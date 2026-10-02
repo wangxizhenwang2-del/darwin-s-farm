@@ -11,5 +11,5 @@ public class SpeciesData: ScriptableObject
     private int baseFitTemperature; //0~100 适宜温度
     private int baseFitHumidity;  //0~100 适宜湿度
     private int baseSize;   //0~100 体型，与运动能力共同决定进食周期、运动速度
-    private int baseFertility;  //0~100 个体终生繁殖数量
+    private int baseFertility;  //0~100 个体繁殖能力系数
 }
