@@ -3,59 +3,39 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class ScreenEdgeCamera : MonoBehaviour
 {
+    [Header("跟随目标")]
     [SerializeField] private Transform player;
-    [SerializeField] private Transform[] cameraPoints;
 
+    /// <summary>
+    /// 表示玩家进入多少范围开始触发，数值越大的话，触发越及时
+    /// </summary>
+    [Header("触发区域")]
+    
     [SerializeField, Range(0.01f, 0.45f)]
-    private float edgeMargin = 0.15f;
+    private float edgeMargin = 0.25f;
 
+    [Header("移动")]
+    [Tooltip("表示鼠标的1移动速度")]
     [SerializeField, Min(0.1f)]
-    private float moveSpeed = 10f;
+    private float moveSpeed = 25f;
 
-    // 新机位至少要近这么多，才允许切换，减少来回跳动。
-    [SerializeField, Min(0f)]
-    private float switchAdvantage = 1f;
+    [Tooltip("玩家距画面中心足够近时停止移动")]
+    [SerializeField, Min(0.01f)]
+    private float stopDistance = 0.15f;
 
     private Camera viewCamera;
-    private Transform currentPoint;
-
-    private Vector3 cameraOffset;
-    private Vector3 targetPosition;
     private bool moving;
+    private bool followEnabled = true;
 
-    private void Start()
+    private void Awake()
     {
         viewCamera = GetComponent<Camera>();
-
-        if (player == null)
-        {
-            enabled = false;
-            return;
-        }
-
-        // 记录初始构图：镜头相对玩家的位置偏移。
-        cameraOffset = transform.position - player.position;
-
-        currentPoint = FindClosestPoint(transform.position);
     }
 
     private void LateUpdate()
     {
-        if (player == null)
+        if (!followEnabled || player == null)
             return;
-
-        if (moving)
-        {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                targetPosition,
-                moveSpeed * Time.deltaTime);
-
-            if (transform.position == targetPosition)
-                moving = false;
-
-            return;
-        }
 
         Vector3 viewport =
             viewCamera.WorldToViewportPoint(player.position);
@@ -69,65 +49,49 @@ public class ScreenEdgeCamera : MonoBehaviour
             viewport.y <= edgeMargin ||
             viewport.y >= 1f - edgeMargin;
 
-        if (!nearEdge)
+        if (nearEdge)
+            moving = true;
+
+        if (!moving)
             return;
 
-        // 如果保持初始构图，镜头此时理想的位置。
-        Vector3 desiredPosition = player.position + cameraOffset;
+        // 使用玩家当前高度，建立一个水平面。
+        Plane playerPlane = new Plane(Vector3.up, player.position);
 
-        Transform nextPoint = FindClosestPoint(desiredPosition);
+        // 从画面中心发射射线。
+        Ray centerRay = viewCamera.ViewportPointToRay(
+            new Vector3(0.5f, 0.5f, 0f));
 
-        if (nextPoint == null || nextPoint == currentPoint)
+        if (!playerPlane.Raycast(centerRay, out float distance))
+        {
+            moving = false;
             return;
-
-        if (currentPoint != null)
-        {
-            float currentDistance =
-                HorizontalDistance(currentPoint.position, desiredPosition);
-
-            float nextDistance =
-                HorizontalDistance(nextPoint.position, desiredPosition);
-
-            if (currentDistance - nextDistance <= switchAdvantage)
-                return;
         }
 
-        currentPoint = nextPoint;
-        targetPosition = nextPoint.position;
-        moving = true;
-    }
+        Vector3 centerOnPlane = centerRay.GetPoint(distance);
 
-    private Transform FindClosestPoint(Vector3 position)
-    {
-        if (cameraPoints == null)
-            return null;
+        // 把玩家移到画面中心所需的相机水平位移。
+        Vector3 correction = player.position - centerOnPlane;
+        correction.y = 0f;
 
-        Transform closest = null;
-        float closestDistance = float.PositiveInfinity;
-
-        foreach (Transform point in cameraPoints)
+        if (correction.sqrMagnitude <= stopDistance * stopDistance)
         {
-            if (point == null)
-                continue;
-
-            float distance =
-                HorizontalDistance(point.position, position);
-
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closest = point;
-            }
+            moving = false;
+            return;
         }
 
-        return closest;
+        Vector3 targetPosition = transform.position + correction;
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            moveSpeed * Time.deltaTime);
     }
 
-    private float HorizontalDistance(Vector3 a, Vector3 b)
+    // 后续建造模式会调用这个方法。
+    public void SetFollowEnabled(bool value)
     {
-        // 地图在 XZ 平面，只比较水平距离。
-        return Vector2.Distance(
-            new Vector2(a.x, a.z),
-            new Vector2(b.x, b.z));
+        followEnabled = value;
+        moving = false;
     }
 }
