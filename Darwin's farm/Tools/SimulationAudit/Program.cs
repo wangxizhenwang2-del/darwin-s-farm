@@ -11,7 +11,8 @@ static class Program
         {
             species = new SpeciesData { trophicLevel = level }, speciesAmount = amount,
             fitTemperature = 50, fitHumidity = 50, size = size,
-            movementAbility = movement, fertility = fertility, habitatNiche = 50
+            movementAbility = movement, fertility = fertility, habitatNiche = 50,
+            trophicLevel = level, trophicLevelInitialized = true
         };
 
     static BlockInfo Block(int recovery, float stock, params PopulationData[] populations)
@@ -26,11 +27,210 @@ static class Program
     {
         var c = new SimulationController();
         c.SetParameters(0.05f, 0.1f, 0.6f);
-        c.SetMutationParameters(30, mutation ? 1f : 0f, 1f);
+        c.SetMutationParameters(7, mutation ? 2f : 0f, 1f);
         return c;
     }
 
     static string F(float value) => value.ToString("0.###", CultureInfo.InvariantCulture);
+
+    static float[] Traits(PopulationData p) => new[]
+    {
+        p.fitTemperature + p.temperatureMutationRemainder,
+        p.fitHumidity + p.humidityMutationRemainder,
+        p.movementAbility + p.movementMutationRemainder,
+        p.size + p.sizeMutationRemainder,
+        p.fertility + p.fertilityMutationRemainder,
+        p.trophicLevel + p.trophicMutationRemainder
+    };
+
+    static int ChangedTraits(float[] before, PopulationData after)
+    {
+        var values = Traits(after);
+        return Enumerable.Range(0, values.Length)
+            .Count(i => Math.Abs(values[i] - before[i]) > 0.0001f);
+    }
+
+    static void DirectedMutationTests()
+    {
+        var environmentPopulation = Pop(0, 50);
+        var environment = Block(1000, 10000f, environmentPopulation);
+        environment.temperature = 75;
+        environment.humidity = 75;
+        var controller = Controller(true);
+        var start = Traits(environmentPopulation);
+        for (int day = 0; day < 7; day++) controller.SimulateBlock(environment);
+        if (ChangedTraits(start, environmentPopulation) != 1 ||
+            environmentPopulation.fitTemperature <= 50 || environmentPopulation.fitHumidity != 50)
+            throw new Exception("environmental shock changed multiple traits in one cycle");
+        for (int day = 0; day < 7; day++) controller.SimulateBlock(environment);
+        if (environmentPopulation.fitHumidity <= 50)
+            throw new Exception("second environmental mismatch was ignored");
+        Console.WriteLine($"DIRECTED_ENV first=temperature second=humidity temp={F(Traits(environmentPopulation)[0])} humidity={F(Traits(environmentPopulation)[1])}");
+
+        var fastPrey = Pop(0, 500, 10, 60);
+        var slowHunter = Pop(1, 5, 10, 10);
+        var pursuit = Block(10000, 10000f, fastPrey, slowHunter);
+        controller = Controller(true);
+        start = Traits(slowHunter);
+        for (int day = 0; day < 7; day++) controller.SimulateBlock(pursuit);
+        if (ChangedTraits(start, slowHunter) != 1 || slowHunter.movementAbility <= 10)
+            throw new Exception($"well-fed slower hunter did not select movement: K/N={F(slowHunter.energySatisfactionToday)} actual={F(slowHunter.actualEnergySatisfactionToday)} traits={string.Join(',', Traits(slowHunter))}");
+        Console.WriteLine($"DIRECTED_MOVEMENT initial=10 final={F(Traits(slowHunter)[2])}");
+
+        var scarcePrey = Pop(0, 500, 10, 60);
+        var unfundedHunter = Pop(1, 5, 10, 10);
+        var shortageBlock = Block(0, 10000f, scarcePrey, unfundedHunter);
+        controller = Controller(true);
+        controller.SetParameters(0f, 0f, 0f);
+        for (int day = 0; day < 7; day++) controller.SimulateBlock(shortageBlock);
+        if (unfundedHunter.movementAbility != 10 ||
+            unfundedHunter.movementMutationRemainder != 0f)
+            throw new Exception("unsustainable movement increase was not rejected");
+        Console.WriteLine("MOVEMENT_ENERGY_GATE increase=rejected");
+
+        var largePrey = Pop(0, 100, 30);
+        var smallHunter = Pop(1, 5, 5);
+        var sizeBlock = Block(10000, 10000f, largePrey, smallHunter);
+        controller = Controller(true);
+        for (int day = 0; day < 7; day++) controller.SimulateBlock(sizeBlock);
+        if (smallHunter.size <= 5)
+            throw new Exception("well-fed smaller hunter did not select size");
+        Console.WriteLine($"DIRECTED_SIZE initial=5 final={F(Traits(smallHunter)[3])}");
+
+        var smallerPrey = Pop(0, 100, 10);
+        var oversizedHunter = Pop(1, 5, 50);
+        var sizeShortage = Block(0, 10000f, smallerPrey, oversizedHunter);
+        controller = Controller(true);
+        controller.SetParameters(0f, 0f, 0f);
+        for (int day = 0; day < 7; day++) controller.SimulateBlock(sizeShortage);
+        if (oversizedHunter.size >= 50)
+            throw new Exception("oversized hungry hunter did not shrink");
+        Console.WriteLine($"HUNGRY_OVERSIZED initial=50 final={F(Traits(oversizedHunter)[3])}");
+        for (int day = 0; day < 140; day++) controller.SimulateBlock(sizeShortage);
+        if (oversizedHunter.size >= 35)
+            throw new Exception("old 30 percent body-size cap is still active");
+        Console.WriteLine($"SIZE_UNBOUNDED initial=50 final={F(Traits(oversizedHunter)[3])}");
+
+        var slowTarget = Block(0, 1000f, Pop(0, 20, 10, 0, 0), Pop(1, 100, 10, 50, 0));
+        var fastTarget = Block(0, 1000f, Pop(0, 20, 10, 100, 0), Pop(1, 100, 10, 50, 0));
+        controller = Controller();
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SimulateBlock(slowTarget);
+        controller.SimulateBlock(fastTarget);
+        if (slowTarget.community[1].allocatedBiomass <=
+            fastTarget.community[1].allocatedBiomass)
+            throw new Exception("prey movement did not reduce hunter's energy gain");
+        Console.WriteLine($"CAPTURE_SPEED slowPreyEnergy={F(slowTarget.community[1].allocatedBiomass)} fastPreyEnergy={F(fastTarget.community[1].allocatedBiomass)}");
+
+        var smallHunterBlock = Block(0, 1000f, Pop(0, 20, 10, 10, 0), Pop(1, 100, 5, 10, 0));
+        var largeHunterBlock = Block(0, 1000f, Pop(0, 20, 10, 10, 0), Pop(1, 100, 30, 10, 0));
+        controller.SimulateBlock(smallHunterBlock);
+        controller.SimulateBlock(largeHunterBlock);
+        if (largeHunterBlock.community[1].allocatedBiomass <=
+            smallHunterBlock.community[1].allocatedBiomass)
+            throw new Exception("hunter size did not improve capture efficiency");
+        Console.WriteLine($"CAPTURE_SIZE smallHunterEnergy={F(smallHunterBlock.community[1].allocatedBiomass)} largeHunterEnergy={F(largeHunterBlock.community[1].allocatedBiomass)}");
+
+        var strandedHunter = Pop(1, 10);
+        var plantAlternative = Block(1000, 10000f, strandedHunter);
+        controller = Controller(true);
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SetMutationParameters(1, 2f, 1f);
+        for (int day = 0; day < 3; day++) controller.SimulateBlock(plantAlternative);
+        if (strandedHunter.trophicLevel != 0)
+            throw new Exception("hungry hunter did not move toward accessible adjacent food");
+        Console.WriteLine($"TROPHIC_ALTERNATIVE initial=1 final={strandedHunter.trophicLevel}");
+
+        var plantCompetitor = Pop(0, 500, 100);
+        var wouldBeHunter = Pop(0, 10);
+        var foodChoice = Block(10000, 10000f, plantCompetitor, wouldBeHunter);
+        controller = Controller(true);
+        controller.SetMutationParameters(1, 2f, 1f);
+        controller.SimulateBlock(foodChoice);
+        if (wouldBeHunter.trophicLevel + wouldBeHunter.trophicMutationRemainder <= 0f)
+            throw new Exception("crowded herbivore did not select accessible prey");
+        Console.WriteLine($"TROPHIC_UP alternative={F(Traits(wouldBeHunter)[5])}");
+
+        var reversedCompetitor = Pop(0, 500, 100);
+        var reversedHunter = Pop(0, 10);
+        var reversedFoodChoice = Block(10000, 10000f, reversedHunter, reversedCompetitor);
+        var reversedController = Controller(true);
+        reversedController.SetMutationParameters(1, 2f, 1f);
+        reversedController.SimulateBlock(reversedFoodChoice);
+        float[] expectedTraits = Traits(wouldBeHunter);
+        float[] reversedTraits = Traits(reversedHunter);
+        if (expectedTraits.Where((value, index) =>
+            Math.Abs(value - reversedTraits[index]) > 0.0001f).Any())
+            throw new Exception("population list order changed the chosen mutation");
+        Console.WriteLine("ORDER_INDEPENDENCE reversedPopulationList=sameTraits");
+
+        var declining = Pop(0, 100);
+        declining.previousMutationPopulation = 150;
+        declining.mutationPopulationInitialized = true;
+        var fertilityBlock = Block(1000, 10000f, declining);
+        controller = Controller(true);
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SetMutationParameters(1, 2f, 1f);
+        controller.SimulateBlock(fertilityBlock);
+        if (declining.fertility <= 50)
+            throw new Exception("well-fed declining population did not increase fertility");
+        Console.WriteLine($"FERTILITY_DECLINE initial=50 final={declining.fertility}");
+
+        var growingUnderPressure = Pop(0, 100);
+        growingUnderPressure.previousMutationPopulation = 50;
+        growingUnderPressure.mutationPopulationInitialized = true;
+        var fertilityPressureBlock = Block(100, 10000f, growingUnderPressure);
+        controller = Controller(true);
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SetMutationParameters(1, 2f, 1f);
+        controller.SimulateBlock(fertilityPressureBlock);
+        if (growingUnderPressure.fertility >= 50)
+            throw new Exception("growing population under resource pressure did not reduce fertility");
+        Console.WriteLine($"FERTILITY_GROWTH_PRESSURE initial=50 final={growingUnderPressure.fertility}");
+
+        var changingPrey = Pop(0, 500, 10);
+        var changingHunter = Pop(1, 5, 50);
+        var recoveryChange = Block(10000, 10000f, changingPrey, changingHunter);
+        controller = Controller(true);
+        for (int day = 0; day < 28; day++) controller.SimulateBlock(recoveryChange);
+        float sizeBeforeChange = Traits(changingHunter)[3];
+        recoveryChange.habitatRecovery = 1000;
+        controller.ScheduleMutationAfterEnvironmentChange(recoveryChange);
+        controller.SimulateBlock(recoveryChange);
+        if (Traits(changingHunter)[3] >= sizeBeforeChange)
+            throw new Exception($"player recovery reduction did not select smaller hunter size: predatorN={changingHunter.speciesAmount} preyN={changingPrey.speciesAmount} K/N={F(changingHunter.energySatisfactionToday)} actual={F(changingHunter.actualEnergySatisfactionToday)} size={F(Traits(changingHunter)[3])}");
+        Console.WriteLine($"PLAYER_RECOVERY_CHANGE before={F(sizeBeforeChange)} after={F(Traits(changingHunter)[3])}");
+    }
+
+    static void EnvironmentGrid()
+    {
+        int survived = 0;
+        int directed = 0;
+        foreach (int temperatureChange in new[] { -25, 0, 25 })
+        foreach (int humidityChange in new[] { -25, 0, 25 })
+        foreach (int recovery in new[] { 100, 1000, 10000 })
+        {
+            var population = Pop(0, 10);
+            var block = Block(recovery, 10000f, population);
+            block.temperature += temperatureChange;
+            block.humidity += humidityChange;
+            var controller = Controller(true);
+            for (int day = 0; day < 365; day++) controller.SimulateBlock(block);
+            if (population.speciesAmount <= 0) continue;
+            survived++;
+            float[] traits = Traits(population);
+            if (temperatureChange * (traits[0] - 50f) < 0f ||
+                humidityChange * (traits[1] - 50f) < 0f ||
+                population.size != 10 || population.movementAbility != 10 ||
+                population.trophicLevel != 0)
+                throw new Exception($"wrong evolution in grid: temp={temperatureChange}, humidity={humidityChange}, recovery={recovery}");
+            if ((temperatureChange == 0 || Math.Abs(traits[0] - 50f) > 0.01f) &&
+                (humidityChange == 0 || Math.Abs(traits[1] - 50f) > 0.01f)) directed++;
+        }
+        Console.WriteLine($"ENV_GRID cases=27 survived={survived} correctlyDirected={directed}");
+        if (directed != survived)
+            throw new Exception("some surviving grid populations did not follow environmental input");
+    }
 
     static void Run(string name, BlockInfo b, SimulationController c, int days, int[] checkpoints,
         Action<int, BlockInfo> beforeDay = null)
@@ -76,7 +276,7 @@ static class Program
             b.temperature = 100;
             b.humidity = 50;
             var c = Controller();
-        c.SetParameters(0, 0, 0);
+            c.SetParameters(0, 0, 0);
             c.SetMutationParameters(1, 1, strength);
             for (int day = 0; day < days; day++) c.SimulateBlock(b);
             if (strength == 0f && (p.fitTemperature != 50 || p.fitHumidity != 50 ||
@@ -182,6 +382,8 @@ static class Program
 
     static void Main()
     {
+        DirectedMutationTests();
+        EnvironmentGrid();
         for (int seed = 0; seed < 20; seed++)
         {
             UnityEngine.Random.InitState(seed);
@@ -206,9 +408,10 @@ static class Program
         hungryController.SetParameters(0f, 0f, 0f);
         hungryController.SetMutationParameters(1, 10f, 1f);
         for (int day = 0; day < 200; day++) hungryController.SimulateBlock(hungryBlock);
-        if (hungryPopulation.size < 7 || hungryPopulation.size > 10)
-            throw new Exception("body size exceeded initial-size mutation bound");
-        Console.WriteLine($"SIZE_BOUND initial=10 final={hungryPopulation.size} range=7..10");
+        if (hungryPopulation.size != 10 || hungryPopulation.movementAbility != 10 ||
+            hungryPopulation.fertility != 50)
+            throw new Exception("starvation alone changed unrelated traits");
+        Console.WriteLine("HUNGER_ALONE traits=unchanged");
 
         UnityEngine.Random.InitState(42);
         var mutationSwitchPopulation = Pop(0, 1);
@@ -328,7 +531,7 @@ static class Program
             plantForaging.community[0].actualEnergySatisfactionToday)
             throw new Exception("movement did not improve plant foraging");
         var preyForaging = Block(0, 1000f,
-            Pop(0, 20, 10, 10, 0), Pop(1, 10, 10, 0, 0), Pop(1, 10, 10, 100, 0));
+            Pop(0, 20, 10, 10, 0), Pop(1, 20, 10, 0, 0), Pop(1, 20, 10, 100, 0));
         Run("movement-hunt-competition", preyForaging, movementController, 1,
             new[] { 1 });
         if (preyForaging.community[2].actualEnergySatisfactionToday <=

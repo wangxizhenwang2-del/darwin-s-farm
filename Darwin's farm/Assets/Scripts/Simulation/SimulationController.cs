@@ -14,9 +14,7 @@ public class SimulationController : MonoBehaviour
     private const float MigrationPopulationScale = 100f;
     private const float EnvironmentalPressureRange = 30f;
     private const float MaximumSelectionPressure = 0.9f;
-    private const int MutationSamplesPerCycle = 4;
-    private const float MutationPressureDeadZone = 0.05f;
-    private const float MaximumSizeDeviation = 0.3f;
+    private const float MinimumMutationScore = 0.15f;
 
     [SerializeField] private SimulationTime simulationTime;
     [SerializeField] private List<BlockInfo> blockInfos = new List<BlockInfo>();
@@ -28,8 +26,8 @@ public class SimulationController : MonoBehaviour
 
     [Header("Mutation")]
     [SerializeField] private bool mutationEnabled = true;
-    [Min(1)] [SerializeField] private int mutationInterval = 30;
-    [Min(0f)] [SerializeField] private float mutationStep = 1f;
+    [Min(1)] [SerializeField] private int mutationInterval = 7;
+    [Min(0f)] [SerializeField] private float mutationStep = 2f;
     [Min(0f)] [SerializeField] private float selectionStrength = 1f;
 
     [Header("Migration")]
@@ -42,6 +40,15 @@ public class SimulationController : MonoBehaviour
         public BlockInfo target;
         public PopulationData population;
         public int amount;
+    }
+
+    private enum MutationTrait { Temperature, Humidity, Movement, Size, Fertility, Trophic }
+
+    private struct MutationDecision
+    {
+        public PopulationData population;
+        public MutationTrait trait;
+        public float score;
     }
 
     private void OnEnable()
@@ -79,6 +86,16 @@ public class SimulationController : MonoBehaviour
     public void SetMutationEnabled(bool enabled)
     {
         mutationEnabled = enabled;
+    }
+
+    public void ScheduleMutationAfterEnvironmentChange(BlockInfo block)
+    {
+        if (block == null || block.community == null) return;
+        foreach (PopulationData population in block.community)
+        {
+            if (population != null)
+                population.mutationDaysElapsed = Mathf.Max(1, mutationInterval) - 1;
+        }
     }
 
     private void SimulateDay(int day)
@@ -165,6 +182,7 @@ public class SimulationController : MonoBehaviour
         block.plantBiomass -= consumedBiomass;
         block.plantBiomass = Mathf.Max(0f, block.plantBiomass);
 
+        List<MutationDecision> decisions = null;
         foreach (PopulationData population in block.community)
         {
             if (population == null) continue;
@@ -177,11 +195,19 @@ public class SimulationController : MonoBehaviour
             population.mutationDaysElapsed++;
             if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval)) continue;
             population.mutationDaysElapsed = 0;
-            if (population.speciesAmount > 0)
+            if (population.speciesAmount > 0 &&
+                TrySelectMutation(block, population, out MutationDecision decision))
             {
-                MutatePopulation(block, population);
+                if (decisions == null) decisions = new List<MutationDecision>();
+                decisions.Add(decision);
             }
             population.previousMutationPopulation = population.speciesAmount;
+        }
+        // 先确定全群落的方向，再应用变异，避免列表顺序改变当天的食物评分。
+        if (decisions != null)
+        {
+            foreach (MutationDecision decision in decisions)
+                ApplySelectedMutation(decision.population, decision.trait, decision.score);
         }
     }
 
@@ -297,8 +323,6 @@ public class SimulationController : MonoBehaviour
             fitTemperature = source.fitTemperature,
             fitHumidity = source.fitHumidity,
             size = source.size,
-            referenceSize = source.referenceSize,
-            referenceSizeInitialized = true,
             fertility = source.fertility,
             trophicLevel = source.trophicLevel,
             trophicLevelInitialized = true,
@@ -329,9 +353,6 @@ public class SimulationController : MonoBehaviour
             arrival.fitHumidity, arrivalAmount, total);
         resident.size = WeightedTrait(resident.size, residentAmount,
             arrival.size, arrivalAmount, total);
-        resident.referenceSize = WeightedTrait(resident.referenceSize, residentAmount,
-            arrival.referenceSize, arrivalAmount, total);
-        resident.referenceSizeInitialized = true;
         resident.fertility = WeightedTrait(resident.fertility, residentAmount,
             arrival.fertility, arrivalAmount, total);
         resident.trophicLevel = WeightedTrait(resident.trophicLevel, residentAmount,
@@ -373,11 +394,6 @@ public class SimulationController : MonoBehaviour
     private static void InitializeMutationState(PopulationData population)
     {
         population.size = Mathf.Clamp(population.size, 1, 100);
-        if (!population.referenceSizeInitialized)
-        {
-            population.referenceSize = population.size;
-            population.referenceSizeInitialized = true;
-        }
         if (!population.trophicLevelInitialized)
         {
             population.trophicLevel = population.species == null ? 0 :
@@ -392,72 +408,173 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    private void MutatePopulation(BlockInfo block, PopulationData population)
+    private bool TrySelectMutation(BlockInfo block, PopulationData population,
+        out MutationDecision decision)
     {
-        // 只有实际缺食才选择更小体型；单纯低于 K 不应持续推高体型。
-        float energySatisfaction = population.energySatisfactionToday;
-        float temperaturePressure = Mathf.Clamp(
+        decision = new MutationDecision();
+        if (mutationStep <= 0f || selectionStrength <= 0f) return false;
+
+        float temperatureScore = Mathf.Clamp(
             (block.temperature - population.fitTemperature - population.temperatureMutationRemainder)
             / EnvironmentalPressureRange * selectionStrength,
             -MaximumSelectionPressure, MaximumSelectionPressure);
-        float humidityPressure = Mathf.Clamp(
+        float humidityScore = Mathf.Clamp(
             (block.humidity - population.fitHumidity - population.humidityMutationRemainder)
             / EnvironmentalPressureRange * selectionStrength,
             -MaximumSelectionPressure, MaximumSelectionPressure);
-        float movementPressure = population.environmentalFitness > 0 &&
-            FoodAvailability(block, population.trophicLevel, population) > 0f
-            ? Mathf.Clamp01((1f - population.actualEnergySatisfactionToday)
-                * selectionStrength) : 0f;
-        float sizePressure = population.actualEnergySatisfactionToday < 0.9f
-            ? Mathf.Clamp((energySatisfaction - 1f) * selectionStrength, -1f, 0f) : 0f;
-        float populationTrend = population.previousMutationPopulation > 0
+        MutationTrait selected = MutationTrait.Temperature;
+        float score = temperatureScore;
+        ChooseMutation(ref selected, ref score, MutationTrait.Humidity, humidityScore);
+
+        // 温湿度失配由玩家环境输入直接造成，先处理最强的一项。
+        if (Mathf.Abs(score) >= MinimumMutationScore)
+        {
+            decision = new MutationDecision { population = population, trait = selected, score = score };
+            return true;
+        }
+
+        score = 0f;
+        float sustainableRatio = population.energySatisfactionToday;
+        float actualRatio = population.actualEnergySatisfactionToday;
+        float shortage = Mathf.Clamp01(1f - Mathf.Min(sustainableRatio, actualRatio));
+        bool enoughEnergy = actualRatio >= 0.9f;
+        foreach (PopulationData other in block.community)
+        {
+            if (other == population || other.speciesAmount <= 0 ||
+                Mathf.Abs(other.trophicLevel - population.trophicLevel) != 1) continue;
+
+            float movementGap = Mathf.Clamp((other.movementAbility - population.movementAbility)
+                / EnvironmentalPressureRange, -1f, 1f);
+            float sizeGap = Mathf.Clamp((other.size - population.size)
+                / EnvironmentalPressureRange, -1f, 1f);
+            if (movementGap > 0f && enoughEnergy &&
+                sustainableRatio >= (population.energyNeed + mutationStep * MovementEnergyWeight)
+                    / population.energyNeed)
+                ChooseMutation(ref selected, ref score, MutationTrait.Movement, movementGap);
+            else if (movementGap < 0f && shortage > 0.1f)
+                ChooseMutation(ref selected, ref score, MutationTrait.Movement,
+                    movementGap * shortage);
+
+            if (sizeGap > 0f && enoughEnergy &&
+                sustainableRatio >= (population.energyNeed + mutationStep * SizeEnergyWeight)
+                    / population.energyNeed)
+                ChooseMutation(ref selected, ref score, MutationTrait.Size, sizeGap);
+            else if (sizeGap < 0f && shortage > 0.1f)
+                ChooseMutation(ref selected, ref score, MutationTrait.Size, sizeGap * shortage);
+        }
+
+        if (actualRatio < 0.8f && sustainableRatio < 0.8f)
+        {
+            float currentFood = FoodAvailability(block, population.trophicLevel, population);
+            int lower = population.trophicLevel - 1;
+            int higher = population.trophicLevel + 1;
+            if (lower >= 0)
+                ChooseMutation(ref selected, ref score, MutationTrait.Trophic,
+                    -FoodAdvantage(currentFood, FoodAvailability(block, lower, population))
+                    * shortage);
+            if (higher <= MaxTrophicLevel)
+                ChooseMutation(ref selected, ref score, MutationTrait.Trophic,
+                    FoodAdvantage(currentFood, FoodAvailability(block, higher, population))
+                    * shortage);
+        }
+
+        float trend = population.previousMutationPopulation > 0
             ? (population.speciesAmount - population.previousMutationPopulation)
                 / (float)population.previousMutationPopulation : 0f;
-        float fertilityPressure = Mathf.Clamp(-populationTrend * selectionStrength, -1f, 1f);
+        if (trend < 0f && enoughEnergy && sustainableRatio >= 0.9f)
+            ChooseMutation(ref selected, ref score, MutationTrait.Fertility,
+                Mathf.Clamp01(-trend * 5f));
+        else if (trend > 0f && shortage > 0.1f)
+            ChooseMutation(ref selected, ref score, MutationTrait.Fertility,
+                -Mathf.Clamp01(trend * 5f));
 
-        float currentFood = FoodAvailability(block, population.trophicLevel, population);
-        float alternativeFood = FoodAvailability(block, population.trophicLevel + 1, population);
-        float foodTotal = currentFood + alternativeFood;
-        float trophicPressure = foodTotal > 0f
-            ? Mathf.Clamp01(1f - population.actualEnergySatisfactionToday)
-                * (alternativeFood - currentFood) / foodTotal * selectionStrength : 0f;
+        score *= selectionStrength;
+        if (Mathf.Abs(score) >= MinimumMutationScore)
+        {
+            decision = new MutationDecision { population = population, trait = selected, score = score };
+            return true;
+        }
+        return false;
+    }
 
-        int minimumSize = Mathf.Max(1, Mathf.CeilToInt(
-            population.referenceSize * (1f - MaximumSizeDeviation)));
-        int maximumSize = Mathf.Min(100, Mathf.FloorToInt(
-            population.referenceSize * (1f + MaximumSizeDeviation)));
+    private static float FoodAdvantage(float current, float alternative)
+    {
+        return current + alternative > 0f
+            ? Mathf.Max(0f, (alternative - current) / (current + alternative)) : 0f;
+    }
 
-        ApplyMutation(ref population.fitTemperature, ref population.temperatureMutationRemainder,
-            1f, temperaturePressure, 100);
-        ApplyMutation(ref population.fitHumidity, ref population.humidityMutationRemainder,
-            1f, humidityPressure, 100);
-        ApplyMutation(ref population.movementAbility, ref population.movementMutationRemainder,
-            0.5f, movementPressure, 100);
-        ApplyMutation(ref population.size, ref population.sizeMutationRemainder,
-            0.5f, sizePressure, maximumSize, minimumSize);
-        ApplyMutation(ref population.fertility, ref population.fertilityMutationRemainder,
-            0.3f, fertilityPressure, 100);
-        ApplyMutation(ref population.trophicLevel, ref population.trophicMutationRemainder,
-            0.05f, trophicPressure, MaxTrophicLevel);
+    private static void ChooseMutation(ref MutationTrait selected, ref float bestScore,
+        MutationTrait candidate, float candidateScore)
+    {
+        if (Mathf.Abs(candidateScore) <= Mathf.Abs(bestScore)) return;
+        selected = candidate;
+        bestScore = candidateScore;
+    }
+
+    private void ApplySelectedMutation(PopulationData population, MutationTrait trait, float score)
+    {
+        switch (trait)
+        {
+            case MutationTrait.Temperature:
+                ApplyMutation(ref population.fitTemperature, ref population.temperatureMutationRemainder,
+                    1f, score, 0, 100); break;
+            case MutationTrait.Humidity:
+                ApplyMutation(ref population.fitHumidity, ref population.humidityMutationRemainder,
+                    1f, score, 0, 100); break;
+            case MutationTrait.Movement:
+                ApplyMutation(ref population.movementAbility, ref population.movementMutationRemainder,
+                    1f, score, 0, 100); break;
+            case MutationTrait.Size:
+                ApplyMutation(ref population.size, ref population.sizeMutationRemainder,
+                    1f, score, 1, 100); break;
+            case MutationTrait.Fertility:
+                ApplyMutation(ref population.fertility, ref population.fertilityMutationRemainder,
+                    0.5f, score, 0, 100); break;
+            case MutationTrait.Trophic:
+                ApplyMutation(ref population.trophicLevel, ref population.trophicMutationRemainder,
+                    0.2f, score, Mathf.Max(0, population.trophicLevel - 1),
+                    Mathf.Min(MaxTrophicLevel, population.trophicLevel + 1)); break;
+        }
     }
 
     private float FoodAvailability(BlockInfo block, int level, PopulationData consumer)
     {
-        if (level > MaxTrophicLevel) return 0f;
+        if (level < 0 || level > MaxTrophicLevel) return 0f;
+        float food = 0f;
         if (level == 0)
         {
-            return Mathf.Min(Mathf.Max(0f, block.habitatRecovery),
+            food = Mathf.Min(Mathf.Max(0f, block.habitatRecovery),
                 Mathf.Max(0f, block.maxPlantBiomass));
         }
-
-        float available = 0f;
-        foreach (PopulationData prey in block.community)
+        else
         {
-            if (prey == null || prey == consumer || prey.trophicLevel != level - 1) continue;
-            available += SustainablePreyProduction(prey) * Mathf.Max(0, prey.size)
-                * PreyEnergyPerSize * PredationEfficiency;
+            foreach (PopulationData prey in block.community)
+            {
+                if (prey == consumer || prey.speciesAmount <= 0 ||
+                    prey.trophicLevel != level - 1) continue;
+                food += SustainablePreyProduction(prey) * prey.size
+                    * PreyEnergyPerSize * PredationEfficiency
+                    * CaptureEfficiency(consumer.movementAbility, consumer.size, prey);
+            }
         }
-        return available;
+
+        // 用同级总需求分摊食物，比较的是该种群可取得的能量，不是整块地的总量。
+        float demand = consumer.energyNeed * Mathf.Max(1, consumer.speciesAmount);
+        foreach (PopulationData competitor in block.community)
+        {
+            if (competitor != consumer && competitor.speciesAmount > 0 &&
+                competitor.trophicLevel == level)
+                demand += competitor.energyNeed * competitor.speciesAmount;
+        }
+        return demand > 0f ? food / demand : 0f;
+    }
+
+    private static float CaptureEfficiency(float predatorMovement, float predatorSize,
+        PopulationData prey)
+    {
+        // 较快、较大的捕食者获取同一猎物所需的追逐成本更低。
+        return Mathf.Clamp(1f + (predatorMovement - prey.movementAbility
+            + predatorSize - prey.size) / 200f, 0.5f, 1.5f);
     }
 
     private static float ForagingEfficiency(PopulationData population)
@@ -477,22 +594,12 @@ public class SimulationController : MonoBehaviour
     }
 
     private void ApplyMutation(ref int trait, ref float remainder, float multiplier,
-        float pressure, int maximum, int minimum = 0)
+        float score, int minimum, int maximum)
     {
-        if (mutationStep <= 0f || Mathf.Abs(pressure) < MutationPressureDeadZone) return;
-        for (int sample = 0; sample < MutationSamplesPerCycle; sample++)
-        {
-            float mutation = Random.Range(-1f, 1f) * mutationStep * multiplier
-                / MutationSamplesPerCycle;
-            // 只有与当前选择方向一致的变异可能保留，避免零压力时随机游走。
-            if (mutation == 0f || Mathf.Sign(mutation) != Mathf.Sign(pressure)) continue;
-            float keepChance = Mathf.Clamp01(Mathf.Abs(pressure));
-            if (Random.value >= keepChance) continue;
-
-            float value = Mathf.Clamp(trait + remainder + mutation, minimum, maximum);
-            trait = Mathf.RoundToInt(value);
-            remainder = value - trait;
-        }
+        float change = Mathf.Sign(score) * mutationStep * multiplier * Mathf.Clamp01(Mathf.Abs(score));
+        float value = Mathf.Clamp(trait + remainder + change, minimum, maximum);
+        trait = Mathf.RoundToInt(value);
+        remainder = value - trait;
     }
 
     private void SimulatePopulation(PopulationData population){
@@ -662,6 +769,8 @@ public class SimulationController : MonoBehaviour
         float totalDemand = 0f;
         float totalDeficit = 0f;
         float totalForagingWeight = 0f;
+        float weightedMovement = 0f;
+        float weightedSize = 0f;
 
         // 同一营养级先统一读取数量与需求，再进行任何扣减。
         foreach (PopulationData population in block.community)
@@ -677,6 +786,8 @@ public class SimulationController : MonoBehaviour
                 float demand = population.energyNeed * population.speciesAmount;
                 totalDemand += demand;
                 totalDeficit += Mathf.Max(0f, demand - population.energyReserve);
+                weightedMovement += demand * population.movementAbility;
+                weightedSize += demand * population.size;
                 totalForagingWeight += demand * ForagingEfficiency(population)
                     * Mathf.Clamp01(population.environmentalFitness / 100f);
             }
@@ -694,13 +805,16 @@ public class SimulationController : MonoBehaviour
         float availableEnergy = 0f;
         float sustainableEnergy = 0f;
         int[] maxKills = new int[prey.Count];
+        float[] energyPerPrey = new float[prey.Count];
         for (int i = 0; i < prey.Count; i++)
         {
             maxKills[i] = Mathf.FloorToInt(prey[i].speciesAmount * MaxDailyPreyFraction);
-            float preyEnergy = prey[i].size * PreyEnergyPerSize
-                * PredationEfficiency * hunterEfficiency;
-            availableEnergy += maxKills[i] * preyEnergy;
-            sustainableEnergy += SustainablePreyProduction(prey[i]) * preyEnergy;
+            energyPerPrey[i] = prey[i].size * PreyEnergyPerSize
+                * PredationEfficiency * hunterEfficiency
+                * CaptureEfficiency(weightedMovement / totalDemand,
+                    weightedSize / totalDemand, prey[i]);
+            availableEnergy += maxKills[i] * energyPerPrey[i];
+            sustainableEnergy += SustainablePreyProduction(prey[i]) * energyPerPrey[i];
         }
 
         // 捕食者承载量由猎物的可持续日生产量决定，而不是现存全部猎物。
@@ -722,8 +836,7 @@ public class SimulationController : MonoBehaviour
         for (int i = 0; i < prey.Count; i++)
         {
             kills[i] = Mathf.FloorToInt(maxKills[i] * fraction);
-            gainedEnergy += kills[i] * prey[i].size * PreyEnergyPerSize
-                * PredationEfficiency * hunterEfficiency;
+            gainedEnergy += kills[i] * energyPerPrey[i];
         }
 
         while (gainedEnergy < totalDeficit && gainedEnergy < availableEnergy)
@@ -748,8 +861,7 @@ public class SimulationController : MonoBehaviour
                 break;
             }
             kills[best]++;
-            gainedEnergy += prey[best].size * PreyEnergyPerSize
-                * PredationEfficiency * hunterEfficiency;
+            gainedEnergy += energyPerPrey[best];
         }
 
         for (int i = 0; i < prey.Count; i++)

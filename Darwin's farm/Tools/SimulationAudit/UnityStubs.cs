@@ -24,7 +24,6 @@ namespace UnityEngine
         public static float Abs(float x) => Math.Abs(x);
         public static int RoundToInt(float x) => (int)MathF.Round(x, MidpointRounding.ToEven);
         public static int FloorToInt(float x) => (int)MathF.Floor(x);
-        public static int CeilToInt(float x) => (int)MathF.Ceiling(x);
         public static float Sign(float x) => x >= 0 ? 1f : -1f;
     }
 

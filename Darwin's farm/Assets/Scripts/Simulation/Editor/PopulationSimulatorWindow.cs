@@ -22,8 +22,6 @@ public class PopulationSimulatorWindow : EditorWindow
 
     [SerializeField] private int temperature = 50;
     [SerializeField] private int humidity = 50;
-    [SerializeField] private int elevation;
-    [SerializeField] private WaterCoverage waterCoverage;
     [SerializeField] private float plantBiomass = 1000f;
     [SerializeField] private float maxPlantBiomass = 10000f;
     [SerializeField] private int habitatRecovery = 100;
@@ -32,14 +30,15 @@ public class PopulationSimulatorWindow : EditorWindow
     [SerializeField] private float maxOverCapacityDeathRate = 0.1f;
     [SerializeField] private float maxStarvationDeathRate = 0.6f;
     [SerializeField] private bool mutationEnabled = true;
-    [SerializeField] private int mutationInterval = 30;
-    [SerializeField] private float mutationStep = 1f;
+    [SerializeField] private int mutationInterval = 7;
+    [SerializeField] private float mutationStep = 2f;
     [SerializeField] private float selectionStrength = 1f;
     [SerializeField] private float secondsPerDay = 1f;
     [SerializeField] private List<PopulationInput> populations = new List<PopulationInput>();
     [SerializeField] private bool initialized;
 
     private static readonly int[] speeds = { 1, 2, 4, 8 };
+    private static readonly string[] traitNames = { "适温", "适湿", "运动", "体型", "生育", "食性" };
     private GameObject runtimeObject;
     private BlockInfo block;
     private SimulationController controller;
@@ -148,16 +147,25 @@ public class PopulationSimulatorWindow : EditorWindow
         maxPlantBiomass = Mathf.Max(0f, EditorGUILayout.FloatField("植物生物量上限", maxPlantBiomass));
         plantBiomass = Mathf.Clamp(EditorGUILayout.FloatField("植物生物量", plantBiomass), 0f, maxPlantBiomass);
         habitatRecovery = Mathf.Max(0, EditorGUILayout.IntField("每日恢复量", habitatRecovery));
-        elevation = EditorGUILayout.IntSlider("海拔", elevation, 0, 2);
-        waterCoverage = (WaterCoverage)EditorGUILayout.EnumPopup("水域", waterCoverage);
         if (block != null && GUILayout.Button("应用环境变化到当前模拟"))
         {
+            bool changed = block.temperature != temperature || block.humidity != humidity ||
+                block.habitatRecovery != habitatRecovery;
+            if (changed)
+                dailyOutput.Add("Day " + currentDay + "    环境改变：温度 " + block.temperature
+                    + "→" + temperature + "，湿度 " + block.humidity + "→" + humidity
+                    + "，每日恢复 " + block.habitatRecovery + "→" + habitatRecovery);
             block.temperature = temperature;
             block.humidity = humidity;
             block.habitatRecovery = habitatRecovery;
+            if (changed)
+            {
+                controller.SetMutationParameters(mutationInterval, mutationStep, selectionStrength);
+                controller.ScheduleMutationAfterEnvironmentChange(block);
+            }
             Repaint();
         }
-        EditorGUILayout.HelpBox("温度、湿度和每日恢复量可通过上方按钮在运行中生效；植物初始库存等其他数据需要 Restart。海拔和水域目前不参与种群计算。", MessageType.Info);
+        EditorGUILayout.HelpBox("温度、湿度和每日恢复量可在运行中生效，并在下一模拟日触发一次变异评估；植物初始库存和上限需要 Restart。", MessageType.Info);
     }
 
     private void DrawParameters()
@@ -182,7 +190,7 @@ public class PopulationSimulatorWindow : EditorWindow
             controller.SetMutationEnabled(mutationEnabled);
         }
         EditorGUILayout.LabelField("固定参数从下一模拟日起生效。", EditorStyles.miniLabel);
-        EditorGUILayout.LabelField("无明显选择压力时性状不变；体型最多偏离初始值 30%。", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField("每周期只变异一个性状；推荐间隔 7 天、步长 2。", EditorStyles.miniLabel);
         EditorGUILayout.HelpBox("达到 K 后数量可以保持水平，但每天仍有出生和死亡；当天的两个整数显示在当前状态和每日输出中。", MessageType.Info);
         EditorGUILayout.HelpBox("单一种群时 K≈每日恢复量÷个体能耗。初始数量低于 K/2，才能看到先加速后减速的增长段；整数出生会使曲线呈阶梯状。", MessageType.Info);
         if (populations.Count == 1 && populations[0].data != null &&
@@ -237,8 +245,6 @@ public class PopulationSimulatorWindow : EditorWindow
                 input.data.size = EditorGUILayout.IntSlider("体型", input.data.size, 1, 100);
                 input.data.movementAbility = EditorGUILayout.IntSlider("运动能力", input.data.movementAbility, 0, 100);
                 input.data.fertility = EditorGUILayout.IntSlider("繁殖能力", input.data.fertility, 0, 100);
-                input.data.habitatNiche = EditorGUILayout.IntSlider("生境生态位", input.data.habitatNiche, 0, 100);
-                EditorGUILayout.LabelField("生境生态位目前不参与计算。", EditorStyles.miniLabel);
             }
             EditorGUILayout.EndVertical();
         }
@@ -287,8 +293,7 @@ public class PopulationSimulatorWindow : EditorWindow
                 + "    运动 " + (population.movementAbility + population.movementMutationRemainder).ToString("F2")
                 + "    体型 " + (population.size + population.sizeMutationRemainder).ToString("F2"));
             EditorGUILayout.LabelField("生育 " + (population.fertility + population.fertilityMutationRemainder).ToString("F2")
-                + "    食性 " + (population.trophicLevel + population.trophicMutationRemainder).ToString("F2")
-                + "    生态位 " + population.habitatNiche);
+                + "    食性 " + (population.trophicLevel + population.trophicMutationRemainder).ToString("F2"));
         }
     }
 
@@ -449,8 +454,6 @@ public class PopulationSimulatorWindow : EditorWindow
         block = runtimeObject.AddComponent<BlockInfo>();
         block.temperature = temperature;
         block.humidity = humidity;
-        block.elevation = elevation;
-        block.waterCoverage = waterCoverage;
         block.plantBiomass = plantBiomass;
         block.maxPlantBiomass = maxPlantBiomass;
         block.habitatRecovery = habitatRecovery;
@@ -482,6 +485,18 @@ public class PopulationSimulatorWindow : EditorWindow
             return;
         }
 
+        float[][] previousTraits = null;
+        if (mutationEnabled && mutationStep > 0f)
+        {
+            previousTraits = new float[block.community.Count][];
+            for (int i = 0; i < block.community.Count; i++)
+            {
+                PopulationData population = block.community[i];
+                if (population.mutationDaysElapsed + 1 >= mutationInterval)
+                    previousTraits[i] = TraitValues(population);
+            }
+        }
+
         controller.SetParameters(reproductionScale,
             maxOverCapacityDeathRate, maxStarvationDeathRate);
         controller.SetMutationParameters(mutationInterval, mutationStep, selectionStrength);
@@ -489,7 +504,35 @@ public class PopulationSimulatorWindow : EditorWindow
         controller.SimulateBlock(block);
         currentDay++;
         RecordDay();
+        if (previousTraits != null)
+        {
+            for (int i = 0; i < previousTraits.Length; i++)
+            {
+                if (previousTraits[i] == null) continue;
+                float[] after = TraitValues(block.community[i]);
+                for (int trait = 0; trait < after.Length; trait++)
+                {
+                    if (Mathf.Abs(after[trait] - previousTraits[i][trait]) < 0.001f) continue;
+                    dailyOutput.Add("Day " + currentDay + "    " + history[i].name + " 进化："
+                        + traitNames[trait] + " " + previousTraits[i][trait].ToString("F2")
+                        + "→" + after[trait].ToString("F2"));
+                }
+            }
+        }
         Repaint();
+    }
+
+    private static float[] TraitValues(PopulationData population)
+    {
+        return new[]
+        {
+            population.fitTemperature + population.temperatureMutationRemainder,
+            population.fitHumidity + population.humidityMutationRemainder,
+            population.movementAbility + population.movementMutationRemainder,
+            population.size + population.sizeMutationRemainder,
+            population.fertility + population.fertilityMutationRemainder,
+            population.trophicLevel + population.trophicMutationRemainder
+        };
     }
 
     private void RecordDay()

@@ -10,9 +10,6 @@ public class PopulationData
     public int fitTemperature; //0~100 适宜温度
     public int fitHumidity;  //0~100 适宜湿度
     public int size;   //1~100 体型，与代谢能力共同决定进食周期、运动速度
-    // 记录起始体型，限制长期选择造成的累计偏移。
-    public int referenceSize;
-    public bool referenceSizeInitialized;
     public int fertility;  //0~100 个体繁殖能力系数
 
     // 食性从物种资产继承一次，此后由各自种群独立演化。
