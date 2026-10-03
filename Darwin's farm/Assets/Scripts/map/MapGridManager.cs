@@ -106,8 +106,9 @@ public class MapGridManager : MonoBehaviour
     }
 
     public bool TryPlaceTile(
-        Vector2Int coordinate,
-        MapTileDefinition definition)
+    Vector2Int coordinate,
+    MapTileDefinition definition,
+    int rotationSteps = 0)
     {
         if (definition == null || !CanPlaceAt(coordinate))
             return false;
@@ -117,6 +118,11 @@ public class MapGridManager : MonoBehaviour
 
         tileRoot.transform.SetParent(placedTiles, false);
         tileRoot.transform.position = GridToWorld(coordinate);
+
+        rotationSteps = ((rotationSteps % 4) + 4) % 4;
+
+        tileRoot.transform.rotation =
+            Quaternion.Euler(0f, rotationSteps * 90f, 0f);
 
         Color coreColor = definition.mainColor;
 
@@ -165,11 +171,26 @@ public class MapGridManager : MonoBehaviour
             new Vector3(1f, 0.5f, 15f),
             borderColor);
 
+        CreatePart(
+     tileRoot.transform,
+     "DirectionMarker",
+     new Vector3(0f, 0.12f, 4f),
+     new Vector3(0.5f, 0.24f, 3f),
+     Color.white);
+
+        // 标记只显示方向，不参与碰撞。
+        Collider markerCollider = tileRoot.transform
+            .Find("DirectionMarker")
+            .GetComponent<Collider>();
+
+        markerCollider.enabled = false;
+        Destroy(markerCollider);
+
         MapTileInstance instance =
      tileRoot.AddComponent<MapTileInstance>();
 
         // 此时主体和四边都已经创建完成。
-        instance.Initialize(coordinate, definition, 0);
+        instance.Initialize(coordinate, definition, 0, rotationSteps);//后加旋转
 
         tiles.Add(coordinate, instance);
 

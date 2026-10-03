@@ -184,6 +184,13 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         float localX,
         float localZ)
     {
+
+        Vector2 gridOffset =
+    tile.LocalToGridOffset(new Vector2(localX, localZ));
+
+        localX = gridOffset.x;
+        localZ = gridOffset.y;
+
         Color total = Color.black;
         float totalWeight = 0f;
 
@@ -261,9 +268,12 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         List<Color> colors,
         List<int> triangles)
     {
+        Vector2Int gridDirection =
+    tile.LocalToGridDirection(direction);
+
         if (gridManager.TryGetNeighbor(
                 tile.Coordinate,
-                direction,
+                gridDirection,
                 out MapTileInstance neighbor))
         {
             return;

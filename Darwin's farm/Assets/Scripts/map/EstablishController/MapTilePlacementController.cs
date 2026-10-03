@@ -38,6 +38,8 @@ public class MapTilePlacementController : MonoBehaviour
     private Vector2Int currentCoordinate;
     private bool canPlace;
 
+    private int rotationSteps;
+
     public bool IsDragging => draggingDefinition != null;
 
     private void Awake()
@@ -83,7 +85,6 @@ public class MapTilePlacementController : MonoBehaviour
         if (!IsDragging)
             return;
 
-        // N关闭建造模式后，取消本次拖拽。
         if (!buildMode.IsBuildMode)
         {
             CancelDrag();
@@ -94,6 +95,7 @@ public class MapTilePlacementController : MonoBehaviour
         bool released;
         bool held;
         bool cancel;
+        bool rotate;
 
 #if ENABLE_INPUT_SYSTEM
         if (Mouse.current == null)
@@ -109,13 +111,18 @@ public class MapTilePlacementController : MonoBehaviour
         cancel = Mouse.current.rightButton.wasPressedThisFrame ||
                  (Keyboard.current != null &&
                   Keyboard.current.escapeKey.wasPressedThisFrame);
-#else
-        mousePosition = Input.mousePosition;
-        released = Input.GetMouseButtonUp(0);
-        held = Input.GetMouseButton(0);
 
-        cancel = Input.GetMouseButtonDown(1) ||
-                 Input.GetKeyDown(KeyCode.Escape);
+        rotate = Keyboard.current != null &&
+                 Keyboard.current.rKey.wasPressedThisFrame;
+#else
+    mousePosition = Input.mousePosition;
+    released = Input.GetMouseButtonUp(0);
+    held = Input.GetMouseButton(0);
+
+    cancel = Input.GetMouseButtonDown(1) ||
+             Input.GetKeyDown(KeyCode.Escape);
+
+    rotate = Input.GetKeyDown(KeyCode.R);
 #endif
 
         if (cancel || (!held && !released))
@@ -124,7 +131,9 @@ public class MapTilePlacementController : MonoBehaviour
             return;
         }
 
-        // 每帧重新检查，松手时不会使用旧的位置判断。
+        if (rotate)
+            rotationSteps = (rotationSteps + 1) % 4;
+
         UpdatePreview(mousePosition);
 
         if (released)
@@ -133,7 +142,8 @@ public class MapTilePlacementController : MonoBehaviour
             {
                 gridManager.TryPlaceTile(
                     currentCoordinate,
-                    draggingDefinition);
+                    draggingDefinition,
+                    rotationSteps);
             }
 
             CancelDrag();
@@ -173,6 +183,9 @@ public class MapTilePlacementController : MonoBehaviour
         previewObject.transform.position =
             gridManager.GridToWorld(currentCoordinate) +
             Vector3.up * 0.06f;
+
+        previewObject.transform.rotation =
+    Quaternion.Euler(0f, rotationSteps * 90f, 0f);
 
         previewObject.SetActive(true);
 
@@ -243,6 +256,11 @@ public class MapTilePlacementController : MonoBehaviour
 
         previewRenderers =
             previewObject.GetComponentsInChildren<Renderer>();
+
+        CreatePreviewPart(
+    "DirectionMarker",
+    new Vector3(0f, 0.12f, 4f),
+    new Vector3(0.5f, 0.24f, 3f));//白盒阶段增加标记
     }
 
     private void CreatePreviewPart(
@@ -272,6 +290,8 @@ public class MapTilePlacementController : MonoBehaviour
 
     public void CancelDrag()
     {
+
+        rotationSteps = 0;
         draggingDefinition = null;
         canPlace = false;
 

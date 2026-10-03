@@ -7,15 +7,20 @@ public class MapTileInstance : MonoBehaviour
     [SerializeField] private MapTileDefinition definition;
     [SerializeField] private int heightLevel;
 
+    [SerializeField, Range(0, 3)]
+    private int rotationSteps;
+
     public Vector2Int Coordinate => coordinate;
     public MapTileDefinition Definition => definition;
     public int HeightLevel => heightLevel;
+
+    public int RotationSteps => rotationSteps;
+    public float RotationDegrees => rotationSteps * 90f;
 
     public BiomeType Biome => definition.biome;
     public Color MainColor => definition.mainColor;
 
     public Renderer Core { get; private set; }
-
     public Renderer NorthBorder { get; private set; }
     public Renderer SouthBorder { get; private set; }
     public Renderer EastBorder { get; private set; }
@@ -24,14 +29,16 @@ public class MapTileInstance : MonoBehaviour
     public void Initialize(
         Vector2Int gridCoordinate,
         MapTileDefinition tileDefinition,
-        int level)
+        int level,
+        int rotation = 0)
     {
         coordinate = gridCoordinate;
         definition = tileDefinition;
         heightLevel = level;
 
-        Core = FindRenderer("Core");
+        rotationSteps = ((rotation % 4) + 4) % 4;
 
+        Core = FindRenderer("Core");
         NorthBorder = FindRenderer("Border_North");
         SouthBorder = FindRenderer("Border_South");
         EastBorder = FindRenderer("Border_East");
@@ -44,19 +51,38 @@ public class MapTileInstance : MonoBehaviour
 
         if (child == null)
         {
-            Debug.LogError(
-                $"地块缺少子物体：{childName}",
-                this);
-
+            Debug.LogError($"地块缺少子物体：{childName}", this);
             return null;
         }
 
         return child.GetComponent<Renderer>();
     }
 
-    // 通过方向取得对应的外围区域。
+    // 地块自身的方向，转换成地图方向。
+    public Vector2Int LocalToGridDirection(Vector2Int direction)
+    {
+        for (int i = 0; i < rotationSteps; i++)
+            direction = new Vector2Int(direction.y, -direction.x);
+
+        return direction;
+    }
+
+    // 地块自身的平面位置偏移，转换成地图方向的偏移。
+    public Vector2 LocalToGridOffset(Vector2 offset)
+    {
+        for (int i = 0; i < rotationSteps; i++)
+            offset = new Vector2(offset.y, -offset.x);
+
+        return offset;
+    }
+
+    // 参数是地图里的上下左右方向。
     public Renderer GetBorder(Vector2Int direction)
     {
+        // 先转换回地块自身方向。
+        for (int i = 0; i < rotationSteps; i++)
+            direction = new Vector2Int(-direction.y, direction.x);
+
         if (direction == Vector2Int.up)
             return NorthBorder;
 
