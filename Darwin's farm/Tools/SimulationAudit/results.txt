@@ -1,0 +1,85 @@
+CASE single-herbivore
+day=1 plant=998 growth=100 consumed=102 pops=N:10,K:9.804,birth:0,death:0,intake:102,sat:0.98,temp:50,size:10,trophic:0
+day=7 plant=986 growth=100 consumed=102 pops=N:10,K:9.804,birth:0,death:0,intake:102,sat:0.98,temp:50,size:10,trophic:0
+day=30 plant=1021.6 growth=100 consumed=102 pops=N:10,K:9.804,birth:0,death:0,intake:102,sat:0.98,temp:50,size:10,trophic:0
+day=100 plant=1248.798 growth=100 consumed=91.8 pops=N:9,K:9.804,birth:0,death:0,intake:91.8,sat:1.089,temp:50,size:10,trophic:0
+day=365 plant=2258.99 growth=100 consumed=102 pops=N:10,K:9.804,birth:0,death:0,intake:102,sat:0.98,temp:50,size:10,trophic:0
+CASE herbivore-predator
+day=1 plant=9490 growth=0 consumed=510 pops=N:50,K:98.039,birth:1,death:1,intake:510,sat:1.961,temp:50,size:10,trophic:0 | N:3,K:5.587,birth:0,death:0,intake:30.6,sat:1.862,temp:50,size:10,trophic:1
+day=5 plant=9490 growth=520.2 consumed=510 pops=N:51,K:98.039,birth:2,death:1,intake:510,sat:1.961,temp:50,size:10,trophic:0 | N:3,K:5.587,birth:0,death:0,intake:30.6,sat:1.862,temp:50,size:10,trophic:1
+day=10 plant=9459.4 growth=530.4 consumed=540.6 pops=N:52,K:98.039,birth:1,death:2,intake:540.6,sat:1.85,temp:50,size:10,trophic:0 | N:3,K:5.587,birth:0,death:0,intake:30.6,sat:1.862,temp:50,size:10,trophic:1
+day=20 plant=9439 growth=550.8 consumed=561 pops=N:54,K:98.039,birth:1,death:2,intake:561,sat:1.783,temp:50,size:10,trophic:0 | N:4,K:5.587,birth:0,death:0,intake:40.8,sat:1.397,temp:50,size:10,trophic:1
+day=50 plant=9388 growth=601.8 consumed=612 pops=N:59,K:98.039,birth:1,death:2,intake:612,sat:1.634,temp:50,size:10,trophic:0 | N:4,K:5.587,birth:0,death:0,intake:40.8,sat:1.397,temp:50,size:10,trophic:1
+day=100 plant=9367.6 growth=632.4 consumed=632.4 pops=N:61,K:98.039,birth:1,death:2,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
+CASE two-level-long
+day=365 plant=9367.6 growth=632.4 consumed=632.4 pops=N:63,K:98.039,birth:1,death:0,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:6,K:5.587,birth:1,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
+day=1000 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:2,death:2,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
+day=2000 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:1,death:1,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
+CASE two-level-with-mutation
+day=365 plant=9373.92 growth=626.08 consumed=626.08 pops=N:56,K:88.551,birth:1,death:1,intake:626.08,sat:1.581,temp:49.421,size:10.658,trophic:0.125 | N:5,K:5.271,birth:1,death:1,intake:50.9,sat:1.054,temp:50.75,size:10.36,trophic:1.035
+day=1000 plant=9367.68 growth=644.481 consumed=632.32 pops=N:52,K:81.414,birth:1,death:1,intake:632.32,sat:1.566,temp:50.089,size:12.41,trophic:0 | N:4,K:5.005,birth:0,death:1,intake:55.8,sat:1.001,temp:50.188,size:11.255,trophic:1.16
+day=2000 plant=9349.56 growth=650.44 consumed=650.44 pops=N:45,K:67.893,birth:1,death:2,intake:650.44,sat:1.476,temp:49.038,size:14.264,trophic:0.112 | N:4,K:4.675,birth:0,death:0,intake:44.64,sat:1.169,temp:49.855,size:10.906,trophic:1.115
+CASE three-level
+day=1 plant=8980 growth=0 consumed=1020 pops=N:99,K:196.078,birth:2,death:3,intake:1020,sat:1.961,temp:50,size:10,trophic:0 | N:9,K:11.174,birth:0,death:1,intake:102,sat:1.117,temp:50,size:10,trophic:1 | N:2,K:0.637,birth:0,death:0,intake:20.4,sat:0.318,temp:50,size:10,trophic:2
+day=5 plant=8980 growth=1020 consumed=1020 pops=N:100,K:196.078,birth:3,death:3,intake:1020,sat:1.961,temp:50,size:10,trophic:0 | N:10,K:11.174,birth:1,death:0,intake:91.8,sat:1.242,temp:50,size:10,trophic:1 | N:1,K:0,birth:0,death:1,intake:11.4,sat:0,temp:50,size:10,trophic:2
+day=10 plant=8959.6 growth=1040.4 consumed=1040.4 pops=N:102,K:196.078,birth:2,death:2,intake:1040.4,sat:1.922,temp:50,size:10,trophic:0 | N:9,K:11.174,birth:1,death:0,intake:81.6,sat:1.397,temp:50,size:10,trophic:1 | N:0,K:0,birth:0,death:1,intake:10.2,sat:0,temp:50,size:10,trophic:2
+day=20 plant=8939.2 growth=1060.8 consumed=1060.8 pops=N:105,K:196.078,birth:3,death:2,intake:1060.8,sat:1.885,temp:50,size:10,trophic:0 | N:9,K:11.174,birth:0,death:0,intake:91.8,sat:1.242,temp:50,size:10,trophic:1 | N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:50,size:10,trophic:2
+day=50 plant=8878 growth=1111.8 consumed=1122 pops=N:110,K:196.078,birth:3,death:3,intake:1122,sat:1.783,temp:50,size:10,trophic:0 | N:10,K:11.174,birth:0,death:0,intake:102,sat:1.117,temp:50,size:10,trophic:1 | N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:50,size:10,trophic:2
+day=100 plant=8847.4 growth=1152.6 consumed=1152.6 pops=N:113,K:196.078,birth:3,death:3,intake:1152.6,sat:1.735,temp:50,size:10,trophic:0 | N:11,K:11.174,birth:0,death:0,intake:112.2,sat:1.016,temp:50,size:10,trophic:1 | N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:50,size:10,trophic:2
+CASE one-large-prey
+day=1 plant=1000 growth=100 consumed=100 pops=N:1,K:1,birth:0,death:0,intake:100,sat:1,temp:50,size:100,trophic:0 | N:1,K:0,birth:0,death:0,intake:0,sat:0,temp:50,size:10,trophic:1
+CASE no-resource
+day=1 plant=0 growth=0 consumed=0 pops=N:30,K:0,birth:0,death:70,intake:0,sat:0,temp:50,size:10,trophic:0
+day=2 plant=0 growth=0 consumed=0 pops=N:9,K:0,birth:0,death:21,intake:0,sat:0,temp:50,size:10,trophic:0
+day=3 plant=0 growth=0 consumed=0 pops=N:3,K:0,birth:0,death:6,intake:0,sat:0,temp:50,size:10,trophic:0
+day=5 plant=0 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:1,intake:0,sat:0,temp:50,size:10,trophic:0
+day=10 plant=0 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:50,size:10,trophic:0
+day=20 plant=0 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:50,size:10,trophic:0
+CASE environment-shift
+day=1 plant=9949 growth=0 consumed=51 pops=N:5,K:98.039,birth:0,death:0,intake:51,sat:19.608,temp:50,size:10,trophic:0
+day=99 plant=9944 growth=56 consumed=56 pops=N:5,K:87.5,birth:0,death:0,intake:56,sat:17.5,temp:50.929,size:10.512,trophic:0.026
+day=100 plant=10000 growth=56 consumed=0 pops=N:5,K:0,birth:0,death:0,intake:0,sat:0,temp:50.929,size:10.512,trophic:0.026
+day=130 plant=10000 growth=0 consumed=0 pops=N:5,K:0,birth:0,death:0,intake:0,sat:0,temp:50.929,size:10.071,trophic:0
+day=500 plant=10000 growth=0 consumed=0 pops=N:5,K:0,birth:0,death:0,intake:0,sat:0,temp:50.275,size:8.68,trophic:0
+day=1000 plant=10000 growth=0 consumed=0 pops=N:5,K:0,birth:0,death:0,intake:0,sat:0,temp:51.343,size:7.26,trophic:0
+day=2000 plant=10000 growth=0 consumed=0 pops=N:5,K:0,birth:0,death:0,intake:0,sat:0,temp:55.542,size:3.474,trophic:0
+CASE environment-shift-default-mortality
+day=99 plant=9622.6 growth=367.2 consumed=377.4 pops=N:36,K:97.059,birth:0,death:1,intake:377.4,sat:2.623,temp:48.762,size:10.425,trophic:0
+day=100 plant=10000 growth=377.4 consumed=0 pops=N:11,K:0,birth:0,death:25,intake:0,sat:0,temp:48.762,size:10.425,trophic:0
+day=110 plant=10000 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:48.762,size:10.425,trophic:0
+day=120 plant=10000 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:48.762,size:10.425,trophic:0
+day=130 plant=10000 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:48.762,size:10.425,trophic:0
+day=160 plant=10000 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:48.762,size:10.425,trophic:0
+day=200 plant=10000 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sat:0,temp:48.762,size:10.425,trophic:0
+SHIFT deltaEach=10 N_before=54 extinctDay=0 N_day1000=75 adaptedTemp=50.18
+SHIFT deltaEach=25 N_before=54 extinctDay=0 N_day1000=44 adaptedTemp=50.366
+SHIFT deltaEach=50 N_before=54 extinctDay=103 N_day1000=0 adaptedTemp=50.347
+SHIFT_ENSEMBLE deltaEach=10 seeds=50 days=365 survivors=50 meanFinal=73.1
+SHIFT_ENSEMBLE deltaEach=25 seeds=50 days=365 survivors=50 meanFinal=42.3
+SHIFT_ENSEMBLE deltaEach=50 seeds=50 days=365 survivors=0 meanFinal=0
+ENSEMBLE strength=0 seeds=100 days=1000 meanTemp=50.968 meanHumidity=48.24 meanSize=63.421 meanTrophic=0.541
+ENSEMBLE strength=1 seeds=100 days=1000 meanTemp=93.976 meanHumidity=49.139 meanSize=64.037 meanTrophic=0.542
+SWEEP recovery=1000 prey0=25 predator0=1 preyExtinctDay=0 predatorExtinctDay=0 peakPredators=6 finalPrey=63 finalPredators=5
+SWEEP recovery=1000 prey0=25 predator0=3 preyExtinctDay=0 predatorExtinctDay=0 peakPredators=6 finalPrey=12 finalPredators=3
+SWEEP recovery=10000 prey0=250 predator0=1 preyExtinctDay=0 predatorExtinctDay=0 peakPredators=56 finalPrey=659 finalPredators=55
+SWEEP recovery=10000 prey0=250 predator0=3 preyExtinctDay=0 predatorExtinctDay=0 peakPredators=56 finalPrey=627 finalPredators=55
+CASE three-level-productive
+day=1 plant=4900 growth=0 consumed=5100 pops=N:503,K:980.392,birth:12,death:9,intake:5100,sat:1.961,temp:50,size:10,trophic:0 | N:19,K:55.868,birth:0,death:1,intake:204,sat:2.793,temp:50,size:10,trophic:1 | N:1,K:3.184,birth:0,death:0,intake:10.2,sat:3.184,temp:50,size:10,trophic:2
+day=30 plant=3849.4 growth=6120 consumed=6150.6 pops=N:606,K:980.392,birth:15,death:12,intake:6150.6,sat:1.626,temp:50,size:10,trophic:0 | N:26,K:55.868,birth:0,death:0,intake:265.2,sat:2.149,temp:50,size:10,trophic:1 | N:1,K:3.184,birth:0,death:0,intake:10.2,sat:3.184,temp:50,size:10,trophic:2
+day=100 plant=2574.4 growth=7425.6 consumed=7425.6 pops=N:730,K:980.392,birth:18,death:16,intake:7425.6,sat:1.347,temp:50,size:10,trophic:0 | N:35,K:55.868,birth:1,death:0,intake:346.8,sat:1.643,temp:50,size:10,trophic:1 | N:3,K:3.184,birth:0,death:0,intake:30.6,sat:1.061,temp:50,size:10,trophic:2
+day=365 plant=2250 growth=7750 consumed=7750 pops=N:765,K:980.392,birth:19,death:18,intake:7750,sat:1.283,temp:50,size:10,trophic:0 | N:34,K:55.561,birth:1,death:1,intake:346.8,sat:1.634,temp:50,size:10,trophic:1 | N:4,K:3.166,birth:1,death:0,intake:30.6,sat:1.055,temp:50,size:10,trophic:2
+day=1000 plant=2250 growth=7750 consumed=7750 pops=N:765,K:980.392,birth:19,death:18,intake:7750,sat:1.283,temp:50,size:10,trophic:0 | N:34,K:55.561,birth:1,death:0,intake:336.6,sat:1.684,temp:50,size:10,trophic:1 | N:3,K:3.166,birth:0,death:0,intake:30.6,sat:1.055,temp:50,size:10,trophic:2
+day=2000 plant=2250 growth=7750 consumed=7750 pops=N:764,K:980.392,birth:19,death:20,intake:7750,sat:1.282,temp:50,size:10,trophic:0 | N:34,K:55.488,birth:1,death:0,intake:336.6,sat:1.681,temp:50,size:10,trophic:1 | N:4,K:3.162,birth:1,death:0,intake:30.6,sat:1.054,temp:50,size:10,trophic:2
+CASE three-level-productive-with-mutation
+day=365 plant=2258.2 growth=7741.8 consumed=7741.8 pops=N:757,K:980.392,birth:18,death:20,intake:7741.8,sat:1.292,temp:50.295,size:10.11,trophic:0.046 | N:37,K:48.845,birth:1,death:1,intake:414.4,sat:1.32,temp:51.529,size:10.508,trophic:1.093 | N:2,K:2.648,birth:0,death:0,intake:22.4,sat:1.324,temp:52.25,size:11.279,trophic:1.897
+day=1000 plant=2482.5 growth=7517.5 consumed=7517.5 pops=N:741,K:950.98,birth:18,death:18,intake:7517.5,sat:1.283,temp:48.529,size:10.09,trophic:0.064 | N:27,K:40.215,birth:1,death:1,intake:329.4,sat:1.489,temp:52.012,size:12.142,trophic:1.174 | N:2,K:2.025,birth:0,death:0,intake:24.36,sat:1.012,temp:52.622,size:12.386,trophic:1.91
+day=2000 plant=2949.06 growth=7050.94 consumed=7050.94 pops=N:577,K:801.964,birth:14,death:14,intake:7050.94,sat:1.39,temp:49.817,size:12.138,trophic:0.081 | N:27,K:35.13,birth:0,death:1,intake:397.6,sat:1.255,temp:49.191,size:14.137,trophic:1.127 | N:1,K:1.654,birth:0,death:0,intake:15.16,sat:1.654,temp:53.442,size:15.475,trophic:1.643
+CHAIN_ENSEMBLE levels=2 seeds=50 days=2000 allSurvive=50 preySurvive=50 middleSurvive=50 topSurvive=0
+CHAIN_ENSEMBLE levels=3 seeds=50 days=2000 allSurvive=50 preySurvive=50 middleSurvive=50 topSurvive=50
+CASE movement-plant-competition
+day=1 plant=0 growth=0 consumed=100 pops=N:10,K:0,birth:0,death:0,intake:38.462,sat:0,temp:50,size:10,trophic:0 | N:10,K:0,birth:0,death:0,intake:61.538,sat:0,temp:50,size:10,trophic:0
+CASE movement-hunt-competition
+day=1 plant=796 growth=0 consumed=204 pops=N:18,K:0,birth:0,death:2,intake:204,sat:0,temp:50,size:10,trophic:0 | N:10,K:0,birth:0,death:0,intake:92.727,sat:0,temp:50,size:10,trophic:1 | N:10,K:0,birth:0,death:0,intake:120,sat:0,temp:50,size:10,trophic:1
+STRESS scenarios=200 days=365 invalid=0 extinctCommunities=117
+CASE large-population
+day=1 plant=2000000000 growth=0 consumed=1000000000 pops=N:1801508096,K:2147484000,birth:1500000000,death:698491904,intake:1000000000,sat:2.147,temp:50,size:0,trophic:0
