@@ -1,7 +1,7 @@
 [System.Serializable]
 public class PopulationData
 {
-    public int speciesAmount;
+    public float speciesAmount; //种群规模保留小数，显示时再取整
     public SpeciesData species;
 
     //进化趋势
@@ -15,4 +15,6 @@ public class PopulationData
     //因变量
     public int environmentalFitness;    //0~100，越强越利于繁殖
     public float energyNeed;
+    public float allocatedBiomass;
+    public float carryingCapacity; //潜在资源份额可支撑的种群规模
 }

@@ -16,15 +16,14 @@ public class SimulationTime : MonoBehaviour
     
     void Update()
     {
-        if (time >= basicDayLength)
+        time += Time.deltaTime * simulationSpeed;
+        // 一帧跨过多天时逐天补算
+        while (time >= basicDayLength)
         {
             currentDay++;
             time -= basicDayLength;
             OnDayChanged?.Invoke(currentDay); //授时
             Debug.Log("Day "+currentDay);
-        } else
-        {
-            time += Time.deltaTime * simulationSpeed;
         }
     }
 
@@ -34,7 +33,6 @@ public class SimulationTime : MonoBehaviour
     public void ResetDay()  
     {
         currentDay=0;
-        OnDayChanged?.Invoke(currentDay); 
         time=0;
     }
 }
