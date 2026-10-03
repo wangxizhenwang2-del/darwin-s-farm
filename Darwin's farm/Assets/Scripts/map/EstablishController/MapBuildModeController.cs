@@ -83,8 +83,9 @@ public class MapBuildModeController : MonoBehaviour
             clickToMove.SetMovementInputEnabled(!value);
 
         // 建造模式中，暂停玩家触发的自动跟随。
+        // 切换相机的建造控制与玩家跟随。
         if (screenEdgeCamera != null)
-            screenEdgeCamera.SetFollowEnabled(!value);
+            screenEdgeCamera.SetBuildMode(value);
 
         if (value)
             RefreshPreview();
