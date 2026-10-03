@@ -163,7 +163,10 @@ public class MapTilePlacementController : MonoBehaviour
 
         // 目前所有地块的顶面位于同一高度。
         Vector3 planeOrigin =
-            gridManager.GridToWorld(Vector2Int.zero);
+    gridManager.GridToWorld(Vector2Int.zero) +
+    Vector3.up *
+    draggingDefinition.heightLevel *
+    MapGridManager.HeightStep;
 
         Plane mapPlane = new Plane(Vector3.up, planeOrigin);
 
@@ -181,8 +184,10 @@ public class MapTilePlacementController : MonoBehaviour
         canPlace = gridManager.CanPlaceAt(currentCoordinate);
 
         previewObject.transform.position =
-            gridManager.GridToWorld(currentCoordinate) +
-            Vector3.up * 0.06f;
+    gridManager.GridToWorld(currentCoordinate) +
+    Vector3.up *
+    (draggingDefinition.heightLevel *
+     MapGridManager.HeightStep + 0.06f);
 
         previewObject.transform.rotation =
     Quaternion.Euler(0f, rotationSteps * 90f, 0f);

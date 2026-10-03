@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using Unity.AI.Navigation;
 
 public class MapTileColorTransitionSystem : MonoBehaviour
 {
@@ -7,18 +9,27 @@ public class MapTileColorTransitionSystem : MonoBehaviour
     [SerializeField] private MapGridManager gridManager;
     [SerializeField] private Material vertexColorMaterial;
 
-    // 17米 / 34段 = 每段0.5米。
     private const int Segments = 34;
     private const float HalfSize = 8.5f;
+
+    private static readonly float[] Knots =
+    {
+        -8.5f, -7.5f, 7.5f, 8.5f
+    };
 
     private class SurfaceData
     {
         public Mesh mesh;
         public MeshRenderer renderer;
+        public MeshCollider collider;
+        public Transform blockers;
     }
 
     private readonly Dictionary<MapTileInstance, SurfaceData> surfaces =
         new Dictionary<MapTileInstance, SurfaceData>();
+
+    private readonly Dictionary<MapTileInstance, float[,]> heightControls =
+        new Dictionary<MapTileInstance, float[,]>();
 
     private void OnEnable()
     {
@@ -30,7 +41,7 @@ public class MapTileColorTransitionSystem : MonoBehaviour
     {
         if (gridManager == null || vertexColorMaterial == null)
         {
-            Debug.LogError("颜色过渡系统的引用未设置。", this);
+            Debug.LogError("地形过渡系统的引用未设置。", this);
             enabled = false;
             return;
         }
@@ -49,15 +60,27 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         if (gridManager == null || vertexColorMaterial == null)
             return;
 
+        heightControls.Clear();
+
+        // 先统一计算所有地块的高度接口。
+        foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
+            heightControls.Add(tile, CreateHeightControls(tile));
+
         foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
         {
             SurfaceData surface = GetOrCreateSurface(tile);
 
-            UpdateSurface(tile, surface.mesh);
+            ClearBlockers(surface.blockers);
+
+            // 修改网格前，解除旧碰撞网格引用。
+            surface.collider.sharedMesh = null;
+
+            BuildMesh(tile, surface);
 
             surface.renderer.sharedMaterial = vertexColorMaterial;
+            surface.collider.sharedMesh = surface.mesh;
 
-            HideOriginalRenderers(tile);
+            DisableOldParts(tile);
         }
     }
 
@@ -67,37 +90,206 @@ public class MapTileColorTransitionSystem : MonoBehaviour
             return existing;
 
         GameObject surfaceObject = new GameObject("ColorSurface");
-
         surfaceObject.layer = tile.Core.gameObject.layer;
-
         surfaceObject.transform.SetParent(tile.transform, false);
-        surfaceObject.transform.localPosition = Vector3.zero;
-        surfaceObject.transform.localRotation = Quaternion.identity;
-        surfaceObject.transform.localScale = Vector3.one;
 
         MeshFilter filter = surfaceObject.AddComponent<MeshFilter>();
         MeshRenderer renderer =
             surfaceObject.AddComponent<MeshRenderer>();
 
-        // 在运行时方法里创建Unity对象，不在字段初始化中创建。
+        MeshCollider collider =
+            surfaceObject.AddComponent<MeshCollider>();
+
+        collider.convex = false;
+
         Mesh mesh = new Mesh();
-        mesh.name = $"TileColorMesh_{tile.Coordinate}";
-
+        mesh.name = $"TileTerrain_{tile.Coordinate}";
         filter.sharedMesh = mesh;
-        renderer.sharedMaterial = vertexColorMaterial;
 
-        SurfaceData surface = new SurfaceData
+        GameObject blockerRoot = new GameObject("CliffBlockers");
+        blockerRoot.layer = surfaceObject.layer;
+        blockerRoot.transform.SetParent(tile.transform, false);
+
+        SurfaceData data = new SurfaceData
         {
             mesh = mesh,
-            renderer = renderer
+            renderer = renderer,
+            collider = collider,
+            blockers = blockerRoot.transform
         };
 
-        surfaces.Add(tile, surface);
-
-        return surface;
+        surfaces.Add(tile, data);
+        return data;
     }
 
-    private void UpdateSurface(MapTileInstance tile, Mesh mesh)
+    private float BaseHeight(MapTileInstance tile)
+    {
+        return gridManager.GridToWorld(tile.Coordinate).y +
+               tile.HeightLevel * MapGridManager.HeightStep;
+    }
+
+    private float[,] CreateHeightControls(MapTileInstance tile)
+    {
+        float[,] values = new float[4, 4];
+
+        for (int x = 0; x < 4; x++)
+        {
+            for (int z = 0; z < 4; z++)
+            {
+                bool outerX = x == 0 || x == 3;
+                bool outerZ = z == 0 || z == 3;
+
+                int sx = x == 0 ? -1 : 1;
+                int sz = z == 0 ? -1 : 1;
+
+                if (outerX && outerZ)
+                {
+                    values[x, z] = CornerHeight(tile, sx, sz);
+                }
+                else if (outerX)
+                {
+                    values[x, z] = EdgeHeight(
+                        tile, new Vector2Int(sx, 0));
+                }
+                else if (outerZ)
+                {
+                    values[x, z] = EdgeHeight(
+                        tile, new Vector2Int(0, sz));
+                }
+                else
+                {
+                    // 主体四角保持本地块高度。
+                    values[x, z] = BaseHeight(tile);
+                }
+            }
+        }
+
+        return values;
+    }
+
+    private float EdgeHeight(
+        MapTileInstance tile,
+        Vector2Int gridDirection)
+    {
+        if (!gridManager.TryGetNeighbor(
+                tile.Coordinate,
+                gridDirection,
+                out MapTileInstance neighbor))
+        {
+            return BaseHeight(tile);
+        }
+
+        int difference =
+            Mathf.Abs(tile.HeightLevel - neighbor.HeightLevel);
+
+        // 悬崖两侧分别保持各自的高度。
+        if (difference >= 2)
+            return BaseHeight(tile);
+
+        // 平面或坡面：共享边使用相同高度。
+        return (BaseHeight(tile) + BaseHeight(neighbor)) * 0.5f;
+    }
+
+    private float CornerHeight(
+        MapTileInstance tile,
+        int sx,
+        int sz)
+    {
+        Vector2Int[] candidates =
+        {
+            tile.Coordinate,
+            tile.Coordinate + new Vector2Int(sx, 0),
+            tile.Coordinate + new Vector2Int(0, sz),
+            tile.Coordinate + new Vector2Int(sx, sz)
+        };
+
+        HashSet<Vector2Int> reached = new HashSet<Vector2Int>();
+        Queue<MapTileInstance> pending = new Queue<MapTileInstance>();
+
+        reached.Add(tile.Coordinate);
+        pending.Enqueue(tile);
+
+        float total = 0f;
+        int count = 0;
+
+        // 同一个角点附近，通过差0或1级的边连接的地块，
+        // 使用同一个角点高度。
+        while (pending.Count > 0)
+        {
+            MapTileInstance current = pending.Dequeue();
+
+            total += BaseHeight(current);
+            count++;
+
+            foreach (Vector2Int coordinate in candidates)
+            {
+                if (reached.Contains(coordinate))
+                    continue;
+
+                Vector2Int delta = coordinate - current.Coordinate;
+
+                if (Mathf.Abs(delta.x) + Mathf.Abs(delta.y) != 1)
+                    continue;
+
+                if (!gridManager.TryGetTile(
+                        coordinate,
+                        out MapTileInstance neighbor))
+                {
+                    continue;
+                }
+
+                if (Mathf.Abs(
+                        current.HeightLevel - neighbor.HeightLevel) > 1)
+                {
+                    continue;
+                }
+
+                reached.Add(coordinate);
+                pending.Enqueue(neighbor);
+            }
+        }
+
+        return total / count;
+    }
+
+    private int FindBand(float position)
+    {
+        if (position < -7.5f)
+            return 0;
+
+        if (position <= 7.5f)
+            return 1;
+
+        return 2;
+    }
+
+    private float SampleHeight(
+        MapTileInstance tile,
+        Vector2 gridOffset)
+    {
+        float[,] values = heightControls[tile];
+
+        int x = FindBand(gridOffset.x);
+        int z = FindBand(gridOffset.y);
+
+        float tx = Mathf.InverseLerp(
+            Knots[x], Knots[x + 1], gridOffset.x);
+
+        float tz = Mathf.InverseLerp(
+            Knots[z], Knots[z + 1], gridOffset.y);
+
+        float lower = Mathf.Lerp(
+            values[x, z], values[x + 1, z], tx);
+
+        float upper = Mathf.Lerp(
+            values[x, z + 1], values[x + 1, z + 1], tx);
+
+        return Mathf.Lerp(lower, upper, tz);
+    }
+
+    private void BuildMesh(
+        MapTileInstance tile,
+        SurfaceData surface)
     {
         int rowSize = Segments + 1;
 
@@ -105,8 +297,6 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         List<Color> colors = new List<Color>();
         List<int> triangles = new List<int>();
 
-        // 生成整块顶面。
-        // 中间15×15米全部保持本地块颜色。
         for (int z = 0; z <= Segments; z++)
         {
             float localZ =
@@ -117,10 +307,14 @@ public class MapTileColorTransitionSystem : MonoBehaviour
                 float localX =
                     -HalfSize + x * MapGridManager.TileSize / Segments;
 
-                vertices.Add(new Vector3(localX, 0f, localZ));
+                Vector2 offset = tile.LocalToGridOffset(
+                    new Vector2(localX, localZ));
 
-                colors.Add(ToVertexColor(
-                    CalculateColor(tile, localX, localZ)));
+                float localY =
+                    SampleHeight(tile, offset) - BaseHeight(tile);
+
+                vertices.Add(new Vector3(localX, localY, localZ));
+                colors.Add(VertexColor(CalculateColor(tile, offset)));
             }
         }
 
@@ -133,7 +327,6 @@ public class MapTileColorTransitionSystem : MonoBehaviour
                 int c = a + rowSize;
                 int d = c + 1;
 
-                // 顶面朝上。
                 triangles.Add(a);
                 triangles.Add(c);
                 triangles.Add(b);
@@ -144,58 +337,174 @@ public class MapTileColorTransitionSystem : MonoBehaviour
             }
         }
 
-        // 给地图外边缘补0.5米厚的侧面。
-        // 有邻居的边不生成侧面。
-        AddSideIfExposed(
-            tile, Vector2Int.left,
+        BuildEdge(tile, surface, Vector2Int.left,
             new Vector3(-HalfSize, 0f, -HalfSize),
             new Vector3(-HalfSize, 0f, HalfSize),
             vertices, colors, triangles);
 
-        AddSideIfExposed(
-            tile, Vector2Int.up,
+        BuildEdge(tile, surface, Vector2Int.up,
             new Vector3(-HalfSize, 0f, HalfSize),
             new Vector3(HalfSize, 0f, HalfSize),
             vertices, colors, triangles);
 
-        AddSideIfExposed(
-            tile, Vector2Int.right,
+        BuildEdge(tile, surface, Vector2Int.right,
             new Vector3(HalfSize, 0f, HalfSize),
             new Vector3(HalfSize, 0f, -HalfSize),
             vertices, colors, triangles);
 
-        AddSideIfExposed(
-            tile, Vector2Int.down,
+        BuildEdge(tile, surface, Vector2Int.down,
             new Vector3(HalfSize, 0f, -HalfSize),
             new Vector3(-HalfSize, 0f, -HalfSize),
             vertices, colors, triangles);
 
-        mesh.Clear();
-        mesh.SetVertices(vertices);
-        mesh.SetColors(colors);
-        mesh.SetTriangles(triangles, 0);
+        surface.mesh.Clear();
+        surface.mesh.SetVertices(vertices);
+        surface.mesh.SetColors(colors);
+        surface.mesh.SetTriangles(triangles, 0);
+        surface.mesh.RecalculateNormals();
+        surface.mesh.RecalculateBounds();
+    }
 
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
+    private void BuildEdge(
+        MapTileInstance tile,
+        SurfaceData surface,
+        Vector2Int localDirection,
+        Vector3 start,
+        Vector3 end,
+        List<Vector3> vertices,
+        List<Color> colors,
+        List<int> triangles)
+    {
+        Vector2Int gridDirection =
+            tile.LocalToGridDirection(localDirection);
+
+        bool hasNeighbor = gridManager.TryGetNeighbor(
+            tile.Coordinate, gridDirection, out MapTileInstance neighbor);
+
+        if (hasNeighbor)
+        {
+            int difference = tile.HeightLevel - neighbor.HeightLevel;
+
+            // 平面和坡面不需要墙。
+            // 悬崖只由较高一侧生成，避免重复。
+            if (difference < 2)
+                return;
+
+            CreateCliffBlocker(
+                tile, neighbor, localDirection, surface.blockers);
+        }
+
+        for (int i = 0; i < Segments; i++)
+        {
+            Vector3 a = Vector3.Lerp(
+                start, end, (float)i / Segments);
+
+            Vector3 b = Vector3.Lerp(
+                start, end, (float)(i + 1) / Segments);
+
+            Vector2 offsetA = tile.LocalToGridOffset(
+                new Vector2(a.x, a.z));
+
+            Vector2 offsetB = tile.LocalToGridOffset(
+                new Vector2(b.x, b.z));
+
+            float topA = SampleHeight(tile, offsetA);
+            float topB = SampleHeight(tile, offsetB);
+
+            float bottomA;
+            float bottomB;
+
+            if (hasNeighbor)
+            {
+                Vector2 neighborShift = new Vector2(
+                    gridDirection.x * MapGridManager.TileSize,
+                    gridDirection.y * MapGridManager.TileSize);
+
+                bottomA = SampleHeight(
+                    neighbor, offsetA - neighborShift);
+
+                bottomB = SampleHeight(
+                    neighbor, offsetB - neighborShift);
+            }
+            else
+            {
+                bottomA = topA - 0.5f;
+                bottomB = topB - 0.5f;
+            }
+
+            float baseHeight = BaseHeight(tile);
+
+            int index = vertices.Count;
+
+            vertices.Add(new Vector3(a.x, topA - baseHeight, a.z));
+            vertices.Add(new Vector3(b.x, topB - baseHeight, b.z));
+            vertices.Add(new Vector3(a.x, bottomA - baseHeight, a.z));
+            vertices.Add(new Vector3(b.x, bottomB - baseHeight, b.z));
+
+            Color colorA = CalculateColor(tile, offsetA);
+            Color colorB = CalculateColor(tile, offsetB);
+
+            colors.Add(VertexColor(colorA));
+            colors.Add(VertexColor(colorB));
+            colors.Add(VertexColor(colorA));
+            colors.Add(VertexColor(colorB));
+
+            // 墙面朝向地块外侧。
+            triangles.Add(index);
+            triangles.Add(index + 2);
+            triangles.Add(index + 1);
+
+            triangles.Add(index + 1);
+            triangles.Add(index + 2);
+            triangles.Add(index + 3);
+        }
+    }
+
+    private void CreateCliffBlocker(
+        MapTileInstance tile,
+        MapTileInstance neighbor,
+        Vector2Int localDirection,
+        Transform parent)
+    {
+        GameObject blocker = new GameObject("Cliff_NotWalkable");
+        blocker.layer = tile.Core.gameObject.layer;
+        blocker.transform.SetParent(parent, false);
+
+        NavMeshModifierVolume volume =
+            blocker.AddComponent<NavMeshModifierVolume>();
+
+        float high = BaseHeight(tile);
+        float low = BaseHeight(neighbor);
+
+        volume.center = new Vector3(
+            localDirection.x * HalfSize,
+            (high + low) * 0.5f - high,
+            localDirection.y * HalfSize);
+
+        volume.size = localDirection.x != 0
+            ? new Vector3(0.6f, high - low + 4f, 17.2f)
+            : new Vector3(17.2f, high - low + 4f, 0.6f);
+
+        volume.area = NavMesh.GetAreaFromName("Not Walkable");
+    }
+
+    private void ClearBlockers(Transform root)
+    {
+        for (int i = root.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = root.GetChild(i).gameObject;
+            child.SetActive(false);
+            Destroy(child);
+        }
     }
 
     private Color CalculateColor(
         MapTileInstance tile,
-        float localX,
-        float localZ)
+        Vector2 gridOffset)
     {
-
-        Vector2 gridOffset =
-    tile.LocalToGridOffset(new Vector2(localX, localZ));
-
-        localX = gridOffset.x;
-        localZ = gridOffset.y;
-
         Color total = Color.black;
         float totalWeight = 0f;
 
-        // 颜色计算包括对角地块；
-        // 放置规则仍然只允许上下左右连接。
         for (int dz = -1; dz <= 1; dz++)
         {
             for (int dx = -1; dx <= 1; dx++)
@@ -204,25 +513,18 @@ public class MapTileColorTransitionSystem : MonoBehaviour
                     tile.Coordinate + new Vector2Int(dx, dz);
 
                 if (!gridManager.TryGetTile(
-                        coordinate,
-                        out MapTileInstance neighbor))
+                        coordinate, out MapTileInstance neighbor))
                 {
                     continue;
                 }
 
-                float distanceX = Mathf.Abs(
-                    localX - dx * MapGridManager.TileSize);
+                float weightX = AxisWeight(Mathf.Abs(
+                    gridOffset.x - dx * MapGridManager.TileSize));
 
-                float distanceZ = Mathf.Abs(
-                    localZ - dz * MapGridManager.TileSize);
-
-                float weightX = AxisWeight(distanceX);
-                float weightZ = AxisWeight(distanceZ);
+                float weightZ = AxisWeight(Mathf.Abs(
+                    gridOffset.y - dz * MapGridManager.TileSize));
 
                 float weight = weightX * weightZ;
-
-                if (weight <= 0f)
-                    continue;
 
                 total.r += neighbor.MainColor.r * weight;
                 total.g += neighbor.MainColor.g * weight;
@@ -244,93 +546,40 @@ public class MapTileColorTransitionSystem : MonoBehaviour
 
     private float AxisWeight(float distance)
     {
-        // 距中心7.5米以内权重为1。
-        // 从7.5米到9.5米平滑降低到0。
         float t = Mathf.Clamp01((9.5f - distance) / 2f);
-
         return t * t * (3f - 2f * t);
     }
 
-    private Color ToVertexColor(Color color)
+    private Color VertexColor(Color color)
     {
-        // Inspector颜色与材质颜色保持一致。
         return QualitySettings.activeColorSpace == ColorSpace.Linear
             ? color.linear
             : color;
     }
 
-    private void AddSideIfExposed(
-        MapTileInstance tile,
-        Vector2Int direction,
-        Vector3 start,
-        Vector3 end,
-        List<Vector3> vertices,
-        List<Color> colors,
-        List<int> triangles)
+    private void DisableOldParts(MapTileInstance tile)
     {
-        Vector2Int gridDirection =
-    tile.LocalToGridDirection(direction);
-
-        if (gridManager.TryGetNeighbor(
-                tile.Coordinate,
-                gridDirection,
-                out MapTileInstance neighbor))
+        Renderer[] parts =
         {
-            return;
-        }
+            tile.Core,
+            tile.NorthBorder,
+            tile.SouthBorder,
+            tile.EastBorder,
+            tile.WestBorder
+        };
 
-        for (int i = 0; i < Segments; i++)
+        foreach (Renderer part in parts)
         {
-            Vector3 a = Vector3.Lerp(
-                start, end, (float)i / Segments);
+            if (part == null)
+                continue;
 
-            Vector3 b = Vector3.Lerp(
-                start, end, (float)(i + 1) / Segments);
+            part.enabled = false;
 
-            int index = vertices.Count;
+            Collider collider = part.GetComponent<Collider>();
 
-            vertices.Add(a);
-            vertices.Add(b);
-            vertices.Add(a + Vector3.down * 0.5f);
-            vertices.Add(b + Vector3.down * 0.5f);
-
-            Color colorA = ToVertexColor(
-                CalculateColor(tile, a.x, a.z));
-
-            Color colorB = ToVertexColor(
-                CalculateColor(tile, b.x, b.z));
-
-            colors.Add(colorA);
-            colors.Add(colorB);
-            colors.Add(colorA);
-            colors.Add(colorB);
-
-            triangles.Add(index);
-            triangles.Add(index + 1);
-            triangles.Add(index + 2);
-
-            triangles.Add(index + 1);
-            triangles.Add(index + 3);
-            triangles.Add(index + 2);
+            if (collider != null)
+                collider.enabled = false;
         }
-    }
-
-    private void HideOriginalRenderers(MapTileInstance tile)
-    {
-        if (tile.Core != null)
-            tile.Core.enabled = false;
-
-        if (tile.NorthBorder != null)
-            tile.NorthBorder.enabled = false;
-
-        if (tile.SouthBorder != null)
-            tile.SouthBorder.enabled = false;
-
-        if (tile.EastBorder != null)
-            tile.EastBorder.enabled = false;
-
-        if (tile.WestBorder != null)
-            tile.WestBorder.enabled = false;
     }
 
     private void OnDestroy()
@@ -342,5 +591,6 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         }
 
         surfaces.Clear();
+        heightControls.Clear();
     }
 }

@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7722ac77dd8ea8d42846e03da83d0862, type: 3}
-  m_Name: "\u6C99\u5730"
+  m_Name: "\u5CA9\u5730 1"
   m_EditorClassIdentifier: Assembly-CSharp::MapTileDefinition
-  displayName: "\u6C99\u5730"
-  biome: 1
-  mainColor: {r: 0.69803923, g: 0.53579223, b: 0.29803923, a: 1}
-  heightLevel: 1
+  displayName: "\u5CA9\u5730"
+  biome: 2
+  mainColor: {r: 0.33962262, g: 0.22309393, b: 0.12281944, a: 1}

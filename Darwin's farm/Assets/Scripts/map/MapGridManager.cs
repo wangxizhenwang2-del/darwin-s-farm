@@ -8,6 +8,8 @@ public class MapGridManager : MonoBehaviour
 
     public event System.Action TilesChanged;
 
+    public const float HeightStep = 1f;
+
     private static readonly Vector2Int[] Directions =
     {
         Vector2Int.right,
@@ -117,7 +119,9 @@ public class MapGridManager : MonoBehaviour
             $"Tile_{coordinate.x}_{coordinate.y}_{definition.displayName}");
 
         tileRoot.transform.SetParent(placedTiles, false);
-        tileRoot.transform.position = GridToWorld(coordinate);
+        tileRoot.transform.position =
+    GridToWorld(coordinate) +
+    Vector3.up * definition.heightLevel * HeightStep;
 
         rotationSteps = ((rotationSteps % 4) + 4) % 4;
 
@@ -190,15 +194,19 @@ public class MapGridManager : MonoBehaviour
      tileRoot.AddComponent<MapTileInstance>();
 
         // 此时主体和四边都已经创建完成。
-        instance.Initialize(coordinate, definition, 0, rotationSteps);//后加旋转
+        instance.Initialize(
+     coordinate,
+     definition,
+     definition.heightLevel,
+     rotationSteps);
 
         tiles.Add(coordinate, instance);
 
-        // 正式地形生成完成后更新导航。
-        mapNavigation.RequestUpdate();
-
-        // 通知建造预览等系统刷新。
+        // 先生成新的可见网格和碰撞体。
         TilesChanged?.Invoke();
+
+        // 再请求导航更新。
+        mapNavigation.RequestUpdate();
 
         return true;
     }

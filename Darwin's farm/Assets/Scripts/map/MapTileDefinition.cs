@@ -17,4 +17,7 @@ public class MapTileDefinition : ScriptableObject
     public BiomeType biome = BiomeType.Grass;
 
     public Color mainColor = new Color(0.35f, 0.7f, 0.3f);
+
+    [Range(0, 2)]
+    public int heightLevel;//白盒最后一阶段，给每块地图增加高度信息
 }
