@@ -176,6 +176,16 @@ static class Program
             throw new Exception("well-fed declining population did not increase fertility");
         Console.WriteLine($"FERTILITY_DECLINE initial=50 final={declining.fertility}");
 
+        var smallFluctuation = Pop(0, 3);
+        smallFluctuation.previousMutationPopulation = 4;
+        smallFluctuation.mutationPopulationInitialized = true;
+        var fluctuationBlock = Block(1000, 10000f, smallFluctuation);
+        controller.SimulateBlock(fluctuationBlock);
+        if (smallFluctuation.fertility != 50 ||
+            smallFluctuation.fertilityMutationRemainder != 0f)
+            throw new Exception("one-animal fluctuation changed fertility");
+        Console.WriteLine("SMALL_POPULATION_FLUCTUATION fertility=unchanged");
+
         var growingUnderPressure = Pop(0, 100);
         growingUnderPressure.previousMutationPopulation = 50;
         growingUnderPressure.mutationPopulationInitialized = true;
@@ -194,8 +204,12 @@ static class Program
         controller = Controller(true);
         for (int day = 0; day < 28; day++) controller.SimulateBlock(recoveryChange);
         float sizeBeforeChange = Traits(changingHunter)[3];
-        recoveryChange.habitatRecovery = 1000;
-        controller.ScheduleMutationAfterEnvironmentChange(recoveryChange);
+        if (!controller.ApplyEnvironment(recoveryChange, recoveryChange.temperature,
+            recoveryChange.humidity, 1000))
+            throw new Exception("player environment change was ignored");
+        if (controller.ApplyEnvironment(recoveryChange, recoveryChange.temperature,
+            recoveryChange.humidity, 1000))
+            throw new Exception("unchanged environment scheduled another mutation");
         controller.SimulateBlock(recoveryChange);
         if (Traits(changingHunter)[3] >= sizeBeforeChange)
             throw new Exception($"player recovery reduction did not select smaller hunter size: predatorN={changingHunter.speciesAmount} preyN={changingPrey.speciesAmount} K/N={F(changingHunter.energySatisfactionToday)} actual={F(changingHunter.actualEnergySatisfactionToday)} size={F(Traits(changingHunter)[3])}");
@@ -232,6 +246,40 @@ static class Program
             throw new Exception("some surviving grid populations did not follow environmental input");
     }
 
+    static void CompetitionSweep()
+    {
+        int plantComparisons = 0;
+        foreach (int fasterMovement in new[] { 25, 50, 75, 100 })
+        {
+            var slower = Pop(0, 10, 10, 0, 0);
+            var faster = Pop(0, 10, 10, fasterMovement, 0);
+            var block = Block(0, 100f, slower, faster);
+            var controller = Controller();
+            controller.SetParameters(0f, 0f, 0f);
+            controller.SimulateBlock(block);
+            if (faster.allocatedBiomass <= slower.allocatedBiomass)
+                throw new Exception($"faster herbivore lost plant competition: movement={fasterMovement}");
+            plantComparisons++;
+        }
+
+        float previousHuntEnergy = float.MaxValue;
+        int huntComparisons = 0;
+        foreach (int preyMovement in new[] { 0, 25, 50, 75, 100 })
+        {
+            var prey = Pop(0, 20, 10, preyMovement, 0);
+            var hunter = Pop(1, 100, 10, 50, 0);
+            var block = Block(0, 1000f, prey, hunter);
+            var controller = Controller();
+            controller.SetParameters(0f, 0f, 0f);
+            controller.SimulateBlock(block);
+            if (hunter.allocatedBiomass >= previousHuntEnergy)
+                throw new Exception($"faster prey did not lower hunting gain: movement={preyMovement}");
+            previousHuntEnergy = hunter.allocatedBiomass;
+            huntComparisons++;
+        }
+        Console.WriteLine($"COMPETITION_SWEEP plantComparisons={plantComparisons} huntSpeeds={huntComparisons} direction=consistent");
+    }
+
     static void Run(string name, BlockInfo b, SimulationController c, int days, int[] checkpoints,
         Action<int, BlockInfo> beforeDay = null)
     {
@@ -265,64 +313,68 @@ static class Program
         }
     }
 
-    static void MutationEnsemble(float strength, int seeds, int days)
+    static void SelectionStrengthCheck(float strength, int days)
     {
-        double temp = 0, humidity = 0, size = 0, trophic = 0;
-        for (int seed = 0; seed < seeds; seed++)
-        {
-            UnityEngine.Random.InitState(seed);
-            var p = Pop(0, 1);
-            var b = Block(1000, 10000f, p);
-            b.temperature = 100;
-            b.humidity = 50;
-            var c = Controller();
-            c.SetParameters(0, 0, 0);
-            c.SetMutationParameters(1, 1, strength);
-            for (int day = 0; day < days; day++) c.SimulateBlock(b);
-            if (strength == 0f && (p.fitTemperature != 50 || p.fitHumidity != 50 ||
-                p.size != 10 || p.movementAbility != 10 || p.fertility != 50 ||
-                p.trophicLevel != 0))
-                throw new Exception("zero selection strength changed a trait");
-            temp += p.fitTemperature + p.temperatureMutationRemainder;
-            humidity += p.fitHumidity + p.humidityMutationRemainder;
-            size += p.size + p.sizeMutationRemainder;
-            trophic += p.trophicLevel + p.trophicMutationRemainder;
-        }
-        Console.WriteLine($"ENSEMBLE strength={strength} seeds={seeds} days={days} meanTemp={F((float)(temp/seeds))} meanHumidity={F((float)(humidity/seeds))} meanSize={F((float)(size/seeds))} meanTrophic={F((float)(trophic/seeds))}");
+        var population = Pop(0, 1);
+        var block = Block(1000, 10000f, population);
+        block.temperature = 100;
+        var controller = Controller();
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SetMutationParameters(1, 1f, strength);
+        for (int day = 0; day < days; day++) controller.SimulateBlock(block);
+        float[] traits = Traits(population);
+        if (strength == 0f && (traits[0] != 50f || traits[1] != 50f ||
+            traits[2] != 10f || traits[3] != 10f || traits[4] != 50f || traits[5] != 0f))
+            throw new Exception("zero selection strength changed a trait");
+        if (strength > 0f && traits[0] <= 50f)
+            throw new Exception("positive selection strength did not adapt to heat");
+        Console.WriteLine($"SELECTION_STRENGTH strength={strength} days={days} temperature={F(traits[0])}");
     }
 
-    static void ChainEnsemble(bool threeLevels, int seeds, int days)
+    static void ChainEnsemble(bool threeLevels, int configurations, int days)
     {
         int allSurvive = 0;
         int preySurvive = 0;
         int middleSurvive = 0;
         int topSurvive = 0;
-        for (int seed = 0; seed < seeds; seed++)
+        int minimumFertility = 100;
+        int maximumFertility = 0;
+        for (int scenario = 0; scenario < configurations; scenario++)
         {
-            UnityEngine.Random.InitState(seed);
             var b = threeLevels
-                ? Block(10000, 10000f, Pop(0, 500), Pop(1, 20), Pop(2, 2))
-                : Block(1000, 10000f, Pop(0, 50), Pop(1, 3));
+                ? Block(10000, 10000f, Pop(0, 450 + scenario * 2),
+                    Pop(1, 18 + scenario % 5), Pop(2, 1 + scenario % 3))
+                : Block(1000, 10000f, Pop(0, 45 + scenario % 11),
+                    Pop(1, 2 + scenario % 4));
+            b.temperature += scenario % 5 - 2;
+            b.humidity += scenario / 5 % 5 - 2;
             var c = Controller(true);
             for (int day = 0; day < days; day++) c.SimulateBlock(b);
             if (b.community.All(p => p.speciesAmount > 0)) allSurvive++;
             if (b.community[0].speciesAmount > 0) preySurvive++;
             if (b.community[1].speciesAmount > 0) middleSurvive++;
             if (threeLevels && b.community[2].speciesAmount > 0) topSurvive++;
+            if (threeLevels && b.community[2].speciesAmount == 0)
+                Console.WriteLine($"CHAIN_TOP_EXTINCT scenario={scenario} prey0={450 + scenario * 2} middle0={18 + scenario % 5} top0={1 + scenario % 3} temperature={b.temperature} humidity={b.humidity}");
+            foreach (PopulationData population in b.community)
+            {
+                minimumFertility = Math.Min(minimumFertility, population.fertility);
+                maximumFertility = Math.Max(maximumFertility, population.fertility);
+            }
         }
-        Console.WriteLine($"CHAIN_ENSEMBLE levels={(threeLevels ? 3 : 2)} seeds={seeds} days={days} allSurvive={allSurvive} preySurvive={preySurvive} middleSurvive={middleSurvive} topSurvive={topSurvive}");
-        if (allSurvive < seeds * 9 / 10)
-            throw new Exception("food chain survival below 90% of seeds");
+        Console.WriteLine($"CHAIN_SWEEP levels={(threeLevels ? 3 : 2)} configurations={configurations} days={days} allSurvive={allSurvive} preySurvive={preySurvive} middleSurvive={middleSurvive} topSurvive={topSurvive} fertilityRange={minimumFertility}..{maximumFertility}");
+        if (allSurvive < configurations * 9 / 10)
+            throw new Exception("food chain survival below 90% of configurations");
     }
 
-    static void ShiftEnsemble(int change, int seeds, int days)
+    static void ShiftEnsemble(int change, int configurations, int days)
     {
         int survivors = 0;
         long finalTotal = 0;
-        for (int seed = 0; seed < seeds; seed++)
+        for (int scenario = 0; scenario < configurations; scenario++)
         {
-            UnityEngine.Random.InitState(seed);
-            var b = Block(1000, 10000f, Pop(0, 10));
+            var b = Block(800 + 100 * (scenario % 5), 10000f,
+                Pop(0, 8 + scenario / 5 % 10));
             var c = Controller(true);
             for (int day = 1; day <= days; day++)
             {
@@ -336,22 +388,21 @@ static class Program
             if (b.community[0].speciesAmount > 0) survivors++;
             finalTotal += b.community[0].speciesAmount;
         }
-        Console.WriteLine($"SHIFT_ENSEMBLE deltaEach={change} seeds={seeds} days={days} survivors={survivors} meanFinal={F(finalTotal / (float)seeds)}");
-        if (change <= 25 && survivors < seeds * 9 / 10)
+        Console.WriteLine($"SHIFT_SWEEP deltaEach={change} configurations={configurations} days={days} survivors={survivors} meanFinal={F(finalTotal / (float)configurations)}");
+        if (change <= 25 && survivors < configurations * 9 / 10)
             throw new Exception("small environment shift caused too many extinctions");
-        if (change >= 50 && survivors > seeds / 10)
+        if (change >= 50 && survivors > configurations / 10)
             throw new Exception("large environment shift was not lethal");
     }
 
-    static void DirectionEnsemble(int change, int seeds, int days)
+    static void DirectionEnsemble(int change, int configurations, int days)
     {
         int temperatureToward = 0, humidityToward = 0, survivors = 0;
         double temperatureChange = 0, humidityChange = 0;
-        for (int seed = 0; seed < seeds; seed++)
+        for (int scenario = 0; scenario < configurations; scenario++)
         {
-            UnityEngine.Random.InitState(seed);
-            var population = Pop(0, 10);
-            var block = Block(1000, 10000f, population);
+            var population = Pop(0, 8 + scenario / 5 % 10);
+            var block = Block(800 + 100 * (scenario % 5), 10000f, population);
             var controller = Controller(true);
             for (int day = 1; day <= days; day++)
             {
@@ -372,22 +423,23 @@ static class Program
             if (humidityDelta * change > 0f) humidityToward++;
             if (population.speciesAmount > 0) survivors++;
         }
-        Console.WriteLine($"DIRECTION deltaEach={change} seeds={seeds} days={days} "
+        Console.WriteLine($"DIRECTION deltaEach={change} configurations={configurations} days={days} "
             + $"temperatureToward={temperatureToward} humidityToward={humidityToward} "
-            + $"meanTemperatureChange={F((float)(temperatureChange / seeds))} "
-            + $"meanHumidityChange={F((float)(humidityChange / seeds))} survivors={survivors}");
-        if (temperatureToward < seeds * 9 / 10 || humidityToward < seeds * 9 / 10)
-            throw new Exception("environmental mutation direction too random");
+            + $"meanTemperatureChange={F((float)(temperatureChange / configurations))} "
+            + $"meanHumidityChange={F((float)(humidityChange / configurations))} survivors={survivors}");
+        if (temperatureToward < configurations * 9 / 10 ||
+            humidityToward < configurations * 9 / 10)
+            throw new Exception("environmental mutation direction was inconsistent");
     }
 
     static void Main()
     {
         DirectedMutationTests();
         EnvironmentGrid();
-        for (int seed = 0; seed < 20; seed++)
+        CompetitionSweep();
+        for (int configuration = 0; configuration < 20; configuration++)
         {
-            UnityEngine.Random.InitState(seed);
-            var stablePopulation = Pop(0, 100);
+            var stablePopulation = Pop(0, 60 + configuration);
             var stableBlock = Block(1000, 10000f, stablePopulation);
             var stableController = Controller(true);
             for (int day = 0; day < 2000; day++) stableController.SimulateBlock(stableBlock);
@@ -397,9 +449,9 @@ static class Program
                 stablePopulation.fertilityMutationRemainder != 0f ||
                 stablePopulation.fitTemperature != 50 || stablePopulation.fitHumidity != 50 ||
                 stablePopulation.movementAbility != 10 || stablePopulation.trophicLevel != 0)
-                throw new Exception($"suitable environment drifted: seed={seed}");
+                throw new Exception($"suitable environment drifted: configuration={configuration}");
         }
-        Console.WriteLine("STABLE suitable environment seeds=20 days=2000 traits=unchanged");
+        Console.WriteLine("STABLE suitable environment configurations=20 days=2000 traits=unchanged");
 
         UnityEngine.Random.InitState(42);
         var hungryPopulation = Pop(0, 100);
@@ -492,8 +544,8 @@ static class Program
         DirectionEnsemble(10, 50, 730);
         DirectionEnsemble(25, 50, 730);
         DirectionEnsemble(-25, 50, 730);
-        MutationEnsemble(0, 100, 1000);
-        MutationEnsemble(1, 100, 1000);
+        SelectionStrengthCheck(0, 1000);
+        SelectionStrengthCheck(1, 1000);
 
         foreach (int recovery in new[] { 1000, 10000 })
         foreach (int predatorCount in new[] { 1, 3 })

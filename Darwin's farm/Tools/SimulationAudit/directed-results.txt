@@ -10,10 +10,12 @@ TROPHIC_ALTERNATIVE initial=1 final=0
 TROPHIC_UP alternative=0.173
 ORDER_INDEPENDENCE reversedPopulationList=sameTraits
 FERTILITY_DECLINE initial=50 final=51
+SMALL_POPULATION_FLUCTUATION fertility=unchanged
 FERTILITY_GROWTH_PRESSURE initial=50 final=49
 PLAYER_RECOVERY_CHANGE before=50 after=48.096
 ENV_GRID cases=27 survived=27 correctlyDirected=27
-STABLE suitable environment seeds=20 days=2000 traits=unchanged
+COMPETITION_SWEEP plantComparisons=4 huntSpeeds=5 direction=consistent
+STABLE suitable environment configurations=20 days=2000 traits=unchanged
 HUNGER_ALONE traits=unchanged
 MUTATION_SWITCH disabled=unchanged enabledTemp=95.589 disabledAgain=unchanged
 CASE single-herbivore
@@ -34,9 +36,9 @@ day=365 plant=9367.6 growth=632.4 consumed=632.4 pops=N:63,K:98.039,birth:1,deat
 day=1000 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:2,death:2,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
 day=2000 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:1,death:1,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
 CASE two-level-with-mutation
-day=365 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:2,death:2,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:6,K:5.587,birth:0,death:0,intake:61.2,sat:0.931,temp:50,size:10,trophic:1
-day=1000 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:1,death:1,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
-day=2000 plant=9377.8 growth=622.2 consumed=622.2 pops=N:62,K:98.039,birth:2,death:1,intake:622.2,sat:1.607,temp:50,size:10,trophic:0 | N:5,K:5.699,birth:0,death:0,intake:51,sat:1.14,temp:50,size:10,trophic:1
+day=365 plant=9367.6 growth=632.4 consumed=632.4 pops=N:63,K:98.039,birth:1,death:0,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:6,K:5.587,birth:1,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
+day=1000 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:2,death:2,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
+day=2000 plant=9367.6 growth=632.4 consumed=632.4 pops=N:62,K:98.039,birth:1,death:1,intake:632.4,sat:1.581,temp:50,size:10,trophic:0 | N:5,K:5.587,birth:0,death:0,intake:51,sat:1.117,temp:50,size:10,trophic:1
 CASE three-level
 day=1 plant=8980 growth=0 consumed=1020 pops=N:99,K:196.078,birth:2,death:3,intake:1020,sat:1.961,temp:50,size:10,trophic:0 | N:9,K:11.174,birth:0,death:1,intake:102,sat:1.117,temp:50,size:10,trophic:1 | N:2,K:0.637,birth:0,death:0,intake:20.4,sat:0.318,temp:50,size:10,trophic:2
 day=5 plant=8980 growth=1020 consumed=1020 pops=N:100,K:196.078,birth:3,death:3,intake:1020,sat:1.961,temp:50,size:10,trophic:0 | N:10,K:11.174,birth:1,death:0,intake:91.8,sat:1.242,temp:50,size:10,trophic:1 | N:1,K:0,birth:0,death:1,intake:11.4,sat:0,temp:50,size:10,trophic:2
@@ -72,14 +74,14 @@ day=200 plant=10000 growth=0 consumed=0 pops=N:0,K:0,birth:0,death:0,intake:0,sa
 SHIFT deltaEach=10 N_before=56 extinctDay=0 N_day1000=89 adaptedTemp=55.63
 SHIFT deltaEach=25 N_before=56 extinctDay=0 N_day1000=89 adaptedTemp=70.545
 SHIFT deltaEach=50 N_before=56 extinctDay=103 N_day1000=0 adaptedTemp=50
-SHIFT_ENSEMBLE deltaEach=10 seeds=50 days=365 survivors=50 meanFinal=89
-SHIFT_ENSEMBLE deltaEach=25 seeds=50 days=365 survivors=50 meanFinal=78
-SHIFT_ENSEMBLE deltaEach=50 seeds=50 days=365 survivors=0 meanFinal=0
-DIRECTION deltaEach=10 seeds=50 days=730 temperatureToward=50 humidityToward=50 meanTemperatureChange=5.63 meanHumidityChange=5.63 survivors=50
-DIRECTION deltaEach=25 seeds=50 days=730 temperatureToward=50 humidityToward=50 meanTemperatureChange=20.545 meanHumidityChange=20.545 survivors=50
-DIRECTION deltaEach=-25 seeds=50 days=730 temperatureToward=50 humidityToward=50 meanTemperatureChange=-20.545 meanHumidityChange=-20.545 survivors=50
-ENSEMBLE strength=0 seeds=100 days=1000 meanTemp=50 meanHumidity=50 meanSize=10 meanTrophic=0
-ENSEMBLE strength=1 seeds=100 days=1000 meanTemp=95.589 meanHumidity=50 meanSize=10 meanTrophic=0
+SHIFT_SWEEP deltaEach=10 configurations=50 days=365 survivors=50 meanFinal=88.64
+SHIFT_SWEEP deltaEach=25 configurations=50 days=365 survivors=50 meanFinal=77.58
+SHIFT_SWEEP deltaEach=50 configurations=50 days=365 survivors=0 meanFinal=0
+DIRECTION deltaEach=10 configurations=50 days=730 temperatureToward=50 humidityToward=50 meanTemperatureChange=5.63 meanHumidityChange=5.63 survivors=50
+DIRECTION deltaEach=25 configurations=50 days=730 temperatureToward=50 humidityToward=50 meanTemperatureChange=20.545 meanHumidityChange=20.545 survivors=50
+DIRECTION deltaEach=-25 configurations=50 days=730 temperatureToward=50 humidityToward=50 meanTemperatureChange=-20.545 meanHumidityChange=-20.545 survivors=50
+SELECTION_STRENGTH strength=0 days=1000 temperature=50
+SELECTION_STRENGTH strength=1 days=1000 temperature=95.589
 SWEEP recovery=1000 prey0=25 predator0=1 preyExtinctDay=0 predatorExtinctDay=0 peakPredators=6 finalPrey=63 finalPredators=5
 SWEEP recovery=1000 prey0=25 predator0=3 preyExtinctDay=0 predatorExtinctDay=0 peakPredators=6 finalPrey=12 finalPredators=3
 SWEEP recovery=10000 prey0=250 predator0=1 preyExtinctDay=0 predatorExtinctDay=0 peakPredators=56 finalPrey=659 finalPredators=55
@@ -92,11 +94,12 @@ day=365 plant=2250 growth=7750 consumed=7750 pops=N:765,K:980.392,birth:19,death
 day=1000 plant=2250 growth=7750 consumed=7750 pops=N:765,K:980.392,birth:19,death:18,intake:7750,sat:1.283,temp:50,size:10,trophic:0 | N:34,K:55.561,birth:1,death:0,intake:336.6,sat:1.684,temp:50,size:10,trophic:1 | N:3,K:3.166,birth:0,death:0,intake:30.6,sat:1.055,temp:50,size:10,trophic:2
 day=2000 plant=2250 growth=7750 consumed=7750 pops=N:764,K:980.392,birth:19,death:20,intake:7750,sat:1.282,temp:50,size:10,trophic:0 | N:34,K:55.488,birth:1,death:0,intake:336.6,sat:1.681,temp:50,size:10,trophic:1 | N:4,K:3.162,birth:1,death:0,intake:30.6,sat:1.054,temp:50,size:10,trophic:2
 CASE three-level-productive-with-mutation
-day=365 plant=2250 growth=7750 consumed=7750 pops=N:764,K:980.392,birth:19,death:19,intake:7750,sat:1.283,temp:50,size:10,trophic:0 | N:35,K:55.561,birth:1,death:0,intake:346.8,sat:1.634,temp:50,size:10,trophic:1 | N:3,K:3.166,birth:0,death:0,intake:30.6,sat:1.055,temp:50,size:10,trophic:2
-day=1000 plant=2250 growth=7750 consumed=7750 pops=N:764,K:980.392,birth:19,death:20,intake:7750,sat:1.282,temp:50,size:10,trophic:0 | N:34,K:55.488,birth:0,death:1,intake:357,sat:1.585,temp:50,size:10,trophic:1 | N:3,K:3.225,birth:0,death:0,intake:30.6,sat:1.075,temp:50,size:10,trophic:2
-day=2000 plant=2250 growth=7750 consumed=7750 pops=N:765,K:980.392,birth:19,death:19,intake:7750,sat:1.282,temp:50,size:10,trophic:0 | N:35,K:55.488,birth:1,death:0,intake:346.8,sat:1.632,temp:50,size:10,trophic:1 | N:3,K:3.225,birth:1,death:1,intake:30.6,sat:1.075,temp:50,size:10,trophic:2
-CHAIN_ENSEMBLE levels=2 seeds=50 days=2000 allSurvive=50 preySurvive=50 middleSurvive=50 topSurvive=0
-CHAIN_ENSEMBLE levels=3 seeds=50 days=2000 allSurvive=50 preySurvive=50 middleSurvive=50 topSurvive=50
+day=365 plant=2250 growth=7750 consumed=7750 pops=N:765,K:980.392,birth:19,death:18,intake:7750,sat:1.283,temp:50,size:10,trophic:0 | N:34,K:55.561,birth:1,death:1,intake:346.8,sat:1.634,temp:50,size:10,trophic:1 | N:4,K:3.166,birth:1,death:0,intake:30.6,sat:1.055,temp:50,size:10,trophic:2
+day=1000 plant=2250 growth=7750 consumed=7750 pops=N:765,K:980.392,birth:19,death:18,intake:7750,sat:1.283,temp:50,size:10,trophic:0 | N:34,K:55.561,birth:1,death:0,intake:336.6,sat:1.684,temp:50,size:10,trophic:1 | N:3,K:3.166,birth:0,death:0,intake:30.6,sat:1.055,temp:50,size:10,trophic:2
+day=2000 plant=2250 growth=7750 consumed=7750 pops=N:764,K:980.392,birth:19,death:20,intake:7750,sat:1.282,temp:50,size:10,trophic:0 | N:34,K:55.488,birth:1,death:0,intake:336.6,sat:1.681,temp:50,size:10,trophic:1 | N:4,K:3.162,birth:1,death:0,intake:30.6,sat:1.054,temp:50,size:10,trophic:2
+CHAIN_SWEEP levels=2 configurations=50 days=2000 allSurvive=50 preySurvive=50 middleSurvive=50 topSurvive=0 fertilityRange=50..50
+CHAIN_TOP_EXTINCT scenario=35 prey0=520 middle0=18 top0=3 temperature=48 humidity=50
+CHAIN_SWEEP levels=3 configurations=50 days=2000 allSurvive=49 preySurvive=50 middleSurvive=50 topSurvive=49 fertilityRange=50..50
 CASE movement-plant-competition
 day=1 plant=0 growth=0 consumed=100 pops=N:10,K:0,birth:0,death:0,intake:38.462,sat:0,temp:50,size:10,trophic:0 | N:10,K:0,birth:0,death:0,intake:61.538,sat:0,temp:50,size:10,trophic:0
 CASE movement-hunt-competition

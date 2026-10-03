@@ -11,7 +11,7 @@ public class SimulationController : MonoBehaviour
     private const float FitnessTolerance = 90f;
     private const float SizeEnergyWeight = 1f;
     private const float MovementEnergyWeight = 0.02f;
-    private const float MigrationPopulationScale = 100f;
+    private const float TerrainStepProbability = 0.5f;
     private const float EnvironmentalPressureRange = 30f;
     private const float MaximumSelectionPressure = 0.9f;
     private const float MinimumMutationScore = 0.15f;
@@ -33,6 +33,11 @@ public class SimulationController : MonoBehaviour
     [Header("Migration")]
     [SerializeField] private bool migrationEnabled = false;
     [Min(1)] [SerializeField] private int migrationInterval = 7;
+    [Min(0.01f)] [SerializeField] private float migrationPopulationScale = 100f;
+    [Range(0f, 0.99f)] [SerializeField] private float overloadThreshold = 0.8f;
+    [Range(0f, 1f)] [SerializeField] private float baseOverloadProbability = 0.5f;
+    [Range(0f, 1f)] [SerializeField] private float overloadMigrationFraction = 0.2f;
+    [Min(0)] [SerializeField] private int migrationCooldownDays = 7;
 
     private struct MigrationEvent
     {
@@ -41,6 +46,8 @@ public class SimulationController : MonoBehaviour
         public PopulationData population;
         public int amount;
     }
+
+    public event System.Action<BlockInfo, BlockInfo, PopulationData, int> OnPopulationMigrated;
 
     private enum MutationTrait { Temperature, Humidity, Movement, Size, Fertility, Trophic }
 
@@ -88,17 +95,64 @@ public class SimulationController : MonoBehaviour
         mutationEnabled = enabled;
     }
 
-    public void ScheduleMutationAfterEnvironmentChange(BlockInfo block)
+    public void SetMigrationParameters(bool enabled, int interval, float populationScale,
+        float threshold, float overloadProbability,
+        float overloadFraction, int cooldownDays)
     {
-        if (block == null || block.community == null) return;
+        migrationEnabled = enabled;
+        migrationInterval = Mathf.Max(1, interval);
+        migrationPopulationScale = Mathf.Max(0.01f, populationScale);
+        overloadThreshold = Mathf.Clamp(threshold, 0f, 0.99f);
+        baseOverloadProbability = Mathf.Clamp01(overloadProbability);
+        overloadMigrationFraction = Mathf.Clamp01(overloadFraction);
+        migrationCooldownDays = Mathf.Max(0, cooldownDays);
+    }
+
+    public void SetBlocks(List<BlockInfo> blocks)
+    {
+        blockInfos = blocks ?? new List<BlockInfo>();
+    }
+
+    public void MovePopulation(BlockInfo source, BlockInfo target, PopulationData population,
+        int day)
+    {
+        if (source == null || target == null || source == target || population == null ||
+            source.community == null || !source.community.Contains(population) ||
+            population.speciesAmount <= 0 || day < population.nextMigrationDay) return;
+        int amount = LimitMigrationAmount(population.speciesAmount, 1f);
+        if (amount == 0) return;
+        ApplyMigrationEvents(new List<MigrationEvent>
+        {
+            new MigrationEvent
+            {
+                source = source, target = target, population = population,
+                amount = amount
+            }
+        }, day);
+    }
+
+    public bool ApplyEnvironment(BlockInfo block, int temperature, int humidity, int recovery)
+    {
+        if (block == null) return false;
+        temperature = Mathf.Clamp(temperature, 0, 100);
+        humidity = Mathf.Clamp(humidity, 0, 100);
+        recovery = Mathf.Max(0, recovery);
+        if (block.temperature == temperature && block.humidity == humidity &&
+            block.habitatRecovery == recovery) return false;
+
+        block.temperature = temperature;
+        block.humidity = humidity;
+        block.habitatRecovery = recovery;
+        if (block.community == null) return true;
         foreach (PopulationData population in block.community)
         {
             if (population != null)
                 population.mutationDaysElapsed = Mathf.Max(1, mutationInterval) - 1;
         }
+        return true;
     }
 
-    private void SimulateDay(int day)
+    public void SimulateDay(int day)
     {
         foreach (BlockInfo block in blockInfos)
         {
@@ -106,7 +160,7 @@ public class SimulationController : MonoBehaviour
         }
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
-            SimulateMigration();
+            SimulateMigration(day);
         }
     }
 
@@ -211,7 +265,7 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    private static float CalculateFitness(BlockInfo block, PopulationData population)
+    public static float CalculateFitness(BlockInfo block, PopulationData population)
     {
         int temperatureDifference = Mathf.Abs(block.temperature - population.fitTemperature);
         int humidityDifference = Mathf.Abs(block.humidity - population.fitHumidity);
@@ -219,7 +273,50 @@ public class SimulationController : MonoBehaviour
             (temperatureDifference + humidityDifference) / FitnessTolerance);
     }
 
-    private void SimulateMigration()
+    public float EstimateTargetCapacity(BlockInfo target, PopulationData migrant)
+    {
+        if (target == null || migrant == null || target.community == null ||
+            migrant.speciesAmount <= 0) return 0f;
+        if (migrant.species != null)
+        {
+            PopulationData resident = target.community.Find(population =>
+                population != null && population.species == migrant.species);
+            if (resident != null) return Mathf.Max(0f, resident.carryingCapacity);
+        }
+        float fitness = CalculateFitness(target, migrant);
+        return Mathf.Max(0f, migrant.speciesAmount
+            * FoodAvailability(target, migrant.trophicLevel, migrant) * fitness);
+    }
+
+    public float TargetCapacityCorrection(BlockInfo target, PopulationData migrant)
+    {
+        float capacity = EstimateTargetCapacity(target, migrant);
+        if (capacity <= 0f) return 0f;
+        int residents = 0;
+        if (migrant.species != null)
+        {
+            foreach (PopulationData population in target.community)
+                if (population != null && population.species == migrant.species)
+                    residents += Mathf.Max(0, population.speciesAmount);
+        }
+        return Mathf.Clamp01(1f - residents / capacity);
+    }
+
+    public float CalculateOverloadPressure(PopulationData population)
+    {
+        if (population == null || population.speciesAmount <= 0) return 0f;
+        if (population.carryingCapacity <= 0f) return 1f;
+        float ratio = population.speciesAmount / population.carryingCapacity;
+        return Mathf.Clamp01((ratio - overloadThreshold) / (1f - overloadThreshold));
+    }
+
+    public static int LimitMigrationAmount(int population, float proportion)
+    {
+        int amount = Mathf.Min(population, Mathf.RoundToInt(population * proportion));
+        return amount < 10 ? 0 : Mathf.Min(amount, 100);
+    }
+
+    private void SimulateMigration(int day)
     {
         List<MigrationEvent> events = new List<MigrationEvent>();
         foreach (BlockInfo source in blockInfos)
@@ -227,36 +324,75 @@ public class SimulationController : MonoBehaviour
             if (source == null || source.community == null || source.Neighbors == null) continue;
             foreach (PopulationData population in source.community)
             {
-                if (population == null || population.speciesAmount <= 0) continue;
+                if (population == null || population.speciesAmount <= 0 ||
+                    day < population.nextMigrationDay) continue;
 
                 float currentFitness = CalculateFitness(source, population);
-                BlockInfo target = null;
-                float targetFitness = currentFitness;
-                float terrainProbability = 0f;
+                BlockInfo normalTarget = null;
+                BlockInfo overloadTarget = null;
+                float normalFitness = currentFitness;
+                float overloadFitness = -1f;
+                float normalTerrain = 0f;
+                float overloadTerrain = 0f;
+                float normalCapacity = 0f;
+                float overloadCapacity = 0f;
                 foreach (BlockInfo neighbor in source.Neighbors)
                 {
                     if (neighbor == null || neighbor == source) continue;
                     int heightDifference = Mathf.Abs(neighbor.elevation - source.elevation);
                     if (heightDifference >= 2) continue;
+                    float terrain = heightDifference == 0 ? 1f : TerrainStepProbability;
+                    if (terrain <= 0f) continue;
+                    float capacity = TargetCapacityCorrection(neighbor, population);
+                    if (capacity <= 0f) continue;
                     float fitness = CalculateFitness(neighbor, population);
-                    if (fitness > targetFitness)
+                    if (fitness > currentFitness &&
+                        (fitness > normalFitness ||
+                         (fitness == normalFitness && capacity > normalCapacity)))
                     {
-                        target = neighbor;
-                        targetFitness = fitness;
-                        terrainProbability = heightDifference == 0 ? 1f : 0.5f;
+                        normalTarget = neighbor;
+                        normalFitness = fitness;
+                        normalTerrain = terrain;
+                        normalCapacity = capacity;
+                    }
+                    if (fitness > overloadFitness ||
+                        (fitness == overloadFitness && capacity > overloadCapacity))
+                    {
+                        overloadTarget = neighbor;
+                        overloadFitness = fitness;
+                        overloadTerrain = terrain;
+                        overloadCapacity = capacity;
+                    }
+                }
+
+                BlockInfo target = null;
+                int amount = 0;
+                float baseProbability = population.speciesAmount /
+                    (population.speciesAmount + migrationPopulationScale);
+                if (normalTarget != null)
+                {
+                    float difference = normalFitness - currentFitness;
+                    float probability = difference * normalTerrain * baseProbability
+                        * normalCapacity;
+                    if (Random.value < probability)
+                    {
+                        amount = LimitMigrationAmount(population.speciesAmount, difference);
+                        if (amount > 0) target = normalTarget;
+                    }
+                }
+                if (target == null && overloadTarget != null)
+                {
+                    float pressure = CalculateOverloadPressure(population);
+                    float probability = pressure * baseOverloadProbability
+                        * overloadTerrain * overloadCapacity;
+                    if (pressure > 0f && Random.value < probability)
+                    {
+                        amount = LimitMigrationAmount(population.speciesAmount,
+                            pressure * overloadMigrationFraction);
+                        if (amount > 0) target = overloadTarget;
                     }
                 }
                 if (target == null) continue;
-
-                float difference = targetFitness - currentFitness;
-                float baseProbability = population.speciesAmount /
-                    (population.speciesAmount + MigrationPopulationScale);
-                float probability = difference * terrainProbability * baseProbability;
-                if (Random.value >= probability) continue;
-
-                int amount = Mathf.Min(population.speciesAmount,
-                    Mathf.RoundToInt(population.speciesAmount * difference));
-                if (amount <= 0) continue;
                 events.Add(new MigrationEvent
                 {
                     source = source,
@@ -267,6 +403,11 @@ public class SimulationController : MonoBehaviour
             }
         }
 
+        ApplyMigrationEvents(events, day);
+    }
+
+    private void ApplyMigrationEvents(List<MigrationEvent> events, int day)
+    {
         // 全部结果确定后先迁出、再迁入；新迁入的种群不会在本日再次出发。
         List<PopulationData> arrivals = new List<PopulationData>(events.Count);
         foreach (MigrationEvent migration in events)
@@ -275,6 +416,9 @@ public class SimulationController : MonoBehaviour
             int originalAmount = origin.speciesAmount;
             float share = migration.amount / (float)originalAmount;
             PopulationData arrival = CopyMigrant(origin, migration.amount);
+            int readyDay = day + migrationCooldownDays + 1;
+            origin.nextMigrationDay = Mathf.Max(origin.nextMigrationDay, readyDay);
+            arrival.nextMigrationDay = origin.nextMigrationDay;
             arrival.energyReserve = origin.energyReserve * share;
             origin.energyReserve -= arrival.energyReserve;
             arrival.birthRemainder = origin.birthRemainder * share;
@@ -309,6 +453,8 @@ public class SimulationController : MonoBehaviour
                 InitializeMutationState(resident);
                 MergeMigrants(resident, arrival);
             }
+            OnPopulationMigrated?.Invoke(events[i].source, target,
+                events[i].population, events[i].amount);
         }
     }
 
@@ -333,6 +479,7 @@ public class SimulationController : MonoBehaviour
             fertilityMutationRemainder = source.fertilityMutationRemainder,
             trophicMutationRemainder = source.trophicMutationRemainder,
             mutationDaysElapsed = source.mutationDaysElapsed,
+            nextMigrationDay = source.nextMigrationDay,
             previousMutationPopulation = amount,
             mutationPopulationInitialized = true
         };
@@ -372,6 +519,8 @@ public class SimulationController : MonoBehaviour
         resident.energyReserve += arrival.energyReserve;
         resident.birthRemainder += arrival.birthRemainder;
         resident.deathRemainder += arrival.deathRemainder;
+        resident.nextMigrationDay = Mathf.Max(resident.nextMigrationDay,
+            arrival.nextMigrationDay);
         resident.speciesAmount = total;
         resident.previousMutationPopulation = total;
         resident.mutationPopulationInitialized = true;
@@ -478,15 +627,16 @@ public class SimulationController : MonoBehaviour
                     * shortage);
         }
 
-        float trend = population.previousMutationPopulation > 0
-            ? (population.speciesAmount - population.previousMutationPopulation)
-                / (float)population.previousMutationPopulation : 0f;
-        if (trend < 0f && enoughEnergy && sustainableRatio >= 0.9f)
+        int populationChange = population.speciesAmount - population.previousMutationPopulation;
+        // 小种群少一只的整数波动不应被当作持续衰退。
+        float trendScore = Mathf.Clamp01(Mathf.Abs(populationChange)
+            / Mathf.Max(15f, population.previousMutationPopulation * 0.2f));
+        if (populationChange < 0 && enoughEnergy && sustainableRatio >= 0.9f)
             ChooseMutation(ref selected, ref score, MutationTrait.Fertility,
-                Mathf.Clamp01(-trend * 5f));
-        else if (trend > 0f && shortage > 0.1f)
+                trendScore);
+        else if (populationChange > 0 && shortage > 0.1f)
             ChooseMutation(ref selected, ref score, MutationTrait.Fertility,
-                -Mathf.Clamp01(trend * 5f));
+                -trendScore);
 
         score *= selectionStrength;
         if (Mathf.Abs(score) >= MinimumMutationScore)

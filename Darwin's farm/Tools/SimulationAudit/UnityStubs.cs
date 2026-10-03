@@ -31,7 +31,6 @@ namespace UnityEngine
     {
         private static System.Random generator = new System.Random(1);
         public static void InitState(int seed) => generator = new System.Random(seed);
-        public static float Range(float min, float max) => min + (float)generator.NextDouble() * (max - min);
         public static float value => (float)generator.NextDouble();
     }
 }

@@ -18,6 +18,7 @@ public class BlockInfo : MonoBehaviour
 {
     [SerializeField]List<BlockInfo> neighbors;
     public IReadOnlyList<BlockInfo> Neighbors => neighbors;
+    public void SetNeighbors(List<BlockInfo> value) => neighbors = value;
     [SerializeField]public int temperature;  //温度为0~100，温暖为50，极寒为0，极热为100
     [SerializeField]public int humidity;  //湿度为0~100
     [SerializeField]public int elevation; //海拔为0、1或2
