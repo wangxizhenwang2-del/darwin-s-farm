@@ -50,6 +50,96 @@ static class Program
             .Count(i => Math.Abs(values[i] - before[i]) > 0.0001f);
     }
 
+    static void MigrationMergeTests()
+    {
+        var species = new SpeciesData { trophicLevel = 0 };
+        var resident = Pop(0, 20);
+        resident.species = species;
+        resident.lineageName = "右侧名称";
+        resident.fitTemperature = 41;
+        resident.temperatureMutationRemainder = 0.4f;
+        var migrant = Pop(0, 30);
+        migrant.species = species;
+        migrant.lineageName = "左侧名称";
+        migrant.fitTemperature = 62;
+        migrant.temperatureMutationRemainder = -0.25f;
+        var left = Block(1000, 10000f, migrant);
+        var right = Block(1000, 10000f, resident);
+        var controller = Controller();
+        controller.SetMigrationParameters(true, 1, 1f, 0.8f, 1f, 1f, 0);
+        controller.SetBlocks(new List<BlockInfo> { left, right });
+        controller.MovePopulation(left, right, migrant, 0);
+        float expectedTemperature = (20f * 41.4f + 30f * 61.75f) / 50f;
+        if (right.community.Count != 1 || right.community[0] != resident ||
+            resident.speciesAmount != 50 || left.community.Count != 0 ||
+            Math.Abs(resident.fitTemperature + resident.temperatureMutationRemainder
+                - expectedTemperature) > 0.001f)
+            throw new Exception("same asset did not merge count and precise weighted trait");
+
+        resident = Pop(0, 20);
+        resident.species = null;
+        resident.lineageName = "同族";
+        migrant = Pop(0, 30);
+        migrant.species = null;
+        migrant.lineageName = "同族";
+        left = Block(1000, 10000f, migrant);
+        right = Block(1000, 10000f, resident);
+        controller = Controller();
+        controller.MovePopulation(left, right, migrant, 0);
+        if (right.community.Count != 1 || resident.speciesAmount != 50)
+            throw new Exception("same unnamed-asset lineage did not merge");
+
+        migrant = Pop(0, 30);
+        migrant.species = null;
+        migrant.lineageName = "另一族";
+        left = Block(1000, 10000f, migrant);
+        controller.MovePopulation(left, right, migrant, 0);
+        if (right.community.Count != 2 || resident.speciesAmount != 50)
+            throw new Exception("different lineage was incorrectly merged");
+
+        var namedResident = Pop(0, 20);
+        namedResident.lineageName = "同名";
+        var namedMigrant = Pop(0, 30);
+        namedMigrant.lineageName = "同名";
+        left = Block(1000, 10000f, namedMigrant);
+        right = Block(1000, 10000f, namedResident);
+        controller.MovePopulation(left, right, namedMigrant, 0);
+        if (right.community.Count != 2)
+            throw new Exception("distinct species assets merged only because names matched");
+
+        var sourcePopulation = Pop(0, 50);
+        species = sourcePopulation.species;
+        resident = Pop(0, 10);
+        resident.species = species;
+        left = Block(0, 0f, sourcePopulation);
+        right = Block(10000, 10000f, resident);
+        left.SetNeighbors(new List<BlockInfo> { right });
+        right.SetNeighbors(new List<BlockInfo> { left });
+        controller = Controller();
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SetMigrationParameters(true, 1, 1f, 0.8f, 1f, 1f, 0);
+        controller.SetBlocks(new List<BlockInfo> { left, right });
+        controller.SimulateDay(1);
+        if (left.community[0].speciesAmount != 50 || right.community[0].speciesAmount != 10)
+            throw new Exception("overload migrated into an occupied same-species block");
+
+        right.community.Clear();
+        controller.SimulateDay(2);
+        if (right.community.Count != 1 || right.community[0].speciesAmount != 50)
+            throw new Exception("overload failed to found a new neighboring population");
+        if (right.community[0].lastMigrationSource != left)
+            throw new Exception("migrant did not remember its source block");
+
+        right.temperature = 80;
+        controller.SimulateDay(3);
+        if (left.community.Count != 0)
+            throw new Exception("migrant automatically returned to its source without an environment edit");
+        controller.ApplyEnvironment(left, 51, 50, 0);
+        if (right.community[0].lastMigrationSource != null)
+            throw new Exception("environment edit did not clear return block");
+        Console.WriteLine("MIGRATION_MERGE asset_and_name=merged weighted_traits=exact overload=empty_only return=blocked_until_environment_edit");
+    }
+
     static void DirectedMutationTests()
     {
         var environmentPopulation = Pop(0, 50);
@@ -432,8 +522,48 @@ static class Program
             throw new Exception("environmental mutation direction was inconsistent");
     }
 
+    static void LiveTrophicLevelTests()
+    {
+        var prey = Pop(0, 100);
+        var predator = Pop(0, 5);
+        var block = Block(10000, 10000f, prey, predator);
+        var controller = Controller();
+        controller.SetParameters(0f, 0f, 0f);
+
+        controller.SimulateBlock(block);
+        if (prey.deathsToday != 0)
+            throw new Exception("same-level populations unexpectedly hunted");
+
+        predator.trophicMutationRemainder = 0.3f;
+        predator.energyReserve = 40f;
+        predator.mutationDaysElapsed = 5;
+        if (!SimulationController.SetTrophicLevel(predator, 1) ||
+            predator.trophicMutationRemainder != 0f || predator.energyReserve != 0f ||
+            predator.mutationDaysElapsed != 0)
+            throw new Exception("manual trophic change did not reset old food state");
+        controller.SimulateBlock(block);
+        if (prey.deathsToday <= 0 || predator.trophicLevel != 1 ||
+            predator.species.trophicLevel != 0)
+            throw new Exception("live level 1 did not hunt level 0 independently of asset");
+
+        SimulationController.SetTrophicLevel(predator, 0);
+        controller.SimulateBlock(block);
+        if (prey.deathsToday != 0)
+            throw new Exception("returning to level 0 did not stop predation");
+
+        SimulationController.SetTrophicLevel(prey, 1);
+        SimulationController.SetTrophicLevel(predator, 2);
+        controller.SimulateBlock(block);
+        if (prey.deathsToday <= 0)
+            throw new Exception("live level 2 did not hunt level 1");
+
+        Console.WriteLine("LIVE TROPHIC 0/1/2 switching and predation=ok");
+    }
+
     static void Main()
     {
+        MigrationMergeTests();
+        LiveTrophicLevelTests();
         DirectedMutationTests();
         EnvironmentGrid();
         CompetitionSweep();

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <NoWarn>0169;0649;0067</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../SimulationAudit/UnityStubs.cs" Link="UnityStubs.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/SpeciesData.cs" Link="SpeciesData.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/PopulationData.cs" Link="PopulationData.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/BlockInfo.cs" Link="BlockInfo.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/EcologicalNiche.cs" Link="EcologicalNiche.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.cs" Link="SimulationController.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Population.cs" Link="SimulationController.Population.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/FoodWeb.cs" Link="FoodWeb.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Mutation.cs" Link="SimulationController.Mutation.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Migration.cs" Link="SimulationController.Migration.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Niches.cs" Link="SimulationController.Niches.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/WaterRegion.cs" Link="WaterRegion.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/PopulationTransfer.cs" Link="PopulationTransfer.cs" />
+  </ItemGroup>
+</Project>

@@ -77,6 +77,7 @@ public partial class PopulationSimulatorWindow
             maxOverCapacityDeathRate, maxStarvationDeathRate);
         controller.SetMutationParameters(mutationInterval, mutationStep, selectionStrength);
         controller.SetMutationEnabled(mutationEnabled);
+        controller.SetEcologicalNichesEnabled(ecologicalNichesEnabled);
         controller.SetMigrationParameters(migrationEnabled, migrationInterval,
             migrationPopulationScale, overloadThreshold,
             baseOverloadProbability, overloadMigrationFraction, migrationCooldownDays);
@@ -142,7 +143,7 @@ public partial class PopulationSimulatorWindow
         if (inputs == null) return result;
         foreach (PopulationInput input in inputs)
             if (input != null && input.data != null && input.data.speciesAmount > 0)
-                result.Add(CopyPopulation(input.data));
+                result.Add(CopyPopulationInput(input));
         return result;
     }
 
@@ -150,7 +151,7 @@ public partial class PopulationSimulatorWindow
     {
         if (rightPopulations == null) rightPopulations = new List<PopulationInput>();
         DrawParameters();
-        EditorGUILayout.HelpBox("手动迁出会跳过概率判定，每次至多迁出 100 只；少于 10 只或处于冷却期时不可操作。自动迁徙按间隔和概率结算。", MessageType.Info);
+        EditorGUILayout.HelpBox("同一物种资产，或未指定资产时同名，迁入后会按数量加权合并。超载迁徙只开拓无同族的地块；自动迁徙不会在环境未改变时迁回来源地。手动迁出跳过概率判定，每次至多 100 只。", MessageType.Info);
         EditorGUILayout.BeginHorizontal();
         float width = Mathf.Max(470f, (position.width - 34f) / 2f);
         DrawDualColumn(true, width);
@@ -214,7 +215,7 @@ public partial class PopulationSimulatorWindow
     {
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("群落配置（待应用）", EditorStyles.boldLabel);
-        EditorGUILayout.LabelField("应用群落会重建此地块种群。", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField("应用群落会重建此地块种群；同族同生态位共用一条曲线。", EditorStyles.miniLabel);
         List<PopulationInput> inputs = leftSide ? populations : rightPopulations;
         int removeIndex = -1;
         for (int i = 0; i < inputs.Count; i++)
@@ -229,11 +230,8 @@ public partial class PopulationSimulatorWindow
             EditorGUILayout.EndHorizontal();
             if (input.expanded)
             {
-                input.name = EditorGUILayout.TextField("名称", input.name);
-                input.data.species = (SpeciesData)EditorGUILayout.ObjectField("物种",
-                    input.data.species, typeof(SpeciesData), false);
-                EditorGUILayout.LabelField("初始营养级 " +
-                    (input.data.species == null ? 0 : input.data.species.trophicLevel));
+                input.name = EditorGUILayout.TextField("名称（无物种资产时作同族标识）", input.name);
+                DrawInitialTrophicLevel(input.data);
                 input.data.speciesAmount = Mathf.Max(0, EditorGUILayout.IntField("数量", input.data.speciesAmount));
                 input.data.fitTemperature = EditorGUILayout.IntSlider("适宜温度", input.data.fitTemperature, 0, 100);
                 input.data.fitHumidity = EditorGUILayout.IntSlider("适宜湿度", input.data.fitHumidity, 0, 100);
@@ -320,8 +318,8 @@ public partial class PopulationSimulatorWindow
                 + "    出生 " + population.birthsToday + "    死亡 " + population.deathsToday);
             EditorGUILayout.LabelField("适温 " + population.fitTemperature
                 + "    适湿 " + population.fitHumidity + "    运动 " + population.movementAbility);
-            EditorGUILayout.LabelField("体型 " + population.size + "    生育 " + population.fertility
-                + "    食性 " + population.trophicLevel);
+            EditorGUILayout.LabelField("体型 " + population.size + "    生育 " + population.fertility);
+            DrawLiveTrophicLevel(population, SideName(leftSide, population), SideOutput(leftSide));
             float here = SimulationController.CalculateFitness(target, population);
             float there = SimulationController.CalculateFitness(opposite, population);
             float difference = Mathf.Max(0f, there - here);
@@ -332,13 +330,17 @@ public partial class PopulationSimulatorWindow
             float capacity = controller.EstimateTargetCapacity(opposite, population);
             float correction = controller.TargetCapacityCorrection(opposite, population);
             float pressure = controller.CalculateOverloadPressure(population);
-            float normalChance = difference * terrain * basic * correction;
-            float overloadChance = pressure * appliedBaseOverloadProbability
-                * terrain * correction;
-            int normalAmount = SimulationController.LimitMigrationAmount(
+            bool returnBlocked = opposite == population.lastMigrationSource;
+            bool sameSpeciesAlreadyThere = opposite.community.Exists(resident =>
+                SimulationController.SameSpecies(resident, population));
+            float normalChance = returnBlocked ? 0f : difference * terrain * basic * correction;
+            float overloadChance = returnBlocked || sameSpeciesAlreadyThere ? 0f :
+                pressure * appliedBaseOverloadProbability * terrain * correction;
+            int normalAmount = returnBlocked ? 0 : SimulationController.LimitMigrationAmount(
                 population.speciesAmount, difference);
-            int overloadAmount = SimulationController.LimitMigrationAmount(
-                population.speciesAmount, pressure * appliedOverloadMigrationFraction);
+            int overloadAmount = returnBlocked || sameSpeciesAlreadyThere ? 0 :
+                SimulationController.LimitMigrationAmount(population.speciesAmount,
+                    pressure * appliedOverloadMigrationFraction);
             EditorGUILayout.LabelField("适应度 本地 " + here.ToString("P0")
                 + "    对侧 " + there.ToString("P0") + "    差值 " + difference.ToString("P0"));
             EditorGUILayout.LabelField("目标K " + capacity.ToString("F1")
@@ -414,28 +416,62 @@ public partial class PopulationSimulatorWindow
         leftSide ? leftSidePlants : rightSidePlants;
     private List<string> SideOutput(bool leftSide) =>
         leftSide ? leftSideOutput : rightSideOutput;
-    private List<PopulationInput> SideInputs(bool leftSide) =>
-        leftSide ? populations : rightPopulations;
+
+    private static bool SameHistoryPopulation(PopulationData first, PopulationData second)
+    {
+        return first != null && second != null &&
+            (first == second || first.ecologicalNiche == second.ecologicalNiche &&
+                SimulationController.SameSpecies(first, second));
+    }
 
     private string SideName(bool leftSide, PopulationData population)
     {
-        SideHistory existing = SideSeries(leftSide).Find(item => item.population == population);
-        return existing != null ? existing.name : population.species != null
-            ? population.species.name : "种群";
+        SideHistory existing = SideSeries(leftSide).Find(item =>
+            SameHistoryPopulation(item.population, population));
+        return existing != null ? existing.name :
+            !string.IsNullOrWhiteSpace(population.lineageName)
+                ? population.lineageName : population.species != null
+                    ? population.species.name : "种群";
+    }
+
+    private static void MergeDuplicateSeries(List<SideHistory> series)
+    {
+        for (int i = 0; i < series.Count; i++)
+        {
+            for (int j = series.Count - 1; j > i; j--)
+            {
+                if (!SameHistoryPopulation(series[i].population, series[j].population))
+                    continue;
+                List<float> retained = series[i].amounts;
+                List<float> duplicate = series[j].amounts;
+                while (retained.Count < duplicate.Count) retained.Add(0f);
+                for (int day = 0; day < duplicate.Count; day++)
+                    retained[day] += duplicate[day];
+                series.RemoveAt(j);
+            }
+        }
     }
 
     private void EnsureSideSeries(bool leftSide)
     {
         BlockInfo target = GetSideBlock(leftSide);
         List<SideHistory> series = SideSeries(leftSide);
-        List<PopulationInput> inputs = SideInputs(leftSide);
+        MergeDuplicateSeries(series);
         for (int i = 0; i < target.community.Count; i++)
         {
             PopulationData population = target.community[i];
-            if (series.Exists(item => item.population == population)) continue;
-            string name = i < inputs.Count && inputs[i] != null &&
-                !string.IsNullOrWhiteSpace(inputs[i].name) ? inputs[i].name :
-                population.species != null ? population.species.name : "种群 " + (i + 1);
+            SideHistory existing = series.Find(item =>
+                SameHistoryPopulation(item.population, population));
+            if (existing != null)
+            {
+                existing.population = population;
+                if (!string.IsNullOrWhiteSpace(population.lineageName))
+                    existing.name = population.lineageName;
+                continue;
+            }
+            string name = !string.IsNullOrWhiteSpace(population.lineageName)
+                ? population.lineageName : population.species != null
+                    ? population.species.name : "种群 " + (i + 1);
             SideHistory item = new SideHistory
             {
                 population = population, name = name,
@@ -443,6 +479,21 @@ public partial class PopulationSimulatorWindow
             };
             for (int day = 0; day < currentDay; day++) item.amounts.Add(0f);
             series.Add(item);
+        }
+    }
+
+    private static void CurrentSeriesStats(BlockInfo target, SideHistory item,
+        out int amount, out int births, out int deaths)
+    {
+        amount = 0;
+        births = 0;
+        deaths = 0;
+        foreach (PopulationData population in target.community)
+        {
+            if (!SameHistoryPopulation(item.population, population)) continue;
+            amount += population.speciesAmount;
+            births += population.birthsToday;
+            deaths += population.deathsToday;
         }
     }
 
@@ -464,13 +515,12 @@ public partial class PopulationSimulatorWindow
                 + target.consumedBiomassToday.ToString("F2"));
         foreach (SideHistory item in SideSeries(leftSide))
         {
-            int amount = target.community.Contains(item.population)
-                ? item.population.speciesAmount : 0;
+            CurrentSeriesStats(target, item, out int amount, out int births, out int deaths);
             item.amounts.Add(amount);
             if (currentDay > 0 && amount > 0)
                 SideOutput(leftSide).Add("Day " + currentDay + "    " + item.name
-                    + "    数量 " + amount + "    出生 " + item.population.birthsToday
-                    + "    死亡 " + item.population.deathsToday);
+                    + "    数量 " + amount + "    出生 " + births
+                    + "    死亡 " + deaths);
         }
     }
 
@@ -485,8 +535,8 @@ public partial class PopulationSimulatorWindow
         foreach (SideHistory item in SideSeries(leftSide))
         {
             while (item.amounts.Count <= currentDay) item.amounts.Add(0f);
-            item.amounts[currentDay] = target.community.Contains(item.population)
-                ? item.population.speciesAmount : 0;
+            CurrentSeriesStats(target, item, out int amount, out _, out _);
+            item.amounts[currentDay] = amount;
         }
     }
 

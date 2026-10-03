@@ -25,6 +25,9 @@ public class BlockInfo : MonoBehaviour
     [SerializeField]public float plantBiomass;   //植物库存为0~maxPlantBiomass
     [SerializeField]public float maxPlantBiomass = 10000f; //植物生物量上限
     [SerializeField]public int habitatRecovery; //每日恢复的生物量
+    [SerializeField] public float algaeBiomass; //水域生产者库存；生态位系统启用后由水域共享
+    [SerializeField] public float maxAlgaeBiomass = 10000f;
+    [SerializeField] public int algaeRecovery;
     public float plantGrowthToday; //当天实际生长的植物量
     public float consumedBiomassToday; //当天被种群吃掉的植物量
     [SerializeField]public List<PopulationData> community;    //群落，存储了当前地块的种群

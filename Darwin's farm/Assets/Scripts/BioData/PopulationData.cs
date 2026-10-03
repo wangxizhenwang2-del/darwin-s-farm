@@ -3,6 +3,9 @@ public class PopulationData
 {
     public int speciesAmount; //种群数量保持整数
     public SpeciesData species;
+    public string lineageName; // 未指定物种资产时，以同名识别跨地块的同一种群
+    public string speciesId; // 生态位分化产生的独立物种标识；普通迁徙保持不变
+    public EcologicalNiche ecologicalNiche = EcologicalNiche.Land;
 
     //进化趋势
     public int movementAbility;   //0~100 影响物种的移动距离、能量消耗
@@ -38,6 +41,7 @@ public class PopulationData
     public int populationBeforePredation; //捕食前数量，避免捕食后分母缩小造成虚假盈余
     public float energyReserve; //捕食者吃下整只猎物后未用完的能量
     public int nextMigrationDay; //迁徙冷却结束后可再次参与检查的日期
+    public BlockInfo lastMigrationSource; // 环境未改变时，禁止自动迁回上次迁出的地块
     public float birthRemainder; //累计不足一个体的繁殖量
     public float deathRemainder; //累计不足一个体的死亡量
     public int birthsToday; //当天出生数量

@@ -30,6 +30,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
     [SerializeField] private float maxOverCapacityDeathRate = 0.1f;
     [SerializeField] private float maxStarvationDeathRate = 0.6f;
     [SerializeField] private bool mutationEnabled = true;
+    [SerializeField] private bool ecologicalNichesEnabled;
     [SerializeField] private int mutationInterval = 7;
     [SerializeField] private float mutationStep = 2f;
     [SerializeField] private float selectionStrength = 1f;
@@ -39,6 +40,8 @@ public partial class PopulationSimulatorWindow : EditorWindow
 
     private static readonly int[] speeds = { 1, 2, 4, 8 };
     private static readonly string[] traitNames = { "适温", "适湿", "运动", "体型", "生育", "食性" };
+    private static readonly string[] trophicLevelNames =
+        { "0 · 植食", "1 · 捕食 0 级", "2 · 捕食 1 级" };
     private GameObject runtimeObject;
     private BlockInfo block;
     private SimulationController controller;
@@ -96,6 +99,11 @@ public partial class PopulationSimulatorWindow : EditorWindow
             if (controller != null) RestartSimulation();
         }
         EditorGUILayout.LabelField("切换迁徙模式会按当前输入重新开始模拟。", EditorStyles.miniLabel);
+        ecologicalNichesEnabled = EditorGUILayout.Toggle("启用生态位（预留）",
+            ecologicalNichesEnabled);
+        if (controller != null)
+            controller.SetEcologicalNichesEnabled(ecologicalNichesEnabled);
+        EditorGUILayout.LabelField("生态位规则尚未接入每日模拟。", EditorStyles.miniLabel);
 
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
         if (migrationEnabled)
@@ -166,6 +174,8 @@ public partial class PopulationSimulatorWindow : EditorWindow
         {
             bool changed = block.temperature != temperature || block.humidity != humidity ||
                 block.habitatRecovery != habitatRecovery;
+            bool otherChanged = block.elevation != elevation ||
+                block.maxPlantBiomass != maxPlantBiomass || block.plantBiomass != plantBiomass;
             if (changed)
                 dailyOutput.Add("Day " + currentDay + "    环境改变：温度 " + block.temperature
                     + "→" + temperature + "，湿度 " + block.humidity + "→" + humidity
@@ -177,6 +187,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
             block.elevation = elevation;
             block.maxPlantBiomass = maxPlantBiomass;
             block.plantBiomass = Mathf.Clamp(plantBiomass, 0f, maxPlantBiomass);
+            if (otherChanged) controller.NotifyEnvironmentChanged();
             Repaint();
         }
         EditorGUILayout.HelpBox("环境数值可在运行中应用；温度、湿度和恢复量改变会在下一模拟日触发变异评估。", MessageType.Info);
@@ -214,7 +225,9 @@ public partial class PopulationSimulatorWindow : EditorWindow
         EditorGUILayout.HelpBox("达到 K 后数量可以保持水平，但每天仍有出生和死亡；当天的两个整数显示在当前状态和每日输出中。", MessageType.Info);
         EditorGUILayout.HelpBox("单一种群时 K≈每日恢复量÷个体能耗。初始数量低于 K/2，才能看到先加速后减速的增长段；整数出生会使曲线呈阶梯状。", MessageType.Info);
         if (populations.Count == 1 && populations[0].data != null &&
-            (populations[0].data.species == null || populations[0].data.species.trophicLevel == 0))
+            (populations[0].data.trophicLevelInitialized
+                ? populations[0].data.trophicLevel == 0
+                : populations[0].data.species == null || populations[0].data.species.trophicLevel == 0))
         {
             PopulationData input = populations[0].data;
             float energyNeed = Mathf.Max(1f, input.size
@@ -253,11 +266,8 @@ public partial class PopulationSimulatorWindow : EditorWindow
 
             if (input.expanded)
             {
-                input.name = EditorGUILayout.TextField("名称", input.name);
-                input.data.species = (SpeciesData)EditorGUILayout.ObjectField(
-                    "物种（营养级）", input.data.species, typeof(SpeciesData), false);
-                EditorGUILayout.LabelField("营养级 " +
-                    (input.data.species == null ? 0 : input.data.species.trophicLevel));
+                input.name = EditorGUILayout.TextField("名称（无物种资产时作同族标识）", input.name);
+                DrawInitialTrophicLevel(input.data);
                 input.data.speciesAmount = Mathf.Max(0,
                     EditorGUILayout.IntField("初始数量", input.data.speciesAmount));
                 input.data.fitTemperature = EditorGUILayout.IntSlider("适宜温度", input.data.fitTemperature, 0, 100);
@@ -314,9 +324,33 @@ public partial class PopulationSimulatorWindow : EditorWindow
                 + "    适湿 " + (population.fitHumidity + population.humidityMutationRemainder).ToString("F2")
                 + "    运动 " + (population.movementAbility + population.movementMutationRemainder).ToString("F2")
                 + "    体型 " + (population.size + population.sizeMutationRemainder).ToString("F2"));
-            EditorGUILayout.LabelField("生育 " + (population.fertility + population.fertilityMutationRemainder).ToString("F2")
-                + "    食性 " + (population.trophicLevel + population.trophicMutationRemainder).ToString("F2"));
+            EditorGUILayout.LabelField("生育 " + (population.fertility + population.fertilityMutationRemainder).ToString("F2"));
+            DrawLiveTrophicLevel(population, history[i].name, dailyOutput);
         }
+    }
+
+    private static void DrawInitialTrophicLevel(PopulationData data)
+    {
+        SpeciesData selected = (SpeciesData)EditorGUILayout.ObjectField(
+            "物种", data.species, typeof(SpeciesData), false);
+        if (selected != data.species || !data.trophicLevelInitialized)
+        {
+            data.species = selected;
+            data.trophicLevel = selected == null ? 0 :
+                Mathf.Clamp(selected.trophicLevel, 0, SimulationController.MaxTrophicLevel);
+            data.trophicLevelInitialized = true;
+        }
+        data.trophicLevel = EditorGUILayout.Popup("初始营养级",
+            Mathf.Clamp(data.trophicLevel, 0, SimulationController.MaxTrophicLevel), trophicLevelNames);
+    }
+
+    private void DrawLiveTrophicLevel(PopulationData population, string name,
+        List<string> output)
+    {
+        int selected = EditorGUILayout.Popup("当前营养级（下日起生效）",
+            Mathf.Clamp(population.trophicLevel, 0, SimulationController.MaxTrophicLevel), trophicLevelNames);
+        if (SimulationController.SetTrophicLevel(population, selected))
+            output.Add("Day " + currentDay + "    " + name + "    营养级改为 " + selected);
     }
 
     private void DrawChart()
@@ -501,7 +535,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
         for (int i = 0; i < populations.Count; i++)
         {
             PopulationInput input = populations[i];
-            block.community.Add(CopyPopulation(input.data));
+            block.community.Add(CopyPopulationInput(input));
             history.Add(new PopulationHistory
             {
                 name = string.IsNullOrWhiteSpace(input.name) ? "种群 " + (i + 1) : input.name,
@@ -614,6 +648,14 @@ public partial class PopulationSimulatorWindow : EditorWindow
         };
     }
 
+    private PopulationData CopyPopulationInput(PopulationInput input)
+    {
+        PopulationData copy = CopyPopulation(input.data);
+        if (!string.IsNullOrWhiteSpace(input.name))
+            copy.lineageName = input.name.Trim();
+        return copy;
+    }
+
     private PopulationData CopyPopulation(PopulationData data)
     {
         if (data == null)
@@ -624,6 +666,9 @@ public partial class PopulationSimulatorWindow : EditorWindow
         return new PopulationData
         {
             species = data.species,
+            lineageName = data.lineageName,
+            speciesId = data.speciesId,
+            ecologicalNiche = data.ecologicalNiche,
             speciesAmount = Mathf.Max(0, data.speciesAmount),
             movementAbility = data.movementAbility,
             habitatNiche = data.habitatNiche,
@@ -631,7 +676,9 @@ public partial class PopulationSimulatorWindow : EditorWindow
             fitHumidity = data.fitHumidity,
             size = data.size,
             fertility = data.fertility,
-            trophicLevel = data.species == null ? 0 : Mathf.Clamp(data.species.trophicLevel, 0, 2),
+            trophicLevel = data.trophicLevelInitialized
+                ? Mathf.Clamp(data.trophicLevel, 0, 2)
+                : data.species == null ? 0 : Mathf.Clamp(data.species.trophicLevel, 0, 2),
             trophicLevelInitialized = true
         };
     }
