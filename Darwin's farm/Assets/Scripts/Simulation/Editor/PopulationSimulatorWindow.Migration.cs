@@ -382,6 +382,7 @@ public partial class PopulationSimulatorWindow
             EditorGUILayout.LabelField("适温 " + population.fitTemperature
                 + "    适湿 " + population.fitHumidity + "    运动 " + population.movementAbility);
             EditorGUILayout.LabelField("体型 " + population.size + "    生育 " + population.fertility);
+            EditorGUILayout.LabelField(controller.GetExpectedEvolutionDirection(target, population));
             DrawLiveTrophicLevel(population, SideName(leftSide, population), SideOutput(leftSide));
             float here = SimulationController.CalculateFitness(target, population);
             float there = SimulationController.CalculateFitness(opposite, population);

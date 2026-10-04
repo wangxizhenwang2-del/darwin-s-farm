@@ -18,6 +18,7 @@ public partial class SimulationController
     public bool EcologicalNichesEnabled => ecologicalNichesEnabled;
     public event Action<BlockInfo, BlockInfo, PopulationData, PopulationData, int>
         OnNicheConverted;
+    public event Action<PopulationData, BlockInfo, RiverBankSide?> OnLandPositionChanged;
 
     public void SetEcologicalNichesEnabled(bool enabled) => ecologicalNichesEnabled = enabled;
 
@@ -32,6 +33,43 @@ public partial class SimulationController
     }
 
     public WaterRegionMap BuildWaterRegions() => WaterRegionMap.Build(blockInfos);
+
+    // 河岸是陆地栖息地的一个位置，不拥有独立种群或食物库存。
+    public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
+        RiverBankSide side, PopulationData population)
+    {
+        if (!ecologicalNichesEnabled || home == null || home.community == null ||
+            population == null || population.speciesAmount <= 0 ||
+            population.ecologicalNiche != EcologicalNiche.Land ||
+            !home.community.Contains(population)) return false;
+        return HabitatTopology.TryGetBankOwner(river, side, out BlockInfo owner) &&
+            owner == home;
+    }
+
+    public bool TryMoveToRiverBank(BlockInfo home, BlockInfo river,
+        RiverBankSide side, PopulationData population)
+    {
+        if (!CanMoveToRiverBank(home, river, side, population)) return false;
+        if (population.landPositionBlock == river &&
+            population.landPositionBank == side) return false;
+        population.landPositionBlock = river;
+        population.landPositionBank = side;
+        OnLandPositionChanged?.Invoke(population, river, side);
+        return true;
+    }
+
+    public bool TryReturnFromRiverBank(BlockInfo home, PopulationData population)
+    {
+        if (!ecologicalNichesEnabled || home == null || home.community == null ||
+            population == null || population.ecologicalNiche != EcologicalNiche.Land ||
+            population.speciesAmount <= 0 ||
+            !home.community.Contains(population) ||
+            population.landPositionBlock == null) return false;
+        population.landPositionBlock = null;
+        population.landPositionBank = default(RiverBankSide);
+        OnLandPositionChanged?.Invoke(population, home, null);
+        return true;
+    }
 
     public static float CalculateWaterFitness(WaterRegion region, PopulationData population)
     {
@@ -81,11 +119,12 @@ public partial class SimulationController
             NicheSplitAmount(population.speciesAmount) == 0) return false;
 
         BlockInfo waterTarget = null;
-        if (source.Neighbors != null)
-            foreach (BlockInfo neighbor in source.Neighbors)
-                if (WaterRegionMap.IsWater(neighbor) &&
-                    (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
-                    waterTarget = neighbor;
+        foreach (BlockInfo neighbor in blockInfos)
+            if (HabitatTopology.CanLandEnterWater(source, neighbor) &&
+                (population.landPositionBlock == null ||
+                 population.landPositionBlock == neighbor) &&
+                (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
+                waterTarget = neighbor;
         if (waterTarget != null)
         {
             if (UnityEngine.Random.value < landToWaterProbability)
@@ -123,7 +162,7 @@ public partial class SimulationController
         WaterRegion from = regions.GetRegion(source);
         WaterRegion to = regions.GetRegion(target);
         if (from == null || to == null || from == to ||
-            !RegionsTouch(from, target) || target == population.lastMigrationSource)
+            !WaterRegionsTouch(from, target) || target == population.lastMigrationSource)
             return false;
         int difference = to.Elevation - from.Elevation;
         if (Mathf.Abs(difference) != 1 || to.AvailableFood <= 0f ||
@@ -146,7 +185,7 @@ public partial class SimulationController
             regions == null || target == null || WaterRegionMap.IsWater(target) ||
             NicheSplitAmount(population.speciesAmount) == 0) return false;
         WaterRegion region = regions.GetRegion(source);
-        if (region == null || !RegionsTouch(region, target) ||
+        if (region == null || !WaterRegionTouchesLand(region, target) ||
             WaterFoodPressure(region) < 1f ||
             UnityEngine.Random.value >= waterToLandProbability) return false;
         return ConvertNiche(source, target, population, EcologicalNiche.Land,
@@ -194,16 +233,25 @@ public partial class SimulationController
         return false;
     }
 
-    private static bool RegionsTouch(WaterRegion region, BlockInfo target)
+    private static bool WaterRegionsTouch(WaterRegion region, BlockInfo target)
     {
         if (region == null || target == null) return false;
         foreach (BlockInfo block in region.Members)
-            if (AreNeighbors(block, target) || AreNeighbors(target, block)) return true;
+            if (HabitatTopology.ChannelsConnect(block, target)) return true;
+        return false;
+    }
+
+    private static bool WaterRegionTouchesLand(WaterRegion region, BlockInfo land)
+    {
+        if (region == null || land == null) return false;
+        foreach (BlockInfo block in region.Members)
+            if (HabitatTopology.CanLandEnterWater(land, block)) return true;
         return false;
     }
 
     private static float EnergyNeedForNiche(PopulationData population) =>
-        CalculateEnergyNeed(population.size, population.movementAbility);
+        CalculateEnergyNeed(population.size, population.movementAbility,
+            population.fertility);
 
     private float AirTargetCapacityCorrection(BlockInfo target, PopulationData migrant)
     {

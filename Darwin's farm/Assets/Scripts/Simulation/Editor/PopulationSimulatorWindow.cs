@@ -232,7 +232,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
         {
             PopulationData input = populations[0].data;
             float energyNeed = SimulationController.CalculateEnergyNeed(
-                input.size, input.movementAbility);
+                input.size, input.movementAbility, input.fertility);
             float fitness = Mathf.Clamp01(1f - (Mathf.Abs(temperature - input.fitTemperature)
                 + Mathf.Abs(humidity - input.fitHumidity)) / 90f);
             float projectedStock = plantBiomass + SimulationController.CalculatePlantGrowth(
@@ -333,6 +333,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
                 + "    运动 " + (population.movementAbility + population.movementMutationRemainder).ToString("F2")
                 + "    体型 " + (population.size + population.sizeMutationRemainder).ToString("F2"));
             EditorGUILayout.LabelField("生育 " + (population.fertility + population.fertilityMutationRemainder).ToString("F2"));
+            EditorGUILayout.LabelField(controller.GetExpectedEvolutionDirection(block, population));
             DrawLiveTrophicLevel(population, history[i].name, dailyOutput);
         }
     }

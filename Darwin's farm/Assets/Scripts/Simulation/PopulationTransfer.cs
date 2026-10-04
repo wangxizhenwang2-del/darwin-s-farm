@@ -5,6 +5,7 @@ internal static class PopulationTransfer
 {
     public static PopulationData CopyForMove(PopulationData source, int amount)
     {
+        // 不复制河岸位置；迁入者落在新栖息地，留下的个体仍在原河岸。
         return new PopulationData
         {
             species = source.species,

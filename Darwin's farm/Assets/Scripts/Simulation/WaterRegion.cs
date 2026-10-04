@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 水域只由实际列入地图的地块构成；连接、含水、同海拔三个条件缺一不可。
+// 一片水域由实际接通、同海拔的河道或纯水地块构成。
 public sealed class WaterRegion
 {
     private readonly List<BlockInfo> members = new List<BlockInfo>();
@@ -93,8 +93,7 @@ public sealed class WaterRegionMap
         return block != null && byBlock.TryGetValue(block, out region) ? region : null;
     }
 
-    public static bool IsWater(BlockInfo block) =>
-        block != null && block.waterCoverage != WaterCoverage.Land;
+    public static bool IsWater(BlockInfo block) => HabitatTopology.IsWater(block);
 
     public static WaterRegionMap Build(IEnumerable<BlockInfo> blocks)
     {
@@ -114,7 +113,8 @@ public sealed class WaterRegionMap
             foreach (BlockInfo neighbor in block.Neighbors)
             {
                 if (neighbor == null || !allowed.Contains(neighbor) ||
-                    neighbor.elevation != block.elevation) continue;
+                    neighbor.elevation != block.elevation ||
+                    !HabitatTopology.ChannelsConnect(block, neighbor)) continue;
                 connections[block].Add(neighbor);
                 connections[neighbor].Add(block);
             }

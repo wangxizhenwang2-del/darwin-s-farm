@@ -12,7 +12,21 @@ public enum WaterCoverage
         horizontalRiver = 6,
         CrossingRiver = 7,
         Lake = 8,
+        Sea = 9,
     };
+
+public enum RiverBankSide
+{
+    North, East, South, West,
+    NorthEast, SouthEast, SouthWest, NorthWest
+}
+
+[System.Serializable]
+public class RiverBankInfo
+{
+    public RiverBankSide side;
+    public BlockInfo landOwner;
+}
 
 public class BlockInfo : MonoBehaviour
 {
@@ -32,4 +46,15 @@ public class BlockInfo : MonoBehaviour
     public float consumedBiomassToday; //当天被种群吃掉的植物量
     [SerializeField]public List<PopulationData> community;    //群落，存储了当前地块的种群
     [SerializeField] public WaterCoverage waterCoverage;
+    // 河岸只是陆地种群可到达的位置，资源和种群仍归 landOwner。
+    [SerializeField] private List<RiverBankInfo> riverBanks = new List<RiverBankInfo>();
+    public IReadOnlyList<RiverBankInfo> RiverBanks => riverBanks;
+    public void SetRiverBanks(List<RiverBankInfo> banks) =>
+        riverBanks = banks ?? new List<RiverBankInfo>();
+
+    // 仅记录真正接通的河道；普通地块邻接不等于水路相通。
+    [SerializeField] private List<BlockInfo> waterLinks = new List<BlockInfo>();
+    public IReadOnlyList<BlockInfo> WaterLinks => waterLinks;
+    public void SetWaterLinks(List<BlockInfo> links) =>
+        waterLinks = links ?? new List<BlockInfo>();
 }

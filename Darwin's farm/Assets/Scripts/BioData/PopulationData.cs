@@ -6,6 +6,9 @@ public class PopulationData
     public string lineageName; // 未指定物种资产时，以同名识别跨地块的同一种群
     public string speciesId; // 生态位分化产生的独立物种标识；普通迁徙保持不变
     public EcologicalNiche ecologicalNiche = EcologicalNiche.Land;
+    // null 表示在所属陆地地块；到河岸时只更新位置，种群仍留在所属地块。
+    public BlockInfo landPositionBlock;
+    public RiverBankSide landPositionBank;
 
     //进化趋势
     public int movementAbility;   //0~100 影响物种的移动距离、能量消耗

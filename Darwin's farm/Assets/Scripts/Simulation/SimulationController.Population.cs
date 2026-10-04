@@ -6,8 +6,12 @@ public partial class SimulationController
 {
     private const float FitnessTolerance = 90f;
     private const float SizeEnergyWeight = 1f;
-    private const float MovementEnergyWeight = 0.02f;
+    private const float MovementEnergyWeight = 0.01f;
+    private const float HighSpeedEnergyWeight = 0.00001f;
+    private const float HighFertilityEnergyWeight = 0.0002f;
+    private const float ExtremeTraitEnergyWeight = 0.02f;
     internal const float DensityPredationCompensation = 0.5f;
+    internal const float PredatorStarvationMultiplier = 0.5f;
 
     [Header("Population")]
     [SerializeField] private float reproductionScale = 0.05f;
@@ -32,10 +36,22 @@ public partial class SimulationController
     }
 
     public static float CalculateEnergyNeed(float size, float movement)
+        => CalculateEnergyNeed(size, movement, 80f);
+
+    public static float CalculateEnergyNeed(float size, float movement, float fertility)
     {
         float speed = Mathf.Clamp(movement, 0f, 100f);
+        float highSpeed = Mathf.Max(0f, speed - 50f);
+        float extremeSpeed = Mathf.Max(0f, speed - 90f);
+        float highFertility = Mathf.Max(0f, fertility - 80f);
+        float extremeFertility = Mathf.Max(0f, fertility - 90f);
         return Mathf.Max(1f, size * SizeEnergyWeight
-            + speed * MovementEnergyWeight * (1f + speed / 40f));
+            + speed * MovementEnergyWeight * (1f + speed / 40f)
+            + highSpeed * highSpeed * highSpeed * HighSpeedEnergyWeight
+            + extremeSpeed * extremeSpeed * extremeSpeed * ExtremeTraitEnergyWeight
+            + highFertility * highFertility * HighFertilityEnergyWeight
+            + extremeFertility * extremeFertility * extremeFertility
+                * ExtremeTraitEnergyWeight);
     }
 
     private static void PreparePopulations(BlockInfo block)
@@ -45,7 +61,8 @@ public partial class SimulationController
             population.environmentalFitness = Mathf.RoundToInt(
                 CalculateFitness(block, population) * 100f);
             population.energyNeed = CalculateEnergyNeed(population.size,
-                population.movementAbility);
+                population.movementAbility, population.fertility
+                    + population.fertilityMutationRemainder);
             population.populationBeforePredation = Mathf.Max(0, population.speciesAmount);
             population.allocatedBiomass = 0f;
             population.carryingCapacity = 0f;
@@ -83,7 +100,8 @@ public partial class SimulationController
         int beforeHunt = population.populationBeforePredation;
         int hunted = population.deathsToday;
         EstimateDemography(population, beforeHunt, reproductionScale,
-            maxOverCapacityDeathRate, maxStarvationDeathRate,
+            maxOverCapacityDeathRate, maxStarvationDeathRate *
+                (population.trophicLevel > 0 ? PredatorStarvationMultiplier : 1f),
             out float expectedBirths, out float expectedDeaths);
         float densityDeaths = capacity > 0f
             ? expectedBirths * beforeHunt / capacity : 0f;
@@ -113,15 +131,24 @@ public partial class SimulationController
         float reproductionScale, float overCapacityDeathRate, float starvationDeathRate,
         out float births, out float deaths)
     {
+        EstimateDemography(count, population.fertility, population.environmentalFitness,
+            population.energyNeed, population.allocatedBiomass,
+            population.carryingCapacity, reproductionScale, overCapacityDeathRate,
+            starvationDeathRate, out births, out deaths);
+    }
+
+    internal static void EstimateDemography(int count, float fertility, float fitness,
+        float energyNeed, float allocatedBiomass, float capacity,
+        float reproductionScale, float overCapacityDeathRate, float starvationDeathRate,
+        out float births, out float deaths)
+    {
         births = 0f;
         deaths = 0f;
-        if (count <= 0 || population.energyNeed <= 0f) return;
+        if (count <= 0 || energyNeed <= 0f) return;
 
-        float intake = Mathf.Clamp01(population.allocatedBiomass /
-            (count * population.energyNeed));
-        float capacity = population.carryingCapacity;
-        births = capacity > 0f ? count * (population.fertility / 100f)
-            * reproductionScale * population.environmentalFitness / 100f * intake : 0f;
+        float intake = Mathf.Clamp01(allocatedBiomass / (count * energyNeed));
+        births = capacity > 0f ? count * (fertility / 100f)
+            * reproductionScale * fitness / 100f * intake : 0f;
         float densityDeaths = capacity > 0f ? births * count / capacity : 0f;
         float overCapacityDeaths = count * overCapacityDeathRate
             * Mathf.Max(0f, 1f - capacity / count);

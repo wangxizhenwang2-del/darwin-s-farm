@@ -54,6 +54,11 @@ public partial class SimulationController
         if (source == null || target == null || source == target || population == null ||
             source.community == null || !source.community.Contains(population) ||
             population.speciesAmount <= 0 || day < population.nextMigrationDay) return;
+        // 生态位开启后，旧的陆地迁徙不能把陆生种群塞进河道地块。
+        if (ecologicalNichesEnabled &&
+            (source.waterCoverage != WaterCoverage.Land ||
+             target.waterCoverage != WaterCoverage.Land ||
+             population.ecologicalNiche != EcologicalNiche.Land)) return;
         int amount = LimitMigrationAmount(population.speciesAmount, 1f);
         if (amount == 0) return;
         ApplyMovePlans(new List<MovePlan>
@@ -119,10 +124,13 @@ public partial class SimulationController
         foreach (BlockInfo source in blockInfos)
         {
             if (source == null || source.community == null || source.Neighbors == null) continue;
+            if (ecologicalNichesEnabled && source.waterCoverage != WaterCoverage.Land) continue;
             foreach (PopulationData population in source.community)
             {
                 if (population == null || population.speciesAmount <= 0 ||
                     day < population.nextMigrationDay) continue;
+                if (ecologicalNichesEnabled &&
+                    population.ecologicalNiche != EcologicalNiche.Land) continue;
                 if (TryPlanMove(source, population, plans, out MovePlan plan))
                     plans.Add(plan);
             }
@@ -142,6 +150,8 @@ public partial class SimulationController
         {
             if (neighbor == null || neighbor == source ||
                 neighbor == population.lastMigrationSource) continue;
+            if (ecologicalNichesEnabled &&
+                neighbor.waterCoverage != WaterCoverage.Land) continue;
             int heightDifference = Mathf.Abs(neighbor.elevation - source.elevation);
             if (heightDifference >= 2) continue;
             float terrain = heightDifference == 0 ? 1f : TerrainStepProbability;

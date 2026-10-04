@@ -177,11 +177,141 @@ internal static class Program
             "air migration failed across elevation difference two");
     }
 
+    private static void RiverBanksAndChannels()
+    {
+        BlockInfo left = Block(0, false, 800f);
+        BlockInfo right = Block(0, false, 900f);
+        BlockInfo orphan = Block(0, false, 100f);
+        BlockInfo river = Block(0, true, 100f);
+        BlockInfo lake = Block(0, true, 200f);
+        BlockInfo sea = Block(0, true, 300f);
+        BlockInfo parallel = Block(1, true, 400f);
+        river.waterCoverage = WaterCoverage.VerticalRiver;
+        parallel.waterCoverage = WaterCoverage.VerticalRiver;
+        sea.waterCoverage = WaterCoverage.Sea;
+        left.SetNeighbors(new List<BlockInfo> { river });
+        right.SetNeighbors(new List<BlockInfo> { river });
+        orphan.SetNeighbors(new List<BlockInfo> { river });
+        river.SetNeighbors(new List<BlockInfo> { left, right, orphan, lake, parallel });
+        lake.SetNeighbors(new List<BlockInfo> { river, sea });
+        sea.SetNeighbors(new List<BlockInfo> { lake });
+        parallel.SetNeighbors(new List<BlockInfo> { river });
+        river.SetRiverBanks(new List<RiverBankInfo>
+        {
+            new RiverBankInfo { side = RiverBankSide.West, landOwner = left },
+            new RiverBankInfo { side = RiverBankSide.East, landOwner = right }
+        });
+        river.SetWaterLinks(new List<BlockInfo> { lake });
+
+        BlockInfo[] blocks = { left, right, orphan, river, lake, sea, parallel };
+        SimulationController controller = Controller(blocks);
+        WaterRegionMap regions = controller.BuildWaterRegions();
+        Check(HabitatTopology.IsRiver(river) && HabitatTopology.IsPureWater(lake) &&
+            HabitatTopology.IsPureWater(sea) && !HabitatTopology.IsPureWater(river),
+            "river and pure water not distinguished");
+        Check(regions.GetRegion(river) == regions.GetRegion(lake) &&
+            regions.GetRegion(lake) == regions.GetRegion(sea) &&
+            regions.GetRegion(river) != regions.GetRegion(parallel) &&
+            regions.GetRegion(river).AlgaeBiomass == 600f &&
+            regions.GetRegion(river).AvailableFood == 600f,
+            "river channel connected by tile adjacency instead of water links");
+        Check(HabitatTopology.CanLandEnterWater(left, river) &&
+            HabitatTopology.CanLandEnterWater(right, river) &&
+            !HabitatTopology.CanLandEnterWater(orphan, river) &&
+            !HabitatTopology.TryGetBankOwner(lake, RiverBankSide.West, out _),
+            "river bank ownership");
+
+        PopulationData landAnimals = Population(120, EcologicalNiche.Land, "left");
+        left.community.Add(landAnimals);
+        Check(!controller.TryMoveToRiverBank(left, river, RiverBankSide.West, landAnimals),
+            "disabled niche switch moved animals to a bank");
+        controller.SetEcologicalNichesEnabled(true);
+        int positionEvents = 0;
+        controller.OnLandPositionChanged += (_, _, _) => positionEvents++;
+        Check(controller.CanMoveToRiverBank(left, river, RiverBankSide.West, landAnimals) &&
+            !controller.CanMoveToRiverBank(left, river, RiverBankSide.East, landAnimals),
+            "model permission did not follow bank ownership");
+        Check(controller.TryMoveToRiverBank(left, river, RiverBankSide.West, landAnimals) &&
+            landAnimals.landPositionBlock == river &&
+            landAnimals.landPositionBank == RiverBankSide.West &&
+            landAnimals.speciesAmount == 120 && left.community.Contains(landAnimals) &&
+            river.community.Count == 0 && right.community.Count == 0 &&
+            left.plantBiomass == 800f && river.plantBiomass == 100f &&
+            landAnimals.nextMigrationDay == 0 && positionEvents == 1,
+            "bank walk changed population or triggered migration");
+        Check(!controller.TryMoveToRiverBank(left, river, RiverBankSide.West, landAnimals) &&
+            positionEvents == 1, "same bank produced a duplicate position event");
+        Check(!controller.TryMoveToRiverBank(left, river, RiverBankSide.East, landAnimals),
+            "animal crossed to a bank owned by another land block");
+        Check(controller.TryReturnFromRiverBank(left, landAnimals) &&
+            landAnimals.landPositionBlock == null && positionEvents == 2,
+            "return from river bank");
+        controller.MovePopulation(left, river, landAnimals, 1);
+        Check(left.community.Contains(landAnimals) && landAnimals.speciesAmount == 120 &&
+            river.community.Count == 0,
+            "old land migration placed an independent land population in the river");
+
+        PopulationData orphanAnimals = Population(120, EcologicalNiche.Land, "orphan");
+        orphan.community.Add(orphanAnimals);
+        controller.SetEcologicalNicheProbabilities(1f, 0f, 1f, 1f, 1f);
+        Check(!controller.TryLandDepartureConversion(orphan, orphanAnimals, 1, out _),
+            "unowned river bank allowed land to water conversion");
+        Check(controller.TryLandDepartureConversion(left, landAnimals, 1,
+            out PopulationData riverChild) && riverChild.speciesAmount == 12 &&
+            river.community.Contains(riverChild), "owned river bank blocked conversion");
+
+        PopulationData fish = Population(200, EcologicalNiche.Water, "river-fish");
+        river.community.Add(fish);
+        Check(!controller.TryWaterMigration(river, parallel, fish, regions, 1),
+            "unconnected parallel river allowed water migration");
+        Check(!controller.TryWaterToLandConversion(river, orphan, fish,
+            regions, 1, out _), "fish emerged onto an unowned bank");
+        Check(controller.TryWaterToLandConversion(river, right, fish,
+            regions, 1, out PopulationData landChild) &&
+            landChild.speciesAmount == 20 && right.community.Contains(landChild),
+            "fish could not reach an owned bank");
+
+        river.SetWaterLinks(new List<BlockInfo> { lake, parallel });
+        regions = controller.BuildWaterRegions();
+        Check(regions.GetRegion(river) != regions.GetRegion(parallel) &&
+            controller.TryWaterMigration(river, parallel, fish, regions, 2),
+            "connected river at different elevation blocked water migration");
+
+        river.SetRiverBanks(new List<RiverBankInfo>
+        {
+            new RiverBankInfo { side = RiverBankSide.West, landOwner = left },
+            new RiverBankInfo { side = RiverBankSide.West, landOwner = right }
+        });
+        Check(!HabitatTopology.TryGetBankOwner(river, RiverBankSide.West, out _),
+            "ambiguous river bank ownership was accepted");
+    }
+
+    private static void LegacyMigrationCannotClaimRiver()
+    {
+        BlockInfo land = Block(0, false, 100f);
+        BlockInfo river = Block(0, true, 1000f);
+        river.waterCoverage = WaterCoverage.VerticalRiver;
+        land.SetNeighbors(new List<BlockInfo> { river });
+        river.SetNeighbors(new List<BlockInfo> { land });
+        PopulationData population = Population(200, EcologicalNiche.Land);
+        land.community.Add(population);
+        SimulationController controller = Controller(land, river);
+        controller.SetEcologicalNichesEnabled(true);
+        controller.SetMutationEnabled(false);
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SimulateDay(1);
+        Check(land.community.Contains(population) && population.speciesAmount == 200 &&
+            river.community.Count == 0,
+            "daily land migration created an independent river land population");
+    }
+
     private static void Main()
     {
         TopologyAndFitness();
         ConversionAndSwitch();
         WaterAndAirMoves();
-        Console.WriteLine("NICHE_AUDIT passed: topology, resources, fitness, switch, conversions and migrations");
+        RiverBanksAndChannels();
+        LegacyMigrationCannotClaimRiver();
+        Console.WriteLine("NICHE_AUDIT passed: water channels, river banks, resources, conversions and migrations");
     }
 }
