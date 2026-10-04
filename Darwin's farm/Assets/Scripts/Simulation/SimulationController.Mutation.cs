@@ -97,28 +97,80 @@ public partial class SimulationController
 
         float temperatureScore = Mathf.Clamp(
             (block.temperature - population.fitTemperature - population.temperatureMutationRemainder)
-            / EnvironmentalPressureRange * selectionStrength,
+            / EnvironmentalPressureRange,
             -MaximumSelectionPressure, MaximumSelectionPressure);
         float humidityScore = Mathf.Clamp(
             (block.humidity - population.fitHumidity - population.humidityMutationRemainder)
-            / EnvironmentalPressureRange * selectionStrength,
+            / EnvironmentalPressureRange,
             -MaximumSelectionPressure, MaximumSelectionPressure);
         MutationTrait selected = MutationTrait.Temperature;
         float score = temperatureScore;
         KeepStrongerMutation(ref selected, ref score, MutationTrait.Humidity, humidityScore);
 
-        // 温湿度失配由玩家环境输入直接造成，先处理最强的一项。
-        if (Mathf.Abs(score) >= MinimumMutationScore)
-        {
-            decision = new MutationDecision { population = population, trait = selected, score = score };
-            return true;
-        }
-
-        score = 0f;
+        // 环境与生态压力一起比较，避免温湿度适应把换赛道永久排在后面。
         float sustainableRatio = population.energySatisfactionToday;
         float actualRatio = population.actualEnergySatisfactionToday;
         float shortage = Mathf.Clamp01(1f - Mathf.Min(sustainableRatio, actualRatio));
         bool enoughEnergy = actualRatio >= 0.9f;
+        int populationChange = population.speciesAmount - population.previousMutationPopulation;
+        // 小种群少一只的整数波动不应被当作持续衰退。
+        float trendScore = Mathf.Clamp01(Mathf.Abs(populationChange)
+            / Mathf.Max(15f, population.previousMutationPopulation * 0.2f));
+        if (population.trophicLevel == 0 && enoughEnergy &&
+            population.fertility < 100 && block.habitatRecovery > block.consumedBiomassToday)
+        {
+            float surplus = (block.habitatRecovery - block.consumedBiomassToday)
+                / Mathf.Max(1f, block.habitatRecovery);
+            bool hunted = false;
+            foreach (PopulationData other in block.community)
+                if (other.speciesAmount > 0 && other.trophicLevel == 1)
+                    hunted = true;
+            if (hunted && population.carryingCapacity > 0f)
+            {
+                float room = Mathf.Clamp01(1f - population.speciesAmount
+                    / population.carryingCapacity);
+                KeepStrongerMutation(ref selected, ref score, MutationTrait.Fertility,
+                    room * (0.35f + 0.7f * surplus));
+            }
+            if (populationChange < 0)
+                KeepStrongerMutation(ref selected, ref score, MutationTrait.Fertility,
+                    Mathf.Clamp01(trendScore * (1f + surplus)));
+        }
+        if (population.trophicLevel == 0)
+        {
+            bool strongerSameTrackCompetitor = false;
+            bool decliningMinority = false;
+            float ownForaging = Mathf.Clamp01(population.environmentalFitness / 100f)
+                * (0.75f + population.movementAbility * 0.0025f);
+            foreach (PopulationData other in block.community)
+                if (other != population && other.speciesAmount > 0 &&
+                    other.trophicLevel == 0 &&
+                    (other.size < 8) == (population.size < 8) &&
+                    Mathf.Clamp01(other.environmentalFitness / 100f)
+                        * (0.75f + other.movementAbility * 0.0025f)
+                        > ownForaging + 0.001f)
+                {
+                    strongerSameTrackCompetitor = true;
+                    if (population.speciesAmount < other.speciesAmount &&
+                        population.speciesAmount < population.previousMutationPopulation)
+                        decliningMinority = true;
+                }
+            if (strongerSameTrackCompetitor)
+            {
+                int targetSize = population.size < 8 ? 10 : 6;
+                float alternative = FoodWeb.ProjectedHerbivoreCapacity(block,
+                    population, targetSize);
+                float gain = (alternative - population.carryingCapacity)
+                    / Mathf.Max(1f, alternative);
+                float nicheScore = Mathf.Clamp(gain, 0f, 0.6f);
+                // 已持续失势的少数种群可提前换赛道，不必等原赛道 K 降到更低。
+                if (decliningMinority && alternative > population.speciesAmount * 0.5f)
+                    nicheScore = Mathf.Max(nicheScore, 0.38f);
+                if (nicheScore > 0f)
+                    KeepStrongerMutation(ref selected, ref score, MutationTrait.Size,
+                        Mathf.Sign(targetSize - population.size) * nicheScore);
+            }
+        }
         foreach (PopulationData other in block.community)
         {
             if (other == population || other.speciesAmount <= 0 ||
@@ -129,41 +181,57 @@ public partial class SimulationController
             float sizeGap = Mathf.Clamp((other.size - population.size)
                 / EnvironmentalPressureRange, -1f, 1f);
             if (movementGap > 0f && enoughEnergy &&
-                sustainableRatio >= (population.energyNeed + mutationStep * MovementEnergyWeight)
-                    / population.energyNeed)
-                KeepStrongerMutation(ref selected, ref score, MutationTrait.Movement, movementGap);
-            else if (movementGap < 0f && shortage > 0.1f)
+                sustainableRatio >= CalculateEnergyNeed(population.size,
+                    population.movementAbility + mutationStep)
+                    / population.energyNeed &&
+                MovementBenefitExceedsEnergyCost(population, other))
+                KeepStrongerMutation(ref selected, ref score, MutationTrait.Movement,
+                    movementGap * 0.55f);
+            else if (movementGap < 0f && shortage > 0.1f &&
+                MovementBenefitExceedsEnergyCost(population, other, false))
                 KeepStrongerMutation(ref selected, ref score, MutationTrait.Movement,
                     movementGap * shortage);
 
             if (sizeGap > 0f && enoughEnergy &&
                 sustainableRatio >= (population.energyNeed + mutationStep * SizeEnergyWeight)
-                    / population.energyNeed)
+                    / population.energyNeed &&
+                SizeBenefitExceedsEnergyCost(population, other))
                 KeepStrongerMutation(ref selected, ref score, MutationTrait.Size, sizeGap);
             else if (sizeGap < 0f && shortage > 0.1f)
                 KeepStrongerMutation(ref selected, ref score, MutationTrait.Size, sizeGap * shortage);
         }
 
-        if (actualRatio < 0.8f && sustainableRatio < 0.8f)
+        if (population.trophicLevel > 0 && enoughEnergy &&
+            sustainableRatio >= 0.8f && sustainableRatio < 1.25f)
         {
-            float currentFood = FoodWeb.FoodPerDemand(block, population.trophicLevel, population, reproductionScale);
-            int lower = population.trophicLevel - 1;
-            int higher = population.trophicLevel + 1;
-            if (lower >= 0)
-                KeepStrongerMutation(ref selected, ref score, MutationTrait.Trophic,
-                    -FoodAdvantage(currentFood, FoodWeb.FoodPerDemand(block, lower, population, reproductionScale))
-                    * shortage);
-            if (higher <= MaxTrophicLevel)
-                KeepStrongerMutation(ref selected, ref score, MutationTrait.Trophic,
-                    FoodAdvantage(currentFood, FoodWeb.FoodPerDemand(block, higher, population, reproductionScale))
-                    * shortage);
+            foreach (PopulationData prey in block.community)
+            {
+                if (prey.speciesAmount <= 0 ||
+                    prey.trophicLevel != population.trophicLevel - 1 ||
+                    !MovementBenefitExceedsEnergyCost(population, prey)) continue;
+                float before = FoodWeb.CaptureEfficiency(
+                    population.movementAbility, population.size, prey);
+                float after = Mathf.Min(1.5f,
+                    before + Mathf.Min(mutationStep,
+                        100f - population.movementAbility) / 100f);
+                float gain = (after - before) / before
+                    - (CalculateEnergyNeed(population.size,
+                        population.movementAbility + mutationStep)
+                        - population.energyNeed) / population.energyNeed;
+                KeepStrongerMutation(ref selected, ref score,
+                    MutationTrait.Movement, Mathf.Clamp01(gain * 24f));
+            }
         }
 
-        int populationChange = population.speciesAmount - population.previousMutationPopulation;
-        // 小种群少一只的整数波动不应被当作持续衰退。
-        float trendScore = Mathf.Clamp01(Mathf.Abs(populationChange)
-            / Mathf.Max(15f, population.previousMutationPopulation * 0.2f));
-        if (populationChange < 0 && enoughEnergy && sustainableRatio >= 0.9f)
+        // 营养级整群跳变会抹掉捕食链；食性仍可由界面直接调整。
+        if (population.trophicLevel > 0 && enoughEnergy &&
+            population.carryingCapacity > population.speciesAmount &&
+            population.fertility < 100)
+            KeepStrongerMutation(ref selected, ref score, MutationTrait.Fertility,
+                Mathf.Clamp01(1f - population.speciesAmount
+                    / population.carryingCapacity));
+        else if (populationChange < 0 && enoughEnergy && sustainableRatio >= 0.9f &&
+            population.trophicLevel > 0)
             KeepStrongerMutation(ref selected, ref score, MutationTrait.Fertility,
                 trendScore);
         else if (populationChange > 0 && shortage > 0.1f)
@@ -171,6 +239,9 @@ public partial class SimulationController
                 -trendScore);
 
         score *= selectionStrength;
+        if (selected == MutationTrait.Temperature || selected == MutationTrait.Humidity)
+            score = Mathf.Clamp(score, -MaximumSelectionPressure,
+                MaximumSelectionPressure);
         if (Mathf.Abs(score) >= MinimumMutationScore)
         {
             decision = new MutationDecision { population = population, trait = selected, score = score };
@@ -183,6 +254,50 @@ public partial class SimulationController
     {
         return current + alternative > 0f
             ? Mathf.Max(0f, (alternative - current) / (current + alternative)) : 0f;
+    }
+
+    private bool MovementBenefitExceedsEnergyCost(PopulationData population,
+        PopulationData opponent, bool increase = true)
+    {
+        float step = increase ? Mathf.Min(mutationStep, 100f - population.movementAbility)
+            : Mathf.Min(mutationStep, population.movementAbility);
+        if (step <= 0f || population.energyNeed <= 0f) return false;
+        bool predator = population.trophicLevel > opponent.trophicLevel;
+        PopulationData prey = predator ? opponent : population;
+        float before = FoodWeb.CaptureEfficiency(
+            predator ? population.movementAbility : opponent.movementAbility,
+            predator ? population.size : opponent.size, prey);
+        float direction = predator ? 1f : -1f;
+        float after = Mathf.Clamp(before + direction * (increase ? step : -step) / 100f,
+            0.5f, 1.5f);
+        float captureChange = Mathf.Abs(after - before) / before;
+        float energyChange = Mathf.Abs(CalculateEnergyNeed(population.size,
+            population.movementAbility + (increase ? step : -step))
+            - population.energyNeed) / population.energyNeed;
+        return increase
+            ? captureChange > energyChange * (predator ? 1f : 1.1f)
+            : energyChange > captureChange;
+    }
+
+    private bool SizeBenefitExceedsEnergyCost(PopulationData population,
+        PopulationData opponent)
+    {
+        float growth = Mathf.Min(mutationStep, 100f - population.size);
+        if (growth <= 0f || population.energyNeed <= 0f) return false;
+
+        bool isPredator = population.trophicLevel > opponent.trophicLevel;
+        float predatorMovement = isPredator
+            ? population.movementAbility : opponent.movementAbility;
+        float predatorSize = isPredator ? population.size : opponent.size;
+        PopulationData prey = isPredator ? opponent : population;
+        float before = FoodWeb.CaptureEfficiency(predatorMovement, predatorSize, prey);
+        float after = isPredator
+            ? FoodWeb.CaptureEfficiency(predatorMovement, predatorSize + growth, prey)
+            : Mathf.Clamp(1f + (predatorMovement - prey.movementAbility
+                + predatorSize - prey.size - growth) / 100f, 0.5f, 1.5f);
+        float captureBenefit = Mathf.Abs(after - before) / before;
+        float energyCost = growth * SizeEnergyWeight / population.energyNeed;
+        return captureBenefit > energyCost;
     }
 
     private static void KeepStrongerMutation(ref MutationTrait selected, ref float bestScore,

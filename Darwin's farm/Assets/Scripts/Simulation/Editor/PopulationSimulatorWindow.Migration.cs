@@ -143,7 +143,11 @@ public partial class PopulationSimulatorWindow
         if (inputs == null) return result;
         foreach (PopulationInput input in inputs)
             if (input != null && input.data != null && input.data.speciesAmount > 0)
-                result.Add(CopyPopulationInput(input));
+            {
+                PopulationData added = CopyPopulationInput(input);
+                input.runtimePopulation = added;
+                result.Add(added);
+            }
         return result;
     }
 
@@ -215,7 +219,7 @@ public partial class PopulationSimulatorWindow
     {
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("群落配置（待应用）", EditorStyles.boldLabel);
-        EditorGUILayout.LabelField("应用群落会重建此地块种群；同族同生态位共用一条曲线。", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField("现有种群保留数量；初始数量只用于新加入的种群。", EditorStyles.miniLabel);
         List<PopulationInput> inputs = leftSide ? populations : rightPopulations;
         int removeIndex = -1;
         for (int i = 0; i < inputs.Count; i++)
@@ -232,7 +236,7 @@ public partial class PopulationSimulatorWindow
             {
                 input.name = EditorGUILayout.TextField("名称（无物种资产时作同族标识）", input.name);
                 DrawInitialTrophicLevel(input.data);
-                input.data.speciesAmount = Mathf.Max(0, EditorGUILayout.IntField("数量", input.data.speciesAmount));
+                input.data.speciesAmount = Mathf.Max(0, EditorGUILayout.IntField("新种群初始数量", input.data.speciesAmount));
                 input.data.fitTemperature = EditorGUILayout.IntSlider("适宜温度", input.data.fitTemperature, 0, 100);
                 input.data.fitHumidity = EditorGUILayout.IntSlider("适宜湿度", input.data.fitHumidity, 0, 100);
                 input.data.size = EditorGUILayout.IntSlider("体型", input.data.size, 1, 100);
@@ -249,7 +253,7 @@ public partial class PopulationSimulatorWindow
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("应用群落修改到模拟"))
             {
-                GetSideBlock(leftSide).community = CopyCommunity(inputs);
+                ApplyCommunityChanges(GetSideBlock(leftSide), inputs);
                 SideOutput(leftSide).Add("Day " + currentDay + "    群落配置已应用");
                 RefreshSideSnapshot(leftSide);
             }
@@ -259,7 +263,8 @@ public partial class PopulationSimulatorWindow
                 foreach (PopulationData population in GetSideBlock(leftSide).community)
                     inputs.Add(new PopulationInput
                     {
-                        name = SideName(leftSide, population), data = CopyPopulation(population)
+                        name = SideName(leftSide, population), data = CopyPopulation(population),
+                        runtimePopulation = population
                     });
             }
             EditorGUILayout.EndHorizontal();
@@ -268,21 +273,79 @@ public partial class PopulationSimulatorWindow
 
     private void ApplyLeftCommunity()
     {
-        block.community = CopyCommunity(populations);
+        List<PopulationData> before = new List<PopulationData>(block.community);
+        List<PopulationHistory> oldHistory = new List<PopulationHistory>(history);
+        ApplyCommunityChanges(block, populations);
         history.Clear();
         for (int i = 0; i < block.community.Count; i++)
         {
-            PopulationHistory series = new PopulationHistory
+            PopulationData population = block.community[i];
+            int oldIndex = before.IndexOf(population);
+            PopulationHistory series = oldIndex >= 0 && oldIndex < oldHistory.Count
+                ? oldHistory[oldIndex] : new PopulationHistory
+                {
+                    color = Color.HSVToRGB((i * 0.618034f + 0.53f) % 1f, 0.7f, 0.95f)
+                };
+            series.name = population.lineageName;
+            if (oldIndex < 0)
             {
-                name = i < populations.Count ? populations[i].name : "种群 " + (i + 1),
-                color = Color.HSVToRGB((i * 0.618034f + 0.53f) % 1f, 0.7f, 0.95f)
-            };
-            for (int day = 0; day < currentDay; day++) series.amounts.Add(0f);
-            series.amounts.Add(block.community[i].speciesAmount);
+                for (int day = 0; day < currentDay; day++) series.amounts.Add(0f);
+                series.amounts.Add(population.speciesAmount);
+            }
             history.Add(series);
         }
         dailyOutput.Add("Day " + currentDay + "    群落配置已应用");
         Repaint();
+    }
+
+    private void ApplyCommunityChanges(BlockInfo target, List<PopulationInput> inputs)
+    {
+        List<PopulationData> old = target.community;
+        List<PopulationData> next = new List<PopulationData>();
+        bool[] used = new bool[old.Count];
+        if (inputs != null)
+        {
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                PopulationInput input = inputs[i];
+                if (input == null || input.data == null) continue;
+                PopulationData edited = CopyPopulationInput(input);
+                int match = -1;
+                if (input.runtimePopulation != null)
+                    for (int j = 0; j < old.Count; j++)
+                        if (!used[j] && old[j] == input.runtimePopulation)
+                        { match = j; break; }
+                if (match >= 0)
+                {
+                    used[match] = true;
+                    PopulationData resident = old[match];
+                    resident.species = edited.species;
+                    resident.lineageName = edited.lineageName;
+                    if (!string.IsNullOrWhiteSpace(edited.speciesId))
+                        resident.speciesId = edited.speciesId;
+                    resident.ecologicalNiche = edited.ecologicalNiche;
+                    resident.fitTemperature = edited.fitTemperature;
+                    resident.temperatureMutationRemainder = 0f;
+                    resident.fitHumidity = edited.fitHumidity;
+                    resident.humidityMutationRemainder = 0f;
+                    resident.size = edited.size;
+                    resident.sizeMutationRemainder = 0f;
+                    resident.movementAbility = edited.movementAbility;
+                    resident.movementMutationRemainder = 0f;
+                    resident.fertility = edited.fertility;
+                    resident.fertilityMutationRemainder = 0f;
+                    SimulationController.SetTrophicLevel(resident, edited.trophicLevel);
+                    input.runtimePopulation = resident;
+                    next.Add(resident);
+                }
+                else if (edited.speciesAmount > 0)
+                {
+                    input.runtimePopulation = edited;
+                    next.Add(edited);
+                }
+            }
+        }
+        target.community = next;
     }
 
     private void DrawDualState(bool leftSide)

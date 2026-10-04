@@ -203,8 +203,7 @@ public partial class SimulationController
     }
 
     private static float EnergyNeedForNiche(PopulationData population) =>
-        Mathf.Max(1f, population.size * SizeEnergyWeight +
-            population.movementAbility * MovementEnergyWeight);
+        CalculateEnergyNeed(population.size, population.movementAbility);
 
     private float AirTargetCapacityCorrection(BlockInfo target, PopulationData migrant)
     {

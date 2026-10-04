@@ -8,25 +8,29 @@ internal static class FoodWeb
     private const float PredationEfficiency = 0.8f;
     public const int MaxTrophicLevel = 2;
     public const float PredatorReserveDays = 10f;
-    private const float MaxDailyPreyFraction = 0.1f;
+    private const float MaxDailyPreyFraction = 0.08f;
+    private const float SharedPlantFraction = 0.1f;
 
     public static void GrowPlants(BlockInfo block)
     {
         float maximum = Mathf.Max(0f, block.maxPlantBiomass);
         float before = Mathf.Clamp(block.plantBiomass, 0f, maximum);
-        block.plantBiomass = Mathf.Min(maximum,
-            before + Mathf.Max(0, block.habitatRecovery));
+        float growth = SimulationController.CalculatePlantGrowth(before,
+            maximum, block.habitatRecovery);
+        block.plantBiomass = Mathf.Min(maximum, before + growth);
         block.plantGrowthToday = block.plantBiomass - before;
     }
 
-    public static float FeedCommunity(BlockInfo block, float reproductionScale)
+    public static float FeedCommunity(BlockInfo block, float reproductionScale,
+        float overCapacityDeathRate, float starvationDeathRate)
     {
         float eaten = FeedHerbivores(block);
         int highestLevel = 0;
         foreach (PopulationData population in block.community)
             highestLevel = Mathf.Max(highestLevel, population.trophicLevel);
         for (int level = 1; level <= highestLevel; level++)
-            FeedPredators(block, level, reproductionScale);
+            FeedPredators(block, level, reproductionScale,
+                overCapacityDeathRate, starvationDeathRate);
         return eaten;
     }
 
@@ -43,8 +47,12 @@ internal static class FoodWeb
         float food = 0f;
         if (level == 0)
         {
-            food = Mathf.Min(Mathf.Max(0f, block.habitatRecovery),
-                Mathf.Max(0f, block.maxPlantBiomass));
+            float maximum = Mathf.Max(0f, block.maxPlantBiomass);
+            float stock = Mathf.Clamp(block.plantBiomass, 0f, maximum);
+            float projectedStock = stock + SimulationController.CalculatePlantGrowth(
+                stock, maximum, block.habitatRecovery);
+            food = Mathf.Min(PlantSupportFood(block, projectedStock),
+                projectedStock * ForagingEfficiency(consumer));
         }
         else
         {
@@ -52,9 +60,9 @@ internal static class FoodWeb
             {
                 if (prey == consumer || prey.speciesAmount <= 0 ||
                     prey.trophicLevel != level - 1) continue;
-                food += SustainablePreyGrowth(prey, reproductionScale) * prey.size
-                    * PreyEnergyPerSize * PredationEfficiency
-                    * CaptureEfficiency(consumer.movementAbility, consumer.size, prey);
+                food += prey.speciesAmount * DailyPreyFraction(level)
+                    * CaptureChance(consumer.movementAbility, consumer.size, prey)
+                    * prey.size * PreyEnergyPerSize * PredationEfficiency;
             }
         }
 
@@ -69,47 +77,56 @@ internal static class FoodWeb
         return demand > 0f ? food / demand : 0f;
     }
 
-    private static float CaptureEfficiency(float predatorMovement, float predatorSize,
+    internal static float CaptureEfficiency(float predatorMovement, float predatorSize,
         PopulationData prey)
     {
-        // 较快、较大的捕食者获取同一猎物所需的追逐成本更低。
+        // 运动与体型影响捕获成功机会，不改变一只猎物包含的能量。
         return Mathf.Clamp(1f + (predatorMovement - prey.movementAbility
-            + predatorSize - prey.size) / 200f, 0.5f, 1.5f);
+            + predatorSize - prey.size) / 100f, 0.5f, 1.5f);
     }
+
+    private static float CaptureChance(float movement, float size, PopulationData prey) =>
+        CaptureEfficiency(movement, size, prey) / 1.5f;
 
     private static float ForagingEfficiency(PopulationData population)
     {
         return 0.75f + 0.0025f * Mathf.Clamp(population.movementAbility, 0, 100);
     }
 
-    private static float SustainablePreyGrowth(PopulationData prey, float reproductionScale)
+    private static float DailyPreyFraction(int predatorLevel)
+    {
+        return predatorLevel == 1 ? MaxDailyPreyFraction : 0.1f;
+    }
+
+    private static float PlantSupportFood(BlockInfo block, float availableStock)
+    {
+        float maximum = Mathf.Max(0f, block.maxPlantBiomass);
+        if (maximum <= 0f) return 0f;
+        float stock = Mathf.Clamp(availableStock, 0f, maximum);
+        float recovery = Mathf.Min(Mathf.Max(0, block.habitatRecovery), maximum);
+        return Mathf.Min(stock, recovery);
+    }
+
+    private static float SupportedPreyHarvest(PopulationData prey,
+        float reproductionScale, float overCapacityDeathRate, float starvationDeathRate)
     {
         if (prey.speciesAmount <= 0 || prey.carryingCapacity <= 0f) return 0f;
-        float r = prey.fertility / 100f * reproductionScale;
-        float fitness = prey.environmentalFitness / 100f;
-        float demand = prey.energyNeed * prey.populationBeforePredation;
-        float intake = demand > 0f ? Mathf.Clamp01(prey.allocatedBiomass / demand) : 0f;
-        return Mathf.Min(r * prey.carryingCapacity / 4f, r * prey.speciesAmount)
-            * fitness * intake;
+        SimulationController.EstimateDemography(prey, prey.speciesAmount,
+            reproductionScale, overCapacityDeathRate, starvationDeathRate,
+            out float births, out float deaths);
+        // 捕食可替代密度死亡，不能替代饥饿和超载死亡。
+        float densityDeaths = births * prey.speciesAmount / prey.carryingCapacity;
+        return Mathf.Max(0f, births - deaths
+            + densityDeaths * SimulationController.DensityPredationCompensation);
     }
 
     private static float FeedHerbivores(BlockInfo block)
     {
-        float foodLeft = block.plantBiomass;
-        float eaten = 0f;
-
         List<PopulationData> herbivores = new List<PopulationData>();
-
-        // 只有 0 级种群吃植物，其余种群稍后捕食。
         foreach (PopulationData population in block.community)
-        {
-            if (population.speciesAmount > 0 &&
-                population.trophicLevel == 0)
-            {
+            if (population.speciesAmount > 0 && population.trophicLevel == 0)
                 herbivores.Add(population);
-            }
-        }
-
+        if (herbivores.Count == 0) return 0f;
         float bestForaging = 0f;
         float bestFitness = 0f;
         foreach (PopulationData population in herbivores)
@@ -119,97 +136,138 @@ internal static class FoodWeb
                 ForagingEfficiency(population) * fitness);
             bestFitness = Mathf.Max(bestFitness, fitness);
         }
-        foodLeft *= bestForaging;
-
-        // 库存能救急；长期能养活多少个体，仍要看每天长回多少。
-        float totalCapacityWeight = 0f;
+        float availableFood = block.plantBiomass * bestForaging;
+        float capacityFood = Mathf.Min(PlantSupportFood(block, block.plantBiomass)
+            * bestFitness, availableFood);
+        float smallWeight = 0f;
+        float largeWeight = 0f;
+        float allWeight = 0f;
         foreach (PopulationData population in herbivores)
         {
-            float fitness = Mathf.Clamp01(population.environmentalFitness / 100f);
-            totalCapacityWeight += population.energyNeed * population.speciesAmount
-                * fitness * ForagingEfficiency(population);
+            float weight = PlantWeight(population);
+            smallWeight += weight * SmallTrack(population.size);
+            largeWeight += weight * (1f - SmallTrack(population.size));
+            allWeight += weight;
         }
-
-        float dailyRecovery = Mathf.Min(Mathf.Max(0, block.habitatRecovery),
-            Mathf.Max(0f, block.maxPlantBiomass)) * bestFitness;
-        if (totalCapacityWeight > 0f)
+        if (allWeight <= 0f) return 0f;
+        float ownPool = capacityFood * (1f - SharedPlantFraction) / 2f;
+        float sharedPool = capacityFood - 2f * ownPool;
+        if (smallWeight <= 0f) { sharedPool += ownPool; ownPool = 0f; }
+        float largePool = capacityFood * (1f - SharedPlantFraction) / 2f;
+        if (largeWeight <= 0f) { sharedPool += largePool; largePool = 0f; }
+        foreach (PopulationData population in herbivores)
         {
-            foreach (PopulationData population in herbivores)
-            {
-                float fitness = Mathf.Clamp01(population.environmentalFitness / 100f);
-                float competitionWeight = population.energyNeed * population.speciesAmount
-                    * fitness * ForagingEfficiency(population);
-                float dailyShare = dailyRecovery * competitionWeight / totalCapacityWeight;
-                population.carryingCapacity = dailyShare / population.energyNeed;
-            }
+            float weight = PlantWeight(population);
+            float small = SmallTrack(population.size);
+            float share = sharedPool * weight / allWeight;
+            if (smallWeight > 0f) share += ownPool * weight * small / smallWeight;
+            if (largeWeight > 0f) share += largePool * weight * (1f - small) / largeWeight;
+            population.carryingCapacity = share / population.energyNeed;
         }
-
-        while (foodLeft > 0.01f &&
-               herbivores.Count > 0)
-        {
-            float totalWeight = 0f;
-
-            // 这一轮的份额取决于还缺多少、是否适应环境、会不会觅食。
-            foreach (PopulationData population in herbivores)
-            {
-                float totalDemand = population.energyNeed * population.speciesAmount;
-                float remainingDemand = totalDemand - population.allocatedBiomass;
-                float fitness = Mathf.Clamp01(population.environmentalFitness / 100f);
-                float competitionWeight = remainingDemand * fitness * ForagingEfficiency(population);
-                totalWeight += competitionWeight;
-            }
-
-            // 谁都没法利用这些食物，就留在地块里。
-            if (totalWeight <= 0f)
-            {
-                break;
-            }
-
-            // 都按同一份剩余食物计算，避免先遍历的种群占便宜。
-            float foodThisRound = foodLeft;
-            List<PopulationData> satisfied = new List<PopulationData>();
-            float eatenThisRound = 0f;
-
-            // 每个种群最多吃到自己的剩余需求。
-            foreach (PopulationData population in herbivores)
-            {
-                float totalDemand = population.energyNeed * population.speciesAmount;
-                float remainingDemand = totalDemand - population.allocatedBiomass;
-                float fitness = Mathf.Clamp01(population.environmentalFitness / 100f);
-                float competitionWeight = remainingDemand * fitness * ForagingEfficiency(population);
-                float share = competitionWeight / totalWeight;
-                float allocated = foodThisRound * share;
-
-                float received = Mathf.Min(allocated, remainingDemand);
-                population.allocatedBiomass += received;
-                eatenThisRound += received;
-
-                if (population.allocatedBiomass >= totalDemand - 0.01f)
-                {
-                    satisfied.Add(population);
-                }
-            }
-
-            foodLeft -= eatenThisRound;
-            eaten += eatenThisRound;
-
-            // 吃饱的退出，剩余食物再分给还饿着的。
-            foreach (PopulationData population in satisfied)
-            {
-                herbivores.Remove(population);
-            }
-
-            // 没人吃饱说明这一轮已分完可用食物，不必空转。
-            if (satisfied.Count == 0)
-            {
-                break;
-            }
-        }
-
+        // 两条赛道只分配当天同一份草；无人使用的额度回到公共池。
+        float foodPool = availableFood * (1f - SharedPlantFraction) / 2f;
+        float unused = DistributePlantPool(herbivores, foodPool, 1);
+        unused += DistributePlantPool(herbivores, foodPool, 2);
+        DistributePlantPool(herbivores,
+            availableFood * SharedPlantFraction + unused, 0);
+        float eaten = 0f;
+        foreach (PopulationData population in herbivores)
+            eaten += population.allocatedBiomass;
         return eaten;
     }
 
-    private static void FeedPredators(BlockInfo block, int level, float reproductionScale)
+    private static float SmallTrack(float size) => size < 8f ? 1f : 0f;
+
+    private static float PlantWeight(PopulationData population) =>
+        population.energyNeed * population.speciesAmount
+        * Mathf.Clamp01(population.environmentalFitness / 100f)
+        * ForagingEfficiency(population);
+
+    internal static float ProjectedHerbivoreCapacity(BlockInfo block,
+        PopulationData candidate, float targetSize)
+    {
+        if (candidate.speciesAmount <= 0 || targetSize <= 0f) return 0f;
+        float smallWeight = 0f;
+        float largeWeight = 0f;
+        float allWeight = 0f;
+        float candidateWeight = 0f;
+        float candidateSmall = SmallTrack(targetSize);
+        float bestFitness = 0f;
+        float bestForaging = 0f;
+        foreach (PopulationData population in block.community)
+        {
+            if (population.speciesAmount <= 0 || population.trophicLevel != 0) continue;
+            float fitness = Mathf.Clamp01(population.environmentalFitness / 100f);
+            bestFitness = Mathf.Max(bestFitness, fitness);
+            bestForaging = Mathf.Max(bestForaging, fitness * ForagingEfficiency(population));
+            float small = population == candidate ? candidateSmall : SmallTrack(population.size);
+            float energy = population == candidate
+                ? SimulationController.CalculateEnergyNeed(targetSize,
+                    population.movementAbility)
+                : population.energyNeed;
+            float weight = energy * population.speciesAmount * fitness
+                * ForagingEfficiency(population);
+            smallWeight += weight * small;
+            largeWeight += weight * (1f - small);
+            allWeight += weight;
+            if (population == candidate) candidateWeight = weight;
+        }
+        if (candidateWeight <= 0f || allWeight <= 0f) return 0f;
+        float food = Mathf.Min(PlantSupportFood(block, block.plantBiomass)
+            * bestFitness, block.plantBiomass * bestForaging);
+        float ownPool = food * (1f - SharedPlantFraction) / 2f;
+        float sharedPool = food * SharedPlantFraction;
+        if (smallWeight <= 0f) sharedPool += ownPool;
+        if (largeWeight <= 0f) sharedPool += ownPool;
+        float share = sharedPool * candidateWeight / allWeight;
+        if (smallWeight > 0f)
+            share += ownPool * candidateWeight * candidateSmall / smallWeight;
+        if (largeWeight > 0f)
+            share += ownPool * candidateWeight * (1f - candidateSmall) / largeWeight;
+        float candidateEnergy = SimulationController.CalculateEnergyNeed(targetSize,
+            candidate.movementAbility);
+        return share / candidateEnergy;
+    }
+
+    private static float DistributePlantPool(List<PopulationData> herbivores,
+        float pool, int track)
+    {
+        while (pool > 0.01f)
+        {
+            float totalWeight = 0f;
+            foreach (PopulationData population in herbivores)
+            {
+                float remaining = Mathf.Max(0f, population.energyNeed
+                    * population.speciesAmount - population.allocatedBiomass);
+                float affinity = track == 1 ? SmallTrack(population.size)
+                    : track == 2 ? 1f - SmallTrack(population.size) : 1f;
+                totalWeight += remaining * affinity
+                    * Mathf.Clamp01(population.environmentalFitness / 100f)
+                    * ForagingEfficiency(population);
+            }
+            if (totalWeight <= 0f) break;
+            float distributed = 0f;
+            foreach (PopulationData population in herbivores)
+            {
+                float remaining = Mathf.Max(0f, population.energyNeed
+                    * population.speciesAmount - population.allocatedBiomass);
+                float affinity = track == 1 ? SmallTrack(population.size)
+                    : track == 2 ? 1f - SmallTrack(population.size) : 1f;
+                float weight = remaining * affinity
+                    * Mathf.Clamp01(population.environmentalFitness / 100f)
+                    * ForagingEfficiency(population);
+                float received = Mathf.Min(remaining, pool * weight / totalWeight);
+                population.allocatedBiomass += received;
+                distributed += received;
+            }
+            pool -= distributed;
+            if (distributed <= 0.01f) break;
+        }
+        return pool;
+    }
+
+    private static void FeedPredators(BlockInfo block, int level, float reproductionScale,
+        float overCapacityDeathRate, float starvationDeathRate)
     {
         List<PopulationData> predators = new List<PopulationData>();
         List<PopulationData> prey = new List<PopulationData>();
@@ -255,17 +313,21 @@ internal static class FoodWeb
         float[] energyPerPrey = new float[prey.Count];
         for (int i = 0; i < prey.Count; i++)
         {
-            maxKills[i] = Mathf.FloorToInt(prey[i].speciesAmount * MaxDailyPreyFraction);
-            energyPerPrey[i] = prey[i].size * PreyEnergyPerSize
-                * PredationEfficiency * hunterEfficiency
-                * CaptureEfficiency(weightedMovement / totalDemand,
+            float expectedKills = prey[i].speciesAmount * DailyPreyFraction(level)
+                * hunterEfficiency * CaptureChance(weightedMovement / totalDemand,
                     weightedSize / totalDemand, prey[i]);
-            availableEnergy += maxKills[i] * energyPerPrey[i];
-            sustainableEnergy += SustainablePreyGrowth(prey[i], reproductionScale) * energyPerPrey[i];
+            maxKills[i] = Mathf.FloorToInt(expectedKills);
+            if (UnityEngine.Random.value < expectedKills - maxKills[i]) maxKills[i]++;
+            energyPerPrey[i] = prey[i].size * PreyEnergyPerSize
+                * PredationEfficiency;
+            availableEnergy += expectedKills * energyPerPrey[i];
+            sustainableEnergy += Mathf.Min(expectedKills,
+                SupportedPreyHarvest(prey[i], reproductionScale,
+                    overCapacityDeathRate, starvationDeathRate)) * energyPerPrey[i];
         }
 
-        // 捕食者承载量由猎物的可持续日生产量决定，而不是现存全部猎物。
-        float dailyFood = Mathf.Min(availableEnergy, sustainableEnergy);
+        // K 使用可持续期望捕获量；实际捕获的小数部分只影响当天能量。
+        float dailyFood = sustainableEnergy;
         foreach (PopulationData predator in predators)
         {
             float weight = predator.energyNeed * predator.speciesAmount
@@ -286,7 +348,7 @@ internal static class FoodWeb
             gainedEnergy += kills[i] * energyPerPrey[i];
         }
 
-        while (gainedEnergy < totalDeficit && gainedEnergy < availableEnergy)
+        while (gainedEnergy < totalDeficit)
         {
             int best = -1;
             float bestRemainder = -1f;

@@ -4,6 +4,9 @@ using UnityEngine;
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
+    // 库存低于上限的 40% 时维持完整日恢复量；更密集时逐步减速。
+    private const float FullPlantGrowthUntilFraction = 0.4f;
+
     [SerializeField] private SimulationTime simulationTime;
     [SerializeField] private List<BlockInfo> blockInfos = new List<BlockInfo>();
 
@@ -26,6 +29,17 @@ public partial class SimulationController : MonoBehaviour
     public void SetBlocks(List<BlockInfo> blocks)
     {
         blockInfos = blocks ?? new List<BlockInfo>();
+    }
+
+    public static float CalculatePlantGrowth(float stock, float maximum, int recovery)
+    {
+        maximum = Mathf.Max(0f, maximum);
+        if (maximum <= 0f) return 0f;
+        stock = Mathf.Clamp(stock, 0f, maximum);
+        float remaining = maximum - stock;
+        float densityFactor = Mathf.Clamp01(remaining /
+            (maximum * (1f - FullPlantGrowthUntilFraction)));
+        return Mathf.Min(remaining, Mathf.Max(0, recovery) * densityFactor);
     }
 
     public static bool SetTrophicLevel(PopulationData population, int level)
@@ -82,7 +96,8 @@ public partial class SimulationController : MonoBehaviour
 
         FoodWeb.GrowPlants(block);
         PreparePopulations(block);
-        float eaten = FoodWeb.FeedCommunity(block, reproductionScale);
+        float eaten = FoodWeb.FeedCommunity(block, reproductionScale,
+            maxOverCapacityDeathRate, maxStarvationDeathRate);
         UpdatePopulations(block);
         FoodWeb.SpendPlants(block, eaten);
         EvolveCommunity(block);

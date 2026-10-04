@@ -11,6 +11,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
         public string name;
         public PopulationData data = new PopulationData();
         public bool expanded = true;
+        [NonSerialized] public PopulationData runtimePopulation;
     }
 
     private class PopulationHistory
@@ -223,19 +224,26 @@ public partial class PopulationSimulatorWindow : EditorWindow
             ApplyFixedParameters();
         EditorGUILayout.LabelField("每周期只变异一个性状；推荐间隔 7 天、步长 2。", EditorStyles.miniLabel);
         EditorGUILayout.HelpBox("达到 K 后数量可以保持水平，但每天仍有出生和死亡；当天的两个整数显示在当前状态和每日输出中。", MessageType.Info);
-        EditorGUILayout.HelpBox("单一种群时 K≈每日恢复量÷个体能耗。初始数量低于 K/2，才能看到先加速后减速的增长段；整数出生会使曲线呈阶梯状。", MessageType.Info);
+        EditorGUILayout.HelpBox("植物库存低于上限 40% 时按最大恢复量生长，之后逐渐减速；食草者 K 仍由恢复上限和个体能耗决定。体型 <8 与 ≥8 使用不同觅食赛道；1 级每日捕获上限 8%，2 级为 10%。", MessageType.Info);
         if (populations.Count == 1 && populations[0].data != null &&
             (populations[0].data.trophicLevelInitialized
                 ? populations[0].data.trophicLevel == 0
                 : populations[0].data.species == null || populations[0].data.species.trophicLevel == 0))
         {
             PopulationData input = populations[0].data;
-            float energyNeed = Mathf.Max(1f, input.size
-                + input.movementAbility * 0.02f);
+            float energyNeed = SimulationController.CalculateEnergyNeed(
+                input.size, input.movementAbility);
             float fitness = Mathf.Clamp01(1f - (Mathf.Abs(temperature - input.fitTemperature)
                 + Mathf.Abs(humidity - input.fitHumidity)) / 90f);
-            float capacity = Mathf.Min(habitatRecovery, maxPlantBiomass)
-                * fitness / energyNeed;
+            float projectedStock = plantBiomass + SimulationController.CalculatePlantGrowth(
+                plantBiomass, maxPlantBiomass, habitatRecovery);
+            float supportFood = Mathf.Min(projectedStock,
+                Mathf.Min(habitatRecovery, maxPlantBiomass));
+            float availableFood = projectedStock
+                * (0.75f + 0.0025f * Mathf.Clamp(input.movementAbility, 0, 100))
+                * fitness;
+            float capacity = Mathf.Min(supportFood * fitness, availableFood)
+                / energyNeed;
             EditorGUILayout.LabelField("当前输入预估：个体能耗 " + energyNeed.ToString("F1")
                 + "    K " + capacity.ToString("F2") + "    K/2 " + (capacity / 2f).ToString("F2"));
         }
@@ -244,7 +252,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
     private void DrawPopulations()
     {
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("种群数据（初始值）", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("群落配置（待应用）", EditorStyles.boldLabel);
         int removeIndex = -1;
 
         for (int i = 0; i < populations.Count; i++)
@@ -269,7 +277,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
                 input.name = EditorGUILayout.TextField("名称（无物种资产时作同族标识）", input.name);
                 DrawInitialTrophicLevel(input.data);
                 input.data.speciesAmount = Mathf.Max(0,
-                    EditorGUILayout.IntField("初始数量", input.data.speciesAmount));
+                    EditorGUILayout.IntField("新种群初始数量", input.data.speciesAmount));
                 input.data.fitTemperature = EditorGUILayout.IntSlider("适宜温度", input.data.fitTemperature, 0, 100);
                 input.data.fitHumidity = EditorGUILayout.IntSlider("适宜湿度", input.data.fitHumidity, 0, 100);
                 input.data.size = EditorGUILayout.IntSlider("体型", input.data.size, 1, 100);
@@ -535,7 +543,9 @@ public partial class PopulationSimulatorWindow : EditorWindow
         for (int i = 0; i < populations.Count; i++)
         {
             PopulationInput input = populations[i];
-            block.community.Add(CopyPopulationInput(input));
+            PopulationData added = CopyPopulationInput(input);
+            input.runtimePopulation = added;
+            block.community.Add(added);
             history.Add(new PopulationHistory
             {
                 name = string.IsNullOrWhiteSpace(input.name) ? "种群 " + (i + 1) : input.name,

@@ -163,9 +163,9 @@ static class Program
         controller = Controller(true);
         start = Traits(slowHunter);
         for (int day = 0; day < 7; day++) controller.SimulateBlock(pursuit);
-        if (ChangedTraits(start, slowHunter) != 1 || slowHunter.movementAbility <= 10)
-            throw new Exception($"well-fed slower hunter did not select movement: K/N={F(slowHunter.energySatisfactionToday)} actual={F(slowHunter.actualEnergySatisfactionToday)} traits={string.Join(',', Traits(slowHunter))}");
-        Console.WriteLine($"DIRECTED_MOVEMENT initial=10 final={F(Traits(slowHunter)[2])}");
+        if (ChangedTraits(start, slowHunter) != 1 || slowHunter.fertility <= 50)
+            throw new Exception($"well-fed hunter with excess capacity did not select fertility: K/N={F(slowHunter.energySatisfactionToday)} actual={F(slowHunter.actualEnergySatisfactionToday)} traits={string.Join(',', Traits(slowHunter))}");
+        Console.WriteLine($"DIRECTED_FERTILITY initial=50 final={F(Traits(slowHunter)[4])}");
 
         var scarcePrey = Pop(0, 500, 10, 60);
         var unfundedHunter = Pop(1, 5, 10, 10);
@@ -175,7 +175,7 @@ static class Program
         for (int day = 0; day < 7; day++) controller.SimulateBlock(shortageBlock);
         if (unfundedHunter.movementAbility != 10 ||
             unfundedHunter.movementMutationRemainder != 0f)
-            throw new Exception("unsustainable movement increase was not rejected");
+            throw new Exception($"unsustainable movement increase was not rejected: {string.Join(',', Traits(unfundedHunter))} K={F(unfundedHunter.carryingCapacity)} actual={F(unfundedHunter.actualEnergySatisfactionToday)}");
         Console.WriteLine("MOVEMENT_ENERGY_GATE increase=rejected");
 
         var largePrey = Pop(0, 100, 30);
@@ -183,9 +183,9 @@ static class Program
         var sizeBlock = Block(10000, 10000f, largePrey, smallHunter);
         controller = Controller(true);
         for (int day = 0; day < 7; day++) controller.SimulateBlock(sizeBlock);
-        if (smallHunter.size <= 5)
-            throw new Exception("well-fed smaller hunter did not select size");
-        Console.WriteLine($"DIRECTED_SIZE initial=5 final={F(Traits(smallHunter)[3])}");
+        if (smallHunter.size != 5 || smallHunter.sizeMutationRemainder != 0f)
+            throw new Exception("costly size growth was selected despite weak capture benefit");
+        Console.WriteLine("SIZE_COST_GATE costlyGrowth=rejected");
 
         var smallerPrey = Pop(0, 100, 10);
         var oversizedHunter = Pop(1, 5, 50);
@@ -214,12 +214,13 @@ static class Program
 
         var smallHunterBlock = Block(0, 1000f, Pop(0, 20, 10, 10, 0), Pop(1, 100, 5, 10, 0));
         var largeHunterBlock = Block(0, 1000f, Pop(0, 20, 10, 10, 0), Pop(1, 100, 30, 10, 0));
-        controller.SimulateBlock(smallHunterBlock);
-        controller.SimulateBlock(largeHunterBlock);
-        if (largeHunterBlock.community[1].allocatedBiomass <=
-            smallHunterBlock.community[1].allocatedBiomass)
-            throw new Exception("hunter size did not improve capture efficiency");
-        Console.WriteLine($"CAPTURE_SIZE smallHunterEnergy={F(smallHunterBlock.community[1].allocatedBiomass)} largeHunterEnergy={F(largeHunterBlock.community[1].allocatedBiomass)}");
+        float smallChance = FoodWeb.CaptureEfficiency(10f, 5f,
+            smallHunterBlock.community[0]);
+        float largeChance = FoodWeb.CaptureEfficiency(10f, 30f,
+            largeHunterBlock.community[0]);
+        if (largeChance <= smallChance)
+            throw new Exception("hunter size did not improve capture chance");
+        Console.WriteLine($"CAPTURE_SIZE smallChance={F(smallChance)} largeChance={F(largeChance)}");
 
         var strandedHunter = Pop(1, 10);
         var plantAlternative = Block(1000, 10000f, strandedHunter);
@@ -227,9 +228,9 @@ static class Program
         controller.SetParameters(0f, 0f, 0f);
         controller.SetMutationParameters(1, 2f, 1f);
         for (int day = 0; day < 3; day++) controller.SimulateBlock(plantAlternative);
-        if (strandedHunter.trophicLevel != 0)
-            throw new Exception("hungry hunter did not move toward accessible adjacent food");
-        Console.WriteLine($"TROPHIC_ALTERNATIVE initial=1 final={strandedHunter.trophicLevel}");
+        if (strandedHunter.trophicLevel != 1)
+            throw new Exception("starvation converted the entire predator population");
+        Console.WriteLine("TROPHIC_ALTERNATIVE whole-population switch=disabled");
 
         var plantCompetitor = Pop(0, 500, 100);
         var wouldBeHunter = Pop(0, 10);
@@ -237,9 +238,9 @@ static class Program
         controller = Controller(true);
         controller.SetMutationParameters(1, 2f, 1f);
         controller.SimulateBlock(foodChoice);
-        if (wouldBeHunter.trophicLevel + wouldBeHunter.trophicMutationRemainder <= 0f)
-            throw new Exception("crowded herbivore did not select accessible prey");
-        Console.WriteLine($"TROPHIC_UP alternative={F(Traits(wouldBeHunter)[5])}");
+        if (wouldBeHunter.trophicLevel != 0)
+            throw new Exception("crowded herbivore switched the entire population");
+        Console.WriteLine("TROPHIC_UP whole-population switch=disabled");
 
         var reversedCompetitor = Pop(0, 500, 100);
         var reversedHunter = Pop(0, 10);
@@ -257,7 +258,7 @@ static class Program
         var declining = Pop(0, 100);
         declining.previousMutationPopulation = 150;
         declining.mutationPopulationInitialized = true;
-        var fertilityBlock = Block(1000, 10000f, declining);
+        var fertilityBlock = Block(2000, 10000f, declining);
         controller = Controller(true);
         controller.SetParameters(0f, 0f, 0f);
         controller.SetMutationParameters(1, 2f, 1f);
@@ -302,7 +303,7 @@ static class Program
             throw new Exception("unchanged environment scheduled another mutation");
         controller.SimulateBlock(recoveryChange);
         if (Traits(changingHunter)[3] >= sizeBeforeChange)
-            throw new Exception($"player recovery reduction did not select smaller hunter size: predatorN={changingHunter.speciesAmount} preyN={changingPrey.speciesAmount} K/N={F(changingHunter.energySatisfactionToday)} actual={F(changingHunter.actualEnergySatisfactionToday)} size={F(Traits(changingHunter)[3])}");
+            throw new Exception($"player recovery reduction did not select smaller hunter size: predatorN={changingHunter.speciesAmount} preyN={changingPrey.speciesAmount} preyK={F(changingPrey.carryingCapacity)} stock={F(recoveryChange.plantBiomass)} K/N={F(changingHunter.energySatisfactionToday)} actual={F(changingHunter.actualEnergySatisfactionToday)} size={F(Traits(changingHunter)[3])}");
         Console.WriteLine($"PLAYER_RECOVERY_CHANGE before={F(sizeBeforeChange)} after={F(Traits(changingHunter)[3])}");
     }
 
@@ -352,19 +353,15 @@ static class Program
             plantComparisons++;
         }
 
-        float previousHuntEnergy = float.MaxValue;
+        float previousChance = float.MaxValue;
         int huntComparisons = 0;
         foreach (int preyMovement in new[] { 0, 25, 50, 75, 100 })
         {
             var prey = Pop(0, 20, 10, preyMovement, 0);
-            var hunter = Pop(1, 100, 10, 50, 0);
-            var block = Block(0, 1000f, prey, hunter);
-            var controller = Controller();
-            controller.SetParameters(0f, 0f, 0f);
-            controller.SimulateBlock(block);
-            if (hunter.allocatedBiomass >= previousHuntEnergy)
-                throw new Exception($"faster prey did not lower hunting gain: movement={preyMovement}");
-            previousHuntEnergy = hunter.allocatedBiomass;
+            float chance = FoodWeb.CaptureEfficiency(50f, 10f, prey);
+            if (chance >= previousChance)
+                throw new Exception($"faster prey did not lower capture chance: movement={preyMovement}");
+            previousChance = chance;
             huntComparisons++;
         }
         Console.WriteLine($"COMPETITION_SWEEP plantComparisons={plantComparisons} huntSpeeds={huntComparisons} direction=consistent");
@@ -380,7 +377,11 @@ static class Program
             float oldStock = b.plantBiomass;
             c.SimulateBlock(b);
             if (Math.Abs(b.plantBiomass - (Math.Min(b.maxPlantBiomass,
-                Math.Clamp(oldStock, 0f, b.maxPlantBiomass) + Math.Max(0, b.habitatRecovery))
+                Math.Clamp(oldStock, 0f, b.maxPlantBiomass) +
+                    Math.Max(0, b.habitatRecovery) *
+                    (b.maxPlantBiomass > 0f
+                        ? 1f - Math.Clamp(oldStock, 0f, b.maxPlantBiomass)
+                            / b.maxPlantBiomass : 0f))
                 - b.consumedBiomassToday)) > 0.05f)
                 Console.WriteLine("INVARIANT plant mass mismatch day=" + day);
             foreach (var p in b.community)
@@ -560,28 +561,409 @@ static class Program
         Console.WriteLine("LIVE TROPHIC 0/1/2 switching and predation=ok");
     }
 
-    static void Main()
+    static void FoodChainBalanceTests()
     {
+        var solitary = Pop(0, 10, 5, 10, 80);
+        var solitaryBlock = Block(1000, 10000f, solitary);
+        solitaryBlock.maxPlantBiomass = 100000f;
+        var solitaryController = Controller();
+        solitaryController.SetParameters(0.1f, 0.1f, 0.6f);
+        float stockAtDay1000 = 0f;
+        for (int day = 1; day <= 2000; day++)
+        {
+            solitaryController.SimulateBlock(solitaryBlock);
+            if (solitary.carryingCapacity > 1000f / solitary.energyNeed + 0.01f)
+                throw new Exception("solitary herbivore K counted plant reserves as renewal");
+            if (day == 377 || day == 1000 || day == 2000)
+                Console.WriteLine($"SINGLE_CHAIN day={day} plant={F(solitaryBlock.plantBiomass)} population={solitary.speciesAmount} K={F(solitary.carryingCapacity)} growth={F(solitaryBlock.plantGrowthToday)} eaten={F(solitaryBlock.consumedBiomassToday)}");
+            if (day == 1000) stockAtDay1000 = solitaryBlock.plantBiomass;
+        }
+        if (solitary.speciesAmount <= 0 || solitaryBlock.plantBiomass <= 0f ||
+            solitaryBlock.plantBiomass < stockAtDay1000 - 2000f)
+            throw new Exception("solitary herbivore failed to stabilize with renewable plants");
+
+        var lowPrey = Pop(0, 100, 6, 22, 80);
+        var lowHunter = Pop(1, 12, 15, 30, 50);
+        var low = Block(1000, 1000f, lowPrey, lowHunter);
+        low.maxPlantBiomass = 100000f;
+        var highPrey = Pop(0, 100, 6, 22, 80);
+        var highHunter = Pop(1, 12, 15, 30, 50);
+        var high = Block(1000, 77458f, highPrey, highHunter);
+        high.maxPlantBiomass = 100000f;
+        var controller = Controller();
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        controller.SimulateBlock(low);
+        controller.SimulateBlock(high);
+        if (Math.Abs(highPrey.carryingCapacity - lowPrey.carryingCapacity) > 0.01f ||
+            Math.Abs(highHunter.carryingCapacity - lowHunter.carryingCapacity) > 0.01f)
+            throw new Exception("surplus plant stock inflated sustainable capacity");
+        var recoveringDestination = Block(1000, 0f);
+        if (controller.EstimateTargetCapacity(recoveringDestination, lowPrey) <= 0f)
+            throw new Exception("empty plant stock hid next day's migration capacity");
+
+        var herbivorePrey = Pop(0, 100, 10, 10, 0);
+        var levelOne = Block(10000, 10000f, herbivorePrey,
+            Pop(1, 1000, 15, 30, 0));
+        var carnivorePrey = Pop(1, 20, 10, 10, 0);
+        var levelTwo = Block(0, 0f, carnivorePrey,
+            Pop(2, 1000, 15, 30, 0));
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SimulateBlock(levelOne);
+        controller.SimulateBlock(levelTwo);
+        if (herbivorePrey.deathsToday > 8 || carnivorePrey.deathsToday > 2 ||
+            herbivorePrey.deathsToday <= 0)
+            throw new Exception("trophic catch limits exceeded the 8% ceiling");
+
+        var prey = Pop(0, 185, 6, 22, 80);
+        var hunter = Pop(1, 12, 15, 30, 50);
+        var block = Block(1000, 10000f, prey, hunter);
+        block.maxPlantBiomass = 100000f;
+        controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        for (int day = 1; day <= 10000; day++)
+        {
+            controller.SimulateBlock(block);
+            if (day == 217 || day == 365 || day == 2000 || day == 5000 || day == 10000)
+                Console.WriteLine($"SCREENSHOT_CHAIN day={day} plant={F(block.plantBiomass)} prey={prey.speciesAmount} preyK={F(prey.carryingCapacity)} predator={hunter.speciesAmount} predatorK={F(hunter.carryingCapacity)} size={F(Traits(prey)[3])} movement={F(Traits(prey)[2])} fertility={F(Traits(prey)[4])}");
+            if ((day == 217 && (prey.speciesAmount < 50 || hunter.speciesAmount < 5)) ||
+                (day == 2000 && (prey.speciesAmount < 50 || hunter.speciesAmount < 5)))
+                throw new Exception($"food chain failed to recover from the screenshot scenario on day {day}");
+            if (day >= 365 && (prey.speciesAmount <= 0 || hunter.speciesAmount <= 0))
+                throw new Exception($"screenshot-like food chain lost a population on day {day}");
+        }
+    }
+
+    static void EcologyScenarioTests()
+    {
+        UnityEngine.Random.InitState(7);
+        var solo = Pop(0, 10, 5, 10, 80);
+        var soloBlock = Block(1000, 10000f, solo);
+        soloBlock.maxPlantBiomass = 100000f;
+        var controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        int day20 = 0, day50 = 0, day100 = 0;
+        float soloStock500 = 0f;
+        for (int day = 1; day <= 1200; day++)
+        {
+            controller.SimulateBlock(soloBlock);
+            if (day == 20) day20 = solo.speciesAmount;
+            if (day == 50) day50 = solo.speciesAmount;
+            if (day == 100) day100 = solo.speciesAmount;
+            if (day == 500) soloStock500 = soloBlock.plantBiomass;
+        }
+        if (day20 >= day50 || day50 >= day100 ||
+            Math.Abs(solo.speciesAmount - solo.carryingCapacity) > 4f ||
+            soloStock500 < 30000f || soloStock500 > 60000f ||
+            soloBlock.plantBiomass < 30000f || soloBlock.plantBiomass > 60000f ||
+            Math.Abs(soloBlock.plantGrowthToday - soloBlock.consumedBiomassToday) > 20f)
+            throw new Exception("single herbivore lost its saturating growth curve");
+        Console.WriteLine($"ECOLOGY_SOLO N20={day20} N50={day50} N100={day100} final={solo.speciesAmount} K={F(solo.carryingCapacity)} stock={F(soloBlock.plantBiomass)}");
+
+        var small = Pop(0, 10, 5, 10, 80);
+        var large = Pop(0, 10, 10, 20, 50);
+        var dual = Block(1000, 10000f, small, large);
+        dual.maxPlantBiomass = 100000f;
+        controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        float dualStock500 = 0f;
+        for (int day = 1; day <= 2000; day++)
+        {
+            controller.SimulateBlock(dual);
+            if (day == 500) dualStock500 = dual.plantBiomass;
+        }
+        if (Math.Abs(small.speciesAmount - small.carryingCapacity) > 4f ||
+            Math.Abs(large.speciesAmount - large.carryingCapacity) > 4f ||
+            small.speciesAmount < 50 || large.speciesAmount < 25 ||
+            dualStock500 < 30000f || dualStock500 > 60000f ||
+            dual.plantBiomass < 30000f || dual.plantBiomass > 60000f ||
+            Math.Abs(dual.plantGrowthToday - dual.consumedBiomassToday) > 20f)
+            throw new Exception("separate herbivore tracks did not coexist near both K values");
+        Console.WriteLine($"ECOLOGY_TWO_TRACKS small={small.speciesAmount} large={large.speciesAmount} stock={F(dual.plantBiomass)}");
+
+        var switcher = Pop(0, 10, 5, 10, 80);
+        var incumbent = Pop(0, 10, 6, 20, 50);
+        var changing = Block(1000, 10000f, switcher, incumbent);
+        changing.maxPlantBiomass = 100000f;
+        controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        float minimumStock = float.MaxValue, maximumStock = 0f;
+        int switchDay = 0;
+        float changingStock500 = 0f;
+        for (int day = 1; day <= 5000; day++)
+        {
+            controller.SimulateBlock(changing);
+            if (switchDay == 0 && switcher.size >= 8) switchDay = day;
+            if (day == 500) changingStock500 = changing.plantBiomass;
+            if (day <= 4500) continue;
+            minimumStock = Math.Min(minimumStock, changing.plantBiomass);
+            maximumStock = Math.Max(maximumStock, changing.plantBiomass);
+        }
+        if (switchDay == 0 || switchDay > 550 || incumbent.size >= 8 ||
+            switcher.speciesAmount < 20 || incumbent.speciesAmount < 20 ||
+            Math.Abs(switcher.speciesAmount - switcher.carryingCapacity) > 5f ||
+            Math.Abs(incumbent.speciesAmount - incumbent.carryingCapacity) > 5f ||
+            changingStock500 < 30000f || changingStock500 > 60000f ||
+            changing.plantBiomass < 30000f || changing.plantBiomass > 60000f ||
+            maximumStock - minimumStock > 3000f)
+            throw new Exception("weak herbivore failed to switch tracks and stabilize");
+        Console.WriteLine($"ECOLOGY_TRACK_SWITCH day={switchDay} newSize={switcher.size} small={incumbent.speciesAmount} large={switcher.speciesAmount} stock={F(changing.plantBiomass)}");
+
+        var disadvantaged = Pop(0, 10, 6, 10, 50);
+        disadvantaged.fitTemperature = 70;
+        disadvantaged.fitHumidity = 70;
+        var dominant = Pop(0, 20, 5, 30, 80);
+        var recoverable = Block(1000, 10000f, dominant, disadvantaged);
+        recoverable.maxPlantBiomass = 100000f;
+        controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        int disadvantagedSwitchDay = 0;
+        for (int day = 1; day <= 1000; day++)
+        {
+            controller.SimulateBlock(recoverable);
+            if (disadvantagedSwitchDay == 0 && disadvantaged.size >= 8)
+                disadvantagedSwitchDay = day;
+        }
+        if (disadvantagedSwitchDay == 0 || disadvantagedSwitchDay > 500 ||
+            disadvantaged.speciesAmount < 20 || dominant.speciesAmount < 20 ||
+            recoverable.plantBiomass < 30000f || recoverable.plantBiomass > 70000f)
+            throw new Exception("recoverable competitor failed to change tracks");
+        Console.WriteLine($"ECOLOGY_COMPETITOR_ESCAPE day={disadvantagedSwitchDay} dominant={dominant.speciesAmount} survivor={disadvantaged.speciesAmount} stock={F(recoverable.plantBiomass)}");
+
+        var winner = Pop(0, 20, 5, 30, 80);
+        var loser = Pop(0, 10, 6, 10, 50);
+        loser.fitTemperature = 80;
+        loser.fitHumidity = 80;
+        var exclusion = Block(1000, 10000f, winner, loser);
+        exclusion.maxPlantBiomass = 100000f;
+        controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        float exclusionStock500 = 0f;
+        for (int day = 1; day <= 2000; day++)
+        {
+            controller.SimulateBlock(exclusion);
+            if (day == 500) exclusionStock500 = exclusion.plantBiomass;
+            if (day == 500 || day == 1000 || day == 2000)
+                Console.WriteLine($"ECOLOGY_EXCLUSION_DAY day={day} winner={winner.speciesAmount} loser={loser.speciesAmount} stock={F(exclusion.plantBiomass)} growth={F(exclusion.plantGrowthToday)} eaten={F(exclusion.consumedBiomassToday)}");
+        }
+        if (loser.speciesAmount != 0 || winner.speciesAmount < 140 ||
+            Math.Abs(winner.speciesAmount - winner.carryingCapacity) > 5f ||
+            exclusionStock500 < 30000f || exclusionStock500 > 70000f ||
+            Math.Abs(exclusion.plantBiomass - exclusionStock500) > 5000f ||
+            exclusion.plantBiomass < 30000f || exclusion.plantBiomass > 70000f)
+            throw new Exception("clear competitive disadvantage did not cause exclusion");
+        Console.WriteLine($"ECOLOGY_EXCLUSION winner={winner.speciesAmount} loser={loser.speciesAmount} stock={F(exclusion.plantBiomass)}");
+
+        var prey = Pop(0, 100, 5, 10, 80);
+        var predator = Pop(1, 5, 20, 30, 50);
+        var chain = Block(1000, 10000f, prey, predator);
+        chain.maxPlantBiomass = 100000f;
+        controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        minimumStock = float.MaxValue;
+        maximumStock = 0f;
+        float preySpeedAt500 = 0f, hunterSpeedAt500 = 0f, fertilityAt500 = 0f;
+        float chainStock500 = 0f, chainBalance500 = 0f;
+        for (int day = 1; day <= 2000; day++)
+        {
+            controller.SimulateBlock(chain);
+            if (day == 500)
+            {
+                preySpeedAt500 = Traits(prey)[2];
+                hunterSpeedAt500 = Traits(predator)[2];
+                fertilityAt500 = Traits(prey)[4];
+                chainStock500 = chain.plantBiomass;
+                chainBalance500 = Math.Abs(chain.plantGrowthToday
+                    - chain.consumedBiomassToday);
+            }
+            if (day <= 1500) continue;
+            minimumStock = Math.Min(minimumStock, chain.plantBiomass);
+            maximumStock = Math.Max(maximumStock, chain.plantBiomass);
+        }
+        if (predator.speciesAmount <= 5 || prey.speciesAmount < 75 ||
+            preySpeedAt500 < 16f || hunterSpeedAt500 < 40f ||
+            fertilityAt500 <= 82f || fertilityAt500 >= 100f ||
+            chainStock500 < 30000f || chainStock500 > 80000f ||
+            chainBalance500 > 30f ||
+            chain.plantBiomass < 30000f || chain.plantBiomass > 80000f ||
+            maximumStock - minimumStock > 5000f)
+            throw new Exception("predation did not sustain coevolution and plant balance");
+        Console.WriteLine($"ECOLOGY_PREDATION prey={prey.speciesAmount} hunter={predator.speciesAmount} speed500={F(preySpeedAt500)}/{F(hunterSpeedAt500)} fertility500={F(fertilityAt500)} stock={F(chain.plantBiomass)}");
+
+        var tinyPrey = Pop(0, 10, 5, 10, 0);
+        var persistentHunter = Pop(1, 100, 20, 30, 0);
+        var fractional = Block(1000, 10000f, tinyPrey, persistentHunter);
+        fractional.maxPlantBiomass = 100000f;
+        controller = Controller();
+        controller.SetParameters(0f, 0f, 0f);
+        int caught = 0;
+        for (int day = 0; day < 100; day++)
+        {
+            tinyPrey.speciesAmount = 10;
+            controller.SimulateBlock(fractional);
+            if (tinyPrey.deathsToday > 1)
+                throw new Exception("fractional capture exceeded the small-prey daily cap");
+            caught += tinyPrey.deathsToday;
+        }
+        if (caught <= 0 || caught >= 100)
+            throw new Exception("fractional capture recreated the 20-prey hard threshold");
+        Console.WriteLine($"ECOLOGY_FRACTIONAL_HUNT prey=10 catchDays={caught}/100");
+
+        var sparsePrey = Pop(0, 10, 5, 10, 80);
+        var excessHunters = Pop(1, 100, 20, 30, 50);
+        var impossible = Block(1000, 10000f, sparsePrey, excessHunters);
+        impossible.maxPlantBiomass = 100000f;
+        controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        for (int day = 1; day <= 100; day++) controller.SimulateBlock(impossible);
+        if (excessHunters.speciesAmount > 5 || sparsePrey.speciesAmount <= 0)
+            throw new Exception("100 hunters on 10 prey did not collapse appropriately");
+        Console.WriteLine($"ECOLOGY_OVERSUBSCRIBED prey={sparsePrey.speciesAmount} hunters={excessHunters.speciesAmount}");
+        UnityEngine.Random.InitState(1);
+    }
+
+    static void Explore(string name, BlockInfo block, int days)
+    {
+        var controller = Controller(true);
+        controller.SetParameters(0.1f, 0.1f, 0.6f);
+        foreach (int day in Enumerable.Range(1, days))
+        {
+            controller.SimulateBlock(block);
+            if (day != 50 && day != 100 && day != 300 && day != 500 &&
+                day != 1000 && day != 2000 && day != 5000) continue;
+            Console.WriteLine($"EXPLORE {name} day={day} stock={F(block.plantBiomass)} growth={F(block.plantGrowthToday)} eaten={F(block.consumedBiomassToday)} " +
+                string.Join(" | ", block.community.Select(p => $"N={p.speciesAmount},K={F(p.carryingCapacity)},size={F(Traits(p)[3])},move={F(Traits(p)[2])},fert={F(Traits(p)[4])},level={p.trophicLevel}")));
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        if (args.Length > 0 && args[0] == "ecology-probe")
+        {
+            for (int seed = 1; seed <= 12; seed++)
+            {
+                UnityEngine.Random.InitState(seed);
+                var a = Pop(0, 10, 5, 10, 80);
+                var b = Pop(0, 10, 6, 20, 50);
+                var track = Block(1000, 10000f, a, b);
+                track.maxPlantBiomass = 100000f;
+                var c = Controller(true);
+                c.SetParameters(0.1f, 0.1f, 0.6f);
+                int switched = 0;
+                for (int day = 1; day <= 1000; day++)
+                {
+                    c.SimulateBlock(track);
+                    if (switched == 0 && a.size >= 8) switched = day;
+                }
+                if (switched == 0 || switched > 550 || a.speciesAmount < 20 ||
+                    b.speciesAmount < 20 || track.plantBiomass < 30000f ||
+                    track.plantBiomass > 70000f)
+                    throw new Exception($"track switch failed for seed {seed}");
+                Console.WriteLine($"PROBE_TRACK seed={seed} day={switched} A={a.speciesAmount} B={b.speciesAmount} ASize={F(Traits(a)[3])} stock={F(track.plantBiomass)}");
+
+                UnityEngine.Random.InitState(seed);
+                a = Pop(0, 20, 5, 30, 80);
+                b = Pop(0, 10, 6, 10, 50);
+                b.fitTemperature = 70;
+                b.fitHumidity = 70;
+                var contest = Block(1000, 10000f, a, b);
+                contest.maxPlantBiomass = 100000f;
+                c = Controller(true);
+                c.SetParameters(0.1f, 0.1f, 0.6f);
+                int extinct = 0, changed = 0;
+                for (int day = 1; day <= 1000; day++)
+                {
+                    c.SimulateBlock(contest);
+                    if (extinct == 0 && b.speciesAmount == 0) extinct = day;
+                    if (changed == 0 && b.size >= 8) changed = day;
+                }
+                if (extinct != 0 || changed == 0 || changed > 500 ||
+                    a.speciesAmount < 20 || b.speciesAmount < 20 ||
+                    contest.plantBiomass < 30000f || contest.plantBiomass > 70000f)
+                    throw new Exception($"recoverable competition failed for seed {seed}");
+                Console.WriteLine($"PROBE_CONTEST seed={seed} extinct={extinct} switch={changed} A={a.speciesAmount} B={b.speciesAmount} BFit={b.fitTemperature}/{b.fitHumidity} stock={F(contest.plantBiomass)}");
+
+                UnityEngine.Random.InitState(seed);
+                a = Pop(0, 100, 5, 10, 80);
+                b = Pop(1, 5, 20, 30, 50);
+                var chain = Block(1000, 10000f, a, b);
+                chain.maxPlantBiomass = 100000f;
+                c = Controller(true);
+                c.SetParameters(0.1f, 0.1f, 0.6f);
+                for (int day = 1; day <= 500; day++)
+                    c.SimulateBlock(chain);
+                if (a.speciesAmount < 75 || b.speciesAmount < 5 ||
+                    Traits(a)[2] < 16f || Traits(b)[2] < 40f ||
+                    Traits(a)[4] <= 82f || Traits(a)[4] >= 100f ||
+                    chain.plantBiomass < 30000f || chain.plantBiomass > 80000f)
+                    throw new Exception($"coevolution failed for seed {seed}");
+                Console.WriteLine($"PROBE_CHAIN seed={seed} prey={a.speciesAmount} hunter={b.speciesAmount} speed={F(Traits(a)[2])}/{F(Traits(b)[2])} fertility={F(Traits(a)[4])}/{F(Traits(b)[4])} stock={F(chain.plantBiomass)}");
+            }
+            return;
+        }
+        if (args.Length > 0 && args[0] == "scan")
+        {
+            foreach (int weakFit in new[] { 70, 75, 80, 85, 90, 95 })
+            foreach (int weakFertility in new[] { 10, 30, 50 })
+            {
+                var strong = Pop(0, 20, 5, 30, 80);
+                var weak = Pop(0, 10, 6, 10, weakFertility);
+                weak.fitTemperature = weakFit;
+                weak.fitHumidity = weakFit;
+                var block = Block(1000, 10000f, strong, weak);
+                block.maxPlantBiomass = 100000f;
+                var controller = Controller(true);
+                controller.SetParameters(0.1f, 0.1f, 0.6f);
+                for (int day = 0; day < 2000; day++) controller.SimulateBlock(block);
+                Console.WriteLine($"SCAN fit={weakFit} fertility={weakFertility} strong={strong.speciesAmount} weak={weak.speciesAmount} weakSize={F(Traits(weak)[3])} stock={F(block.plantBiomass)}");
+            }
+            return;
+        }
+        if (args.Length > 0 && args[0] == "explore")
+        {
+            var solo = Block(1000, 10000f, Pop(0, 10, 5, 10, 80));
+            solo.maxPlantBiomass = 100000f;
+            Explore("solo", solo, 2000);
+            var competition = Block(1000, 10000f, Pop(0, 10, 5, 10, 80), Pop(0, 10, 6, 20, 50));
+            competition.maxPlantBiomass = 100000f;
+            Explore("same-track", competition, 5000);
+            var dual = Block(1000, 10000f, Pop(0, 10, 5, 10, 80), Pop(0, 10, 10, 20, 50));
+            dual.maxPlantBiomass = 100000f;
+            Explore("two-tracks", dual, 2000);
+            var exclusion = Block(1000, 10000f, Pop(0, 20, 5, 80, 80), Pop(0, 2, 6, 0, 5));
+            exclusion.maxPlantBiomass = 100000f;
+            Explore("exclusion", exclusion, 2000);
+            var chain = Block(1000, 10000f, Pop(0, 100, 5, 10, 80), Pop(1, 100, 20, 30, 50));
+            chain.maxPlantBiomass = 100000f;
+            Explore("chain", chain, 2000);
+            var invasion = Block(1000, 10000f, Pop(0, 100, 5, 10, 80), Pop(1, 5, 20, 30, 50));
+            invasion.maxPlantBiomass = 100000f;
+            Explore("invasion", invasion, 2000);
+            return;
+        }
         MigrationMergeTests();
         LiveTrophicLevelTests();
         DirectedMutationTests();
+        FoodChainBalanceTests();
+        EcologyScenarioTests();
         EnvironmentGrid();
         CompetitionSweep();
+        int stableMaxFertility = 0;
         for (int configuration = 0; configuration < 20; configuration++)
         {
             var stablePopulation = Pop(0, 60 + configuration);
             var stableBlock = Block(1000, 10000f, stablePopulation);
             var stableController = Controller(true);
             for (int day = 0; day < 2000; day++) stableController.SimulateBlock(stableBlock);
+            stableMaxFertility = Math.Max(stableMaxFertility, stablePopulation.fertility);
             if (stablePopulation.speciesAmount <= 0 || stablePopulation.size != 10 ||
                 stablePopulation.sizeMutationRemainder != 0f ||
-                stablePopulation.fertility != 50 ||
-                stablePopulation.fertilityMutationRemainder != 0f ||
                 stablePopulation.fitTemperature != 50 || stablePopulation.fitHumidity != 50 ||
                 stablePopulation.movementAbility != 10 || stablePopulation.trophicLevel != 0)
-                throw new Exception($"suitable environment drifted: configuration={configuration}");
+                throw new Exception($"suitable environment drifted: configuration={configuration} N={stablePopulation.speciesAmount} K={F(stablePopulation.carryingCapacity)} stock={F(stableBlock.plantBiomass)} traits={string.Join(',', Traits(stablePopulation))}");
         }
-        Console.WriteLine("STABLE suitable environment configurations=20 days=2000 traits=unchanged");
+        if (stableMaxFertility > 60)
+            throw new Exception($"suitable environment drove excessive fertility: {stableMaxFertility}");
+        Console.WriteLine($"STABLE suitable environment configurations=20 days=2000 maxFertility={stableMaxFertility}");
 
         UnityEngine.Random.InitState(42);
         var hungryPopulation = Pop(0, 100);
