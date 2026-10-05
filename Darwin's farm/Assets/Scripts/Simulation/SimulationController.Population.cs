@@ -6,17 +6,22 @@ public partial class SimulationController
 {
     private const float FitnessTolerance = 90f;
     private const float SizeEnergyWeight = 1f;
+    private const float SmallSizeEnergyWeight = 2f;
     private const float MovementEnergyWeight = 0.01f;
     private const float HighSpeedEnergyWeight = 0.00001f;
     private const float HighFertilityEnergyWeight = 0.0002f;
     private const float ExtremeTraitEnergyWeight = 0.02f;
     internal const float DensityPredationCompensation = 0.5f;
     internal const float PredatorStarvationMultiplier = 0.5f;
+    public const float DefaultLevelOnePreyFraction = 0.08f;
+    public const float DefaultLevelTwoPreyFraction = 0.1f;
 
     [Header("Population")]
     [SerializeField] private float reproductionScale = 0.05f;
     [SerializeField] private float maxOverCapacityDeathRate = 0.1f;
     [SerializeField] private float maxStarvationDeathRate = 0.6f;
+    [SerializeField] private float levelOnePreyFraction = DefaultLevelOnePreyFraction;
+    [SerializeField] private float levelTwoPreyFraction = DefaultLevelTwoPreyFraction;
 
     // 数值模拟器可直接调整这些固定参数
     public void SetParameters(float newReproductionScale, float newMaxOverCapacityDeathRate,
@@ -35,6 +40,12 @@ public partial class SimulationController
             (temperatureDifference + humidityDifference) / FitnessTolerance);
     }
 
+    public void SetPredationFractions(float levelOne, float levelTwo)
+    {
+        levelOnePreyFraction = Mathf.Clamp01(levelOne);
+        levelTwoPreyFraction = Mathf.Clamp01(levelTwo);
+    }
+
     public static float CalculateEnergyNeed(float size, float movement)
         => CalculateEnergyNeed(size, movement, 80f);
 
@@ -45,7 +56,10 @@ public partial class SimulationController
         float extremeSpeed = Mathf.Max(0f, speed - 90f);
         float highFertility = Mathf.Max(0f, fertility - 80f);
         float extremeFertility = Mathf.Max(0f, fertility - 90f);
+        // 小体型的基础生理成本抵消无限缩小带来的节能收益。
+        float smallSize = Mathf.Max(0f, 5f - size);
         return Mathf.Max(1f, size * SizeEnergyWeight
+            + smallSize * smallSize * SmallSizeEnergyWeight
             + speed * MovementEnergyWeight * (1f + speed / 40f)
             + highSpeed * highSpeed * highSpeed * HighSpeedEnergyWeight
             + extremeSpeed * extremeSpeed * extremeSpeed * ExtremeTraitEnergyWeight

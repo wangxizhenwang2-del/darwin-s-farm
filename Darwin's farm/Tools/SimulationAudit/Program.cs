@@ -161,11 +161,20 @@ static partial class Program
         var predator = pair.community[1];
         if (Traits(prey)[2] <= 10f || Traits(prey)[4] <= 80f ||
             Traits(predator)[2] <= 30f ||
+            Traits(predator)[3] >= 20f || Traits(predator)[3] < 10f ||
             pair.plantBiomass < 30000f || pair.plantBiomass > 80000f)
-            throw new Exception("movement and fertility did not both respond to predation");
+            throw new Exception("movement, fertility, and body size did not respond to predation");
         if (!controller.GetExpectedEvolutionDirection(pair, prey)
             .StartsWith("进化方向："))
             throw new Exception("live evolution direction unavailable");
+
+        var undersizedHunter = MatrixBlock("C");
+        undersizedHunter.community[1].size = 8;
+        controller = MatrixController();
+        for (int day = 1; day <= 500; day++) controller.SimulateBlock(undersizedHunter);
+        if (Traits(undersizedHunter.community[1])[3] <= 8f ||
+            undersizedHunter.community[1].speciesAmount <= 0)
+            throw new Exception("undersized predator did not gain from body growth");
 
         var switching = MatrixBlock("B-switch");
         controller = MatrixController();
@@ -182,7 +191,7 @@ static partial class Program
         if (stressed.community[0].fitTemperature <= 50 &&
             stressed.community[0].fitHumidity <= 50)
             throw new Exception("forecast ignored environmental fitness");
-        Console.WriteLine("FORECAST_MUTATION solo_stable=ok prey_movement_and_fertility=ok predator_movement=ok track_switch=ok environment=ok");
+        Console.WriteLine($"FORECAST_MUTATION solo_stable=ok prey_movement_and_fertility=ok predator_size_20_to_{F(Traits(predator)[3])} undersized_size_8_to_{F(Traits(undersizedHunter.community[1])[3])} track_switch=ok environment=ok");
     }
 
     static void EnvironmentGrid()
@@ -242,6 +251,15 @@ static partial class Program
             previousChance = chance;
             huntComparisons++;
         }
+        var smallPrey = Pop(0, 20, 5, 10, 50);
+        var largePrey = Pop(0, 20, 7, 10, 50);
+        if (FoodWeb.CaptureEfficiency(30f, 10f, smallPrey) <=
+                FoodWeb.CaptureEfficiency(30f, 5f, smallPrey) ||
+            FoodWeb.CaptureEfficiency(30f, 10f, largePrey) >=
+                FoodWeb.CaptureEfficiency(30f, 10f, smallPrey) ||
+            SimulationController.CalculateEnergyNeed(20f, 30f, 50f) <=
+                SimulationController.CalculateEnergyNeed(10f, 30f, 50f))
+            throw new Exception("body-size capture and energy tradeoff failed");
         Console.WriteLine($"COMPETITION_SWEEP plantComparisons={plantComparisons} huntSpeeds={huntComparisons} direction=consistent");
     }
 
@@ -491,6 +509,23 @@ static partial class Program
             herbivorePrey.deathsToday <= 0)
             throw new Exception("trophic catch limits exceeded the 8% ceiling");
 
+        foreach (int predatorLevel in new[] { 1, 2 })
+        {
+            var adjustablePrey = Pop(predatorLevel - 1, 100, 10, 10, 0);
+            var adjustableBlock = Block(10000, 10000f, adjustablePrey,
+                Pop(predatorLevel, 1000, 15, 30, 0));
+            controller.SetPredationFractions(0f, 0f);
+            controller.SimulateBlock(adjustableBlock);
+            if (adjustablePrey.deathsToday != 0)
+                throw new Exception("zero predation setting still caught prey");
+            controller.SetPredationFractions(0.15f, 0.15f);
+            controller.SimulateBlock(adjustableBlock);
+            if (adjustablePrey.deathsToday <= 0)
+                throw new Exception("adjustable predation setting did not affect hunting");
+        }
+        controller.SetPredationFractions(SimulationController.DefaultLevelOnePreyFraction,
+            SimulationController.DefaultLevelTwoPreyFraction);
+
         var prey = Pop(0, 185, 6, 22, 80);
         var hunter = Pop(1, 12, 15, 30, 50);
         var block = Block(1000, 10000f, prey, hunter);
@@ -717,6 +752,11 @@ static partial class Program
         if (args.Length > 0 && args[0] == "scenario-matrix")
         {
             ScenarioMatrix();
+            return;
+        }
+        if (args.Length > 0 && args[0] == "evolution-audit")
+        {
+            PresetEvolutionTests();
             return;
         }
         if (args.Length > 0 && args[0] == "extreme-probe")

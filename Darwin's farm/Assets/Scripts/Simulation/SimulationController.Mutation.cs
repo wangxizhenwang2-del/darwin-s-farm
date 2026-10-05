@@ -21,6 +21,7 @@ public partial class SimulationController
         public MutationTrait trait;
         public float score;
         public float expectedGain;
+        public bool nicheSwitch;
     }
 
     public void SetMutationParameters(int interval, float step, float strength)
@@ -48,6 +49,7 @@ public partial class SimulationController
         List<MutationDecision> decisions = null;
         foreach (PopulationData population in block.community)
         {
+            population.evolutionCheckReady = false;
             if (!mutationEnabled)
             {
                 population.mutationDaysElapsed = 0;
@@ -57,6 +59,7 @@ public partial class SimulationController
             population.mutationDaysElapsed++;
             if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval)) continue;
             population.mutationDaysElapsed = 0;
+            population.evolutionCheckReady = population.speciesAmount > 0;
             if (population.speciesAmount > 0 &&
                 TryChooseForecastMutation(block, population, out MutationDecision decision))
             {
@@ -68,7 +71,8 @@ public partial class SimulationController
         // 先看完整个群落，再动性状；这样先后顺序不会左右当天的选择。
         if (decisions == null) return;
         foreach (MutationDecision decision in decisions)
-            ApplyMutationDecision(decision.population, decision.trait, decision.score);
+            ApplyMutationDecision(decision.population, decision.trait, decision.score,
+                decision.nicheSwitch);
     }
 
     private static void InitializeMutationState(PopulationData population)
@@ -88,7 +92,8 @@ public partial class SimulationController
         }
     }
 
-    private void ApplyMutationDecision(PopulationData population, MutationTrait trait, float score)
+    private void ApplyMutationDecision(PopulationData population, MutationTrait trait,
+        float score, bool nicheSwitch)
     {
         switch (trait)
         {
@@ -103,7 +108,7 @@ public partial class SimulationController
                     1f, score, 0, 100); break;
             case MutationTrait.Size:
                 ChangeTrait(ref population.size, ref population.sizeMutationRemainder,
-                    1f, score, 1, 100); break;
+                    nicheSwitch ? 1f : 0.1f, score, 1, 100); break;
             case MutationTrait.Fertility:
                 ChangeTrait(ref population.fertility, ref population.fertilityMutationRemainder,
                     0.5f, score, 0, 100); break;

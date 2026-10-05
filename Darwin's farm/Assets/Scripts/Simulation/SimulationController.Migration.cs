@@ -81,7 +81,8 @@ public partial class SimulationController
         if (resident != null) return Mathf.Max(0f, resident.carryingCapacity);
         float fitness = CalculateFitness(target, migrant);
         return Mathf.Max(0f, migrant.speciesAmount
-            * FoodWeb.FoodPerDemand(target, migrant.trophicLevel, migrant, reproductionScale) * fitness);
+            * FoodWeb.FoodPerDemand(target, migrant.trophicLevel, migrant,
+                reproductionScale, levelOnePreyFraction, levelTwoPreyFraction) * fitness);
     }
 
     public float TargetCapacityCorrection(BlockInfo target, PopulationData migrant)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // 种群搬家时的身份、复制与合并规则。这里不决定何时迁徙。
@@ -6,7 +7,7 @@ internal static class PopulationTransfer
     public static PopulationData CopyForMove(PopulationData source, int amount)
     {
         // 不复制河岸位置；迁入者落在新栖息地，留下的个体仍在原河岸。
-        return new PopulationData
+        PopulationData copy = new PopulationData
         {
             species = source.species,
             lineageName = source.lineageName,
@@ -30,8 +31,17 @@ internal static class PopulationTransfer
             mutationDaysElapsed = source.mutationDaysElapsed,
             nextMigrationDay = source.nextMigrationDay,
             previousMutationPopulation = amount,
-            mutationPopulationInitialized = true
+            mutationPopulationInitialized = true,
+            evolutionCheckReady = source.evolutionCheckReady
         };
+        if (source.evolutionConversions != null)
+            foreach (EvolutionConversionRecord record in source.evolutionConversions)
+                if (record != null)
+                    copy.evolutionConversions.Add(new EvolutionConversionRecord
+                    {
+                        target = record.target, day = record.day
+                    });
+        return copy;
     }
 
     // 迁徙和生态位分化都从这里拆分个体，储备与不足一个体的小数也按比例带走。
@@ -89,6 +99,27 @@ internal static class PopulationTransfer
         resident.previousMutationPopulation = total;
         resident.mutationPopulationInitialized = true;
         resident.trophicLevelInitialized = true;
+        resident.evolutionCheckReady |= arrival.evolutionCheckReady;
+        if (arrival.evolutionConversions != null)
+        {
+            if (resident.evolutionConversions == null)
+                resident.evolutionConversions = new List<EvolutionConversionRecord>();
+            foreach (EvolutionConversionRecord record in arrival.evolutionConversions)
+            {
+                if (record == null || record.target == null) continue;
+                EvolutionConversionRecord existing = resident.evolutionConversions.Find(
+                    item => item != null && item.target == record.target);
+                if (existing == null)
+                    resident.evolutionConversions.Add(new EvolutionConversionRecord
+                    {
+                        target = record.target, day = record.day
+                    });
+                else if (record.day > existing.day)
+                {
+                    existing.day = record.day;
+                }
+            }
+        }
     }
 
     private static int WeightedTrait(int resident, int residentAmount, int arrival,

@@ -8,7 +8,6 @@ internal static class FoodWeb
     private const float PredationEfficiency = 0.8f;
     public const int MaxTrophicLevel = 2;
     public const float PredatorReserveDays = 10f;
-    private const float MaxDailyPreyFraction = 0.08f;
     private const float SharedPlantFraction = 0.1f;
 
     public static void GrowPlants(BlockInfo block)
@@ -22,7 +21,8 @@ internal static class FoodWeb
     }
 
     public static float FeedCommunity(BlockInfo block, float reproductionScale,
-        float overCapacityDeathRate, float starvationDeathRate)
+        float overCapacityDeathRate, float starvationDeathRate,
+        float levelOnePreyFraction, float levelTwoPreyFraction)
     {
         float eaten = FeedHerbivores(block);
         int highestLevel = 0;
@@ -30,7 +30,8 @@ internal static class FoodWeb
             highestLevel = Mathf.Max(highestLevel, population.trophicLevel);
         for (int level = 1; level <= highestLevel; level++)
             FeedPredators(block, level, reproductionScale,
-                overCapacityDeathRate, starvationDeathRate);
+                overCapacityDeathRate, starvationDeathRate,
+                DailyPreyFraction(level, levelOnePreyFraction, levelTwoPreyFraction));
         return eaten;
     }
 
@@ -41,7 +42,8 @@ internal static class FoodWeb
     }
 
     public static float FoodPerDemand(BlockInfo block, int level,
-        PopulationData consumer, float reproductionScale)
+        PopulationData consumer, float reproductionScale,
+        float levelOnePreyFraction, float levelTwoPreyFraction)
     {
         if (level < 0 || level > MaxTrophicLevel) return 0f;
         float food = 0f;
@@ -60,7 +62,8 @@ internal static class FoodWeb
             {
                 if (prey == consumer || prey.speciesAmount <= 0 ||
                     prey.trophicLevel != level - 1) continue;
-                food += prey.speciesAmount * DailyPreyFraction(level)
+                food += prey.speciesAmount * DailyPreyFraction(level,
+                        levelOnePreyFraction, levelTwoPreyFraction)
                     * CaptureChance(consumer.movementAbility, consumer.size, prey)
                     * prey.size * PreyEnergyPerSize * PredationEfficiency;
             }
@@ -79,18 +82,29 @@ internal static class FoodWeb
 
     internal static float CaptureEfficiency(float predatorMovement, float predatorSize,
         PopulationData prey)
+        => CaptureEfficiency(predatorMovement, predatorSize,
+            prey.movementAbility, prey.size, prey.trophicLevel);
+
+    private static float CaptureEfficiency(float predatorMovement, float predatorSize,
+        float preyMovement, float preySize, int preyLevel)
     {
         // 运动与体型影响捕获成功机会，不改变一只猎物包含的能量。
-        return Mathf.Clamp(1f + (predatorMovement - prey.movementAbility) / 40f
-            + (predatorSize - prey.size) / 200f, 0.5f, 2f);
+        float movementAndSize = Mathf.Clamp(1f +
+            (predatorMovement - preyMovement) / 40f
+            + (predatorSize - preySize) / 80f, 0.5f, 2f);
+        // 一级捕食者过小便难以处理食草猎物；体型达到 10 后不再获额外收益。
+        float handling = preyLevel == 0
+            ? Mathf.Min(1f, predatorSize / 10f) : 1f;
+        return movementAndSize * handling * handling;
     }
 
     private static float CaptureChance(float movement, float size, PopulationData prey) =>
         CaptureEfficiency(movement, size, prey) / 2f;
 
-    // 按当天捕食公式计算连续的期望值，不掷随机数，也不改动真实种群。
+    // 固定当天猎手的捕食努力，只比较候选猎物性状造成的风险变化；不掷随机数。
     internal static float ExpectedPreyLoss(BlockInfo block, PopulationData target,
-        float targetMovement, float targetSize)
+        float targetMovement, float targetSize,
+        float levelOnePreyFraction, float levelTwoPreyFraction)
     {
         int level = target.trophicLevel + 1;
         float demand = 0f, deficit = 0f, foraging = 0f;
@@ -112,19 +126,18 @@ internal static class FoodWeb
         foreach (PopulationData prey in block.community)
         {
             if (prey.speciesAmount <= 0 || prey.trophicLevel != target.trophicLevel) continue;
-            float chance = Mathf.Clamp(1f +
-                (movement / demand - prey.movementAbility) / 40f
-                + (size / demand - prey.size) / 200f, 0.5f, 2f) / 2f;
-            float kills = prey.speciesAmount * DailyPreyFraction(level) * efficiency * chance;
-            totalEnergy += kills * prey.size * PreyEnergyPerSize * PredationEfficiency;
+            float chance = CaptureEfficiency(movement / demand, size / demand,
+                prey.movementAbility, prey.size, prey.trophicLevel) / 2f;
+            float kills = prey.speciesAmount * DailyPreyFraction(level,
+                levelOnePreyFraction, levelTwoPreyFraction) * efficiency * chance;
+            float preySize = prey == target ? targetSize : prey.size;
+            // 猎手数量和预期尝试次数保持当前值；候选体型仍改变每只猎物的能量。
+            totalEnergy += kills * preySize * PreyEnergyPerSize * PredationEfficiency;
             if (prey == target)
-            {
-                float candidateChance = Mathf.Clamp(1f +
-                    (movement / demand - targetMovement) / 40f
-                    + (size / demand - targetSize) / 200f, 0.5f, 2f) / 2f;
-                targetKills = prey.speciesAmount * DailyPreyFraction(level)
-                    * efficiency * candidateChance;
-            }
+                targetKills = prey.speciesAmount * DailyPreyFraction(level,
+                        levelOnePreyFraction, levelTwoPreyFraction)
+                    * efficiency * CaptureEfficiency(movement / demand, size / demand,
+                        targetMovement, targetSize, prey.trophicLevel) / 2f;
         }
         return targetKills * (totalEnergy > 0f ? Mathf.Min(1f, deficit / totalEnergy) : 0f);
     }
@@ -135,9 +148,10 @@ internal static class FoodWeb
     private static float ForagingEfficiency(float movement) =>
         0.75f + 0.0025f * Mathf.Clamp(movement, 0f, 100f);
 
-    private static float DailyPreyFraction(int predatorLevel)
+    private static float DailyPreyFraction(int predatorLevel,
+        float levelOnePreyFraction, float levelTwoPreyFraction)
     {
-        return predatorLevel == 1 ? MaxDailyPreyFraction : 0.1f;
+        return predatorLevel == 1 ? levelOnePreyFraction : levelTwoPreyFraction;
     }
 
     private static float PlantSupportFood(BlockInfo block, float availableStock)
@@ -286,7 +300,8 @@ internal static class FoodWeb
     internal static float ProjectedPredatorCapacity(BlockInfo block,
         PopulationData candidate, float targetSize, float targetMovement,
         float targetFitness, float targetFertility, float reproductionScale,
-        float overCapacityDeathRate, float starvationDeathRate)
+        float overCapacityDeathRate, float starvationDeathRate,
+        float levelOnePreyFraction, float levelTwoPreyFraction)
     {
         float totalDemand = 0f, totalForaging = 0f;
         float weightedMovement = 0f, weightedSize = 0f, candidateWeight = 0f;
@@ -315,7 +330,8 @@ internal static class FoodWeb
         {
             if (prey.speciesAmount <= 0 ||
                 prey.trophicLevel != candidate.trophicLevel - 1) continue;
-            float kills = prey.speciesAmount * DailyPreyFraction(candidate.trophicLevel)
+            float kills = prey.speciesAmount * DailyPreyFraction(candidate.trophicLevel,
+                    levelOnePreyFraction, levelTwoPreyFraction)
                 * totalForaging / totalDemand
                 * CaptureChance(weightedMovement / totalDemand,
                     weightedSize / totalDemand, prey);
@@ -364,7 +380,7 @@ internal static class FoodWeb
     }
 
     private static void FeedPredators(BlockInfo block, int level, float reproductionScale,
-        float overCapacityDeathRate, float starvationDeathRate)
+        float overCapacityDeathRate, float starvationDeathRate, float dailyPreyFraction)
     {
         List<PopulationData> predators = new List<PopulationData>();
         List<PopulationData> prey = new List<PopulationData>();
@@ -410,7 +426,7 @@ internal static class FoodWeb
         float[] energyPerPrey = new float[prey.Count];
         for (int i = 0; i < prey.Count; i++)
         {
-            float expectedKills = prey[i].speciesAmount * DailyPreyFraction(level)
+            float expectedKills = prey[i].speciesAmount * dailyPreyFraction
                 * hunterEfficiency * CaptureChance(weightedMovement / totalDemand,
                     weightedSize / totalDemand, prey[i]);
             maxKills[i] = Mathf.FloorToInt(expectedKills);

@@ -22,12 +22,13 @@ public partial class SimulationController
         MutationTrait bestTrait = MutationTrait.Temperature;
         float bestGain = 0f;
         int bestDirection = 0;
+        bool nicheSwitch = false;
 
         for (int trait = 0; trait < 5; trait++)
         {
-            // 没有捕食关系时，运动只会退化成节能优化；体型保留给跨赛道选择。
-            if ((MutationTrait)trait == MutationTrait.Size ||
-                (MutationTrait)trait == MutationTrait.Movement &&
+            // 体型与运动只在有捕食关系时参与普通选择；无捕食时仍可因竞争换赛道。
+            if (((MutationTrait)trait == MutationTrait.Size ||
+                 (MutationTrait)trait == MutationTrait.Movement) &&
                 !HasTrophicInteraction(block, population)) continue;
             for (int direction = -1; direction <= 1; direction += 2)
             {
@@ -45,7 +46,7 @@ public partial class SimulationController
                     case MutationTrait.Movement:
                         candidateMovement = Mathf.Clamp(movement + direction * mutationStep, 0f, 100f); break;
                     case MutationTrait.Size:
-                        candidateSize = Mathf.Clamp(size + direction * mutationStep, 1f, 100f); break;
+                        candidateSize = Mathf.Clamp(size + direction * mutationStep * 0.1f, 1f, 100f); break;
                     case MutationTrait.Fertility:
                         candidateFertility = Mathf.Clamp(fertility + direction * mutationStep * 0.5f, 0f, 100f); break;
                 }
@@ -60,6 +61,7 @@ public partial class SimulationController
                 bestGain = gain;
                 bestTrait = (MutationTrait)trait;
                 bestDirection = direction;
+                nicheSwitch = false;
             }
         }
 
@@ -80,6 +82,7 @@ public partial class SimulationController
                     bestGain = gain;
                     bestTrait = MutationTrait.Size;
                     bestDirection = targetSize > size ? 1 : -1;
+                    nicheSwitch = true;
                 }
             }
         }
@@ -90,7 +93,8 @@ public partial class SimulationController
         decision = new MutationDecision
         {
             population = population, trait = bestTrait,
-            score = bestDirection * score, expectedGain = bestGain
+            score = bestDirection * score, expectedGain = bestGain,
+            nicheSwitch = nicheSwitch
         };
         return true;
     }
@@ -127,7 +131,8 @@ public partial class SimulationController
                 movement, fitness, fertility)
             : FoodWeb.ProjectedPredatorCapacity(block, population, size,
                 movement, fitness, fertility, reproductionScale,
-                maxOverCapacityDeathRate, maxStarvationDeathRate);
+                maxOverCapacityDeathRate, maxStarvationDeathRate,
+                levelOnePreyFraction, levelTwoPreyFraction);
 
         // 已有实际摄食率提供当天的起点，K 的变化提供候选性状对食物份额的影响。
         float intake = Mathf.Clamp01(population.actualEnergySatisfactionToday
@@ -141,7 +146,8 @@ public partial class SimulationController
             maxOverCapacityDeathRate, maxStarvationDeathRate *
                 (population.trophicLevel > 0 ? PredatorStarvationMultiplier : 1f),
             out float births, out float deaths);
-        float hunted = FoodWeb.ExpectedPreyLoss(block, population, movement, size);
+        float hunted = FoodWeb.ExpectedPreyLoss(block, population, movement, size,
+            levelOnePreyFraction, levelTwoPreyFraction);
         float densityDeaths = capacity > 0f ? births * count / capacity : 0f;
         deaths -= Mathf.Min(hunted, densityDeaths) * DensityPredationCompensation;
         return births - deaths - hunted;

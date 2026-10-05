@@ -29,6 +29,7 @@ public partial class SimulationController : MonoBehaviour
     public void SetBlocks(List<BlockInfo> blocks)
     {
         blockInfos = blocks ?? new List<BlockInfo>();
+        UpdateSpeciesStatuses();
     }
 
     public static float CalculatePlantGrowth(float stock, float maximum, int recovery)
@@ -75,15 +76,18 @@ public partial class SimulationController : MonoBehaviour
 
     public void SimulateDay(int day)
     {
+        var livingAtStart = LivingSpeciesByBlock();
         // 生态位开关仍是预留项，新的海陆空入口尚未排进每日流程。
         foreach (BlockInfo block in blockInfos)
         {
             SimulateBlock(block);
         }
+        RunPresetEvolution(day, livingAtStart);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);
         }
+        UpdateSpeciesStatuses();
     }
 
     public void SimulateBlock(BlockInfo block)
@@ -97,7 +101,8 @@ public partial class SimulationController : MonoBehaviour
         FoodWeb.GrowPlants(block);
         PreparePopulations(block);
         float eaten = FoodWeb.FeedCommunity(block, reproductionScale,
-            maxOverCapacityDeathRate, maxStarvationDeathRate);
+            maxOverCapacityDeathRate, maxStarvationDeathRate,
+            levelOnePreyFraction, levelTwoPreyFraction);
         UpdatePopulations(block);
         FoodWeb.SpendPlants(block, eaten);
         EvolveCommunity(block);

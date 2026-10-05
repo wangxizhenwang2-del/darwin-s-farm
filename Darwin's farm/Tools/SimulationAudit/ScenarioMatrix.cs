@@ -79,6 +79,11 @@ static partial class Program
                     }
                 }
                 int extinct = block.community.Count(p => p.speciesAmount == 0);
+                if (scenario == "A" &&
+                    (Math.Abs(Traits(block.community[0])[3] - 5f) > 0.001f ||
+                     Math.Abs(Traits(block.community[0])[2] - 10f) > 0.001f ||
+                     Traits(block.community[0])[4] > 83f))
+                    throw new Exception($"solo herbivore traits drifted in seed {seed}");
                 PopulationData extreme = block.community.FirstOrDefault(p => p.speciesAmount > 0 &&
                     (p.movementAbility + p.movementMutationRemainder > 95f ||
                      p.fertility + p.fertilityMutationRemainder > 95f ||
@@ -190,4 +195,5 @@ static partial class Program
                 throw new Exception($"long-run trait extreme in {scenario}");
         }
     }
+
 }

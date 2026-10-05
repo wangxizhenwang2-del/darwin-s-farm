@@ -30,6 +30,8 @@ public partial class PopulationSimulatorWindow : EditorWindow
     [SerializeField] private float reproductionScale = 0.05f;
     [SerializeField] private float maxOverCapacityDeathRate = 0.1f;
     [SerializeField] private float maxStarvationDeathRate = 0.6f;
+    [SerializeField] private float levelOnePreyFraction = SimulationController.DefaultLevelOnePreyFraction;
+    [SerializeField] private float levelTwoPreyFraction = SimulationController.DefaultLevelTwoPreyFraction;
     [SerializeField] private bool mutationEnabled = true;
     [SerializeField] private bool ecologicalNichesEnabled;
     [SerializeField] private int mutationInterval = 7;
@@ -201,6 +203,10 @@ public partial class PopulationSimulatorWindow : EditorWindow
         reproductionScale = Mathf.Max(0f, EditorGUILayout.FloatField("繁殖系数", reproductionScale));
         maxOverCapacityDeathRate = EditorGUILayout.Slider("超载衰退上限", maxOverCapacityDeathRate, 0f, 1f);
         maxStarvationDeathRate = EditorGUILayout.Slider("最大饥饿死亡率", maxStarvationDeathRate, 0f, 1f);
+        levelOnePreyFraction = EditorGUILayout.Slider("一级捕食比例 (%)",
+            levelOnePreyFraction * 100f, 0f, 100f) / 100f;
+        levelTwoPreyFraction = EditorGUILayout.Slider("二级捕食比例 (%)",
+            levelTwoPreyFraction * 100f, 0f, 100f) / 100f;
         mutationEnabled = EditorGUILayout.Toggle("启用变异", mutationEnabled);
         mutationInterval = Mathf.Max(1, EditorGUILayout.IntField("变异间隔（天）", mutationInterval));
         mutationStep = Mathf.Max(0f, EditorGUILayout.FloatField("变异步长", mutationStep));
@@ -224,7 +230,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
             ApplyFixedParameters();
         EditorGUILayout.LabelField("每周期只变异一个性状；推荐间隔 7 天、步长 2。", EditorStyles.miniLabel);
         EditorGUILayout.HelpBox("达到 K 后数量可以保持水平，但每天仍有出生和死亡；当天的两个整数显示在当前状态和每日输出中。", MessageType.Info);
-        EditorGUILayout.HelpBox("植物库存低于上限 40% 时按最大恢复量生长，之后逐渐减速；食草者 K 仍由恢复上限和个体能耗决定。体型 <8 与 ≥8 使用不同觅食赛道；1 级每日捕获上限 8%，2 级为 10%。", MessageType.Info);
+        EditorGUILayout.HelpBox("植物库存低于上限 40% 时按最大恢复量生长，之后逐渐减速；食草者 K 仍由恢复上限和个体能耗决定。体型 <8 与 ≥8 使用不同觅食赛道。捕食比例是期望捕获数的基础系数，仍会乘觅食效率与捕获机会。", MessageType.Info);
         if (populations.Count == 1 && populations[0].data != null &&
             (populations[0].data.trophicLevelInitialized
                 ? populations[0].data.trophicLevel == 0
@@ -533,6 +539,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
         controller = runtimeObject.AddComponent<SimulationController>();
         controller.SetParameters(reproductionScale,
             maxOverCapacityDeathRate, maxStarvationDeathRate);
+        controller.SetPredationFractions(levelOnePreyFraction, levelTwoPreyFraction);
         controller.SetMutationParameters(mutationInterval, mutationStep, selectionStrength);
         controller.SetMutationEnabled(mutationEnabled);
         controller.SetMigrationParameters(false, migrationInterval,
@@ -553,6 +560,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
                 color = Color.HSVToRGB((i * 0.618034f + 0.53f) % 1f, 0.7f, 0.95f)
             });
         }
+        controller.RefreshSpeciesStatuses();
         RecordDay();
         Repaint();
     }
@@ -584,8 +592,8 @@ public partial class PopulationSimulatorWindow : EditorWindow
             }
         }
 
-        controller.SimulateBlock(block);
         currentDay++;
+        controller.SimulateDay(currentDay);
         RecordDay();
         if (previousTraits != null)
         {
@@ -620,6 +628,20 @@ public partial class PopulationSimulatorWindow : EditorWindow
 
     private void RecordDay()
     {
+        while (history.Count < block.community.Count)
+        {
+            int index = history.Count;
+            PopulationData population = block.community[index];
+            PopulationHistory added = new PopulationHistory
+            {
+                name = !string.IsNullOrWhiteSpace(population.lineageName)
+                    ? population.lineageName : population.species != null
+                        ? population.species.name : "种群 " + (index + 1),
+                color = Color.HSVToRGB((index * 0.618034f + 0.53f) % 1f, 0.7f, 0.95f)
+            };
+            for (int day = 0; day < currentDay; day++) added.amounts.Add(0f);
+            history.Add(added);
+        }
         plantHistory.Add(block.plantBiomass);
         if (currentDay > 0)
         {

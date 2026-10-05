@@ -1,4 +1,11 @@
 [System.Serializable]
+public class EvolutionConversionRecord
+{
+    public SpeciesData target;
+    public int day;
+}
+
+[System.Serializable]
 public class PopulationData
 {
     public int speciesAmount; //种群数量保持整数
@@ -33,6 +40,10 @@ public class PopulationData
     public int mutationDaysElapsed;
     public int previousMutationPopulation;
     public bool mutationPopulationInitialized;
+    // 随迁徙继承，防止同一分支在目标物种仍存活时反复转化。
+    public System.Collections.Generic.List<EvolutionConversionRecord> evolutionConversions =
+        new System.Collections.Generic.List<EvolutionConversionRecord>();
+    [System.NonSerialized] public bool evolutionCheckReady;
 
     //因变量
     public int environmentalFitness;    //0~100，越强越利于繁殖
