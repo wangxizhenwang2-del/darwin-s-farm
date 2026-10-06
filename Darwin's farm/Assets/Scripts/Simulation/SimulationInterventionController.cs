@@ -23,6 +23,13 @@ public struct SimulationInterventionRequest
     public WaterCoverage waterTarget;
 }
 
+[Serializable]
+public struct SimulationEnvironmentEdit
+{
+    public int temperature, humidity, elevation, habitatRecovery;
+    public float maxPlantBiomass, plantBiomass;
+}
+
 public sealed class SimulationInterventionTarget
 {
     public Vector2Int Coordinate { get; internal set; }
@@ -248,6 +255,71 @@ public sealed class SimulationInterventionController : MonoBehaviour
                     lastAppliedDay = simulationTime.currentDay
                 });
         return true;
+    }
+
+    public bool TryApplyCommunity(Vector2Int coordinate,
+        IReadOnlyList<SimulationPopulationEdit> edits, out string error)
+    {
+        error = null;
+        if (!isActiveAndEnabled || bridge == null || simulationController == null ||
+            !bridge.TryGetBlock(coordinate, out BlockInfo block))
+        {
+            error = "目标地块已不存在";
+            return false;
+        }
+        if (!simulationController.ApplyCommunityEdits(block, edits))
+        {
+            error = "群落输入无效、地块已改变，或纯水地块不能新增陆地种群";
+            return false;
+        }
+        return true;
+    }
+
+    // Direct single-tile editor controls use the same runtime mutation boundary.
+    public bool TryApplyEnvironment(Vector2Int coordinate,
+        SimulationEnvironmentEdit edit, out string error)
+    {
+        error = null;
+        if (!isActiveAndEnabled || bridge == null || gridManager == null ||
+            simulationController == null ||
+            !bridge.TryGetBlock(coordinate, out BlockInfo block) ||
+            !gridManager.TryGetTile(coordinate, out MapTileInstance tile))
+        {
+            error = "目标地块已不存在";
+            return false;
+        }
+        if (edit.temperature < 0 || edit.temperature > 100 ||
+            edit.humidity < 0 || edit.humidity > 100 ||
+            edit.elevation < 0 || edit.elevation > 2 ||
+            edit.habitatRecovery < 0 ||
+            float.IsNaN(edit.maxPlantBiomass) ||
+            float.IsInfinity(edit.maxPlantBiomass) ||
+            edit.maxPlantBiomass < 0f ||
+            float.IsNaN(edit.plantBiomass) ||
+            float.IsInfinity(edit.plantBiomass) ||
+            edit.plantBiomass < 0f ||
+            edit.plantBiomass > edit.maxPlantBiomass)
+        {
+            error = "环境输入超出允许范围";
+            return false;
+        }
+        if (tile.HeightLevel != edit.elevation &&
+            !gridManager.TrySetTileHeight(coordinate, edit.elevation))
+        {
+            error = "高度修改失败";
+            return false;
+        }
+        simulationController.ApplyPlantCapacity(block, edit.maxPlantBiomass);
+        simulationController.ApplyEnvironment(block, edit.temperature,
+            edit.humidity, edit.habitatRecovery);
+        simulationController.ApplyPlantBiomass(block, edit.plantBiomass);
+        return true;
+    }
+
+    public void ApplyTuning(SimulationTuning tuning, float secondsPerDay)
+    {
+        simulationController.ApplyTuning(tuning);
+        simulationTime.SetSecondsPerDay(secondsPerDay);
     }
 
     private static bool TryPreviewTarget(SimulationInterventionRequest request,

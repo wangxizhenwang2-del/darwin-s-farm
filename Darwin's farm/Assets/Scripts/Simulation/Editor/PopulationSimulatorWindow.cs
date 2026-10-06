@@ -89,6 +89,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
     private void OnDisable()
     {
         EditorApplication.update -= UpdateSimulation;
+        StopLiveRecording();
         if (liveInterventions != null) liveInterventions.ClearPreview();
         DestroyRuntime();
     }
@@ -101,7 +102,11 @@ public partial class PopulationSimulatorWindow : EditorWindow
         {
             liveGameMode = nextLiveMode;
             if (liveGameMode) running = false;
-            else if (liveInterventions != null) liveInterventions.ClearPreview();
+            else
+            {
+                StopLiveRecording();
+                if (liveInterventions != null) liveInterventions.ClearPreview();
+            }
         }
         GUILayout.Label(liveGameMode ? "鼠标地块实时数据" : "独立数值测试");
         EditorGUILayout.EndHorizontal();

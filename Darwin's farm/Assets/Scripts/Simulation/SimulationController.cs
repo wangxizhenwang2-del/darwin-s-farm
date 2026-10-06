@@ -1,11 +1,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// A draft may refer to an existing resident or describe a new population.
+public sealed class SimulationPopulationEdit
+{
+    public PopulationData Resident;
+    public PopulationData Draft;
+}
+
+[System.Serializable]
+public struct SimulationTuning
+{
+    public float reproductionScale, overCapacityDeathRate, starvationDeathRate;
+    public float levelOnePreyFraction, levelTwoPreyFraction;
+    public bool mutationEnabled, migrationEnabled, ecologicalNichesEnabled;
+    public int mutationInterval, migrationInterval, migrationCooldownDays;
+    public float mutationStep, selectionStrength, migrationPopulationScale;
+    public float overloadThreshold, baseOverloadProbability, overloadMigrationFraction;
+}
+
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
     public event System.Action<int> OnDaySimulated;
     public event System.Action<BlockInfo> OnBlockEnvironmentChanged;
+    public event System.Action<BlockInfo> OnBlockCommunityChanged;
     // 库存低于上限的 40% 时维持完整日恢复量；更密集时逐步减速。
     private const float FullPlantGrowthUntilFraction = 0.4f;
 
@@ -54,6 +73,117 @@ public partial class SimulationController : MonoBehaviour
     {
         blockInfos = blocks ?? new List<BlockInfo>();
         UpdateSpeciesStatuses();
+    }
+
+    public SimulationTuning ReadTuning() => new SimulationTuning
+    {
+        reproductionScale = reproductionScale,
+        overCapacityDeathRate = maxOverCapacityDeathRate,
+        starvationDeathRate = maxStarvationDeathRate,
+        levelOnePreyFraction = levelOnePreyFraction,
+        levelTwoPreyFraction = levelTwoPreyFraction,
+        mutationEnabled = mutationEnabled,
+        mutationInterval = mutationInterval,
+        mutationStep = mutationStep,
+        selectionStrength = selectionStrength,
+        migrationEnabled = migrationEnabled,
+        migrationInterval = migrationInterval,
+        migrationPopulationScale = migrationPopulationScale,
+        overloadThreshold = overloadThreshold,
+        baseOverloadProbability = baseOverloadProbability,
+        overloadMigrationFraction = overloadMigrationFraction,
+        migrationCooldownDays = migrationCooldownDays,
+        ecologicalNichesEnabled = ecologicalNichesEnabled
+    };
+
+    public void ApplyTuning(SimulationTuning tuning)
+    {
+        SetParameters(tuning.reproductionScale, tuning.overCapacityDeathRate,
+            tuning.starvationDeathRate);
+        SetPredationFractions(tuning.levelOnePreyFraction, tuning.levelTwoPreyFraction);
+        SetMutationParameters(tuning.mutationInterval, tuning.mutationStep,
+            tuning.selectionStrength);
+        SetMutationEnabled(tuning.mutationEnabled);
+        SetMigrationParameters(tuning.migrationEnabled, tuning.migrationInterval,
+            tuning.migrationPopulationScale, tuning.overloadThreshold,
+            tuning.baseOverloadProbability, tuning.overloadMigrationFraction,
+            tuning.migrationCooldownDays);
+        SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
+    }
+
+    public bool ApplyPlantCapacity(BlockInfo block, float maximum)
+    {
+        if (block == null || !blockInfos.Contains(block) ||
+            float.IsNaN(maximum) || float.IsInfinity(maximum) || maximum < 0f)
+            return false;
+        if (Mathf.Abs(block.maxPlantBiomass - maximum) < 0.0001f) return true;
+        block.maxPlantBiomass = maximum;
+        block.plantBiomass = Mathf.Min(block.plantBiomass, maximum);
+        NotifyEnvironmentChanged();
+        OnBlockEnvironmentChanged?.Invoke(block);
+        return true;
+    }
+
+    // Keep existing population identity and count, as the standalone simulator does.
+    // Omitting a resident removes it; a null resident creates a new population.
+    public bool ApplyCommunityEdits(BlockInfo block,
+        IReadOnlyList<SimulationPopulationEdit> edits)
+    {
+        if (block == null || !blockInfos.Contains(block) || edits == null ||
+            block.community == null) return false;
+        HashSet<PopulationData> seen = new HashSet<PopulationData>();
+        foreach (SimulationPopulationEdit edit in edits)
+        {
+            if (edit == null || edit.Draft == null ||
+                edit.Draft.speciesAmount < 0 ||
+                edit.Draft.fitTemperature < 0 || edit.Draft.fitTemperature > 100 ||
+                edit.Draft.fitHumidity < 0 || edit.Draft.fitHumidity > 100 ||
+                edit.Draft.size < 1 || edit.Draft.size > 100 ||
+                edit.Draft.movementAbility < 0 || edit.Draft.movementAbility > 100 ||
+                edit.Draft.fertility < 0 || edit.Draft.fertility > 100 ||
+                edit.Draft.trophicLevel < 0 ||
+                edit.Draft.trophicLevel > MaxTrophicLevel ||
+                (edit.Resident == null && edit.Draft.speciesAmount > 0 &&
+                 ecologicalNichesEnabled && HabitatTopology.IsPureWater(block)) ||
+                (edit.Resident != null &&
+                 (!block.community.Contains(edit.Resident) || !seen.Add(edit.Resident))))
+                return false;
+        }
+
+        List<PopulationData> next = new List<PopulationData>(edits.Count);
+        foreach (SimulationPopulationEdit edit in edits)
+        {
+            PopulationData draft = edit.Draft;
+            if (edit.Resident == null)
+            {
+                if (draft.speciesAmount <= 0) continue;
+                next.Add(draft);
+                continue;
+            }
+            PopulationData resident = edit.Resident;
+            resident.species = draft.species;
+            resident.lineageName = draft.lineageName;
+            if (!string.IsNullOrWhiteSpace(draft.speciesId))
+                resident.speciesId = draft.speciesId;
+            resident.ecologicalNiche = draft.ecologicalNiche;
+            resident.fitTemperature = draft.fitTemperature;
+            resident.temperatureMutationRemainder = 0f;
+            resident.fitHumidity = draft.fitHumidity;
+            resident.humidityMutationRemainder = 0f;
+            resident.size = draft.size;
+            resident.sizeMutationRemainder = 0f;
+            resident.movementAbility = draft.movementAbility;
+            resident.movementMutationRemainder = 0f;
+            resident.fertility = draft.fertility;
+            resident.fertilityMutationRemainder = 0f;
+            SetTrophicLevel(resident, draft.trophicLevel);
+            next.Add(resident);
+        }
+        block.community = next;
+        UpdateSpeciesStatuses();
+        NotifyEnvironmentChanged();
+        OnBlockCommunityChanged?.Invoke(block);
+        return true;
     }
 
     public static float CalculatePlantGrowth(float stock, float maximum, int recovery)

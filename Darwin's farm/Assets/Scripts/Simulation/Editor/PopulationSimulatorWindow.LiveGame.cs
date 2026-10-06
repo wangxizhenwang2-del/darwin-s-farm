@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,6 +22,10 @@ public partial class PopulationSimulatorWindow
     private bool hasLiveCoordinate;
     private string liveMessage;
     private Vector2 liveScroll;
+    [SerializeField] private int livePage;
+    [SerializeField] private int liveEditPage;
+    private readonly List<PopulationInput> livePopulations = new List<PopulationInput>();
+    private BlockInfo liveDraftBlock;
 
     private void ResolveLiveGame()
     {
@@ -55,7 +60,11 @@ public partial class PopulationSimulatorWindow
         MapTileInstance tile = hit.collider.GetComponentInParent<MapTileInstance>();
         if (tile == null || tile.Block == null) return;
         if (!hasLiveCoordinate || liveCoordinate != tile.Coordinate)
+        {
             liveMessage = null;
+            liveDraftBlock = null;
+            liveEnvironmentBlock = null;
+        }
         liveCoordinate = tile.Coordinate;
         hasLiveCoordinate = true;
     }
@@ -65,6 +74,9 @@ public partial class PopulationSimulatorWindow
         if (!EditorApplication.isPlaying)
         {
             hasLiveCoordinate = false;
+            liveDraftBlock = null;
+            livePopulations.Clear();
+            StopLiveRecording();
             EditorGUILayout.HelpBox("进入 Play 模式后，把鼠标移到 Game 视图中的地块上。", MessageType.Info);
             return;
         }
@@ -82,14 +94,60 @@ public partial class PopulationSimulatorWindow
             return;
         }
 
+        EnsureLiveRecording();
+
         liveScroll = EditorGUILayout.BeginScrollView(liveScroll);
-        EditorGUILayout.LabelField("最近鼠标指向的地块 " + liveCoordinate +
-            "    Day " + liveTime.currentDay, EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("地块 " + liveCoordinate + "    ·    Day " +
+            liveTime.currentDay, EditorStyles.boldLabel);
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("继续")) liveTime.Play();
         if (GUILayout.Button("暂停")) liveTime.Pause();
         if (GUILayout.Button("2 倍速")) liveTime.DoubleSpeed();
+        if (GUILayout.Button("下一天")) liveTime.NextDay();
         EditorGUILayout.EndHorizontal();
+        int nextPage = GUILayout.Toolbar(livePage, new[] { "地块概览", "编辑与干预", "趋势与每日输出" });
+        if (nextPage != livePage)
+        {
+            livePage = nextPage;
+            if (livePage != 1) liveInterventions.ClearPreview();
+        }
+        EditorGUILayout.Space(6f);
+        if (livePage == 0)
+        {
+            DrawLiveOverview(block);
+        }
+        else if (livePage == 1)
+        {
+            int nextEditPage = GUILayout.Toolbar(liveEditPage,
+                new[] { "环境", "种群", "固定变量", "范围干预" });
+            if (nextEditPage != liveEditPage)
+            {
+                liveEditPage = nextEditPage;
+                if (liveEditPage != 3) liveInterventions.ClearPreview();
+            }
+            EditorGUILayout.Space(4f);
+            switch (liveEditPage)
+            {
+                case 0: DrawLiveEnvironment(block); break;
+                case 1: DrawLiveCommunity(block); break;
+                case 2: DrawLiveTuning(); break;
+                case 3: DrawLiveIntervention(); break;
+            }
+        }
+        else
+        {
+            DrawLiveChart(block);
+            DrawLiveOutput(block);
+        }
+        if (!string.IsNullOrEmpty(liveMessage))
+            EditorGUILayout.HelpBox(liveMessage, MessageType.Info);
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawLiveOverview(BlockInfo block)
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.LabelField("环境数据", EditorStyles.boldLabel);
         EditorGUILayout.LabelField("温度 " + block.temperature +
             "    湿度 " + block.humidity + "    高度 " + block.elevation);
         EditorGUILayout.LabelField("基础状态 " + block.waterCoverage);
@@ -98,8 +156,9 @@ public partial class PopulationSimulatorWindow
             "    每日恢复 " + block.habitatRecovery);
         EditorGUILayout.LabelField("今日生长 " + block.plantGrowthToday.ToString("F1") +
             "    今日消耗 " + block.consumedBiomassToday.ToString("F1"));
+        EditorGUILayout.EndVertical();
 
-        EditorGUILayout.Space();
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.LabelField("当前种群", EditorStyles.boldLabel);
         bool anyPopulation = false;
         if (block.community != null)
@@ -124,14 +183,95 @@ public partial class PopulationSimulatorWindow
             }
         if (!anyPopulation)
             EditorGUILayout.LabelField("本地块暂无存活种群");
+        EditorGUILayout.EndVertical();
+    }
 
-        DrawLiveIntervention();
-        EditorGUILayout.EndScrollView();
+    private void ReadLiveCommunity(BlockInfo block)
+    {
+        livePopulations.Clear();
+        if (block.community != null)
+            foreach (PopulationData population in block.community)
+            {
+                if (population == null) continue;
+                livePopulations.Add(new PopulationInput
+                {
+                    name = population.species != null
+                        ? population.species.SpeciesName : population.lineageName,
+                    data = CopyPopulation(population),
+                    runtimePopulation = population
+                });
+            }
+        liveDraftBlock = block;
+    }
+
+    private void DrawLiveCommunity(BlockInfo block)
+    {
+        if (liveDraftBlock != block) ReadLiveCommunity(block);
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.LabelField("群落配置（待应用）", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("现有种群保留当前数量；初始数量只用于新增种群。",
+            EditorStyles.miniLabel);
+        int removeIndex = -1;
+        for (int i = 0; i < livePopulations.Count; i++)
+        {
+            PopulationInput input = livePopulations[i];
+            if (input.data == null) input.data = new PopulationData();
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.BeginHorizontal();
+            input.expanded = EditorGUILayout.Foldout(input.expanded, input.name, true);
+            if (GUILayout.Button("删除", GUILayout.Width(50f))) removeIndex = i;
+            EditorGUILayout.EndHorizontal();
+            if (input.expanded)
+            {
+                input.name = EditorGUILayout.TextField("名称（无物种资产时作同族标识）", input.name);
+                DrawInitialTrophicLevel(input.data);
+                if (input.runtimePopulation != null)
+                    EditorGUILayout.LabelField("当前数量", input.runtimePopulation.speciesAmount.ToString());
+                else
+                    input.data.speciesAmount = Mathf.Max(0,
+                        EditorGUILayout.IntField("新种群初始数量", input.data.speciesAmount));
+                input.data.fitTemperature = EditorGUILayout.IntSlider("适宜温度", input.data.fitTemperature, 0, 100);
+                input.data.fitHumidity = EditorGUILayout.IntSlider("适宜湿度", input.data.fitHumidity, 0, 100);
+                input.data.size = EditorGUILayout.IntSlider("体型", input.data.size, 1, 100);
+                input.data.movementAbility = EditorGUILayout.IntSlider("运动能力", input.data.movementAbility, 0, 100);
+                input.data.fertility = EditorGUILayout.IntSlider("繁殖能力", input.data.fertility, 0, 100);
+            }
+            EditorGUILayout.EndVertical();
+        }
+        if (removeIndex >= 0) livePopulations.RemoveAt(removeIndex);
+        if (GUILayout.Button("+ 添加种群"))
+            livePopulations.Add(CreatePopulation("种群 " + (livePopulations.Count + 1)));
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("应用群落修改到游戏"))
+        {
+            List<SimulationPopulationEdit> edits = new List<SimulationPopulationEdit>();
+            foreach (PopulationInput input in livePopulations)
+                edits.Add(new SimulationPopulationEdit
+                {
+                    Resident = input.runtimePopulation,
+                    Draft = CopyPopulationInput(input)
+                });
+            bool success = liveInterventions.TryApplyCommunity(liveCoordinate, edits,
+                out string error);
+            liveMessage = success ? "群落修改已应用" : error;
+            if (success)
+            {
+                LogLive(block, "群落配置已修改");
+                ReadLiveCommunity(block);
+            }
+        }
+        if (GUILayout.Button("读取当前群落"))
+        {
+            ReadLiveCommunity(block);
+            liveMessage = "已读取当前地块的群落";
+        }
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
     }
 
     private void DrawLiveIntervention()
     {
-        EditorGUILayout.Space();
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.LabelField("环境干预（开发测试入口）", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox("经济系统尚未接入，本页暂不扣费。范围内只修改已放置地块。",
             MessageType.Info);
@@ -184,9 +324,11 @@ public partial class PopulationSimulatorWindow
                 liveMessage = success
                     ? "已应用到 " + result.Targets.Count + " 个地块"
                     : result.Error;
+                if (success && liveBridge.TryGetBlock(liveCoordinate, out BlockInfo site))
+                    LogLive(site, "环境干预 " + request.kind +
+                        "，影响 " + result.Targets.Count + " 格");
                 liveInterventions.ClearPreview();
             }
-        if (!string.IsNullOrEmpty(liveMessage))
-            EditorGUILayout.HelpBox(liveMessage, MessageType.Info);
+        EditorGUILayout.EndVertical();
     }
 }

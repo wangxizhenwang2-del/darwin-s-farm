@@ -8,6 +8,19 @@ public class SimulationTime : MonoBehaviour
     private float time=0;
     public int currentDay;
     public event Action<int> OnDayChanged;
+    public float SecondsPerDay => basicDayLength;
+
+    public void SetSecondsPerDay(float seconds)
+    {
+        if (float.IsNaN(seconds) || float.IsInfinity(seconds)) return;
+        basicDayLength = Mathf.Max(0.05f, seconds);
+    }
+
+    public void NextDay()
+    {
+        currentDay++;
+        OnDayChanged?.Invoke(currentDay);
+    }
 
     void Start()
     {
@@ -20,9 +33,8 @@ public class SimulationTime : MonoBehaviour
         // 一帧跨过多天时逐天补算
         while (time >= basicDayLength)
         {
-            currentDay++;
             time -= basicDayLength;
-            OnDayChanged?.Invoke(currentDay); //授时
+            NextDay(); //授时
             Debug.Log("Day "+currentDay);
         }
     }

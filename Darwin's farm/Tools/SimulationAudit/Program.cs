@@ -140,6 +140,36 @@ static partial class Program
         Console.WriteLine("MIGRATION_MERGE asset_and_name=merged weighted_traits=exact overload=empty_only return=blocked_until_environment_edit");
     }
 
+    static void CommunityEditTests()
+    {
+        var resident = Pop(0, 20);
+        var removed = Pop(0, 8);
+        var site = Block(100, 1000f, resident, removed);
+        var controller = Controller();
+        controller.SetBlocks(new List<BlockInfo> { site });
+        var stale = Pop(0, 2);
+        if (controller.ApplyCommunityEdits(site, new List<SimulationPopulationEdit>
+            {
+                new SimulationPopulationEdit { Resident = stale, Draft = Pop(0, 3) }
+            }) || site.community.Count != 2)
+            throw new Exception("stale community draft changed the block");
+
+        var edited = Pop(1, 999);
+        edited.fitTemperature = 63;
+        var newcomer = Pop(0, 4);
+        newcomer.lineageName = "new";
+        if (!controller.ApplyCommunityEdits(site, new List<SimulationPopulationEdit>
+            {
+                new SimulationPopulationEdit { Resident = resident, Draft = edited },
+                new SimulationPopulationEdit { Draft = newcomer }
+            }) || site.community.Count != 2 || site.community[0] != resident ||
+            resident.speciesAmount != 20 || resident.fitTemperature != 63 ||
+            resident.trophicLevel != 1 || site.community[1] != newcomer ||
+            newcomer.speciesAmount != 4 || site.community.Contains(removed))
+            throw new Exception("community edit did not preserve, add and remove populations");
+        Console.WriteLine("COMMUNITY_EDIT preserve_count=ok create=ok remove=ok stale=blocked");
+    }
+
     static void DirectedMutationTests()
     {
         UnityEngine.Random.InitState(7);
@@ -868,6 +898,7 @@ static partial class Program
             Explore("F", MatrixBlock("F"), 500);
             return;
         }
+        CommunityEditTests();
         MigrationMergeTests();
         LiveTrophicLevelTests();
         DirectedMutationTests();

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#152b25">
+  <title>Darwin Atlas · 生物网络工作台</title>
+  <meta name="description" content="协作整理物种、进化关系和食物网，导出 Darwin's Farm 物种数据。">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">✳</span><div><b>DARWIN <i>ATLAS</i></b><small>生物网络工作台</small></div></div>
+      <div class="section-label">工作空间</div>
+      <button class="nav active" data-view="evolution"><span class="nav-icon">◇</span><span>进化网络</span><kbd id="evolution-count">0</kbd></button>
+      <button class="nav" data-view="food"><span class="nav-icon">↗</span><span>食物网</span><kbd id="food-count">0</kbd></button>
+      <div class="sidebar-spacer"></div>
+      <div class="section-label">数据管理</div>
+      <button class="side-action" id="refresh-remote">↻ <span>读取 GitHub 数据</span></button>
+      <button class="side-action" id="import-button">⇧ <span>导入 JSON</span></button>
+      <button class="side-action" id="export-button">⇩ <span>导出 JSON</span></button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden>
+      <div class="source-card"><span class="source-dot"></span><div><b id="source-title">本地工作副本</b><small id="source-subtitle">自动保存在此浏览器</small></div></div>
+      <a class="repo-link" href="https://github.com/wangxizhenwang2-del/darwin-s-farm/tree/main/web-studio" target="_blank" rel="noopener">查看 GitHub 仓库 <span>↗</span></a>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="breadcrumbs">DARWIN'S FARM <span>/</span> <strong id="breadcrumb">进化网络</strong></div><div class="top-actions"><span class="save-state" id="save-state">● 本地已保存</span><button class="icon-button" id="help-button" title="使用说明">?</button><div class="avatar">DF</div></div></header>
+      <section class="workspace-head"><div><div class="eyebrow">ECOSYSTEM DESIGN STUDIO <span>·</span> V1.1</div><h1 id="page-title">进化网络</h1><p id="page-description">用实线连接可相互演化的物种，也包含退化路径。</p></div><div class="head-actions"><button class="button secondary" id="fit-button">适应画布</button><button class="button primary" id="add-species">＋ 新建物种</button></div></section>
+      <section class="stats"><div><span>物种总数</span><b id="species-stat">0</b><small>已收录物种</small></div><div><span id="relation-label">进化关系</span><b id="relation-stat">0</b><small id="relation-description">已建立连接</small></div><div><span>营养层级</span><b id="level-stat">0</b><small>0 食草 · 1/2 捕食</small></div><div class="tip"><span class="tip-icon">✦</span><p id="mode-tip">无箭头实线表示双向演化；食物网仍用单向箭头。</p></div></section>
+      <section class="canvas-shell"><div class="canvas-toolbar"><div class="view-pills"><button class="pill active" data-view="evolution">◇ 进化关系</button><button class="pill" data-view="food">↗ 食物关系</button></div><div class="toolbar-right"><button class="tool-button" id="connect-button" title="连接两个节点">↗ <span>连接物种</span></button><span class="divider"></span><button class="tool-button" id="zoom-out" title="缩小">−</button><span id="zoom-label">100%</span><button class="tool-button" id="zoom-in" title="放大">＋</button></div></div>
+        <div class="canvas-viewport" id="viewport"><div class="canvas-grid" id="canvas-grid"></div><div class="canvas-world" id="world"><svg class="edges" id="edges" aria-hidden="true"><defs><marker id="arrow-food" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 1 1 L 10 6 L 1 11" fill="none" stroke="#d9ae6b" stroke-width="2" stroke-linejoin="round"/></marker></defs><g id="edge-lines"></g></svg><div id="nodes"></div></div><div class="canvas-hint" id="canvas-hint">拖动物种卡片调整位置 · 点击「连接物种」建立双向关系</div><div class="zoom-badge" id="zoom-badge">100%</div></div>
+      </section>
+      <div class="footer-line"><span>◉ <strong>工作提示</strong>：编辑会保存在当前浏览器。导出后将 JSON 提交到仓库即可与组员共享。</span><a href="https://github.com/wangxizhenwang2-del/darwin-s-farm/edit/main/web-studio/data/bioweb.json" target="_blank" rel="noopener">在 GitHub 更新数据 ↗</a></div>
+    </main>
+    <aside class="inspector" id="inspector"><div class="inspector-header"><div><span class="section-label">物种详情</span><h2 id="inspector-title">选择一个物种</h2></div><button class="close-button" id="close-inspector">×</button></div><div id="inspector-body" class="inspector-empty">点击画布中的节点，查看并编辑物种属性。</div></aside>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <dialog id="species-dialog"><form method="dialog" id="species-form"><div class="dialog-head"><span>新建物种</span><button value="cancel" aria-label="关闭">×</button></div><label>物种名称<input name="name" required maxlength="40" placeholder="例如：林地兔"></label><label>图片地址（可选）<input name="image" type="url" placeholder="https://..."></label><div class="dialog-actions"><button class="button secondary" value="cancel">取消</button><button class="button primary" value="save">创建物种</button></div></form></dialog>
+  <dialog id="help-dialog"><div class="dialog-head"><span>使用说明</span><button id="close-help" aria-label="关闭">×</button></div><div class="help-content"><p><b>建立关系</b>：点击「连接物种」，再点击两个物种。进化网络用无箭头实线表示双向关系，可进化也可退化；食物网的箭头从猎物指向捕食者。</p><p><b>协作更新</b>：网站打开时会读取仓库的 <code>web-studio/data/bioweb.json</code>。本地编辑后导出 JSON，替换仓库中的文件并提交 PR；其他成员刷新页面即可看到合并后的版本。</p><p><b>数据范围</b>：物种字段与 Unity 的 <code>SpeciesData</code> 对齐。食物箭头单独保存在 JSON 中；当前 Unity 模拟器仍按营养级计算捕食，尚未读取具体捕食连线。</p></div></dialog>
+  <script src="./app.js" defer></script>
+</body>
+</html>
