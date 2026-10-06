@@ -26,6 +26,8 @@ public class MapBuildModeController : MonoBehaviour
     [SerializeField, Min(0.01f)]
     private float heightOffset = 0.08f;
 
+    private float previewHeight;
+
     public bool IsBuildMode { get; private set; }
 
     private void Awake()
@@ -143,7 +145,7 @@ public class MapBuildModeController : MonoBehaviour
         float halfSize = MapGridManager.TileSize * 0.5f;
 
         Vector3 center = gridManager.GridToWorld(coordinate);
-        center.y += heightOffset;
+        center.y += heightOffset + previewHeight;
 
         line.SetPositions(new Vector3[]
         {
@@ -172,5 +174,16 @@ public class MapBuildModeController : MonoBehaviour
             gridManager.TilesChanged -= HandleTilesChanged;
 
         SetBuildMode(false);
+    }
+
+    public void SetPreviewHeight(float height)
+    {
+        if (Mathf.Approximately(previewHeight, height))
+            return;
+
+        previewHeight = height;
+
+        if (IsBuildMode)
+            RefreshPreview();
     }
 }

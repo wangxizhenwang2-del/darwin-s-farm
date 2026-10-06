@@ -3,9 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-#if ENABLE_INPUT_SYSTEM
+
 using UnityEngine.InputSystem;
-#endif
 
 // 先更新相机，再让拖拽预览计算鼠标对应的位置。
 [DefaultExecutionOrder(-100)]
@@ -92,7 +91,7 @@ public class ScreenEdgeCamera : MonoBehaviour
         float scroll = 0f;
         bool hasMouse = false;
 
-#if ENABLE_INPUT_SYSTEM
+
         Keyboard keyboard = Keyboard.current;
 
         if (keyboard != null)
@@ -128,39 +127,11 @@ public class ScreenEdgeCamera : MonoBehaviour
             mousePosition = Mouse.current.position.ReadValue();
             scroll = Mouse.current.scroll.ReadValue().y;
         }
-#else
-        if (Input.GetKey(KeyCode.W) ||
-            Input.GetKey(KeyCode.UpArrow))
-        {
-            movement.y += 1f;
-        }
 
-        if (Input.GetKey(KeyCode.S) ||
-            Input.GetKey(KeyCode.DownArrow))
-        {
-            movement.y -= 1f;
-        }
-
-        if (Input.GetKey(KeyCode.D) ||
-            Input.GetKey(KeyCode.RightArrow))
-        {
-            movement.x += 1f;
-        }
-
-        if (Input.GetKey(KeyCode.A) ||
-            Input.GetKey(KeyCode.LeftArrow))
-        {
-            movement.x -= 1f;
-        }
-
-        hasMouse = true;
-        mousePosition = Input.mousePosition;
-        scroll = Input.mouseScrollDelta.y;
-#endif
 
         movement = Vector2.ClampMagnitude(movement, 1f);
 
-        // 相机的右方向投影到地图水平面。
+        // 相机的右方向投影到地图水平面,用于找到相机朝向地面的右方向
         Vector3 right =
             Vector3.ProjectOnPlane(transform.right, Vector3.up);
 

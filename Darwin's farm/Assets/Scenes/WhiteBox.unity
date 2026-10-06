@@ -1659,7 +1659,7 @@ MonoBehaviour:
   maxOrthographicSize: 70
   minFieldOfView: 10
   maxFieldOfView: 70
-  returnResponsiveness: 6
+  returnResponsiveness: 5
 --- !u!1 &1706416254
 GameObject:
   m_ObjectHideFlags: 0
