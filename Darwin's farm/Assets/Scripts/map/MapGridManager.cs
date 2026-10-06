@@ -211,6 +211,20 @@ public class MapGridManager : MonoBehaviour
         return true;
     }
 
+    // The future player operation layer validates cost and permission before calling this.
+    public bool TrySetTileHeight(Vector2Int coordinate, int level)
+    {
+        if (!initialized || level < 0 || level > 2 ||
+            !tiles.TryGetValue(coordinate, out MapTileInstance tile) ||
+            tile.HeightLevel == level)
+            return false;
+
+        tile.SetHeightLevel(level, GridToWorld(coordinate));
+        TilesChanged?.Invoke();
+        mapNavigation.RequestUpdate();
+        return true;
+    }
+
     private void CreatePart(
         Transform parent,
         string partName,

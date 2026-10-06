@@ -4,26 +4,50 @@ using UnityEngine;
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
+    public event System.Action<int> OnDaySimulated;
+    public event System.Action<BlockInfo> OnBlockEnvironmentChanged;
     // 库存低于上限的 40% 时维持完整日恢复量；更密集时逐步减速。
     private const float FullPlantGrowthUntilFraction = 0.4f;
 
     [SerializeField] private SimulationTime simulationTime;
     [SerializeField] private List<BlockInfo> blockInfos = new List<BlockInfo>();
+    private bool activeForTime;
+    private bool subscribedToTime;
 
     private void OnEnable()
     {
-        if (simulationTime != null)
-        {
-            simulationTime.OnDayChanged += SimulateDay;
-        }
+        activeForTime = true;
+        SubscribeToTime();
     }
 
     private void OnDisable()
     {
+        activeForTime = false;
+        UnsubscribeFromTime();
+    }
+
+    // Runtime map setup may bind the clock after this component was enabled.
+    public void BindTime(SimulationTime time)
+    {
+        if (simulationTime == time) return;
+        UnsubscribeFromTime();
+        simulationTime = time;
+        SubscribeToTime();
+    }
+
+    private void SubscribeToTime()
+    {
+        if (!activeForTime || simulationTime == null || subscribedToTime) return;
+        simulationTime.OnDayChanged += SimulateDay;
+        subscribedToTime = true;
+    }
+
+    private void UnsubscribeFromTime()
+    {
+        if (!subscribedToTime) return;
         if (simulationTime != null)
-        {
             simulationTime.OnDayChanged -= SimulateDay;
-        }
+        subscribedToTime = false;
     }
 
     public void SetBlocks(List<BlockInfo> blocks)
@@ -71,6 +95,40 @@ public partial class SimulationController : MonoBehaviour
         block.habitatRecovery = recovery;
         NotifyEnvironmentChanged();
         RetryMutationSoon(block);
+        OnBlockEnvironmentChanged?.Invoke(block);
+        return true;
+    }
+
+    public bool ApplyPlantBiomass(BlockInfo block, float stock)
+    {
+        if (block == null || float.IsNaN(stock) || float.IsInfinity(stock))
+            return false;
+        stock = Mathf.Clamp(stock, 0f, Mathf.Max(0f, block.maxPlantBiomass));
+        if (Mathf.Abs(block.plantBiomass - stock) < 0.0001f) return false;
+        block.plantBiomass = stock;
+        NotifyEnvironmentChanged();
+        OnBlockEnvironmentChanged?.Invoke(block);
+        return true;
+    }
+
+    // P1 terrain conversion covers land and a pure-water tile only.
+    public bool ApplyWaterCoverage(BlockInfo block, WaterCoverage coverage)
+    {
+        if (block == null || (coverage != WaterCoverage.Land &&
+                              coverage != WaterCoverage.Lake) ||
+            block.waterCoverage == coverage)
+            return false;
+        if (block.community != null)
+            foreach (PopulationData population in block.community)
+                if (population != null && population.speciesAmount > 0)
+                    return false;
+
+        block.waterCoverage = coverage;
+        block.SetRiverBanks(null);
+        block.SetWaterLinks(null);
+        NotifyEnvironmentChanged();
+        RetryMutationSoon(block);
+        OnBlockEnvironmentChanged?.Invoke(block);
         return true;
     }
 
@@ -88,11 +146,14 @@ public partial class SimulationController : MonoBehaviour
             RunMigration(day);
         }
         UpdateSpeciesStatuses();
+        OnDaySimulated?.Invoke(day);
     }
 
     public void SimulateBlock(BlockInfo block)
     {
         if (block == null || block.community == null) return;
+        // The aquatic food loop is reserved for P2; a pure-water tile does not grow land plants.
+        if (ecologicalNichesEnabled && HabitatTopology.IsPureWater(block)) return;
 
         block.community.RemoveAll(population => population == null);
         foreach (PopulationData population in block.community)

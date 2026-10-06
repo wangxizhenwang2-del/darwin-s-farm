@@ -64,6 +64,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
     {
         PopulationSimulatorWindow window = GetWindow<PopulationSimulatorWindow>("种群数值模拟器");
         window.minSize = new Vector2(520f, 640f);
+        if (EditorApplication.isPlaying) window.liveGameMode = true;
     }
 
     private void OnEnable()
@@ -88,11 +89,28 @@ public partial class PopulationSimulatorWindow : EditorWindow
     private void OnDisable()
     {
         EditorApplication.update -= UpdateSimulation;
+        if (liveInterventions != null) liveInterventions.ClearPreview();
         DestroyRuntime();
     }
 
     private void OnGUI()
     {
+        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+        bool nextLiveMode = GUILayout.Toggle(liveGameMode, "连接游戏", EditorStyles.toolbarButton);
+        if (nextLiveMode != liveGameMode)
+        {
+            liveGameMode = nextLiveMode;
+            if (liveGameMode) running = false;
+            else if (liveInterventions != null) liveInterventions.ClearPreview();
+        }
+        GUILayout.Label(liveGameMode ? "鼠标地块实时数据" : "独立数值测试");
+        EditorGUILayout.EndHorizontal();
+        if (liveGameMode)
+        {
+            DrawLiveGame();
+            return;
+        }
+
         DrawControls();
 
         bool nextMigrationEnabled = EditorGUILayout.Toggle("启用迁徙", migrationEnabled);
@@ -493,6 +511,16 @@ public partial class PopulationSimulatorWindow : EditorWindow
     {
         // 编辑器时间驱动模拟，不要求进入游戏播放模式
         double now = EditorApplication.timeSinceStartup;
+        if (liveGameMode)
+        {
+            if (EditorApplication.isPlaying)
+            {
+                UpdateLiveHover();
+                Repaint();
+            }
+            lastUpdate = now;
+            return;
+        }
         if (running && block != null)
         {
             elapsedTime += (now - lastUpdate) * speeds[speedIndex];

@@ -1,5 +1,8 @@
 using System;
 
+// Unity supplies this namespace in the editor; the standalone audit uses no annotations.
+namespace JetBrains.Annotations { }
+
 namespace UnityEngine
 {
     public class MonoBehaviour { }

@@ -13,6 +13,7 @@ public class MapTileInstance : MonoBehaviour
     public Vector2Int Coordinate => coordinate;
     public MapTileDefinition Definition => definition;
     public int HeightLevel => heightLevel;
+    public BlockInfo Block => GetComponent<BlockInfo>();
 
     public int RotationSteps => rotationSteps;
     public float RotationDegrees => rotationSteps * 90f;
@@ -43,6 +44,13 @@ public class MapTileInstance : MonoBehaviour
         SouthBorder = FindRenderer("Border_South");
         EastBorder = FindRenderer("Border_East");
         WestBorder = FindRenderer("Border_West");
+    }
+
+    // Change the instance height without mutating the tile preset asset.
+    internal void SetHeightLevel(int level, Vector3 gridOrigin)
+    {
+        heightLevel = level;
+        transform.position = gridOrigin + Vector3.up * level * MapGridManager.HeightStep;
     }
 
     private Renderer FindRenderer(string childName)

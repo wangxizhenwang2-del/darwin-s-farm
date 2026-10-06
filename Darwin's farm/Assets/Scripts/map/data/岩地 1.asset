@@ -15,3 +15,9 @@ MonoBehaviour:
   displayName: "\u5CA9\u5730"
   biome: 2
   mainColor: {r: 0.33962262, g: 0.22309393, b: 0.12281944, a: 1}
+  initialTemperature: 20
+  initialHumidity: 30
+  initialPlantBiomass: 300
+  maxPlantBiomass: 4000
+  habitatRecovery: 100
+  initialWaterCoverage: 0

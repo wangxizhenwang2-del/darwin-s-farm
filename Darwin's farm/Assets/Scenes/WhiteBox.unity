@@ -1023,6 +1023,10 @@ GameObject:
   - component: {fileID: 1541449668}
   - component: {fileID: 1541449669}
   - component: {fileID: 1541449670}
+  - component: {fileID: 1541449671}
+  - component: {fileID: 1541449672}
+  - component: {fileID: 1541449673}
+  - component: {fileID: 1541449674}
   m_Layer: 0
   m_Name: MapSystem
   m_TagString: Untagged
@@ -1116,6 +1120,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapTileColorTransitionSystem
   gridManager: {fileID: 1541449667}
   vertexColorMaterial: {fileID: 2100000, guid: 17b69ac77d450ec4da4450e033d8b3e9, type: 2}
+--- !u!114 &1541449671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d250444df2269a6499b0a68b21c97306, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SimulationTime
+  currentDay: 0
+--- !u!114 &1541449672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3240788aee4bd2f43a263fb6050c811f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SimulationController
+  simulationTime: {fileID: 1541449671}
+  blockInfos: []
+  migrationEnabled: 1
+  ecologicalNichesEnabled: 1
+--- !u!114 &1541449673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 182b3e2d985b4ec38d40b8f4d6149a5c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MapSimulationBridge
+  gridManager: {fileID: 1541449667}
+  simulationController: {fileID: 1541449672}
+  simulationTime: {fileID: 1541449671}
+--- !u!114 &1541449674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f7f3ab47e8c4ea694f4e7c7c63a219a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SimulationInterventionController
+  gridManager: {fileID: 1541449667}
+  bridge: {fileID: 1541449673}
+  simulationController: {fileID: 1541449672}
+  simulationTime: {fileID: 1541449671}
+  maxRadius: 2
 --- !u!1 &1640010066
 GameObject:
   m_ObjectHideFlags: 0
