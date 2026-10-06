@@ -72,14 +72,15 @@ public static class DarwinAtlasImporter
             EditorUtility.SetDirty(asset);
         }
 
+        // Each line is an undirected relationship: either species can evolve
+        // into the other when its current traits fit the target species.
         if (network.evolutionLinks != null)
             foreach (Link link in network.evolutionLinks)
-                if (link != null && byId.TryGetValue(link.from, out SpeciesData ancestor)
-                    && byId.TryGetValue(link.to, out SpeciesData descendant)
-                    && ancestor != descendant && !ancestor.evolutionTargets.Contains(descendant))
+                if (link != null && byId.TryGetValue(link.from, out SpeciesData first)
+                    && byId.TryGetValue(link.to, out SpeciesData second) && first != second)
                 {
-                    ancestor.evolutionTargets.Add(descendant);
-                    EditorUtility.SetDirty(ancestor);
+                    AddEvolutionTarget(first, second);
+                    AddEvolutionTarget(second, first);
                 }
 
         EnsureFolder("Assets", "Resources");
@@ -94,6 +95,13 @@ public static class DarwinAtlasImporter
     {
         if (!AssetDatabase.IsValidFolder(parent + "/" + name))
             AssetDatabase.CreateFolder(parent, name);
+    }
+
+    private static void AddEvolutionTarget(SpeciesData source, SpeciesData target)
+    {
+        if (source.evolutionTargets.Contains(target)) return;
+        source.evolutionTargets.Add(target);
+        EditorUtility.SetDirty(source);
     }
 
     private static string SafeFileName(string id)
