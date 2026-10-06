@@ -4,7 +4,15 @@ public enum BiomeType
 {
     Grass,
     Sand,
-    Rock
+    Rock,
+    Forest,
+    Rainforest,
+    Grassland,
+    Desert,
+    Tundra,
+    Highland,
+    SnowMountain,
+    Volcano
 }
 //在project 中创建新资源，用来记录地块的相关信息
 [CreateAssetMenu(

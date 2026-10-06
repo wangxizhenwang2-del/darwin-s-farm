@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7722ac77dd8ea8d42846e03da83d0862, type: 3}
+  m_Name: "\u8352\u6f20"
+  m_EditorClassIdentifier: Assembly-CSharp::MapTileDefinition
+  displayName: "\u8352\u6f20"
+  biome: 6
+  mainColor: {r: 0.78823529, g: 0.79607843, b: 0.55294118, a: 1}
+  heightLevel: 0
+  initialTemperature: 80
+  initialHumidity: 20
+  initialPlantBiomass: 1500
+  maxPlantBiomass: 150000
+  habitatRecovery: 15000
+  initialWaterCoverage: 0
