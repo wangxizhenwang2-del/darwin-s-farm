@@ -265,7 +265,7 @@ G(候选性状) = 预计出生 − 预计自然死亡 − 预计被捕食
 | 植物分配与捕食 | `Assets/Scripts/Simulation/FoodWeb.cs` |
 | 变异规则 | `Assets/Scripts/Simulation/SimulationController.Mutation.cs` |
 | 迁徙决策与执行 | `Assets/Scripts/Simulation/SimulationController.Migration.cs`、`PopulationTransfer.cs` |
-| 预留的海陆空生态位 | `Assets/Scripts/Simulation/SimulationController.Niches.cs`、`WaterRegion.cs` |
+| 预留的海陆空生态位 | `Assets/Scripts/Simulation/SimulationController.Niches.cs`、`HabitatTopology.cs` |
 | 地块输入、植物库存、群落、邻居 | `Assets/Scripts/BioData/BlockInfo.cs` |
 | 种群性状、结果指标和小数余量 | `Assets/Scripts/BioData/PopulationData.cs` |
 | 物种初始食性 | `Assets/Scripts/BioData/SpeciesData.cs` |
