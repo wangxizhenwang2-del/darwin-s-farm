@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 先分植物，再逐级分猎物。食物规则只接收地块和繁殖倍率，不持有控制器状态。
+// 食物供给与捕食计算独立于模拟控制器的状态。
 internal static class FoodWeb
 {
     private const float PreyEnergyPerSize = 15f;

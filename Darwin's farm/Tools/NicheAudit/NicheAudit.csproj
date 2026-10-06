@@ -13,13 +13,9 @@
     <Compile Include="../../Assets/Scripts/BioData/BlockInfo.cs" Link="BlockInfo.cs" />
     <Compile Include="../../Assets/Scripts/BioData/EcologicalNiche.cs" Link="EcologicalNiche.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/SimulationController.cs" Link="SimulationController.cs" />
-    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Population.cs" Link="SimulationController.Population.cs" />
-    <Compile Include="../../Assets/Scripts/Simulation/FoodWeb.cs" Link="FoodWeb.cs" />
-    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Mutation.cs" Link="SimulationController.Mutation.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.FoodWeb.cs" Link="SimulationController.FoodWeb.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Evolution.cs" Link="SimulationController.Evolution.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Migration.cs" Link="SimulationController.Migration.cs" />
-    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Niches.cs" Link="SimulationController.Niches.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/HabitatTopology.cs" Link="HabitatTopology.cs" />
-    <Compile Include="../../Assets/Scripts/Simulation/PopulationTransfer.cs" Link="PopulationTransfer.cs" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 `SimulationController` 的 `ecologicalNichesEnabled` 默认为关闭。可在 Inspector 或通过
 `SetEcologicalNichesEnabled` 设置。`SimulateDay`、`SimulateBlock` 和现有自动陆地迁徙
-目前不会调用生态位转换规则；这些规则通过 `SimulationController.Niches.cs` 的独立入口供后续接线。
+目前不会调用生态位转换规则；这些规则通过 `SimulationController.Migration.cs` 的独立入口供后续接线。
 开关打开时，旧陆地迁徙会跳过河流与纯水地块，避免把陆生种群当作独立居民放进河道。
 种群数值模拟器显示“启用生态位（预留）”开关，但开启后仍只运行原有每日模拟。
 

@@ -258,16 +258,17 @@ G(候选性状) = 预计出生 − 预计自然死亡 − 预计被捕食
 
 ## 08 · 快速对照源码
 
+`Assets/Scripts/Simulation` 根目录保留六个脚本。游戏代码调用 `SimulationController` 的公开方法；`FoodWeb`、`PopulationTransfer` 和水域拓扑类型是规则实现，不需要额外挂载。
+
 | 内容 | 源码位置 |
 |:--|:--|
-| 每日执行顺序 | `Assets/Scripts/Simulation/SimulationController.cs` |
-| 适应度、出生死亡 | `Assets/Scripts/Simulation/SimulationController.Population.cs` |
-| 植物分配与捕食 | `Assets/Scripts/Simulation/FoodWeb.cs` |
-| 变异规则 | `Assets/Scripts/Simulation/SimulationController.Mutation.cs` |
-| 迁徙决策与执行 | `Assets/Scripts/Simulation/SimulationController.Migration.cs`、`PopulationTransfer.cs` |
-| 预留的海陆空生态位 | `Assets/Scripts/Simulation/SimulationController.Niches.cs`、`HabitatTopology.cs` |
+| 每日执行顺序与种群结算 | `Assets/Scripts/Simulation/SimulationController.cs` |
+| 植物分配与捕食 | `Assets/Scripts/Simulation/SimulationController.FoodWeb.cs` |
+| 性状变异、预测与预设物种演化 | `Assets/Scripts/Simulation/SimulationController.Evolution.cs` |
+| 陆地迁徙、海陆空生态位与种群转移 | `Assets/Scripts/Simulation/SimulationController.Migration.cs` |
+| 河岸、邻接和水域连通 | `Assets/Scripts/Simulation/HabitatTopology.cs` |
+| 游戏模拟日时钟 | `Assets/Scripts/Simulation/SimulationTime.cs` |
 | 地块输入、植物库存、群落、邻居 | `Assets/Scripts/BioData/BlockInfo.cs` |
 | 种群性状、结果指标和小数余量 | `Assets/Scripts/BioData/PopulationData.cs` |
 | 物种初始食性 | `Assets/Scripts/BioData/SpeciesData.cs` |
 | 单/双地块模拟器输入与显示 | `Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.cs`、`PopulationSimulatorWindow.Migration.cs` |
-| 游戏模拟日时钟 | `Assets/Scripts/Simulation/SimulationTime.cs` |
