@@ -74,6 +74,9 @@ public class MapTilePlacementController : MonoBehaviour
 
         draggingDefinition = definition;
 
+        buildMode.SetPreviewHeight(
+    definition.heightLevel * MapGridManager.HeightStep);
+
         CreatePreview();
 
         // 鼠标此时还在UI上，先隐藏场景预览。
@@ -299,6 +302,9 @@ public class MapTilePlacementController : MonoBehaviour
         rotationSteps = 0;
         draggingDefinition = null;
         canPlace = false;
+
+        if (buildMode != null)
+            buildMode.SetPreviewHeight(0f);
 
         if (previewObject != null)
         {
