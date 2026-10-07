@@ -19,6 +19,7 @@ public struct SimulationInterventionRequest
     public Vector2Int center;
     public int radius;
     public float amount;
+    // Legacy serialization only. Runtime duration is determined by the operation kind.
     public int durationDays;
     public WaterCoverage waterTarget;
 }
@@ -51,29 +52,31 @@ public sealed class SimulationInterventionPreview
 // Cost calculation and payment belong to the future Simulation/Economy system.
 public sealed class SimulationInterventionController : MonoBehaviour
 {
-    private sealed class OngoingEffect
-    {
-        public Vector2Int coordinate;
-        public BlockInfo block;
-        public SimulationInterventionKind kind;
-        public float amount;
-        public int remainingDays;
-        public int lastAppliedDay;
-    }
-
     [SerializeField] private MapGridManager gridManager;
     [SerializeField] private MapSimulationBridge bridge;
     [SerializeField] private SimulationController simulationController;
     [SerializeField] private SimulationTime simulationTime;
-    [SerializeField, Range(0, 4)] private int maxRadius = 2;
+    private SimulationEnvironmentController environment;
 
-    private readonly List<OngoingEffect> ongoing = new List<OngoingEffect>();
     private readonly List<LineRenderer> previewOutlines = new List<LineRenderer>();
     private readonly List<Vector2Int> previewCoordinates = new List<Vector2Int>();
     private readonly List<int> previewHeights = new List<int>();
     private Material previewMaterial;
-    public int MaxRadius => maxRadius;
-    public int OngoingEffectCount => ongoing.Count;
+    public int MaxRadius => 0;
+    public int OngoingEffectCount
+    {
+        get
+        {
+            int count = 0;
+            if (Environment != null)
+                foreach (var item in Environment.ReadAll())
+                    if (item.Environment.HasLocalClimate || item.Environment.HasMonsoon ||
+                        item.Environment.Recovery.Phase != DarwinFarm.Environment.EffectPhase.None) count++;
+            return count;
+        }
+    }
+    private SimulationEnvironmentController Environment => environment != null ? environment :
+        environment = GetComponent<SimulationEnvironmentController>();
 
     private void Awake()
     {
@@ -90,18 +93,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        if (simulationController != null)
-            simulationController.OnDaySimulated += ApplyOngoingEffects;
-    }
-
-    private void OnDisable()
-    {
-        if (simulationController != null)
-            simulationController.OnDaySimulated -= ApplyOngoingEffects;
-        ClearPreview();
-    }
+    private void OnDisable() => ClearPreview();
 
     public void ShowPreview(SimulationInterventionPreview preview)
     {
@@ -184,77 +176,63 @@ public sealed class SimulationInterventionController : MonoBehaviour
             preview.Error = "干预控制器未就绪";
             return preview;
         }
-        if (request.radius < 0 || request.radius > maxRadius ||
-            request.durationDays < 1 || request.durationDays > 30 ||
-            float.IsNaN(request.amount) || float.IsInfinity(request.amount) ||
-            Mathf.Abs(request.amount) > 1000000f)
+        if (request.radius != 0 || float.IsNaN(request.amount) || float.IsInfinity(request.amount))
         {
-            preview.Error = "范围、持续天数或变化量不合法";
+            preview.Error = "单格操作只允许半径 0；季风通过发源点专用接口部署";
             return preview;
         }
-        bool terrain = request.kind == SimulationInterventionKind.Elevation ||
-                       request.kind == SimulationInterventionKind.WaterCoverage;
-        if (terrain && request.durationDays != 1)
+        if (!bridge.TryGetBlock(request.center, out BlockInfo block))
         {
-            preview.Error = "地貌改造只能一次完成";
+            preview.Error = "目标地块不存在";
             return preview;
         }
-        if (!bridge.TryGetBlock(request.center, out _))
+        float before, after;
+        if (request.kind == SimulationInterventionKind.WaterCoverage)
         {
-            preview.Error = "鼠标位置没有已放置地块";
-            return preview;
+            if (request.waterTarget != WaterCoverage.Land && request.waterTarget != WaterCoverage.Lake)
+                preview.Error = "目前只支持陆地与湖水基础状态";
+            if (block.community != null)
+                foreach (PopulationData population in block.community)
+                    if (population != null && population.speciesAmount > 0)
+                        preview.Error = "有存活种群时不能直接改变水陆状态";
+            before = (int)block.waterCoverage; after = (int)request.waterTarget;
+            if (before == after) preview.Error = "目标状态没有改变";
         }
-
-        for (int dx = -request.radius; dx <= request.radius; dx++)
-        for (int dy = -request.radius; dy <= request.radius; dy++)
+        else
         {
-            if (Mathf.Abs(dx) + Mathf.Abs(dy) > request.radius) continue;
-            Vector2Int coordinate = request.center + new Vector2Int(dx, dy);
-            if (!bridge.TryGetBlock(coordinate, out BlockInfo block)) continue;
-            if (!TryPreviewTarget(request, coordinate, block,
-                    out SimulationInterventionTarget target, out string error))
+            if (Environment == null)
+            { preview.Error = "环境控制器未就绪"; return preview; }
+            if (!Environment.TryPreview(request.center, request.kind, request.amount,
+                out var target, out string error))
             {
                 preview.Error = error;
-                preview.Targets.Clear();
                 return preview;
             }
-            if (target != null) preview.Targets.Add(target);
+            var state = target.Before.Environment;
+            before = request.kind == SimulationInterventionKind.Temperature ? (float)state.Temperature.Value :
+                request.kind == SimulationInterventionKind.Humidity ? (float)state.Humidity.Value :
+                request.kind == SimulationInterventionKind.PlantRecovery ? (float)state.Recovery.Value :
+                request.kind == SimulationInterventionKind.Elevation ? state.Elevation : target.Before.PlantStock;
+            after = (float)target.Target;
         }
-
-        if (preview.Targets.Count == 0)
-            preview.Error = "目标地块的数值不会改变";
+        if (preview.Error == null)
+            preview.Targets.Add(new SimulationInterventionTarget
+            {
+                Coordinate = request.center, Block = block, NextValue = after,
+                Before = FormatValue(request.kind, before), After = FormatValue(request.kind, after)
+            });
         return preview;
     }
 
-    public bool TryApply(SimulationInterventionRequest request,
-        out SimulationInterventionPreview result)
+    public bool TryApply(SimulationInterventionRequest request, out SimulationInterventionPreview result)
     {
         result = Preview(request);
         if (!result.IsValid) return false;
-
-        // Validate the full range before starting any changes.
-        foreach (SimulationInterventionTarget target in result.Targets)
-        {
-            if (!ApplyValue(request.kind, target.Block, target.Coordinate,
-                    target.NextValue))
-            {
-                result.Error = "提交时地块状态已改变，请重新预览";
-                return false;
-            }
-        }
-
-        if (request.durationDays > 1)
-            foreach (SimulationInterventionTarget target in result.Targets)
-                ongoing.Add(new OngoingEffect
-                {
-                    coordinate = target.Coordinate,
-                    block = target.Block,
-                    kind = request.kind,
-                    amount = request.amount,
-                    remainingDays = request.durationDays - 1,
-                    lastAppliedDay = simulationTime.currentDay
-                });
-        return true;
+        if (request.kind == SimulationInterventionKind.WaterCoverage)
+            return simulationController.ApplyWaterCoverage(result.Targets[0].Block, request.waterTarget);
+        bool applied = Environment.TryApply(request.center, request.kind, request.amount, out string error);
+        if (!applied) result.Error = error;
+        return applied;
     }
 
     public bool TryApplyCommunity(Vector2Int coordinate,
@@ -280,123 +258,15 @@ public sealed class SimulationInterventionController : MonoBehaviour
         SimulationEnvironmentEdit edit, out string error)
     {
         error = null;
-        if (!isActiveAndEnabled || bridge == null || gridManager == null ||
-            simulationController == null ||
-            !bridge.TryGetBlock(coordinate, out BlockInfo block) ||
-            !gridManager.TryGetTile(coordinate, out MapTileInstance tile))
-        {
-            error = "目标地块已不存在";
-            return false;
-        }
-        if (edit.temperature < 0 || edit.temperature > 100 ||
-            edit.humidity < 0 || edit.humidity > 100 ||
-            edit.elevation < 0 || edit.elevation > 2 ||
-            edit.habitatRecovery < 0 ||
-            float.IsNaN(edit.maxPlantBiomass) ||
-            float.IsInfinity(edit.maxPlantBiomass) ||
-            edit.maxPlantBiomass < 0f ||
-            float.IsNaN(edit.plantBiomass) ||
-            float.IsInfinity(edit.plantBiomass) ||
-            edit.plantBiomass < 0f ||
-            edit.plantBiomass > edit.maxPlantBiomass)
-        {
-            error = "环境输入超出允许范围";
-            return false;
-        }
-        if (tile.HeightLevel != edit.elevation &&
-            !gridManager.TrySetTileHeight(coordinate, edit.elevation))
-        {
-            error = "高度修改失败";
-            return false;
-        }
-        simulationController.ApplyPlantCapacity(block, edit.maxPlantBiomass);
-        simulationController.ApplyEnvironment(block, edit.temperature,
-            edit.humidity, edit.habitatRecovery);
-        simulationController.ApplyPlantBiomass(block, edit.plantBiomass);
-        return true;
+        if (!isActiveAndEnabled || Environment == null)
+        { error = "环境控制器未就绪"; return false; }
+        return Environment.TryEditEnvironment(coordinate, edit, out error);
     }
 
     public void ApplyTuning(SimulationTuning tuning, float secondsPerDay)
     {
         simulationController.ApplyTuning(tuning);
         simulationTime.SetSecondsPerDay(secondsPerDay);
-    }
-
-    private static bool TryPreviewTarget(SimulationInterventionRequest request,
-        Vector2Int coordinate, BlockInfo block,
-        out SimulationInterventionTarget target, out string error)
-    {
-        target = null;
-        error = null;
-        if ((request.kind == SimulationInterventionKind.PlantBiomass ||
-             request.kind == SimulationInterventionKind.PlantRecovery) &&
-            HabitatTopology.IsPureWater(block))
-        {
-            error = "范围内有纯水地块，不能进行陆地植物干预";
-            return false;
-        }
-        float before;
-        float after;
-        switch (request.kind)
-        {
-            case SimulationInterventionKind.Temperature:
-                before = block.temperature;
-                after = Mathf.Clamp(block.temperature + Mathf.RoundToInt(request.amount), 0, 100);
-                break;
-            case SimulationInterventionKind.Humidity:
-                before = block.humidity;
-                after = Mathf.Clamp(block.humidity + Mathf.RoundToInt(request.amount), 0, 100);
-                break;
-            case SimulationInterventionKind.PlantBiomass:
-                before = block.plantBiomass;
-                after = Mathf.Clamp(before + request.amount, 0f,
-                    Mathf.Max(0f, block.maxPlantBiomass));
-                break;
-            case SimulationInterventionKind.PlantRecovery:
-                before = block.habitatRecovery;
-                after = Mathf.Max(0, block.habitatRecovery + Mathf.RoundToInt(request.amount));
-                break;
-            case SimulationInterventionKind.Elevation:
-                before = block.elevation;
-                after = block.elevation + Mathf.RoundToInt(request.amount);
-                if (after < 0 || after > 2)
-                {
-                    error = "范围内有地块的目标高度超出 0–2";
-                    return false;
-                }
-                break;
-            case SimulationInterventionKind.WaterCoverage:
-                if (request.waterTarget != WaterCoverage.Land &&
-                    request.waterTarget != WaterCoverage.Lake)
-                {
-                    error = "P1 仅支持陆地与湖水基础状态";
-                    return false;
-                }
-                if (block.community != null)
-                    foreach (PopulationData population in block.community)
-                        if (population != null && population.speciesAmount > 0)
-                        {
-                            error = "范围内有存活种群，不能直接改变水陆状态";
-                            return false;
-                        }
-                before = (int)block.waterCoverage;
-                after = (int)request.waterTarget;
-                break;
-            default:
-                error = "未知干预类型";
-                return false;
-        }
-
-        if (Mathf.Abs(after - before) < 0.0001f) return true;
-        target = new SimulationInterventionTarget
-        {
-            Coordinate = coordinate,
-            Block = block,
-            NextValue = after,
-            Before = FormatValue(request.kind, before),
-            After = FormatValue(request.kind, after)
-        };
-        return true;
     }
 
     private static string FormatValue(SimulationInterventionKind kind, float value)
@@ -407,56 +277,4 @@ public sealed class SimulationInterventionController : MonoBehaviour
             ? value.ToString("F1") : value.ToString("F0");
     }
 
-    private bool ApplyValue(SimulationInterventionKind kind, BlockInfo block,
-        Vector2Int coordinate, float value)
-    {
-        switch (kind)
-        {
-            case SimulationInterventionKind.Temperature:
-                return simulationController.ApplyEnvironment(block, (int)value,
-                    block.humidity, block.habitatRecovery);
-            case SimulationInterventionKind.Humidity:
-                return simulationController.ApplyEnvironment(block, block.temperature,
-                    (int)value, block.habitatRecovery);
-            case SimulationInterventionKind.PlantBiomass:
-                return simulationController.ApplyPlantBiomass(block, value);
-            case SimulationInterventionKind.PlantRecovery:
-                return simulationController.ApplyEnvironment(block, block.temperature,
-                    block.humidity, (int)value);
-            case SimulationInterventionKind.Elevation:
-                return gridManager.TrySetTileHeight(coordinate, (int)value);
-            case SimulationInterventionKind.WaterCoverage:
-                return simulationController.ApplyWaterCoverage(block,
-                    (WaterCoverage)(int)value);
-            default:
-                return false;
-        }
-    }
-
-    private void ApplyOngoingEffects(int day)
-    {
-        for (int i = ongoing.Count - 1; i >= 0; i--)
-        {
-            OngoingEffect effect = ongoing[i];
-            if (day <= effect.lastAppliedDay) continue;
-            if (!bridge.TryGetBlock(effect.coordinate, out BlockInfo currentBlock) ||
-                currentBlock != effect.block)
-            {
-                ongoing.RemoveAt(i);
-                continue;
-            }
-            effect.lastAppliedDay = day;
-            SimulationInterventionRequest step = new SimulationInterventionRequest
-            {
-                kind = effect.kind,
-                amount = effect.amount,
-                durationDays = 1
-            };
-            if (TryPreviewTarget(step, effect.coordinate, effect.block,
-                    out SimulationInterventionTarget target, out _) && target != null)
-                ApplyValue(effect.kind, effect.block, effect.coordinate, target.NextValue);
-            effect.remainingDays--;
-            if (effect.remainingDays <= 0) ongoing.RemoveAt(i);
-        }
-    }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 // Keeps the placed square grid and the simulation's block graph in sync.
 public sealed class MapSimulationBridge : MonoBehaviour
 {
+    public event System.Action BlockGraphSynchronized;
     private static readonly Vector2Int[] Directions =
     {
         Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down
@@ -28,6 +29,9 @@ public sealed class MapSimulationBridge : MonoBehaviour
         }
 
         simulationController.BindTime(simulationTime);
+        // Runtime attachment also supports existing scenes without changing collaborators' map setup.
+        if (GetComponent<SimulationEnvironmentController>() == null)
+            gameObject.AddComponent<SimulationEnvironmentController>();
     }
 
     private void OnEnable()
@@ -93,18 +97,19 @@ public sealed class MapSimulationBridge : MonoBehaviour
         simulationController.SetBlocks(blocks);
         if (existingHeightChanged)
             simulationController.NotifyEnvironmentChanged();
+        BlockGraphSynchronized?.Invoke();
     }
 
     private static void InitializeBlock(BlockInfo block, MapTileDefinition preset,
         int elevation)
     {
+        var defaults = SimulationEnvironmentController.InitialDefaults(preset, elevation);
         block.elevation = elevation;
-        block.temperature = Mathf.Clamp(preset.initialTemperature, 0, 100);
-        block.humidity = Mathf.Clamp(preset.initialHumidity, 0, 100);
-        block.maxPlantBiomass = Mathf.Max(0f, preset.maxPlantBiomass);
-        block.plantBiomass = Mathf.Clamp(preset.initialPlantBiomass, 0f,
-            block.maxPlantBiomass);
-        block.habitatRecovery = Mathf.Max(0, preset.habitatRecovery);
+        block.temperature = defaults.Temperature;
+        block.humidity = defaults.Humidity;
+        block.maxPlantBiomass = DarwinFarm.Environment.EnvironmentRules.PlantCapacity;
+        block.plantBiomass = defaults.Recovery;
+        block.habitatRecovery = defaults.Recovery;
         block.waterCoverage = preset.initialWaterCoverage;
         block.community = new List<PopulationData>();
     }

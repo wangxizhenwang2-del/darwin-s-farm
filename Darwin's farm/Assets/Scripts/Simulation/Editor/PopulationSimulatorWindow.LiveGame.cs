@@ -8,7 +8,7 @@ public partial class PopulationSimulatorWindow
 {
     [SerializeField] private bool liveGameMode;
     [SerializeField] private SimulationInterventionKind liveKind;
-    [SerializeField] private float liveAmount = 5f;
+    [SerializeField] private float liveAmount = 25f;
     [SerializeField] private int liveRadius;
     [SerializeField] private int liveDurationDays = 1;
     [SerializeField] private WaterCoverage liveWaterTarget = WaterCoverage.Lake;
@@ -119,7 +119,7 @@ public partial class PopulationSimulatorWindow
         else if (livePage == 1)
         {
             int nextEditPage = GUILayout.Toolbar(liveEditPage,
-                new[] { "环境", "种群", "固定变量", "范围干预" });
+                new[] { "环境", "种群", "固定变量", "单格干预" });
             if (nextEditPage != liveEditPage)
             {
                 liveEditPage = nextEditPage;
@@ -273,23 +273,24 @@ public partial class PopulationSimulatorWindow
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         EditorGUILayout.LabelField("环境干预（开发测试入口）", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("经济系统尚未接入，本页暂不扣费。范围内只修改已放置地块。",
+        EditorGUILayout.HelpBox("经济系统尚未接入。此开发入口执行单格操作；季风通过独立控制器接口部署。",
             MessageType.Info);
 
         liveKind = (SimulationInterventionKind)EditorGUILayout.EnumPopup("操作", liveKind);
-        liveRadius = EditorGUILayout.IntSlider("范围半径（四邻距离）", liveRadius,
-            0, liveInterventions.MaxRadius);
-        bool terrain = liveKind == SimulationInterventionKind.Elevation ||
-                       liveKind == SimulationInterventionKind.WaterCoverage;
+        liveRadius = 0;
+
         if (liveKind == SimulationInterventionKind.WaterCoverage)
         {
             liveWaterTarget = (WaterCoverage)EditorGUILayout.EnumPopup("目标状态", liveWaterTarget);
         }
         else
         {
-            liveAmount = EditorGUILayout.FloatField("每次变化量（可为负）", liveAmount);
+            liveAmount = EditorGUILayout.FloatField("强度（可为负）", liveAmount);
         }
-        liveDurationDays = terrain ? 1 : EditorGUILayout.IntSlider("持续天数", liveDurationDays, 1, 30);
+        liveDurationDays = 1; // Compatibility field; controller owns fixed operation timelines.
+        EditorGUILayout.HelpBox("温湿度 ±25/±50：25天渐变、维持100天、25天恢复。\n" +
+            "植被增量 ±25000/±50000：立即生效，100天恢复。\n" +
+            "库存 ±0.25/±0.5：增加按上限，减少按现库存；海拔 ±1：均立即生效。", MessageType.Info);
 
         SimulationInterventionRequest request = new SimulationInterventionRequest
         {
@@ -306,13 +307,13 @@ public partial class PopulationSimulatorWindow
             EditorGUILayout.HelpBox(preview.Error, MessageType.Warning);
         else
         {
-            EditorGUILayout.LabelField("范围预览：" + preview.Targets.Count + " 个地块",
+            EditorGUILayout.LabelField("目标预览：" + preview.Targets.Count + " 个地块",
                 EditorStyles.boldLabel);
             foreach (SimulationInterventionTarget target in preview.Targets)
                 EditorGUILayout.LabelField(target.Coordinate + "    " +
                     target.Before + " → " + target.After);
             if (liveDurationDays > 1)
-                EditorGUILayout.LabelField("首次立即生效，之后每个模拟日结算后继续作用。",
+                EditorGUILayout.LabelField("时序由控制器按照操作类型执行。",
                     EditorStyles.miniLabel);
         }
 

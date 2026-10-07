@@ -1064,8 +1064,8 @@ MonoBehaviour:
   placedTiles: {fileID: 1227533140}
   mapNavigation: {fileID: 267322164}
   tileMaterial: {fileID: 2100000, guid: a8b939c6a1a18164b81f08d238b315c7, type: 2}
-  initialTile: {fileID: 11400000, guid: 715d292d3c4a4b2488c6ef86bb7d85d6, type: 2}
-  testTile: {fileID: 11400000, guid: 3ac519965a5df254cb8210cd3065b9b4, type: 2}
+  initialTile: {fileID: 11400000, guid: 786bdc6d0231451dbb3df13286b1a477, type: 2}
+  testTile: {fileID: 11400000, guid: 015789cd96df421cbdf7bdf8d9030566, type: 2}
   testCoordinate: {x: 1, y: 0}
   showAvailablePositions: 0
 --- !u!114 &1541449668
@@ -1348,9 +1348,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 910f762926d245d4830d3c3aedea0e2e, type: 2}
   - {fileID: 11400000, guid: 4f18b7555e4e45068405c3fd60ce4857, type: 2}
   - {fileID: 11400000, guid: d640625fbb334577bddde07edba27126, type: 2}
-  - {fileID: 11400000, guid: 4ca206b9b3e80f54997136a78fd5279a, type: 2}
-  - {fileID: 11400000, guid: 3ac519965a5df254cb8210cd3065b9b4, type: 2}
-  - {fileID: 11400000, guid: 715d292d3c4a4b2488c6ef86bb7d85d6, type: 2}
 --- !u!114 &1662351436
 MonoBehaviour:
   m_ObjectHideFlags: 0

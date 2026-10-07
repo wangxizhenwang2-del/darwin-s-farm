@@ -22,6 +22,8 @@ public struct SimulationTuning
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
+    // A deterministic environment step before ecology; avoids Unity event subscription-order dependencies.
+    public event System.Action<int> OnBeforeDaySimulated;
     public event System.Action<int> OnDaySimulated;
     public event System.Action<BlockInfo> OnBlockEnvironmentChanged;
     public event System.Action<BlockInfo> OnBlockCommunityChanged;
@@ -264,6 +266,7 @@ public partial class SimulationController : MonoBehaviour
 
     public void SimulateDay(int day)
     {
+        OnBeforeDaySimulated?.Invoke(day);
         var livingAtStart = LivingSpeciesByBlock();
         // 生态位开关仍是预留项，新的海陆空入口尚未排进每日流程。
         foreach (BlockInfo block in blockInfos)

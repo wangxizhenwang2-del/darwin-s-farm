@@ -165,13 +165,14 @@ public partial class PopulationSimulatorWindow
             liveEnvironment.humidity, 0, 100);
         liveEnvironment.elevation = EditorGUILayout.IntSlider("海拔",
             liveEnvironment.elevation, 0, 2);
-        liveEnvironment.maxPlantBiomass = Mathf.Max(0f,
-            EditorGUILayout.FloatField("植物生物量上限", liveEnvironment.maxPlantBiomass));
+        liveEnvironment.maxPlantBiomass = DarwinFarm.Environment.EnvironmentRules.PlantCapacity;
+        EditorGUILayout.LabelField("植物生物量上限", "1,000,000（固定）");
         liveEnvironment.plantBiomass = Mathf.Clamp(
             EditorGUILayout.FloatField("植物生物量", liveEnvironment.plantBiomass),
             0f, liveEnvironment.maxPlantBiomass);
-        liveEnvironment.habitatRecovery = Mathf.Max(0,
-            EditorGUILayout.IntField("每日恢复量", liveEnvironment.habitatRecovery));
+        liveEnvironment.habitatRecovery = Mathf.Clamp(
+            EditorGUILayout.IntField("每日恢复量", liveEnvironment.habitatRecovery), 0,
+            DarwinFarm.Environment.EnvironmentRules.MaximumRecovery);
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("应用环境修改"))
         {

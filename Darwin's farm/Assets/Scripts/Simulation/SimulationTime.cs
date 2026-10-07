@@ -8,6 +8,7 @@ public class SimulationTime : MonoBehaviour
     private float time=0;
     public int currentDay;
     public event Action<int> OnDayChanged;
+    public event Action<int> OnDayReset;
     public float SecondsPerDay => basicDayLength;
 
     public void SetSecondsPerDay(float seconds)
@@ -46,5 +47,6 @@ public class SimulationTime : MonoBehaviour
     {
         currentDay=0;
         time=0;
+        OnDayReset?.Invoke(currentDay);
     }
 }
