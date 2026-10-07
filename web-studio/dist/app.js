@@ -3,6 +3,8 @@
   const DATA_URL = 'https://raw.githubusercontent.com/wangxizhenwang2-del/darwin-s-farm/main/web-studio/data/bioweb.json';
   const STORAGE_KEY = 'darwin-atlas-draft-v1';
   const DIRTY_KEY = 'darwin-atlas-dirty-v1';
+  const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+  const MAX_STORED_IMAGE_BYTES = 256 * 1024;
   const $ = id => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   const uuid = () => crypto.randomUUID ? crypto.randomUUID() : `sp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -16,6 +18,42 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeImage = url => { try { const u = new URL(url, location.href); return ['https:','http:','data:'].includes(u.protocol) && (u.protocol !== 'data:' || /^data:image\/(png|jpeg|webp|gif);base64,/i.test(url)) ? url : ''; } catch { return ''; } };
   const imageMarkup = s => { const url = safeImage(s.image); return url ? `<img src="${esc(url)}" alt="">` : '✳'; };
+  const dataUrlBytes = url => Math.ceil((url.length - url.indexOf(',') - 1) * 3 / 4);
+  function readFileAsDataURL(file) {
+    return new Promise((resolve,reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error('无法读取图片文件'));
+      reader.readAsDataURL(file);
+    });
+  }
+  function loadImage(file) {
+    return new Promise((resolve,reject) => {
+      const url=URL.createObjectURL(file),image=new Image();
+      image.onload=()=>{URL.revokeObjectURL(url);resolve(image);};
+      image.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('图片格式无法解码'));};
+      image.src=url;
+    });
+  }
+  async function prepareImage(file) {
+    if (!['image/png','image/jpeg','image/webp','image/gif'].includes(file.type)) throw new Error('请选择 PNG、JPEG、WebP 或 GIF 图片');
+    if (file.size > MAX_UPLOAD_BYTES) throw new Error('原图请控制在 10 MB 以下');
+    if (file.size <= MAX_STORED_IMAGE_BYTES) return safeImage(await readFileAsDataURL(file));
+    const image=await loadImage(file),canvas=document.createElement('canvas'),context=canvas.getContext('2d');
+    if (!context || !image.naturalWidth || !image.naturalHeight) throw new Error('无法处理图片');
+    for (const edge of [768,640,512,384]) {
+      const ratio=Math.min(1,edge/Math.max(image.naturalWidth,image.naturalHeight));
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*ratio));
+      canvas.height=Math.max(1,Math.round(image.naturalHeight*ratio));
+      context.clearRect(0,0,canvas.width,canvas.height);
+      context.drawImage(image,0,0,canvas.width,canvas.height);
+      for (const quality of [.82,.7,.58,.46]) {
+        const url=canvas.toDataURL('image/webp',quality);
+        if (url.startsWith('data:image/webp;') && dataUrlBytes(url)<=MAX_STORED_IMAGE_BYTES) return url;
+      }
+    }
+    throw new Error('图片压缩后仍过大，请换一张图片');
+  }
   function clean(input) {
     if (!input || input.schemaVersion !== 1 || !Array.isArray(input.species)) throw new Error('文件不是 Darwin Atlas v1 数据');
     const ids = new Set();
@@ -83,6 +121,7 @@
     $('inspector-body').innerHTML=`
       <div class="inspector-image">${imageMarkup(s)}</div>
       <label class="upload-label">＋ 上传物种图片<input id="image-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden></label>
+      <small class="upload-note">支持最大 10 MB 原图，上传后自动压缩。</small>
       <label class="field"><span>物种名称</span><input data-field="name" maxlength="40" value="${esc(s.name)}"></label>
       <label class="field"><span>学名 / 注释</span><input data-field="scientificName" maxlength="70" value="${esc(s.scientificName)}"></label>
       <label class="field"><span>图片地址</span><input data-field="image" value="${esc(s.image)}" placeholder="https://..."></label>
@@ -122,10 +161,14 @@
   $('nodes').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const el=e.target.closest('.node');if(el){e.preventDefault();onNode(el.dataset.id);}}});
   function renderEdgesOnly(){ $('edge-lines').innerHTML=edgeMarkup(); }
   $('edge-lines').addEventListener('click',e=>{const path=e.target.closest('.edge');if(!path)return;if(confirm('删除这条关系？')){currentLinks().splice(Number(path.dataset.index),1);changed();render();}});
-  $('inspector-body').addEventListener('change',e=>{
+  $('inspector-body').addEventListener('change',async e=>{
     const s=data.species.find(x=>x.id===selected);if(!s)return;
     if(e.target.id==='image-upload'){
-      const file=e.target.files?.[0];if(!file)return;if(file.size>900000){toast('图片请压缩到 900 KB 以下');return;}const reader=new FileReader();reader.onload=()=>{s.image=safeImage(reader.result);changed();render();};reader.readAsDataURL(file);return;
+      const file=e.target.files?.[0];if(!file)return;
+      toast('正在处理图片…');
+      try { const image=await prepareImage(file);if(!data.species.includes(s))return;s.image=image;changed();render();toast('图片已上传并优化'); }
+      catch(error){toast(error.message || '图片处理失败');}
+      return;
     }
     const key=e.target.dataset.field;if(!key)return;
     if(['name','scientificName'].includes(key))s[key]=String(e.target.value).trim().slice(0,key==='name'?40:70)|| (key==='name'?'未命名物种':'');
