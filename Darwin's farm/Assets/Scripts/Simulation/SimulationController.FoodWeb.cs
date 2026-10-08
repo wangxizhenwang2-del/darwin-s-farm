@@ -490,6 +490,7 @@ internal static class FoodWeb
         {
             prey[i].speciesAmount -= kills[i];
             prey[i].deathsToday += kills[i];
+            prey[i].predationDeathsToday += kills[i];
         }
 
         float[] energyByPredator = new float[predators.Count];
@@ -536,6 +537,7 @@ internal static class FoodWeb
             float extra = totalForagingWeight > 0f
                 ? remainingEnergy * extraWeight / totalForagingWeight : 0f;
             float energy = energyByPredator[i] + extra;
+            predator.huntingEnergyToday = Mathf.Max(0f, energy - predator.energyReserve);
             predator.allocatedBiomass = Mathf.Min(demand, energy);
             predator.energyReserve = Mathf.Clamp(energy - demand, 0f,
                 demand * PredatorReserveDays);

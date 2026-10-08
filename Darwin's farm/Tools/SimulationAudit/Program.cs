@@ -169,7 +169,17 @@ static partial class Program
             resident.trophicLevel != 1 || site.community[1] != newcomer ||
             newcomer.speciesAmount != 4 || site.community.Contains(removed))
             throw new Exception("community edit did not preserve, add and remove populations");
-        Console.WriteLine("COMMUNITY_EDIT preserve_count=ok create=ok remove=ok stale=blocked");
+        var duplicate = Pop(0, 6, size: 20);
+        duplicate.species = newcomer.species;
+        if (!controller.ApplyCommunityEdits(site, new List<SimulationPopulationEdit>
+            {
+                new SimulationPopulationEdit { Resident = resident, Draft = resident },
+                new SimulationPopulationEdit { Resident = newcomer, Draft = newcomer },
+                new SimulationPopulationEdit { Draft = duplicate }
+            }) || site.community.Count != 2 || site.community[1] != newcomer ||
+            newcomer.speciesAmount != 10 || newcomer.size != 16)
+            throw new Exception("same-species land drafts did not merge with weighted traits");
+        Console.WriteLine("COMMUNITY_EDIT preserve_count=ok create=ok remove=ok stale=blocked duplicate_land=merged");
     }
 
     static void DirectedMutationTests()
@@ -779,8 +789,61 @@ static partial class Program
         }
     }
 
+    static void S02S03RegressionTests()
+    {
+        CommunityEditTests();
+        var hungry = Pop(0, 100);
+        var dry = Block(0, 0f, hungry);
+        dry.maxPlantBiomass = 1000000f;
+        var controller = Controller();
+        controller.SetMutationEnabled(false);
+        for (int day = 1; day <= 14; day++)
+        {
+            controller.SimulateBlock(dry);
+            if (dry.plantBiomass != 0f || dry.plantGrowthToday != 0f ||
+                dry.consumedBiomassToday != 0f || hungry.allocatedBiomass != 0f)
+                throw new Exception("S02 zero-recovery starvation was not isolated");
+        }
+        if (hungry.speciesAmount >= 100)
+            throw new Exception("S02 starving herbivores did not decline");
+
+        UnityEngine.Random.InitState(20);
+        var prey = Pop(0, 100);
+        var middle = Pop(1, 20, size: 15, movement: 30, fertility: 40);
+        var top = Pop(2, 10, size: 20, movement: 30, fertility: 35);
+        var chain = Block(100000, 100000f, prey, middle, top);
+        chain.maxPlantBiomass = 1000000f;
+        controller = Controller();
+        controller.SetMutationEnabled(false);
+        int captured = 0;
+        for (int day = 1; day <= 30; day++)
+        {
+            controller.SimulateBlock(chain);
+            captured += prey.predationDeathsToday + middle.predationDeathsToday;
+            foreach (PopulationData predator in new[] { middle, top })
+            {
+                float demand = predator.populationBeforePredation * predator.energyNeed;
+                float cap = predator.speciesAmount * predator.energyNeed *
+                    FoodWeb.PredatorReserveDays;
+                float expected = Math.Min(cap, Math.Max(0f,
+                    predator.reserveAtDayStart + predator.huntingEnergyToday - demand));
+                if (Math.Abs(predator.energyReserve - expected) > 0.02f ||
+                    predator.predationDeathsToday > predator.deathsToday)
+                    throw new Exception($"S03 predator energy ledger mismatch on day {day}");
+            }
+        }
+        if (captured <= 0)
+            throw new Exception("S03 food chain never captured prey");
+        Console.WriteLine($"S02_S03 starvation=isolated land_duplicate=merged predator_reserve=balanced captured={captured}");
+    }
+
     static void Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "s02-s03")
+        {
+            S02S03RegressionTests();
+            return;
+        }
         if (args.Length > 0 && args[0] == "scenario-matrix")
         {
             ScenarioMatrix();

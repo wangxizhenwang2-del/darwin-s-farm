@@ -54,6 +54,9 @@ public class PopulationData
     public float actualEnergySatisfactionToday; //当日实际摄食率，用于运动选择
     public int populationBeforePredation; //捕食前数量，避免捕食后分母缩小造成虚假盈余
     public float energyReserve; //捕食者吃下整只猎物后未用完的能量
+    [System.NonSerialized] public float reserveAtDayStart; //测试诊断：当日捕食前储备
+    [System.NonSerialized] public float huntingEnergyToday; //测试诊断：当日从猎物获得的能量
+    [System.NonSerialized] public int predationDeathsToday; //测试诊断：当日被捕食数量
     public int nextMigrationDay; //迁徙冷却结束后可再次参与检查的日期
     public BlockInfo lastMigrationSource; // 环境未改变时，禁止自动迁回上次迁出的地块
     public float birthRemainder; //累计不足一个体的繁殖量

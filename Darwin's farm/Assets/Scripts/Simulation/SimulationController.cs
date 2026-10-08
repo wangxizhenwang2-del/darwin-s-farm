@@ -179,7 +179,27 @@ public partial class SimulationController : MonoBehaviour
             SetTrophicLevel(resident, draft.trophicLevel);
             next.Add(resident);
         }
-        block.community = next;
+        // A land tile has one local population per species. New drafts from
+        // the editor/test entry may match a resident; use migration's same
+        // weighted transfer rule to keep one population record.
+        List<PopulationData> merged = new List<PopulationData>(next.Count);
+        foreach (PopulationData population in next)
+        {
+            PopulationData match = null;
+            if (population != null && population.speciesAmount > 0 &&
+                population.ecologicalNiche == EcologicalNiche.Land &&
+                population.landPositionBlock == null)
+            {
+                match = merged.Find(resident => resident != null &&
+                    resident.speciesAmount > 0 &&
+                    resident.ecologicalNiche == EcologicalNiche.Land &&
+                    resident.landPositionBlock == null &&
+                    PopulationTransfer.IsSameSpecies(resident, population));
+            }
+            if (match == null) merged.Add(population);
+            else PopulationTransfer.Merge(match, population);
+        }
+        block.community = merged;
         UpdateSpeciesStatuses();
         NotifyEnvironmentChanged();
         OnBlockCommunityChanged?.Invoke(block);
@@ -358,6 +378,9 @@ public partial class SimulationController : MonoBehaviour
                 population.movementAbility, population.fertility
                     + population.fertilityMutationRemainder);
             population.populationBeforePredation = Mathf.Max(0, population.speciesAmount);
+            population.reserveAtDayStart = population.energyReserve;
+            population.huntingEnergyToday = 0f;
+            population.predationDeathsToday = 0;
             population.allocatedBiomass = 0f;
             population.carryingCapacity = 0f;
             population.birthsToday = 0;
