@@ -113,12 +113,16 @@ public partial class SimulationController
         return amount < 10 ? 0 : Mathf.Min(amount, 100);
     }
 
+    // V4.1 natural migration uses a fixed 10% split regardless of why it moved.
+    public static int StandardMigrationAmount(int population) =>
+        population < 10 ? 0 : Mathf.Min(population,
+            Mathf.Clamp(Mathf.RoundToInt(population * 0.1f), 10, 100));
+
     private struct MoveCandidate
     {
         public BlockInfo target;
-        public float fitness;
-        public float terrain;
-        public float capacity;
+        public float chance;
+        public float tieBreaker;
     }
 
     private void RunMigration(int day)
@@ -127,13 +131,12 @@ public partial class SimulationController
         foreach (BlockInfo source in blockInfos)
         {
             if (source == null || source.community == null || source.Neighbors == null) continue;
-            if (ecologicalNichesEnabled && source.waterCoverage != WaterCoverage.Land) continue;
+            if (source.waterCoverage != WaterCoverage.Land) continue;
             foreach (PopulationData population in source.community)
             {
                 if (population == null || population.speciesAmount <= 0 ||
                     day < population.nextMigrationDay) continue;
-                if (ecologicalNichesEnabled &&
-                    population.ecologicalNiche != EcologicalNiche.Land) continue;
+                if (population.ecologicalNiche != EcologicalNiche.Land) continue;
                 if (TryPlanMove(source, population, plans, out MovePlan plan))
                     plans.Add(plan);
             }
@@ -145,16 +148,20 @@ public partial class SimulationController
         List<MovePlan> planned, out MovePlan plan)
     {
         plan = new MovePlan();
+        int amount = StandardMigrationAmount(population.speciesAmount);
+        if (amount == 0) return false;
         float currentFitness = CalculateFitness(source, population);
-        MoveCandidate normal = new MoveCandidate { fitness = currentFitness };
-        MoveCandidate overload = new MoveCandidate { fitness = -1f };
+        float pressure = CalculateOverloadPressure(population);
+        float baseChance = population.speciesAmount /
+            (population.speciesAmount + migrationPopulationScale);
+        List<MoveCandidate> candidates = new List<MoveCandidate>();
 
         foreach (BlockInfo neighbor in source.Neighbors)
         {
             if (neighbor == null || neighbor == source ||
                 neighbor == population.lastMigrationSource) continue;
-            if (ecologicalNichesEnabled &&
-                neighbor.waterCoverage != WaterCoverage.Land) continue;
+            if (neighbor.waterCoverage != WaterCoverage.Land ||
+                neighbor.community == null) continue;
             int heightDifference = Mathf.Abs(neighbor.elevation - source.elevation);
             if (heightDifference >= 2) continue;
             float terrain = heightDifference == 0 ? 1f : TerrainStepProbability;
@@ -163,14 +170,8 @@ public partial class SimulationController
             if (capacity <= 0f) continue;
             float fitness = CalculateFitness(neighbor, population);
 
-            if (fitness > currentFitness &&
-                (fitness > normal.fitness ||
-                 (fitness == normal.fitness && capacity > normal.capacity)))
-                normal = new MoveCandidate
-                {
-                    target = neighbor, fitness = fitness, terrain = terrain,
-                    capacity = capacity
-                };
+            float normalChance = fitness > currentFitness
+                ? (fitness - currentFitness) * terrain * baseChance * capacity : 0f;
 
             bool occupied = neighbor.community.Exists(resident =>
                 resident != null &&
@@ -179,48 +180,33 @@ public partial class SimulationController
                 move.target == neighbor &&
                 move.population.ecologicalNiche == population.ecologicalNiche &&
                 SameSpecies(move.population, population));
-            if (!occupied && (fitness > overload.fitness ||
-                (fitness == overload.fitness && capacity > overload.capacity)))
-                overload = new MoveCandidate
-                {
-                    target = neighbor, fitness = fitness, terrain = terrain,
-                    capacity = capacity
-                };
+            float overloadChance = !occupied && pressure > 0f
+                ? pressure * baseOverloadProbability * terrain * capacity : 0f;
+            float chance = Mathf.Max(normalChance, overloadChance);
+            if (chance <= 0f) continue;
+            candidates.Add(new MoveCandidate
+            {
+                target = neighbor, chance = Mathf.Clamp01(chance),
+                tieBreaker = Random.value
+            });
         }
 
-        BlockInfo target = null;
-        int amount = 0;
-        float baseChance = population.speciesAmount /
-            (population.speciesAmount + migrationPopulationScale);
-        if (normal.target != null)
+        candidates.Sort((left, right) =>
         {
-            float gain = normal.fitness - currentFitness;
-            float chance = gain * normal.terrain * baseChance * normal.capacity;
-            if (Random.value < chance)
+            int byChance = right.chance.CompareTo(left.chance);
+            return byChance != 0 ? byChance : right.tieBreaker.CompareTo(left.tieBreaker);
+        });
+        foreach (MoveCandidate candidate in candidates)
+        {
+            if (Random.value >= candidate.chance) continue;
+            plan = new MovePlan
             {
-                amount = LimitMigrationAmount(population.speciesAmount, gain);
-                if (amount > 0) target = normal.target;
-            }
+                source = source, target = candidate.target,
+                population = population, amount = amount
+            };
+            return true;
         }
-        if (target == null && overload.target != null)
-        {
-            float pressure = CalculateOverloadPressure(population);
-            float chance = pressure * baseOverloadProbability *
-                overload.terrain * overload.capacity;
-            if (pressure > 0f && Random.value < chance)
-            {
-                amount = LimitMigrationAmount(population.speciesAmount,
-                    pressure * overloadMigrationFraction);
-                if (amount > 0) target = overload.target;
-            }
-        }
-
-        if (target == null) return false;
-        plan = new MovePlan
-        {
-            source = source, target = target, population = population, amount = amount
-        };
-        return true;
+        return false;
     }
 
     private void ApplyMovePlans(List<MovePlan> plans, int day)

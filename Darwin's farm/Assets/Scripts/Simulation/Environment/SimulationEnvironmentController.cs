@@ -172,6 +172,7 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         {
             case SimulationInterventionKind.Temperature:
             case SimulationInterventionKind.Humidity:
+                if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水格不能进行温湿度干预"; return false; }
                 if (!EnvironmentRules.IsClimateStrength(amount)) { error = "温湿度强度必须为 ±25 或 ±50"; return false; }
                 var attribute = kind == SimulationInterventionKind.Temperature ? EnvironmentAttribute.Temperature : EnvironmentAttribute.Humidity;
                 target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount);
@@ -179,15 +180,16 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 enter = 25; hold = 100; returning = 25;
                 break;
             case SimulationInterventionKind.PlantRecovery:
-                if (HabitatTopology.IsPureWater(blocks[state.Position])) { error = "纯水地块不能进行陆地植物干预"; return false; }
+                if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (!EnvironmentRules.IsRecoveryStrength(amount)) { error = "增量强度必须为 ±25000 或 ±50000"; return false; }
                 target = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, state.Defaults.Recovery + amount);
                 r = EnvironmentRules.Round(target); returning = 100; break;
             case SimulationInterventionKind.PlantBiomass:
-                if (HabitatTopology.IsPureWater(blocks[state.Position])) { error = "纯水地块不能进行陆地植物干预"; return false; }
+                if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f) { error = "库存操作使用 ±0.25 或 ±0.5（25%／50%）"; return false; }
                 target = EnvironmentRules.ChangeStock(snapshot.PlantStock, amount); break;
             case SimulationInterventionKind.Elevation:
+                if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域整域改高尚未接入，不能按单格处理"; return false; }
                 if (Math.Abs(amount) != 1 || z + (int)amount < 0 || z + (int)amount > 2) { error = "海拔只能 ±1，且必须保持在 0–2"; return false; }
                 target = z + (int)amount; z = (int)target; break;
             default: error = "该操作由原有专用入口处理"; return false;

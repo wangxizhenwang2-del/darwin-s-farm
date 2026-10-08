@@ -27,8 +27,6 @@ public partial class SimulationController : MonoBehaviour
     public event System.Action<int> OnDaySimulated;
     public event System.Action<BlockInfo> OnBlockEnvironmentChanged;
     public event System.Action<BlockInfo> OnBlockCommunityChanged;
-    // 库存低于上限的 40% 时维持完整日恢复量；更密集时逐步减速。
-    private const float FullPlantGrowthUntilFraction = 0.4f;
 
     [SerializeField] private SimulationTime simulationTime;
     [SerializeField] private List<BlockInfo> blockInfos = new List<BlockInfo>();
@@ -146,7 +144,7 @@ public partial class SimulationController : MonoBehaviour
                 edit.Draft.trophicLevel < 0 ||
                 edit.Draft.trophicLevel > MaxTrophicLevel ||
                 (edit.Resident == null && edit.Draft.speciesAmount > 0 &&
-                 ecologicalNichesEnabled && HabitatTopology.IsPureWater(block)) ||
+                 HabitatTopology.IsWater(block)) ||
                 (edit.Resident != null &&
                  (!block.community.Contains(edit.Resident) || !seen.Add(edit.Resident))))
                 return false;
@@ -193,10 +191,7 @@ public partial class SimulationController : MonoBehaviour
         maximum = Mathf.Max(0f, maximum);
         if (maximum <= 0f) return 0f;
         stock = Mathf.Clamp(stock, 0f, maximum);
-        float remaining = maximum - stock;
-        float densityFactor = Mathf.Clamp01(remaining /
-            (maximum * (1f - FullPlantGrowthUntilFraction)));
-        return Mathf.Min(remaining, Mathf.Max(0, recovery) * densityFactor);
+        return Mathf.Min(maximum - stock, Mathf.Max(0, recovery));
     }
 
     public static bool SetTrophicLevel(PopulationData population, int level)
@@ -243,25 +238,11 @@ public partial class SimulationController : MonoBehaviour
         return true;
     }
 
-    // P1 terrain conversion covers land and a pure-water tile only.
+    // Player-facing land/water conversion is forbidden by V4.1. Map construction
+    // and future atomic event transactions own changes to the base tile type.
     public bool ApplyWaterCoverage(BlockInfo block, WaterCoverage coverage)
     {
-        if (block == null || (coverage != WaterCoverage.Land &&
-                              coverage != WaterCoverage.Lake) ||
-            block.waterCoverage == coverage)
-            return false;
-        if (block.community != null)
-            foreach (PopulationData population in block.community)
-                if (population != null && population.speciesAmount > 0)
-                    return false;
-
-        block.waterCoverage = coverage;
-        block.SetRiverBanks(null);
-        block.SetWaterLinks(null);
-        NotifyEnvironmentChanged();
-        RetryMutationSoon(block);
-        OnBlockEnvironmentChanged?.Invoke(block);
-        return true;
+        return false;
     }
 
     public void SimulateDay(int day)
@@ -285,8 +266,8 @@ public partial class SimulationController : MonoBehaviour
     public void SimulateBlock(BlockInfo block)
     {
         if (block == null || block.community == null) return;
-        // The aquatic food loop is reserved for P2; a pure-water tile does not grow land plants.
-        if (ecologicalNichesEnabled && HabitatTopology.IsPureWater(block)) return;
+        // Aquatic ecology is not connected yet; never run the land food loop on water.
+        if (HabitatTopology.IsWater(block)) return;
 
         block.community.RemoveAll(population => population == null);
         foreach (PopulationData population in block.community)

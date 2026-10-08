@@ -401,11 +401,11 @@ public partial class PopulationSimulatorWindow
             float normalChance = returnBlocked ? 0f : difference * terrain * basic * correction;
             float overloadChance = returnBlocked || sameSpeciesAlreadyThere ? 0f :
                 pressure * appliedBaseOverloadProbability * terrain * correction;
-            int normalAmount = returnBlocked ? 0 : SimulationController.LimitMigrationAmount(
-                population.speciesAmount, difference);
-            int overloadAmount = returnBlocked || sameSpeciesAlreadyThere ? 0 :
-                SimulationController.LimitMigrationAmount(population.speciesAmount,
-                    pressure * appliedOverloadMigrationFraction);
+            int normalAmount = returnBlocked || normalChance <= 0f ? 0 :
+                SimulationController.StandardMigrationAmount(population.speciesAmount);
+            int overloadAmount = returnBlocked || sameSpeciesAlreadyThere ||
+                overloadChance <= 0f ? 0 :
+                SimulationController.StandardMigrationAmount(population.speciesAmount);
             EditorGUILayout.LabelField("适应度 本地 " + here.ToString("P0")
                 + "    对侧 " + there.ToString("P0") + "    差值 " + difference.ToString("P0"));
             EditorGUILayout.LabelField("目标K " + capacity.ToString("F1")

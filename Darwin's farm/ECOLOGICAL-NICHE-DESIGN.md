@@ -1,5 +1,7 @@
 # 生态位系统（已实现规则，尚未接入每日模拟）
 
+> **版本说明：**本文记录旧版代码和独立入口的实现状态；其中河岸归属、旧水格类型、温湿适应和迁徙概率不再是 V4.1 的策划依据。新规则以《游戏策划案v4.1.docx》第 10～12 章为准，接入时须迁移而非沿用下列旧值。
+
 `SimulationController` 的 `ecologicalNichesEnabled` 默认为关闭。可在 Inspector 或通过
 `SetEcologicalNichesEnabled` 设置。`SimulateDay`、`SimulateBlock` 和现有自动陆地迁徙
 目前不会调用生态位转换规则；这些规则通过 `SimulationController.Migration.cs` 的独立入口供后续接线。

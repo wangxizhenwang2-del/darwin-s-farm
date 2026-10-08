@@ -7,9 +7,8 @@ public partial class SimulationController
 {
     [Header("Preset Species Evolution")]
     [SerializeField] private bool presetEvolutionEnabled = true;
-    [Min(0)] [SerializeField] private int evolutionTraitTolerance = 5;
-    [Range(0f, 1f)] [SerializeField] private float evolutionSplitFraction = 0.1f;
-    [Min(1)] [SerializeField] private int minimumEvolutionFounders = 5;
+    private const int EvolutionTraitTolerance = 5;
+    private const float EvolutionChance = 0.01f;
 
     private readonly HashSet<SpeciesData> knownSpecies = new HashSet<SpeciesData>();
     private readonly HashSet<SpeciesData> livingSpecies = new HashSet<SpeciesData>();
@@ -27,9 +26,8 @@ public partial class SimulationController
         float splitFraction, int minimumFounders)
     {
         presetEvolutionEnabled = enabled;
-        evolutionTraitTolerance = Mathf.Max(0, tolerance);
-        evolutionSplitFraction = Mathf.Clamp01(splitFraction);
-        minimumEvolutionFounders = Mathf.Max(1, minimumFounders);
+        // Retain the prototype API, but V4.1 fixes the tolerance, chance and
+        // founder count rather than allowing those parameters to change rules.
     }
 
     // 供玩家手动增删种群后同步解锁/灭绝状态。
@@ -72,21 +70,25 @@ public partial class SimulationController
     private void RunPresetEvolution(int day,
         Dictionary<BlockInfo, HashSet<SpeciesData>> livingAtStart)
     {
-        if (!presetEvolutionEnabled || !mutationEnabled || evolutionSplitFraction <= 0f)
+        if (!presetEvolutionEnabled || day <= 0 || day % 7 != 0)
             return;
         foreach (BlockInfo block in blockInfos)
         {
-            if (block == null || block.community == null) continue;
+            if (block == null || block.community == null ||
+                block.waterCoverage != WaterCoverage.Land) continue;
             // 新生成的 B 不参加同一天的另一轮演化。
             List<PopulationData> candidates = new List<PopulationData>(block.community);
             foreach (PopulationData ancestor in candidates)
             {
-                if (ancestor == null || !ancestor.evolutionCheckReady ||
-                    ancestor.species == null || ancestor.speciesAmount <= 0 ||
+                if (ancestor == null || ancestor.ecologicalNiche != EcologicalNiche.Land ||
+                    ancestor.species == null ||
+                    ancestor.species.baseEcologicalNiche != EcologicalNiche.Land ||
+                    ancestor.speciesAmount < 11 ||
                     ancestor.species.evolutionTargets == null) continue;
                 SpeciesData target = ClosestEvolutionTarget(ancestor, block, day,
                     livingAtStart);
-                if (target != null) ConvertToPresetSpecies(block, ancestor, target, day);
+                if (target != null && UnityEngine.Random.value < EvolutionChance)
+                    ConvertToPresetSpecies(block, ancestor, target, day);
             }
         }
     }
@@ -96,12 +98,17 @@ public partial class SimulationController
     {
         SpeciesData best = null;
         int bestDistance = int.MaxValue;
+        float bestFitness = -1f;
+        int ties = 0;
         foreach (SpeciesData target in source.species.evolutionTargets)
         {
-            if (target == null || target == source.species) continue;
+            if (target == null || target == source.species ||
+                target.baseEcologicalNiche != EcologicalNiche.Land ||
+                target.evolutionTargets == null ||
+                !target.evolutionTargets.Contains(source.species) ||
+                !EachTraitWithinTolerance(source, target) ||
+                HasLivingSpecies(block, target)) continue;
             int distance = TraitDistance(source, target);
-            if (distance > evolutionTraitTolerance * 5 ||
-                !EachTraitWithinTolerance(source, target)) continue;
             EvolutionConversionRecord record = source.evolutionConversions == null ? null :
                 source.evolutionConversions.Find(item => item != null && item.target == target);
             if (record != null)
@@ -109,28 +116,36 @@ public partial class SimulationController
                 bool livingBefore = livingAtStart.TryGetValue(block,
                     out HashSet<SpeciesData> atStart) && atStart.Contains(target);
                 if (livingBefore || HasLivingSpecies(block, target) ||
-                    day < record.day + Mathf.Max(1, mutationInterval)) continue;
+                    day < record.day + 7) continue;
             }
-            if (distance < bestDistance)
+            float fitness = Mathf.Clamp01(1f -
+                (Mathf.Abs(block.temperature - target.baseFitTemperature) +
+                 Mathf.Abs(block.humidity - target.baseFitHumidity)) / FitnessTolerance);
+            if (fitness > bestFitness || fitness == bestFitness && distance < bestDistance)
             {
                 best = target;
                 bestDistance = distance;
+                bestFitness = fitness;
+                ties = 1;
+            }
+            else if (fitness == bestFitness && distance == bestDistance &&
+                     UnityEngine.Random.value < 1f / ++ties)
+            {
+                best = target;
             }
         }
         return best;
     }
 
     private bool EachTraitWithinTolerance(PopulationData source, SpeciesData target) =>
-        Mathf.Abs(source.movementAbility - target.baseMovementAbility) <= evolutionTraitTolerance &&
-        Mathf.Abs(source.fitTemperature - target.baseFitTemperature) <= evolutionTraitTolerance &&
-        Mathf.Abs(source.fitHumidity - target.baseFitHumidity) <= evolutionTraitTolerance &&
-        Mathf.Abs(source.size - target.baseSize) <= evolutionTraitTolerance &&
-        Mathf.Abs(source.fertility - target.baseFertility) <= evolutionTraitTolerance;
+        Mathf.Abs(source.movementAbility - target.baseMovementAbility) <= EvolutionTraitTolerance &&
+        Mathf.Abs(source.fitTemperature - target.baseFitTemperature) <= EvolutionTraitTolerance &&
+        Mathf.Abs(source.fitHumidity - target.baseFitHumidity) <= EvolutionTraitTolerance &&
+        Mathf.Abs(source.size - target.baseSize) <= EvolutionTraitTolerance &&
+        Mathf.Abs(source.fertility - target.baseFertility) <= EvolutionTraitTolerance;
 
     private static int TraitDistance(PopulationData source, SpeciesData target) =>
         Mathf.Abs(source.movementAbility - target.baseMovementAbility) +
-        Mathf.Abs(source.fitTemperature - target.baseFitTemperature) +
-        Mathf.Abs(source.fitHumidity - target.baseFitHumidity) +
         Mathf.Abs(source.size - target.baseSize) +
         Mathf.Abs(source.fertility - target.baseFertility);
 
@@ -145,9 +160,8 @@ public partial class SimulationController
     private void ConvertToPresetSpecies(BlockInfo block, PopulationData ancestor,
         SpeciesData target, int day)
     {
-        int amount = Mathf.Max(minimumEvolutionFounders,
-            Mathf.RoundToInt(ancestor.speciesAmount * evolutionSplitFraction));
-        if (ancestor.speciesAmount - amount < minimumEvolutionFounders) return;
+        int amount = Mathf.Clamp(Mathf.RoundToInt(ancestor.speciesAmount * 0.1f), 10, 100);
+        if (ancestor.speciesAmount - amount < 1) return;
         PopulationData descendant = PopulationTransfer.Split(ancestor, amount, block,
             day, migrationCooldownDays);
         SpeciesData origin = ancestor.species;

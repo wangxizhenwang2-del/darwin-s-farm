@@ -189,14 +189,8 @@ public sealed class SimulationInterventionController : MonoBehaviour
         float before, after;
         if (request.kind == SimulationInterventionKind.WaterCoverage)
         {
-            if (request.waterTarget != WaterCoverage.Land && request.waterTarget != WaterCoverage.Lake)
-                preview.Error = "目前只支持陆地与湖水基础状态";
-            if (block.community != null)
-                foreach (PopulationData population in block.community)
-                    if (population != null && population.speciesAmount > 0)
-                        preview.Error = "有存活种群时不能直接改变水陆状态";
-            before = (int)block.waterCoverage; after = (int)request.waterTarget;
-            if (before == after) preview.Error = "目标状态没有改变";
+            preview.Error = "V4.1 不允许直接改变已建地块的陆水状态；请拆除后重建";
+            return preview;
         }
         else
         {
@@ -228,8 +222,6 @@ public sealed class SimulationInterventionController : MonoBehaviour
     {
         result = Preview(request);
         if (!result.IsValid) return false;
-        if (request.kind == SimulationInterventionKind.WaterCoverage)
-            return simulationController.ApplyWaterCoverage(result.Targets[0].Block, request.waterTarget);
         bool applied = Environment.TryApply(request.center, request.kind, request.amount, out string error);
         if (!applied) result.Error = error;
         return applied;

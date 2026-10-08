@@ -276,17 +276,13 @@ public partial class PopulationSimulatorWindow
         EditorGUILayout.HelpBox("经济系统尚未接入。此开发入口执行单格操作；季风通过独立控制器接口部署。",
             MessageType.Info);
 
-        liveKind = (SimulationInterventionKind)EditorGUILayout.EnumPopup("操作", liveKind);
+        liveKind = (SimulationInterventionKind)EditorGUILayout.Popup("操作",
+            Mathf.Clamp((int)liveKind, 0, 4), new[]
+            {
+                "温度", "湿度", "植物库存", "每日植被增量", "海拔"
+            });
         liveRadius = 0;
-
-        if (liveKind == SimulationInterventionKind.WaterCoverage)
-        {
-            liveWaterTarget = (WaterCoverage)EditorGUILayout.EnumPopup("目标状态", liveWaterTarget);
-        }
-        else
-        {
-            liveAmount = EditorGUILayout.FloatField("强度（可为负）", liveAmount);
-        }
+        liveAmount = EditorGUILayout.FloatField("强度（可为负）", liveAmount);
         liveDurationDays = 1; // Compatibility field; controller owns fixed operation timelines.
         EditorGUILayout.HelpBox("温湿度 ±25/±50：25天渐变、维持100天、25天恢复。\n" +
             "植被增量 ±25000/±50000：立即生效，100天恢复。\n" +

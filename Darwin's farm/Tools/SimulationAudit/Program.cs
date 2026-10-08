@@ -125,14 +125,16 @@ static partial class Program
 
         right.community.Clear();
         controller.SimulateDay(2);
-        if (right.community.Count != 1 || right.community[0].speciesAmount != 50)
+        if (right.community.Count != 1 || right.community[0].speciesAmount != 10 ||
+            left.community[0].speciesAmount != 40)
             throw new Exception("overload failed to found a new neighboring population");
         if (right.community[0].lastMigrationSource != left)
             throw new Exception("migrant did not remember its source block");
 
         right.temperature = 80;
         controller.SimulateDay(3);
-        if (left.community.Count != 0)
+        if (right.community[0].speciesAmount != 10 ||
+            right.community[0].lastMigrationSource != left)
             throw new Exception("migrant automatically returned to its source without an environment edit");
         controller.ApplyEnvironment(left, 51, 50, 0);
         if (right.community[0].lastMigrationSource != null)
@@ -787,6 +789,11 @@ static partial class Program
         if (args.Length > 0 && args[0] == "evolution-audit")
         {
             PresetEvolutionTests();
+            return;
+        }
+        if (args.Length > 0 && args[0] == "v41-rules")
+        {
+            V41RulesAudit();
             return;
         }
         if (args.Length > 0 && args[0] == "extreme-probe")
