@@ -1027,6 +1027,7 @@ GameObject:
   - component: {fileID: 1541449672}
   - component: {fileID: 1541449673}
   - component: {fileID: 1541449674}
+  - component: {fileID: 1541449675}
   m_Layer: 0
   m_Name: MapSystem
   m_TagString: Untagged
@@ -1872,6 +1873,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 267322163}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1541449675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56eb812c4e4f0c40877bcb1a7d92702, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationMovementController
+  gridManager: {fileID: 1541449667}
+  viewCamera: {fileID: 1669876467}
+  settings:
+    leaderSize: 0.8
+    followerSize: 0.45
+    speed: 1.8
+    followerSpeed: 2.4
+    spacing: 1.2
+    pauseSeconds: 1.2
+    retrySeconds: 1
+    arrivalDistance: 0.08
+    turnSpeed: 8
+    labelHeight: 0.6
+    populationGap: 0.3
+    memberGap: 0.08
+    playerGap: 0.1
+    wanderEdgeMargin: 0.8
+    replanSeconds: 0.5
+    blockedRetargetSeconds: 1.5
+    formationSlack: 0.75
+    targetAttempts: 24
+  debugTile: {x: 0, y: 0}
+  firstDebugCount: 37
+  secondDebugCount: 123
+  editedDebugCount: 68
+  walkableAreaMask: -1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

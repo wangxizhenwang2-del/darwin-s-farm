@@ -8,6 +8,15 @@ public class MapGridManager : MonoBehaviour
 
     public event System.Action TilesChanged;
 
+    public RuntimeMapNavigation Navigation => mapNavigation;
+
+    [ContextMenu("Population Debug/Create two on test coordinate (Play Mode)")]
+    private void TestCreatePopulations()
+    {
+        PopulationMovementController controller = PopulationMovementController.GetOrCreate(this);
+        if (controller != null) controller.CreateDebugPopulations(testCoordinate);
+    }
+
     public const float HeightStep = 1f;
 
     private static readonly Vector2Int[] Directions =
