@@ -26,6 +26,8 @@ public class ClickToMove : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        if (GetComponent<PopulationPlayerBarrier>() == null)
+            gameObject.AddComponent<PopulationPlayerBarrier>();
         path = new NavMeshPath();
 
         if (viewCamera == null)
