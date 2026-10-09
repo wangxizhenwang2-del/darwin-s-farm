@@ -74,8 +74,6 @@ public class RuntimeMapNavigation : MonoBehaviour
                     yield return operation;
                 }
             }
-
-            Debug.Log("地图导航更新完成。", this);
         }
         finally
         {
