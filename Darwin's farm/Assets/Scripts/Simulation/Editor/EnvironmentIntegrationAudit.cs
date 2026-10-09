@@ -70,6 +70,16 @@ public static class EnvironmentIntegrationAudit
                 preset.habitatRecovery == d.Recovery && preset.initialPlantBiomass == d.Recovery && preset.maxPlantBiomass == 1000000,
                 "Serialized preset differs from canonical rules " + assets[i]);
         }
+        Check(c.TryEditEnvironment(new Vector2Int(3, 0), new SimulationEnvironmentEdit
+        {
+            temperature = 68, humidity = 17, elevation = 0,
+            habitatRecovery = 50000, maxPlantBiomass = 1000000,
+            plantBiomass = 100000
+        }, out string terrainError), terrainError);
+        Check(Read(c, 3).Environment.Terrain == TerrainKind.Desert &&
+            grid.TryGetTile(new Vector2Int(3, 0), out MapTileInstance desertTile) &&
+            desertTile.Biome == BiomeType.Desert,
+            "Runtime tile terrain must follow environment reclassification.");
         Apply(c, 6, SimulationInterventionKind.Temperature, 50);
         clock.NextDay();
         Check(bridge.TryGetBlock(new Vector2Int(6, 0), out var highland) && highland.temperature == 52,

@@ -5,6 +5,7 @@ public class MapTileInstance : MonoBehaviour
     [Header("运行时地块数据")]
     [SerializeField] private Vector2Int coordinate;
     [SerializeField] private MapTileDefinition definition;
+    [SerializeField] private BiomeType runtimeBiome;
     [SerializeField] private int heightLevel;
 
     [SerializeField, Range(0, 3)]
@@ -18,7 +19,7 @@ public class MapTileInstance : MonoBehaviour
     public int RotationSteps => rotationSteps;
     public float RotationDegrees => rotationSteps * 90f;
 
-    public BiomeType Biome => definition.biome;
+    public BiomeType Biome => runtimeBiome;
     public Color MainColor => definition.mainColor;
 
     public Renderer Core { get; private set; }
@@ -35,6 +36,7 @@ public class MapTileInstance : MonoBehaviour
     {
         coordinate = gridCoordinate;
         definition = tileDefinition;
+        runtimeBiome = tileDefinition.biome;
         heightLevel = level;
 
         rotationSteps = ((rotation % 4) + 4) % 4;
@@ -44,6 +46,12 @@ public class MapTileInstance : MonoBehaviour
         SouthBorder = FindRenderer("Border_South");
         EastBorder = FindRenderer("Border_East");
         WestBorder = FindRenderer("Border_West");
+    }
+
+    // Change terrain on this instance without mutating its construction preset.
+    internal void SetRuntimeBiome(BiomeType biome)
+    {
+        runtimeBiome = biome;
     }
 
     // Change the instance height without mutating the tile preset asset.

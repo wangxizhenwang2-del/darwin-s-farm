@@ -16,6 +16,7 @@
     <Compile Include="../../Assets/Scripts/Simulation/SimulationController.FoodWeb.cs" Link="SimulationController.FoodWeb.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Evolution.cs" Link="SimulationController.Evolution.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Migration.cs" Link="SimulationController.Migration.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/PopulationTransitionResult.cs" Link="PopulationTransitionResult.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/HabitatTopology.cs" Link="HabitatTopology.cs" />
   </ItemGroup>
 </Project>

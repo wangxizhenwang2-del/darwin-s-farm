@@ -129,7 +129,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
             ecologicalNichesEnabled);
         if (controller != null)
             controller.SetEcologicalNichesEnabled(ecologicalNichesEnabled);
-        EditorGUILayout.LabelField("生态位规则尚未接入每日模拟。", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField("独立数值测试没有海陆空地块；生态位转换请在连接游戏模式验证。", EditorStyles.miniLabel);
 
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
         if (migrationEnabled)

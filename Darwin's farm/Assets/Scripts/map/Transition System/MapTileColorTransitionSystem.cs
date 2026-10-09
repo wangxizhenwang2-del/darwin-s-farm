@@ -42,9 +42,15 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         if (gridManager != null)
         {
             gridManager.TilesChanged += RefreshAll;
-            environment = gridManager.GetComponent<SimulationEnvironmentController>();
-            if (environment != null) environment.Changed += HandleEnvironmentChanged;
         }
+        BindEnvironment();
+    }
+
+    private void BindEnvironment()
+    {
+        if (gridManager == null || environment != null) return;
+        environment = gridManager.GetComponent<SimulationEnvironmentController>();
+        if (environment != null) environment.Changed += HandleEnvironmentChanged;
     }
 
     private void Start()
@@ -56,6 +62,8 @@ public class MapTileColorTransitionSystem : MonoBehaviour
             return;
         }
 
+        // The bridge may add the environment controller after OnEnable.
+        BindEnvironment();
         if (environment != null) CacheTerrain(environment.ReadAll());
         RefreshAll();
     }
@@ -65,6 +73,7 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         if (gridManager != null)
             gridManager.TilesChanged -= RefreshAll;
         if (environment != null) environment.Changed -= HandleEnvironmentChanged;
+        environment = null;
     }
 
     // 2026-10-09 13:54 +08:00: land colors follow reclassified terrain.
@@ -115,8 +124,8 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         terrainColors.Clear();
         foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
             if (tile != null && tile.Definition != null &&
-                !terrainColors.ContainsKey(tile.Biome))
-                terrainColors.Add(tile.Biome, tile.MainColor);
+                !terrainColors.ContainsKey(tile.Definition.biome))
+                terrainColors.Add(tile.Definition.biome, tile.MainColor);
 
         // 先统一计算所有地块的高度接口。
         foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
@@ -606,7 +615,7 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         if (tile.Block == null || tile.Block.waterCoverage != WaterCoverage.Land ||
             !liveTerrain.TryGetValue(tile.Coordinate, out TerrainKind kind))
             return tile.MainColor;
-        BiomeType biome = (BiomeType)((int)kind + (int)BiomeType.Forest);
+        BiomeType biome = SimulationEnvironmentController.BiomeFromTerrain(kind);
         if (terrainColors.TryGetValue(biome, out Color color)) return color;
         // Match shipped assets even when that terrain preset is not placed.
         switch (kind)

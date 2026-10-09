@@ -297,12 +297,41 @@ internal static class Program
         land.community.Add(population);
         SimulationController controller = Controller(land, river);
         controller.SetEcologicalNichesEnabled(true);
+        controller.SetEcologicalNicheProbabilities(1f, 0f, 1f, 1f, 1f);
         controller.SetMutationEnabled(false);
         controller.SetParameters(0f, 0f, 0f);
         controller.SimulateDay(1);
         Check(land.community.Contains(population) && population.speciesAmount == 200 &&
             river.community.Count == 0,
             "daily land migration created an independent river land population");
+    }
+
+    private static void DailyNicheConversion()
+    {
+        BlockInfo land = Block(0, false, 100000f);
+        BlockInfo lake = Block(0, true, 1000f);
+        land.SetNeighbors(new List<BlockInfo> { lake });
+        lake.SetNeighbors(new List<BlockInfo> { land });
+        PopulationData chicken = Population(200, EcologicalNiche.Land);
+        land.community.Add(chicken);
+        SimulationController controller = Controller(land, lake);
+        controller.SetMutationEnabled(false);
+        controller.SetParameters(0f, 0f, 0f);
+        controller.SetMigrationParameters(false, 7, 100f, 0.8f, 0.5f, 0.2f, 7);
+        controller.SetEcologicalNicheProbabilities(1f, 0f, 0f, 0f, 0f);
+        controller.SimulateDay(1);
+        Check(land.community.Count == 1 && lake.community.Count == 0,
+            "disabled niche system changed the daily population");
+        controller.SetEcologicalNichesEnabled(true);
+        int events = 0;
+        controller.OnNicheConversionResolved += _ => events++;
+        controller.SimulateDay(2);
+        Check(events == 1 && chicken.speciesAmount == 180 &&
+            lake.community.Count == 1 && lake.community[0].speciesAmount == 20 &&
+            lake.community[0].ecologicalNiche == EcologicalNiche.Water,
+            "daily niche conversion did not split once with migration disabled");
+        controller.SimulateDay(3);
+        Check(events == 1, "newly converted population ignored its cooldown");
     }
 
     private static void Main()
@@ -312,6 +341,7 @@ internal static class Program
         WaterAndAirMoves();
         RiverBanksAndChannels();
         LegacyMigrationCannotClaimRiver();
+        DailyNicheConversion();
         Console.WriteLine("NICHE_AUDIT passed: water channels, river banks, resources, conversions and migrations");
     }
 }

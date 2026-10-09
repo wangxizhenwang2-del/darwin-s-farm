@@ -109,7 +109,7 @@ public sealed class WhiteboxEcologyDebugController : MonoBehaviour
             BlockInfo block = tile.Block;
             var lines = new List<string>();
             var members = new List<PopulationData>();
-            string terrain = tile.Definition != null ? tile.Definition.displayName : tile.Biome.ToString();
+            string terrain = tile.Biome.ToString();
             lines.Add($"{terrain}/{WaterName(block.waterCoverage)}  温{block.temperature} 湿{block.humidity} 海{block.elevation}");
             plantDelta.TryGetValue(block, out float growth);
             lines.Add($"植物{block.plantBiomass:F0}  Δ{Signed(growth)}");

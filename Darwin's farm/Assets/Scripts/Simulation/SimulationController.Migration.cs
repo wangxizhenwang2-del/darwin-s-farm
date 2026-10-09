@@ -265,7 +265,7 @@ public partial class SimulationController
     private const float NicheSplitFraction = 0.1f;
     private const int MinimumNicheSplit = 11;
 
-    [Header("Ecological Niches (reserved; not connected to SimulateDay)")]
+    [Header("Ecological Niches")]
     [SerializeField] private bool ecologicalNichesEnabled = false;
     [Range(0f, 1f)] [SerializeField] private float landToWaterProbability = 0.02f;
     [Range(0f, 1f)] [SerializeField] private float landToAirProbability = 0.01f;
@@ -292,6 +292,46 @@ public partial class SimulationController
     }
 
     public WaterRegionMap BuildWaterRegions() => WaterRegionMap.Build(blockInfos);
+
+    // Take a snapshot so a newly split population cannot convert again on
+    // the same day, and adding an air population cannot invalidate enumeration.
+    private void RunNicheConversions(int day)
+    {
+        var candidates = new List<(BlockInfo block, PopulationData population)>();
+        foreach (BlockInfo block in blockInfos)
+            if (block != null && block.community != null)
+                foreach (PopulationData population in block.community)
+                    if (population != null && population.speciesAmount > 0)
+                        candidates.Add((block, population));
+
+        WaterRegionMap regions = BuildWaterRegions();
+        foreach (var candidate in candidates)
+        {
+            BlockInfo source = candidate.block;
+            PopulationData population = candidate.population;
+            if (source.community == null || !source.community.Contains(population) ||
+                population.speciesAmount <= 0) continue;
+            if (population.ecologicalNiche == EcologicalNiche.Land)
+            {
+                TryLandDepartureConversion(source, population, day, out _);
+                continue;
+            }
+            if (population.ecologicalNiche != EcologicalNiche.Water) continue;
+            WaterRegion region = regions.GetRegion(source);
+            if (region == null || WaterFoodPressure(region) < 1f) continue;
+            // One destination and one probability draw per population per day.
+            BlockInfo target = null;
+            foreach (BlockInfo block in blockInfos)
+                if (block != null && block.community != null &&
+                    !WaterRegionMap.IsWater(block) && WaterRegionTouchesLand(region, block))
+                {
+                    target = block;
+                    break;
+                }
+            if (target != null)
+                TryWaterToLandConversion(source, target, population, regions, day, out _);
+        }
+    }
 
     // 河岸是陆地栖息地的一个位置，不拥有独立种群或食物库存。
     public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
@@ -367,8 +407,7 @@ public partial class SimulationController
             Mathf.Clamp01(demand / region.AvailableFood);
     }
 
-    // 只在陆生种群已决定迁出后调用。返回 false 时由调用方继续原有陆地迁徙。
-    // 独立入口目前没有接入 SimulateDay。
+    // Called once per eligible land population during the daily niche phase.
     public bool TryLandDepartureConversion(BlockInfo source, PopulationData population,
         int day, out PopulationData descendant)
     {

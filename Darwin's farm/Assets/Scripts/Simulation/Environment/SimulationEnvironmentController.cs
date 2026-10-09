@@ -79,6 +79,21 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
             default: return TerrainKind.Grassland;
         }
     }
+    public static BiomeType BiomeFromTerrain(TerrainKind kind)
+    {
+        switch (kind)
+        {
+            case TerrainKind.Forest: return BiomeType.Forest;
+            case TerrainKind.Rainforest: return BiomeType.Rainforest;
+            case TerrainKind.Grassland: return BiomeType.Grassland;
+            case TerrainKind.Desert: return BiomeType.Desert;
+            case TerrainKind.Tundra: return BiomeType.Tundra;
+            case TerrainKind.Highland: return BiomeType.Highland;
+            case TerrainKind.SnowMountain: return BiomeType.SnowMountain;
+            case TerrainKind.Volcano: return BiomeType.Volcano;
+            default: throw new ArgumentOutOfRangeException(nameof(kind));
+        }
+    }
     public static TerrainDefaults InitialDefaults(MapTileDefinition preset, int actualElevation)
     {
         var defaults = EnvironmentRules.Defaults(TerrainFromPreset(preset.biome));
@@ -194,6 +209,9 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
             if (!blocks.TryGetValue(state.Position, out BlockInfo block)) continue;
             simulation.ApplyEnvironment(block, EnvironmentRules.Round(state.Temperature.Value),
                 EnvironmentRules.Round(state.Humidity.Value), EnvironmentRules.Round(state.Recovery.Value));
+            if (!state.IsWater && grid != null && grid.TryGetTile(
+                    new Vector2Int(state.Position.X, state.Position.Y), out MapTileInstance tile))
+                tile.SetRuntimeBiome(BiomeFromTerrain(state.Terrain));
             snapshots.Add(new EnvironmentReadSnapshot(state, block.plantBiomass));
         }
         if (notifyReaders) Changed?.Invoke(snapshots.AsReadOnly());
