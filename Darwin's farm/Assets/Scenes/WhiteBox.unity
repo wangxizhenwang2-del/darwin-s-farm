@@ -1027,6 +1027,8 @@ GameObject:
   - component: {fileID: 1541449672}
   - component: {fileID: 1541449673}
   - component: {fileID: 1541449674}
+  - component: {fileID: 2200000001}
+  - component: {fileID: 2200000002}
   - component: {fileID: 1541449675}
   m_Layer: 0
   m_Name: MapSystem
@@ -1182,6 +1184,37 @@ MonoBehaviour:
   simulationController: {fileID: 1541449672}
   simulationTime: {fileID: 1541449671}
   maxRadius: 2
+--- !u!114 &2200000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9302c9afeb84463588d539116eab4621, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugController
+  grid: {fileID: 1541449667}
+  simulation: {fileID: 1541449672}
+  clock: {fileID: 1541449671}
+--- !u!114 &2200000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac3448232014d82ad450b32f576c302, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugView
+  controller: {fileID: 2200000001}
+  viewCamera: {fileID: 1669876467}
+  fontSize: 11
+  heightAboveTile: 2.5
 --- !u!1 &1640010066
 GameObject:
   m_ObjectHideFlags: 0

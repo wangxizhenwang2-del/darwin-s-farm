@@ -137,6 +137,45 @@ public partial class SimulationController
         return best;
     }
 
+    // Read-only UI forecast. It uses the conversion eligibility rules without
+    // consuming a random roll or changing the simulation state.
+    public SpeciesData GetLikelyEvolutionTarget(BlockInfo block, PopulationData source, int day)
+    {
+        if (!presetEvolutionEnabled || block == null || source == null ||
+            block.waterCoverage != WaterCoverage.Land ||
+            source.ecologicalNiche != EcologicalNiche.Land ||
+            source.species == null || source.speciesAmount < 11 ||
+            source.species.baseEcologicalNiche != EcologicalNiche.Land ||
+            source.species.evolutionTargets == null) return null;
+
+        SpeciesData best = null;
+        int bestDistance = int.MaxValue;
+        float bestFitness = -1f;
+        foreach (SpeciesData target in source.species.evolutionTargets)
+        {
+            if (target == null || target == source.species ||
+                target.baseEcologicalNiche != EcologicalNiche.Land ||
+                target.evolutionTargets == null ||
+                !target.evolutionTargets.Contains(source.species) ||
+                !EachTraitWithinTolerance(source, target) ||
+                HasLivingSpecies(block, target)) continue;
+            EvolutionConversionRecord record = source.evolutionConversions == null ? null :
+                source.evolutionConversions.Find(item => item != null && item.target == target);
+            if (record != null && day < record.day + 7) continue;
+            int distance = TraitDistance(source, target);
+            float fitness = Mathf.Clamp01(1f -
+                (Mathf.Abs(block.temperature - target.baseFitTemperature) +
+                 Mathf.Abs(block.humidity - target.baseFitHumidity)) / FitnessTolerance);
+            if (fitness > bestFitness || fitness == bestFitness && distance < bestDistance)
+            {
+                best = target;
+                bestDistance = distance;
+                bestFitness = fitness;
+            }
+        }
+        return best;
+    }
+
     private bool EachTraitWithinTolerance(PopulationData source, SpeciesData target) =>
         Mathf.Abs(source.movementAbility - target.baseMovementAbility) <= EvolutionTraitTolerance &&
         Mathf.Abs(source.fitTemperature - target.baseFitTemperature) <= EvolutionTraitTolerance &&
