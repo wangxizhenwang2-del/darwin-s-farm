@@ -46,6 +46,22 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     public PopulationMovementState MovementState => movementState;
     public Vector3 TargetPosition => targetPosition;
     public Transform Leader => members == null ? null : members[0].visual;
+    public PopulationData EcologicalPopulation { get; private set; }
+
+    public void BindEcologicalPopulation(PopulationData data, Color color)
+    {
+        EcologicalPopulation = data;
+        if (data == null || members == null) return;
+        foreach (Member member in members)
+        {
+            Renderer renderer = member.visual.GetComponent<Renderer>();
+            var properties = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(properties);
+            properties.SetColor("_BaseColor", color);
+            properties.SetColor("_Color", color);
+            renderer.SetPropertyBlock(properties);
+        }
+    }
 
     internal Member[] members;
     internal PopulationTileSpace space;

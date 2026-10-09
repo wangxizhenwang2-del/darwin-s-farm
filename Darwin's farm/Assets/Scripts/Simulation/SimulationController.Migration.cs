@@ -592,6 +592,7 @@ internal static class PopulationTransfer
             trophicMutationRemainder = source.trophicMutationRemainder,
             mutationDaysElapsed = source.mutationDaysElapsed,
             nextMigrationDay = source.nextMigrationDay,
+            nextEvolutionDay = source.nextEvolutionDay,
             previousMutationPopulation = amount,
             mutationPopulationInitialized = true,
             evolutionCheckReady = source.evolutionCheckReady
@@ -601,7 +602,9 @@ internal static class PopulationTransfer
                 if (record != null)
                     copy.evolutionConversions.Add(new EvolutionConversionRecord
                     {
-                        target = record.target, day = record.day
+                        target = record.target, day = record.day,
+                        effectiveDays = record.effectiveDays,
+                        failedDraws = record.failedDraws
                     });
         return copy;
     }
@@ -623,6 +626,9 @@ internal static class PopulationTransfer
         origin.birthRemainder -= branch.birthRemainder;
         origin.deathRemainder -= branch.deathRemainder;
         origin.speciesAmount -= amount;
+        // 2026-10-09 13:47 +08:00: a newly split migration branch starts with
+        // zero target progress; its inherited evolution cooldown still applies.
+        if (origin.speciesAmount > 0) branch.evolutionConversions.Clear();
         return branch;
     }
 
@@ -656,32 +662,16 @@ internal static class PopulationTransfer
         resident.deathRemainder += arrival.deathRemainder;
         resident.nextMigrationDay = Mathf.Max(resident.nextMigrationDay,
             arrival.nextMigrationDay);
+        resident.nextEvolutionDay = Mathf.Max(resident.nextEvolutionDay,
+            arrival.nextEvolutionDay);
         resident.lastMigrationSource = arrival.lastMigrationSource;
         resident.speciesAmount = total;
         resident.previousMutationPopulation = total;
         resident.mutationPopulationInitialized = true;
         resident.trophicLevelInitialized = true;
         resident.evolutionCheckReady |= arrival.evolutionCheckReady;
-        if (arrival.evolutionConversions != null)
-        {
-            if (resident.evolutionConversions == null)
-                resident.evolutionConversions = new List<EvolutionConversionRecord>();
-            foreach (EvolutionConversionRecord record in arrival.evolutionConversions)
-            {
-                if (record == null || record.target == null) continue;
-                EvolutionConversionRecord existing = resident.evolutionConversions.Find(
-                    item => item != null && item.target == record.target);
-                if (existing == null)
-                    resident.evolutionConversions.Add(new EvolutionConversionRecord
-                    {
-                        target = record.target, day = record.day
-                    });
-                else if (record.day > existing.day)
-                {
-                    existing.day = record.day;
-                }
-            }
-        }
+        // V4.3: the resident keeps its target records. Arrival records never add
+        // progress to them; only the longer outstanding cooldown survives.
     }
 
     private static int WeightedTrait(int resident, int residentAmount, int arrival,

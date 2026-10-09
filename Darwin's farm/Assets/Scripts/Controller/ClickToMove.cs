@@ -65,6 +65,7 @@ public class ClickToMove : MonoBehaviour
         }
 
         mousePosition = Mouse.current.position.ReadValue();
+        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(mousePosition)) return;
 
 
         Ray ray = viewCamera.ScreenPointToRay(mousePosition);

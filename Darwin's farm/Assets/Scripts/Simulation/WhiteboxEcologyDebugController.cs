@@ -8,6 +8,7 @@ public sealed class WhiteboxEcologyDebugController : MonoBehaviour
     {
         public MapTileInstance tile;
         public string[] lines;
+        public PopulationData[] populations;
     }
 
     [SerializeField] private MapGridManager grid;
@@ -105,6 +106,7 @@ public sealed class WhiteboxEcologyDebugController : MonoBehaviour
             if (tile == null || tile.Block == null) continue;
             BlockInfo block = tile.Block;
             var lines = new List<string>();
+            var members = new List<PopulationData>();
             string terrain = tile.Definition != null ? tile.Definition.displayName : tile.Biome.ToString();
             lines.Add($"{terrain}/{WaterName(block.waterCoverage)}  温{block.temperature} 湿{block.humidity} 海{block.elevation}");
             plantDelta.TryGetValue(block, out float growth);
@@ -113,6 +115,7 @@ public sealed class WhiteboxEcologyDebugController : MonoBehaviour
                 foreach (PopulationData population in block.community)
                 {
                     if (population == null || population.speciesAmount <= 0) continue;
+                    members.Add(population);
                     string name = population.species != null ? population.species.SpeciesName :
                         string.IsNullOrEmpty(population.lineageName) ? "未命名" : population.lineageName;
                     populationDelta.TryGetValue(population, out int change);
@@ -132,7 +135,10 @@ public sealed class WhiteboxEcologyDebugController : MonoBehaviour
                     if (target != null) final += "  进化：" + target.SpeciesName;
                     lines.Add(final);
                 }
-            labels.Add(new TileLabel { tile = tile, lines = lines.ToArray() });
+            labels.Add(new TileLabel
+            {
+                tile = tile, lines = lines.ToArray(), populations = members.ToArray()
+            });
         }
     }
 

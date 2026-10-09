@@ -9,12 +9,14 @@ namespace DarwinFarm.Environment
         public GridPosition Position { get; }
         public int Elevation { get; }
         public TerrainKind InitialTerrain { get; }
+        public bool IsWater { get; }
         public IReadOnlyList<GridPosition> Neighbors { get; }
-        public TopologyNode(GridPosition position, int elevation, TerrainKind initialTerrain, IEnumerable<GridPosition> neighbors)
+        public TopologyNode(GridPosition position, int elevation, TerrainKind initialTerrain, IEnumerable<GridPosition> neighbors,
+            bool isWater = false)
         {
             if (elevation < 0 || elevation > 2) throw new ArgumentOutOfRangeException(nameof(elevation));
             EnvironmentRules.Defaults(initialTerrain); // Validate before this node can mutate a world.
-            Position = position; Elevation = elevation; InitialTerrain = initialTerrain;
+            Position = position; Elevation = elevation; InitialTerrain = initialTerrain; IsWater = isWater;
             var list = new List<GridPosition>(neighbors ?? Array.Empty<GridPosition>());
             list.Sort(); Neighbors = list.AsReadOnly();
         }
@@ -36,6 +38,7 @@ namespace DarwinFarm.Environment
         public GridPosition Position { get; }
         public int Elevation { get; }
         public TerrainKind Terrain { get; }
+        public bool IsWater { get; }
         public TerrainDefaults Defaults => EnvironmentRules.Defaults(Terrain);
         public AttributeSnapshot Temperature { get; }
         public AttributeSnapshot Humidity { get; }
@@ -44,11 +47,19 @@ namespace DarwinFarm.Environment
         public bool HasMonsoon => MonsoonId.HasValue;
         public bool MonsoonApplied { get; }
         public bool HasLocalClimate { get; }
+        public bool HasLocalTemperature { get; }
+        public bool HasLocalHumidity { get; }
+        public bool HasRecoveryCommand { get; }
+        public bool CanCancelRecovery { get; }
         internal EnvironmentSnapshot(EnvironmentTile tile)
         {
-            Position = tile.Position; Elevation = tile.Elevation; Terrain = tile.Terrain;
+            Position = tile.Position; Elevation = tile.Elevation; Terrain = tile.Terrain; IsWater = tile.IsWater;
             Temperature = tile.Attribute(0); Humidity = tile.Attribute(1); Recovery = tile.Attribute(2);
             MonsoonId = tile.MonsoonId; HasLocalClimate = tile.HasLocalClimate;
+            HasLocalTemperature = tile.Locals[0] != null;
+            HasLocalHumidity = tile.Locals[1] != null;
+            HasRecoveryCommand = tile.RecoveryReturning;
+            CanCancelRecovery = tile.RecoveryReturning && !tile.RecoveryCancelIssued;
             MonsoonApplied = HasMonsoon && !HasLocalClimate;
         }
     }
@@ -118,21 +129,25 @@ namespace DarwinFarm.Environment
     {
         internal readonly GridPosition Position;
         internal int Elevation;
+        internal bool IsWater;
         internal TerrainKind Terrain;
         internal readonly double[] Values = new double[3];
         internal readonly Transition[] Tracks = { new Transition(), new Transition(), new Transition() };
         internal readonly LocalClimateEffect[] Locals = new LocalClimateEffect[2];
         internal bool RecoveryReturning;
+        internal bool RecoveryCancelIssued;
+        internal bool RecoveryDetached;
         internal long? MonsoonId;
         internal readonly double[] WindTargets = new double[2];
         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
         internal EnvironmentTile(TopologyNode node)
         {
-            Position = node.Position; Elevation = node.Elevation;
+            Position = node.Position; Elevation = node.Elevation; IsWater = node.IsWater;
             var defaults = EnvironmentRules.Defaults(node.InitialTerrain);
             Terrain = EnvironmentRules.Classify(Elevation, defaults.Temperature, defaults.Humidity, defaults.Recovery);
             defaults = EnvironmentRules.Defaults(Terrain);
-            Values[0] = defaults.Temperature; Values[1] = defaults.Humidity; Values[2] = defaults.Recovery;
+            Values[0] = defaults.Temperature; Values[1] = defaults.Humidity;
+            Values[2] = IsWater ? EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
             for (int i = 0; i < 3; i++) Tracks[i].Stop(Values[i]);
         }
         internal AttributeSnapshot Attribute(int index)

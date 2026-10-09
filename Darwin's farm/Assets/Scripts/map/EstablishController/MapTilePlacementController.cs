@@ -209,6 +209,7 @@ public class MapTilePlacementController : MonoBehaviour
 
     private bool IsPointerOverUI(Vector2 mousePosition)
     {
+        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(mousePosition)) return true;
         if (EventSystem.current == null)
             return false;
 

@@ -110,6 +110,81 @@ public static class EnvironmentIntegrationAudit
         Check(c.GetComponent<SimulationInterventionController>().TryApply(new SimulationInterventionRequest
         { center = new Vector2Int(6, 0), kind = SimulationInterventionKind.Humidity, amount = 25, radius = 0 }, out _),
             "Legacy editor adapter must use new controller.");
+        AuditPlayerTechnologies(c, grid, grass);
+    }
+
+    // 2026-10-09 15:04 +08:00: exercise the actual player Controller and
+    // map bridge, including atomic two-cell water operations, in Play mode.
+    private static void AuditPlayerTechnologies(SimulationEnvironmentController c,
+        MapGridManager grid, MapTileDefinition grass)
+    {
+        var player = c.GetComponent<EnvironmentTechnologyController>();
+        Check(player != null && grid.TryPlaceTile(new Vector2Int(11, 0), grass),
+            "Player technology controller and land target");
+        var land = new Vector2Int(11, 0);
+        var kinds = new[]
+        {
+            DarwinFarm.Environment.EnvironmentTechnologyKind.HeatInjection,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.RadiativeCooling,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.CloudSeeding,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.VaporRecovery,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.GrowthCatalyst,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSeeding,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSuppression,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.CrustUplift,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.StrataSubsidence
+        };
+        foreach (var kind in kinds)
+        {
+            var choice = new DarwinFarm.Environment.EnvironmentTechnologyChoice(kind,
+                kind == DarwinFarm.Environment.EnvironmentTechnologyKind.CrustUplift ||
+                kind == DarwinFarm.Environment.EnvironmentTechnologyKind.StrataSubsidence ? 1 : 2);
+            Check(player.TryDeploy(land, choice, out var preview) && preview.Cost == 0,
+                "Zero-cost land technology " + kind + ": " + preview.Error);
+        }
+        var lake = ScriptableObject.CreateInstance<MapTileDefinition>();
+        lake.biome = BiomeType.Grassland;
+        lake.initialWaterCoverage = WaterCoverage.Lake;
+        lake.heightLevel = 0;
+        lake.displayName = "audit-water";
+        Check(grid.TryPlaceTile(new Vector2Int(12, 0), lake) &&
+            grid.TryPlaceTile(new Vector2Int(13, 0), lake), "Two connected water cells");
+        var water = new Vector2Int(12, 0);
+        Check(!player.Preview(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+            DarwinFarm.Environment.EnvironmentTechnologyKind.HeatInjection)).IsValid,
+            "Water rejects climate technology");
+        Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+            DarwinFarm.Environment.EnvironmentTechnologyKind.GrowthCatalyst), out _),
+            "Whole-water catalyst");
+        Check(Read(c, 12).Environment.Recovery.Value == 100000 &&
+            Read(c, 13).Environment.Recovery.Value == 100000, "Water catalyst reaches both cells");
+        Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSeeding), out _),
+            "Whole-water seeding");
+        Check(Read(c, 12).PlantStock + Read(c, 13).PlantStock == 900000,
+            "Whole-water seeding uses total capacity");
+        Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSuppression), out _),
+            "Whole-water suppression");
+        Check(Read(c, 12).Environment.Recovery.Value == 75000 &&
+            Read(c, 12).PlantStock + Read(c, 13).PlantStock == 675000,
+            "Whole-water suppression changes R and S together");
+        Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+            DarwinFarm.Environment.EnvironmentTechnologyKind.CrustUplift), out _),
+            "Whole-water height transaction");
+        Check(Read(c, 12).Environment.Elevation == 1 &&
+            Read(c, 13).Environment.Elevation == 1, "All water heights committed");
+        Check(player.TryDeploy(land, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+            DarwinFarm.Environment.EnvironmentTechnologyKind.MonsoonAnchor, 1, 20, -40), out _),
+            "Monsoon anchor is tenth technology");
+        Check(c.Monsoons.Count == 1 && player.CurrentApplied(land).Contains("季风锚"),
+            "Current technology readback includes wind");
+        SimulationTime time = c.GetComponent<SimulationTime>();
+        time.Play(); time.DoubleSpeed();
+        Check(time.Speed == 2f, "2x speed command");
+        time.TogglePause(); Check(time.IsPaused, "space pauses the day clock");
+        time.TogglePause(); Check(time.Speed == 2f, "space resumes the previous speed");
+        time.Pause();
     }
     private static void Finish(Exception error)
     {

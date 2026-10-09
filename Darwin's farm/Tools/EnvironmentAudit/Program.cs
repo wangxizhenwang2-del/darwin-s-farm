@@ -215,9 +215,81 @@ static class Program
         Check(many.ReadMonsoons().Count == 0 && many.ReadSettlements().Count == 3, "all overlapping groups cancel atomically");
         Check(many.ReadSettlements().Sum(s => s.RefundAmount) == 23, "multi-source refunds actual total");
     }
+    static TopologyNode[] MixedLine(params bool[] water)
+    {
+        var result = new TopologyNode[water.Length];
+        for (int i = 0; i < water.Length; i++)
+        {
+            var neighbors = new List<GridPosition>();
+            if (i > 0) neighbors.Add(new GridPosition(i - 1, 0));
+            if (i + 1 < water.Length) neighbors.Add(new GridPosition(i + 1, 0));
+            result[i] = new TopologyNode(new GridPosition(i, 0), 0,
+                TerrainKind.Grassland, neighbors, water[i]);
+        }
+        return result;
+    }
+    static void V43Technologies()
+    {
+        Check(EnvironmentTechnologyCatalog.All.Length == 10, "V4.3 has ten technologies");
+        foreach (EnvironmentTechnologyKind kind in EnvironmentTechnologyCatalog.All)
+            Check(!string.IsNullOrWhiteSpace(EnvironmentTechnologyCatalog.Name(kind)),
+                "technology needs a player-facing name");
+        Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+            EnvironmentTechnologyKind.CrustUplift, 2)), "height has no large tier");
+        Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+            EnvironmentTechnologyKind.MonsoonAnchor, 1, 0, 20)),
+            "wind needs two nonzero signed choices");
+        var w = new EnvironmentWorld();
+        w.SynchronizeTopology(MixedLine(false, true, false));
+        Check(!w.TrySetClimate(new GridPosition(1, 0), EnvironmentAttribute.Temperature,
+            25, out _), "water rejects climate technology");
+        Check(!w.TryDeployMonsoon(new GridPosition(1, 0), 20, 20,
+            null, out _, out _), "water rejects monsoon source");
+        Check(w.TryPreviewMonsoon(Origin, 20, -40, out var area, out _)
+            && area.Count == 2 && !area.Contains(new GridPosition(1, 0)),
+            "one water tile bridges two land cells without receiving climate");
+        long wind = Wind(w, 0, 20, -40);
+        Check(w.ReadMonsoons().Single().Area.Count == 2, "wind stores land-only area");
+        Check(!Read(w, 1).HasMonsoon && Read(w, 2).HasMonsoon,
+            "water has no wind effect");
+        Check(w.TryCancelMonsoon(wind, out _), "wind cleanup");
+        var twoWater = new EnvironmentWorld();
+        twoWater.SynchronizeTopology(MixedLine(false, true, true, false));
+        Check(twoWater.TryPreviewMonsoon(Origin, 20, 20, out var blocked, out _)
+            && blocked.Count == 1, "two consecutive water tiles cannot bridge");
+
+        var aquatic = new EnvironmentWorld();
+        aquatic.SynchronizeTopology(MixedLine(true, true));
+        Near(75000, Read(aquatic).Recovery.Value, "water default recovery");
+        var members = new[] { new GridPosition(0, 0), new GridPosition(1, 0) };
+        Check(aquatic.TrySetRecoveryBatch(members, 25000, false, out _),
+            "whole-water catalyst");
+        Near(100000, Read(aquatic).Recovery.Value, "water catalyst per cell");
+        Near(100000, Read(aquatic, 1).Recovery.Value, "second water member catalyst");
+        Check(!aquatic.TrySetRecoveryBatch(new[] { Origin, new GridPosition(9, 0) },
+            50000, false, out _), "invalid water batch rejected");
+        Near(100000, Read(aquatic).Recovery.Value, "failed batch leaves first member unchanged");
+        Check(aquatic.TrySetRecoveryBatch(members, .5, true, out _),
+            "suppression replaces catalyst");
+        Near(50000, Read(aquatic).Recovery.Value, "suppression multiplies actual R");
+        Near(75000, Read(aquatic).Recovery.Target, "water R returns to water default");
+        Check(aquatic.TryCancelRecoveryBatch(members, out _), "cancel entire water R timeline");
+        Check(!aquatic.TryCancelRecoveryBatch(members, out _),
+            "repeated cancellation cannot indefinitely extend water recovery");
+        aquatic.AdvanceToDay(100);
+        Near(75000, Read(aquatic).Recovery.Value, "water R returns in 100 days");
+        Near(425000, EnvironmentRules.ChangeStock(50000, 1500000, .25),
+            "water seeding uses water capacity");
+        Near(37500, EnvironmentRules.ChangeStock(50000, 1500000, -.25),
+            "water suppression uses actual stock");
+        aquatic.ReconcileWaterRecovery(members);
+        Check(!Read(aquatic).HasRecoveryCommand &&
+            Read(aquatic).Recovery.Phase == EffectPhase.None,
+            "regroup clears water R timeline at actual value");
+    }
     static void Main()
     {
-        Classification(); Timelines(); RecoveryAndStock(); WindMasking(); TopologyAndRefunds();
-        Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, defaults, timelines, interruptions, topology, refunds)");
+        Classification(); Timelines(); RecoveryAndStock(); WindMasking(); TopologyAndRefunds(); V43Technologies();
+        Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, timelines, ten technologies, water, topology, refunds)");
     }
 }

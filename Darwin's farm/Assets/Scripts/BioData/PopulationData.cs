@@ -2,6 +2,10 @@
 public class EvolutionConversionRecord
 {
     public SpeciesData target;
+    // 2026-10-09 13:46 +08:00: V4.3 keeps independent, frozen progress per target.
+    public int effectiveDays;
+    public int failedDraws;
+    // Kept for migration of existing serialized whitebox data; no longer gates evolution.
     public int day;
 }
 
@@ -40,9 +44,11 @@ public class PopulationData
     public int mutationDaysElapsed;
     public int previousMutationPopulation;
     public bool mutationPopulationInitialized;
-    // 随迁徙继承，防止同一分支在目标物种仍存活时反复转化。
+    // V4.3: each directly connected target has its own effective-day/draw record.
     public System.Collections.Generic.List<EvolutionConversionRecord> evolutionConversions =
         new System.Collections.Generic.List<EvolutionConversionRecord>();
+    // Successful split on day D freezes progress on D..D+49; D+50 is eligible.
+    public int nextEvolutionDay;
     [System.NonSerialized] public bool evolutionCheckReady;
 
     //因变量

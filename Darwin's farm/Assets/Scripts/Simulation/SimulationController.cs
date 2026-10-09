@@ -268,13 +268,12 @@ public partial class SimulationController : MonoBehaviour
     public void SimulateDay(int day)
     {
         OnBeforeDaySimulated?.Invoke(day);
-        var livingAtStart = LivingSpeciesByBlock();
         // 生态位开关仍是预留项，新的海陆空入口尚未排进每日流程。
         foreach (BlockInfo block in blockInfos)
         {
             SimulateBlock(block);
         }
-        RunPresetEvolution(day, livingAtStart);
+        RunPresetEvolution(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);
