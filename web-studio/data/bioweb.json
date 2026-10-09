@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "species": [
-    {"id":"grass","name":"野草","scientificName":"Poaceae","image":"./images/grass.svg","x":120,"y":250,"trophicLevel":0,"baseMovementAbility":0,"baseHabitatNiche":50,"baseFitTemperature":55,"baseFitHumidity":60,"baseSize":2,"baseFertility":85,"baseEcologicalNiche":"Land"},
-    {"id":"rabbit","name":"林地兔","scientificName":"Leporidae","image":"./images/rabbit.svg","x":400,"y":160,"trophicLevel":0,"baseMovementAbility":72,"baseHabitatNiche":55,"baseFitTemperature":48,"baseFitHumidity":52,"baseSize":16,"baseFertility":78,"baseEcologicalNiche":"Land"},
-    {"id":"hare","name":"高原野兔","scientificName":"Lepus timidus","image":"./images/hare.svg","x":710,"y":75,"trophicLevel":0,"baseMovementAbility":82,"baseHabitatNiche":58,"baseFitTemperature":28,"baseFitHumidity":45,"baseSize":18,"baseFertility":65,"baseEcologicalNiche":"Land"},
-    {"id":"fox","name":"赤狐","scientificName":"Vulpes vulpes","image":"./images/fox.svg","x":715,"y":335,"trophicLevel":1,"baseMovementAbility":80,"baseHabitatNiche":55,"baseFitTemperature":45,"baseFitHumidity":50,"baseSize":32,"baseFertility":52,"baseEcologicalNiche":"Land"},
-    {"id":"wolf","name":"灰狼","scientificName":"Canis lupus","image":"./images/wolf.svg","x":1020,"y":240,"trophicLevel":2,"baseMovementAbility":78,"baseHabitatNiche":52,"baseFitTemperature":35,"baseFitHumidity":48,"baseSize":72,"baseFertility":38,"baseEcologicalNiche":"Land"}
+    {"id":"grass","name":"野草","description":"草地中的基础生产者，为食草动物提供食物。","image":"./images/grass.svg","x":120,"y":250,"trophicLevel":0,"baseMovementAbility":0,"baseHabitatNiche":50,"baseFitTemperature":55,"baseFitHumidity":60,"baseSize":2,"baseFertility":85,"baseEcologicalNiche":"Land"},
+    {"id":"rabbit","name":"林地兔","description":"生活在林地边缘，以草本植物为食。","image":"./images/rabbit.svg","x":400,"y":160,"trophicLevel":0,"baseMovementAbility":72,"baseHabitatNiche":55,"baseFitTemperature":48,"baseFitHumidity":52,"baseSize":16,"baseFertility":78,"baseEcologicalNiche":"Land"},
+    {"id":"hare","name":"高原野兔","description":"适应较冷的高原环境，善于快速移动。","image":"./images/hare.svg","x":710,"y":75,"trophicLevel":0,"baseMovementAbility":82,"baseHabitatNiche":58,"baseFitTemperature":28,"baseFitHumidity":45,"baseSize":18,"baseFertility":65,"baseEcologicalNiche":"Land"},
+    {"id":"fox","name":"赤狐","description":"灵活的一级捕食者，主要捕食小型食草动物。","image":"./images/fox.svg","x":715,"y":335,"trophicLevel":1,"baseMovementAbility":80,"baseHabitatNiche":55,"baseFitTemperature":45,"baseFitHumidity":50,"baseSize":32,"baseFertility":52,"baseEcologicalNiche":"Land"},
+    {"id":"wolf","name":"灰狼","description":"体型较大的二级捕食者，位于示例食物网顶端。","image":"./images/wolf.svg","x":1020,"y":240,"trophicLevel":2,"baseMovementAbility":78,"baseHabitatNiche":52,"baseFitTemperature":35,"baseFitHumidity":48,"baseSize":72,"baseFertility":38,"baseEcologicalNiche":"Land"}
   ],
   "evolutionLinks": [{"from":"rabbit","to":"hare"}],
   "foodLinks": [{"from":"grass","to":"rabbit"},{"from":"rabbit","to":"fox"},{"from":"hare","to":"fox"},{"from":"fox","to":"wolf"}]
