@@ -17,7 +17,7 @@ public static class DarwinAtlasImporter
 
     [Serializable] private class Species
     {
-        public string id, name, scientificName, image, baseEcologicalNiche;
+        public string id, name, description, image, baseEcologicalNiche;
         public int trophicLevel, baseMovementAbility, baseHabitatNiche,
             baseFitTemperature, baseFitHumidity, baseSize, baseFertility;
     }
