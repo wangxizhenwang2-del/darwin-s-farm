@@ -2,23 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Whitebox-only controller: seeds the eight terrain cases and keeps one visual
-// queue bound to each living ecological population.
+// Whitebox-only controller: seeds one chicken population on the initial tile
+// and keeps visual queues bound to living ecological populations.
 public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
 {
     [SerializeField] private MapGridManager grid;
     [SerializeField] private MapSimulationBridge bridge;
     [SerializeField] private SimulationController simulation;
     [SerializeField] private PopulationMovementController movement;
-    [Header("Terrain assets")]
-    [SerializeField] private MapTileDefinition forest, rainforest, desert, highland,
-        volcano, tundra, snowMountain;
     [Header("JSON order: deer, chicken, fierce deer, civet, sparrow lion")]
     [SerializeField] private SpeciesData[] species = new SpeciesData[5];
     [SerializeField] private Color[] speciesColors = new Color[5];
-    [SerializeField, Min(1)] private int herbivoresPerTile = 160;
-    [SerializeField, Min(1)] private int firstPredatorsPerTile = 25;
-    [SerializeField, Min(1)] private int topPredatorsPerTile = 8;
+    [SerializeField] private SpeciesData initialChickenSpecies;
+    [SerializeField, Min(1)] private int initialChickenCount = 160;
 
     private readonly Dictionary<PopulationData, WhiteboxPopulation> visuals =
         new Dictionary<PopulationData, WhiteboxPopulation>();
@@ -43,7 +39,7 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
         // registers it with the simulation before this coroutine resumes.
         yield return null;
         if (grid == null || bridge == null || simulation == null || movement == null ||
-            species == null || species.Length != 5 || speciesColors == null ||
+            initialChickenSpecies == null || species == null || species.Length != 5 || speciesColors == null ||
             speciesColors.Length != 5)
         {
             Debug.LogError("Whitebox bioweb test setup has missing references.", this);
@@ -59,30 +55,18 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
             }
 
         simulation.SetEvolutionNetworkSpecies(species);
-        Place(new Vector2Int(1, 0), forest);
-        Place(new Vector2Int(2, 0), rainforest);
-        Place(new Vector2Int(0, 1), desert);
-        Place(new Vector2Int(1, 1), highland);
-        Place(new Vector2Int(2, 1), volcano);
-        Place(new Vector2Int(0, 2), tundra);
-        Place(new Vector2Int(1, 2), snowMountain);
-        bridge.Synchronize();
-        foreach (MapTileInstance tile in grid.GetPlacedTiles()) Seed(tile);
+        if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) ||
+            initialTile.Block == null)
+        {
+            Debug.LogError("Whitebox initial grassland tile is unavailable.", this);
+            enabled = false;
+            yield break;
+        }
+        Seed(initialTile, initialChickenSpecies);
         nextSync = 0f;
     }
 
-    private void Place(Vector2Int coordinate, MapTileDefinition terrain)
-    {
-        if (terrain == null)
-        {
-            Debug.LogError($"Missing terrain asset at {coordinate}.", this);
-            return;
-        }
-        if (!grid.TryGetTile(coordinate, out _) && !grid.TryPlaceTile(coordinate, terrain))
-            Debug.LogError($"Could not place test terrain at {coordinate}.", this);
-    }
-
-    private void Seed(MapTileInstance tile)
+    private void Seed(MapTileInstance tile, SpeciesData chicken)
     {
         if (tile == null || tile.Block == null) return;
         BlockInfo block = tile.Block;
@@ -91,25 +75,21 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
             foreach (PopulationData existing in block.community)
                 if (existing != null)
                     edits.Add(new SimulationPopulationEdit { Resident = existing, Draft = existing });
-        foreach (SpeciesData type in species)
+        if (block.community == null || !block.community.Exists(p => p != null && p.species == chicken))
         {
-            if (block.community != null && block.community.Exists(p => p != null && p.species == type))
-                continue;
-            int amount = type.trophicLevel == 0 ? herbivoresPerTile :
-                type.trophicLevel == 1 ? firstPredatorsPerTile : topPredatorsPerTile;
             var population = new PopulationData
             {
-                species = type,
-                speciesAmount = amount,
-                lineageName = type.SpeciesName,
+                species = chicken,
+                speciesAmount = initialChickenCount,
+                lineageName = chicken.SpeciesName,
                 ecologicalNiche = EcologicalNiche.Land,
-                fitTemperature = type.baseFitTemperature,
-                fitHumidity = type.baseFitHumidity,
-                size = type.baseSize,
-                movementAbility = type.baseMovementAbility,
-                fertility = type.baseFertility,
-                habitatNiche = type.baseHabitatNiche,
-                trophicLevel = type.trophicLevel,
+                fitTemperature = chicken.baseFitTemperature,
+                fitHumidity = chicken.baseFitHumidity,
+                size = chicken.baseSize,
+                movementAbility = chicken.baseMovementAbility,
+                fertility = chicken.baseFertility,
+                habitatNiche = chicken.baseHabitatNiche,
+                trophicLevel = chicken.trophicLevel,
                 trophicLevelInitialized = true
             };
             edits.Add(new SimulationPopulationEdit { Draft = population });
@@ -131,7 +111,6 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
             {
                 if (data == null || data.speciesAmount <= 0) continue;
                 int index = System.Array.IndexOf(species, data.species);
-                if (index < 0) continue;
                 living.Add(data);
                 if (visuals.TryGetValue(data, out WhiteboxPopulation visual) && visual != null &&
                     visual.TileId == tile.Coordinate)
@@ -146,8 +125,10 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
                 creations++;
                 visual = movement.CreatePopulation(tile.Coordinate, data.speciesAmount);
                 if (visual == null) { retryAt[data] = Time.unscaledTime + 3f; continue; }
-                visual.BindEcologicalPopulation(data, speciesColors[index]);
-                visual.name = $"{data.species.SpeciesName}_{tile.Coordinate.x}_{tile.Coordinate.y}";
+                visual.BindEcologicalPopulation(data,
+                    index >= 0 ? speciesColors[index] : Color.white);
+                string name = data.species != null ? data.species.SpeciesName : data.lineageName;
+                visual.name = $"{name}_{tile.Coordinate.x}_{tile.Coordinate.y}";
                 visuals[data] = visual;
                 retryAt.Remove(data);
             }

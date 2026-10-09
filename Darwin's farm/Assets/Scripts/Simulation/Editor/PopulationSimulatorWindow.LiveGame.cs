@@ -20,6 +20,7 @@ public partial class PopulationSimulatorWindow
     private SimulationTime liveTime;
     private Vector2Int liveCoordinate;
     private bool hasLiveCoordinate;
+    private double nextLiveRepaint;
     private string liveMessage;
     private Vector2 liveScroll;
     [SerializeField] private int livePage;

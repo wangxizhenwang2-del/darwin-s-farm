@@ -518,10 +518,13 @@ public partial class PopulationSimulatorWindow : EditorWindow
         double now = EditorApplication.timeSinceStartup;
         if (liveGameMode)
         {
-            if (EditorApplication.isPlaying)
+            // The live dashboard needs timely updates, but not one raycast and
+            // one full IMGUI repaint for every Editor update.
+            if (EditorApplication.isPlaying && now >= nextLiveRepaint)
             {
                 UpdateLiveHover();
                 Repaint();
+                nextLiveRepaint = now + 0.1;
             }
             lastUpdate = now;
             return;

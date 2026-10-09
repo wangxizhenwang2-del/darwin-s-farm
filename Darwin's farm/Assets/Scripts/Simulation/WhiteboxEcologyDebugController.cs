@@ -98,7 +98,9 @@ public sealed class WhiteboxEcologyDebugController : MonoBehaviour
     private void LateUpdate()
     {
         if (Time.unscaledTime < nextRefresh) return;
-        nextRefresh = Time.unscaledTime + 0.25f;
+        // Forecast labels are diagnostic; refreshing once per second avoids
+        // repeated food-web projections between simulation days.
+        nextRefresh = Time.unscaledTime + 1f;
         labels.Clear();
         if (grid == null) return;
         foreach (MapTileInstance tile in grid.GetPlacedTiles())

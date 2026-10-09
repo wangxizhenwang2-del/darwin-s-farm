@@ -56,7 +56,6 @@ public class SimulationTime : MonoBehaviour
         {
             time -= basicDayLength;
             NextDay(); //授时
-            Debug.Log("Day "+currentDay);
         }
     }
 

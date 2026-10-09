@@ -1233,13 +1233,6 @@ MonoBehaviour:
   bridge: {fileID: 1541449673}
   simulation: {fileID: 1541449672}
   movement: {fileID: 1541449675}
-  forest: {fileID: 11400000, guid: 3c445dd62bc94cc79be5b23d90e7a887, type: 2}
-  rainforest: {fileID: 11400000, guid: d213c23cebc3449fa779099117c1b809, type: 2}
-  desert: {fileID: 11400000, guid: 015789cd96df421cbdf7bdf8d9030566, type: 2}
-  highland: {fileID: 11400000, guid: 910f762926d245d4830d3c3aedea0e2e, type: 2}
-  volcano: {fileID: 11400000, guid: d640625fbb334577bddde07edba27126, type: 2}
-  tundra: {fileID: 11400000, guid: 94fdb423f3304ad2af4ef8486abf31fd, type: 2}
-  snowMountain: {fileID: 11400000, guid: 4f18b7555e4e45068405c3fd60ce4857, type: 2}
   species:
   - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
   - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
@@ -1252,9 +1245,8 @@ MonoBehaviour:
   - {r: 0.95, g: 0.24, b: 0.18, a: 1}
   - {r: 0.75, g: 0.28, b: 0.92, a: 1}
   - {r: 0.36, g: 0.95, b: 0.38, a: 1}
-  herbivoresPerTile: 160
-  firstPredatorsPerTile: 25
-  topPredatorsPerTile: 8
+  initialChickenSpecies: {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  initialChickenCount: 160
 --- !u!1 &1640010066
 GameObject:
   m_ObjectHideFlags: 0
