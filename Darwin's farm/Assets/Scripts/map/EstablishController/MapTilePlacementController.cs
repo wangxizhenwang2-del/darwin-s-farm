@@ -26,6 +26,7 @@ public class MapTilePlacementController : MonoBehaviour
         new Color(1f, 0.2f, 0.2f);
 
     private MapTileDefinition draggingDefinition;
+    private ScreenEdgeCamera screenEdgeCamera;
 
     private GameObject previewObject;
     private Renderer[] previewRenderers;
@@ -50,6 +51,9 @@ public class MapTilePlacementController : MonoBehaviour
         if (viewCamera == null)
             viewCamera = Camera.main;
 
+        if (viewCamera != null)
+            screenEdgeCamera = viewCamera.GetComponent<ScreenEdgeCamera>();
+
         if (viewCamera == null ||
             gridManager == null ||
             buildMode == null ||
@@ -65,7 +69,8 @@ public class MapTilePlacementController : MonoBehaviour
     {
         if (!isActiveAndEnabled ||
             !buildMode.IsBuildMode ||
-            definition == null)
+            definition == null ||
+            (screenEdgeCamera != null && screenEdgeCamera.IsMapDragging))
         {
             return;
         }
@@ -73,6 +78,8 @@ public class MapTilePlacementController : MonoBehaviour
         CancelDrag();
 
         draggingDefinition = definition;
+        if (screenEdgeCamera != null)
+            screenEdgeCamera.SetTileDragActive(true);
 
         buildMode.SetPreviewHeight(
     definition.heightLevel * MapGridManager.HeightStep);
@@ -302,6 +309,8 @@ public class MapTilePlacementController : MonoBehaviour
 
         rotationSteps = 0;
         draggingDefinition = null;
+        if (screenEdgeCamera != null)
+            screenEdgeCamera.SetTileDragActive(false);
         canPlace = false;
 
         if (buildMode != null)

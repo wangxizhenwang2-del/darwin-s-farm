@@ -57,6 +57,9 @@ public class MapBuildModeController : MonoBehaviour
 
     private void Update()
     {
+        if (!Application.isFocused || ScreenEdgeCamera.IsTextInputFocused())
+            return;
+
         bool pressedN;
 
 #if ENABLE_INPUT_SYSTEM
@@ -84,8 +87,7 @@ public class MapBuildModeController : MonoBehaviour
         if (clickToMove != null)
             clickToMove.SetMovementInputEnabled(!value);
 
-        // 建造模式中，暂停玩家触发的自动跟随。
-        // 切换相机的建造控制与玩家跟随。
+        // 切换浏览输入，当前视角保持不变。
         if (screenEdgeCamera != null)
             screenEdgeCamera.SetBuildMode(value);
 

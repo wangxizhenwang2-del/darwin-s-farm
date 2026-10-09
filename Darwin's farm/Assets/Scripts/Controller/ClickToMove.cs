@@ -19,6 +19,7 @@ public class ClickToMove : MonoBehaviour
     private float sampleDistance = 0.5f;
 
     private NavMeshAgent agent;
+    private ScreenEdgeCamera screenEdgeCamera;
     private NavMeshPath path;
 
     private bool movementInputEnabled = true;
@@ -33,6 +34,9 @@ public class ClickToMove : MonoBehaviour
         if (viewCamera == null)
             viewCamera = Camera.main;
 
+        if (viewCamera != null)
+            screenEdgeCamera = viewCamera.GetComponent<ScreenEdgeCamera>();
+
         agent.autoRepath = true;
     }
 
@@ -45,6 +49,10 @@ public class ClickToMove : MonoBehaviour
         {
             return;
         }
+
+        if (!Application.isFocused ||
+            (screenEdgeCamera != null && screenEdgeCamera.IsMapBrowsingInputActive))
+            return;
 
         if (mapNavigation != null && mapNavigation.IsUpdating)
             return;

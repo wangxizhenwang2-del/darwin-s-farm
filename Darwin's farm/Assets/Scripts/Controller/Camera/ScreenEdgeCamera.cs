@@ -25,11 +25,11 @@ public class ScreenEdgeCamera : MonoBehaviour
     [SerializeField, Min(0.01f)]
     private float stopDistance = 0.15f;
 
-    [Header("建造模式平移")]
+    [Header("地图平移")]
     [SerializeField, Min(0.1f)]
     private float buildMoveSpeed = 30f;
 
-    [Header("建造模式缩放")]
+    [Header("地图缩放")]
     [Tooltip("每次滚轮输入的缩放幅度。")]
     [SerializeField, Range(0.01f, 0.5f)]
     private float zoomStep = 0.1f;
@@ -58,9 +58,31 @@ public class ScreenEdgeCamera : MonoBehaviour
     private bool followEnabled = true;
     private bool buildModeEnabled;
 
-    private float savedOrthographicSize;
-    private float savedFieldOfView;
+    private bool mapDragging;
+    private bool tileDragging;
+    private Vector2 previousMousePosition;
 
+    public bool IsMapDragging => mapDragging;
+
+    // ClickToMove runs in Update, before the camera's LateUpdate.
+    public bool IsMapBrowsingInputActive
+    {
+        get
+        {
+            Mouse mouse = Mouse.current;
+            if (!Application.isFocused || tileDragging || mouse == null ||
+                !CanBrowseMap())
+                return false;
+
+            if (mapDragging && mouse.middleButton.isPressed)
+                return true;
+
+            Vector2 position = mouse.position.ReadValue();
+            return IsOverMap(position) &&
+                   (mouse.middleButton.isPressed ||
+                    !Mathf.Approximately(mouse.scroll.ReadValue().y, 0f));
+        }
+    }
     private readonly List<RaycastResult> uiResults =
         new List<RaycastResult>();
 
@@ -72,112 +94,121 @@ public class ScreenEdgeCamera : MonoBehaviour
     private void LateUpdate()
     {
         if (!Application.isFocused)
-            return;
-
-        if (buildModeEnabled)
         {
-            UpdateBuildCamera();
+            mapDragging = false;
             return;
         }
-
-        UpdatePlayerFollow();
-    }
-
-    private void UpdateBuildCamera()
-    {
-        Vector2 movement = Vector2.zero;
-        Vector2 mousePosition = Vector2.zero;
-
-        float scroll = 0f;
-        bool hasMouse = false;
-
 
         Keyboard keyboard = Keyboard.current;
+        if (keyboard != null && keyboard.tabKey.wasPressedThisFrame &&
+            !IsTextInputFocused())
+            ReturnToPlayer();
 
-        if (keyboard != null)
+        UpdateMapBrowsing();
+
+        if (returningToPlayer || (!buildModeEnabled && followEnabled))
+            UpdatePlayerFollow();
+    }
+
+    private bool CanBrowseMap()
+    {
+        if (buildModeEnabled)
+            return true;
+
+        Keyboard keyboard = Keyboard.current;
+        return keyboard != null &&
+               (keyboard.leftAltKey.isPressed || keyboard.rightAltKey.isPressed);
+    }
+
+    private void UpdateMapBrowsing()
+    {
+        Mouse mouse = Mouse.current;
+        if (mouse == null || !CanBrowseMap() || tileDragging)
         {
-            if (keyboard.wKey.isPressed ||
-                keyboard.upArrowKey.isPressed)
-            {
-                movement.y += 1f;
-            }
-
-            if (keyboard.sKey.isPressed ||
-                keyboard.downArrowKey.isPressed)
-            {
-                movement.y -= 1f;
-            }
-
-            if (keyboard.dKey.isPressed ||
-                keyboard.rightArrowKey.isPressed)
-            {
-                movement.x += 1f;
-            }
-
-            if (keyboard.aKey.isPressed ||
-                keyboard.leftArrowKey.isPressed)
-            {
-                movement.x -= 1f;
-            }
-        }
-
-        if (Mouse.current != null)
-        {
-            hasMouse = true;
-            mousePosition = Mouse.current.position.ReadValue();
-            scroll = Mouse.current.scroll.ReadValue().y;
-        }
-
-
-        movement = Vector2.ClampMagnitude(movement, 1f);
-
-        // 相机的右方向投影到地图水平面,用于找到相机朝向地面的右方向
-        Vector3 right =
-            Vector3.ProjectOnPlane(transform.right, Vector3.up);
-
-        if (right.sqrMagnitude < 0.001f)
-            right = Vector3.right;
-
-        right.Normalize();
-
-        // 与右方向垂直的地图前方向。
-        Vector3 forward = Vector3.Cross(right, Vector3.up);
-
-        Vector3 moveDirection =
-            right * movement.x + forward * movement.y;
-
-        transform.position +=
-            moveDirection * buildMoveSpeed * Time.deltaTime;
-
-        if (!hasMouse ||
-            !viewCamera.pixelRect.Contains(mousePosition) ||
-            IsPointerOverUI(mousePosition) ||
-            Mathf.Approximately(scroll, 0f))
-        {
+            mapDragging = false;
             return;
         }
 
-        // 按输入方向缩放，避免不同输入系统的滚轮数值差异。
-        float factor = Mathf.Exp(-Mathf.Sign(scroll) * zoomStep);
+        Vector2 position = mouse.position.ReadValue();
+        if (!mouse.middleButton.isPressed)
+            mapDragging = false;
 
+        if (mapDragging)
+        {
+            if (TryGetMapPoint(previousMousePosition, out Vector3 previous) &&
+                TryGetMapPoint(position, out Vector3 current))
+            {
+                Vector3 movement = previous - current;
+                movement.y = 0f;
+                movement *= buildMoveSpeed / 30f;
+                if (movement.sqrMagnitude > 0.000001f)
+                {
+                    transform.position += movement;
+                    PauseFollow();
+                }
+            }
+            previousMousePosition = position;
+        }
+        else if (mouse.middleButton.wasPressedThisFrame && IsOverMap(position))
+        {
+            mapDragging = true;
+            previousMousePosition = position;
+        }
+
+        if (!IsOverMap(position))
+            return;
+
+        float scroll = mouse.scroll.ReadValue().y;
+        if (Mathf.Approximately(scroll, 0f))
+            return;
+
+        float factor = Mathf.Exp(-Mathf.Sign(scroll) * zoomStep);
         if (viewCamera.orthographic)
         {
-            viewCamera.orthographicSize = Mathf.Clamp(
-                viewCamera.orthographicSize * factor,
-                minOrthographicSize,
-                maxOrthographicSize);
+            float size = Mathf.Clamp(viewCamera.orthographicSize * factor,
+                minOrthographicSize, maxOrthographicSize);
+            if (!Mathf.Approximately(size, viewCamera.orthographicSize))
+            {
+                viewCamera.orthographicSize = size;
+                PauseFollow();
+            }
         }
         else
         {
-            viewCamera.fieldOfView = Mathf.Clamp(
-                viewCamera.fieldOfView * factor,
-                minFieldOfView,
-                maxFieldOfView);
+            float fieldOfView = Mathf.Clamp(viewCamera.fieldOfView * factor,
+                minFieldOfView, maxFieldOfView);
+            if (!Mathf.Approximately(fieldOfView, viewCamera.fieldOfView))
+            {
+                viewCamera.fieldOfView = fieldOfView;
+                PauseFollow();
+            }
         }
+    }
+
+    private bool TryGetMapPoint(Vector2 position, out Vector3 point)
+    {
+        float height = player != null ? player.position.y : 0f;
+        Plane mapPlane = new Plane(Vector3.up, new Vector3(0f, height, 0f));
+        Ray ray = viewCamera.ScreenPointToRay(position);
+        if (mapPlane.Raycast(ray, out float distance))
+        {
+            point = ray.GetPoint(distance);
+            return true;
+        }
+
+        point = Vector3.zero;
+        return false;
+    }
+
+    private bool IsOverMap(Vector2 position)
+    {
+        return viewCamera.pixelRect.Contains(position) &&
+               !IsPointerOverUI(position);
     }
 
     private bool IsPointerOverUI(Vector2 mousePosition)
     {
+        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(mousePosition)) return true;
         if (EventSystem.current == null)
             return false;
 
@@ -198,9 +229,18 @@ public class ScreenEdgeCamera : MonoBehaviour
         return false;
     }
 
+    public static bool IsTextInputFocused()
+    {
+        GameObject selected = EventSystem.current != null
+            ? EventSystem.current.currentSelectedGameObject : null;
+        return selected != null &&
+               (selected.GetComponent<InputField>() != null ||
+                selected.GetComponent("TMP_InputField") != null);
+    }
+
     private void UpdatePlayerFollow()
     {
-        if (!followEnabled || player == null)
+        if ((!followEnabled && !returningToPlayer) || player == null)
             return;
 
         Vector3 viewport =
@@ -271,41 +311,56 @@ public class ScreenEdgeCamera : MonoBehaviour
 
     public void SetBuildMode(bool value)
     {
-
-
         if (buildModeEnabled == value)
             return;
 
-        if (value)
-        {
-            returningToPlayer = false;
-            savedOrthographicSize = viewCamera.orthographicSize;
-            savedFieldOfView = viewCamera.fieldOfView;
-
-            buildModeEnabled = true;
-            followEnabled = false;
-            moving = false;
-        }
-        else
-        {
-            buildModeEnabled = false;
-
-            viewCamera.orthographicSize = savedOrthographicSize;
-            viewCamera.fieldOfView = savedFieldOfView;
-
-            followEnabled = true;
-
-            // 关闭建造模式后，主动跟进到玩家附近。
-            moving = player != null;
-            returningToPlayer = player != null;
-        }
+        buildModeEnabled = value;
+        mapDragging = false;
+        PauseFollow();
     }
 
-    // 保留原接口，供其他系统单独控制跟随。
+    public void SetTileDragActive(bool value)
+    {
+        tileDragging = value;
+        if (value)
+            mapDragging = false;
+    }
+
+    private void PauseFollow()
+    {
+        followEnabled = false;
+        moving = false;
+        returningToPlayer = false;
+    }
+
+    private void ReturnToPlayer()
+    {
+        if (player == null)
+            return;
+
+        returningToPlayer = true;
+        moving = true;
+        followEnabled = !buildModeEnabled;
+    }
+
+    // 保留原接口，供其他系统控制自动跟随。
     public void SetFollowEnabled(bool value)
     {
         returningToPlayer = false;
         followEnabled = value;
         moving = false;
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+            mapDragging = false;
+    }
+
+    private void OnDisable()
+    {
+        mapDragging = false;
+        tileDragging = false;
+        returningToPlayer = false;
     }
 }
