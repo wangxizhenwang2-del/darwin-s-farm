@@ -10,6 +10,21 @@ internal static class FoodWeb
     public const float PredatorReserveDays = 10f;
     private const float SharedPlantFraction = 0.1f;
 
+    // 2026-10-09 13:49 +08:00: explicit species links take priority; the
+    // V4.3 level fallback allows L2 to hunt either lower level.
+    internal static bool CanEat(PopulationData predator, PopulationData prey)
+    {
+        if (predator == null || prey == null || predator == prey) return false;
+        bool allowedLevels = predator.trophicLevel == 1 && prey.trophicLevel == 0 ||
+            predator.trophicLevel == 2 &&
+            (prey.trophicLevel == 0 || prey.trophicLevel == 1);
+        if (!allowedLevels) return false;
+        List<SpeciesData> links = predator.species != null ? predator.species.preySpecies : null;
+        return links != null && links.Count > 0
+            ? prey.species != null && links.Contains(prey.species)
+            : true;
+    }
+
     public static void GrowPlants(BlockInfo block)
     {
         float maximum = Mathf.Max(0f, block.maxPlantBiomass);
@@ -25,13 +40,8 @@ internal static class FoodWeb
         float levelOnePreyFraction, float levelTwoPreyFraction)
     {
         float eaten = FeedHerbivores(block);
-        int highestLevel = 0;
-        foreach (PopulationData population in block.community)
-            highestLevel = Mathf.Max(highestLevel, population.trophicLevel);
-        for (int level = 1; level <= highestLevel; level++)
-            FeedPredators(block, level, reproductionScale,
-                overCapacityDeathRate, starvationDeathRate,
-                DailyPreyFraction(level, levelOnePreyFraction, levelTwoPreyFraction));
+        FeedSharedPredators(block, reproductionScale, overCapacityDeathRate,
+            starvationDeathRate, levelOnePreyFraction, levelTwoPreyFraction);
         return eaten;
     }
 
@@ -45,29 +55,18 @@ internal static class FoodWeb
         PopulationData consumer, float reproductionScale,
         float levelOnePreyFraction, float levelTwoPreyFraction)
     {
-        if (level < 0 || level > MaxTrophicLevel) return 0f;
+        if (block == null || block.community == null || consumer == null ||
+            level < 0 || level > MaxTrophicLevel) return 0f;
+        if (level > 0)
+            return ProjectedPredatorIntakeRatio(block, consumer,
+                levelOnePreyFraction, levelTwoPreyFraction);
         float food = 0f;
-        if (level == 0)
-        {
-            float maximum = Mathf.Max(0f, block.maxPlantBiomass);
-            float stock = Mathf.Clamp(block.plantBiomass, 0f, maximum);
-            float projectedStock = stock + SimulationController.CalculatePlantGrowth(
-                stock, maximum, block.habitatRecovery);
-            food = Mathf.Min(PlantSupportFood(block, projectedStock),
-                projectedStock * ForagingEfficiency(consumer));
-        }
-        else
-        {
-            foreach (PopulationData prey in block.community)
-            {
-                if (prey == consumer || prey.speciesAmount <= 0 ||
-                    prey.trophicLevel != level - 1) continue;
-                food += prey.speciesAmount * DailyPreyFraction(level,
-                        levelOnePreyFraction, levelTwoPreyFraction)
-                    * CaptureChance(consumer.movementAbility, consumer.size, prey)
-                    * prey.size * PreyEnergyPerSize * PredationEfficiency;
-            }
-        }
+        float maximum = Mathf.Max(0f, block.maxPlantBiomass);
+        float stock = Mathf.Clamp(block.plantBiomass, 0f, maximum);
+        float projectedStock = stock + SimulationController.CalculatePlantGrowth(
+            stock, maximum, block.habitatRecovery);
+        food = Mathf.Min(PlantSupportFood(block, projectedStock),
+            projectedStock * ForagingEfficiency(consumer));
 
         // 把同级竞争者算进去，才知道这个种群实际能分到多少。
         float demand = consumer.energyNeed * Mathf.Max(1, consumer.speciesAmount);
@@ -78,6 +77,57 @@ internal static class FoodWeb
                 demand += competitor.energyNeed * competitor.speciesAmount;
         }
         return demand > 0f ? food / demand : 0f;
+    }
+
+    // 2026-10-09 13:58 +08:00: prospective intake follows the same graph and
+    // one-quota-per-prey split as the actual land food ledger.
+    private static float ProjectedPredatorIntakeRatio(BlockInfo block,
+        PopulationData consumer, float levelOnePreyFraction,
+        float levelTwoPreyFraction)
+    {
+        float ownDemand = consumer.energyNeed * consumer.speciesAmount;
+        if (ownDemand <= 0f) return 0f;
+        bool present = block.community.Contains(consumer);
+        float food = 0f;
+        foreach (PopulationData prey in block.community)
+        {
+            if (prey == null || prey.speciesAmount <= 0 || prey.size <= 0f ||
+                !CanEat(consumer, prey)) continue;
+            float eligibleDemand = 0f;
+            float totalEffort = 0f;
+            float weightedCatch = 0f;
+            float ownEffort = 0f;
+            foreach (PopulationData hunter in block.community)
+            {
+                if (hunter == null || hunter.speciesAmount <= 0 ||
+                    !CanEat(hunter, prey)) continue;
+                float demand = hunter.energyNeed * hunter.speciesAmount;
+                float effort = demand * ForagingEfficiency(hunter)
+                    * Mathf.Clamp01(hunter.environmentalFitness / 100f)
+                    * CaptureChance(hunter.movementAbility, hunter.size, prey);
+                eligibleDemand += demand;
+                totalEffort += effort;
+                weightedCatch += effort * DailyPreyFraction(hunter.trophicLevel,
+                    levelOnePreyFraction, levelTwoPreyFraction);
+                if (hunter == consumer) ownEffort = effort;
+            }
+            if (!present)
+            {
+                ownEffort = ownDemand * ForagingEfficiency(consumer)
+                    * Mathf.Clamp01(consumer.environmentalFitness / 100f)
+                    * CaptureChance(consumer.movementAbility, consumer.size, prey);
+                eligibleDemand += ownDemand;
+                totalEffort += ownEffort;
+                weightedCatch += ownEffort * DailyPreyFraction(consumer.trophicLevel,
+                    levelOnePreyFraction, levelTwoPreyFraction);
+            }
+            if (eligibleDemand <= 0f || totalEffort <= 0f) continue;
+            float expected = Mathf.Min(prey.speciesAmount,
+                prey.speciesAmount * weightedCatch / eligibleDemand);
+            food += expected * prey.size * PreyEnergyPerSize * PredationEfficiency
+                * ownEffort / totalEffort;
+        }
+        return food / ownDemand;
     }
 
     internal static float CaptureEfficiency(float predatorMovement, float predatorSize,
@@ -102,44 +152,79 @@ internal static class FoodWeb
         CaptureEfficiency(movement, size, prey) / 2f;
 
     // 固定当天猎手的捕食努力，只比较候选猎物性状造成的风险变化；不掷随机数。
+    // 2026-10-09 13:53 +08:00: forecast uses the same shared prey quota as
+    // actual feeding, including L2 hunters of L0 prey and a hypothetical new
+    // target population that has not yet been inserted into the community.
     internal static float ExpectedPreyLoss(BlockInfo block, PopulationData target,
         float targetMovement, float targetSize,
         float levelOnePreyFraction, float levelTwoPreyFraction)
     {
-        int level = target.trophicLevel + 1;
-        float demand = 0f, deficit = 0f, foraging = 0f;
-        float movement = 0f, size = 0f;
-        foreach (PopulationData predator in block.community)
-        {
-            if (predator.speciesAmount <= 0 || predator.trophicLevel != level) continue;
-            float ownDemand = predator.energyNeed * predator.speciesAmount;
-            demand += ownDemand;
-            deficit += Mathf.Max(0f, ownDemand - predator.energyReserve);
-            foraging += ownDemand * ForagingEfficiency(predator)
-                * Mathf.Clamp01(predator.environmentalFitness / 100f);
-            movement += ownDemand * predator.movementAbility;
-            size += ownDemand * predator.size;
-        }
-        if (demand <= 0f || deficit <= 0f) return 0f;
-        float efficiency = foraging / demand;
-        float totalEnergy = 0f, targetKills = 0f;
+        if (block == null || block.community == null || target == null ||
+            target.speciesAmount <= 0) return 0f;
+        float expectedTargetKills = 0f;
+        float availableEnergy = 0f;
+        float totalDeficit = 0f;
+        bool targetPresent = false;
+        foreach (PopulationData hunter in block.community)
+            if (hunter != null && hunter.speciesAmount > 0 && hunter.trophicLevel > 0)
+            {
+                bool hasFood = CanEat(hunter, target);
+                if (!hasFood)
+                    foreach (PopulationData prey in block.community)
+                        if (prey != null && prey.speciesAmount > 0 &&
+                            CanEat(hunter, prey)) { hasFood = true; break; }
+                if (hasFood)
+                    totalDeficit += Mathf.Max(0f,
+                        hunter.energyNeed * hunter.speciesAmount - hunter.energyReserve);
+            }
         foreach (PopulationData prey in block.community)
         {
-            if (prey.speciesAmount <= 0 || prey.trophicLevel != target.trophicLevel) continue;
-            float chance = CaptureEfficiency(movement / demand, size / demand,
-                prey.movementAbility, prey.size, prey.trophicLevel) / 2f;
-            float kills = prey.speciesAmount * DailyPreyFraction(level,
-                levelOnePreyFraction, levelTwoPreyFraction) * efficiency * chance;
-            float preySize = prey == target ? targetSize : prey.size;
-            // 猎手数量和预期尝试次数保持当前值；候选体型仍改变每只猎物的能量。
-            totalEnergy += kills * preySize * PreyEnergyPerSize * PredationEfficiency;
-            if (prey == target)
-                targetKills = prey.speciesAmount * DailyPreyFraction(level,
-                        levelOnePreyFraction, levelTwoPreyFraction)
-                    * efficiency * CaptureEfficiency(movement / demand, size / demand,
-                        targetMovement, targetSize, prey.trophicLevel) / 2f;
+            if (prey == null || prey.speciesAmount <= 0 || prey.size <= 0f) continue;
+            bool isTarget = prey == target;
+            targetPresent |= isTarget;
+            float kills = ExpectedSharedKills(block, prey,
+                isTarget ? targetMovement : prey.movementAbility,
+                isTarget ? targetSize : prey.size,
+                levelOnePreyFraction, levelTwoPreyFraction);
+            availableEnergy += kills * (isTarget ? targetSize : prey.size)
+                * PreyEnergyPerSize * PredationEfficiency;
+            if (isTarget) expectedTargetKills = kills;
         }
-        return targetKills * (totalEnergy > 0f ? Mathf.Min(1f, deficit / totalEnergy) : 0f);
+        if (!targetPresent)
+        {
+            expectedTargetKills = ExpectedSharedKills(block, target,
+                targetMovement, targetSize,
+                levelOnePreyFraction, levelTwoPreyFraction);
+            availableEnergy += expectedTargetKills * targetSize
+                * PreyEnergyPerSize * PredationEfficiency;
+        }
+        float demandFraction = availableEnergy > 0f
+            ? Mathf.Min(1f, totalDeficit / availableEnergy) : 0f;
+        return Mathf.Min(target.speciesAmount, expectedTargetKills * demandFraction);
+    }
+
+    private static float ExpectedSharedKills(BlockInfo block, PopulationData prey,
+        float movement, float size,
+        float levelOnePreyFraction, float levelTwoPreyFraction)
+    {
+        float eligibleDemand = 0f;
+        float weightedCatch = 0f;
+        foreach (PopulationData hunter in block.community)
+        {
+            if (hunter == null || hunter.speciesAmount <= 0 ||
+                !CanEat(hunter, prey)) continue;
+            float demand = hunter.energyNeed * hunter.speciesAmount;
+            eligibleDemand += demand;
+            weightedCatch += demand * ForagingEfficiency(hunter)
+                * Mathf.Clamp01(hunter.environmentalFitness / 100f)
+                * CaptureEfficiency(hunter.movementAbility, hunter.size,
+                    movement, size, prey.trophicLevel) / 2f
+                * DailyPreyFraction(hunter.trophicLevel,
+                    levelOnePreyFraction, levelTwoPreyFraction);
+        }
+        return eligibleDemand > 0f
+            ? Mathf.Min(prey.speciesAmount,
+                prey.speciesAmount * weightedCatch / eligibleDemand) : 0f;
     }
 
     private static float ForagingEfficiency(PopulationData population) =>
@@ -164,11 +249,18 @@ internal static class FoodWeb
     }
 
     private static float SupportedPreyHarvest(PopulationData prey,
-        float reproductionScale, float overCapacityDeathRate, float starvationDeathRate)
+        float reproductionScale, float overCapacityDeathRate, float starvationDeathRate,
+        bool projectedFeeding = false)
     {
         if (prey.speciesAmount <= 0 || prey.carryingCapacity <= 0f) return 0f;
-        SimulationController.EstimateDemography(prey, prey.speciesAmount,
-            reproductionScale, overCapacityDeathRate, starvationDeathRate *
+        float allocation = projectedFeeding
+            ? Mathf.Min(prey.energyNeed * prey.speciesAmount,
+                prey.carryingCapacity * prey.energyNeed)
+            : prey.allocatedBiomass;
+        SimulationController.EstimateDemography(prey.speciesAmount,
+            prey.fertility, prey.environmentalFitness, prey.energyNeed,
+            allocation, prey.carryingCapacity, reproductionScale,
+            overCapacityDeathRate, starvationDeathRate *
                 (prey.trophicLevel > 0 ?
                     SimulationController.PredatorStarvationMultiplier : 1f),
             out float births, out float deaths);
@@ -259,6 +351,7 @@ internal static class FoodWeb
         float candidateSmall = SmallTrack(targetSize);
         float bestFitness = 0f;
         float bestForaging = 0f;
+        bool candidatePresent = block.community.Contains(candidate);
         foreach (PopulationData population in block.community)
         {
             if (population.speciesAmount <= 0 || population.trophicLevel != 0) continue;
@@ -280,6 +373,20 @@ internal static class FoodWeb
             allWeight += weight;
             if (population == candidate) candidateWeight = weight;
         }
+        if (!candidatePresent)
+        {
+            // A target species is scored before it is inserted into the tile.
+            float fitness = Mathf.Clamp01(targetFitness);
+            float foraging = ForagingEfficiency(targetMovement);
+            float energy = SimulationController.CalculateEnergyNeed(targetSize,
+                targetMovement, targetFertility);
+            candidateWeight = energy * candidate.speciesAmount * fitness * foraging;
+            smallWeight += candidateWeight * candidateSmall;
+            largeWeight += candidateWeight * (1f - candidateSmall);
+            allWeight += candidateWeight;
+            bestFitness = Mathf.Max(bestFitness, fitness);
+            bestForaging = Mathf.Max(bestForaging, fitness * foraging);
+        }
         if (candidateWeight <= 0f || allWeight <= 0f) return 0f;
         float food = Mathf.Min(PlantSupportFood(block, block.plantBiomass)
             * bestFitness, block.plantBiomass * bestForaging);
@@ -297,49 +404,68 @@ internal static class FoodWeb
         return share / candidateEnergy;
     }
 
+    // 2026-10-09 13:54 +08:00: projected K shares each prey quota with every
+    // hunter that can eat it, matching the actual food-web settlement.
     internal static float ProjectedPredatorCapacity(BlockInfo block,
         PopulationData candidate, float targetSize, float targetMovement,
         float targetFitness, float targetFertility, float reproductionScale,
         float overCapacityDeathRate, float starvationDeathRate,
         float levelOnePreyFraction, float levelTwoPreyFraction)
     {
-        float totalDemand = 0f, totalForaging = 0f;
-        float weightedMovement = 0f, weightedSize = 0f, candidateWeight = 0f;
+        if (candidate == null || candidate.speciesAmount <= 0) return 0f;
         float candidateNeed = SimulationController.CalculateEnergyNeed(targetSize,
             targetMovement, targetFertility);
-        foreach (PopulationData predator in block.community)
-        {
-            if (predator.speciesAmount <= 0 ||
-                predator.trophicLevel != candidate.trophicLevel) continue;
-            float need = predator == candidate ? candidateNeed : predator.energyNeed;
-            float movement = predator == candidate ? targetMovement : predator.movementAbility;
-            float size = predator == candidate ? targetSize : predator.size;
-            float fitness = Mathf.Clamp01(predator == candidate ? targetFitness
-                : predator.environmentalFitness / 100f);
-            float demand = need * predator.speciesAmount;
-            float weight = demand * ForagingEfficiency(movement) * fitness;
-            totalDemand += demand;
-            totalForaging += weight;
-            weightedMovement += demand * movement;
-            weightedSize += demand * size;
-            if (predator == candidate) candidateWeight = weight;
-        }
-        if (totalDemand <= 0f || totalForaging <= 0f) return 0f;
-        float sustainableEnergy = 0f;
+        float candidateDemand = candidateNeed * candidate.speciesAmount;
+        float capacity = 0f;
+        bool candidatePresent = block.community.Contains(candidate);
         foreach (PopulationData prey in block.community)
         {
-            if (prey.speciesAmount <= 0 ||
-                prey.trophicLevel != candidate.trophicLevel - 1) continue;
-            float kills = prey.speciesAmount * DailyPreyFraction(candidate.trophicLevel,
-                    levelOnePreyFraction, levelTwoPreyFraction)
-                * totalForaging / totalDemand
-                * CaptureChance(weightedMovement / totalDemand,
-                    weightedSize / totalDemand, prey);
-            sustainableEnergy += Mathf.Min(kills, SupportedPreyHarvest(prey,
-                reproductionScale, overCapacityDeathRate, starvationDeathRate))
-                * prey.size * PreyEnergyPerSize * PredationEfficiency;
+            if (prey == null || prey.speciesAmount <= 0 || prey.size <= 0f ||
+                !CanEat(candidate, prey)) continue;
+            float eligibleDemand = 0f;
+            float totalEffort = 0f;
+            float weightedCatch = 0f;
+            float candidateEffort = 0f;
+            foreach (PopulationData hunter in block.community)
+            {
+                if (hunter == null || hunter.speciesAmount <= 0 ||
+                    !CanEat(hunter, prey)) continue;
+                bool isCandidate = hunter == candidate;
+                float hunterDemand = isCandidate ? candidateDemand :
+                    hunter.energyNeed * hunter.speciesAmount;
+                float movement = isCandidate ? targetMovement : hunter.movementAbility;
+                float size = isCandidate ? targetSize : hunter.size;
+                float fitness = isCandidate ? targetFitness :
+                    hunter.environmentalFitness / 100f;
+                float effort = hunterDemand * ForagingEfficiency(movement)
+                    * Mathf.Clamp01(fitness)
+                    * CaptureChance(movement, size, prey);
+                eligibleDemand += hunterDemand;
+                totalEffort += effort;
+                weightedCatch += effort * DailyPreyFraction(hunter.trophicLevel,
+                    levelOnePreyFraction, levelTwoPreyFraction);
+                if (isCandidate) candidateEffort = effort;
+            }
+            if (!candidatePresent)
+            {
+                candidateEffort = candidateDemand * ForagingEfficiency(targetMovement)
+                    * Mathf.Clamp01(targetFitness)
+                    * CaptureChance(targetMovement, targetSize, prey);
+                eligibleDemand += candidateDemand;
+                totalEffort += candidateEffort;
+                weightedCatch += candidateEffort * DailyPreyFraction(candidate.trophicLevel,
+                    levelOnePreyFraction, levelTwoPreyFraction);
+            }
+            if (eligibleDemand <= 0f || totalEffort <= 0f) continue;
+            float expected = Mathf.Min(prey.speciesAmount,
+                prey.speciesAmount * weightedCatch / eligibleDemand);
+            float sustainable = Mathf.Min(expected, SupportedPreyHarvest(prey,
+                reproductionScale, overCapacityDeathRate, starvationDeathRate,
+                prey.trophicLevel > 0));
+            capacity += sustainable * prey.size * PreyEnergyPerSize
+                * PredationEfficiency * candidateEffort / totalEffort / candidateNeed;
         }
-        return sustainableEnergy * candidateWeight / totalForaging / candidateNeed;
+        return capacity;
     }
 
     private static float DistributePlantPool(List<PopulationData> herbivores,
@@ -379,168 +505,164 @@ internal static class FoodWeb
         return pool;
     }
 
-    private static void FeedPredators(BlockInfo block, int level, float reproductionScale,
-        float overCapacityDeathRate, float starvationDeathRate, float dailyPreyFraction)
+    // 2026-10-09 13:51 +08:00: one quota per prey group across all linked
+    // hunters and levels. Read every hunter/prey before committing any death;
+    // distribute each actual prey energy pool only to hunters that can eat it.
+    private static void FeedSharedPredators(BlockInfo block, float reproductionScale,
+        float overCapacityDeathRate, float starvationDeathRate,
+        float levelOnePreyFraction, float levelTwoPreyFraction)
     {
-        List<PopulationData> predators = new List<PopulationData>();
-        List<PopulationData> prey = new List<PopulationData>();
-        float totalDemand = 0f;
-        float totalDeficit = 0f;
-        float totalForagingWeight = 0f;
-        float weightedMovement = 0f;
-        float weightedSize = 0f;
-
-        // 同一营养级先统一读取数量与需求，再进行任何扣减。
+        var hunters = new List<PopulationData>();
+        var prey = new List<PopulationData>();
         foreach (PopulationData population in block.community)
         {
-            if (population.speciesAmount <= 0)
-            {
-                continue;
-            }
-            int populationLevel = population.trophicLevel;
-            if (populationLevel == level)
-            {
-                predators.Add(population);
-                float demand = population.energyNeed * population.speciesAmount;
-                totalDemand += demand;
-                totalDeficit += Mathf.Max(0f, demand - population.energyReserve);
-                weightedMovement += demand * population.movementAbility;
-                weightedSize += demand * population.size;
-                totalForagingWeight += demand * ForagingEfficiency(population)
-                    * Mathf.Clamp01(population.environmentalFitness / 100f);
-            }
-            else if (populationLevel == level - 1 && population.size > 0)
-            {
-                prey.Add(population);
-            }
+            if (population == null || population.speciesAmount <= 0) continue;
+            if (population.trophicLevel > 0 && population.energyNeed > 0f)
+                hunters.Add(population);
+            if (population.size > 0) prey.Add(population);
         }
-        if (totalDemand <= 0f)
-        {
-            return;
-        }
-
-        float hunterEfficiency = totalForagingWeight / totalDemand;
+        int hunterCount = hunters.Count;
+        if (hunterCount == 0) return;
+        int preyCount = prey.Count;
+        var demand = new float[hunterCount];
+        var deficit = new float[hunterCount];
+        var gained = new float[hunterCount];
+        var effort = new float[hunterCount, preyCount];
+        var expected = new float[preyCount];
+        var energyPerPrey = new float[preyCount];
+        var maximumKills = new int[preyCount];
+        float totalDeficit = 0f;
         float availableEnergy = 0f;
-        float sustainableEnergy = 0f;
-        int[] maxKills = new int[prey.Count];
-        float[] energyPerPrey = new float[prey.Count];
-        for (int i = 0; i < prey.Count; i++)
+        for (int i = 0; i < hunterCount; i++)
         {
-            float expectedKills = prey[i].speciesAmount * dailyPreyFraction
-                * hunterEfficiency * CaptureChance(weightedMovement / totalDemand,
-                    weightedSize / totalDemand, prey[i]);
-            maxKills[i] = Mathf.FloorToInt(expectedKills);
-            if (UnityEngine.Random.value < expectedKills - maxKills[i]) maxKills[i]++;
-            energyPerPrey[i] = prey[i].size * PreyEnergyPerSize
-                * PredationEfficiency;
-            availableEnergy += expectedKills * energyPerPrey[i];
-            sustainableEnergy += Mathf.Min(expectedKills,
-                SupportedPreyHarvest(prey[i], reproductionScale,
-                    overCapacityDeathRate, starvationDeathRate)) * energyPerPrey[i];
+            demand[i] = hunters[i].energyNeed * hunters[i].speciesAmount;
+            deficit[i] = Mathf.Max(0f, demand[i] - hunters[i].energyReserve);
+            totalDeficit += deficit[i];
+        }
+        for (int j = 0; j < preyCount; j++)
+        {
+            float eligibleDemand = 0f;
+            float weightedCatch = 0f;
+            for (int i = 0; i < hunterCount; i++)
+            {
+                if (!CanEat(hunters[i], prey[j])) continue;
+                float weight = demand[i] * ForagingEfficiency(hunters[i])
+                    * Mathf.Clamp01(hunters[i].environmentalFitness / 100f)
+                    * CaptureChance(hunters[i].movementAbility,
+                        hunters[i].size, prey[j]);
+                effort[i, j] = weight;
+                eligibleDemand += demand[i];
+                weightedCatch += weight * DailyPreyFraction(hunters[i].trophicLevel,
+                    levelOnePreyFraction, levelTwoPreyFraction);
+            }
+            if (eligibleDemand <= 0f) continue;
+            expected[j] = Mathf.Min(prey[j].speciesAmount,
+                prey[j].speciesAmount * weightedCatch / eligibleDemand);
+            energyPerPrey[j] = prey[j].size * PreyEnergyPerSize * PredationEfficiency;
+            availableEnergy += expected[j] * energyPerPrey[j];
+            maximumKills[j] = Mathf.FloorToInt(expected[j]);
+            if (UnityEngine.Random.value < expected[j] - maximumKills[j])
+                maximumKills[j]++;
+            maximumKills[j] = Mathf.Min(maximumKills[j], prey[j].speciesAmount);
         }
 
-        // K 使用可持续期望捕获量；实际捕获的小数部分只影响当天能量。
-        float dailyFood = sustainableEnergy;
-        foreach (PopulationData predator in predators)
-        {
-            float weight = predator.energyNeed * predator.speciesAmount
-                * ForagingEfficiency(predator)
-                * Mathf.Clamp01(predator.environmentalFitness / 100f);
-            predator.carryingCapacity = totalForagingWeight > 0f
-                ? dailyFood * weight / totalForagingWeight / predator.energyNeed : 0f;
-        }
+        // K uses the same shared expected quotas. L1 capacity is computed
+        // before L2 asks for the sustainable production of an L1 prey group.
+        for (int level = 1; level <= MaxTrophicLevel; level++)
+            for (int j = 0; j < preyCount; j++)
+            {
+                if (expected[j] <= 0f) continue;
+                float sustainable = Mathf.Min(expected[j], SupportedPreyHarvest(prey[j],
+                    reproductionScale, overCapacityDeathRate, starvationDeathRate,
+                    prey[j].trophicLevel > 0));
+                float totalEffort = 0f;
+                for (int i = 0; i < hunterCount; i++) totalEffort += effort[i, j];
+                if (totalEffort <= 0f) continue;
+                for (int i = 0; i < hunterCount; i++)
+                    if (hunters[i].trophicLevel == level && effort[i, j] > 0f)
+                        hunters[i].carryingCapacity += sustainable * energyPerPrey[j]
+                            * effort[i, j] / totalEffort / hunters[i].energyNeed;
+            }
 
-        // 储备先支付当天能耗；不足时才捕猎，整只猎物多出的能量留作后续几天使用。
-        float fraction = availableEnergy > 0f
+        float huntFraction = availableEnergy > 0f
             ? Mathf.Min(1f, totalDeficit / availableEnergy) : 0f;
-        int[] kills = new int[prey.Count];
-        float gainedEnergy = 0f;
-        for (int i = 0; i < prey.Count; i++)
+        var kills = new int[preyCount];
+        float plannedEnergy = 0f;
+        for (int j = 0; j < preyCount; j++)
         {
-            kills[i] = Mathf.FloorToInt(maxKills[i] * fraction);
-            gainedEnergy += kills[i] * energyPerPrey[i];
+            kills[j] = Mathf.FloorToInt(maximumKills[j] * huntFraction);
+            plannedEnergy += kills[j] * energyPerPrey[j];
         }
-
-        while (gainedEnergy < totalDeficit)
+        while (plannedEnergy < totalDeficit)
         {
             int best = -1;
-            float bestRemainder = -1f;
-            for (int i = 0; i < prey.Count; i++)
+            float remainder = -1f;
+            for (int j = 0; j < preyCount; j++)
             {
-                if (kills[i] >= maxKills[i])
-                {
-                    continue;
-                }
-                float remainder = maxKills[i] * fraction - kills[i];
-                if (remainder > bestRemainder)
-                {
-                    best = i;
-                    bestRemainder = remainder;
-                }
+                if (kills[j] >= maximumKills[j]) continue;
+                float candidate = maximumKills[j] * huntFraction - kills[j];
+                if (candidate > remainder) { best = j; remainder = candidate; }
             }
-            if (best < 0)
-            {
-                break;
-            }
+            if (best < 0) break;
             kills[best]++;
-            gainedEnergy += energyPerPrey[best];
+            plannedEnergy += energyPerPrey[best];
         }
+        for (int j = 0; j < preyCount; j++)
+        {
+            float eligibleNeed = 0f;
+            for (int i = 0; i < hunterCount; i++)
+                if (effort[i, j] > 0f)
+                    eligibleNeed += Mathf.Max(0f, deficit[i] - gained[i]);
+            int actual = energyPerPrey[j] > 0f
+                ? Mathf.Min(kills[j], Mathf.CeilToInt(eligibleNeed / energyPerPrey[j])) : 0;
+            actual = Mathf.Min(actual, prey[j].speciesAmount);
+            if (actual <= 0) continue;
+            prey[j].speciesAmount -= actual;
+            prey[j].deathsToday += actual;
+            prey[j].predationDeathsToday += actual;
+            DistributePreyEnergy(effort, j, demand, deficit, gained,
+                actual * energyPerPrey[j]);
+        }
+        for (int i = 0; i < hunterCount; i++)
+        {
+            PopulationData hunter = hunters[i];
+            float energy = hunter.energyReserve + gained[i];
+            hunter.huntingEnergyToday = gained[i];
+            hunter.allocatedBiomass = Mathf.Min(demand[i], energy);
+            hunter.energyReserve = Mathf.Clamp(energy - demand[i], 0f,
+                demand[i] * PredatorReserveDays);
+        }
+    }
 
-        for (int i = 0; i < prey.Count; i++)
+    private static void DistributePreyEnergy(float[,] effort, int preyIndex,
+        float[] demand, float[] deficit, float[] gained, float pool)
+    {
+        int hunterCount = demand.Length;
+        for (int round = 0; round < hunterCount && pool > 0.0001f; round++)
         {
-            prey[i].speciesAmount -= kills[i];
-            prey[i].deathsToday += kills[i];
-            prey[i].predationDeathsToday += kills[i];
-        }
-
-        float[] energyByPredator = new float[predators.Count];
-        float remainingEnergy = gainedEnergy;
-        for (int i = 0; i < predators.Count; i++)
-        {
-            energyByPredator[i] = predators[i].energyReserve;
-        }
-        while (remainingEnergy > 0.001f)
-        {
-            float weightTotal = 0f;
-            for (int i = 0; i < predators.Count; i++)
+            float totalWeight = 0f;
+            for (int i = 0; i < hunterCount; i++)
+                totalWeight += effort[i, preyIndex] *
+                    Mathf.Max(0f, deficit[i] - gained[i]) / Mathf.Max(1f, demand[i]);
+            if (totalWeight <= 0f) break;
+            float allocated = 0f;
+            for (int i = 0; i < hunterCount; i++)
             {
-                PopulationData predator = predators[i];
-                float demand = predator.energyNeed * predator.speciesAmount;
-                weightTotal += Mathf.Max(0f, demand - energyByPredator[i])
-                    * ForagingEfficiency(predator)
-                    * Mathf.Clamp01(predator.environmentalFitness / 100f);
+                float need = Mathf.Max(0f, deficit[i] - gained[i]);
+                float weight = effort[i, preyIndex] * need / Mathf.Max(1f, demand[i]);
+                float share = Mathf.Min(need, pool * weight / totalWeight);
+                gained[i] += share;
+                allocated += share;
             }
-            if (weightTotal <= 0f) break;
-
-            float roundEnergy = remainingEnergy;
-            float distributed = 0f;
-            for (int i = 0; i < predators.Count; i++)
-            {
-                PopulationData predator = predators[i];
-                float demand = predator.energyNeed * predator.speciesAmount;
-                float deficit = Mathf.Max(0f, demand - energyByPredator[i]);
-                float weight = deficit * ForagingEfficiency(predator)
-                    * Mathf.Clamp01(predator.environmentalFitness / 100f);
-                float amount = Mathf.Min(deficit, roundEnergy * weight / weightTotal);
-                energyByPredator[i] += amount;
-                distributed += amount;
-            }
-            if (distributed <= 0f) break;
-            remainingEnergy -= distributed;
+            if (allocated <= 0.0001f) break;
+            pool -= allocated;
         }
-        for (int i = 0; i < predators.Count; i++)
-        {
-            PopulationData predator = predators[i];
-            float demand = predator.energyNeed * predator.speciesAmount;
-            float extraWeight = demand * ForagingEfficiency(predator)
-                * Mathf.Clamp01(predator.environmentalFitness / 100f);
-            float extra = totalForagingWeight > 0f
-                ? remainingEnergy * extraWeight / totalForagingWeight : 0f;
-            float energy = energyByPredator[i] + extra;
-            predator.huntingEnergyToday = Mathf.Max(0f, energy - predator.energyReserve);
-            predator.allocatedBiomass = Mathf.Min(demand, energy);
-            predator.energyReserve = Mathf.Clamp(energy - demand, 0f,
-                demand * PredatorReserveDays);
-        }
+        // A final whole prey can exceed today's deficit; its extra energy is
+        // shared among eligible hunters and then capped by their reserve limit.
+        float totalEffort = 0f;
+        for (int i = 0; i < hunterCount; i++) totalEffort += effort[i, preyIndex];
+        if (totalEffort > 0f)
+            for (int i = 0; i < hunterCount; i++)
+                gained[i] += pool * effort[i, preyIndex] / totalEffort;
     }
 }

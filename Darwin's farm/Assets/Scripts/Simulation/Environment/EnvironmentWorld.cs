@@ -60,7 +60,8 @@ namespace DarwinFarm.Environment
             foreach (var wind in monsoons.Values)
                 if (!next.TryGetValue(wind.Source, out TopologyNode node) ||
                     !topology.TryGetValue(wind.Source, out TopologyNode previous) ||
-                    node.Elevation != previous.Elevation || !SameNeighbors(node.Neighbors, previous.Neighbors))
+                    node.Elevation != previous.Elevation || node.IsWater != previous.IsWater ||
+                    !SameNeighbors(node.Neighbors, previous.Neighbors))
                     sourceChanged = true;
 
             var removed = new List<GridPosition>();
@@ -70,8 +71,8 @@ namespace DarwinFarm.Environment
             foreach (var node in next.Values)
             {
                 if (!tiles.TryGetValue(node.Position, out EnvironmentTile tile)) tiles.Add(node.Position, new EnvironmentTile(node));
-                else if (tile.Elevation != node.Elevation)
-                { tile.Elevation = node.Elevation; Reclassify(tile); }
+                else if (tile.Elevation != node.Elevation || tile.IsWater != node.IsWater)
+                { tile.Elevation = node.Elevation; tile.IsWater = node.IsWater; Reclassify(tile); }
             }
             if (sourceChanged)
                 foreach (long id in new List<long>(monsoons.Keys)) EndMonsoon(id, MonsoonExitReason.SourceChanged);
@@ -83,7 +84,8 @@ namespace DarwinFarm.Environment
             error = null;
             if (attribute != EnvironmentAttribute.Temperature && attribute != EnvironmentAttribute.Humidity ||
                 !EnvironmentRules.IsClimateStrength(amount)) { error = "单格温湿度强度必须为 ±25 或 ±50"; return false; }
-            if (!tiles.TryGetValue(position, out EnvironmentTile tile)) { error = "目标地块不存在"; return false; }
+            if (!tiles.TryGetValue(position, out EnvironmentTile tile) || tile.IsWater)
+            { error = "温湿度科技只适用于陆格"; return false; }
             int index = (int)attribute;
             tile.Locals[index] = new LocalClimateEffect();
             double target = EnvironmentRules.Clamp(attribute, EnvironmentRules.Defaults(tile.Terrain).Get(attribute) + amount);
@@ -100,6 +102,8 @@ namespace DarwinFarm.Environment
                 !tiles.TryGetValue(position, out EnvironmentTile tile) || tile.Locals[(int)attribute] == null)
             { error = "该地块没有对应单格操作"; return false; }
             int index = (int)attribute;
+            if (tile.Locals[index].Age >= 125)
+            { error = "该单格操作已经在退出"; return false; }
             tile.Locals[index].Age = 125;
             StartLocalReturn(tile, index);
             RefreshClimateTargets(tile, true);
@@ -107,26 +111,92 @@ namespace DarwinFarm.Environment
         }
 
         public bool TrySetRecovery(GridPosition position, double amount, out string error)
+            => TrySetRecoveryBatch(new[] { position }, amount, false, out error);
+
+        // 2026-10-09 14:18 +08:00: validate an entire water body before
+        // mutating any member. Suppression uses the actual current R, whereas
+        // catalyst uses the terrain default (or the water default) once.
+        public bool TrySetRecoveryBatch(IReadOnlyList<GridPosition> positions,
+            double amount, bool suppress, out string error)
         {
             error = null;
-            if (!EnvironmentRules.IsRecoveryStrength(amount)) { error = "植被增量强度必须为 ±25000 或 ±50000"; return false; }
-            if (!tiles.TryGetValue(position, out EnvironmentTile tile)) { error = "目标地块不存在"; return false; }
-            tile.Values[2] = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, EnvironmentRules.Defaults(tile.Terrain).Recovery + amount);
-            tile.Tracks[2].Stop(tile.Values[2]);
-            tile.RecoveryReturning = true;
-            Reclassify(tile);
-            // Immediate transformation determines the fixed return target for this command.
-            tile.Tracks[2].Begin(tile.Values[2], EnvironmentRules.Defaults(tile.Terrain).Recovery, 100, EffectPhase.Returning);
+            if (positions == null || positions.Count == 0 ||
+                (suppress ? amount != .25 && amount != .5 : !EnvironmentRules.IsRecoveryStrength(amount)))
+            { error = suppress ? "生态抑制比例必须为 25% 或 50%" : "增量强度必须为 ±25000 或 ±50000"; return false; }
+            var members = new List<EnvironmentTile>(positions.Count);
+            var unique = new HashSet<GridPosition>();
+            foreach (GridPosition position in positions)
+            {
+                if (!unique.Add(position) || !tiles.TryGetValue(position, out EnvironmentTile tile))
+                { error = "目标水域含重复或不存在的地块"; return false; }
+                members.Add(tile);
+            }
+            foreach (EnvironmentTile tile in members)
+            {
+                double next = suppress ? tile.Values[2] * (1 - amount) :
+                    RecoveryDefault(tile) + amount;
+                tile.Values[2] = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
+                tile.Tracks[2].Stop(tile.Values[2]);
+                tile.RecoveryReturning = true;
+                tile.RecoveryDetached = false;
+                tile.RecoveryCancelIssued = false;
+                Reclassify(tile);
+                tile.Tracks[2].Begin(tile.Values[2], RecoveryDefault(tile),
+                    EnvironmentRules.RecoveryReturnDays, EffectPhase.Returning);
+            }
             return true;
         }
 
         public bool TryCancelRecovery(GridPosition position, out string error)
+            => TryCancelRecoveryBatch(new[] { position }, out error);
+
+        public bool TryCancelRecoveryBatch(IReadOnlyList<GridPosition> positions, out string error)
         {
             error = null;
-            if (!tiles.TryGetValue(position, out EnvironmentTile tile) || !tile.RecoveryReturning)
-            { error = "该地块没有植被增量操作"; return false; }
-            tile.Tracks[2].Begin(tile.Values[2], EnvironmentRules.Defaults(tile.Terrain).Recovery, 100, EffectPhase.Returning);
+            if (positions == null || positions.Count == 0)
+            { error = "目标水域为空"; return false; }
+            var members = new List<EnvironmentTile>(positions.Count);
+            var unique = new HashSet<GridPosition>();
+            foreach (GridPosition position in positions)
+            {
+                if (!unique.Add(position) || !tiles.TryGetValue(position, out EnvironmentTile tile) ||
+                    !tile.RecoveryReturning || tile.RecoveryCancelIssued)
+                { error = "目标地块没有可统一撤销的植被增量操作"; return false; }
+                members.Add(tile);
+            }
+            foreach (EnvironmentTile tile in members)
+            {
+                tile.RecoveryCancelIssued = true;
+                tile.Tracks[2].Begin(tile.Values[2], RecoveryDefault(tile), 100,
+                    EffectPhase.Returning);
+            }
             return true;
+        }
+
+        public void DetachRecovery(GridPosition position)
+        {
+            if (!tiles.TryGetValue(position, out EnvironmentTile tile) || !tile.IsWater) return;
+            tile.RecoveryReturning = false;
+            tile.RecoveryCancelIssued = false;
+            tile.RecoveryDetached = true;
+            tile.Tracks[2].Stop(tile.Values[2]);
+        }
+        public void ReconcileWaterRecovery(IReadOnlyList<GridPosition> positions)
+        {
+            if (positions == null || positions.Count == 0) return;
+            double total = 0;
+            foreach (GridPosition position in positions)
+                if (tiles.TryGetValue(position, out EnvironmentTile tile) && tile.IsWater)
+                    total += tile.Values[2];
+                else return;
+            double average = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+                total / positions.Count);
+            foreach (GridPosition position in positions)
+            {
+                EnvironmentTile tile = tiles[position];
+                tile.Values[2] = average;
+                DetachRecovery(position);
+            }
         }
 
         public bool TryPreviewMonsoon(GridPosition source, int temperatureOffset, int humidityOffset,
@@ -135,8 +205,8 @@ namespace DarwinFarm.Environment
             area = Array.Empty<GridPosition>(); error = null;
             if (!EnvironmentRules.IsMonsoonStrength(temperatureOffset) || !EnvironmentRules.IsMonsoonStrength(humidityOffset))
             { error = "季风温湿度强度分别必须为 ±20 或 ±40"; return false; }
-            if (!topology.TryGetValue(source, out TopologyNode node) || node.Elevation == 2)
-            { error = "季风发源点必须是海拔 0 或 1 的已放置地块"; return false; }
+            if (!topology.TryGetValue(source, out TopologyNode node) || node.Elevation == 2 || node.IsWater)
+            { error = "季风发源点必须是海拔 0 或 1 的已放置陆格"; return false; }
             var positions = new List<GridPosition>(Flood(source)); positions.Sort(); area = positions.AsReadOnly();
             return true;
         }
@@ -174,6 +244,8 @@ namespace DarwinFarm.Environment
             if (temperature < 0 || temperature > 100 || humidity < 0 || humidity > 100 || recovery < 0 || recovery > 150000 ||
                 !tiles.TryGetValue(position, out EnvironmentTile tile)) { error = "环境输入超出允许范围或目标不存在"; return false; }
             tile.Locals[0] = tile.Locals[1] = null; tile.RecoveryReturning = false;
+            tile.RecoveryCancelIssued = false;
+            tile.RecoveryDetached = false;
             tile.Values[0] = temperature; tile.Values[1] = humidity; tile.Values[2] = recovery;
             for (int i = 0; i < 3; i++) tile.Tracks[i].Stop(tile.Values[i]);
             Reclassify(tile); RefreshClimateTargets(tile); RefreshRecoveryTarget(tile);
@@ -237,7 +309,9 @@ namespace DarwinFarm.Environment
             }
         }
         private void RefreshRecoveryTarget(EnvironmentTile tile)
-        { if (!tile.RecoveryReturning) EnsureTarget(tile, 2, EnvironmentRules.Defaults(tile.Terrain).Recovery); }
+        { if (!tile.RecoveryReturning && !tile.RecoveryDetached) EnsureTarget(tile, 2, RecoveryDefault(tile)); }
+        private static double RecoveryDefault(EnvironmentTile tile) => tile.IsWater
+            ? EnvironmentRules.WaterDefaultRecovery : EnvironmentRules.Defaults(tile.Terrain).Recovery;
         private static void EnsureTarget(EnvironmentTile tile, int index, double target)
         {
             var track = tile.Tracks[index];
@@ -246,6 +320,7 @@ namespace DarwinFarm.Environment
         }
         private void Reclassify(EnvironmentTile tile)
         {
+            if (tile.IsWater) return;
             var kind = EnvironmentRules.Classify(tile.Elevation, EnvironmentRules.Round(tile.Values[0]),
                 EnvironmentRules.Round(tile.Values[1]), EnvironmentRules.Round(tile.Values[2]));
             if (kind == tile.Terrain) return;
@@ -256,11 +331,23 @@ namespace DarwinFarm.Environment
         private HashSet<GridPosition> Flood(GridPosition source)
         {
             var result = new HashSet<GridPosition>();
-            if (!topology.TryGetValue(source, out TopologyNode root) || root.Elevation == 2) return result;
+            if (!topology.TryGetValue(source, out TopologyNode root) || root.Elevation == 2 || root.IsWater) return result;
             var queue = new Queue<GridPosition>(); result.Add(source); queue.Enqueue(source);
             while (queue.Count > 0)
-                foreach (var neighbor in topology[queue.Dequeue()].Neighbors)
-                    if (topology[neighbor].Elevation == root.Elevation && result.Add(neighbor)) queue.Enqueue(neighbor);
+            {
+                TopologyNode current = topology[queue.Dequeue()];
+                foreach (GridPosition neighbor in current.Neighbors)
+                {
+                    TopologyNode next = topology[neighbor];
+                    if (next.Elevation != root.Elevation) continue;
+                    if (!next.IsWater)
+                    { if (result.Add(neighbor)) queue.Enqueue(neighbor); continue; }
+                    // Exactly one water tile may bridge two land segments.
+                    foreach (GridPosition across in next.Neighbors)
+                        if (topology[across].Elevation == root.Elevation &&
+                            !topology[across].IsWater && result.Add(across)) queue.Enqueue(across);
+                }
+            }
             return result;
         }
         private void RecomputeMonsoons()

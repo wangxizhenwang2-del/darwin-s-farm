@@ -1027,7 +1027,10 @@ GameObject:
   - component: {fileID: 1541449672}
   - component: {fileID: 1541449673}
   - component: {fileID: 1541449674}
+  - component: {fileID: 2200000001}
+  - component: {fileID: 2200000002}
   - component: {fileID: 1541449675}
+  - component: {fileID: 2200000003}
   m_Layer: 0
   m_Name: MapSystem
   m_TagString: Untagged
@@ -1182,6 +1185,76 @@ MonoBehaviour:
   simulationController: {fileID: 1541449672}
   simulationTime: {fileID: 1541449671}
   maxRadius: 2
+--- !u!114 &2200000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9302c9afeb84463588d539116eab4621, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugController
+  grid: {fileID: 1541449667}
+  simulation: {fileID: 1541449672}
+  clock: {fileID: 1541449671}
+--- !u!114 &2200000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac3448232014d82ad450b32f576c302, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugView
+  controller: {fileID: 2200000001}
+  testSetup: {fileID: 2200000003}
+  viewCamera: {fileID: 1669876467}
+  fontSize: 11
+  heightAboveTile: 2.5
+--- !u!114 &2200000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d7bef5a2d84a48b8e1fb67ce9030d4, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxBiowebTestSetup
+  grid: {fileID: 1541449667}
+  bridge: {fileID: 1541449673}
+  simulation: {fileID: 1541449672}
+  movement: {fileID: 1541449675}
+  forest: {fileID: 11400000, guid: 3c445dd62bc94cc79be5b23d90e7a887, type: 2}
+  rainforest: {fileID: 11400000, guid: d213c23cebc3449fa779099117c1b809, type: 2}
+  desert: {fileID: 11400000, guid: 015789cd96df421cbdf7bdf8d9030566, type: 2}
+  highland: {fileID: 11400000, guid: 910f762926d245d4830d3c3aedea0e2e, type: 2}
+  volcano: {fileID: 11400000, guid: d640625fbb334577bddde07edba27126, type: 2}
+  tundra: {fileID: 11400000, guid: 94fdb423f3304ad2af4ef8486abf31fd, type: 2}
+  snowMountain: {fileID: 11400000, guid: 4f18b7555e4e45068405c3fd60ce4857, type: 2}
+  species:
+  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
+  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  - {fileID: 11400000, guid: ad78dccedcc75ea39c6dd15c18f62412, type: 2}
+  - {fileID: 11400000, guid: 31e3fbb824575f1eb43191539c0f254b, type: 2}
+  - {fileID: 11400000, guid: f069c1edb4be5d87af4a6c26b73563b4, type: 2}
+  speciesColors:
+  - {r: 0.15, g: 0.75, b: 0.95, a: 1}
+  - {r: 1, g: 0.84, b: 0.12, a: 1}
+  - {r: 0.95, g: 0.24, b: 0.18, a: 1}
+  - {r: 0.75, g: 0.28, b: 0.92, a: 1}
+  - {r: 0.36, g: 0.95, b: 0.38, a: 1}
+  herbivoresPerTile: 160
+  firstPredatorsPerTile: 25
+  topPredatorsPerTile: 8
 --- !u!1 &1640010066
 GameObject:
   m_ObjectHideFlags: 0

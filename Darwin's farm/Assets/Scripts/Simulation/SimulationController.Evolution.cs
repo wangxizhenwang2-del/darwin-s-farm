@@ -8,7 +8,9 @@ public partial class SimulationController
     [Header("Preset Species Evolution")]
     [SerializeField] private bool presetEvolutionEnabled = true;
     private const int EvolutionTraitTolerance = 5;
-    private const float EvolutionChance = 0.01f;
+    private const int EvolutionCooldownDays = 50;
+    [SerializeField] private List<SpeciesData> evolutionNetworkSpecies =
+        new List<SpeciesData>();
 
     private readonly HashSet<SpeciesData> knownSpecies = new HashSet<SpeciesData>();
     private readonly HashSet<SpeciesData> livingSpecies = new HashSet<SpeciesData>();
@@ -30,6 +32,15 @@ public partial class SimulationController
         // founder count rather than allowing those parameters to change rules.
     }
 
+    // Include the whole graph when a starting species only has incoming edges.
+    public void SetEvolutionNetworkSpecies(IEnumerable<SpeciesData> species)
+    {
+        evolutionNetworkSpecies = species == null ? new List<SpeciesData>() :
+            new List<SpeciesData>(species);
+        if (evolutionNetworkSpecies != null)
+            foreach (SpeciesData entry in evolutionNetworkSpecies) RegisterSpecies(entry);
+    }
+
     // 供玩家手动增删种群后同步解锁/灭绝状态。
     public void RefreshSpeciesStatuses() => UpdateSpeciesStatuses();
 
@@ -43,6 +54,7 @@ public partial class SimulationController
 
     private void UpdateSpeciesStatuses()
     {
+        foreach (SpeciesData entry in evolutionNetworkSpecies) RegisterSpecies(entry);
         HashSet<SpeciesData> living = new HashSet<SpeciesData>();
         foreach (BlockInfo block in blockInfos)
         {
@@ -67,74 +79,201 @@ public partial class SimulationController
         }
     }
 
-    private void RunPresetEvolution(int day,
-        Dictionary<BlockInfo, HashSet<SpeciesData>> livingAtStart)
+    private sealed class EvolutionPlan
     {
-        if (!presetEvolutionEnabled || day <= 0 || day % 7 != 0)
-            return;
+        public BlockInfo block;
+        public PopulationData ancestor;
+        public SpeciesData target;
+    }
+
+    // 2026-10-09 13:48 +08:00: V4.3 land evolution uses daily, per-target
+    // progress. Plan all successes before committing so list order cannot win
+    // a contested target species by accident.
+    private void RunPresetEvolution(int day)
+    {
+        if (!presetEvolutionEnabled || day <= 0) return;
+        var plans = new List<EvolutionPlan>();
         foreach (BlockInfo block in blockInfos)
         {
             if (block == null || block.community == null ||
                 block.waterCoverage != WaterCoverage.Land) continue;
-            // 新生成的 B 不参加同一天的另一轮演化。
-            List<PopulationData> candidates = new List<PopulationData>(block.community);
-            foreach (PopulationData ancestor in candidates)
+            foreach (PopulationData ancestor in new List<PopulationData>(block.community))
             {
-                if (ancestor == null || ancestor.ecologicalNiche != EcologicalNiche.Land ||
-                    ancestor.species == null ||
-                    ancestor.species.baseEcologicalNiche != EcologicalNiche.Land ||
-                    ancestor.speciesAmount < 11 ||
-                    ancestor.species.evolutionTargets == null) continue;
-                SpeciesData target = ClosestEvolutionTarget(ancestor, block, day,
-                    livingAtStart);
-                if (target != null && UnityEngine.Random.value < EvolutionChance)
-                    ConvertToPresetSpecies(block, ancestor, target, day);
+                SpeciesData target = SelectEvolutionTarget(block, ancestor, day);
+                if (target == null) continue;
+                EvolutionConversionRecord record = GetEvolutionRecord(ancestor, target, true);
+                if (record.effectiveDays < int.MaxValue) record.effectiveDays++;
+                if (record.effectiveDays % 2 != 0) continue;
+                float chance = Mathf.Min(1f, (record.failedDraws + 1) / 100f);
+                if (UnityEngine.Random.value >= chance)
+                {
+                    if (record.failedDraws < 99) record.failedDraws++;
+                    continue;
+                }
+                plans.Add(new EvolutionPlan { block = block, ancestor = ancestor,
+                    target = target });
             }
+        }
+        var resolved = new bool[plans.Count];
+        for (int i = 0; i < plans.Count; i++)
+        {
+            if (resolved[i]) continue;
+            EvolutionPlan winner = plans[i];
+            int contenders = 0;
+            for (int j = i; j < plans.Count; j++)
+            {
+                EvolutionPlan contender = plans[j];
+                if (contender.block != plans[i].block ||
+                    contender.target != plans[i].target) continue;
+                resolved[j] = true;
+                if (UnityEngine.Random.Range(0, ++contenders) == 0) winner = contender;
+            }
+            if (IsEligibleEvolutionTarget(winner.block, winner.ancestor,
+                    winner.target, day))
+                ConvertToPresetSpecies(winner.block, winner.ancestor,
+                    winner.target, day);
         }
     }
 
-    private SpeciesData ClosestEvolutionTarget(PopulationData source, BlockInfo block,
-        int day, Dictionary<BlockInfo, HashSet<SpeciesData>> livingAtStart)
+    // Read-only forecast: uses exactly the daily selection, without changing
+    // records or consuming random numbers.
+    public SpeciesData GetLikelyEvolutionTarget(BlockInfo block, PopulationData source, int day)
+        => SelectEvolutionTarget(block, source, day);
+
+    private SpeciesData SelectEvolutionTarget(BlockInfo block, PopulationData source, int day)
     {
+        if (!presetEvolutionEnabled || block == null || source == null ||
+            block.community == null || !block.community.Contains(source) ||
+            block.waterCoverage != WaterCoverage.Land ||
+            source.ecologicalNiche != EcologicalNiche.Land ||
+            source.species == null || source.species.baseEcologicalNiche != EcologicalNiche.Land ||
+            source.speciesAmount < 11 || day < source.nextEvolutionDay) return null;
+
         SpeciesData best = null;
-        int bestDistance = int.MaxValue;
-        float bestFitness = -1f;
-        int ties = 0;
-        foreach (SpeciesData target in source.species.evolutionTargets)
+        float bestGrowth = float.NegativeInfinity;
+        int bestDays = -1;
+        foreach (SpeciesData target in ConnectedTargets(source.species))
         {
-            if (target == null || target == source.species ||
-                target.baseEcologicalNiche != EcologicalNiche.Land ||
-                target.evolutionTargets == null ||
-                !target.evolutionTargets.Contains(source.species) ||
-                !EachTraitWithinTolerance(source, target) ||
-                HasLivingSpecies(block, target)) continue;
-            int distance = TraitDistance(source, target);
-            EvolutionConversionRecord record = source.evolutionConversions == null ? null :
-                source.evolutionConversions.Find(item => item != null && item.target == target);
-            if (record != null)
+            if (!IsEligibleEvolutionTarget(block, source, target, day)) continue;
+            float growth = ProjectedTargetGrowth(block, source, target);
+            EvolutionConversionRecord record = GetEvolutionRecord(source, target, false);
+            int days = record == null ? 0 : record.effectiveDays;
+            if (best == null || growth > bestGrowth + 0.00001f ||
+                Mathf.Abs(growth - bestGrowth) <= 0.00001f &&
+                (days > bestDays || days == bestDays &&
+                 CompareSpeciesOrder(target, best) < 0))
             {
-                bool livingBefore = livingAtStart.TryGetValue(block,
-                    out HashSet<SpeciesData> atStart) && atStart.Contains(target);
-                if (livingBefore || HasLivingSpecies(block, target) ||
-                    day < record.day + 7) continue;
-            }
-            float fitness = Mathf.Clamp01(1f -
-                (Mathf.Abs(block.temperature - target.baseFitTemperature) +
-                 Mathf.Abs(block.humidity - target.baseFitHumidity)) / FitnessTolerance);
-            if (fitness > bestFitness || fitness == bestFitness && distance < bestDistance)
-            {
-                best = target;
-                bestDistance = distance;
-                bestFitness = fitness;
-                ties = 1;
-            }
-            else if (fitness == bestFitness && distance == bestDistance &&
-                     UnityEngine.Random.value < 1f / ++ties)
-            {
-                best = target;
+                best = target; bestGrowth = growth; bestDays = days;
             }
         }
         return best;
+    }
+
+    private List<SpeciesData> ConnectedTargets(SpeciesData source)
+    {
+        var result = new HashSet<SpeciesData>();
+        if (source.evolutionTargets != null)
+            foreach (SpeciesData target in source.evolutionTargets)
+                if (target != null && target != source) result.Add(target);
+        foreach (SpeciesData candidate in knownSpecies)
+            if (candidate != null && candidate != source &&
+                candidate.evolutionTargets != null &&
+                candidate.evolutionTargets.Contains(source)) result.Add(candidate);
+        return new List<SpeciesData>(result);
+    }
+
+    private static string StableSpeciesKey(SpeciesData species) =>
+        string.IsNullOrEmpty(species.SpeciesName) ? species.name : species.SpeciesName;
+
+    private int CompareSpeciesOrder(SpeciesData left, SpeciesData right)
+    {
+        int leftId = evolutionNetworkSpecies == null ? -1 :
+            evolutionNetworkSpecies.IndexOf(left);
+        int rightId = evolutionNetworkSpecies == null ? -1 :
+            evolutionNetworkSpecies.IndexOf(right);
+        if (leftId >= 0 && rightId >= 0 && leftId != rightId)
+            return leftId.CompareTo(rightId);
+        int byName = string.CompareOrdinal(StableSpeciesKey(left), StableSpeciesKey(right));
+        return byName != 0 ? byName : string.CompareOrdinal(left.name, right.name);
+    }
+
+    private static EvolutionConversionRecord GetEvolutionRecord(PopulationData source,
+        SpeciesData target, bool create)
+    {
+        if (source.evolutionConversions == null)
+        {
+            if (!create) return null;
+            source.evolutionConversions = new List<EvolutionConversionRecord>();
+        }
+        EvolutionConversionRecord record = source.evolutionConversions.Find(item =>
+            item != null && item.target == target);
+        if (record != null || !create) return record;
+        record = new EvolutionConversionRecord { target = target };
+        source.evolutionConversions.Add(record);
+        return record;
+    }
+
+    private bool IsEligibleEvolutionTarget(BlockInfo block, PopulationData source,
+        SpeciesData target, int day)
+    {
+        if (target == null || target == source.species ||
+            target.baseEcologicalNiche != EcologicalNiche.Land ||
+            day < source.nextEvolutionDay ||
+            Mathf.Clamp(Mathf.RoundToInt(source.speciesAmount * 0.1f), 10, 100)
+                >= source.speciesAmount ||
+            !EachTraitWithinTolerance(source, target) ||
+            HasLivingSpecies(block, target)) return false;
+        var candidate = TargetPopulation(target, 10);
+        if (candidate.trophicLevel == 0) return block.plantBiomass > 0f;
+        foreach (PopulationData prey in block.community)
+            if (prey != null && prey.speciesAmount > 0 &&
+                FoodWeb.CanEat(candidate, prey)) return true;
+        return false;
+    }
+
+    private static PopulationData TargetPopulation(SpeciesData target, int count) =>
+        new PopulationData
+        {
+            species = target, speciesAmount = count,
+            ecologicalNiche = EcologicalNiche.Land,
+            trophicLevel = target.trophicLevel, trophicLevelInitialized = true,
+            fitTemperature = target.baseFitTemperature,
+            fitHumidity = target.baseFitHumidity,
+            movementAbility = target.baseMovementAbility,
+            size = target.baseSize, fertility = target.baseFertility
+        };
+
+    private float ProjectedTargetGrowth(BlockInfo block, PopulationData source,
+        SpeciesData target)
+    {
+        int founders = Mathf.Clamp(Mathf.RoundToInt(source.speciesAmount * 0.1f), 10, 100);
+        PopulationData candidate = TargetPopulation(target, founders);
+        float fitness = ForecastFitness(block, candidate.fitTemperature, candidate.fitHumidity);
+        float need = CalculateEnergyNeed(candidate.size, candidate.movementAbility,
+            candidate.fertility);
+        candidate.energyNeed = need;
+        candidate.environmentalFitness = Mathf.RoundToInt(fitness * 100f);
+        float foodRatio = FoodWeb.FoodPerDemand(block, candidate.trophicLevel, candidate,
+            reproductionScale, levelOnePreyFraction, levelTwoPreyFraction);
+        float capacity = candidate.trophicLevel == 0
+            ? FoodWeb.ProjectedHerbivoreCapacity(block, candidate, candidate.size,
+                candidate.movementAbility, fitness, candidate.fertility)
+            : FoodWeb.ProjectedPredatorCapacity(block, candidate,
+                candidate.size, candidate.movementAbility, fitness,
+                candidate.fertility, reproductionScale, maxOverCapacityDeathRate,
+                maxStarvationDeathRate, levelOnePreyFraction, levelTwoPreyFraction);
+        float intake = Mathf.Clamp01(foodRatio);
+        EstimateDemography(founders, candidate.fertility, fitness * 100f, need,
+            intake * founders * need, capacity, reproductionScale,
+            maxOverCapacityDeathRate, maxStarvationDeathRate *
+                (candidate.trophicLevel > 0 ? PredatorStarvationMultiplier : 1f),
+            out float births, out float deaths);
+        float hunted = FoodWeb.ExpectedPreyLoss(block, candidate,
+            candidate.movementAbility, candidate.size,
+            levelOnePreyFraction, levelTwoPreyFraction);
+        float densityDeaths = capacity > 0f ? births * founders / capacity : 0f;
+        deaths -= Mathf.Min(hunted, densityDeaths) * DensityPredationCompensation;
+        return births - deaths - hunted;
     }
 
     private bool EachTraitWithinTolerance(PopulationData source, SpeciesData target) =>
@@ -143,11 +282,6 @@ public partial class SimulationController
         Mathf.Abs(source.fitHumidity - target.baseFitHumidity) <= EvolutionTraitTolerance &&
         Mathf.Abs(source.size - target.baseSize) <= EvolutionTraitTolerance &&
         Mathf.Abs(source.fertility - target.baseFertility) <= EvolutionTraitTolerance;
-
-    private static int TraitDistance(PopulationData source, SpeciesData target) =>
-        Mathf.Abs(source.movementAbility - target.baseMovementAbility) +
-        Mathf.Abs(source.size - target.baseSize) +
-        Mathf.Abs(source.fertility - target.baseFertility);
 
     private static bool HasLivingSpecies(BlockInfo block, SpeciesData species)
     {
@@ -180,6 +314,7 @@ public partial class SimulationController
         descendant.fertility = target.baseFertility;
         ClearMutationRemainders(descendant);
         descendant.energyReserve = 0f;
+        descendant.nextEvolutionDay = day + EvolutionCooldownDays;
 
         ancestor.movementAbility = AverageTrait(ancestor.movementAbility,
             origin.baseMovementAbility, 0, 100);
@@ -196,17 +331,11 @@ public partial class SimulationController
         ancestor.trophicLevelInitialized = true;
         ClearMutationRemainders(ancestor);
         ancestor.energyReserve = 0f;
-        if (ancestor.evolutionConversions == null)
-            ancestor.evolutionConversions = new List<EvolutionConversionRecord>();
-        EvolutionConversionRecord record = ancestor.evolutionConversions.Find(
-            item => item != null && item.target == target);
-        if (record == null)
-            ancestor.evolutionConversions.Add(new EvolutionConversionRecord
-            { target = target, day = day });
-        else
-        {
-            record.day = day;
-        }
+        ancestor.nextEvolutionDay = day + EvolutionCooldownDays;
+        EvolutionConversionRecord record = GetEvolutionRecord(ancestor, target, true);
+        record.effectiveDays = 0;
+        record.failedDraws = 0;
+        record.day = day;
 
         PopulationData resident = block.community.Find(population =>
             population != null && population != ancestor &&
@@ -229,21 +358,6 @@ public partial class SimulationController
         population.sizeMutationRemainder = 0f;
         population.fertilityMutationRemainder = 0f;
         population.trophicMutationRemainder = 0f;
-    }
-
-    private Dictionary<BlockInfo, HashSet<SpeciesData>> LivingSpeciesByBlock()
-    {
-        var result = new Dictionary<BlockInfo, HashSet<SpeciesData>>();
-        foreach (BlockInfo block in blockInfos)
-        {
-            if (block == null || block.community == null) continue;
-            var species = new HashSet<SpeciesData>();
-            foreach (PopulationData population in block.community)
-                if (population != null && population.species != null &&
-                    population.speciesAmount > 0) species.Add(population.species);
-            result[block] = species;
-        }
-        return result;
     }
 
     // 性状变异、候选收益预测和小数余量。
@@ -545,7 +659,8 @@ public partial class SimulationController
     {
         foreach (PopulationData other in block.community)
             if (other != population && other.speciesAmount > 0 &&
-                Mathf.Abs(other.trophicLevel - population.trophicLevel) == 1)
+                (FoodWeb.CanEat(other, population) ||
+                 FoodWeb.CanEat(population, other)))
                 return true;
         return false;
     }

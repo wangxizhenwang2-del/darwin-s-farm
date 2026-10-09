@@ -32,6 +32,8 @@ public sealed class MapSimulationBridge : MonoBehaviour
         // Runtime attachment also supports existing scenes without changing collaborators' map setup.
         if (GetComponent<SimulationEnvironmentController>() == null)
             gameObject.AddComponent<SimulationEnvironmentController>();
+        if (GetComponent<EnvironmentTechnologyController>() == null)
+            gameObject.AddComponent<EnvironmentTechnologyController>();
     }
 
     private void OnEnable()
@@ -104,12 +106,14 @@ public sealed class MapSimulationBridge : MonoBehaviour
         int elevation)
     {
         var defaults = SimulationEnvironmentController.InitialDefaults(preset, elevation);
+        bool water = preset.initialWaterCoverage != WaterCoverage.Land;
         block.elevation = elevation;
         block.temperature = defaults.Temperature;
         block.humidity = defaults.Humidity;
-        block.maxPlantBiomass = DarwinFarm.Environment.EnvironmentRules.PlantCapacity;
-        block.plantBiomass = defaults.Recovery;
-        block.habitatRecovery = defaults.Recovery;
+        block.maxPlantBiomass = water ? DarwinFarm.Environment.EnvironmentRules.WaterPlantCapacity :
+            DarwinFarm.Environment.EnvironmentRules.PlantCapacity;
+        block.plantBiomass = water ? DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
+        block.habitatRecovery = water ? DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
         block.waterCoverage = preset.initialWaterCoverage;
         block.community = new List<PopulationData>();
     }

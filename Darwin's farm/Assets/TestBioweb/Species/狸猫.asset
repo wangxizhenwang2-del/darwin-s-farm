@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dba79df3cdc97a43a021e65f117e9a0, type: 3}
+  m_Name: "\u72f8\u732b"
+  m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
+  speciesName: "\u72f8\u732b"
+  sprite: {fileID: 0}
+  evolutionTargets:
+  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
+  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  - {fileID: 11400000, guid: ad78dccedcc75ea39c6dd15c18f62412, type: 2}
+  - {fileID: 11400000, guid: f069c1edb4be5d87af4a6c26b73563b4, type: 2}
+  preySpecies:
+  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
+  trophicLevel: 1
+  baseMovementAbility: 72
+  baseHabitatNiche: 50
+  baseFitTemperature: 32
+  baseFitHumidity: 52
+  baseSize: 12
+  baseFertility: 58
+  baseEcologicalNiche: 0

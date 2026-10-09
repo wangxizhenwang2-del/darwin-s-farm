@@ -40,7 +40,8 @@ namespace DarwinFarm.Environment
     // Pure domain rules. No Unity, rendering, map objects or economy implementation.
     public static class EnvironmentRules
     {
-        public const int PlantCapacity = 1000000, MaximumRecovery = 150000;
+        public const int PlantCapacity = 1000000, WaterPlantCapacity = 1500000;
+        public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
         public const int TransitionDays = 25, ClimateHoldDays = 100, RecoveryReturnDays = 100;
         public static TerrainDefaults Defaults(TerrainKind kind)
         {
@@ -97,11 +98,13 @@ namespace DarwinFarm.Environment
         public static bool IsMonsoonStrength(double value) => IsFinite(value) && (Math.Abs(value) == 20 || Math.Abs(value) == 40);
         public static bool IsRecoveryStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25000 || Math.Abs(value) == 50000);
         public static double ChangeStock(double stock, double signedFraction)
+            => ChangeStock(stock, PlantCapacity, signedFraction);
+        public static double ChangeStock(double stock, double capacity, double signedFraction)
         {
-            if (!IsFinite(stock) || stock < 0 || stock > PlantCapacity ||
+            if (!IsFinite(capacity) || capacity <= 0 || !IsFinite(stock) || stock < 0 || stock > capacity ||
                 !IsFinite(signedFraction) || (Math.Abs(signedFraction) != .25 && Math.Abs(signedFraction) != .5))
                 throw new ArgumentOutOfRangeException(nameof(signedFraction));
-            return Math.Max(0, Math.Min(PlantCapacity, stock + signedFraction * (signedFraction > 0 ? PlantCapacity : stock)));
+            return Math.Max(0, Math.Min(capacity, stock + signedFraction * (signedFraction > 0 ? capacity : stock)));
         }
     }
 }

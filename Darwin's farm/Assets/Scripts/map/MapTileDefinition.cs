@@ -37,4 +37,6 @@ public class MapTileDefinition : ScriptableObject
     [Min(0f)] public float maxPlantBiomass = 1000000f;
     [Min(0)] public int habitatRecovery = 100000;
     public WaterCoverage initialWaterCoverage = WaterCoverage.Land;
+    // Optional river opening override: north, east, south, west bits; 0 derives from shape.
+    [Range(0, 15)] public int riverOpenings;
 }

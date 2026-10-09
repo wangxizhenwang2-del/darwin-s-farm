@@ -234,6 +234,27 @@ public class MapGridManager : MonoBehaviour
         return true;
     }
 
+    // 2026-10-09 14:27 +08:00: a water-body height operation validates every
+    // member first, then raises one graph event after the complete map commit.
+    public bool TryShiftTileHeights(IReadOnlyList<Vector2Int> coordinates, int delta)
+    {
+        if (!initialized || coordinates == null || coordinates.Count == 0 ||
+            (delta != -1 && delta != 1)) return false;
+        var members = new List<MapTileInstance>(coordinates.Count);
+        var seen = new HashSet<Vector2Int>();
+        foreach (Vector2Int coordinate in coordinates)
+        {
+            if (!seen.Add(coordinate) || !tiles.TryGetValue(coordinate, out MapTileInstance tile) ||
+                tile.HeightLevel + delta < 0 || tile.HeightLevel + delta > 2)
+                return false;
+            members.Add(tile);
+        }
+        foreach (MapTileInstance tile in members)
+            tile.SetHeightLevel(tile.HeightLevel + delta, GridToWorld(tile.Coordinate));
+        TilesChanged?.Invoke();
+        mapNavigation.RequestUpdate();
+        return true;
+    }
     private void CreatePart(
         Transform parent,
         string partName,

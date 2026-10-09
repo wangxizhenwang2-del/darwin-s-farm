@@ -7,7 +7,7 @@ public sealed class EnvironmentReadSnapshot
 {
     public EnvironmentSnapshot Environment { get; }
     public float PlantStock { get; }
-    public int PlantCapacity => EnvironmentRules.PlantCapacity;
+    public int PlantCapacity => Environment.IsWater ? EnvironmentRules.WaterPlantCapacity : EnvironmentRules.PlantCapacity;
     public EnvironmentReadSnapshot(EnvironmentSnapshot environment, float plantStock)
     { Environment = environment; PlantStock = plantStock; }
 }
@@ -36,6 +36,7 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     private SimulationTime clock;
     private EnvironmentWorld world;
     private readonly Dictionary<GridPosition, BlockInfo> blocks = new Dictionary<GridPosition, BlockInfo>();
+    private readonly Dictionary<GridPosition, string> waterGroups = new Dictionary<GridPosition, string>();
     private readonly HashSet<long> notifiedSettlements = new HashSet<long>();
     public event Action<IReadOnlyList<EnvironmentReadSnapshot>> Changed;
     public event Action<MonsoonSettlement> SettlementAvailable;
@@ -99,7 +100,9 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 var neighbor = new GridPosition(pair.Key.X + delta.X, pair.Key.Y + delta.Y);
                 if (byCoordinate.ContainsKey(neighbor)) neighbors.Add(neighbor);
             }
-            graph.Add(new TopologyNode(pair.Key, pair.Value.HeightLevel, TerrainFromPreset(pair.Value.Definition.biome), neighbors));
+            graph.Add(new TopologyNode(pair.Key, pair.Value.HeightLevel,
+                TerrainFromPreset(pair.Value.Definition.biome), neighbors,
+                HabitatTopology.IsWater(pair.Value.Block)));
         }
         world.SynchronizeTopology(graph);
         if (clock != null)
@@ -112,9 +115,42 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         {
             var block = pair.Value.Block;
             blocks.Add(pair.Key, block);
-            block.maxPlantBiomass = EnvironmentRules.PlantCapacity;
-            block.plantBiomass = Mathf.Clamp(block.plantBiomass, 0, EnvironmentRules.PlantCapacity);
+            block.maxPlantBiomass = HabitatTopology.IsWater(block)
+                ? EnvironmentRules.WaterPlantCapacity : EnvironmentRules.PlantCapacity;
+            block.plantBiomass = Mathf.Clamp(block.plantBiomass, 0, block.maxPlantBiomass);
         }
+        // 2026-10-09 14:34 +08:00: regroup shared water stock by physical
+        // openings and equal height. A changed membership detaches the old R
+        // timeline while retaining its actual per-cell value.
+        var nextGroups = new Dictionary<GridPosition, string>();
+        foreach (List<MapTileInstance> area in WaterBodyTopology.AllAreas(grid))
+        {
+            string identity = string.Join(";", area.ConvertAll(tile =>
+                tile.Coordinate.x + "," + tile.Coordinate.y));
+            double stock = 0;
+            bool changed = false;
+            foreach (MapTileInstance tile in area)
+            {
+                GridPosition position = Position(tile.Coordinate);
+                stock += tile.Block.plantBiomass;
+                changed |= waterGroups.TryGetValue(position, out string previous) && previous != identity;
+                nextGroups[position] = identity;
+            }
+            float average = Mathf.Clamp((float)(stock / area.Count), 0f,
+                EnvironmentRules.WaterPlantCapacity);
+            if (changed)
+            {
+                var positions = new List<GridPosition>(area.Count);
+                foreach (MapTileInstance tile in area) positions.Add(Position(tile.Coordinate));
+                world.ReconcileWaterRecovery(positions);
+            }
+            foreach (MapTileInstance tile in area)
+            {
+                tile.Block.plantBiomass = average;
+            }
+        }
+        waterGroups.Clear();
+        foreach (var pair in nextGroups) waterGroups.Add(pair.Key, pair.Value);
         Publish();
     }
     private static readonly GridPosition[] Directions =
@@ -123,7 +159,30 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     private void Advance(int day)
     {
         world.AdvanceToDay(day);
+        GrowWaterPlants();
         Publish(false);
+    }
+    private void GrowWaterPlants()
+    {
+        if (grid == null) return;
+        foreach (List<MapTileInstance> area in WaterBodyTopology.AllAreas(grid))
+        {
+            double totalStock = 0, dailyGrowth = 0;
+            foreach (MapTileInstance tile in area)
+            {
+                totalStock += tile.Block.plantBiomass;
+                if (world.TryRead(Position(tile.Coordinate), out EnvironmentSnapshot state))
+                    dailyGrowth += state.Recovery.Value;
+            }
+            double capacity = (double)EnvironmentRules.WaterPlantCapacity * area.Count;
+            double grown = Math.Min(dailyGrowth, Math.Max(0, capacity - totalStock));
+            float perCell = (float)((totalStock + grown) / area.Count);
+            foreach (MapTileInstance tile in area)
+            {
+                tile.Block.plantGrowthToday = (float)(grown / area.Count);
+                tile.Block.plantBiomass = perCell;
+            }
+        }
     }
     private void RebaseClock(int day) => world.RebaseClock(day);
     private void NotifyReaders(int day) => Changed?.Invoke(ReadAll());
@@ -218,11 +277,103 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         }
         if (applied) Publish(); return applied;
     }
+
+    public bool TryGetWaterArea(Vector2Int coordinate,
+        out IReadOnlyList<Vector2Int> members, out string error)
+    {
+        members = Array.Empty<Vector2Int>(); error = null;
+        if (!isActiveAndEnabled || grid == null || world == null)
+        { error = "环境控制器未就绪"; return false; }
+        List<MapTileInstance> area = WaterBodyTopology.Area(grid, coordinate);
+        if (area.Count == 0) { error = "目标不是已建水格"; return false; }
+        var coordinates = new List<Vector2Int>(area.Count);
+        foreach (MapTileInstance tile in area) coordinates.Add(tile.Coordinate);
+        members = coordinates.AsReadOnly();
+        return true;
+    }
+
+    // 2026-10-09 14:41 +08:00: player water tools operate on the complete
+    // connected body. Validation precedes all writes; the map height path
+    // then publishes one topology event for the entire height transaction.
+    public bool TryApplyWater(Vector2Int coordinate, SimulationInterventionKind kind,
+        float amount, out string error)
+    {
+        if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> area, out error)) return false;
+        var positions = new List<GridPosition>(area.Count);
+        foreach (Vector2Int member in area) positions.Add(Position(member));
+        switch (kind)
+        {
+            case SimulationInterventionKind.PlantRecovery:
+                if (amount != 25000f && amount != 50000f)
+                { error = "增产档位必须为 +25000 或 +50000"; return false; }
+                if (!world.TrySetRecoveryBatch(positions, amount, false, out error)) return false;
+                Publish(); return true;
+            case SimulationInterventionKind.PlantBiomass:
+                if (amount != .25f && amount != .5f)
+                { error = "播种档位必须为容量的 25% 或 50%"; return false; }
+                double totalStock = 0;
+                foreach (Vector2Int member in area) totalStock += blocks[Position(member)].plantBiomass;
+                double capacity = (double)EnvironmentRules.WaterPlantCapacity * area.Count;
+                float next = (float)(EnvironmentRules.ChangeStock(totalStock, capacity, amount) / area.Count);
+                foreach (Vector2Int member in area)
+                    simulation.ApplyPlantBiomass(blocks[Position(member)], next);
+                Publish(); return true;
+            case SimulationInterventionKind.Elevation:
+                if (amount != -1f && amount != 1f)
+                { error = "海拔只能升降一级"; return false; }
+                foreach (Vector2Int member in area)
+                    if (!grid.TryGetTile(member, out MapTileInstance tile) ||
+                        tile.HeightLevel + (int)amount < 0 || tile.HeightLevel + (int)amount > 2)
+                    { error = "整片水域中有地块会越过海拔边界"; return false; }
+                if (!grid.TryShiftTileHeights(area, (int)amount))
+                { error = "整片水域海拔提交失败"; return false; }
+                Publish(); return true;
+            default: error = "该科技不能投放到水域"; return false;
+        }
+    }
+
+    public bool TryApplySuppression(Vector2Int coordinate, float fraction, out string error)
+    {
+        error = null;
+        if (fraction != .25f && fraction != .5f)
+        { error = "生态抑制档位必须为 25% 或 50%"; return false; }
+        if (!TryRead(coordinate, out EnvironmentReadSnapshot snapshot))
+        { error = "目标地块不存在"; return false; }
+        var area = new List<Vector2Int>();
+        if (snapshot.Environment.IsWater)
+        {
+            if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> members, out error)) return false;
+            area.AddRange(members);
+        }
+        else area.Add(coordinate);
+        var positions = new List<GridPosition>(area.Count);
+        double totalStock = 0;
+        foreach (Vector2Int member in area) positions.Add(Position(member));
+        foreach (Vector2Int member in area) totalStock += blocks[Position(member)].plantBiomass;
+        if (!world.TrySetRecoveryBatch(positions, fraction, true, out error)) return false;
+        float nextPerCell = (float)(totalStock * (1f - fraction) / area.Count);
+        foreach (Vector2Int member in area)
+        {
+            BlockInfo block = blocks[Position(member)];
+            simulation.ApplyPlantBiomass(block, nextPerCell);
+        }
+        Publish(); return true;
+    }
     public bool TryCancel(Vector2Int coordinate, EnvironmentAttribute attribute, out string error)
     {
         error = null;
         if (!isActiveAndEnabled || world == null) { error = "环境控制器未就绪"; return false; }
-        bool result = attribute == EnvironmentAttribute.Recovery ? world.TryCancelRecovery(Position(coordinate), out error) :
+        bool result;
+        if (attribute == EnvironmentAttribute.Recovery &&
+            TryRead(coordinate, out EnvironmentReadSnapshot snapshot) && snapshot.Environment.IsWater)
+        {
+            if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> area, out error)) return false;
+            var positions = new List<GridPosition>(area.Count);
+            foreach (Vector2Int member in area) positions.Add(Position(member));
+            result = world.TryCancelRecoveryBatch(positions, out error);
+        }
+        else result = attribute == EnvironmentAttribute.Recovery ?
+            world.TryCancelRecovery(Position(coordinate), out error) :
             world.TryCancelClimate(Position(coordinate), attribute, out error);
         if (result) Publish(); return result;
     }

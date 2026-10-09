@@ -10,6 +10,9 @@ public class SpeciesData: ScriptableObject
 
     // 只有列出的目标才会触发预设物种的进化。
     public List<SpeciesData> evolutionTargets = new List<SpeciesData>();
+    // Empty means the legacy adjacent-trophic-level food web. Test bioweb
+    // assets list their exact prey, including level-two hunters of herbivores.
+    public List<SpeciesData> preySpecies = new List<SpeciesData>();
 
     [Range(0, 2)] public int trophicLevel; //0 食草，1、2 分别捕食低一级，最多三级食物链
     [Range(0, 100)] public int baseMovementAbility;

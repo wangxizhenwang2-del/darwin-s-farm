@@ -2,12 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Unity.AI.Navigation;
+using DarwinFarm.Environment;
 
 public class MapTileColorTransitionSystem : MonoBehaviour
 {
     [Header("引用")]
     [SerializeField] private MapGridManager gridManager;
     [SerializeField] private Material vertexColorMaterial;
+    private SimulationEnvironmentController environment;
+    private readonly Dictionary<Vector2Int, TerrainKind> liveTerrain =
+        new Dictionary<Vector2Int, TerrainKind>();
+    private readonly Dictionary<BiomeType, Color> terrainColors =
+        new Dictionary<BiomeType, Color>();
 
     private const int Segments = 34;
     private const float HalfSize = 8.5f;
@@ -34,7 +40,11 @@ public class MapTileColorTransitionSystem : MonoBehaviour
     private void OnEnable()
     {
         if (gridManager != null)
+        {
             gridManager.TilesChanged += RefreshAll;
+            environment = gridManager.GetComponent<SimulationEnvironmentController>();
+            if (environment != null) environment.Changed += HandleEnvironmentChanged;
+        }
     }
 
     private void Start()
@@ -46,6 +56,7 @@ public class MapTileColorTransitionSystem : MonoBehaviour
             return;
         }
 
+        if (environment != null) CacheTerrain(environment.ReadAll());
         RefreshAll();
     }
 
@@ -53,6 +64,46 @@ public class MapTileColorTransitionSystem : MonoBehaviour
     {
         if (gridManager != null)
             gridManager.TilesChanged -= RefreshAll;
+        if (environment != null) environment.Changed -= HandleEnvironmentChanged;
+    }
+
+    // 2026-10-09 13:54 +08:00: land colors follow reclassified terrain.
+    // Recolor existing meshes only when terrain kind changes; keep geometry
+    // and navigation colliders untouched during ordinary climate updates.
+    private void HandleEnvironmentChanged(IReadOnlyList<EnvironmentReadSnapshot> snapshots)
+    {
+        if (CacheTerrain(snapshots)) RefreshColors();
+    }
+
+    private void RefreshColors()
+    {
+        foreach (KeyValuePair<MapTileInstance, SurfaceData> item in surfaces)
+        {
+            if (item.Key == null || item.Value.mesh == null) continue;
+            Vector3[] vertices = item.Value.mesh.vertices;
+            var colors = new List<Color>(vertices.Length);
+            foreach (Vector3 vertex in vertices)
+            {
+                Vector2 offset = item.Key.LocalToGridOffset(
+                    new Vector2(vertex.x, vertex.z));
+                colors.Add(VertexColor(CalculateColor(item.Key, offset)));
+            }
+            item.Value.mesh.SetColors(colors);
+        }
+    }
+
+    private bool CacheTerrain(IReadOnlyList<EnvironmentReadSnapshot> snapshots)
+    {
+        bool changed = false;
+        foreach (EnvironmentReadSnapshot snapshot in snapshots)
+        {
+            Vector2Int coordinate = new Vector2Int(snapshot.Environment.Position.X,
+                snapshot.Environment.Position.Y);
+            TerrainKind kind = snapshot.Environment.Terrain;
+            if (!liveTerrain.TryGetValue(coordinate, out TerrainKind previous) || previous != kind)
+            { liveTerrain[coordinate] = kind; changed = true; }
+        }
+        return changed;
     }
 
     private void RefreshAll()
@@ -61,6 +112,11 @@ public class MapTileColorTransitionSystem : MonoBehaviour
             return;
 
         heightControls.Clear();
+        terrainColors.Clear();
+        foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
+            if (tile != null && tile.Definition != null &&
+                !terrainColors.ContainsKey(tile.Biome))
+                terrainColors.Add(tile.Biome, tile.MainColor);
 
         // 先统一计算所有地块的高度接口。
         foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
@@ -526,22 +582,45 @@ public class MapTileColorTransitionSystem : MonoBehaviour
 
                 float weight = weightX * weightZ;
 
-                total.r += neighbor.MainColor.r * weight;
-                total.g += neighbor.MainColor.g * weight;
-                total.b += neighbor.MainColor.b * weight;
+                Color neighborColor = LiveColor(neighbor);
+                total.r += neighborColor.r * weight;
+                total.g += neighborColor.g * weight;
+                total.b += neighborColor.b * weight;
 
                 totalWeight += weight;
             }
         }
 
         if (totalWeight <= 0f)
-            return tile.MainColor;
+            return LiveColor(tile);
 
         return new Color(
             total.r / totalWeight,
             total.g / totalWeight,
             total.b / totalWeight,
             1f);
+    }
+
+    private Color LiveColor(MapTileInstance tile)
+    {
+        if (tile.Block == null || tile.Block.waterCoverage != WaterCoverage.Land ||
+            !liveTerrain.TryGetValue(tile.Coordinate, out TerrainKind kind))
+            return tile.MainColor;
+        BiomeType biome = (BiomeType)((int)kind + (int)BiomeType.Forest);
+        if (terrainColors.TryGetValue(biome, out Color color)) return color;
+        // Match shipped assets even when that terrain preset is not placed.
+        switch (kind)
+        {
+            case TerrainKind.Forest: return new Color(0.20392157f, 0.54509804f, 0.33333333f);
+            case TerrainKind.Rainforest: return new Color(0.09019608f, 0.47843137f, 0.34509804f);
+            case TerrainKind.Grassland: return new Color(0.51372549f, 0.72549020f, 0.34509804f);
+            case TerrainKind.Desert: return new Color(0.78823529f, 0.79607843f, 0.55294118f);
+            case TerrainKind.Tundra: return new Color(0.64705882f, 0.79607843f, 0.64705882f);
+            case TerrainKind.Highland: return new Color(0.53725490f, 0.65098039f, 0.61176471f);
+            case TerrainKind.SnowMountain: return new Color(0.86666667f, 0.92549020f, 0.90980392f);
+            case TerrainKind.Volcano: return new Color(0.41960784f, 0.47450980f, 0.43137255f);
+            default: return tile.MainColor;
+        }
     }
 
     private float AxisWeight(float distance)
