@@ -1031,6 +1031,7 @@ GameObject:
   - component: {fileID: 2200000002}
   - component: {fileID: 1541449675}
   - component: {fileID: 2200000003}
+  - component: {fileID: 2200000004}
   m_Layer: 0
   m_Name: MapSystem
   m_TagString: Untagged
@@ -1070,7 +1071,7 @@ MonoBehaviour:
   tileMaterial: {fileID: 2100000, guid: a8b939c6a1a18164b81f08d238b315c7, type: 2}
   initialTile: {fileID: 11400000, guid: 786bdc6d0231451dbb3df13286b1a477, type: 2}
   testTile: {fileID: 11400000, guid: 015789cd96df421cbdf7bdf8d9030566, type: 2}
-  testCoordinate: {x: 1, y: 0}
+  testCoordinate: {x: 0, y: 0}
   showAvailablePositions: 0
 --- !u!114 &1541449668
 MonoBehaviour:
@@ -1134,7 +1135,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d250444df2269a6499b0a68b21c97306, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimulationTime
   currentDay: 0
 --- !u!114 &1541449672
@@ -1147,12 +1148,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3240788aee4bd2f43a263fb6050c811f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimulationController
   simulationTime: {fileID: 1541449671}
   blockInfos: []
+  reproductionScale: 0.05
+  maxOverCapacityDeathRate: 0.1
+  maxStarvationDeathRate: 0.6
+  levelOnePreyFraction: 0.08
+  levelTwoPreyFraction: 0.1
+  presetEvolutionEnabled: 1
+  evolutionNetworkSpecies: []
+  mutationEnabled: 1
+  mutationInterval: 7
+  mutationStep: 2
+  selectionStrength: 1
   migrationEnabled: 1
+  migrationInterval: 7
+  migrationPopulationScale: 100
+  overloadThreshold: 0.8
+  baseOverloadProbability: 0.5
+  overloadMigrationFraction: 0.2
+  migrationCooldownDays: 7
   ecologicalNichesEnabled: 1
+  landToWaterProbability: 0.02
+  landToAirProbability: 0.01
+  waterDownProbability: 0.05
+  waterUpProbability: 0.002
+  waterToLandProbability: 0.001
 --- !u!114 &1541449673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1163,7 +1186,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 182b3e2d985b4ec38d40b8f4d6149a5c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapSimulationBridge
   gridManager: {fileID: 1541449667}
   simulationController: {fileID: 1541449672}
@@ -1178,14 +1201,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f7f3ab47e8c4ea694f4e7c7c63a219a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimulationInterventionController
   gridManager: {fileID: 1541449667}
   bridge: {fileID: 1541449673}
   simulationController: {fileID: 1541449672}
   simulationTime: {fileID: 1541449671}
-  maxRadius: 2
---- !u!114 &2200000001
+--- !u!114 &1541449675
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1194,59 +1216,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1541449665}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9302c9afeb84463588d539116eab4621, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugController
-  grid: {fileID: 1541449667}
-  simulation: {fileID: 1541449672}
-  clock: {fileID: 1541449671}
---- !u!114 &2200000002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1541449665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac3448232014d82ad450b32f576c302, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugView
-  controller: {fileID: 2200000001}
-  testSetup: {fileID: 2200000003}
+  m_Script: {fileID: 11500000, guid: f56eb812c4e4f0c40877bcb1a7d92702, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationMovementController
+  gridManager: {fileID: 1541449667}
   viewCamera: {fileID: 1669876467}
-  fontSize: 11
-  heightAboveTile: 2.5
---- !u!114 &2200000003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1541449665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4d7bef5a2d84a48b8e1fb67ce9030d4, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxBiowebTestSetup
-  grid: {fileID: 1541449667}
-  bridge: {fileID: 1541449673}
-  simulation: {fileID: 1541449672}
-  movement: {fileID: 1541449675}
-  species:
-  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
-  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
-  - {fileID: 11400000, guid: ad78dccedcc75ea39c6dd15c18f62412, type: 2}
-  - {fileID: 11400000, guid: 31e3fbb824575f1eb43191539c0f254b, type: 2}
-  - {fileID: 11400000, guid: f069c1edb4be5d87af4a6c26b73563b4, type: 2}
-  speciesColors:
-  - {r: 0.15, g: 0.75, b: 0.95, a: 1}
-  - {r: 1, g: 0.84, b: 0.12, a: 1}
-  - {r: 0.95, g: 0.24, b: 0.18, a: 1}
-  - {r: 0.75, g: 0.28, b: 0.92, a: 1}
-  - {r: 0.36, g: 0.95, b: 0.38, a: 1}
-  initialChickenSpecies: {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
-  initialChickenCount: 160
+  settings:
+    leaderSize: 0.8
+    followerSize: 0.45
+    speed: 1.8
+    followerSpeed: 2.4
+    spacing: 1.2
+    pauseSeconds: 1.2
+    retrySeconds: 1
+    arrivalDistance: 0.08
+    turnSpeed: 8
+    labelHeight: 0.6
+    populationGap: 0.3
+    memberGap: 0.08
+    playerGap: 0.1
+    wanderEdgeMargin: 0.8
+    replanSeconds: 0.5
+    blockedRetargetSeconds: 1.5
+    formationSlack: 0.75
+    targetAttempts: 24
+  debugTile: {x: 0, y: 0}
+  firstDebugCount: 37
+  secondDebugCount: 123
+  editedDebugCount: 68
+  walkableAreaMask: -1
 --- !u!1 &1640010066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1938,7 +1936,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 267322163}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1541449675
+--- !u!114 &2200000001
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1947,35 +1945,88 @@ MonoBehaviour:
   m_GameObject: {fileID: 1541449665}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f56eb812c4e4f0c40877bcb1a7d92702, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::PopulationMovementController
-  gridManager: {fileID: 1541449667}
+  m_Script: {fileID: 11500000, guid: 9302c9afeb84463588d539116eab4621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugController
+  grid: {fileID: 1541449667}
+  simulation: {fileID: 1541449672}
+  clock: {fileID: 1541449671}
+--- !u!114 &2200000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac3448232014d82ad450b32f576c302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugView
+  controller: {fileID: 2200000001}
+  populationVisuals: {fileID: 2200000004}
   viewCamera: {fileID: 1669876467}
-  settings:
-    leaderSize: 0.8
-    followerSize: 0.45
-    speed: 1.8
-    followerSpeed: 2.4
-    spacing: 1.2
-    pauseSeconds: 1.2
-    retrySeconds: 1
-    arrivalDistance: 0.08
-    turnSpeed: 8
-    labelHeight: 0.6
-    populationGap: 0.3
-    memberGap: 0.08
-    playerGap: 0.1
-    wanderEdgeMargin: 0.8
-    replanSeconds: 0.5
-    blockedRetargetSeconds: 1.5
-    formationSlack: 0.75
-    targetAttempts: 24
-  debugTile: {x: 0, y: 0}
-  firstDebugCount: 37
-  secondDebugCount: 123
-  editedDebugCount: 68
-  walkableAreaMask: -1
+  technology: {fileID: 0}
+  clock: {fileID: 0}
+  fontSize: 11
+  heightAboveTile: 2.5
+--- !u!114 &2200000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d7bef5a2d84a48b8e1fb67ce9030d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxBiowebTestSetup
+  grid: {fileID: 1541449667}
+  bridge: {fileID: 1541449673}
+  simulation: {fileID: 1541449672}
+  species:
+  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
+  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  - {fileID: 11400000, guid: ad78dccedcc75ea39c6dd15c18f62412, type: 2}
+  - {fileID: 11400000, guid: 31e3fbb824575f1eb43191539c0f254b, type: 2}
+  - {fileID: 11400000, guid: f069c1edb4be5d87af4a6c26b73563b4, type: 2}
+  initialChickenSpecies: {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  initialChickenCount: 160
+--- !u!114 &2200000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541449665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50dc5d5e29c615d44a225f24e10b4559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationVisualPresenter
+  grid: {fileID: 1541449667}
+  movement: {fileID: 1541449675}
+  simulation: {fileID: 1541449672}
+  presetSpecies:
+  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
+  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  - {fileID: 11400000, guid: ad78dccedcc75ea39c6dd15c18f62412, type: 2}
+  - {fileID: 11400000, guid: 31e3fbb824575f1eb43191539c0f254b, type: 2}
+  - {fileID: 11400000, guid: f069c1edb4be5d87af4a6c26b73563b4, type: 2}
+  presetColors:
+  - {r: 0.15, g: 0.75, b: 0.95, a: 1}
+  - {r: 1, g: 0.84, b: 0.12, a: 1}
+  - {r: 0.95, g: 0.24, b: 0.18, a: 1}
+  - {r: 0.75, g: 0.28, b: 0.92, a: 1}
+  - {r: 0.36, g: 0.95, b: 0.38, a: 1}
+  syncInterval: 0.25
+  maxCreationsPerSync: 2
+  failedCreationRetry: 3
+  transitionSpeed: 5
+  minimumTransitionSeconds: 0.8
+  maximumTransitionSeconds: 4.5
+  fallbackArcHeight: 2.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

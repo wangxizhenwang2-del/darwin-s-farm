@@ -12,6 +12,24 @@ public class EvolutionConversionRecord
 [System.Serializable]
 public class PopulationData
 {
+    // Identifies this population instance, not its species or visual object.
+    // Serialized so an existing resident keeps its identity across model saves.
+    [UnityEngine.SerializeField] private string populationId;
+    public PopulationData() => RegeneratePopulationId();
+    public string PopulationId
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(populationId))
+                populationId = System.Guid.NewGuid().ToString("N");
+            return populationId;
+        }
+    }
+
+    // A full relocation replaces the source record with its arrival record.
+    internal void RetainPopulationId(PopulationData source) => populationId = source.PopulationId;
+    internal void RegeneratePopulationId() => populationId = System.Guid.NewGuid().ToString("N");
+
     public int speciesAmount; //种群数量保持整数
     public SpeciesData species;
     public string lineageName; // 未指定物种资产时，以同名识别跨地块的同一种群

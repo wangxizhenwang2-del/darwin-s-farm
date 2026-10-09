@@ -20,6 +20,7 @@ public partial class SimulationController
 
     public event Action<BlockInfo, PopulationData, PopulationData, SpeciesData, int>
         OnSpeciesEvolved;
+    public event Action<PopulationTransitionResult> OnPresetEvolutionResolved;
     public event Action<SpeciesData> OnSpeciesUnlocked;
     public event Action<SpeciesData> OnSpeciesExtinct;
     public event Action<SpeciesData> OnSpeciesRevived;
@@ -296,6 +297,7 @@ public partial class SimulationController
     {
         int amount = Mathf.Clamp(Mathf.RoundToInt(ancestor.speciesAmount * 0.1f), 10, 100);
         if (ancestor.speciesAmount - amount < 1) return;
+        int sourceCountBefore = ancestor.speciesAmount;
         PopulationData descendant = PopulationTransfer.Split(ancestor, amount, block,
             day, migrationCooldownDays);
         SpeciesData origin = ancestor.species;
@@ -341,9 +343,15 @@ public partial class SimulationController
             population != null && population != ancestor &&
             population.ecologicalNiche == descendant.ecologicalNiche &&
             PopulationTransfer.IsSameSpecies(population, descendant));
+        int targetCountBefore = resident == null ? 0 : resident.speciesAmount;
         if (resident == null) block.community.Add(descendant);
         else PopulationTransfer.Merge(resident, descendant);
         RegisterSpecies(target);
+        OnPresetEvolutionResolved?.Invoke(new PopulationTransitionResult(
+            PopulationTransitionKind.PresetEvolution, day, block, block,
+            ancestor, resident ?? descendant, amount, sourceCountBefore,
+            targetCountBefore, resident == null ? PopulationArrivalOutcome.Created :
+                PopulationArrivalOutcome.Merged, target));
         OnSpeciesEvolved?.Invoke(block, ancestor, resident ?? descendant, target, amount);
     }
 

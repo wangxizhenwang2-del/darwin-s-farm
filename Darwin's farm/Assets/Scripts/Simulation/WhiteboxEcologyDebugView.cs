@@ -6,7 +6,7 @@ using UnityEngine;
 public sealed class WhiteboxEcologyDebugView : MonoBehaviour
 {
     [SerializeField] private WhiteboxEcologyDebugController controller;
-    [SerializeField] private WhiteboxBiowebTestSetup testSetup;
+    [SerializeField] private PopulationVisualPresenter populationVisuals;
     [SerializeField] private Camera viewCamera;
     [SerializeField] private EnvironmentTechnologyController technology;
     [SerializeField] private SimulationTime clock;
@@ -42,7 +42,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
     private void Awake()
     {
         if (controller == null) controller = GetComponent<WhiteboxEcologyDebugController>();
-        if (testSetup == null) testSetup = GetComponent<WhiteboxBiowebTestSetup>();
+        if (populationVisuals == null) populationVisuals = GetComponent<PopulationVisualPresenter>();
         if (viewCamera == null) viewCamera = Camera.main;
         if (technology == null) technology = GetComponent<EnvironmentTechnologyController>();
         if (clock == null) clock = GetComponent<SimulationTime>();
@@ -84,8 +84,8 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
                 if (start + 2 >= label.lines.Length) break;
                 Vector3 populationScreen = Vector3.zero;
                 WhiteboxPopulation visual = null;
-                bool hasVisual = testSetup != null &&
-                    testSetup.TryGetVisual(label.populations[i], out visual) &&
+                bool hasVisual = populationVisuals != null &&
+                    populationVisuals.TryGetVisual(label.populations[i], out visual) &&
                     visual.Leader != null;
                 if (hasVisual)
                     populationScreen = viewCamera.WorldToScreenPoint(

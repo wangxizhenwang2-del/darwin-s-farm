@@ -26,6 +26,7 @@ public partial class SimulationController
     }
 
     public event System.Action<BlockInfo, BlockInfo, PopulationData, int> OnPopulationMigrated;
+    public event Action<PopulationTransitionResult> OnMigrationResolved;
 
     public void SetMigrationParameters(bool enabled, int interval, float populationScale,
         float threshold, float overloadProbability,
@@ -213,11 +214,13 @@ public partial class SimulationController
     {
         // 先让所有种群离开，再统一落地，新来者就不会在同一天连续迁徙。
         List<PopulationData> arrivals = new List<PopulationData>(plans.Count);
+        List<int> sourceCountsBefore = new List<int>(plans.Count);
         foreach (MovePlan plan in plans)
         {
             PopulationData origin = plan.population;
+            sourceCountsBefore.Add(origin.speciesAmount);
             PopulationData arrival = PopulationTransfer.Split(origin, plan.amount,
-                plan.source, day, migrationCooldownDays);
+                plan.source, day, migrationCooldownDays, true);
             if (origin.speciesAmount == 0)
             {
                 plan.source.community.Remove(origin);
@@ -233,6 +236,7 @@ public partial class SimulationController
             PopulationData resident = target.community.Find(population =>
                 population != null && population.ecologicalNiche == arrival.ecologicalNiche &&
                 SameSpecies(population, arrival));
+            int targetCountBefore = resident == null ? 0 : resident.speciesAmount;
             if (resident == null)
             {
                 target.community.Add(arrival);
@@ -242,6 +246,13 @@ public partial class SimulationController
                 InitializeMutationState(resident);
                 PopulationTransfer.Merge(resident, arrival);
             }
+            PopulationData resultPopulation = resident ?? arrival;
+            OnMigrationResolved?.Invoke(new PopulationTransitionResult(
+                PopulationTransitionKind.Migration, day, plans[i].source, target,
+                plans[i].population, resultPopulation, plans[i].amount,
+                sourceCountsBefore[i], targetCountBefore,
+                resident == null ? PopulationArrivalOutcome.Created :
+                    PopulationArrivalOutcome.Merged));
             OnPopulationMigrated?.Invoke(plans[i].source, target,
                 plans[i].population, plans[i].amount);
         }
@@ -265,6 +276,7 @@ public partial class SimulationController
     public bool EcologicalNichesEnabled => ecologicalNichesEnabled;
     public event Action<BlockInfo, BlockInfo, PopulationData, PopulationData, int>
         OnNicheConverted;
+    public event Action<PopulationTransitionResult> OnNicheConversionResolved;
     public event Action<PopulationData, BlockInfo, RiverBankSide?> OnLandPositionChanged;
 
     public void SetEcologicalNichesEnabled(bool enabled) => ecologicalNichesEnabled = enabled;
@@ -533,6 +545,7 @@ public partial class SimulationController
         int amount = NicheSplitAmount(ancestor.speciesAmount);
         if (amount == 0) return false;
         if (niche == EcologicalNiche.Air && HasAirPopulation(target)) return false;
+        int sourceCountBefore = ancestor.speciesAmount;
         descendant = PopulationTransfer.Split(ancestor, amount, source, day,
             migrationCooldownDays);
         // 派生种使用独立 ID，不复用祖先物种资产；可随后保存成正式 SpeciesData。
@@ -546,6 +559,10 @@ public partial class SimulationController
             niche == EcologicalNiche.Air ? 100 : 50;
         if (target.community == null) target.community = new List<PopulationData>();
         target.community.Add(descendant);
+        OnNicheConversionResolved?.Invoke(new PopulationTransitionResult(
+            PopulationTransitionKind.NicheConversion, day, source, target,
+            ancestor, descendant, amount, sourceCountBefore, 0,
+            PopulationArrivalOutcome.Created));
         OnNicheConverted?.Invoke(source, target, ancestor, descendant, amount);
         return true;
     }
@@ -611,10 +628,13 @@ internal static class PopulationTransfer
 
     // 迁徙和生态位分化都从这里拆分个体，储备与不足一个体的小数也按比例带走。
     public static PopulationData Split(PopulationData origin, int amount,
-        BlockInfo source, int day, int cooldownDays)
+        BlockInfo source, int day, int cooldownDays,
+        bool retainIdOnWholeMove = false)
     {
         float share = amount / (float)origin.speciesAmount;
         PopulationData branch = CopyForMove(origin, amount);
+        if (retainIdOnWholeMove && amount == origin.speciesAmount)
+            branch.RetainPopulationId(origin);
         branch.lastMigrationSource = source;
         origin.nextMigrationDay = Mathf.Max(origin.nextMigrationDay,
             day + cooldownDays + 1);
