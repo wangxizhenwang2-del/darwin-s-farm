@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4dba79df3cdc97a43a021e65f117e9a0, type: 3}
-  m_Name: "\u9e7f"
+  m_Name: "\u9E7F"
   m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
-  speciesName: "\u9e7f"
-  sprite: {fileID: 0}
+  speciesName: "\u9E7F"
+  sprite: {fileID: 21300000, guid: 4fe39b54cf10eec419a96ba0b408dfbb, type: 3}
   evolutionTargets: []
   preySpecies: []
   trophicLevel: 0

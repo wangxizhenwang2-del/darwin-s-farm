@@ -14,18 +14,22 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
     private Color sourceColor;
     private Color targetColor;
     private Renderer[] renderers;
+    private SpriteRenderer[] sourceImages;
+    private SpriteRenderer[] targetImages;
+    private Camera viewCamera;
     private MaterialPropertyBlock properties;
     private Action completed;
 
     public void Begin(Vector3[] waypoints, float arc, float seconds, int visibleMembers,
-        PopulationMovementSettings settings, Material material, Color from, Color to,
-        Action onCompleted)
+        PopulationMovementSettings settings, Material material, Sprite fromSprite,
+        Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted)
     {
         path = waypoints;
         arcHeight = Mathf.Max(0f, arc);
         duration = Mathf.Max(0.1f, seconds);
         sourceColor = from;
         targetColor = to;
+        viewCamera = camera;
         completed = onCompleted;
         properties = new MaterialPropertyBlock();
         cumulativeDistances = new float[path.Length];
@@ -41,6 +45,8 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
 
         int count = Mathf.Clamp(visibleMembers, 1, 4);
         renderers = new Renderer[count];
+        sourceImages = new SpriteRenderer[count];
+        targetImages = new SpriteRenderer[count];
         float spacing = Mathf.Max(0.8f, settings.spacing);
         for (int i = 0; i < count; i++)
         {
@@ -55,6 +61,15 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
             Destroy(collider);
             renderers[i] = cube.GetComponent<Renderer>();
             if (material != null) renderers[i].sharedMaterial = material;
+            renderers[i].enabled = fromSprite == null && toSprite == null;
+            sourceImages[i] = PopulationSpriteDisplay.Create(cube.transform,
+                fromSprite != null ? fromSprite : toSprite, from, 1);
+            if (toSprite != null && toSprite != fromSprite)
+                targetImages[i] = PopulationSpriteDisplay.Create(cube.transform,
+                    toSprite, new Color(to.r, to.g, to.b, 0f), 2);
+            Camera activeCamera = viewCamera != null ? viewCamera : Camera.main;
+            PopulationSpriteDisplay.FaceCamera(sourceImages[i], activeCamera);
+            PopulationSpriteDisplay.FaceCamera(targetImages[i], activeCamera);
         }
         ApplyColor(sourceColor);
     }
@@ -76,6 +91,12 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
         transform.localScale = Vector3.one *
             Mathf.Lerp(1f, 0.2f, Mathf.Clamp01((t - 0.8f) * 5f));
         ApplyColor(Color.Lerp(sourceColor, targetColor, eased));
+        Camera camera = viewCamera != null ? viewCamera : Camera.main;
+        for (int i = 0; i < sourceImages.Length; i++)
+        {
+            PopulationSpriteDisplay.FaceCamera(sourceImages[i], camera);
+            PopulationSpriteDisplay.FaceCamera(targetImages[i], camera);
+        }
         if (t >= 1f) Finish();
     }
 
@@ -96,13 +117,24 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
 
     private void ApplyColor(Color color)
     {
-        foreach (Renderer renderer in renderers)
+        float blend = Mathf.Clamp01((elapsed / duration - 0.25f) * 2f);
+        for (int i = 0; i < renderers.Length; i++)
         {
+            Renderer renderer = renderers[i];
             if (renderer == null) continue;
             renderer.GetPropertyBlock(properties);
             properties.SetColor("_BaseColor", color);
             properties.SetColor("_Color", color);
             renderer.SetPropertyBlock(properties);
+            if (targetImages[i] == null)
+            {
+                sourceImages[i].color = color;
+                continue;
+            }
+            sourceImages[i].color = new Color(sourceColor.r, sourceColor.g,
+                sourceColor.b, 1f - blend);
+            targetImages[i].color = new Color(targetColor.r, targetColor.g,
+                targetColor.b, blend);
         }
     }
 
