@@ -16,6 +16,7 @@ public sealed class PopulationPlayerBarrier : MonoBehaviour
     private Vector3 lastPosition;
     private bool controlling;
     private bool previousUpdatePosition;
+    public bool WasBlocked { get; private set; }
     public float Radius
     {
         get
@@ -69,6 +70,7 @@ public sealed class PopulationPlayerBarrier : MonoBehaviour
 
     private void Update()
     {
+        WasBlocked = false;
         if (!PopulationMovementController.HasActivePopulations) { ReleaseControl(); return; }
         BeginControl();
         if (!controlling || !agent.isActiveAndEnabled || !agent.isOnNavMesh) return;
@@ -79,6 +81,7 @@ public sealed class PopulationPlayerBarrier : MonoBehaviour
         Vector3 resolved = desired;
         if (!PopulationMovementController.AllowsPlayerMove(lastPosition, desired, radius))
         {
+            WasBlocked = true;
             float lower = 0f, upper = 1f;
             for (int i = 0; i < 16; i++)
             {

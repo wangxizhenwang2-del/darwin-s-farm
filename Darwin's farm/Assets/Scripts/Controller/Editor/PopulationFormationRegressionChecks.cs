@@ -59,6 +59,44 @@ public static class PopulationFormationRegressionChecks
                 Require(Distance(simulation.bodies[group][member].groundPosition, simulation.bodies[group][member - 1].groundPosition) <=
                     simulation.motions[group].Spacing(member) + 0.2f, "Followers did not regroup when the leader stopped.");
 
+        // A follower with no route must not hold its leader still forever.
+        var stalled = new[]
+        {
+            new PopulationFormationMotion.Body { size = 0.8f, groundPosition = V(0f, 0f) },
+            new PopulationFormationMotion.Body { size = 0.45f, groundPosition = V(0f, -3f) }
+        };
+        var recoverySettings = new PopulationMovementSettings { replanSeconds = 0.3f };
+        var recovery = new PopulationFormationMotion(stalled, recoverySettings,
+            (index, from, to) => index == 0 && PopulationCollisionMath.AllowsMove(
+                PopulationCollisionMath.Flat(from), PopulationCollisionMath.Flat(to),
+                PopulationCollisionMath.Flat(stalled[1].groundPosition), 1.8f),
+            (int index, Vector3 from, Vector3 target, out Vector3[] route) =>
+            { route = index == 0 ? new[] { from, target } : null; return index == 0; },
+            (index, next, heading) => { stalled[index].groundPosition = next; return true; });
+        Require(recovery.SetLeaderTarget(V(0f, 5f), 0f), "Recovery fixture could not set leader route.");
+        for (int tick = 0; tick < 12; tick++) recovery.Tick(0.04f, tick * 0.04f);
+        Require(stalled[0].groundPosition.z < -0.05f,
+            "Leader waited indefinitely when the follower had no route.");
+
+        var displayBodies = new PopulationFormationMotion.Body[4];
+        for (int i = 0; i < displayBodies.Length; i++)
+            displayBodies[i] = new PopulationFormationMotion.Body
+            { size = i == 0 ? 0.8f : 0.45f, groundPosition = V(0f, -i * 2f) };
+        var displayMotion = new PopulationFormationMotion(displayBodies, recoverySettings,
+            (index, from, to) => true,
+            (int index, Vector3 from, Vector3 target, out Vector3[] route) =>
+            { route = new[] { from, target }; return true; },
+            (index, next, heading) => { displayBodies[index].groundPosition = next; return true; });
+        displayMotion.SetActiveCount(1);
+        Require(displayMotion.ActiveCount == 1 && displayMotion.SetLeaderTarget(V(0f, 5f), 0f),
+            "Single-cube formation could not set a route.");
+        for (int tick = 0; tick < 20; tick++) displayMotion.Tick(0.04f, tick * 0.04f);
+        Require(displayBodies[0].groundPosition.z > 0.5f,
+            "Hidden followers still constrained the single-cube leader.");
+        displayMotion.SetActiveCount(4);
+        Require(displayMotion.ActiveCount == 4 && !displayMotion.HasLeaderRoute,
+            "Changing display count retained a stale formation route.");
+
         // Drive a player-sized disc repeatedly through the settled first group.
         Vector3 center = simulation.bodies[0][0].groundPosition;
         Vector3 from = center, targetPlayer = center;
@@ -91,7 +129,7 @@ public static class PopulationFormationRegressionChecks
             Require(Distance(stopped, targetPlayer) > 0.5f, "Player passed through the formation.");
             blocked++;
         }
-        return $"Formation regression passed: 6000 simultaneous ticks, {finished}/{routes} completed routes, all eight members moving, regrouping and {blocked} player crossing attempts.";
+        return $"Formation regression passed: 6000 simultaneous ticks, {finished}/{routes} completed routes, all eight members moving, stalled follower recovery, regrouping and {blocked} player crossing attempts.";
     }
 
     private static Vector3 V(float x, float z) => new Vector3(x, 0f, z);

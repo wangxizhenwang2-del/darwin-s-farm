@@ -13,6 +13,15 @@ public static class PopulationMovementRegressionChecks
     public static string RunChecks()
     {
         int passed = 0;
+        Require(WhiteboxPopulation.VisibleMemberCount(0) == 1 &&
+            WhiteboxPopulation.VisibleMemberCount(100) == 1 &&
+            WhiteboxPopulation.VisibleMemberCount(101) == 2 &&
+            WhiteboxPopulation.VisibleMemberCount(500) == 2 &&
+            WhiteboxPopulation.VisibleMemberCount(501) == 3 &&
+            WhiteboxPopulation.VisibleMemberCount(1000) == 3 &&
+            WhiteboxPopulation.VisibleMemberCount(1001) == 4,
+            "Population display count thresholds changed unexpectedly.");
+        passed++;
         Vector3 heading = Vector3.forward;
         float previousYaw = 0f;
         for (int i = 0; i < 100; i++)
@@ -54,6 +63,21 @@ public static class PopulationMovementRegressionChecks
         Require(movedPath.Length == 2, "Clear reverse route retained obsolete sidesteps.");
         passed++;
 
+        // A player click across a population needs a complete detour, then a
+        // straight route again once the moving population clears the crossing.
+        var playerBlockers = new List<Vector3> { V(0f, 0f), V(0f, 1.2f) };
+        Func<Vector3, Vector3, bool> playerMove = (a, b) => BodiesMove(a, b, playerBlockers, 1.5f);
+        Vector3 playerStart = V(-5f, 0f), playerEnd = V(5f, 0f);
+        Require(!playerMove(playerStart, playerEnd), "Player crossing fixture did not block the direct route.");
+        Require(grid.TryPath(playerStart, playerEnd, playerMove, out Vector3[] playerDetour),
+            "Player could not route around a population.");
+        CheckPath(playerDetour, tile.Move, playerMove);
+        Require(playerDetour.Length > 2, "Player detour still crossed the population.");
+        playerBlockers.Clear();
+        Require(grid.TryPath(playerStart, playerEnd, playerMove, out Vector3[] playerClearPath) &&
+            playerClearPath.Length == 2, "Player route did not recover after the population moved.");
+        passed++;
+
         Region corner = Square(8f, PopulationTileSpace.Clearance(0.8f));
         var cornerGrid = new PopulationLocalNavigation(new Bounds(Vector3.zero, V(16, 16)), 0.4f, corner.Move);
         var blockers = new List<Vector3> { V(6, 3.8f), V(3.8f, 6) };
@@ -90,7 +114,7 @@ public static class PopulationMovementRegressionChecks
             CheckPath(route, corner.Move, cornerBodies); FollowPath(route, corner.Move, cornerBodies);
         }
         passed++;
-        return $"Population movement regression checks: {passed}/9 passed (including 32 changing-obstacle routes).";
+        return $"Population movement regression checks: {passed}/11 passed (including display thresholds and 32 changing-obstacle routes).";
     }
 
     private static Vector3 V(float x, float z) => new Vector3(x, 0f, z);

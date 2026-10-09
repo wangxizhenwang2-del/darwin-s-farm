@@ -27,9 +27,11 @@ public sealed class PopulationMovementSettings
 }
 
 // Movement data deliberately stays independent from the ecological simulator's
-// migration/birth/death rules. Four renderers never imply a population of four.
+// migration/birth/death rules. Visible cubes represent count ranges, not individuals.
 public sealed class WhiteboxPopulation : MonoBehaviour
 {
+    public static int VisibleMemberCount(int count) => count > 1000 ? 4 : count > 500 ? 3 : count > 100 ? 2 : 1;
+
     internal sealed class Member : PopulationFormationMotion.Body
     {
         public Transform visual;
@@ -42,7 +44,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     [SerializeField] private Vector3 targetPosition;
     public string UniqueId => uniqueId;
     public Vector2Int TileId => tileId;
-    public int Count { get => populationCount; set { populationCount = Mathf.Max(0, value); RefreshLabel(); } }
+    public int Count { get => populationCount; set { populationCount = Mathf.Max(0, value); RefreshLabel(); SyncVisibleMembers(true); } }
     public PopulationMovementState MovementState => movementState;
     public Vector3 TargetPosition => targetPosition;
     public Transform Leader => members == null ? null : members[0].visual;
@@ -69,7 +71,9 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private PopulationMovementController controller;
     private TextMesh label;
     private float chooseAt;
+    private float nextMemberRetryAt;
     private int displayedCount = -1;
+    private int activeMemberCount;
     private PopulationFormationMotion motion;
     [SerializeField] private bool waitingForFollowers;
     [SerializeField] private bool wanderingPaused;
@@ -80,6 +84,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         controller = owner; tile = ownedTile; space = ownedSpace;
         uniqueId = Guid.NewGuid().ToString("N"); tileId = tile.Coordinate;
         populationCount = Mathf.Max(0, count);
+        activeMemberCount = VisibleMemberCount(populationCount);
         name = $"Population_{tileId.x}_{tileId.y}_{uniqueId.Substring(0, 8)}";
         members = new Member[4];
         for (int i = 0; i < members.Length; i++)
@@ -99,6 +104,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             renderer.SetPropertyBlock(properties);
             members[i] = new Member { visual = cube.transform, groundPosition = positions[i], size = size };
             Place(members[i], positions[i], Vector3.forward, 1f);
+            if (i >= activeMemberCount) cube.SetActive(false);
         }
         GameObject text = new GameObject("PopulationCount");
         text.transform.SetParent(transform, false);
@@ -109,13 +115,66 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         label.fontSize = 64; label.characterSize = 0.075f; label.color = Color.white;
         targetPosition = positions[0]; movementState = PopulationMovementState.Waiting;
         chooseAt = Time.time + UnityEngine.Random.Range(0f, Mathf.Max(0.1f, controller.Settings.pauseSeconds));
-        Vector3 heading = positions[0] - positions[1]; heading.y = 0f;
-        foreach (Member member in members) Place(member, member.groundPosition, heading.normalized, 1f);
+        Vector3 heading = activeMemberCount > 1 ? positions[0] - positions[1] : Vector3.forward;
+        heading.y = 0f;
+        for (int i = 0; i < activeMemberCount; i++)
+            Place(members[i], members[i].groundPosition, heading.normalized, 1f);
         motion = new PopulationFormationMotion(members, controller.Settings,
             (index, from, to) => space.CanTraverse(from, to, members[index].size) &&
                 controller.HasSeparation(this, members[index], from, to), PlanRoute,
             (index, position, direction) => Place(members[index], position, direction, 1f));
+        motion.SetActiveCount(activeMemberCount);
         RefreshLabel();
+    }
+
+    private void SyncVisibleMembers(bool force)
+    {
+        if (members == null || motion == null) return;
+        int desired = VisibleMemberCount(populationCount);
+        if (desired == activeMemberCount) return;
+        if (desired < activeMemberCount)
+        {
+            for (int i = desired; i < activeMemberCount; i++) members[i].visual.gameObject.SetActive(false);
+            activeMemberCount = desired;
+            motion.SetActiveCount(activeMemberCount);
+            Wait(false);
+            return;
+        }
+        if (!force && Time.time < nextMemberRetryAt) return;
+        bool changed = false;
+        while (activeMemberCount < desired && TryActivateFollower(activeMemberCount))
+        {
+            activeMemberCount++;
+            changed = true;
+        }
+        if (changed)
+        {
+            motion.SetActiveCount(activeMemberCount);
+            Wait(false);
+        }
+        if (activeMemberCount < desired) nextMemberRetryAt = Time.time + 0.5f;
+    }
+
+    private bool TryActivateFollower(int index)
+    {
+        Member member = members[index];
+        Member predecessor = members[index - 1];
+        float spacing = motion.Spacing(index);
+        float backward = Mathf.Atan2(-predecessor.heading.x, -predecessor.heading.z);
+        for (int direction = 0; direction < 16; direction++)
+        {
+            int offset = direction == 0 ? 0 : (direction + 1) / 2 * (direction % 2 == 1 ? 1 : -1);
+            float angle = backward + offset * Mathf.PI * 0.125f;
+            Vector3 candidate = predecessor.groundPosition +
+                new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * spacing;
+            if (!space.CanTraverse(candidate, candidate, member.size) ||
+                !space.CanTraverse(predecessor.groundPosition, candidate, member.size) ||
+                !controller.HasSeparation(this, member, candidate, candidate) ||
+                !Place(member, candidate, predecessor.heading, 1f)) continue;
+            member.visual.gameObject.SetActive(true);
+            return true;
+        }
+        return false;
     }
 
     private void RefreshLabel()
@@ -130,6 +189,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private void LateUpdate()
     {
         RefreshLabel(); // Also supports live Inspector edits.
+        SyncVisibleMembers(false);
         if (label == null || Leader == null) return;
         label.transform.position = Leader.position + Vector3.up *
             (members[0].size * 0.5f + controller.Settings.labelHeight);
@@ -140,9 +200,11 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     internal void Tick(float deltaTime)
     {
         if (members == null || tile == null || motion == null) return;
+        SyncVisibleMembers(false);
         bool valid = true;
-        foreach (Member member in members)
+        for (int i = 0; i < activeMemberCount; i++)
         {
+            Member member = members[i];
             bool placed = Place(member, member.groundPosition, member.heading, 1f);
             member.visual.gameObject.SetActive(placed);
             valid &= placed;
@@ -203,9 +265,16 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         problem = null;
         if (members == null || members.Length != 4 || motion == null)
         { problem = "Missing runtime formation; recreate the debug populations after recompilation."; return false; }
+        if (activeMemberCount != VisibleMemberCount(populationCount))
+        { problem = "Waiting for safe space to display the additional population cubes."; return false; }
+        if (motion.ActiveCount != activeMemberCount)
+        { problem = "Movement member count is out of sync with visible cubes."; return false; }
         if (label == null || !label.gameObject.activeInHierarchy || label.text != Count.ToString())
         { problem = "Count label is hidden or out of sync."; return false; }
-        for (int i = 0; i < members.Length; i++)
+        for (int i = activeMemberCount; i < members.Length; i++)
+            if (members[i].visual.gameObject.activeInHierarchy)
+            { problem = $"Member {i} should be hidden for count {populationCount}."; return false; }
+        for (int i = 0; i < activeMemberCount; i++)
         {
             if (!members[i].visual.gameObject.activeInHierarchy ||
                 !space.CanTraverse(members[i].groundPosition, members[i].groundPosition, members[i].size))

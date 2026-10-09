@@ -72,7 +72,26 @@ public partial class SimulationController : MonoBehaviour
     public void SetBlocks(List<BlockInfo> blocks)
     {
         blockInfos = blocks ?? new List<BlockInfo>();
+        EnsurePopulationIds();
         UpdateSpeciesStatuses();
+    }
+
+    // Model identity is repaired at the same boundary that registers blocks.
+    // This also upgrades older serialized communities that have no population ID.
+    private void EnsurePopulationIds()
+    {
+        var ids = new HashSet<string>(System.StringComparer.Ordinal);
+        var visited = new HashSet<PopulationData>();
+        foreach (BlockInfo block in blockInfos)
+        {
+            if (block == null || block.community == null) continue;
+            foreach (PopulationData population in block.community)
+            {
+                if (population == null || !visited.Add(population)) continue;
+                while (!ids.Add(population.PopulationId))
+                    population.RegeneratePopulationId();
+            }
+        }
     }
 
     public SimulationTuning ReadTuning() => new SimulationTuning
@@ -200,6 +219,7 @@ public partial class SimulationController : MonoBehaviour
             else PopulationTransfer.Merge(match, population);
         }
         block.community = merged;
+        EnsurePopulationIds();
         UpdateSpeciesStatuses();
         NotifyEnvironmentChanged();
         OnBlockCommunityChanged?.Invoke(block);

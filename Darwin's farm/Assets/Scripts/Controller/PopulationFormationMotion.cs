@@ -24,15 +24,19 @@ public sealed class PopulationFormationMotion
     private readonly Func<int, Vector3, Vector3, bool> apply;
     private readonly Route route;
     private readonly Trail[] trails;
+    private readonly float[] followerMovement;
+    private int activeCount;
     private float leaderProgress;
+    private float waitingSeconds;
     public bool WaitingForFollowers { get; private set; }
     public bool HasLeaderRoute => bodies[0].path != null;
+    public int ActiveCount => activeCount;
     public float MaxRadius
     {
         get
         {
             float length = Mathf.Max(0.1f, settings.formationSlack);
-            for (int i = 1; i < bodies.Length; i++) length += Spacing(i);
+            for (int i = 1; i < activeCount; i++) length += Spacing(i);
             return length + Mathf.Max(0.1f, settings.formationSlack);
         }
     }
@@ -42,7 +46,9 @@ public sealed class PopulationFormationMotion
         Func<int, Vector3, Vector3, bool> applyPose)
     {
         bodies = members; settings = parameters; clear = canMove; route = plan; apply = applyPose;
+        activeCount = bodies.Length;
         trails = new Trail[bodies.Length];
+        followerMovement = new float[bodies.Length];
         for (int i = 0; i < bodies.Length; i++)
         {
             Vector3 tail = i + 1 < bodies.Length ? bodies[i + 1].groundPosition : bodies[i].groundPosition;
@@ -53,6 +59,24 @@ public sealed class PopulationFormationMotion
     public float Spacing(int index) => Mathf.Max(settings.spacing,
         PopulationTileSpace.Clearance(bodies[index].size) + PopulationTileSpace.Clearance(bodies[index - 1].size) +
         Mathf.Max(0f, settings.memberGap) + 0.08f);
+
+    public void SetActiveCount(int count)
+    {
+        count = Mathf.Clamp(count, 1, bodies.Length);
+        if (activeCount == count) return;
+        activeCount = count;
+        CancelLeaderRoute();
+        leaderProgress = 0f;
+        for (int i = 0; i < bodies.Length; i++)
+        {
+            bodies[i].path = null;
+            bodies[i].blockedSeconds = 0f;
+            bodies[i].retreatDistance = 0f;
+            if (i >= count) continue;
+            Vector3 tail = i + 1 < count ? bodies[i + 1].groundPosition : bodies[i].groundPosition;
+            trails[i] = new Trail(tail, bodies[i].groundPosition);
+        }
+    }
 
     private static float Distance(Vector3 a, Vector3 b) => Vector2.Distance(
         PopulationCollisionMath.Flat(a), PopulationCollisionMath.Flat(b));
@@ -76,15 +100,17 @@ public sealed class PopulationFormationMotion
         bodies[0].blockedSeconds = 0f;
         return true;
     }
-    public void CancelLeaderRoute() { bodies[0].path = null; WaitingForFollowers = false; }
+    public void CancelLeaderRoute() { bodies[0].path = null; WaitingForFollowers = false; waitingSeconds = 0f; }
 
     public void Tick(float dt, float now)
     {
         // Tail follows the actual path taken by its predecessor, including turns
         // and avoidance. Each predecessor records its successful move immediately.
-        for (int i = 1; i < bodies.Length; i++)
+        for (int i = 1; i < activeCount; i++)
         {
             Body body = bodies[i];
+            Vector3 previousPosition = body.groundPosition;
+            followerMovement[i] = 0f;
             if (HasLeaderRoute && bodies[0].blockedSeconds >= 0.3f && !WaitingForFollowers) continue;
             Vector3 target = trails[i - 1].Behind(Spacing(i));
             if (Distance(target, bodies[i - 1].groundPosition) < Spacing(i) - 0.001f)
@@ -98,27 +124,43 @@ public sealed class PopulationFormationMotion
             {
                 body.replanAt = now + Mathf.Max(0.1f, settings.replanSeconds);
                 if (route(i, body.groundPosition, target, out Vector3[] path)) SetPath(body, path);
+                else TryAlternateFollowTarget(i);
             }
             if (body.path != null) Advance(i, settings.followerSpeed, dt, now);
+            else if (Distance(body.groundPosition, bodies[i - 1].groundPosition) > Spacing(i) + 0.1f)
+                body.blockedSeconds += dt;
+            followerMovement[i] = Distance(previousPosition, body.groundPosition);
         }
         WaitingForFollowers = false;
-        for (int i = 1; i < bodies.Length; i++)
+        for (int i = 1; i < activeCount; i++)
             if (Distance(bodies[i].groundPosition, bodies[i - 1].groundPosition) >
                 Spacing(i) + Mathf.Max(0.1f, settings.formationSlack)) WaitingForFollowers = true;
         Body leader = bodies[0];
-        if (!HasLeaderRoute || WaitingForFollowers) return;
+        if (!HasLeaderRoute) { waitingSeconds = 0f; return; }
+        if (WaitingForFollowers)
+        {
+            int lagging = 1;
+            for (int i = 1; i < activeCount; i++)
+                if (Distance(bodies[i].groundPosition, bodies[i - 1].groundPosition) >
+                    Spacing(i) + Mathf.Max(0.1f, settings.formationSlack))
+                { lagging = i; break; }
+            waitingSeconds = followerMovement[lagging] > 0.005f ? 0f : waitingSeconds + dt;
+            if (waitingSeconds >= Mathf.Max(0.2f, settings.replanSeconds)) MakeRoomForFollowers(lagging, dt);
+            return;
+        }
+        waitingSeconds = 0f;
         Vector3 previous = leader.groundPosition;
         Advance(0, settings.speed, dt, now);
         leaderProgress += Distance(previous, leader.groundPosition);
         if (leaderProgress > 0.6f)
         {
             leaderProgress = 0f;
-            foreach (Body body in bodies) body.retreatDistance = 0f;
+            for (int i = 0; i < activeCount; i++) bodies[i].retreatDistance = 0f;
         }
         if (leader.blockedSeconds < 0.3f) return;
         // Bounded queue retreat, tail first. This can open an exit at a corner;
         // it never selects an unrelated point or grows into repeated wandering.
-        for (int i = bodies.Length - 1; i > 0; i--)
+        for (int i = activeCount - 1; i > 0; i--)
         {
             Body body = bodies[i];
             if (body.retreatDistance >= 0.6f) continue;
@@ -140,7 +182,7 @@ public sealed class PopulationFormationMotion
         Vector3 next = body.groundPosition + delta.normalized * Mathf.Min(delta.magnitude, Mathf.Max(0f, speed) * dt);
         // Check proposed leader position as well, preventing it from leaving a
         // follower behind between the cohesion check and the actual move.
-        if (index + 1 < bodies.Length && Distance(next, bodies[index + 1].groundPosition) >
+        if (index + 1 < activeCount && Distance(next, bodies[index + 1].groundPosition) >
             Spacing(index + 1) + Mathf.Max(0.1f, settings.formationSlack))
         { if (index == 0) WaitingForFollowers = true; return; }
         if (!Allowed(index, body.groundPosition, next))
@@ -151,6 +193,7 @@ public sealed class PopulationFormationMotion
                 body.replanAt = now + Mathf.Max(0.1f, settings.replanSeconds);
                 if (route(index, body.groundPosition, body.goal, out Vector3[] path))
                 { body.path = path; body.corner = 1; }
+                else if (index > 0) TryAlternateFollowTarget(index);
             }
             return;
         }
@@ -165,6 +208,54 @@ public sealed class PopulationFormationMotion
         if (!apply(index, next, heading)) return false;
         trails[index].Record(bodies[index].groundPosition, MaxRadius + 2f);
         return true;
+    }
+
+    private bool TryAlternateFollowTarget(int index)
+    {
+        Body body = bodies[index];
+        Vector3 predecessor = bodies[index - 1].groundPosition;
+        Vector3 best = Vector3.zero;
+        Vector3[] bestPath = null;
+        float bestCost = float.PositiveInfinity;
+        // The predecessor's old trail can be occupied by another moving group.
+        // A nearby slot around it is enough to restore the formation.
+        for (int direction = 0; direction < 16; direction++)
+        {
+            float angle = direction * Mathf.PI * 0.125f;
+            Vector3 candidate = predecessor + new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * Spacing(index);
+            float cost = Distance(body.groundPosition, candidate);
+            if (cost < 0.1f || cost >= bestCost || !Allowed(index, candidate, candidate) ||
+                !route(index, body.groundPosition, candidate, out Vector3[] path)) continue;
+            best = candidate; bestPath = path; bestCost = cost;
+        }
+        if (bestPath == null) return false;
+        SetPath(body, bestPath);
+        body.goal = best;
+        return true;
+    }
+
+    private void MakeRoomForFollowers(int lagging, float dt)
+    {
+        Body leader = bodies[0];
+        Vector3 target = bodies[lagging].groundPosition;
+        float current = Distance(leader.groundPosition, target);
+        float step = Mathf.Max(0f, settings.speed) * dt;
+        Vector3 best = leader.groundPosition;
+        float bestDistance = current;
+        for (int direction = 0; direction < 16; direction++)
+        {
+            float angle = direction * Mathf.PI * 0.125f;
+            Vector3 offset = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * step;
+            Vector3 candidate = leader.groundPosition + offset;
+            float distance = Distance(candidate, target);
+            if (distance >= bestDistance - 0.0001f || !Allowed(0, leader.groundPosition, candidate)) continue;
+            best = candidate; bestDistance = distance;
+        }
+        if (bestDistance < current - 0.0001f)
+        {
+            Vector3 direction = best - leader.groundPosition;
+            Commit(0, best, direction.normalized, dt);
+        }
     }
     private static void SetPath(Body body, Vector3[] path)
     { body.path = path; body.corner = 1; body.goal = path[path.Length - 1]; }

@@ -88,6 +88,7 @@ public sealed class PopulationMovementController : MonoBehaviour
         var filter = new NavMeshQueryFilter { agentTypeID = surface.agentTypeID, areaMask = walkableAreaMask };
         var space = new PopulationTileSpace(tile, filter);
         if (!space.IsReady || settings.leaderSize <= 0f || settings.followerSize <= 0f) return null;
+        int visibleCount = WhiteboxPopulation.VisibleMemberCount(initialCount);
         // Bounded packing: no partial entities and no unchecked fallback positions.
         for (int attempt = 0; attempt < 64; attempt++)
         {
@@ -95,7 +96,8 @@ public sealed class PopulationMovementController : MonoBehaviour
             Vector3 leader = new Vector3(Random.Range(bounds.min.x, bounds.max.x), bounds.max.y,
                 Random.Range(bounds.min.z, bounds.max.z));
             if (!space.CanTraverse(leader, leader, settings.leaderSize) || !SpawnSeparated(leader, settings.leaderSize)) continue;
-            var positions = new Vector3[4]; positions[0] = leader;
+            var positions = new Vector3[4];
+            for (int i = 0; i < positions.Length; i++) positions[i] = leader;
             bool packed = false;
             float startingYaw = Random.Range(0f, Mathf.PI * 2f);
             for (int direction = 0; direction < 16; direction++)
@@ -104,7 +106,7 @@ public sealed class PopulationMovementController : MonoBehaviour
                 Vector3 backward = new Vector3(Mathf.Sin(yaw), 0f, Mathf.Cos(yaw));
                 float distance = 0f;
                 bool fits = true;
-                for (int member = 1; member < positions.Length; member++)
+                for (int member = 1; member < visibleCount; member++)
                 {
                     float predecessorSize = member == 1 ? settings.leaderSize : settings.followerSize;
                     distance += Mathf.Max(settings.spacing, PopulationTileSpace.Clearance(settings.followerSize) +
@@ -127,7 +129,7 @@ public sealed class PopulationMovementController : MonoBehaviour
             PopulationPlayerBarrier.ActivateAll();
             return population;
         }
-        Debug.LogWarning($"No safe space for four population members on tile {tileId}; creation skipped.", this);
+        Debug.LogWarning($"No safe space for {visibleCount} population members on tile {tileId}; creation skipped.", this);
         return null;
     }
 
@@ -142,7 +144,7 @@ public sealed class PopulationMovementController : MonoBehaviour
         foreach (WhiteboxPopulation population in populations)
             if (population != null && population.members != null)
                 foreach (WhiteboxPopulation.Member member in population.members)
-                    if (HorizontalDistance(point, member.groundPosition) <
+                    if (member.visual.gameObject.activeInHierarchy && HorizontalDistance(point, member.groundPosition) <
                         PopulationTileSpace.Clearance(size) + PopulationTileSpace.Clearance(member.size) +
                         Mathf.Max(0f, settings.populationGap)) return false;
         return true;
