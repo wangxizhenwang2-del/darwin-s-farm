@@ -35,6 +35,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     internal sealed class Member : PopulationFormationMotion.Body
     {
         public Transform visual;
+        public SpriteRenderer sprite;
     }
 
     [SerializeField] private string uniqueId;
@@ -48,20 +49,18 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     public PopulationMovementState MovementState => movementState;
     public Vector3 TargetPosition => targetPosition;
     public Transform Leader => members == null ? null : members[0].visual;
+    public Sprite DisplaySprite => members == null ? null : members[0].sprite.sprite;
     public PopulationData EcologicalPopulation { get; private set; }
 
-    public void BindEcologicalPopulation(PopulationData data, Color color)
+    public void BindEcologicalPopulation(PopulationData data, Sprite sprite, Color tint)
     {
         EcologicalPopulation = data;
         if (data == null || members == null) return;
+        Sprite selected = sprite != null ? sprite : controller.FallbackSprite;
         foreach (Member member in members)
         {
-            Renderer renderer = member.visual.GetComponent<Renderer>();
-            var properties = new MaterialPropertyBlock();
-            renderer.GetPropertyBlock(properties);
-            properties.SetColor("_BaseColor", color);
-            properties.SetColor("_Color", color);
-            renderer.SetPropertyBlock(properties);
+            PopulationSpriteDisplay.Configure(member.sprite, selected, tint);
+            member.visual.GetComponent<MeshRenderer>().enabled = selected == null;
         }
     }
 
@@ -102,7 +101,11 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             var properties = new MaterialPropertyBlock();
             properties.SetColor("_BaseColor", color); properties.SetColor("_Color", color);
             renderer.SetPropertyBlock(properties);
-            members[i] = new Member { visual = cube.transform, groundPosition = positions[i], size = size };
+            renderer.enabled = controller.FallbackSprite == null;
+            SpriteRenderer sprite = PopulationSpriteDisplay.Create(cube.transform,
+                controller.FallbackSprite, Color.white);
+            members[i] = new Member { visual = cube.transform, sprite = sprite,
+                groundPosition = positions[i], size = size };
             Place(members[i], positions[i], Vector3.forward, 1f);
             if (i >= activeMemberCount) cube.SetActive(false);
         }
@@ -195,6 +198,9 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             (members[0].size * 0.5f + controller.Settings.labelHeight);
         Camera camera = controller.ViewCamera != null ? controller.ViewCamera : Camera.main;
         if (camera != null) label.transform.rotation = camera.transform.rotation;
+        if (camera != null)
+            foreach (Member member in members)
+                PopulationSpriteDisplay.FaceCamera(member.sprite, camera);
     }
 
     internal void Tick(float deltaTime)

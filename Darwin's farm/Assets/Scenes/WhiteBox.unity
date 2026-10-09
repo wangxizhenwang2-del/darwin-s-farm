@@ -1221,6 +1221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PopulationMovementController
   gridManager: {fileID: 1541449667}
   viewCamera: {fileID: 1669876467}
+  fallbackSprite: {fileID: 21300000, guid: 32e35bd7ef293a74a9785195eaf3fd6f, type: 3}
   settings:
     leaderSize: 0.8
     followerSize: 0.45

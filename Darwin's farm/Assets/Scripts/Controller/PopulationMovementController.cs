@@ -9,6 +9,7 @@ public sealed class PopulationMovementController : MonoBehaviour
     private static readonly List<PopulationMovementController> controllers = new List<PopulationMovementController>();
     [SerializeField] private MapGridManager gridManager;
     [SerializeField] private Camera viewCamera;
+    [SerializeField] private Sprite fallbackSprite;
     [SerializeField] private PopulationMovementSettings settings = new PopulationMovementSettings();
     [Header("Opt-in runtime debug")]
     [SerializeField] private Vector2Int debugTile = Vector2Int.zero;
@@ -21,6 +22,7 @@ public sealed class PopulationMovementController : MonoBehaviour
     private bool navigationWasUpdating;
     public PopulationMovementSettings Settings => settings;
     public Camera ViewCamera => viewCamera;
+    public Sprite FallbackSprite => fallbackSprite;
     public IReadOnlyList<WhiteboxPopulation> Populations => populations.AsReadOnly();
 
     // Explicit attachment: no display objects are created on normal startup.

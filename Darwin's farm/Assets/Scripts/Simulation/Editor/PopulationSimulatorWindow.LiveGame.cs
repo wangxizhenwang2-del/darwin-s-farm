@@ -185,6 +185,7 @@ public partial class PopulationSimulatorWindow
         if (!anyPopulation)
             EditorGUILayout.LabelField("本地块暂无存活种群");
         EditorGUILayout.EndVertical();
+        DrawLiveMigrationDemo(block);
     }
 
     private void ReadLiveCommunity(BlockInfo block)

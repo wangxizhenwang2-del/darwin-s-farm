@@ -32,6 +32,7 @@ public sealed partial class PopulationVisualPresenter
         public PopulationTransitionResult Result;
         public Vector3 Start;
         public Color SourceColor;
+        public Sprite SourceSprite;
         public Material Material;
         public bool Held;
     }
@@ -76,8 +77,10 @@ public sealed partial class PopulationVisualPresenter
             sourceView.Leader.position : TileAnchor(sourceTile);
         PopulationData sourceData = sourceView != null ? sourceView.EcologicalPopulation :
             FindPopulation(result.SourceBlock, result.SourcePopulationId);
-        Color targetColor = ColorFor(targetData);
-        Color sourceColor = sourceData != null ? ColorFor(sourceData) : targetColor;
+        Color targetColor = TintFor(targetData);
+        Color sourceColor = sourceData != null ? TintFor(sourceData) : targetColor;
+        Sprite sourceSprite = sourceView != null ? sourceView.DisplaySprite :
+            sourceData != null ? SpriteFor(sourceData) : SpriteFor(targetData);
         Material material = sourceView != null && sourceView.Leader != null ?
             sourceView.Leader.GetComponent<Renderer>().sharedMaterial :
             targetTile.Core != null ? targetTile.Core.sharedMaterial : null;
@@ -89,6 +92,7 @@ public sealed partial class PopulationVisualPresenter
             Result = result,
             Start = start,
             SourceColor = sourceColor,
+            SourceSprite = sourceSprite,
             Material = material
         });
     }
@@ -140,7 +144,8 @@ public sealed partial class PopulationVisualPresenter
                 ReleaseUnstartedHold(pending);
                 continue;
             }
-            Color targetColor = ColorFor(targetData);
+            Color targetColor = TintFor(targetData);
+            Sprite targetSprite = SpriteFor(targetData);
             Vector3 start = pending.Start;
             Vector3 end = TileAnchor(targetTile);
             if (visuals.TryGetValue(result.ResultPopulationId,
@@ -173,7 +178,8 @@ public sealed partial class PopulationVisualPresenter
             activeTransitions.Add(running);
             transition.Begin(path, !hasRoute ? fallbackArcHeight : 0f, duration,
                 WhiteboxPopulation.VisibleMemberCount(result.Amount), movement.Settings,
-                pending.Material, pending.SourceColor, targetColor,
+                pending.Material, pending.SourceSprite, targetSprite,
+                pending.SourceColor, targetColor, movement.ViewCamera,
                 () => FinishTransition(running));
         }
     }

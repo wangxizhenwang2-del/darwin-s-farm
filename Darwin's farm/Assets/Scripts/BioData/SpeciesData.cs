@@ -7,6 +7,7 @@ public class SpeciesData: ScriptableObject
 {
     [SerializeField] private string speciesName;
     [SerializeField] private Sprite sprite;
+    public Sprite Sprite => sprite;
 
     // 只有列出的目标才会触发预设物种的进化。
     public List<SpeciesData> evolutionTargets = new List<SpeciesData>();

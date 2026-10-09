@@ -90,7 +90,7 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                     visual.TileId == tile.Coordinate)
                 {
                     if (visual.EcologicalPopulation != data)
-                        visual.BindEcologicalPopulation(data, ColorFor(data));
+                        visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data));
                     if (transitionHolds.TryGetValue(id, out TransitionHold hold) &&
                         hold.CountBefore == 0) continue;
                     int count = hold == null ? data.speciesAmount : hold.CountBefore;
@@ -115,7 +115,7 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                     continue;
                 }
 
-                visual.BindEcologicalPopulation(data, ColorFor(data));
+                visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data));
                 if (held && pending.CountBefore == 0)
                 {
                     visual.PauseWandering(true);
@@ -163,6 +163,25 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
             hash = (hash ^ character) * 16777619;
         return Color.HSVToRGB(hash / (float)uint.MaxValue, 0.7f, 1f);
     }
+
+    private Sprite SpriteFor(PopulationData data)
+    {
+        if (data.species != null && data.species.Sprite != null)
+            return data.species.Sprite;
+        // Niche descendants have no SpeciesData asset. Their lineage starts
+        // with the ancestor's name, so they keep its illustration.
+        string lineage = data.lineageName;
+        if (!string.IsNullOrEmpty(lineage) && presetSpecies != null)
+            foreach (SpeciesData species in presetSpecies)
+                if (species != null && species.Sprite != null &&
+                    (lineage == species.SpeciesName ||
+                     lineage.StartsWith(species.SpeciesName + "-", StringComparison.Ordinal)))
+                    return species.Sprite;
+        return movement != null ? movement.FallbackSprite : null;
+    }
+
+    private Color TintFor(PopulationData data) =>
+        data.species != null ? Color.white : Color.Lerp(Color.white, ColorFor(data), 0.3f);
 
     private void ClearVisuals()
     {
