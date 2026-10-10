@@ -24,7 +24,9 @@ public partial class PopulationSimulatorWindow
     private string liveMessage;
     private Vector2 liveScroll;
     [SerializeField] private int livePage;
-    [SerializeField] private int liveEditPage;
+    [SerializeField] private bool liveEnvironmentExpanded = true;
+    [SerializeField] private bool liveCommunityExpanded = true;
+    [SerializeField] private bool liveInterventionExpanded = true;
     private readonly List<PopulationInput> livePopulations = new List<PopulationInput>();
     private BlockInfo liveDraftBlock;
 
@@ -74,10 +76,12 @@ public partial class PopulationSimulatorWindow
     {
         if (!EditorApplication.isPlaying)
         {
+            StopLiveExport();
             hasLiveCoordinate = false;
             liveDraftBlock = null;
             livePopulations.Clear();
             StopLiveRecording();
+            if (livePage == 2) DrawLiveExport();
             EditorGUILayout.HelpBox("进入 Play 模式后，把鼠标移到 Game 视图中的地块上。", MessageType.Info);
             return;
         }
@@ -88,14 +92,26 @@ public partial class PopulationSimulatorWindow
             EditorGUILayout.HelpBox("当前场景缺少地图、模拟器或干预控制器。", MessageType.Warning);
             return;
         }
+        EnsureLiveRecording();
+        int nextPage = GUILayout.Toolbar(livePage, new[] { "地块概览 · 趋势 · 每日输出", "编辑与干预", "导出测试数据" });
+        if (nextPage != livePage)
+        {
+            livePage = nextPage;
+            if (livePage != 1) liveInterventions.ClearPreview();
+        }
+        if (livePage == 2)
+        {
+            liveScroll = EditorGUILayout.BeginScrollView(liveScroll);
+            DrawLiveExport();
+            EditorGUILayout.EndScrollView();
+            return;
+        }
         if (!hasLiveCoordinate ||
             !liveBridge.TryGetBlock(liveCoordinate, out BlockInfo block))
         {
             EditorGUILayout.HelpBox("把鼠标移到 Game 视图中的已放置地块上。", MessageType.Info);
             return;
         }
-
-        EnsureLiveRecording();
 
         liveScroll = EditorGUILayout.BeginScrollView(liveScroll);
         EditorGUILayout.LabelField("地块 " + liveCoordinate + "    ·    Day " +
@@ -104,41 +120,25 @@ public partial class PopulationSimulatorWindow
         if (GUILayout.Button("继续")) liveTime.Play();
         if (GUILayout.Button("暂停")) liveTime.Pause();
         if (GUILayout.Button("2 倍速")) liveTime.DoubleSpeed();
-        if (GUILayout.Button("下一天")) liveTime.NextDay();
-        EditorGUILayout.EndHorizontal();
-        int nextPage = GUILayout.Toolbar(livePage, new[] { "地块概览", "编辑与干预", "趋势与每日输出" });
-        if (nextPage != livePage)
+        if (GUILayout.Button("下一天"))
         {
-            livePage = nextPage;
-            if (livePage != 1) liveInterventions.ClearPreview();
+            WriteExportAction("simulator_window", "next_day", liveCoordinate, "manual step");
+            liveTime.NextDay();
         }
+        EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(6f);
         if (livePage == 0)
         {
             DrawLiveOverview(block);
+            DrawLiveChart(block);
+            DrawLiveOutput(block);
         }
         else if (livePage == 1)
         {
-            int nextEditPage = GUILayout.Toolbar(liveEditPage,
-                new[] { "环境", "种群", "固定变量", "单格干预" });
-            if (nextEditPage != liveEditPage)
-            {
-                liveEditPage = nextEditPage;
-                if (liveEditPage != 3) liveInterventions.ClearPreview();
-            }
-            EditorGUILayout.Space(4f);
-            switch (liveEditPage)
-            {
-                case 0: DrawLiveEnvironment(block); break;
-                case 1: DrawLiveCommunity(block); break;
-                case 2: DrawLiveTuning(); break;
-                case 3: DrawLiveIntervention(); break;
-            }
-        }
-        else
-        {
-            DrawLiveChart(block);
-            DrawLiveOutput(block);
+            DrawLiveEnvironment(block);
+            DrawLiveCommunity(block);
+            DrawLiveTuning();
+            DrawLiveIntervention();
         }
         if (!string.IsNullOrEmpty(liveMessage))
             EditorGUILayout.HelpBox(liveMessage, MessageType.Info);
@@ -210,7 +210,9 @@ public partial class PopulationSimulatorWindow
     {
         if (liveDraftBlock != block) ReadLiveCommunity(block);
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.LabelField("群落配置（待应用）", EditorStyles.boldLabel);
+        liveCommunityExpanded = EditorGUILayout.Foldout(liveCommunityExpanded,
+            "种群配置（待应用）", true);
+        if (!liveCommunityExpanded) { EditorGUILayout.EndVertical(); return; }
         EditorGUILayout.LabelField("现有种群保留当前数量；初始数量只用于新增种群。",
             EditorStyles.miniLabel);
         int removeIndex = -1;
@@ -274,7 +276,14 @@ public partial class PopulationSimulatorWindow
     private void DrawLiveIntervention()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.LabelField("环境干预（开发测试入口）", EditorStyles.boldLabel);
+        liveInterventionExpanded = EditorGUILayout.Foldout(liveInterventionExpanded,
+            "单格干预（开发测试入口）", true);
+        if (!liveInterventionExpanded)
+        {
+            liveInterventions.ClearPreview();
+            EditorGUILayout.EndVertical();
+            return;
+        }
         EditorGUILayout.HelpBox("经济系统尚未接入。此开发入口执行单格操作；季风通过独立控制器接口部署。",
             MessageType.Info);
 
@@ -286,9 +295,7 @@ public partial class PopulationSimulatorWindow
         liveRadius = 0;
         liveAmount = EditorGUILayout.FloatField("强度（可为负）", liveAmount);
         liveDurationDays = 1; // Compatibility field; controller owns fixed operation timelines.
-        EditorGUILayout.HelpBox("温湿度 ±25/±50：25天渐变、维持150天、150天恢复。\n" +
-            "植被增量 ±25000/±50000：立即生效、维持50天、50天恢复。\n" +
-            "此开发入口的库存是独立一次性编辑；玩家植物工具会同时改变库存与日恢复量。海拔 ±1 立即生效。", MessageType.Info);
+        EditorGUILayout.HelpBox("此入口的规则由环境控制器决定；库存为独立一次性编辑，海拔 ±1 立即生效。", MessageType.Info);
 
         SimulationInterventionRequest request = new SimulationInterventionRequest
         {

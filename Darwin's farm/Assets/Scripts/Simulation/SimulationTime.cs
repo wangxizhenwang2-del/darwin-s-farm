@@ -18,6 +18,7 @@ public class SimulationTime : MonoBehaviour
     public int currentDay;
     public event Action<int> OnDayChanged;
     public event Action<int> OnDayReset;
+    public event Action<float> OnSpeedChanged;
     public float SecondsPerDay => basicDayLength;
     public float Speed => simulationSpeed;
     public bool IsPaused => simulationSpeed <= 0f;
@@ -68,13 +69,15 @@ public class SimulationTime : MonoBehaviour
     {
         if (!IsPaused) lastRunningSpeed = simulationSpeed;
         simulationSpeed = 0f;
+        OnSpeedChanged?.Invoke(simulationSpeed);
     }
-    public void Play() { simulationSpeed = 1f; lastRunningSpeed = 1f; }
-    public void DoubleSpeed() { simulationSpeed = 2f; lastRunningSpeed = 2f; }
+    public void Play() { simulationSpeed = 1f; lastRunningSpeed = 1f; OnSpeedChanged?.Invoke(simulationSpeed); }
+    public void DoubleSpeed() { simulationSpeed = 2f; lastRunningSpeed = 2f; OnSpeedChanged?.Invoke(simulationSpeed); }
     public void TogglePause()
     {
         if (IsPaused) simulationSpeed = lastRunningSpeed > 0f ? lastRunningSpeed : 1f;
         else Pause();
+        if (!IsPaused) OnSpeedChanged?.Invoke(simulationSpeed);
     }
     public void ResetDay()  
     {

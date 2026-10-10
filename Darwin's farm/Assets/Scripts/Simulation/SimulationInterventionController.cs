@@ -52,6 +52,7 @@ public sealed class SimulationInterventionPreview
 // Cost calculation and payment belong to the future Simulation/Economy system.
 public sealed class SimulationInterventionController : MonoBehaviour
 {
+    public event Action<Vector2Int, string> OperationCommitted;
     [SerializeField] private MapGridManager gridManager;
     [SerializeField] private MapSimulationBridge bridge;
     [SerializeField] private SimulationController simulationController;
@@ -221,9 +222,20 @@ public sealed class SimulationInterventionController : MonoBehaviour
     public bool TryApply(SimulationInterventionRequest request, out SimulationInterventionPreview result)
     {
         result = Preview(request);
-        if (!result.IsValid) return false;
+        if (!result.IsValid)
+        {
+            OperationCommitted?.Invoke(request.center,
+                "rejected:intervention:" + request.kind + ";amount=" + request.amount +
+                ";reason=" + result.Error);
+            return false;
+        }
         bool applied = Environment.TryApply(request.center, request.kind, request.amount, out string error);
         if (!applied) result.Error = error;
+        if (!applied) OperationCommitted?.Invoke(request.center,
+            "rejected:intervention:" + request.kind + ";amount=" + request.amount +
+            ";reason=" + error);
+        else OperationCommitted?.Invoke(request.center,
+            "intervention:" + request.kind + ";amount=" + request.amount);
         return applied;
     }
 
@@ -235,13 +247,16 @@ public sealed class SimulationInterventionController : MonoBehaviour
             !bridge.TryGetBlock(coordinate, out BlockInfo block))
         {
             error = "目标地块已不存在";
+            OperationCommitted?.Invoke(coordinate, "rejected:community_edit;reason=" + error);
             return false;
         }
         if (!simulationController.ApplyCommunityEdits(block, edits))
         {
             error = "群落输入无效、地块已改变，或纯水地块不能新增陆地种群";
+            OperationCommitted?.Invoke(coordinate, "rejected:community_edit;reason=" + error);
             return false;
         }
+        OperationCommitted?.Invoke(coordinate, "community_edit;entries=" + edits.Count);
         return true;
     }
 
@@ -251,14 +266,31 @@ public sealed class SimulationInterventionController : MonoBehaviour
     {
         error = null;
         if (!isActiveAndEnabled || Environment == null)
-        { error = "环境控制器未就绪"; return false; }
-        return Environment.TryEditEnvironment(coordinate, edit, out error);
+        {
+            error = "环境控制器未就绪";
+            OperationCommitted?.Invoke(coordinate, "rejected:environment_edit;reason=" + error);
+            return false;
+        }
+        bool applied = Environment.TryEditEnvironment(coordinate, edit, out error);
+        if (applied) OperationCommitted?.Invoke(coordinate,
+            "environment_edit;T=" + edit.temperature + ";H=" + edit.humidity +
+            ";Z=" + edit.elevation + ";R=" + edit.habitatRecovery +
+            ";stock=" + edit.plantBiomass);
+        else OperationCommitted?.Invoke(coordinate,
+            "rejected:environment_edit;reason=" + error);
+        return applied;
     }
 
     public void ApplyTuning(SimulationTuning tuning, float secondsPerDay)
     {
         simulationController.ApplyTuning(tuning);
         simulationTime.SetSecondsPerDay(secondsPerDay);
+        OperationCommitted?.Invoke(Vector2Int.zero,
+            "global_tuning;secondsPerDay=" + secondsPerDay +
+            ";reproduction=" + tuning.reproductionScale +
+            ";migration=" + tuning.migrationEnabled +
+            ";mutation=" + tuning.mutationEnabled +
+            ";niches=" + tuning.ecologicalNichesEnabled);
     }
 
     private static string FormatValue(SimulationInterventionKind kind, float value)

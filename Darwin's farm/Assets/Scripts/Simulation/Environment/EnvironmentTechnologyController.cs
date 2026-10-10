@@ -21,6 +21,7 @@ public sealed class EnvironmentTechnologyPreview
 [DisallowMultipleComponent]
 public sealed class EnvironmentTechnologyController : MonoBehaviour
 {
+    public event Action<Vector2Int, string> OperationCommitted;
     private SimulationEnvironmentController environment;
     private MapGridManager grid;
     private readonly Dictionary<Vector2Int, Dictionary<int, EnvironmentTechnologyChoice>>
@@ -162,7 +163,12 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         out EnvironmentTechnologyPreview result)
     {
         result = Preview(coordinate, choice);
-        if (!result.IsValid) return false;
+        if (!result.IsValid)
+        {
+            OperationCommitted?.Invoke(coordinate,
+                "rejected:technology_deploy:" + choice.Kind + ";reason=" + result.Error);
+            return false;
+        }
         bool water = environment.TryRead(coordinate, out EnvironmentReadSnapshot read) &&
             read.Environment.IsWater;
         bool success;
@@ -192,9 +198,18 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                     choice.TemperatureOffset, choice.HumidityOffset, out _, out error); break;
             default: success = false; error = "未知科技"; break;
         }
-        if (!success) { result.Error = error; return false; }
+        if (!success)
+        {
+            result.Error = error;
+            OperationCommitted?.Invoke(coordinate,
+                "rejected:technology_deploy:" + choice.Kind + ";reason=" + error);
+            return false;
+        }
         if (choice.Kind != EnvironmentTechnologyKind.MonsoonAnchor)
             foreach (Vector2Int member in result.Area) Record(member, choice);
+        OperationCommitted?.Invoke(coordinate, "technology_deploy:" + choice.Kind +
+            ";tier=" + choice.Tier + ";temperatureOffset=" + choice.TemperatureOffset +
+            ";humidityOffset=" + choice.HumidityOffset + ";affectedTiles=" + result.Area.Count);
         return true;
     }
 
@@ -261,18 +276,30 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     {
         error = null;
         if (!CanCancel(coordinate, kind))
-        { error = "这里没有可撤销的对应科技"; return false; }
+        {
+            error = "这里没有可撤销的对应科技";
+            OperationCommitted?.Invoke(coordinate,
+                "rejected:technology_cancel:" + kind + ";reason=" + error);
+            return false;
+        }
         if (kind == EnvironmentTechnologyKind.MonsoonAnchor)
         {
             foreach (MonsoonSnapshot wind in environment.Monsoons)
                 if (wind.Source.X == coordinate.x && wind.Source.Y == coordinate.y)
-                    return environment.TryCancelMonsoon(wind.Id, out error);
+                {
+                    bool canceled = environment.TryCancelMonsoon(wind.Id, out error);
+                    if (canceled) OperationCommitted?.Invoke(coordinate,
+                        "technology_cancel:" + kind + ";monsoonId=" + wind.Id);
+                    return canceled;
+                }
             error = "季风已不存在"; return false;
         }
         EnvironmentAttribute attribute = kind == EnvironmentTechnologyKind.TemperatureChange
             ? EnvironmentAttribute.Temperature : kind == EnvironmentTechnologyKind.HumidityChange
                 ? EnvironmentAttribute.Humidity : EnvironmentAttribute.Recovery;
-        return environment.TryCancel(coordinate, attribute, out error);
+        bool result = environment.TryCancel(coordinate, attribute, out error);
+        if (result) OperationCommitted?.Invoke(coordinate, "technology_cancel:" + kind);
+        return result;
     }
 
     private static void AddActive(Dictionary<int, EnvironmentTechnologyChoice> channels,

@@ -89,6 +89,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
     private void OnDisable()
     {
         EditorApplication.update -= UpdateSimulation;
+        StopLiveExport();
         StopLiveRecording();
         if (liveInterventions != null) liveInterventions.ClearPreview();
         DestroyRuntime();
@@ -104,6 +105,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
             if (liveGameMode) running = false;
             else
             {
+                StopLiveExport();
                 StopLiveRecording();
                 if (liveInterventions != null) liveInterventions.ClearPreview();
             }
