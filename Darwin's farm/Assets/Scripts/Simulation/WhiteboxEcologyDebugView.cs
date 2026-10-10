@@ -24,6 +24,10 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
     private Vector2Int? openTechnologyMenu;
     private Rect openMenuRect;
     private readonly List<Rect> interactiveRects = new List<Rect>();
+    private static readonly int[] FourTiers = { 2, 1, -1, -2 };
+    private static readonly string[] MonsoonNames = { "冷湿", "暖湿", "干热", "干冷" };
+    private static readonly int[] MonsoonTemperatures = { -20, 20, 20, -20 };
+    private static readonly int[] MonsoonHumidities = { 20, 20, -20, -20 };
     private static WhiteboxEcologyDebugView activeView;
 
     private void OnEnable() => activeView = this;
@@ -109,19 +113,18 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         if (technology == null) return;
         float width = 255f;
         float x = Mathf.Clamp(anchorX + 138f, 4f, Mathf.Max(4f, Screen.width - width - 4f));
-        float y = Mathf.Clamp(anchorY, 30f, Mathf.Max(30f, Screen.height - 214f));
-        Rect box = new Rect(x, y, width, 210f);
+        float y = Mathf.Clamp(anchorY, 30f, Mathf.Max(30f, Screen.height - 262f));
+        Rect box = new Rect(x, y, width, 258f);
         interactiveRects.Add(box);
         GUI.Box(box, GUIContent.none, backgroundStyle);
         GUI.Label(new Rect(x + 5f, y + 3f, width - 10f, 32f),
             technology.CurrentApplied(coordinate), wrappedStyle);
 
         EnvironmentTechnologyKind kind = selections.TryGetValue(coordinate, out var selected)
-            ? selected : EnvironmentTechnologyKind.HeatInjection;
+            ? selected : EnvironmentTechnologyKind.TemperatureChange;
         int tier = tiers.TryGetValue(coordinate, out int rememberedTier) ? rememberedTier : 1;
-        if (kind == EnvironmentTechnologyKind.CrustUplift ||
-            kind == EnvironmentTechnologyKind.StrataSubsidence ||
-            kind == EnvironmentTechnologyKind.MonsoonAnchor) tier = 1;
+        if (kind == EnvironmentTechnologyKind.MonsoonAnchor) tier = 1;
+        if (kind == EnvironmentTechnologyKind.ElevationChange && (tier == 2 || tier == -2)) tier = 1;
         int windT = windTemperatures.TryGetValue(coordinate, out int selectedT) ? selectedT : 20;
         int windH = windHumidities.TryGetValue(coordinate, out int selectedH) ? selectedH : 20;
         Rect menuButton = new Rect(x + 5f, y + 37f, width - 10f, 23f);
@@ -132,32 +135,50 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         }
         if (kind == EnvironmentTechnologyKind.MonsoonAnchor)
         {
-            if (GUI.Button(new Rect(x + 5f, y + 64f, 118f, 22f), "温 " + Signed(windT)))
-                windTemperatures[coordinate] = windT = NextWind(windT);
-            if (GUI.Button(new Rect(x + 132f, y + 64f, 118f, 22f), "湿 " + Signed(windH)))
-                windHumidities[coordinate] = windH = NextWind(windH);
+            for (int i = 0; i < MonsoonNames.Length; i++)
+            {
+                float buttonX = x + (i % 2 == 0 ? 5f : 132f);
+                float buttonY = y + (i < 2 ? 64f : 89f);
+                int temperature = MonsoonTemperatures[i], humidity = MonsoonHumidities[i];
+                if (GUI.Button(new Rect(buttonX, buttonY, 118f, 22f),
+                    MonsoonNames[i] + (windT == temperature && windH == humidity ? " ✓" : "")))
+                {
+                    windTemperatures[coordinate] = windT = temperature;
+                    windHumidities[coordinate] = windH = humidity;
+                }
+            }
         }
-        else if (kind != EnvironmentTechnologyKind.CrustUplift &&
-            kind != EnvironmentTechnologyKind.StrataSubsidence)
+        else if (kind == EnvironmentTechnologyKind.ElevationChange)
         {
-            if (GUI.Button(new Rect(x + 5f, y + 64f, 118f, 22f), "小档" + (tier == 1 ? " ✓" : "")))
+            if (GUI.Button(new Rect(x + 5f, y + 64f, 118f, 22f), "高1档" + (tier == 1 ? " ✓" : "")))
                 tiers[coordinate] = tier = 1;
-            if (GUI.Button(new Rect(x + 132f, y + 64f, 118f, 22f), "大档" + (tier == 2 ? " ✓" : "")))
-                tiers[coordinate] = tier = 2;
+            if (GUI.Button(new Rect(x + 132f, y + 64f, 118f, 22f), "低1档" + (tier == -1 ? " ✓" : "")))
+                tiers[coordinate] = tier = -1;
         }
-        else GUI.Label(new Rect(x + 5f, y + 65f, width - 10f, 20f), "海拔改变一级", textStyle);
+        else
+        {
+            for (int i = 0; i < FourTiers.Length; i++)
+            {
+                int value = FourTiers[i];
+                float buttonX = x + (i % 2 == 0 ? 5f : 132f);
+                float buttonY = y + (i < 2 ? 64f : 89f);
+                if (GUI.Button(new Rect(buttonX, buttonY, 118f, 22f),
+                    TierLabel(value) + (tier == value ? " ✓" : "")))
+                    tiers[coordinate] = tier = value;
+            }
+        }
 
         var choice = new EnvironmentTechnologyChoice(kind, tier, windT, windH);
         EnvironmentTechnologyPreview preview = technology.Preview(coordinate, choice);
         string effect = preview.IsValid ? preview.After : preview.Error;
-        GUI.Label(new Rect(x + 5f, y + 90f, width - 10f, 29f),
+        GUI.Label(new Rect(x + 5f, y + 116f, width - 10f, 29f),
             preview.Before ?? "", wrappedStyle);
-        GUI.Label(new Rect(x + 5f, y + 120f, width - 10f, 34f), effect, wrappedStyle);
-        GUI.Label(new Rect(x + 5f, y + 159f, width - 10f, 18f),
-            preview.IsValid ? preview.Timing + " · 费用 0" : "不可投放", textStyle);
+        GUI.Label(new Rect(x + 5f, y + 147f, width - 10f, 46f), effect, wrappedStyle);
+        GUI.Label(new Rect(x + 5f, y + 197f, width - 10f, 27f),
+            preview.IsValid ? preview.Timing + " · 费用 0" : "不可投放", wrappedStyle);
         bool enabled = GUI.enabled;
         GUI.enabled = enabled && preview.IsValid;
-        if (GUI.Button(new Rect(x + 5f, y + 181f, 75f, 24f), "投放"))
+        if (GUI.Button(new Rect(x + 5f, y + 226f, 75f, 24f), "投放"))
         {
             bool success = technology.TryDeploy(coordinate, choice, out var committed);
             notices[coordinate] = success ? "已投放（费用 0）" : committed.Error;
@@ -165,12 +186,12 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         }
         GUI.enabled = enabled;
         GUI.enabled = enabled && technology.CanCancel(coordinate, kind);
-        if (GUI.Button(new Rect(x + 85f, y + 181f, 65f, 24f), "撤销"))
+        if (GUI.Button(new Rect(x + 85f, y + 226f, 65f, 24f), "撤销"))
             notices[coordinate] = technology.TryCancel(coordinate, kind, out string error)
                 ? "已撤销" : error;
         GUI.enabled = enabled;
         if (notices.TryGetValue(coordinate, out string notice))
-            GUI.Label(new Rect(x + 155f, y + 184f, width - 160f, 21f), notice, textStyle);
+            GUI.Label(new Rect(x + 155f, y + 229f, width - 160f, 21f), notice, textStyle);
     }
 
     private void DrawOpenTechnologyMenu()
@@ -195,9 +216,8 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
             }
     }
 
-    private static string Signed(int value) => value > 0 ? "+" + value : value.ToString();
-    private static int NextWind(int value) => value == -40 ? -20 : value == -20 ? 20 :
-        value == 20 ? 40 : -40;
+    private static string TierLabel(int tier) => (tier > 0 ? "高" : "低") +
+        Mathf.Abs(tier) + "档";
 
     private void DrawLines(float centerX, float y, string[] lines, int start, int count)
     {

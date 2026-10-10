@@ -42,7 +42,8 @@ namespace DarwinFarm.Environment
     {
         public const int PlantCapacity = 1000000, WaterPlantCapacity = 1500000;
         public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
-        public const int TransitionDays = 25, ClimateHoldDays = 100, RecoveryReturnDays = 100;
+        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 150;
+        public const int RecoveryHoldDays = 50, RecoveryReturnDays = 50;
         // Existing baseline profiles also drive return targets; their elevation is
         // only a placement preset, not an intrinsic property of a terrain kind.
         public static TerrainDefaults Defaults(TerrainKind kind)
@@ -97,8 +98,14 @@ namespace DarwinFarm.Environment
             Math.Min(attribute == EnvironmentAttribute.Recovery ? MaximumRecovery : 100, value));
         public static bool IsFinite(double value) => !double.IsNaN(value) && !double.IsInfinity(value);
         public static bool IsClimateStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25 || Math.Abs(value) == 50);
-        public static bool IsMonsoonStrength(double value) => IsFinite(value) && (Math.Abs(value) == 20 || Math.Abs(value) == 40);
+        public static bool IsMonsoonStrength(double value) => IsFinite(value) && Math.Abs(value) == 20;
         public static bool IsRecoveryStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25000 || Math.Abs(value) == 50000);
+        public static double PotentialRecovery(TerrainDefaults baseline, double temperature, double humidity)
+        {
+            double moisture = baseline.Humidity == 0 ? 1 : Math.Min(1.5, humidity / baseline.Humidity);
+            double warmth = Math.Max(0, 1 - Math.Abs(temperature - baseline.Temperature) / 100);
+            return Clamp(EnvironmentAttribute.Recovery, baseline.Recovery * moisture * warmth);
+        }
         public static double ChangeStock(double stock, double signedFraction)
             => ChangeStock(stock, PlantCapacity, signedFraction);
         public static double ChangeStock(double stock, double capacity, double signedFraction)
@@ -107,6 +114,15 @@ namespace DarwinFarm.Environment
                 !IsFinite(signedFraction) || (Math.Abs(signedFraction) != .25 && Math.Abs(signedFraction) != .5))
                 throw new ArgumentOutOfRangeException(nameof(signedFraction));
             return Math.Max(0, Math.Min(capacity, stock + signedFraction * (signedFraction > 0 ? capacity : stock)));
+        }
+
+        // The combined plant tool always acts on the stock that exists now.
+        public static double MultiplyStock(double stock, double capacity, double signedFraction)
+        {
+            if (!IsFinite(stock) || !IsFinite(capacity) || capacity <= 0 || stock < 0 || stock > capacity ||
+                !IsFinite(signedFraction) || (Math.Abs(signedFraction) != .25 && Math.Abs(signedFraction) != .5))
+                throw new ArgumentOutOfRangeException(nameof(signedFraction));
+            return Math.Max(0, Math.Min(capacity, stock * (1 + signedFraction)));
         }
     }
 }

@@ -49,7 +49,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         var area = new List<Vector2Int> { coordinate };
         if (water)
         {
-            if (choice.Kind <= EnvironmentTechnologyKind.VaporRecovery ||
+            if (choice.Kind == EnvironmentTechnologyKind.TemperatureChange ||
+                choice.Kind == EnvironmentTechnologyKind.HumidityChange ||
                 choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor)
             { result.Error = "温湿度科技和季风锚不能以水格为目标"; return result; }
             if (!environment.TryGetWaterArea(coordinate,
@@ -60,14 +61,11 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         result.Area = area.AsReadOnly();
         result.Effect = EnvironmentTechnologyCatalog.Name(choice.Kind);
         result.Before = water ? WaterSummary(area) : LandSummary(read);
-        int tier = choice.Tier;
         switch (choice.Kind)
         {
-            case EnvironmentTechnologyKind.HeatInjection:
-            case EnvironmentTechnologyKind.RadiativeCooling:
-            case EnvironmentTechnologyKind.CloudSeeding:
-            case EnvironmentTechnologyKind.VaporRecovery:
-                bool temperature = choice.Kind <= EnvironmentTechnologyKind.RadiativeCooling;
+            case EnvironmentTechnologyKind.TemperatureChange:
+            case EnvironmentTechnologyKind.HumidityChange:
+                bool temperature = choice.Kind == EnvironmentTechnologyKind.TemperatureChange;
                 if (!environment.TryPreview(coordinate, temperature ?
                     SimulationInterventionKind.Temperature : SimulationInterventionKind.Humidity,
                     EnvironmentTechnologyCatalog.SignedClimate(choice),
@@ -75,64 +73,55 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 { result.Error = validationError; return result; }
                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
                     climate.Target.ToString("F0") + "；预计地形 " + climate.EstimatedTerrain;
-                result.Timing = "25天进入 · 100天维持 · 25天退出";
+                result.Timing = "25天进入 · 150天维持 · 150天恢复";
                 break;
-            case EnvironmentTechnologyKind.GrowthCatalyst:
-                int growth = EnvironmentTechnologyCatalog.GrowthAmount(choice);
-                if (!water)
+            case EnvironmentTechnologyKind.PlantChange:
+                float fraction = EnvironmentTechnologyCatalog.Fraction(choice);
+                if (choice.Tier > 0)
                 {
-                    if (!environment.TryPreview(coordinate,
-                        SimulationInterventionKind.PlantRecovery, growth,
-                        out EnvironmentOperationPreview catalyst, out validationError))
-                    { result.Error = validationError; return result; }
-                    result.After = "日增量目标 " + catalyst.Target.ToString("F0") +
-                        "；预计地形 " + catalyst.EstimatedTerrain;
-                }
-                else result.After = "每格日增量目标 " +
-                    Math.Min(EnvironmentRules.MaximumRecovery,
-                        EnvironmentRules.WaterDefaultRecovery + growth).ToString("F0") +
-                    "，作用 " + area.Count + " 格";
-                result.Timing = "立即生效 · 100天恢复";
-                break;
-            case EnvironmentTechnologyKind.EcologicalSeeding:
-                float added = EnvironmentTechnologyCatalog.Fraction(choice);
-                if (!water)
-                {
-                    if (!environment.TryPreview(coordinate,
-                        SimulationInterventionKind.PlantBiomass, added,
-                        out EnvironmentOperationPreview seed, out validationError))
-                    { result.Error = validationError; return result; }
-                    result.After = "植物库存 " + seed.Target.ToString("F0");
+                    int growth = EnvironmentTechnologyCatalog.GrowthAmount(choice);
+                    double capacity = (water ? EnvironmentRules.WaterPlantCapacity :
+                        EnvironmentRules.PlantCapacity) * (double)area.Count;
+                    double stock = water ? WaterStock(area) : read.PlantStock;
+                    double nextStock = EnvironmentRules.MultiplyStock(stock, capacity, fraction);
+                    if (water)
+                        result.After = "整域库存 " + nextStock.ToString("F0") +
+                            "；每格日增量 " + Math.Min(EnvironmentRules.MaximumRecovery,
+                                state.Recovery.Value + growth).ToString("F0");
+                    else
+                    {
+                        if (!environment.TryPreview(coordinate, SimulationInterventionKind.PlantRecovery,
+                            growth, out EnvironmentOperationPreview increased, out validationError))
+                        { result.Error = validationError; return result; }
+                        result.After = "库存 " + nextStock.ToString("F0") +
+                            "；日增量 " + increased.Target.ToString("F0") +
+                            "；预计地形 " + increased.EstimatedTerrain;
+                    }
+                    result.Timing = "库存立即乘算 · 日增量立即提高并维持50天，再用50天恢复";
                 }
                 else
                 {
-                    double stock = WaterStock(area);
-                    result.After = "整域库存 " + EnvironmentRules.ChangeStock(stock,
-                        (double)EnvironmentRules.WaterPlantCapacity * area.Count,
-                        added).ToString("F0");
+                    float factor = 1f - fraction;
+                    if (water)
+                        result.After = "整域库存 " + (WaterStock(area) * factor).ToString("F0") +
+                            "；每格日增量 " + Math.Max(0, state.Recovery.Value -
+                                EnvironmentTechnologyCatalog.GrowthAmount(choice)).ToString("F0");
+                    else
+                    {
+                        int recovery = EnvironmentRules.Round(Math.Max(0, state.Recovery.Value -
+                            EnvironmentTechnologyCatalog.GrowthAmount(choice)));
+                        TerrainKind terrain = EnvironmentRules.Classify(state.Elevation,
+                            EnvironmentRules.Round(state.Temperature.Value),
+                            EnvironmentRules.Round(state.Humidity.Value), recovery);
+                        result.After = "库存 " + (read.PlantStock * factor).ToString("F0") +
+                            "；日增量 " + recovery.ToString("F0") +
+                            "；预计地形 " + terrain;
+                    }
+                    result.Timing = "库存立即乘算 · 日增量立即降低并维持50天，再用50天恢复";
                 }
-                result.Timing = "立即生效 · 不回滚";
                 break;
-            case EnvironmentTechnologyKind.EcologicalSuppression:
-                float factor = 1f - EnvironmentTechnologyCatalog.Fraction(choice);
-                if (water)
-                    result.After = "整域库存 " + (WaterStock(area) * factor).ToString("F0") +
-                        "；每格日增量 " + (state.Recovery.Value * factor).ToString("F0");
-                else
-                {
-                    int recovery = EnvironmentRules.Round(state.Recovery.Value * factor);
-                    TerrainKind terrain = EnvironmentRules.Classify(state.Elevation,
-                        EnvironmentRules.Round(state.Temperature.Value),
-                        EnvironmentRules.Round(state.Humidity.Value), recovery);
-                    result.After = "库存 " + (read.PlantStock * factor).ToString("F0") +
-                        "；日增量 " + (state.Recovery.Value * factor).ToString("F0") +
-                        "；预计地形 " + terrain;
-                }
-                result.Timing = "库存立即减少 · 日增量100天恢复";
-                break;
-            case EnvironmentTechnologyKind.CrustUplift:
-            case EnvironmentTechnologyKind.StrataSubsidence:
-                int shift = choice.Kind == EnvironmentTechnologyKind.CrustUplift ? 1 : -1;
+            case EnvironmentTechnologyKind.ElevationChange:
+                int shift = choice.Tier;
                 foreach (Vector2Int member in area)
                 {
                     if (!grid.TryGetTile(member, out MapTileInstance tile) ||
@@ -159,9 +148,10 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 area.Clear();
                 foreach (GridPosition member in covered) area.Add(new Vector2Int(member.X, member.Y));
                 result.Area = area.AsReadOnly();
-                result.After = "覆盖 " + area.Count + " 个陆格，温度 " + Signed(choice.TemperatureOffset) +
+                result.After = EnvironmentTechnologyCatalog.MonsoonPatternName(choice) + "：覆盖 " +
+                    area.Count + " 个陆格，温度 " + Signed(choice.TemperatureOffset) +
                     "，湿度 " + Signed(choice.HumidityOffset);
-                result.Timing = "25天进入 · 长期维持";
+                result.Timing = "立即生效 · 持续至撤销或锚点拓扑变化";
                 break;
             default: result.Error = "未知科技"; break;
         }
@@ -179,32 +169,20 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         string error;
         switch (choice.Kind)
         {
-            case EnvironmentTechnologyKind.HeatInjection:
-            case EnvironmentTechnologyKind.RadiativeCooling:
-            case EnvironmentTechnologyKind.CloudSeeding:
-            case EnvironmentTechnologyKind.VaporRecovery:
+            case EnvironmentTechnologyKind.TemperatureChange:
+            case EnvironmentTechnologyKind.HumidityChange:
                 success = environment.TryApply(coordinate,
-                    choice.Kind <= EnvironmentTechnologyKind.RadiativeCooling ?
+                    choice.Kind == EnvironmentTechnologyKind.TemperatureChange ?
                         SimulationInterventionKind.Temperature : SimulationInterventionKind.Humidity,
                     EnvironmentTechnologyCatalog.SignedClimate(choice), out error); break;
-            case EnvironmentTechnologyKind.GrowthCatalyst:
-                success = water ? environment.TryApplyWater(coordinate,
-                    SimulationInterventionKind.PlantRecovery,
-                    EnvironmentTechnologyCatalog.GrowthAmount(choice), out error) :
-                    environment.TryApply(coordinate, SimulationInterventionKind.PlantRecovery,
-                    EnvironmentTechnologyCatalog.GrowthAmount(choice), out error); break;
-            case EnvironmentTechnologyKind.EcologicalSeeding:
-                success = water ? environment.TryApplyWater(coordinate,
-                    SimulationInterventionKind.PlantBiomass,
+            case EnvironmentTechnologyKind.PlantChange:
+                success = choice.Tier > 0 ? environment.TryApplyPlantIncrease(coordinate,
+                    EnvironmentTechnologyCatalog.GrowthAmount(choice),
                     EnvironmentTechnologyCatalog.Fraction(choice), out error) :
-                    environment.TryApply(coordinate, SimulationInterventionKind.PlantBiomass,
+                    environment.TryApplySuppression(coordinate,
                     EnvironmentTechnologyCatalog.Fraction(choice), out error); break;
-            case EnvironmentTechnologyKind.EcologicalSuppression:
-                success = environment.TryApplySuppression(coordinate,
-                    EnvironmentTechnologyCatalog.Fraction(choice), out error); break;
-            case EnvironmentTechnologyKind.CrustUplift:
-            case EnvironmentTechnologyKind.StrataSubsidence:
-                float shift = choice.Kind == EnvironmentTechnologyKind.CrustUplift ? 1f : -1f;
+            case EnvironmentTechnologyKind.ElevationChange:
+                float shift = choice.Tier;
                 success = water ? environment.TryApplyWater(coordinate,
                     SimulationInterventionKind.Elevation, shift, out error) :
                     environment.TryApply(coordinate, SimulationInterventionKind.Elevation,
@@ -233,14 +211,19 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
             if (state.HasLocalHumidity) AddActive(channels, 1, state.Humidity.Phase, labels);
             if (state.HasRecoveryCommand) AddActive(channels, 2, state.Recovery.Phase, labels);
             if (channels.TryGetValue(3, out var instant))
-                recent = EnvironmentTechnologyCatalog.Name(instant.Kind);
+                recent = EnvironmentTechnologyCatalog.Name(instant.Kind) +
+                    "(" + TierLabel(instant) + ")";
         }
         if (state.MonsoonId.HasValue)
             foreach (MonsoonSnapshot wind in environment.Monsoons)
                 if (wind.Id == state.MonsoonId.Value)
                 {
-                    labels.Add("季风锚 " + Signed(wind.TemperatureOffset) + "/" +
-                        Signed(wind.HumidityOffset) + (state.MonsoonApplied ? "" : "(遮蔽)"));
+                    var windChoice = new EnvironmentTechnologyChoice(
+                        EnvironmentTechnologyKind.MonsoonAnchor, 1,
+                        wind.TemperatureOffset, wind.HumidityOffset);
+                    labels.Add("季风工具 " + EnvironmentTechnologyCatalog.MonsoonPatternName(windChoice) +
+                        " " + Signed(wind.TemperatureOffset) + "/" +
+                        Signed(wind.HumidityOffset));
                     break;
                 }
         return labels.Count > 0 ? "当前科技：" + string.Join("；", labels) :
@@ -257,16 +240,13 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         bool ownsRecovery = HasRecorded(coordinate, 2, kind);
         switch (kind)
         {
-            case EnvironmentTechnologyKind.HeatInjection:
-            case EnvironmentTechnologyKind.RadiativeCooling:
+            case EnvironmentTechnologyKind.TemperatureChange:
                 return ownsTemperature && state.HasLocalTemperature &&
                     state.Temperature.Phase != EffectPhase.Returning;
-            case EnvironmentTechnologyKind.CloudSeeding:
-            case EnvironmentTechnologyKind.VaporRecovery:
+            case EnvironmentTechnologyKind.HumidityChange:
                 return ownsHumidity && state.HasLocalHumidity &&
                     state.Humidity.Phase != EffectPhase.Returning;
-            case EnvironmentTechnologyKind.GrowthCatalyst:
-            case EnvironmentTechnologyKind.EcologicalSuppression:
+            case EnvironmentTechnologyKind.PlantChange:
                 return ownsRecovery && state.CanCancelRecovery;
             case EnvironmentTechnologyKind.MonsoonAnchor:
                 foreach (MonsoonSnapshot wind in environment.Monsoons)
@@ -289,8 +269,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                     return environment.TryCancelMonsoon(wind.Id, out error);
             error = "季风已不存在"; return false;
         }
-        EnvironmentAttribute attribute = kind <= EnvironmentTechnologyKind.RadiativeCooling
-            ? EnvironmentAttribute.Temperature : kind <= EnvironmentTechnologyKind.VaporRecovery
+        EnvironmentAttribute attribute = kind == EnvironmentTechnologyKind.TemperatureChange
+            ? EnvironmentAttribute.Temperature : kind == EnvironmentTechnologyKind.HumidityChange
                 ? EnvironmentAttribute.Humidity : EnvironmentAttribute.Recovery;
         return environment.TryCancel(coordinate, attribute, out error);
     }
@@ -300,7 +280,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     {
         if (phase == EffectPhase.None || phase == EffectPhase.Automatic ||
             !channels.TryGetValue(channel, out var choice)) return;
-        labels.Add(EnvironmentTechnologyCatalog.Name(choice.Kind) +
+        labels.Add(EnvironmentTechnologyCatalog.Name(choice.Kind) + " " + TierLabel(choice) +
             (phase == EffectPhase.Entering ? "(进入)" : phase == EffectPhase.Holding ?
                 "(维持)" : "(恢复)"));
     }
@@ -312,10 +292,9 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     {
         if (!applied.TryGetValue(coordinate, out var channels))
         { channels = new Dictionary<int, EnvironmentTechnologyChoice>(); applied.Add(coordinate, channels); }
-        int channel = choice.Kind <= EnvironmentTechnologyKind.RadiativeCooling ? 0 :
-            choice.Kind <= EnvironmentTechnologyKind.VaporRecovery ? 1 :
-            choice.Kind == EnvironmentTechnologyKind.GrowthCatalyst ||
-            choice.Kind == EnvironmentTechnologyKind.EcologicalSuppression ? 2 : 3;
+        int channel = choice.Kind == EnvironmentTechnologyKind.TemperatureChange ? 0 :
+            choice.Kind == EnvironmentTechnologyKind.HumidityChange ? 1 :
+            choice.Kind == EnvironmentTechnologyKind.PlantChange ? 2 : 3;
         channels[channel] = choice;
         channels[3] = choice;
     }
@@ -340,4 +319,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         " 库存 " + read.PlantStock.ToString("F0") +
         " 增量 " + read.Environment.Recovery.Value.ToString("F0");
     private static string Signed(int value) => value > 0 ? "+" + value : value.ToString();
+    private static string TierLabel(EnvironmentTechnologyChoice choice) =>
+        choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
+            EnvironmentTechnologyCatalog.MonsoonPatternName(choice) :
+            (choice.Tier > 0 ? "高" : "低") + Math.Abs(choice.Tier) + "档";
 }

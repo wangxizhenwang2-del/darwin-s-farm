@@ -286,9 +286,9 @@ public partial class PopulationSimulatorWindow
         liveRadius = 0;
         liveAmount = EditorGUILayout.FloatField("强度（可为负）", liveAmount);
         liveDurationDays = 1; // Compatibility field; controller owns fixed operation timelines.
-        EditorGUILayout.HelpBox("温湿度 ±25/±50：25天渐变、维持100天、25天恢复。\n" +
-            "植被增量 ±25000/±50000：立即生效，100天恢复。\n" +
-            "库存 ±0.25/±0.5：增加按上限，减少按现库存；海拔 ±1：均立即生效。", MessageType.Info);
+        EditorGUILayout.HelpBox("温湿度 ±25/±50：25天渐变、维持150天、150天恢复。\n" +
+            "植被增量 ±25000/±50000：立即生效、维持50天、50天恢复。\n" +
+            "此开发入口的库存是独立一次性编辑；玩家植物工具会同时改变库存与日恢复量。海拔 ±1 立即生效。", MessageType.Info);
 
         SimulationInterventionRequest request = new SimulationInterventionRequest
         {

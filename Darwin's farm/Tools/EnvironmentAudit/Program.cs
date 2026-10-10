@@ -220,12 +220,12 @@ static class Program
         ext.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Grassland)));
         Wind(ext, 0); ext.AdvanceToDay(25);
         ext.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Grassland), (2, 0, TerrainKind.Grassland)));
-        Near(68, Read(ext, 2).Temperature.Value, "new member enters from actual");
+        Near(88, Read(ext, 2).Temperature.Value, "new member receives wind immediately");
         Near(88, Read(ext, 1).Temperature.Value, "unchanged member no restart");
-        ext.AdvanceToDay(50); Near(88, Read(ext, 2).Temperature.Value, "new member 25day entry");
+        ext.AdvanceToDay(50); Near(88, Read(ext, 2).Temperature.Value, "new member keeps wind");
         ext.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 1, TerrainKind.Grassland), (2, 0, TerrainKind.Grassland)));
         Check(!Read(ext, 2).HasMonsoon && Read(ext).HasMonsoon, "non-source disconnect membership");
-        ext.AdvanceToDay(75); Near(68, Read(ext, 2).Temperature.Value, "departed member 25day return");
+        ext.AdvanceToDay(75); Near(68, Read(ext, 2).Temperature.Value, "departed member loses wind immediately");
         int count = ext.ReadAll().Count;
         try
         {
@@ -261,27 +261,50 @@ static class Program
         }
         return result;
     }
-    static void V43Technologies()
+    static void TechnologyTools()
     {
-        Check(EnvironmentTechnologyCatalog.All.Length == 10, "V4.3 has ten technologies");
+        Check(EnvironmentTechnologyCatalog.All.Length == 5, "player has five technology tools");
         foreach (EnvironmentTechnologyKind kind in EnvironmentTechnologyCatalog.All)
             Check(!string.IsNullOrWhiteSpace(EnvironmentTechnologyCatalog.Name(kind)),
                 "technology needs a player-facing name");
         Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
-            EnvironmentTechnologyKind.CrustUplift, 2)), "height has no large tier");
+            EnvironmentTechnologyKind.ElevationChange, 2)), "height has no large tier");
+        Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+            EnvironmentTechnologyKind.ElevationChange, -1)), "height accepts downward tier");
+        foreach (int tier in new[] { 2, 1, -1, -2 })
+        {
+            Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+                EnvironmentTechnologyKind.TemperatureChange, tier)), "temperature tier");
+            Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+                EnvironmentTechnologyKind.HumidityChange, tier)), "humidity tier");
+            Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+                EnvironmentTechnologyKind.PlantChange, tier)), "plant tier");
+            Check(EnvironmentTechnologyCatalog.SignedClimate(new EnvironmentTechnologyChoice(
+                EnvironmentTechnologyKind.TemperatureChange, tier)) == tier * 25,
+                "signed climate tier");
+        }
+        Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+            EnvironmentTechnologyKind.PlantChange, 0)), "plant rejects zero tier");
         Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
             EnvironmentTechnologyKind.MonsoonAnchor, 1, 0, 20)),
             "wind needs two nonzero signed choices");
+        foreach (var preset in new[] { (-20, 20), (20, 20), (20, -20), (-20, -20) })
+            Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+                EnvironmentTechnologyKind.MonsoonAnchor, 1, preset.Item1, preset.Item2)),
+                "four monsoon presets must be valid");
+        Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+            EnvironmentTechnologyKind.MonsoonAnchor, 1, 40, 20)),
+            "player monsoon presets use only 20-point changes");
         var w = new EnvironmentWorld();
         w.SynchronizeTopology(MixedLine(false, true, false));
         Check(!w.TrySetClimate(new GridPosition(1, 0), EnvironmentAttribute.Temperature,
             25, out _), "water rejects climate technology");
         Check(!w.TryDeployMonsoon(new GridPosition(1, 0), 20, 20,
             null, out _, out _), "water rejects monsoon source");
-        Check(w.TryPreviewMonsoon(Origin, 20, -40, out var area, out _)
+        Check(w.TryPreviewMonsoon(Origin, 20, -20, out var area, out _)
             && area.Count == 2 && !area.Contains(new GridPosition(1, 0)),
             "one water tile bridges two land cells without receiving climate");
-        long wind = Wind(w, 0, 20, -40);
+        long wind = Wind(w, 0, 20, -20);
         Check(w.ReadMonsoons().Single().Area.Count == 2, "wind stores land-only area");
         Check(!Read(w, 1).HasMonsoon && Read(w, 2).HasMonsoon,
             "water has no wind effect");
@@ -304,13 +327,14 @@ static class Program
         Near(100000, Read(aquatic).Recovery.Value, "failed batch leaves first member unchanged");
         Check(aquatic.TrySetRecoveryBatch(members, .5, true, out _),
             "suppression replaces catalyst");
-        Near(50000, Read(aquatic).Recovery.Value, "suppression multiplies actual R");
-        Near(75000, Read(aquatic).Recovery.Target, "water R returns to water default");
+        Near(50000, Read(aquatic).Recovery.Value, "suppression subtracts 50000 from actual R");
+        Check(Read(aquatic).Recovery.Phase == EffectPhase.Holding,
+            "water plant operation holds before return");
         Check(aquatic.TryCancelRecoveryBatch(members, out _), "cancel entire water R timeline");
         Check(!aquatic.TryCancelRecoveryBatch(members, out _),
             "repeated cancellation cannot indefinitely extend water recovery");
-        aquatic.AdvanceToDay(100);
-        Near(75000, Read(aquatic).Recovery.Value, "water R returns in 100 days");
+        aquatic.AdvanceToDay(50);
+        Near(75000, Read(aquatic).Recovery.Value, "water R returns in 50 days");
         Near(425000, EnvironmentRules.ChangeStock(50000, 1500000, .25),
             "water seeding uses water capacity");
         Near(37500, EnvironmentRules.ChangeStock(50000, 1500000, -.25),
@@ -322,7 +346,89 @@ static class Program
     }
     static void Main()
     {
-        Classification(); TerrainGraph(); Timelines(); RecoveryAndStock(); WindMasking(); TopologyAndRefunds(); V43Technologies();
-        Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, terrain graph, timelines, ten technologies, water, topology, refunds)");
+        Classification(); TerrainGraph(); NewToolRules(); TopologyAndRefunds(); TechnologyTools();
+        Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, terrain graph, tool slots, timelines, causality, topology, refunds)");
+    }
+
+    static void NewToolRules()
+    {
+        var climate = Single(TerrainKind.Grassland);
+        Climate(climate, EnvironmentAttribute.Temperature, 25);
+        climate.AdvanceToDay(25);
+        Near(93, Read(climate).Temperature.Value, "25-day climate entry");
+        Check(Read(climate).Temperature.Phase == EffectPhase.Holding, "climate holds after entry");
+        climate.AdvanceToDay(174);
+        Near(93, Read(climate).Temperature.Value, "150-day hold");
+        climate.AdvanceToDay(175);
+        Check(Read(climate).Temperature.Phase == EffectPhase.Returning, "return starts day175");
+        climate.AdvanceToDay(325);
+        Near(68, Read(climate).Temperature.Value, "150-day climate return");
+        Check(!Read(climate).HasLocalTemperature, "climate slot released");
+
+        var plant = Single(TerrainKind.Grassland);
+        Check(plant.TrySetRecovery(Origin, 25000, out _), "plant starts");
+        Near(125000, Read(plant).Recovery.Value, "plant recovery changes immediately");
+        plant.AdvanceToDay(50);
+        Near(125000, Read(plant).Recovery.Value, "plant holds for 50 days");
+        Check(Read(plant).Recovery.Phase == EffectPhase.Returning, "plant return starts day50");
+        plant.AdvanceToDay(100);
+        Near(100000, Read(plant).Recovery.Value, "plant returns in 50 days");
+        Check(!Read(plant).HasRecoveryCommand, "plant slot released");
+        Check(plant.TrySetRecovery(Origin, 25000, out _), "plant reapplied");
+        Check(plant.TrySetRecovery(Origin, -50000, out _), "plant switches tier");
+        Near(75000, Read(plant).Recovery.Value, "reapplication uses current recovery");
+        Near(125000, EnvironmentRules.MultiplyStock(100000, 1000000, .25),
+            "positive tier multiplies current stock");
+        Near(62500, EnvironmentRules.MultiplyStock(125000, 1000000, -.5),
+            "negative tier multiplies current stock");
+
+        var slots = Single(TerrainKind.Grassland);
+        Climate(slots, EnvironmentAttribute.Temperature, 25);
+        Climate(slots, EnvironmentAttribute.Humidity, -25);
+        Check(slots.TrySetRecovery(Origin, 25000, out _), "third tool deploys");
+        Check(Read(slots).Temperature.Phase == EffectPhase.Returning &&
+            Read(slots).Humidity.Phase == EffectPhase.Entering &&
+            Read(slots).Recovery.Phase == EffectPhase.Holding,
+            "third tool displaces oldest; recovery tail takes no slot");
+        Climate(slots, EnvironmentAttribute.Temperature, -25);
+        Check(Read(slots).Humidity.Phase == EffectPhase.Returning &&
+            Read(slots).Temperature.Phase == EffectPhase.Entering,
+            "reapplying climate restarts from current and displaces oldest");
+
+        var wind = Single(TerrainKind.Grassland);
+        long windId = Wind(wind, 0, 20, -20);
+        Near(88, Read(wind).Temperature.Value, "wind applies immediately");
+        Near(48, Read(wind).Humidity.Value, "wind humidity applies immediately");
+        Climate(wind, EnvironmentAttribute.Temperature, 25);
+        wind.AdvanceToDay(25);
+        Check(Read(wind).HasMonsoon && Read(wind).MonsoonApplied,
+            "wind remains active alongside local tool");
+        Near(100, Read(wind).Temperature.Value, "wind and temperature add with clamp");
+        Near(48, Read(wind).Humidity.Value, "other wind axis remains active");
+        Check(wind.TrySetRecovery(Origin, 25000, out _), "latest tool joins wind");
+        Check(Read(wind).Temperature.Phase == EffectPhase.Returning,
+            "wind leaves only newest local command active");
+        Check(wind.TryCancelMonsoon(windId, out _), "wind cancel");
+        Near(93, Read(wind).Temperature.Value, "wind removal reveals current local base immediately");
+        Near(68, Read(wind).Humidity.Value, "wind humidity removal is immediate");
+
+        var windTerrain = Single(TerrainKind.Grassland);
+        Wind(windTerrain, 0, 20, -20);
+        Climate(windTerrain, EnvironmentAttribute.Humidity, -25);
+        windTerrain.AdvanceToDay(140);
+        Check(Read(windTerrain).Terrain == TerrainKind.Desert &&
+            Read(windTerrain).HasMonsoon,
+            "biome conversion alone does not revoke the wind anchor");
+
+        var dry = Single(TerrainKind.Grassland);
+        Climate(dry, EnvironmentAttribute.Humidity, -50);
+        dry.AdvanceToDay(25);
+        Check(Read(dry).Recovery.Value < 100000, "dry climate lowers potential recovery");
+        dry.AdvanceToDay(140);
+        Check(Read(dry).Terrain == TerrainKind.Desert && Read(dry).Recovery.Value <= 50000,
+            "climate drives recovery then terrain conversion within 240 days");
+        dry.AdvanceToDay(480);
+        Check(Read(dry).Terrain == TerrainKind.Grassland,
+            "terrain can recover after the technology ends");
     }
 }

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <NoWarn>0169;0649;0067</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../SimulationAudit/UnityStubs.cs" Link="UnityStubs.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/SpeciesData.cs" Link="SpeciesData.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/PopulationData.cs" Link="PopulationData.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/BlockInfo.cs" Link="BlockInfo.cs" />
+    <Compile Include="../../Assets/Scripts/BioData/EcologicalNiche.cs" Link="EcologicalNiche.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.cs" Link="SimulationController.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.FoodWeb.cs" Link="SimulationController.FoodWeb.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Evolution.cs" Link="SimulationController.Evolution.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/SimulationController.Migration.cs" Link="SimulationController.Migration.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/PopulationTransitionResult.cs" Link="PopulationTransitionResult.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/HabitatTopology.cs" Link="HabitatTopology.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentRules.cs" Link="EnvironmentRules.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentState.cs" Link="EnvironmentState.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs" Link="EnvironmentWorld.cs" />
+  </ItemGroup>
+</Project>
