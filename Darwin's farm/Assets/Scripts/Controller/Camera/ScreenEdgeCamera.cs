@@ -29,6 +29,8 @@ public class ScreenEdgeCamera : MonoBehaviour
     [SerializeField, Min(0.1f)]
     private float buildMoveSpeed = 30f;
 
+    [SerializeField, Min(1f)] private float altLeftDragThresholdPixels = 8f;
+
     [Header("地图缩放")]
     [Tooltip("每次滚轮输入的缩放幅度。")]
     [SerializeField, Range(0.01f, 0.5f)]
@@ -59,6 +61,9 @@ public class ScreenEdgeCamera : MonoBehaviour
     private bool buildModeEnabled;
 
     private bool mapDragging;
+    private bool draggingWithLeft;
+    private bool pendingAltLeftDrag;
+    private Vector2 altLeftPressPosition;
     private bool tileDragging;
     private Vector2 previousMousePosition;
 
@@ -78,8 +83,12 @@ public class ScreenEdgeCamera : MonoBehaviour
                 return true;
 
             Vector2 position = mouse.position.ReadValue();
+            Keyboard keyboard = Keyboard.current;
+            bool alt = keyboard != null &&
+                (keyboard.leftAltKey.isPressed || keyboard.rightAltKey.isPressed);
             return IsOverMap(position) &&
                    (mouse.middleButton.isPressed ||
+                    (alt && mouse.leftButton.isPressed && !buildModeEnabled) ||
                     !Mathf.Approximately(mouse.scroll.ReadValue().y, 0f));
         }
     }
@@ -126,12 +135,36 @@ public class ScreenEdgeCamera : MonoBehaviour
         if (mouse == null || !CanBrowseMap() || tileDragging)
         {
             mapDragging = false;
+            draggingWithLeft = false;
+            pendingAltLeftDrag = false;
             return;
         }
 
         Vector2 position = mouse.position.ReadValue();
-        if (!mouse.middleButton.isPressed)
+        if (pendingAltLeftDrag && !mouse.leftButton.isPressed)
+            pendingAltLeftDrag = false;
+        if (mapDragging && (draggingWithLeft
+            ? !mouse.leftButton.isPressed : !mouse.middleButton.isPressed))
+        {
             mapDragging = false;
+            draggingWithLeft = false;
+        }
+        // Alt+left starts panning only beyond the click threshold. Starting
+        // from the current position avoids a jump when the threshold is crossed.
+        if (!buildModeEnabled && mouse.leftButton.wasPressedThisFrame && IsOverMap(position))
+        {
+            pendingAltLeftDrag = true;
+            altLeftPressPosition = position;
+        }
+        if (pendingAltLeftDrag && mouse.leftButton.isPressed && !mapDragging &&
+            (position - altLeftPressPosition).sqrMagnitude >
+            altLeftDragThresholdPixels * altLeftDragThresholdPixels)
+        {
+            pendingAltLeftDrag = false;
+            mapDragging = true;
+            draggingWithLeft = true;
+            previousMousePosition = position;
+        }
 
         if (mapDragging)
         {
@@ -152,6 +185,7 @@ public class ScreenEdgeCamera : MonoBehaviour
         else if (mouse.middleButton.wasPressedThisFrame && IsOverMap(position))
         {
             mapDragging = true;
+            draggingWithLeft = false;
             previousMousePosition = position;
         }
 
@@ -316,6 +350,8 @@ public class ScreenEdgeCamera : MonoBehaviour
 
         buildModeEnabled = value;
         mapDragging = false;
+        draggingWithLeft = false;
+        pendingAltLeftDrag = false;
         PauseFollow();
     }
 
@@ -323,7 +359,11 @@ public class ScreenEdgeCamera : MonoBehaviour
     {
         tileDragging = value;
         if (value)
+        {
             mapDragging = false;
+            draggingWithLeft = false;
+            pendingAltLeftDrag = false;
+        }
     }
 
     private void PauseFollow()
@@ -360,6 +400,8 @@ public class ScreenEdgeCamera : MonoBehaviour
     private void OnDisable()
     {
         mapDragging = false;
+        draggingWithLeft = false;
+        pendingAltLeftDrag = false;
         tileDragging = false;
         returningToPlayer = false;
     }

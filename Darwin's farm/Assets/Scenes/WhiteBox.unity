@@ -1258,6 +1258,7 @@ GameObject:
   - component: {fileID: 1640010069}
   - component: {fileID: 1640010068}
   - component: {fileID: 1640010067}
+  - component: {fileID: 1640010071}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1328,6 +1329,26 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1640010071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640010066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86fb1d82ab3b43b6b72b5f4e72477cde, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::GameInformationUI
+  viewCamera: {fileID: 1669876467}
+  grid: {fileID: 1541449667}
+  movement: {fileID: 1541449675}
+  simulation: {fileID: 1541449672}
+  clock: {fileID: 1541449671}
+  buildMode: {fileID: 1541449668}
+  clickDistancePixels: 8
+  refreshSeconds: 0.25
 --- !u!224 &1640010070
 RectTransform:
   m_ObjectHideFlags: 0
