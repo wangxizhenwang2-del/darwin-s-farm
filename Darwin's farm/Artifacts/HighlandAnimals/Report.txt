@@ -1,0 +1,32 @@
+PASS: Use the existing Billboard Character shader
+PASS: MushroomFox: original image has usable artwork and transparent background
+PASS: MushroomFox: terrain surface picked for placement
+PASS: MushroomFox: no movement or billboard scripts attached
+PASS: MushroomFox: transparent image margins trimmed by UVs
+MushroomFox feet=(-2.40, 0.84, 4.50) height=2.2 width=2.088392
+PASS: Wolf: original image has usable artwork and transparent background
+PASS: Wolf: terrain surface picked for placement
+PASS: Wolf: no movement or billboard scripts attached
+PASS: Wolf: transparent image margins trimmed by UVs
+Wolf feet=(0.10, 0.89, -5.70) height=2.3 width=2.61189
+PASS: PeacockSnakeLion: original image has usable artwork and transparent background
+PASS: PeacockSnakeLion: terrain surface picked for placement
+PASS: PeacockSnakeLion: no movement or billboard scripts attached
+PASS: PeacockSnakeLion: transparent image margins trimmed by UVs
+PeacockSnakeLion feet=(-2.30, 1.02, -0.80) height=2.25 width=2.946749
+PASS: OceanDeer: original image has usable artwork and transparent background
+PASS: OceanDeer: terrain surface picked for placement
+PASS: OceanDeer: no movement or billboard scripts attached
+PASS: OceanDeer: transparent image margins trimmed by UVs
+OceanDeer feet=(1.35, 0.84, -1.70) height=3 width=1.932849
+PASS: ForestDeer: original image has usable artwork and transparent background
+PASS: ForestDeer: terrain surface picked for placement
+PASS: ForestDeer: no movement or billboard scripts attached
+PASS: ForestDeer: transparent image margins trimmed by UVs
+ForestDeer feet=(0.60, 1.02, 4.80) height=2.85 width=1.672978
+PASS: Changing camera direction does not rotate animal transforms
+PASS: Opaque 3D geometry occludes the billboard through depth testing
+PASS: Scene reload preserves all five animals
+PASS: Delivered animals remain shader-only without movement components
+PASS: Foot-anchored culling bounds persist after scene reload
+Shader/runtime/test errors: 0

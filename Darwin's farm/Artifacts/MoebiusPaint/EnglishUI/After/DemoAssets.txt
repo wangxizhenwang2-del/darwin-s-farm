@@ -1,0 +1,4 @@
+Assets/Rendering/Moebius/PaintedTextures/Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 12_Color.png
+Assets/Rendering/Moebius/PaintedTextures/Moebius Paint Surface_Ivory_Paint 12.mat
+Assets/Rendering/Moebius/PaintedTextures/Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 12_Control.png
+Assets/Rendering/Moebius/PaintDemo/MoebiusPaintDemo.unity

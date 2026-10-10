@@ -1,0 +1,1325 @@
+{
+  "models": [
+    {
+      "name": "Grassland",
+      "meshes": 247,
+      "triangles": 63668,
+      "sourceUnit": "cm",
+      "bounds": [
+        -8.5,
+        -0.04647183418273926,
+        -8.563591260042092,
+        8.91327931843652,
+        13.251261350619016,
+        43.19617512635621
+      ],
+      "materials": [
+        {
+          "name": "lambert1",
+          "rgb": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "lambert"
+        },
+        {
+          "name": "standardSurface1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "standardSurface"
+        },
+        {
+          "name": "openPBR_shader1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "openPBRSurface"
+        },
+        {
+          "name": "particleCloud1",
+          "rgb": [
+            0.0,
+            0.5882400274276733,
+            0.6439999938011169
+          ],
+          "type": "particleCloud"
+        },
+        {
+          "name": "wood",
+          "rgb": [
+            0.5537273287773132,
+            0.09582561254501343,
+            0.043169450014829636
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "green",
+          "rgb": [
+            0.004379000049084425,
+            0.5537229776382446,
+            0.005783999804407358
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__wood",
+          "rgb": [
+            0.5537273287773132,
+            0.09582561254501343,
+            0.043169450014829636
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__green",
+          "rgb": [
+            0.004379000049084425,
+            0.5537229776382446,
+            0.005783999804407358
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "lambert2",
+          "rgb": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "lambert"
+        },
+        {
+          "name": "pasted__wood1",
+          "rgb": [
+            0.5537273287773132,
+            0.09582561254501343,
+            0.043169450014829636
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__green1",
+          "rgb": [
+            0.004379000049084425,
+            0.5537229776382446,
+            0.005783999804407358
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__green2",
+          "rgb": [
+            0.004379000049084425,
+            0.5537229776382446,
+            0.005783999804407358
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__TreeBotFBXASC046001",
+          "rgb": [
+            0.23698967695236206,
+            0.23698967695236206,
+            0.23698967695236206
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__TreeBranchFBXASC046001",
+          "rgb": [
+            0.8000000715255737,
+            0.057661015540361404,
+            0.05568776652216911
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__TreeBot",
+          "rgb": [
+            0.15319384634494781,
+            0.056308671832084656,
+            0.009785176254808903
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__TreeBranch",
+          "rgb": [
+            0.12032860517501831,
+            0.8000000715255737,
+            0.12032860517501831
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__Grass",
+          "rgb": [
+            0.07257259637117386,
+            0.46414047479629517,
+            0.07257270812988281
+          ],
+          "type": "phong"
+        }
+      ],
+      "textures": []
+    },
+    {
+      "name": "Desert",
+      "meshes": 394,
+      "triangles": 238588,
+      "sourceUnit": "cm",
+      "bounds": [
+        -25.50049733627045,
+        -0.49877876610167676,
+        -8.539242029526436,
+        25.461305796274775,
+        8.62015595894419,
+        8.539242029526436
+      ],
+      "materials": [
+        {
+          "name": "lambert1",
+          "rgb": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "lambert"
+        },
+        {
+          "name": "standardSurface1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "standardSurface"
+        },
+        {
+          "name": "openPBR_shader1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "openPBRSurface"
+        },
+        {
+          "name": "particleCloud1",
+          "rgb": [
+            0.0,
+            0.5882400274276733,
+            0.6439999938011169
+          ],
+          "type": "particleCloud"
+        },
+        {
+          "name": "pasted__wood",
+          "rgb": [
+            0.5537273287773132,
+            0.09582561254501343,
+            0.043169450014829636
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__wood1",
+          "rgb": [
+            0.5537273287773132,
+            0.09582561254501343,
+            0.043169450014829636
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "lambert2",
+          "rgb": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "lambert"
+        },
+        {
+          "name": "pasted__M_DesertRock_1",
+          "rgb": [
+            0.5596010088920593,
+            0.21422414481639862,
+            0.061586953699588776
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__MaterialFBXASC046002",
+          "rgb": [
+            0.2667599320411682,
+            0.13571007549762726,
+            0.0744209811091423
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_CactusColor2_1_Material",
+          "rgb": [
+            0.8000000715255737,
+            0.04610731452703476,
+            0.07681421935558319
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_Cactus_2_Material",
+          "rgb": [
+            0.24851343035697937,
+            0.5814630389213562,
+            0.08605703711509705
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__Desert_Grass",
+          "rgb": [
+            0.10653497278690338,
+            0.03500852361321449,
+            0.008153513073921204
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_DesertRock_2",
+          "rgb": [
+            0.5596010088920593,
+            0.21422414481639862,
+            0.061586953699588776
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__MaterialFBXASC046003",
+          "rgb": [
+            0.2667599320411682,
+            0.13571007549762726,
+            0.0744209811091423
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_CactusColor2_1_Material1",
+          "rgb": [
+            0.8000000715255737,
+            0.04610731452703476,
+            0.07681421935558319
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_Cactus_2_Material1",
+          "rgb": [
+            0.24851343035697937,
+            0.5814630389213562,
+            0.08605703711509705
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__Desert_Grass1",
+          "rgb": [
+            0.10653497278690338,
+            0.03500852361321449,
+            0.008153513073921204
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_DesertRock_3",
+          "rgb": [
+            0.5596010088920593,
+            0.21422414481639862,
+            0.061586953699588776
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__MaterialFBXASC046004",
+          "rgb": [
+            0.2667599320411682,
+            0.13571007549762726,
+            0.0744209811091423
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_CactusColor2_1_Material2",
+          "rgb": [
+            0.8000000715255737,
+            0.04610731452703476,
+            0.07681421935558319
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_Cactus_2_Material2",
+          "rgb": [
+            0.24851343035697937,
+            0.5814630389213562,
+            0.08605703711509705
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__Desert_Grass2",
+          "rgb": [
+            0.10653497278690338,
+            0.03500852361321449,
+            0.008153513073921204
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_DesertRock_4",
+          "rgb": [
+            0.5596010088920593,
+            0.21422414481639862,
+            0.061586953699588776
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__MaterialFBXASC046005",
+          "rgb": [
+            0.2667599320411682,
+            0.13571007549762726,
+            0.0744209811091423
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_CactusColor2_1_Material3",
+          "rgb": [
+            0.8000000715255737,
+            0.04610731452703476,
+            0.07681421935558319
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_Cactus_2_Material3",
+          "rgb": [
+            0.24851343035697937,
+            0.5814630389213562,
+            0.08605703711509705
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__Desert_Grass3",
+          "rgb": [
+            0.10653497278690338,
+            0.03500852361321449,
+            0.008153513073921204
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_DesertRock_5",
+          "rgb": [
+            0.5596010088920593,
+            0.21422414481639862,
+            0.061586953699588776
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__MaterialFBXASC046006",
+          "rgb": [
+            0.2667599320411682,
+            0.13571007549762726,
+            0.0744209811091423
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_CactusColor2_1_Material4",
+          "rgb": [
+            0.8000000715255737,
+            0.04610731452703476,
+            0.07681421935558319
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_Cactus_2_Material4",
+          "rgb": [
+            0.24851343035697937,
+            0.5814630389213562,
+            0.08605703711509705
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__Desert_Grass4",
+          "rgb": [
+            0.10653497278690338,
+            0.03500852361321449,
+            0.008153513073921204
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_DesertRock_6",
+          "rgb": [
+            0.5596010088920593,
+            0.21422414481639862,
+            0.061586953699588776
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__MaterialFBXASC046007",
+          "rgb": [
+            0.2667599320411682,
+            0.13571007549762726,
+            0.0744209811091423
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_CactusColor2_1_Material5",
+          "rgb": [
+            0.8000000715255737,
+            0.04610731452703476,
+            0.07681421935558319
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__M_Cactus_2_Material5",
+          "rgb": [
+            0.24851343035697937,
+            0.5814630389213562,
+            0.08605703711509705
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__Desert_Grass5",
+          "rgb": [
+            0.10653497278690338,
+            0.03500852361321449,
+            0.008153513073921204
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__steer_bone",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "rib_bone",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "eagle_bone",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "human_bone",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "steer_bone",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "generics_bones",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__steer_bone1",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "pasted__lambert2",
+          "rgb": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "lambert"
+        }
+      ],
+      "textures": [
+        {
+          "node": "base_color_texture",
+          "path": "E:\\All_Ian_Directories\\Projects\\Sketchfab\\avtandil\\content_production_april_22\\3d_assets\\textures\\skulls\\human\\human_bake_diffuse_2k.png"
+        },
+        {
+          "node": "normalmap_texture",
+          "path": "E:\\All_Ian_Directories\\Projects\\Sketchfab\\avtandil\\content_production_april_22\\3d_assets\\textures\\skulls\\human\\human_bake_normal_2k.png"
+        }
+      ]
+    },
+    {
+      "name": "Forest",
+      "meshes": 1203,
+      "triangles": 3064646,
+      "sourceUnit": "cm",
+      "bounds": [
+        -57.77642280761512,
+        2.7564141922643213,
+        -687.2830740265426,
+        9.40032297853852,
+        55.50785988533033,
+        34.55501518976576
+      ],
+      "materials": [
+        {
+          "name": "lambert1",
+          "rgb": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "lambert"
+        },
+        {
+          "name": "standardSurface1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "standardSurface"
+        },
+        {
+          "name": "openPBR_shader1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "openPBRSurface"
+        },
+        {
+          "name": "particleCloud1",
+          "rgb": [
+            0.0,
+            0.5882400274276733,
+            0.6439999938011169
+          ],
+          "type": "particleCloud"
+        },
+        {
+          "name": "daisyLarge1Shader",
+          "rgb": [
+            0.14359919726848602,
+            0.21346862614154816,
+            0.1096823662519455
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "daisyLarge1LeafShader",
+          "rgb": [
+            0.0627450942993164,
+            0.20392157137393951,
+            0.09803921729326248
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "daisyLarge1FlowerShader",
+          "rgb": [
+            0.843137264251709,
+            0.9058823585510254,
+            0.8941176533699036
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "daisyLarge2Shader",
+          "rgb": [
+            0.14359919726848602,
+            0.21346862614154816,
+            0.1096823662519455
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "daisyLarge2LeafShader",
+          "rgb": [
+            0.0627450942993164,
+            0.20392157137393951,
+            0.09803921729326248
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "daisyLarge2FlowerShader",
+          "rgb": [
+            0.843137264251709,
+            0.9058823585510254,
+            0.8941176533699036
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "tallFescue1Shader",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "rampShader"
+        },
+        {
+          "name": "tallFescue1LeafShader",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Flower_MatSG",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Leaf_MatSG",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Stem_MatSG",
+          "rgb": [
+            0.800000011920929,
+            0.800000011920929,
+            0.800000011920929
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Lowpoly_tree_sample:Lowpoly_tree_sample:Bark1",
+          "rgb": [
+            0.20759500563144684,
+            0.1385129988193512,
+            0.055181000381708145
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Lowpoly_tree_sample:Lowpoly_tree_sample:Tree1",
+          "rgb": [
+            0.25686100125312805,
+            0.4405060112476349,
+            0.11076900362968445
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Maya_Lambert13",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "Lowpoly_tree_sample1:Lowpoly_tree_sample:Bark1",
+          "rgb": [
+            0.20759500563144684,
+            0.1385129988193512,
+            0.055181000381708145
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Lowpoly_tree_sample1:Lowpoly_tree_sample:Tree1",
+          "rgb": [
+            0.25686100125312805,
+            0.4405060112476349,
+            0.11076900362968445
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC032FBXASC03547",
+          "rgb": [
+            0.3803921937942505,
+            0.9529412388801575,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC032FBXASC03549",
+          "rgb": [
+            0.5879999995231628,
+            0.5879999995231628,
+            0.5879999995231628
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC032FBXASC03550",
+          "rgb": [
+            0.5879999995231628,
+            0.5879999995231628,
+            0.5879999995231628
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC032FBXASC03551",
+          "rgb": [
+            0.5879999995231628,
+            0.5879999995231628,
+            0.5879999995231628
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC032FBXASC03548",
+          "rgb": [
+            0.7098039388656616,
+            0.13333334028720856,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Maya_Lambert17",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "Maya_Lambert18",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "MaterialFBXASC046047",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046048",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046041",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046012",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046027",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046011",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046026",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046037",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046013",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046025",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046009",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046023",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046015",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046008",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046007",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046049",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046052",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046051",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046016",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046038",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "MaterialFBXASC046042",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Maya_Lambert16",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "Maya_Lambert15",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "Maya_Lambert19",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "Maya_Lambert14",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "Maya_Lambert11",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "fernsFBXASC0321_ncl1_2",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Maya_Lambert12",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        },
+        {
+          "name": "plant_mushroom_mat",
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Maya_Lambert1",
+          "rgb": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "type": "MaterialXSurfaceShader"
+        }
+      ],
+      "textures": [
+        {
+          "node": "base_color_texture",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture1",
+          "path": "C:\\Users\\Shad\\Dropbox\\Documents\\Blender\\plant_mushroom_tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_1",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_3",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_4",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_5",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_6",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_7",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_8",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_9",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_10",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_11",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_12",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_13",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_14",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_15",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_16",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_17",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_18",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_19",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_20",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "base_color_texture_ncl1_21",
+          "path": "C:\\Users\\Tarun\\Desktop\\tex.png"
+        },
+        {
+          "node": "fernsFBXASC0321_ncl1_3",
+          "path": "C:\\Work\\Blender projects\\Nature\\Paporot\\ferns 1.png"
+        },
+        {
+          "node": "file1",
+          "path": "C:/Program Files/Autodesk/Maya2027/brushImages/oakLeafSM.gif"
+        },
+        {
+          "node": "normalmap_texture",
+          "path": "D:\\Work\\tree it\\flower\\Stem_Normal.png"
+        }
+      ]
+    },
+    {
+      "name": "RainForest",
+      "meshes": 12,
+      "triangles": 6080,
+      "sourceUnit": "cm",
+      "bounds": [
+        -13.840379031817198,
+        -3.100971562787679,
+        -39.17690156315059,
+        7.718162826055772,
+        19.457403878796214,
+        13.075871664872032
+      ],
+      "materials": [
+        {
+          "name": "lambert1",
+          "rgb": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "lambert"
+        },
+        {
+          "name": "standardSurface1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "standardSurface"
+        },
+        {
+          "name": "openPBR_shader1",
+          "rgb": [
+            0.4000000059604645,
+            0.4000000059604645,
+            0.4000000059604645
+          ],
+          "type": "openPBRSurface"
+        },
+        {
+          "name": "particleCloud1",
+          "rgb": [
+            0.0,
+            0.5882400274276733,
+            0.6439999938011169
+          ],
+          "type": "particleCloud"
+        },
+        {
+          "name": "Lowpoly_tree_sample:Bark1",
+          "rgb": [
+            0.20759500563144684,
+            0.1385129988193512,
+            0.055181000381708145
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Lowpoly_tree_sample:Tree1",
+          "rgb": [
+            0.25686100125312805,
+            0.4405060112476349,
+            0.11076900362968445
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Lowpoly_tree_sample1:Lowpoly_tree_sample:Bark1",
+          "rgb": [
+            0.20759500563144684,
+            0.1385129988193512,
+            0.055181000381708145
+          ],
+          "type": "phong"
+        },
+        {
+          "name": "Lowpoly_tree_sample1:Lowpoly_tree_sample:Tree1",
+          "rgb": [
+            0.25686100125312805,
+            0.4405060112476349,
+            0.11076900362968445
+          ],
+          "type": "phong"
+        }
+      ],
+      "textures": []
+    }
+  ]
+}

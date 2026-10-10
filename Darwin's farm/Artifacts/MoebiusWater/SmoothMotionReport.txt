@@ -1,0 +1,6 @@
+PASS: Isolated continuous-motion sampling of the delivered scene
+PASS: All 60 consecutive 1/60-second ripple samples change: no held animation frames
+Changed pixels per sample: min 1794, average 1982.2, max 3392
+This samples shader animation phases, not the user's real-time Editor frame rate.
+PASS: No shader compile or runtime errors
+Errors: 0

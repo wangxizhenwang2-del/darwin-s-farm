@@ -1,0 +1,37 @@
+PASS: Isolated automatic-water validation
+PASS: Zero shadow strength equals disabled shadow reception
+PASS: Actual URP main-light shadow map produces ink on the water
+PASS: Water shadow follows a moving caster without a shoreline rebake
+PASS: Water shadow responds to main-light direction
+PASS: Zero wobble strength leaves stationary ripples exactly unchanged over time
+PASS: Wobble visibly deforms ripple curves independently of flow
+PASS: Ripple shapes animate with continuous time while drift and flow are disabled
+PASS: Flow: timed draw contains visible water
+PASS: Flow: identical pinned shader time reproduces identical pixels
+PASS: Flow: actual shader animation changes across one second
+Flow pinned 1/60-second samples: changed-pixel min 2611, mean 2696.0, max 2809; zero-change intervals 0
+PASS: Foam: timed draw contains visible water
+PASS: Foam: identical pinned shader time reproduces identical pixels
+PASS: Foam: actual shader animation changes across one second
+Foam pinned 1/60-second samples: changed-pixel min 283, mean 301.8, max 331; zero-change intervals 0
+PASS: All seven visible shore meshes detected without a manual list
+PASS: Transparent, billboard, animated, physics, hidden and foreign-scene objects excluded
+PASS: Updated demo shoreline/material retain original GUIDs
+PASS: Mapping includes nearby real shores beyond water bounds
+PASS: Demo open edge has no artificial foam at (8.80, 0.00)
+PASS: Demo open edge has no artificial foam at (8.80, 6.80)
+PASS: Demo open edge has no artificial foam at (8.80, -6.80)
+PASS: Demo sand bank remains a detected shoreline
+PASS: Demo rock remains a detected shoreline
+PASS: Open water without land stays foam-free at the center and outer edge
+PASS: Same-level adjacent water does not form a false shoreline at its seam
+PASS: Entirely water-covered mapping produces a neutral distance field without artificial foam
+PASS: Unity Terrain automatically detected using its height, without colliders or a manual list
+PASS: Terrain holes do not become land
+PASS: Nonrectangular water edges also stay foam-free without actual land
+PASS: Real bank outside the mesh creates shoreline foam while the opposite open edge stays clean
+PASS: Automatic bake, Terrain support and water shader compile without errors
+Actual isolated Editor Game camera cadence: 59.0 renders/s; longest gap 40.5 ms.
+This is measured in the isolated project, not the user's active scene. The Water Setup window now has its own live cadence monitor.
+PASS: Actual realtime water renders complete without errors
+Errors: 0

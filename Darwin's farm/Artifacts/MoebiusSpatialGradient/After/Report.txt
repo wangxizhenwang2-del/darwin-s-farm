@@ -1,0 +1,21 @@
+PASS: Before vs ComicOriginal: 0 changed pixels
+PASS: Comic demo uses two distinct material assets
+PASS: Saved scene reloads both control points and renderer references
+PASS: Before vs StageOff: 0 changed pixels
+PASS: Zero strength preserves old rendering: 0 changed pixels
+PASS: Spatial gradient is visibly active
+PASS: Disabling controller restores original materials: 0 changed pixels
+PASS: Existing debug mask 2 unchanged: 0 changed pixels
+PASS: Existing debug mask 3 unchanged: 0 changed pixels
+PASS: Existing debug mask 4 unchanged: 0 changed pixels
+PASS: Existing debug mask 5 unchanged: 0 changed pixels
+PASS: Existing debug mask 9 unchanged: 0 changed pixels
+PASS: Existing debug mask 10 unchanged: 0 changed pixels
+PASS: Existing debug mask 11 unchanged: 0 changed pixels
+PASS: Existing debug mask 12 unchanged: 0 changed pixels
+PASS: Gradient color does not depend on light direction: 0 changed pixels
+PASS: Different-material seam has continuous base color
+PASS: Moving anchors changes direction and transition
+PASS: Moving group keeps its gradient attached: max channel difference 0/255
+PASS: Coincident anchors render safely without division by zero
+Shader/runtime/test errors: 0
