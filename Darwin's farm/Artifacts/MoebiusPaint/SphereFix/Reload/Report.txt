@@ -1,0 +1,6 @@
+PASS: New Unity process restores material's saved paint texture
+PASS: New Unity process restores color coverage
+PASS: New Unity process restores painted control channels
+PASS: Saved scene render survives Unity restart exactly
+PASS: Player assemblies exclude all Scene painting/editor code
+Shader/runtime/test errors: 0

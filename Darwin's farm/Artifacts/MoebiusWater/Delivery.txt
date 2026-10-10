@@ -1,0 +1,11 @@
+Assets/Rendering/Moebius/Defaults/Materials/MoebiusWater.mat
+Assets/Rendering/Moebius/Samples/Water/Materials/CoastalWater.mat
+Assets/Rendering/Moebius/Samples/Water/Materials/LavenderStone.mat
+Assets/Rendering/Moebius/Samples/Water/Materials/PeachStone.mat
+Assets/Rendering/Moebius/Samples/Water/Materials/Sand.mat
+Assets/Rendering/Moebius/Samples/Water/Meshes/Rock.asset
+Assets/Rendering/Moebius/Samples/Water/Meshes/Shore.asset
+Assets/Rendering/Moebius/Samples/Water/Meshes/WaterGrid.asset
+Assets/Rendering/Moebius/Samples/Water/MoebiusWaterDemo.unity
+Assets/Rendering/Moebius/Samples/Water/MoebiusWaterSurface.prefab
+Assets/Rendering/Moebius/Samples/Water/Textures/ShoreDistance.png

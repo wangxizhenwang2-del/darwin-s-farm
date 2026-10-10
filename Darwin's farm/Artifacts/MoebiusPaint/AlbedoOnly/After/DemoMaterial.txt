@@ -1,0 +1,1 @@
+Assets/Rendering/Moebius/PaintedTextures/Moebius Paint Surface_Ivory_Paint 14.mat

@@ -1,0 +1,66 @@
+PASS: Independent Moebius albedo material: pasted__pasted__Cube.020
+PASS: Soft albedo variation painted with the existing generic brush: pasted__pasted__Cube.020
+PASS: Existing NPR effect masks preserved: pasted__pasted__Cube.020
+PASS: Independent Moebius albedo material: pasted__pasted__Cube.021
+PASS: Soft albedo variation painted with the existing generic brush: pasted__pasted__Cube.021
+PASS: Existing NPR effect masks preserved: pasted__pasted__Cube.021
+PASS: Independent Moebius albedo material: pasted__pasted__Cube.022
+PASS: Soft albedo variation painted with the existing generic brush: pasted__pasted__Cube.022
+PASS: Existing NPR effect masks preserved: pasted__pasted__Cube.022
+PASS: Independent Moebius albedo material: pasted__pasted__Cube.023
+PASS: Soft albedo variation painted with the existing generic brush: pasted__pasted__Cube.023
+PASS: Existing NPR effect masks preserved: pasted__pasted__Cube.023
+PASS: Independent Moebius albedo material: pasted__pasted__Cube.024
+PASS: Soft albedo variation painted with the existing generic brush: pasted__pasted__Cube.024
+PASS: Existing NPR effect masks preserved: pasted__pasted__Cube.024
+PASS: Independent Moebius albedo material: pasted__pasted__Cube.025
+PASS: Soft albedo variation painted with the existing generic brush: pasted__pasted__Cube.025
+PASS: Existing NPR effect masks preserved: pasted__pasted__Cube.025
+PASS: Independent Moebius albedo material: pasted__pasted__Cube.026
+PASS: Soft albedo variation painted with the existing generic brush: pasted__pasted__Cube.026
+PASS: Existing NPR effect masks preserved: pasted__pasted__Cube.026
+PASS: Independent Moebius albedo material: Mountain 1 - Paintable
+PASS: Soft albedo variation painted with the existing generic brush: Mountain 1 - Paintable
+PASS: Existing NPR effect masks preserved: Mountain 1 - Paintable
+PASS: Independent Moebius albedo material: Mountain 2 - Paintable
+PASS: Soft albedo variation painted with the existing generic brush: Mountain 2 - Paintable
+PASS: Existing NPR effect masks preserved: Mountain 2 - Paintable
+PASS: Independent Moebius albedo material: pasted__pasted__bush.012
+PASS: Independent Moebius albedo material: pasted__pasted__bush.016
+PASS: Independent Moebius albedo material: pasted__pasted__bush.012
+PASS: Independent Moebius albedo material: pasted__pasted__bush.016
+PASS: Independent Moebius albedo material: pasted__pasted__bush.012
+PASS: Independent Moebius albedo material: pasted__pasted__bush.016
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.031
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.038
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.048
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.049
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.050
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.031
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.032
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.033
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.034
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.035
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.036
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.037
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.039
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.040
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.041
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.042
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.043
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.044
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.045
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.046
+PASS: Independent Moebius albedo material: pasted__pasted__Cone.047
+PASS: Independent Moebius albedo material: pasted__pasted__red06
+PASS: Independent Moebius albedo material: Ground - Paint Here
+PASS: Soft albedo variation painted with the existing generic brush: Ground - Paint Here
+PASS: Colored plateau supports stroke Undo
+PASS: Colored plateau supports stroke Redo
+PASS: Existing NPR effect masks preserved: Ground - Paint Here
+PASS: Complete 38-mesh plateau palette, with 10 painted terrain/rock surfaces
+PASS: Colored scene reloads its saved albedo map
+PASS: The original Tools/Moebius/Paint tool can continue painting this model
+PASS: The workspace still edits albedo only
+Palette: straw meadow, sage shrubs, olive dry grass, warm sandstone, muted mauve rock bases, cream weathered summits.
+Shader/runtime/test errors: 0

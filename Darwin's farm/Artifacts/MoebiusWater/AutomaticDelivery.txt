@@ -1,0 +1,2 @@
+Assets/Rendering/Moebius/Samples/Water/Materials/CoastalWater.mat
+Assets/Rendering/Moebius/Samples/Water/Textures/ShoreDistance.png

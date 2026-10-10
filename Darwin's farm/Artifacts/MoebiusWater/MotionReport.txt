@@ -1,0 +1,6 @@
+PASS: Isolated motion preview of the delivered scene
+Current speeds: Flow 0.5 / Ripple 0.12 / Wave 1.4 / Foam 0.28; wave height remains 0.055m
+PASS: Motion changes 12569 pixels over a 0.5-second animation phase interval
+Previous speeds change 9169 pixels over the same phase interval (image difference, not a frame-rate measurement).
+PASS: No water shader compile errors
+Errors: 0

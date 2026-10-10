@@ -1,0 +1,2 @@
+Actual scene renders: four biomes, receiving ground, small camera movement, billboard cutout, 700x500 resolution, world-triplanar ground shadow hatching.
+Shader/runtime errors: 0

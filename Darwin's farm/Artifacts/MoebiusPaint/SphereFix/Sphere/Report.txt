@@ -1,0 +1,16 @@
+Unity Sphere UV0: min=(-0.000921, 0.017629) max=(0.998334, 0.975891) vertices=515
+PASS: Unity built-in Sphere is accepted and can be picked
+PASS: Accepting border imprecision does not modify the source mesh UVs
+PASS: Boundary test hits the sphere's negative-U seam side
+PASS: GPU color painting works on the curved sphere surface
+PASS: Sphere painting appears through the existing NPR shader
+PASS: Painting reaches the clamped UV border
+PASS: Border paint is visible with the original sphere UVs in the runtime shader
+PASS: Undo restores the sphere's previous stroke
+PASS: Redo restores the sphere's border stroke
+PASS: Saved sphere border paint reopens correctly
+PASS: Sphere border mask painting preserves unrelated control channels
+PASS: Substantial out-of-range UVs are still rejected
+PASS: Selecting a built-in Sphere opens a usable paint workspace
+PASS: Painting and saving preserve the original sphere mesh UVs
+Shader/runtime/test errors: 0

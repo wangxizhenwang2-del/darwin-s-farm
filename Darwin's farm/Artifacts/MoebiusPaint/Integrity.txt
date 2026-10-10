@@ -1,0 +1,7 @@
+UNCHANGED: MoebiusNPRLighting.hlsl
+UNCHANGED: MoebiusNPRHatching.hlsl
+UNCHANGED: MoebiusNPRDetail.hlsl
+UNCHANGED: MoebiusOutline.shader
+UNCHANGED: MoebiusPrint.hlsl
+UNCHANGED: MoebiusSpatialGradient.hlsl
+UNCHANGED: ShadowCaster / DepthOnly / DepthNormals pass source

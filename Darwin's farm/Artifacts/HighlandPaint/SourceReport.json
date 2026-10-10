@@ -1,0 +1,1127 @@
+{
+  "source": "D:\\Documents\\xwechat_files\\wxid_lmicv2nfr9f611_0ebc\\msg\\file\\2026-10\\Highland.mb",
+  "destination": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Art\\ImportedHighland\\Highland.fbx",
+  "meshes": [
+    {
+      "name": "|pPlane2|pPlaneShape2",
+      "vertices": 384,
+      "triangles": 698,
+      "uvSets": [
+        "map1"
+      ],
+      "uvCount": 384,
+      "uvMin": [
+        0.0,
+        0.0
+      ],
+      "uvMax": [
+        1.0,
+        1.0
+      ],
+      "bounds": [
+        -8.5,
+        0.0,
+        -8.5,
+        8.5,
+        2.0876126289367676,
+        8.5
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046031|pasted__pasted__ConeFBXASC046031Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -0.96547731384489,
+        0.930733038824662,
+        6.374437939498726,
+        -0.005664843232041528,
+        2.0357022611290336,
+        7.483759643698061
+      ]
+    },
+    {
+      "name": "|group5|pasted__LAND1|pasted__pasted__ConeFBXASC046031|pasted__pasted__ConeFBXASC046031Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        0.4688818959639094,
+        0.896875888549503,
+        6.3926893584183615,
+        1.428694366576758,
+        2.0018451108538744,
+        7.502011062617696
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046032|pasted__pasted__ConeFBXASC046032Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -4.324437974312202,
+        0.8496906782985425,
+        6.411276392113543,
+        -3.364625503699353,
+        1.954659900602914,
+        7.520598096312878
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046033|pasted__pasted__ConeFBXASC046033Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -4.324437974312199,
+        0.8496906782984488,
+        6.411276392113323,
+        -3.3646255036993504,
+        1.9546599006028202,
+        7.520598096312658
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046034|pasted__pasted__ConeFBXASC046034Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -1.9596743951407722,
+        0.8496906782985432,
+        -7.284578440777286,
+        -0.9998619245279238,
+        1.9546599006029148,
+        -6.175256736577951
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046035|pasted__pasted__ConeFBXASC046035Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -0.35667372891550864,
+        0.8496906782985435,
+        -2.003416551548501,
+        0.6031387416973398,
+        1.954659900602915,
+        -0.8940948473491664
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046036|pasted__pasted__ConeFBXASC046036Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        1.704298210522735,
+        0.849690678298544,
+        -7.106855790249907,
+        2.6641106811355835,
+        1.9546599006029157,
+        -5.997534086050572
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046037|pasted__pasted__ConeFBXASC046037Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -7.076820290899855,
+        0.8496906782985438,
+        -4.143194094423033,
+        -6.117007820287006,
+        1.9546599006029153,
+        -3.0338723902236984
+      ]
+    },
+    {
+      "name": "|group5|pasted__LAND1|pasted__pasted__ConeFBXASC046038|pasted__pasted__ConeFBXASC046038Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        1.6148960401885377,
+        0.8968758885495028,
+        6.392689358418368,
+        2.5747085108013863,
+        2.0018451108538744,
+        7.502011062617703
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046039|pasted__pasted__ConeFBXASC046039Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        0.3263626569794287,
+        0.8496906782985446,
+        -7.106855790249907,
+        1.2861751275922773,
+        1.9546599006029162,
+        -5.997534086050572
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046040|pasted__pasted__ConeFBXASC046040Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        1.0747882669667117,
+        0.8496906782985448,
+        -7.106855790249907,
+        2.0346007375795603,
+        1.9546599006029164,
+        -5.997534086050572
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046041|pasted__pasted__ConeFBXASC046041Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -0.59575643533049,
+        0.8496906782985455,
+        -7.106855790249907,
+        0.3640560352823584,
+        1.954659900602917,
+        -5.997534086050572
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046042|pasted__pasted__ConeFBXASC046042Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -1.146270138410972,
+        0.849690678298546,
+        -7.106855790249907,
+        -0.18645766779812345,
+        1.9546599006029175,
+        -5.997534086050572
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046043|pasted__pasted__ConeFBXASC046043Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -7.076820290899855,
+        0.8496906782985442,
+        -3.579535930868604,
+        -6.117007820287006,
+        1.9546599006029157,
+        -2.4702142266692695
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046044|pasted__pasted__ConeFBXASC046044Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -7.076820290899855,
+        0.8496906782985445,
+        -3.1091911463029125,
+        -6.117007820287006,
+        1.9546599006029162,
+        -1.9998694421035776
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046045|pasted__pasted__ConeFBXASC046045Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -7.076820290899855,
+        0.8496906782985448,
+        -5.079513517159062,
+        -6.117007820287006,
+        1.9546599006029164,
+        -3.970191812959727
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046046|pasted__pasted__ConeFBXASC046046Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -0.35667372891550686,
+        0.8496906782985436,
+        -1.2470770500183983,
+        0.6031387416973416,
+        1.9546599006029153,
+        -0.1377553458190631
+      ]
+    },
+    {
+      "name": "|group6|pasted__LAND1|pasted__pasted__ConeFBXASC046047|pasted__pasted__ConeFBXASC046047Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -1.0491569833452052,
+        0.8496906782985437,
+        -1.660678019719291,
+        -0.08934451273235677,
+        1.9546599006029153,
+        -0.5513563155199558
+      ]
+    },
+    {
+      "name": "|group5|pasted__LAND1|pasted__pasted__ConeFBXASC046048|pasted__pasted__ConeFBXASC046048Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        -0.2555754354850204,
+        0.896875888549503,
+        6.392689358418368,
+        0.7042370351278281,
+        2.0018451108538744,
+        7.502011062617703
+      ]
+    },
+    {
+      "name": "|group5|pasted__LAND1|pasted__pasted__ConeFBXASC046049|pasted__pasted__ConeFBXASC046049Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        1.0320118055279068,
+        0.8968758885495028,
+        6.392689358418371,
+        1.9918242761407554,
+        2.0018451108538744,
+        7.502011062617706
+      ]
+    },
+    {
+      "name": "|group5|pasted__LAND1|pasted__pasted__ConeFBXASC046050|pasted__pasted__ConeFBXASC046050Shape",
+      "vertices": 72,
+      "triangles": 64,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 72,
+      "uvMin": [
+        0.01000000536441803,
+        0.01000000536441803
+      ],
+      "uvMax": [
+        0.49000000953674316,
+        0.49000000953674316
+      ],
+      "bounds": [
+        2.241884013246234,
+        0.8968758885495028,
+        6.392689358418376,
+        3.2016964838590827,
+        2.0018451108538744,
+        7.502011062617711
+      ]
+    },
+    {
+      "name": "|group|pasted__LAND1|pasted__pasted__CubeFBXASC046020|pasted__pasted__CubeFBXASC046020Shape",
+      "vertices": 34,
+      "triangles": 60,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 34,
+      "uvMin": [
+        0.11090350151062012,
+        0.3516803979873657
+      ],
+      "uvMax": [
+        0.2160867601633072,
+        0.4506545662879944
+      ],
+      "bounds": [
+        -7.380136628026205,
+        1.0476929689357777,
+        -8.195778509205041,
+        -2.06204801864849,
+        3.224984995347055,
+        -2.862692911441554
+      ]
+    },
+    {
+      "name": "|group|pasted__LAND1|pasted__pasted__CubeFBXASC046021|pasted__pasted__CubeFBXASC046021Shape",
+      "vertices": 34,
+      "triangles": 60,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 34,
+      "uvMin": [
+        0.11090350151062012,
+        0.3516803979873657
+      ],
+      "uvMax": [
+        0.2160867601633072,
+        0.4506545662879944
+      ],
+      "bounds": [
+        -7.895576289084247,
+        1.0022647765327186,
+        2.8881782873914292,
+        -3.6378948683209953,
+        3.1795571773161138,
+        7.3332266345025765
+      ]
+    },
+    {
+      "name": "|group|pasted__LAND1|pasted__pasted__CubeFBXASC046022|pasted__pasted__CubeFBXASC046022Shape",
+      "vertices": 34,
+      "triangles": 60,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 34,
+      "uvMin": [
+        0.11090350151062012,
+        0.3516803979873657
+      ],
+      "uvMax": [
+        0.2160867601633072,
+        0.4506545662879944
+      ],
+      "bounds": [
+        -7.895576289084247,
+        1.0022647765327186,
+        2.8881782873914292,
+        -3.6378948683209953,
+        3.1795571773161138,
+        7.3332266345025765
+      ]
+    },
+    {
+      "name": "|group|pasted__LAND1|pasted__pasted__CubeFBXASC046023|pasted__pasted__CubeFBXASC046023Shape",
+      "vertices": 34,
+      "triangles": 60,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 34,
+      "uvMin": [
+        0.11090350151062012,
+        0.3516803979873657
+      ],
+      "uvMax": [
+        0.2160867601633072,
+        0.4506545662879944
+      ],
+      "bounds": [
+        -7.112925284794988,
+        0.5972296688567983,
+        0.364356704223956,
+        -4.539619621343377,
+        1.9131662813527321,
+        3.050905310269457
+      ]
+    },
+    {
+      "name": "|group|pasted__LAND1|pasted__pasted__CubeFBXASC046024|pasted__pasted__CubeFBXASC046024Shape",
+      "vertices": 34,
+      "triangles": 60,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 34,
+      "uvMin": [
+        0.11090350151062012,
+        0.3516803979873657
+      ],
+      "uvMax": [
+        0.2160867601633072,
+        0.4506545662879944
+      ],
+      "bounds": [
+        -4.31722662720579,
+        0.5972296825639207,
+        -4.62142393550001,
+        -1.1416299090917532,
+        1.9131662431381091,
+        -1.4854053958906865
+      ]
+    },
+    {
+      "name": "|group|pasted__LAND1|pasted__pasted__CubeFBXASC046025|pasted__pasted__CubeFBXASC046025Shape",
+      "vertices": 34,
+      "triangles": 60,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 34,
+      "uvMin": [
+        0.11090350151062012,
+        0.3516803979873657
+      ],
+      "uvMax": [
+        0.2160867601633072,
+        0.4506545662879944
+      ],
+      "bounds": [
+        -7.548779335639653,
+        0.5972298050959136,
+        -2.836845860499717,
+        -4.3553876347604,
+        1.913166161275357,
+        0.3774336721163236
+      ]
+    },
+    {
+      "name": "|group|pasted__LAND1|pasted__pasted__CubeFBXASC046026|pasted__pasted__CubeFBXASC046026Shape",
+      "vertices": 34,
+      "triangles": 60,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 34,
+      "uvMin": [
+        0.11090350151062012,
+        0.3516803979873657
+      ],
+      "uvMax": [
+        0.2160867601633072,
+        0.4506545662879944
+      ],
+      "bounds": [
+        -0.44618049415037925,
+        1.002265216142421,
+        1.0919647424372059,
+        1.1875561389532028,
+        1.7726697310368342,
+        2.686540992933082
+      ]
+    },
+    {
+      "name": "|group1|pasted__group|pasted__pasted__Mountain1|pasted__pasted__Mountain1Shape",
+      "vertices": 562,
+      "triangles": 1024,
+      "uvSets": [
+        "map1"
+      ],
+      "uvCount": 0,
+      "uvMin": null,
+      "uvMax": null,
+      "bounds": [
+        3.1732251672038387,
+        1.803742446529867,
+        -1.41042009196849,
+        7.445240187264176,
+        5.368208760314349,
+        7.459194630062029
+      ]
+    },
+    {
+      "name": "|group1|pasted__group|pasted__pasted__Mountain|pasted__pasted__MountainShape",
+      "vertices": 562,
+      "triangles": 1024,
+      "uvSets": [
+        "map1"
+      ],
+      "uvCount": 0,
+      "uvMin": null,
+      "uvMax": null,
+      "bounds": [
+        1.7457703378139513,
+        0.8254594900667911,
+        -7.505332898772167,
+        7.41330502984772,
+        4.751452538167236,
+        1.3642818232583522
+      ]
+    },
+    {
+      "name": "|group4|pasted__LAND1|pasted__pasted__bushFBXASC046012|pasted__pasted__bushFBXASC046012Shape",
+      "vertices": 81,
+      "triangles": 158,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 93,
+      "uvMin": [
+        0.0,
+        0.08853612095117569
+      ],
+      "uvMax": [
+        1.0,
+        1.0
+      ],
+      "bounds": [
+        0.7617743978792425,
+        0.7361581313319967,
+        2.617243223756257,
+        2.176746679389483,
+        1.752585423462614,
+        4.067524988331452
+      ]
+    },
+    {
+      "name": "|group3|pasted__LAND1|pasted__pasted__bushFBXASC046012|pasted__pasted__bushFBXASC046012Shape",
+      "vertices": 81,
+      "triangles": 158,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 93,
+      "uvMin": [
+        0.0,
+        0.08853612095117569
+      ],
+      "uvMax": [
+        1.0,
+        1.0
+      ],
+      "bounds": [
+        -0.42997593233165904,
+        0.9415662178356936,
+        -4.9746630624635175,
+        0.9849963491785814,
+        1.9579935099663108,
+        -3.524381297888322
+      ]
+    },
+    {
+      "name": "|group2|pasted__LAND1|pasted__pasted__bushFBXASC046012|pasted__pasted__bushFBXASC046012Shape",
+      "vertices": 81,
+      "triangles": 158,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 93,
+      "uvMin": [
+        0.0,
+        0.08853612095117569
+      ],
+      "uvMax": [
+        1.0,
+        1.0
+      ],
+      "bounds": [
+        -3.2359455613578856,
+        0.9415662178356936,
+        6.29465234839336,
+        -1.8209732798476455,
+        1.9579935099663108,
+        7.744934112968555
+      ]
+    },
+    {
+      "name": "|group4|pasted__LAND1|pasted__pasted__bushFBXASC046016|pasted__pasted__bushFBXASC046016Shape",
+      "vertices": 81,
+      "triangles": 158,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 93,
+      "uvMin": [
+        0.0,
+        0.08853612095117569
+      ],
+      "uvMax": [
+        1.0,
+        1.0
+      ],
+      "bounds": [
+        -3.342905215229983,
+        0.9487515960696817,
+        -1.2863448457424052,
+        -2.315924129917165,
+        1.6864703607791487,
+        -0.23373628227066565
+      ]
+    },
+    {
+      "name": "|group3|pasted__LAND1|pasted__pasted__bushFBXASC046016|pasted__pasted__bushFBXASC046016Shape",
+      "vertices": 81,
+      "triangles": 158,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 93,
+      "uvMin": [
+        0.0,
+        0.08853612095117569
+      ],
+      "uvMax": [
+        1.0,
+        1.0
+      ],
+      "bounds": [
+        0.755060373623577,
+        0.9487515960696817,
+        -4.817135695227429,
+        1.7820414589363955,
+        1.6864703607791487,
+        -3.764527131755689
+      ]
+    },
+    {
+      "name": "|group2|pasted__LAND1|pasted__pasted__bushFBXASC046016|pasted__pasted__bushFBXASC046016Shape",
+      "vertices": 81,
+      "triangles": 158,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 93,
+      "uvMin": [
+        0.0,
+        0.08853612095117569
+      ],
+      "uvMax": [
+        1.0,
+        1.0
+      ],
+      "bounds": [
+        -2.05090925540265,
+        0.9487515960696817,
+        6.452179715629448,
+        -1.0239281700898313,
+        1.6864703607791487,
+        7.504788279101188
+      ]
+    },
+    {
+      "name": "|group8|pasted__LAND1|pasted__pasted__red06|pasted__pasted__red06Shape",
+      "vertices": 202,
+      "triangles": 380,
+      "uvSets": [
+        "UVMap"
+      ],
+      "uvCount": 230,
+      "uvMin": [
+        0.0,
+        0.0
+      ],
+      "uvMax": [
+        0.9900000095367432,
+        0.49000000953674316
+      ],
+      "bounds": [
+        4.57254907992474,
+        5.488031546985664,
+        4.551117048442372,
+        5.146502377062604,
+        6.174834894823434,
+        5.118288507799477
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "lambert1",
+      "rgb": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "lambert"
+    },
+    {
+      "name": "standardSurface1",
+      "rgb": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "type": "standardSurface"
+    },
+    {
+      "name": "openPBR_shader1",
+      "rgb": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "type": "openPBRSurface"
+    },
+    {
+      "name": "particleCloud1",
+      "rgb": [
+        0.0,
+        0.5882400274276733,
+        0.6439999938011169
+      ],
+      "type": "particleCloud"
+    },
+    {
+      "name": "pasted__DarkBrown",
+      "rgb": [
+        0.25979822874069214,
+        0.12067917734384537,
+        0.03521624207496643
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__Brown",
+      "rgb": [
+        0.4292248487472534,
+        0.2719387710094452,
+        0.11384361237287521
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__pasted__DarkBrown",
+      "rgb": [
+        0.25979822874069214,
+        0.12067917734384537,
+        0.03521624207496643
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__pasted__Brown",
+      "rgb": [
+        0.4292248487472534,
+        0.2719387710094452,
+        0.11384361237287521
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "lambert2",
+      "rgb": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "lambert"
+    },
+    {
+      "name": "pasted__DarkBrownFBXASC046002",
+      "rgb": [
+        0.1626415103673935,
+        0.07703694701194763,
+        0.023566627874970436
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__BrownFBXASC046002",
+      "rgb": [
+        0.4292248487472534,
+        0.2719387710094452,
+        0.11384361237287521
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__DarkBrownFBXASC046003",
+      "rgb": [
+        0.1626415103673935,
+        0.07703694701194763,
+        0.023566627874970436
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__BrownFBXASC046003",
+      "rgb": [
+        0.4292248487472534,
+        0.2719387710094452,
+        0.11384361237287521
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__pasted__DarkBrownFBXASC046003",
+      "rgb": [
+        0.1626415103673935,
+        0.07703694701194763,
+        0.023566627874970436
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__pasted__BrownFBXASC046003",
+      "rgb": [
+        0.4292248487472534,
+        0.2719387710094452,
+        0.11384361237287521
+      ],
+      "type": "phong"
+    },
+    {
+      "name": "pasted__lambert2",
+      "rgb": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "lambert"
+    },
+    {
+      "name": "pasted__lambert3",
+      "rgb": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "lambert"
+    },
+    {
+      "name": "pasted__lambert4",
+      "rgb": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "lambert"
+    },
+    {
+      "name": "pasted__lambert5",
+      "rgb": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "lambert"
+    },
+    {
+      "name": "pasted__lambert6",
+      "rgb": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "lambert"
+    }
+  ],
+  "textures": []
+}

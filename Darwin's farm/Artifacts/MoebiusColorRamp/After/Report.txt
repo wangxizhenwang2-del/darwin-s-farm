@@ -1,0 +1,39 @@
+PASS: Before vs Default: 0 changed pixels
+PASS: Existing material defaults to ramp Off
+PASS: Before vs Default: 0 changed pixels
+PASS: Before vs Default: 0 changed pixels
+PASS: Enabled ramp changes visible colors
+PASS: Ramp responds to main-light rotation
+PASS: Rotated object renders with ramp
+PASS: Before vs Debug2Off: 0 changed pixels
+PASS: Ramp preserves debug mask 2: 0 changed pixels
+PASS: Before vs Debug3Off: 0 changed pixels
+PASS: Ramp preserves debug mask 3: 0 changed pixels
+PASS: Before vs Debug4Off: 0 changed pixels
+PASS: Ramp preserves debug mask 4: 0 changed pixels
+PASS: Before vs Debug5Off: 0 changed pixels
+PASS: Ramp preserves debug mask 5: 0 changed pixels
+PASS: Before vs Debug9Off: 0 changed pixels
+PASS: Ramp preserves debug mask 9: 0 changed pixels
+PASS: Before vs Debug10Off: 0 changed pixels
+PASS: Ramp preserves debug mask 10: 0 changed pixels
+PASS: Before vs Debug11Off: 0 changed pixels
+PASS: Ramp preserves debug mask 11: 0 changed pixels
+PASS: Before vs Debug12Off: 0 changed pixels
+PASS: Ramp preserves debug mask 12: 0 changed pixels
+PASS: Before vs OutlineOff: 0 changed pixels
+PASS: Outline mask unchanged with ramp On: 0 changed pixels
+PASS: Before vs ShadowCaster: 0 changed pixels
+PASS: ShadowCaster unaffected by ramp: 0 changed pixels
+PASS: DepthOnly test renders actual geometry: 28680 nonblack pixels
+PASS: Before vs DepthOnly: 0 changed pixels
+PASS: DepthOnly unaffected by ramp: 0 changed pixels
+PASS: DepthNormals test renders actual geometry: 28680 nonblack pixels
+PASS: Before vs DepthNormals: 0 changed pixels
+PASS: DepthNormals unaffected by ramp: 0 changed pixels
+PASS: Original albedo parameter unchanged
+PASS: Low NdotL produces Shadow Ramp Color tint
+PASS: High NdotL produces Light Ramp Color tint
+PASS: Object rotation changes isolated tint from Light to Shadow
+PASS: Inspector normalization enforces shadow < light
+Shader/runtime/test errors: 0

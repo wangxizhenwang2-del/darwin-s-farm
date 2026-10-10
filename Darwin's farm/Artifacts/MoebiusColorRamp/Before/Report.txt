@@ -1,0 +1,4 @@
+PASS: DepthOnly test renders actual geometry: 28680 nonblack pixels
+PASS: DepthNormals test renders actual geometry: 28680 nonblack pixels
+PASS: Original albedo parameter unchanged
+Shader/runtime/test errors: 0

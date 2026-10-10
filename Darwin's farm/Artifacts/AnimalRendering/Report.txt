@@ -1,0 +1,38 @@
+PASS: Run in an isolated validation project
+PASS: Billboard shader imports
+PASS: Billboard has an alpha-tested ShadowCaster pass
+PASS: MushroomFox: prefab casts and receives shadows
+PASS: MushroomFox: style enabled on delivered material
+PASS: MushroomFox: actual ground shadow darkens 7958 pixels
+PASS: MushroomFox: discarded alpha leaves no ground shadow (0 darkened pixels)
+PASS: MushroomFox: filter changes illustration pixels
+PASS: Wolf: prefab casts and receives shadows
+PASS: Wolf: style enabled on delivered material
+PASS: Wolf: actual ground shadow darkens 8970 pixels
+PASS: Wolf: discarded alpha leaves no ground shadow (0 darkened pixels)
+PASS: Wolf: filter changes illustration pixels
+PASS: Camera orbit: shadow persists for orthographic camera
+PASS: Shadow and forward passes share the rendering camera direction
+PASS: Camera orbit: shadow persists for perspective camera
+PASS: Shadow and forward passes share the rendering camera direction
+PASS: PeacockSnakeLion: prefab casts and receives shadows
+PASS: PeacockSnakeLion: style enabled on delivered material
+PASS: PeacockSnakeLion: actual ground shadow darkens 10106 pixels
+PASS: PeacockSnakeLion: discarded alpha leaves no ground shadow (0 darkened pixels)
+PASS: PeacockSnakeLion: filter changes illustration pixels
+PASS: OceanDeer: prefab casts and receives shadows
+PASS: OceanDeer: style enabled on delivered material
+PASS: OceanDeer: actual ground shadow darkens 8907 pixels
+PASS: OceanDeer: discarded alpha leaves no ground shadow (0 darkened pixels)
+PASS: OceanDeer: filter changes illustration pixels
+PASS: ForestDeer: prefab casts and receives shadows
+PASS: ForestDeer: style enabled on delivered material
+PASS: ForestDeer: actual ground shadow darkens 7387 pixels
+PASS: ForestDeer: discarded alpha leaves no ground shadow (0 darkened pixels)
+PASS: ForestDeer: filter changes illustration pixels
+PASS: Delivered Highland scene retains five animals
+PASS: All five scene animals cast shadows
+PASS: All five scene animals use the filter
+PASS: Actual Highland scene: animal shadows darken 2562 pixels on existing terrain
+PASS: No shader or runtime errors
+Errors: 0
