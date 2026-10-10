@@ -17,6 +17,12 @@ public sealed class PopulationTileSpace
     private readonly MapTileInstance tile;
     private readonly NavMeshQueryFilter filter;
     private readonly Dictionary<float, PopulationLocalNavigation> routes = new Dictionary<float, PopulationLocalNavigation>();
+    private struct NavigationTriangle
+    {
+        public Vector3 a, b, c;
+    }
+    private readonly Dictionary<Vector2Int, List<NavigationTriangle>> navigationCells =
+        new Dictionary<Vector2Int, List<NavigationTriangle>>();
     public Bounds Bounds { get; private set; }
     public bool IsReady => ground.Count > 0 && boundary.Count > 0;
 
@@ -32,6 +38,7 @@ public sealed class PopulationTileSpace
         ground.Clear();
         boundary.Clear();
         routes.Clear();
+        navigationCells.Clear();
         if (tile == null) return;
         var edges = new Dictionary<(Vector2Int, Vector2Int), Edge>();
         bool first = true;
@@ -75,6 +82,75 @@ public sealed class PopulationTileSpace
         }
         foreach (Edge edge in edges.Values)
             if (edge.count == 1) boundary.Add(edge);
+        CacheNavigationSurface();
+    }
+
+    // SamplePosition returns the nearest point in 3D. On a slope, voxel height
+    // error moves that point sideways even when the requested XZ is walkable.
+    // Cache the actual NavMesh footprint and interpolate its height at fixed XZ.
+    private void CacheNavigationSurface()
+    {
+        NavMeshTriangulation mesh = NavMesh.CalculateTriangulation();
+        for (int i = 0; i < mesh.indices.Length; i += 3)
+        {
+            if ((filter.areaMask & (1 << mesh.areas[i / 3])) == 0) continue;
+            var triangle = new NavigationTriangle
+            {
+                a = mesh.vertices[mesh.indices[i]],
+                b = mesh.vertices[mesh.indices[i + 1]],
+                c = mesh.vertices[mesh.indices[i + 2]]
+            };
+            Vector3 min = Vector3.Min(triangle.a, Vector3.Min(triangle.b, triangle.c));
+            Vector3 max = Vector3.Max(triangle.a, Vector3.Max(triangle.b, triangle.c));
+            if (max.x < Bounds.min.x || min.x > Bounds.max.x ||
+                max.z < Bounds.min.z || min.z > Bounds.max.z) continue;
+            Vector2Int low = NavigationCell(Vector3.Max(min, Bounds.min));
+            Vector2Int high = NavigationCell(Vector3.Min(max, Bounds.max));
+            for (int z = low.y; z <= high.y; z++)
+                for (int x = low.x; x <= high.x; x++)
+                {
+                    var key = new Vector2Int(x, z);
+                    if (!navigationCells.TryGetValue(key, out List<NavigationTriangle> triangles))
+                        navigationCells.Add(key, triangles = new List<NavigationTriangle>());
+                    triangles.Add(triangle);
+                }
+        }
+    }
+
+    private Vector2Int NavigationCell(Vector3 point) => new Vector2Int(
+        Mathf.FloorToInt(point.x - Bounds.min.x), Mathf.FloorToInt(point.z - Bounds.min.z));
+
+    private bool TryNavigationPoint(Vector3 groundPoint, out Vector3 point)
+    {
+        point = default;
+        if (!navigationCells.TryGetValue(NavigationCell(groundPoint),
+            out List<NavigationTriangle> triangles)) return false;
+        float closest = 0.6f; // Allows bake voxel height error, not horizontal snapping.
+        bool found = false;
+        foreach (NavigationTriangle triangle in triangles)
+        {
+            Vector2 ab = Flat(triangle.b - triangle.a), ac = Flat(triangle.c - triangle.a);
+            Vector2 offset = Flat(groundPoint - triangle.a);
+            float determinant = Cross(ab, ac);
+            if (Mathf.Abs(determinant) < 0.000001f) continue;
+            float u = Cross(offset, ac) / determinant;
+            float v = Cross(ab, offset) / determinant;
+            if (u < -0.00001f || v < -0.00001f || u + v > 1.00001f) continue;
+            float y = triangle.a.y + u * (triangle.b.y - triangle.a.y) +
+                v * (triangle.c.y - triangle.a.y);
+            float difference = Mathf.Abs(y - groundPoint.y);
+            if (difference >= closest) continue;
+            Vector3 candidate = new Vector3(groundPoint.x, y, groundPoint.z);
+            // Triangulation contains every agent type; verify against this filter.
+            // The detail height mesh can differ from the triangulated polygon's
+            // plane. Keep the footprint test exact, but allow this bake offset.
+            if (!NavMesh.SamplePosition(candidate, out NavMeshHit hit, 0.6f, filter) ||
+                Flat(hit.position - candidate).sqrMagnitude > 0.04f) continue;
+            closest = difference;
+            point = new Vector3(groundPoint.x, hit.position.y, groundPoint.z);
+            found = true;
+        }
+        return found;
     }
 
     private static Vector2 Flat(Vector3 p) => new Vector2(p.x, p.z);
@@ -117,8 +193,7 @@ public sealed class PopulationTileSpace
         center = position; normal = Vector3.up;
         if (!TryGround(position, out RaycastHit hit) ||
             !ClearsBoundary(position, position, Clearance(size))) return false;
-        if (!NavMesh.SamplePosition(hit.point, out NavMeshHit navHit, 0.2f, filter) ||
-            Vector2.Distance(Flat(navHit.position), Flat(hit.point)) > 0.08f) return false;
+        if (!TryNavigationPoint(hit.point, out _)) return false;
         normal = hit.normal.normalized;
         center = hit.point + normal * (size * 0.5f);
         // A conservative sphere also covers all orientations while turning.
@@ -147,7 +222,9 @@ public sealed class PopulationTileSpace
         if (!ClearsBoundary(from, to, Clearance(size)) ||
             !TryPose(from, size, out _, out _) || !TryPose(to, size, out _, out _) ||
             !TryGround(from, out RaycastHit start) || !TryGround(to, out RaycastHit end)) return false;
-        if (NavMesh.Raycast(start.point, end.point, out _, filter)) return false;
+        if (!TryNavigationPoint(start.point, out Vector3 navStart) ||
+            !TryNavigationPoint(end.point, out Vector3 navEnd) ||
+            NavMesh.Raycast(navStart, navEnd, out _, filter)) return false;
         // Sweep an enclosing vertical capsule across the WHOLE segment. Its height
         // spans the tile, so even a thin building between samples is not skipped.
         Vector3 low = new Vector3(from.x, Bounds.min.y + 0.05f, from.z);

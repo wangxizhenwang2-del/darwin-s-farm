@@ -1125,33 +1125,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapTileColorTransitionSystem
   gridManager: {fileID: 1541449667}
   vertexColorMaterial: {fileID: 2100000, guid: 17b69ac77d450ec4da4450e033d8b3e9, type: 2}
-  desertBiomeVisual: {fileID: 4992250617241365102, guid: 3f479849ad10f204ba5f5eae364d2590, type: 3}
-  forestBiomeVisual: {fileID: 6963755734654402548, guid: e760630ddd31c274c9666e92768a4aa0, type: 3}
-  grasslandBiomeVisual: {fileID: 5986367128113321659, guid: 1ec593402cb8dac4592abbff72c49cd2, type: 3}
-  highlandBiomeVisual: {fileID: 8022671481964017136, guid: 23e7fcff76c78c040beb5a2330f69945, type: 3}
-  biomeColorOverrides:
-  - biome: 0
-    color: {r: 0.68, g: 0.78, b: 0.49, a: 1}
-  - biome: 1
-    color: {r: 0.89, g: 0.82, b: 0.65, a: 1}
-  - biome: 2
-    color: {r: 0.68, g: 0.67, b: 0.79, a: 1}
-  - biome: 3
-    color: {r: 0.45, g: 0.62, b: 0.38, a: 1}
-  - biome: 4
-    color: {r: 0.35, g: 0.54, b: 0.28, a: 1}
-  - biome: 5
-    color: {r: 0.73, g: 0.81, b: 0.5, a: 1}
-  - biome: 6
-    color: {r: 0.91, g: 0.74, b: 0.56, a: 1}
-  - biome: 7
-    color: {r: 0.77, g: 0.82, b: 0.78, a: 1}
-  - biome: 8
-    color: {r: 0.72, g: 0.75, b: 0.8, a: 1}
-  - biome: 9
-    color: {r: 0.96, g: 0.918, b: 0.867, a: 1}
-  - biome: 10
-    color: {r: 0.45, g: 0.44, b: 0.47, a: 1}
 --- !u!114 &1541449671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1285,7 +1258,6 @@ GameObject:
   - component: {fileID: 1640010069}
   - component: {fileID: 1640010068}
   - component: {fileID: 1640010067}
-  - component: {fileID: 1640010071}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1356,26 +1328,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1640010071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1640010066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fb1d82ab3b43b6b72b5f4e72477cde, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::GameInformationUI
-  viewCamera: {fileID: 1669876467}
-  grid: {fileID: 1541449667}
-  movement: {fileID: 1541449675}
-  simulation: {fileID: 1541449672}
-  clock: {fileID: 1541449671}
-  buildMode: {fileID: 1541449668}
-  clickDistancePixels: 8
-  refreshSeconds: 0.25
 --- !u!224 &1640010070
 RectTransform:
   m_ObjectHideFlags: 0

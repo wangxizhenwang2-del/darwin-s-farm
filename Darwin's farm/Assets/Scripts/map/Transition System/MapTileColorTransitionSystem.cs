@@ -4,15 +4,26 @@ using UnityEngine.AI;
 using Unity.AI.Navigation;
 using DarwinFarm.Environment;
 
-public class MapTileColorTransitionSystem : MonoBehaviour
+public partial class MapTileColorTransitionSystem : MonoBehaviour
 {
+    [System.Serializable]
+    private struct BiomeColorOverride
+    {
+        public BiomeType biome;
+        public Color color;
+    }
+
     [Header("ÒýÓÃ")]
     [SerializeField] private MapGridManager gridManager;
     [SerializeField] private Material vertexColorMaterial;
+    [SerializeField] private List<BiomeColorOverride> biomeColorOverrides =
+        new List<BiomeColorOverride>();
     private SimulationEnvironmentController environment;
     private readonly Dictionary<Vector2Int, TerrainKind> liveTerrain =
         new Dictionary<Vector2Int, TerrainKind>();
     private readonly Dictionary<BiomeType, Color> terrainColors =
+        new Dictionary<BiomeType, Color>();
+    private readonly Dictionary<BiomeType, Color> overrideColors =
         new Dictionary<BiomeType, Color>();
 
     private const int Segments = 34;
@@ -76,12 +87,17 @@ public class MapTileColorTransitionSystem : MonoBehaviour
         environment = null;
     }
 
-    // 2026-10-09 13:54 +08:00: land colors follow reclassified terrain.
-    // Recolor existing meshes only when terrain kind changes; keep geometry
-    // and navigation colliders untouched during ordinary climate updates.
+    // Terrain reclassification changes both appearance and model-derived relief.
+    // Ordinary climate updates leave the surface and NavMesh untouched.
     private void HandleEnvironmentChanged(IReadOnlyList<EnvironmentReadSnapshot> snapshots)
     {
-        if (CacheTerrain(snapshots)) RefreshColors();
+        if (CacheTerrain(snapshots))
+        {
+            // Terrain kind can now change both color and ground relief.
+            RefreshAll();
+            if (gridManager.Navigation != null)
+                gridManager.Navigation.RequestUpdate();
+        }
     }
 
     private void RefreshColors()
@@ -122,6 +138,9 @@ public class MapTileColorTransitionSystem : MonoBehaviour
 
         heightControls.Clear();
         terrainColors.Clear();
+        overrideColors.Clear();
+        foreach (BiomeColorOverride entry in biomeColorOverrides)
+            overrideColors[entry.biome] = entry.color;
         foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
             if (tile != null && tile.Definition != null &&
                 !terrainColors.ContainsKey(tile.Definition.biome))
@@ -147,6 +166,7 @@ public class MapTileColorTransitionSystem : MonoBehaviour
 
             DisableOldParts(tile);
         }
+        SyncBiomeVisuals(true);
     }
 
     private SurfaceData GetOrCreateSurface(MapTileInstance tile)
@@ -376,7 +396,8 @@ public class MapTileColorTransitionSystem : MonoBehaviour
                     new Vector2(localX, localZ));
 
                 float localY =
-                    SampleHeight(tile, offset) - BaseHeight(tile);
+                    SampleHeight(tile, offset) - BaseHeight(tile) +
+                    SampleBiomeRelief(tile, localX, localZ);
 
                 vertices.Add(new Vector3(localX, localY, localZ));
                 colors.Add(VertexColor(CalculateColor(tile, offset)));
@@ -614,8 +635,10 @@ public class MapTileColorTransitionSystem : MonoBehaviour
     {
         if (tile.Block == null || tile.Block.waterCoverage != WaterCoverage.Land ||
             !liveTerrain.TryGetValue(tile.Coordinate, out TerrainKind kind))
-            return tile.MainColor;
+            return overrideColors.TryGetValue(tile.Biome, out Color presetColor)
+                ? presetColor : tile.MainColor;
         BiomeType biome = SimulationEnvironmentController.BiomeFromTerrain(kind);
+        if (overrideColors.TryGetValue(biome, out Color overrideColor)) return overrideColor;
         if (terrainColors.TryGetValue(biome, out Color color)) return color;
         // Match shipped assets even when that terrain preset is not placed.
         switch (kind)
