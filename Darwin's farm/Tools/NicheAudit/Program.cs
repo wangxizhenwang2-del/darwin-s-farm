@@ -306,7 +306,7 @@ internal static class Program
             "daily land migration created an independent river land population");
     }
 
-    private static void DailyNicheConversion()
+    private static void NoDailyNicheConversion()
     {
         BlockInfo land = Block(0, false, 100000f);
         BlockInfo lake = Block(0, true, 1000f);
@@ -326,12 +326,28 @@ internal static class Program
         int events = 0;
         controller.OnNicheConversionResolved += _ => events++;
         controller.SimulateDay(2);
-        Check(events == 1 && chicken.speciesAmount == 180 &&
-            lake.community.Count == 1 && lake.community[0].speciesAmount == 20 &&
-            lake.community[0].ecologicalNiche == EcologicalNiche.Water,
-            "daily niche conversion did not split once with migration disabled");
+        Check(events == 0 && chicken.speciesAmount == 200 &&
+            land.community.Count == 1 && lake.community.Count == 0,
+            "daily simulation created a niche descendant outside the evolution network");
         controller.SimulateDay(3);
-        Check(events == 1, "newly converted population ignored its cooldown");
+        Check(events == 0 && land.community.Count == 1 && lake.community.Count == 0,
+            "daily simulation created a delayed niche descendant");
+
+        BlockInfo isolated = Block(0, false, 100f);
+        PopulationData groundChicken = Population(200, EcologicalNiche.Land);
+        isolated.community.Add(groundChicken);
+        SimulationController airController = Controller(isolated);
+        airController.SetMutationEnabled(false);
+        airController.SetParameters(0f, 0f, 0f);
+        airController.SetMigrationParameters(false, 7, 100f, 0.8f, 0.5f, 0.2f, 7);
+        airController.SetEcologicalNichesEnabled(true);
+        airController.SetEcologicalNicheProbabilities(0f, 1f, 0f, 0f, 0f);
+        string originalId = groundChicken.PopulationId;
+        airController.SimulateDay(1);
+        Check(isolated.community.Count == 1 &&
+            isolated.community[0].PopulationId == originalId &&
+            isolated.community[0].ecologicalNiche == EcologicalNiche.Land,
+            "daily simulation created an airborne chicken descendant");
     }
 
     private static void Main()
@@ -341,7 +357,7 @@ internal static class Program
         WaterAndAirMoves();
         RiverBanksAndChannels();
         LegacyMigrationCannotClaimRiver();
-        DailyNicheConversion();
-        Console.WriteLine("NICHE_AUDIT passed: water channels, river banks, resources, conversions and migrations");
+        NoDailyNicheConversion();
+        Console.WriteLine("NICHE_AUDIT passed: water channels, river banks, resources, explicit conversions and migrations; no automatic niche descendants");
     }
 }

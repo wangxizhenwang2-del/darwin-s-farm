@@ -293,8 +293,6 @@ public partial class SimulationController : MonoBehaviour
             SimulateBlock(block);
         }
         RunPresetEvolution(day);
-        if (ecologicalNichesEnabled && day > 0)
-            RunNicheConversions(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);
