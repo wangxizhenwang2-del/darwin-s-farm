@@ -36,6 +36,7 @@ public sealed class GameInformationUI : MonoBehaviour
     private bool awaitingRelease;
     private bool dragged;
     private float nextRefresh;
+    private BiomeOcclusionVisibility biomeVisibility;
 
     private void Awake()
     {
@@ -59,6 +60,9 @@ public sealed class GameInformationUI : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         BuildHud();
         BuildWindows();
+        biomeVisibility = gameObject.GetComponent<BiomeOcclusionVisibility>();
+        if (biomeVisibility == null) biomeVisibility = gameObject.AddComponent<BiomeOcclusionVisibility>();
+        biomeVisibility.Initialize(viewCamera, grid, movement, canvasRect, font);
     }
 
     private void OnEnable()
@@ -166,6 +170,8 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private WhiteboxPopulation PickPopulation(Vector2 position)
     {
+        if (biomeVisibility != null && biomeVisibility.TryPickMarker(position, out WhiteboxPopulation marked))
+            return marked;
         if (movement == null) return null;
         WhiteboxPopulation closest = null;
         float depth = float.PositiveInfinity;

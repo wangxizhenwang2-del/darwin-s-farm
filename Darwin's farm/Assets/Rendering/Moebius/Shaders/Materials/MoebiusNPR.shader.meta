@@ -3,7 +3,7 @@ guid: ff9803eb4ad50444bb14eaa671550c58
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
-  - _PaintColorMap: {fileID: 2800000, guid: 4aaeaabe496bb164abe1124465280cab, type: 3}
+  - _PaintColorMap: {fileID: 2800000, guid: 7b9b09a307114684a9465164e728c426, type: 3}
   nonModifiableTextures: []
   userData: 
   assetBundleName: 
