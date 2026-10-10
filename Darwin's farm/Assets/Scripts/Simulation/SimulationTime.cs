@@ -6,7 +6,12 @@ using UnityEngine.InputSystem;
 
 public class SimulationTime : MonoBehaviour
 {
-    private float basicDayLength = 5f;
+    // Standard game loop: one simulated day per second at 1x, 1800 days in
+    // fifteen minutes at the existing 2x speed.
+    public const float DefaultSecondsPerDay = 1f;
+    public const int StandardLoopDays = 1800;
+    public const float StandardLoopSpeed = 2f;
+    private float basicDayLength = DefaultSecondsPerDay;
     private float simulationSpeed = 1f;
     private float lastRunningSpeed = 1f;
     private float time=0;

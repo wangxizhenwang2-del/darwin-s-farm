@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentRules.cs" Link="EnvironmentRules.cs" />
+    <Compile Include="../../Assets/Scripts/Simulation/Environment/TerrainTransitionGraph.cs" Link="TerrainTransitionGraph.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentState.cs" Link="EnvironmentState.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs" Link="EnvironmentWorld.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentTechnologyCatalog.cs" Link="EnvironmentTechnologyCatalog.cs" />

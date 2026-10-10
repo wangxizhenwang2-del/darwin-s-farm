@@ -43,6 +43,8 @@ namespace DarwinFarm.Environment
         public const int PlantCapacity = 1000000, WaterPlantCapacity = 1500000;
         public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
         public const int TransitionDays = 25, ClimateHoldDays = 100, RecoveryReturnDays = 100;
+        // Existing baseline profiles also drive return targets; their elevation is
+        // only a placement preset, not an intrinsic property of a terrain kind.
         public static TerrainDefaults Defaults(TerrainKind kind)
         {
             switch (kind)

@@ -80,6 +80,39 @@ static class Program
         Check(EnvironmentRules.Classify(1, 50, 50, 100000) == TerrainKind.Highland, "medium altitude highland default");
         Check(EnvironmentRules.Classify(0, 83, 50, 125000) == TerrainKind.Rainforest, "hot moderately wet rich plants");
     }
+    static void TerrainGraph()
+    {
+        var kinds = (TerrainKind[])Enum.GetValues(typeof(TerrainKind));
+        Check(kinds.Length == 8, "terrain graph expects eight kinds");
+        int directedEdges = 0;
+        var visited = new HashSet<TerrainKind> { TerrainKind.Grassland };
+        var pending = new Queue<TerrainKind>();
+        pending.Enqueue(TerrainKind.Grassland);
+        foreach (TerrainKind kind in kinds)
+        {
+            var neighbors = TerrainTransitionGraph.Neighbors(kind);
+            Check(neighbors.Count >= 2 && neighbors.Count <= 4, "terrain degree must be 2-4: " + kind);
+            Check(neighbors.Distinct().Count() == neighbors.Count && !neighbors.Contains(kind), "invalid terrain neighbor: " + kind);
+            foreach (TerrainKind neighbor in neighbors)
+            {
+                Check(TerrainTransitionGraph.AreAdjacent(neighbor, kind), "terrain edge must be symmetric");
+                directedEdges++;
+            }
+        }
+        while (pending.Count > 0)
+            foreach (TerrainKind neighbor in TerrainTransitionGraph.Neighbors(pending.Dequeue()))
+                if (visited.Add(neighbor)) pending.Enqueue(neighbor);
+        Check(directedEdges == 26 && visited.Count == kinds.Length, "terrain graph must have 13 connected edges");
+        Check(!TerrainTransitionGraph.AreAdjacent(TerrainKind.Desert, TerrainKind.Tundra), "graph must not invent edges");
+
+        // The same terrain can exist at different elevations; the graph has no Z coordinate.
+        Check(EnvironmentRules.Classify(0, 68, 68, 100000) == TerrainKind.Grassland &&
+              EnvironmentRules.Classify(1, 68, 68, 100000) == TerrainKind.Grassland,
+            "grassland can span elevations");
+        Check(EnvironmentRules.Classify(0, 68, 17, 50000) == TerrainKind.Desert &&
+              EnvironmentRules.Classify(1, 68, 17, 50000) == TerrainKind.Desert,
+            "desert can span elevations");
+    }
     static void Timelines()
     {
         var w = Single(TerrainKind.Highland); Climate(w, EnvironmentAttribute.Temperature, 25);
@@ -289,7 +322,7 @@ static class Program
     }
     static void Main()
     {
-        Classification(); Timelines(); RecoveryAndStock(); WindMasking(); TopologyAndRefunds(); V43Technologies();
-        Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, timelines, ten technologies, water, topology, refunds)");
+        Classification(); TerrainGraph(); Timelines(); RecoveryAndStock(); WindMasking(); TopologyAndRefunds(); V43Technologies();
+        Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, terrain graph, timelines, ten technologies, water, topology, refunds)");
     }
 }

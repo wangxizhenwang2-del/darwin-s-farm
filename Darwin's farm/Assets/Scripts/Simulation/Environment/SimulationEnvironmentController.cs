@@ -225,6 +225,12 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         if (world == null || !world.TryRead(position, out var state) || !blocks.TryGetValue(position, out var block)) return false;
         snapshot = new EnvironmentReadSnapshot(state, block.plantBiomass); return true;
     }
+    public IReadOnlyList<TerrainKind> GetTerrainNeighbors(Vector2Int coordinate)
+    {
+        return TryRead(coordinate, out var snapshot) && !snapshot.Environment.IsWater
+            ? TerrainTransitionGraph.Neighbors(snapshot.Environment.Terrain)
+            : Array.Empty<TerrainKind>();
+    }
     public IReadOnlyList<EnvironmentReadSnapshot> ReadAll()
     {
         var result = new List<EnvironmentReadSnapshot>();

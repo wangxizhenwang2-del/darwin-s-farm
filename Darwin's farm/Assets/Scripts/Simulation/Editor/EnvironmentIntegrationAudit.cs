@@ -54,7 +54,14 @@ public static class EnvironmentIntegrationAudit
     {
         var grid = c.GetComponent<MapGridManager>();
         var bridge = c.GetComponent<MapSimulationBridge>();
+        Check(Math.Abs(clock.SecondsPerDay - SimulationTime.DefaultSecondsPerDay) < .0001f &&
+              SimulationTime.StandardLoopDays * SimulationTime.DefaultSecondsPerDay /
+              SimulationTime.StandardLoopSpeed == 900f,
+            "The standard loop must cover 1800 days in 15 minutes at 2x.");
         Check(Read(c, 0).Environment.Terrain == TerrainKind.Grassland, "Initial terrain must be canonical grassland.");
+        Check(c.GetTerrainNeighbors(Vector2Int.zero).Count == 4 &&
+              TerrainTransitionGraph.AreAdjacent(TerrainKind.Grassland, TerrainKind.Desert),
+            "Runtime terrain graph must expose the grassland neighbors.");
         Check(Read(c, 0).PlantStock == 100000, "Initial stock must equal default increment.");
         string[] assets = { "森林", "雨林", "草原", "荒漠", "苔原", "高山", "雪山", "火山" };
         for (int i = 0; i < assets.Length; i++)
