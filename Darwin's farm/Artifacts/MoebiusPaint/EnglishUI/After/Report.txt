@@ -1,0 +1,40 @@
+PASS: Shader without painting equals pre-change pixels
+PASS: Enabled paint without assigned texture uses transparent default
+PASS: Mesh picking without MeshCollider
+PASS: Ray hit barycentrics recover UV0
+PASS: Original/shared material is protected before explicit Make Unique
+PASS: Non-Moebius material is rejected
+PASS: Shared painting material is blocked even on inactive object
+PASS: Empty color mask preserves original render exactly
+PASS: GPU stroke updates working paint texture
+PASS: GPU UV raster is aligned and does not mirror vertically
+PASS: Color painting immediately changes NPR surface rendering
+PASS: Undo restores an entire multi-dab stroke
+PASS: Redo restores entire stroke
+PASS: Color PNG is imported as sRGB
+PASS: Save creates persistent PNG and material reference
+PASS: Clear color removes coverage without changing original style
+PASS: Revert restores saved paint
+PASS: Reopening session loads saved painting
+PASS: World-space radius, strength and smooth falloff behave correctly
+PASS: Color eraser restores zero coverage
+PASS: Save is blocked if material becomes shared during painting
+PASS: Control R paints hatching without damaging G/B/A
+PASS: Existing G/B/A channels accept independently painted values
+PASS: Clear/erase restores R default 1 and preserves other channels
+PASS: Control PNG uses linear channel data
+PASS: Missing UV is reported without modifying model
+PASS: Picking identifies correct submesh/material slot
+PASS: GPU painting only writes selected submesh, even with large radius
+PASS: Paint window opens and identifies selected mesh
+PASS: Native EditorTool activates
+PASS: Scene Handles preview leaves working paint pixels unchanged
+PASS: Scene View repaint executes surface-oriented brush preview
+PASS: Scene View mouse down/drag/up creates a continuous native-tool stroke
+PASS: Brush spacing fills the middle of a dragged stroke
+PASS: Mouse up commits native tool stroke
+PASS: Scene View drag is one Undo operation
+PASS: Scene View Shift shortcut erases painted coverage
+PASS: Alt Scene navigation does not paint
+PASS: Tool deactivates and restores previous tool
+Shader/runtime/test errors: 0

@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Moebius Paint Surface_Ivory_Paint 10
+  m_Shader: {fileID: 4800000, guid: ff9803eb4ad50444bb14eaa671550c58, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _USE_HATCHING
+  - _USE_STIPPLE
+  m_InvalidKeywords:
+  - _USEPAINTCOLOR_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ControlMap:
+        m_Texture: {fileID: 2800000, guid: 0c01363e37ddf1a46b874f97157d21b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HatchTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightingRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PaintColorMap:
+        m_Texture: {fileID: 2800000, guid: 944572195b18a55409086c9558fea7cd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BrightThreshold: 0.8
+    - _CastShadowHatchStrength: 0.9
+    - _CastShadowTintStrength: 0.2
+    - _DebugMode: 0
+    - _DeepShadowThreshold: 0.12
+    - _EnableColorRamp: 0
+    - _EnableSpatialGradient: 0
+    - _HatchContrast: 1
+    - _HatchCrossStrength: 0.3
+    - _HatchIrregularity: 0.65
+    - _HatchLineWidth: 1
+    - _HatchRotation: -25
+    - _HatchScale: 125
+    - _HatchStrength: 0.85
+    - _HatchThirdStrength: 0.12
+    - _HatchThreshold: 0.65
+    - _HighlightInkStrength: 0.8
+    - _HighlightInkWidth: 0.7
+    - _HighlightNoiseStrength: 0.003
+    - _HighlightSize: 0.02
+    - _HighlightStrength: 0.1
+    - _HighlightThreshold: 0.99
+    - _HighlightViewInfluence: 0
+    - _PaperLift: 0.07
+    - _RampLightThreshold: 0.55
+    - _RampShadowThreshold: 0.4
+    - _RampStrength: 0.35
+    - _ShadowSoftness: 0.015
+    - _ShadowThreshold: 0.45
+    - _SpatialGradientStrength: 1
+    - _SpatialGradientWidth: 1
+    - _StippleScale: 65
+    - _StippleStrength: 0.2
+    - _StippleThreshold: 0.65
+    - _SurfaceTintStrength: 0.12
+    - _UseHatchTexture: 0
+    - _UseHatching: 1
+    - _UsePaintColor: 1
+    - _UseRamp: 0
+    - _UseStipple: 1
+    - _UseTriplanar: 0
+    - _UseVertexColor: 0
+    m_Colors:
+    - _BaseColor: {r: 0.9607843, g: 0.91764706, b: 0.8666667, a: 1}
+    - _DeepShadowColor: {r: 0.72, g: 0.75, b: 0.8, a: 1}
+    - _HighlightColor: {r: 1, g: 0.99, b: 0.94, a: 1}
+    - _InkColor: {r: 0.12, g: 0.1, b: 0.09, a: 1}
+    - _RampLightColor: {r: 1, g: 0.97999996, b: 0.94, a: 1}
+    - _RampShadowColor: {r: 0.94, g: 0.92, b: 1, a: 1}
+    - _ShadowColor: {r: 0.79, g: 0.83, b: 0.88, a: 1}
+    - _SpatialGradientColorA: {r: 0.95, g: 0.52, b: 0.37999994, a: 1}
+    - _SpatialGradientColorB: {r: 0.6399999, g: 0.63, b: 0.88, a: 1}
+    - _SpatialGradientPointA: {r: -1, g: 0, b: 0, a: 0}
+    - _SpatialGradientPointB: {r: 1, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

@@ -1,0 +1,17 @@
+Assets/Rendering/Moebius/BiomeTests/Animals/BillboardAnimalQuad.asset
+Assets/Art/Animals/Textures/OceanDeer.png
+Assets/Rendering/Moebius/BiomeTests/Scenes/Highland_Animals.unity
+Assets/Rendering/Moebius/BiomeTests/Animals/Materials/MushroomFox.mat
+Assets/Rendering/Moebius/BiomeTests/Animals/Materials/PeacockSnakeLion.mat
+Assets/Art/Animals/Textures/Wolf.png
+Assets/Rendering/Moebius/BiomeTests/Animals/Prefabs/Wolf.prefab
+Assets/Art/Animals/Textures/ForestDeer.png
+Assets/Art/Animals/Textures/PeacockSnakeLion.png
+Assets/Rendering/Moebius/BiomeTests/Animals/Materials/Wolf.mat
+Assets/Rendering/Moebius/BiomeTests/Animals/Prefabs/OceanDeer.prefab
+Assets/Rendering/Moebius/BiomeTests/Animals/Prefabs/PeacockSnakeLion.prefab
+Assets/Rendering/Moebius/BiomeTests/Animals/Materials/OceanDeer.mat
+Assets/Art/Animals/Textures/MushroomFox.png
+Assets/Rendering/Moebius/BiomeTests/Animals/Prefabs/ForestDeer.prefab
+Assets/Rendering/Moebius/BiomeTests/Animals/Prefabs/MushroomFox.prefab
+Assets/Rendering/Moebius/BiomeTests/Animals/Materials/ForestDeer.mat

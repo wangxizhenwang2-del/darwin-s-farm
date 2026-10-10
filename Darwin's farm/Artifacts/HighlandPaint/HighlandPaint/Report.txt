@@ -1,0 +1,212 @@
+PASS: Maya FBX imports successfully
+PASS: All 38 source mesh renderers are imported
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cube.020
+PASS: Paint UV0 lies within 0-1: mesh 0
+PASS: Paint derivative preserves geometry: mesh 0
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cube.021
+PASS: Paint UV0 lies within 0-1: mesh 1
+PASS: Paint derivative preserves geometry: mesh 1
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cube.022
+PASS: Paint UV0 lies within 0-1: mesh 2
+PASS: Paint derivative preserves geometry: mesh 2
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cube.023
+PASS: Paint UV0 lies within 0-1: mesh 3
+PASS: Paint derivative preserves geometry: mesh 3
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cube.024
+PASS: Paint UV0 lies within 0-1: mesh 4
+PASS: Paint derivative preserves geometry: mesh 4
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cube.025
+PASS: Paint UV0 lies within 0-1: mesh 5
+PASS: Paint derivative preserves geometry: mesh 5
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cube.026
+PASS: Paint UV0 lies within 0-1: mesh 6
+PASS: Paint derivative preserves geometry: mesh 6
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Mountain
+PASS: Paint UV0 lies within 0-1: mesh 7
+PASS: Paint derivative preserves geometry: mesh 7
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Mountain1
+PASS: Paint UV0 lies within 0-1: mesh 8
+PASS: Paint derivative preserves geometry: mesh 8
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__bush.012
+PASS: Paint UV0 lies within 0-1: mesh 9
+PASS: Paint derivative preserves geometry: mesh 9
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__bush.016
+PASS: Paint UV0 lies within 0-1: mesh 10
+PASS: Paint derivative preserves geometry: mesh 10
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__bush.012
+PASS: Paint UV0 lies within 0-1: mesh 11
+PASS: Paint derivative preserves geometry: mesh 11
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__bush.016
+PASS: Paint UV0 lies within 0-1: mesh 12
+PASS: Paint derivative preserves geometry: mesh 12
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__bush.012
+PASS: Paint UV0 lies within 0-1: mesh 13
+PASS: Paint derivative preserves geometry: mesh 13
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__bush.016
+PASS: Paint UV0 lies within 0-1: mesh 14
+PASS: Paint derivative preserves geometry: mesh 14
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.031
+PASS: Paint UV0 lies within 0-1: mesh 15
+PASS: Paint derivative preserves geometry: mesh 15
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.038
+PASS: Paint UV0 lies within 0-1: mesh 16
+PASS: Paint derivative preserves geometry: mesh 16
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.048
+PASS: Paint UV0 lies within 0-1: mesh 17
+PASS: Paint derivative preserves geometry: mesh 17
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.049
+PASS: Paint UV0 lies within 0-1: mesh 18
+PASS: Paint derivative preserves geometry: mesh 18
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.050
+PASS: Paint UV0 lies within 0-1: mesh 19
+PASS: Paint derivative preserves geometry: mesh 19
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.031
+PASS: Paint UV0 lies within 0-1: mesh 20
+PASS: Paint derivative preserves geometry: mesh 20
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.032
+PASS: Paint UV0 lies within 0-1: mesh 21
+PASS: Paint derivative preserves geometry: mesh 21
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.033
+PASS: Paint UV0 lies within 0-1: mesh 22
+PASS: Paint derivative preserves geometry: mesh 22
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.034
+PASS: Paint UV0 lies within 0-1: mesh 23
+PASS: Paint derivative preserves geometry: mesh 23
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.035
+PASS: Paint UV0 lies within 0-1: mesh 24
+PASS: Paint derivative preserves geometry: mesh 24
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.036
+PASS: Paint UV0 lies within 0-1: mesh 25
+PASS: Paint derivative preserves geometry: mesh 25
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.037
+PASS: Paint UV0 lies within 0-1: mesh 26
+PASS: Paint derivative preserves geometry: mesh 26
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.039
+PASS: Paint UV0 lies within 0-1: mesh 27
+PASS: Paint derivative preserves geometry: mesh 27
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.040
+PASS: Paint UV0 lies within 0-1: mesh 28
+PASS: Paint derivative preserves geometry: mesh 28
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.041
+PASS: Paint UV0 lies within 0-1: mesh 29
+PASS: Paint derivative preserves geometry: mesh 29
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.042
+PASS: Paint UV0 lies within 0-1: mesh 30
+PASS: Paint derivative preserves geometry: mesh 30
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.043
+PASS: Paint UV0 lies within 0-1: mesh 31
+PASS: Paint derivative preserves geometry: mesh 31
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.044
+PASS: Paint UV0 lies within 0-1: mesh 32
+PASS: Paint derivative preserves geometry: mesh 32
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.045
+PASS: Paint UV0 lies within 0-1: mesh 33
+PASS: Paint derivative preserves geometry: mesh 33
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.046
+PASS: Paint UV0 lies within 0-1: mesh 34
+PASS: Paint derivative preserves geometry: mesh 34
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__Cone.047
+PASS: Paint UV0 lies within 0-1: mesh 35
+PASS: Paint derivative preserves geometry: mesh 35
+PASS: Unique paint UV unwrap succeeds: pasted__pasted__red06
+PASS: Paint UV0 lies within 0-1: mesh 36
+PASS: Paint derivative preserves geometry: mesh 36
+PASS: Unique paint UV unwrap succeeds: pPlane2
+PASS: Paint UV0 lies within 0-1: mesh 37
+PASS: Paint derivative preserves geometry: mesh 37
+PASS: Ground and both originally UV-less mountains are prepared
+PASS: Material is ready for isolated albedo painting: Highland_00_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_01_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_02_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_03_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_04_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_05_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_06_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_07_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_08_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_09_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_10_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_11_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_12_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_13_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_14_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_15_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_16_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_17_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_18_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_19_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_20_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_21_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_22_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_23_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_24_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_25_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_26_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_27_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_28_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_29_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_30_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_31_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_32_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_33_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_34_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_35_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_36_Slot0
+PASS: Material is ready for isolated albedo painting: Highland_37_Slot0
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cube.020
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cube.021
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cube.022
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cube.023
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cube.024
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cube.025
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cube.026
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Mountain
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Mountain1
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__bush.012
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__bush.016
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__bush.012
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__bush.016
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__bush.012
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__bush.016
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.031
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.038
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.048
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.049
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.050
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.031
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.032
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.033
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.034
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.035
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.036
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.037
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.039
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.040
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.041
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.042
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.043
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.044
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.045
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.046
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__Cone.047
+PASS: Imported source mesh UVs remain unchanged: pasted__pasted__red06
+PASS: Imported source mesh UVs remain unchanged: pPlane2
+PASS: Imported ground can be picked without adding a MeshCollider
+PASS: GPU brush paints soft two-color strokes on the imported ground
+PASS: Painted albedo gradient appears through the existing NPR renderer
+PASS: Warm and cool albedo regions are both present
+PASS: Soft strokes contain blended intermediate colors
+PASS: Undo restores the unpainted imported ground
+PASS: Redo restores the complete gradient stroke
+PASS: Gradient saves to a persistent paint PNG
+PASS: Revert restores the saved imported-model gradient
+PASS: Reopening the imported-model paint session preserves the gradient
+PASS: Albedo painting does not change hatching/highlight/shadow masks
+PASS: The painted model still responds to a changed light direction
+PASS: Light rotation preserves the albedo paint texture
+PASS: Paint editor opens a ready-to-paint session on Highland
+PASS: Native Scene painting tool activates on Highland
+PASS: Saved scene reloads the actual imported-model paint
+PASS: Scene reload preserves the rendered gradient exactly
+Source renderers: 38; unique material slots: 38; paint UV derivative meshes: 38
+Shader/runtime/test errors: 0

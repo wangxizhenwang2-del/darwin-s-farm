@@ -1,0 +1,55 @@
+PASS: Isolated validation project
+PASS: Actual static shoreline mask baked and assigned
+PASS: Subdivided mesh with persistent wave-safe bounds
+PASS: Animation requires no runtime MonoBehaviour
+PASS: Combined flow, waves and foam change with animation time
+PASS: Flow actually moves visible ink strokes on an opaque single-color surface
+PASS: Foam changes independently at the shoreline
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: WaterForward: actual GPU output changes with vertex displacement
+PASS: DepthOnly present
+PASS: DepthOnly present
+PASS: DepthOnly: actual GPU output changes with vertex displacement
+PASS: DepthNormals present
+PASS: DepthNormals present
+PASS: DepthNormals: actual GPU output changes with vertex displacement
+PASS: ShadowCaster present
+PASS: ShadowCaster present
+PASS: ShadowCaster: actual GPU output changes with vertex displacement
+PASS: DepthNormals present
+PASS: ShadowCaster present
+PASS: All optional effects disabled gives a stable flat base color
+PASS: Saved scene/material reload with production defaults
+PASS: Wave culling bounds survive reload
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableFlow: disabled and zero strength have identical GPU output
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableWaves: disabled and zero strength have identical GPU output
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableRipples: disabled and zero strength have identical GPU output
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableFoam: disabled and zero strength have identical GPU output
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableVariation: disabled and zero strength have identical GPU output
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableFoamInk: disabled and zero strength have identical GPU output
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableFoamPatches: disabled and zero strength have identical GPU output
+PASS: WaterForward present
+PASS: WaterForward present
+PASS: _EnableShoreMotion: disabled and zero strength have identical GPU output
+PASS: DepthNormals present
+PASS: DepthNormals present
+PASS: Color effects do not alter depth-normal geometry or outline data
+PASS: Distance bake matches Euclidean distances with rectangular world pixels
+PASS: Unity reports SRP Batcher compatible
+PASS: No shader compiler or runtime errors
+Shader/runtime/test errors: 0

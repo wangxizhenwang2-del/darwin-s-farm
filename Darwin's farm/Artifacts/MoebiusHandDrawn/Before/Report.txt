@@ -1,0 +1,2 @@
+Actual scene renders: four biomes, receiving ground, small camera movement, billboard cutout.
+Shader/runtime errors: 0

@@ -1,0 +1,89 @@
+PASS: Delivered original Highland FBX imports successfully
+PASS: Delivered paintable prefab loads successfully
+PASS: Highland_PaintTest: all 38 renderers load
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cube.020
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cube.021
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cube.022
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cube.023
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cube.024
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cube.025
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cube.026
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on Mountain 1 - Paintable
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on Mountain 2 - Paintable
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__bush.012
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__bush.016
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__bush.012
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__bush.016
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__bush.012
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__bush.016
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.031
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.038
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.048
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.049
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.050
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.031
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.032
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.033
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.034
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.035
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.036
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.037
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.039
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.040
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.041
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.042
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.043
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.044
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.045
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.046
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__Cone.047
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on pasted__pasted__red06
+PASS: Highland_PaintTest: material/mesh binding is paint-ready on Ground - Paint Here
+PASS: Highland_PaintTest: actual paint window opens successfully
+PASS: Highland_PaintTest: workspace targets albedo only
+PASS: Clean scene remains unpainted
+PASS: Highland_PaintTest: inspection does not dirty the scene
+PASS: Highland_GradientExample: all 38 renderers load
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cube.020
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cube.021
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cube.022
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cube.023
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cube.024
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cube.025
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cube.026
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on Mountain 1 - Paintable
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on Mountain 2 - Paintable
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__bush.012
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__bush.016
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__bush.012
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__bush.016
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__bush.012
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__bush.016
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.031
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.038
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.048
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.049
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.050
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.031
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.032
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.033
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.034
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.035
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.036
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.037
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.039
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.040
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.041
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.042
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.043
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.044
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.045
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.046
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__Cone.047
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on pasted__pasted__red06
+PASS: Highland_GradientExample: material/mesh binding is paint-ready on Ground - Paint Here
+PASS: Highland_GradientExample: actual paint window opens successfully
+PASS: Highland_GradientExample: workspace targets albedo only
+PASS: Example scene references its saved gradient texture
+PASS: Highland_GradientExample: inspection does not dirty the scene
+Shader/runtime/test errors: 0

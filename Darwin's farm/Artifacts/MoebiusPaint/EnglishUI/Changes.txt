@@ -1,0 +1,7 @@
+English-only editor labels, tooltips, prompts and diagnostics.
+Paint Layer: Color; Hatching; Detail (Hatch + Stipple); Highlight; Shadow.
+Five flat layer options; no slash-delimited submenu labels.
+Open workspaces display actual Texture Size.
+After: 39 PASS; Reload: 5 PASS; Shader/runtime/test errors: 0.
+Reload preparation preserves the generated isolation scene instead of copying an older source demo over it.
+Usage: Assets/Rendering/Moebius/Editor/Paint/README.md
