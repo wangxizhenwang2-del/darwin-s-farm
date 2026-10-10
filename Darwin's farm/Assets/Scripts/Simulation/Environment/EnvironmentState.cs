@@ -40,10 +40,13 @@ namespace DarwinFarm.Environment
         public TerrainKind Terrain { get; }
         public bool IsWater { get; }
         public TerrainDefaults Defaults => EnvironmentRules.Defaults(Terrain);
+        public TerrainDefaults NaturalDefaults { get; }
         public AttributeSnapshot Temperature { get; }
         public AttributeSnapshot Humidity { get; }
         public AttributeSnapshot Recovery { get; }
         public long? MonsoonId { get; }
+        public double MonsoonTemperatureOffset { get; }
+        public double MonsoonHumidityOffset { get; }
         public bool HasMonsoon => MonsoonId.HasValue;
         public bool MonsoonApplied { get; }
         public bool HasLocalClimate { get; }
@@ -54,13 +57,18 @@ namespace DarwinFarm.Environment
         internal EnvironmentSnapshot(EnvironmentTile tile)
         {
             Position = tile.Position; Elevation = tile.Elevation; Terrain = tile.Terrain; IsWater = tile.IsWater;
+            NaturalDefaults = EnvironmentRules.Defaults(tile.BaselineTerrain);
             Temperature = tile.Attribute(0); Humidity = tile.Attribute(1); Recovery = tile.Attribute(2);
             MonsoonId = tile.MonsoonId; HasLocalClimate = tile.HasLocalClimate;
+            MonsoonTemperatureOffset = tile.WindOffsets[0];
+            MonsoonHumidityOffset = tile.WindOffsets[1];
             HasLocalTemperature = tile.Locals[0] != null;
             HasLocalHumidity = tile.Locals[1] != null;
             HasRecoveryCommand = tile.RecoveryReturning;
-            CanCancelRecovery = tile.RecoveryReturning && !tile.RecoveryCancelIssued;
-            MonsoonApplied = HasMonsoon && !HasLocalClimate;
+            CanCancelRecovery = tile.RecoveryReturning &&
+                tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
+                !tile.RecoveryCancelIssued;
+            MonsoonApplied = HasMonsoon;
         }
     }
 
@@ -122,7 +130,10 @@ namespace DarwinFarm.Environment
     internal sealed class LocalClimateEffect
     {
         internal int Age;
-        internal EffectPhase Phase => Age < 25 ? EffectPhase.Entering : Age < 125 ? EffectPhase.Holding : EffectPhase.Returning;
+        internal long Sequence;
+        internal bool Active => Age < EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
+        internal EffectPhase Phase => Age < EnvironmentRules.TransitionDays ? EffectPhase.Entering :
+            Active ? EffectPhase.Holding : EffectPhase.Returning;
     }
 
     internal sealed class EnvironmentTile
@@ -131,20 +142,24 @@ namespace DarwinFarm.Environment
         internal int Elevation;
         internal bool IsWater;
         internal TerrainKind Terrain;
+        internal TerrainKind BaselineTerrain;
         internal readonly double[] Values = new double[3];
         internal readonly Transition[] Tracks = { new Transition(), new Transition(), new Transition() };
         internal readonly LocalClimateEffect[] Locals = new LocalClimateEffect[2];
+        internal long RecoverySequence;
+        internal int RecoveryAge;
         internal bool RecoveryReturning;
         internal bool RecoveryCancelIssued;
         internal bool RecoveryDetached;
         internal long? MonsoonId;
-        internal readonly double[] WindTargets = new double[2];
+        internal readonly double[] WindOffsets = new double[2];
         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
         internal EnvironmentTile(TopologyNode node)
         {
             Position = node.Position; Elevation = node.Elevation; IsWater = node.IsWater;
             var defaults = EnvironmentRules.Defaults(node.InitialTerrain);
             Terrain = EnvironmentRules.Classify(Elevation, defaults.Temperature, defaults.Humidity, defaults.Recovery);
+            BaselineTerrain = Terrain;
             defaults = EnvironmentRules.Defaults(Terrain);
             Values[0] = defaults.Temperature; Values[1] = defaults.Humidity;
             Values[2] = IsWater ? EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
@@ -153,9 +168,17 @@ namespace DarwinFarm.Environment
         internal AttributeSnapshot Attribute(int index)
         {
             var track = Tracks[index]; var local = index < 2 ? Locals[index] : null;
-            var phase = local != null ? local.Phase : track.Active ? track.Phase : EffectPhase.None;
-            int remaining = local != null && local.Phase == EffectPhase.Holding ? 125 - local.Age : Math.Max(0, track.Duration - track.Age);
-            return new AttributeSnapshot(Values[index], track.Target, phase, remaining, track.Progress);
+            var phase = local != null ? local.Phase :
+                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays
+                    ? EffectPhase.Holding : track.Active ? track.Phase : EffectPhase.None;
+            int remaining = local != null && local.Phase == EffectPhase.Holding ?
+                EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays - local.Age :
+                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays ?
+                    EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
+            double offset = index < 2 ? WindOffsets[index] : 0;
+            return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index] + offset),
+                EnvironmentRules.Clamp((EnvironmentAttribute)index, track.Target + offset),
+                phase, remaining, track.Progress);
         }
     }
 

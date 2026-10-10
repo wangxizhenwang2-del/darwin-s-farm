@@ -258,15 +258,23 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水格不能进行温湿度干预"; return false; }
                 if (!EnvironmentRules.IsClimateStrength(amount)) { error = "温湿度强度必须为 ±25 或 ±50"; return false; }
                 var attribute = kind == SimulationInterventionKind.Temperature ? EnvironmentAttribute.Temperature : EnvironmentAttribute.Humidity;
-                target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount);
+                target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount +
+                    (attribute == EnvironmentAttribute.Temperature ? state.MonsoonTemperatureOffset :
+                        state.MonsoonHumidityOffset));
                 if (attribute == EnvironmentAttribute.Temperature) t = EnvironmentRules.Round(target); else h = EnvironmentRules.Round(target);
-                enter = 25; hold = 100; returning = 25;
+                r = EnvironmentRules.Round(EnvironmentRules.PotentialRecovery(
+                    state.NaturalDefaults, t, h));
+                enter = EnvironmentRules.TransitionDays;
+                hold = EnvironmentRules.ClimateHoldDays;
+                returning = EnvironmentRules.ClimateReturnDays;
                 break;
             case SimulationInterventionKind.PlantRecovery:
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (!EnvironmentRules.IsRecoveryStrength(amount)) { error = "增量强度必须为 ±25000 或 ±50000"; return false; }
-                target = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, state.Defaults.Recovery + amount);
-                r = EnvironmentRules.Round(target); returning = 100; break;
+                target = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, state.Recovery.Value + amount);
+                r = EnvironmentRules.Round(target);
+                hold = EnvironmentRules.RecoveryHoldDays;
+                returning = EnvironmentRules.RecoveryReturnDays; break;
             case SimulationInterventionKind.PlantBiomass:
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f) { error = "库存操作使用 ±0.25 或 ±0.5（25%／50%）"; return false; }
@@ -354,6 +362,43 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 Publish(); return true;
             default: error = "该科技不能投放到水域"; return false;
         }
+    }
+
+    // The positive plant tier changes production and stock as one player action.
+    public bool TryApplyPlantIncrease(Vector2Int coordinate, int recoveryIncrease,
+        float stockFraction, out string error)
+    {
+        error = null;
+        if (!EnvironmentRules.IsRecoveryStrength(recoveryIncrease) || recoveryIncrease < 0 ||
+            stockFraction != recoveryIncrease / 100000f ||
+            !TryRead(coordinate, out EnvironmentReadSnapshot snapshot))
+        { error = "植物增产档位无效或目标地块不存在"; return false; }
+        var area = new List<Vector2Int>();
+        if (snapshot.Environment.IsWater)
+        {
+            if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> members, out error)) return false;
+            area.AddRange(members);
+        }
+        else area.Add(coordinate);
+        var positions = new List<GridPosition>(area.Count);
+        double totalStock = 0;
+        foreach (Vector2Int member in area)
+        {
+            GridPosition position = Position(member);
+            if (!blocks.TryGetValue(position, out BlockInfo block))
+            { error = "植物操作范围内有未就绪地块"; return false; }
+            positions.Add(position);
+            totalStock += block.plantBiomass;
+        }
+        double capacity = (snapshot.Environment.IsWater ? EnvironmentRules.WaterPlantCapacity :
+            EnvironmentRules.PlantCapacity) * (double)area.Count;
+        float nextPerCell = (float)(EnvironmentRules.MultiplyStock(totalStock, capacity,
+            stockFraction) / area.Count);
+        if (!world.TrySetRecoveryBatch(positions, recoveryIncrease, false, out error)) return false;
+        foreach (Vector2Int member in area)
+            simulation.ApplyPlantBiomass(blocks[Position(member)], nextPerCell);
+        Publish();
+        return true;
     }
 
     public bool TryApplySuppression(Vector2Int coordinate, float fraction, out string error)

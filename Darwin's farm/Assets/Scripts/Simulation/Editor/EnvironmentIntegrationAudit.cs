@@ -94,22 +94,24 @@ public static class EnvironmentIntegrationAudit
         Check(highland.plantGrowthToday > 0, "Ecology must still grow plants.");
         Check(c.TryDeployMonsoon(Vector2Int.zero, 20, 20, out long wind, out var error), error);
         Apply(c, 0, SimulationInterventionKind.Temperature, 25);
-        Check(Read(c, 0).Environment.HasMonsoon && !Read(c, 0).Environment.MonsoonApplied, "Runtime local masks monsoon.");
+        Check(Read(c, 0).Environment.HasMonsoon && Read(c, 0).Environment.MonsoonApplied,
+            "Wind remains active beside the newest local tool.");
         for (int day = 0; day < 25; day++) clock.NextDay();
-        Check(Read(c, 0).Environment.Temperature.Value == 93, "Runtime 25day entry.");
+        Check(Read(c, 0).Environment.Temperature.Value == 100, "Runtime 25day stacked entry.");
         int oldDay = clock.currentDay;
         clock.ResetDay(); clock.NextDay();
-        Check(clock.currentDay == 1 && oldDay > 1 && Read(c, 0).Environment.Temperature.Value == 93, "Clock reset preserves effects.");
+        Check(clock.currentDay == 1 && oldDay > 1 && Read(c, 0).Environment.Temperature.Value == 100, "Clock reset preserves effects.");
         Check(c.TryCancel(Vector2Int.zero, EnvironmentAttribute.Temperature, out error), error);
-        for (int day = 0; day < 25; day++) clock.NextDay();
-        Check(Read(c, 0).Environment.MonsoonApplied && Read(c, 0).Environment.Temperature.Value == 88, "Runtime monsoon resumes.");
+        for (int day = 0; day < 150; day++) clock.NextDay();
+        Check(Read(c, 0).Environment.MonsoonApplied && Read(c, 0).Environment.Temperature.Value == 88,
+            "Runtime climate recovers while monsoon stays active.");
         float stock = Read(c, 0).PlantStock;
         Apply(c, 0, SimulationInterventionKind.PlantBiomass, -.25f);
         Check(Math.Abs(Read(c, 0).PlantStock - stock * .75f) < .1f, "Runtime percentage stock basis.");
         stock = Read(c, 0).PlantStock;
         Apply(c, 0, SimulationInterventionKind.PlantRecovery, 25000);
-        Check(Read(c, 0).Environment.Terrain == TerrainKind.Rainforest && Read(c, 0).PlantStock == stock,
-            "Transformation must preserve stock.");
+        Check(Read(c, 0).Environment.Recovery.Value >= 25000 && Read(c, 0).PlantStock == stock,
+            "Plant recovery changes without replacing stock.");
         Check(c.TryCancelMonsoon(wind, out error), error);
         var grass = AssetDatabase.LoadAssetAtPath<MapTileDefinition>("Assets/Scripts/map/data/草原.asset");
         Check(grid.TryPlaceTile(new Vector2Int(9, 0), grass) && grid.TryPlaceTile(new Vector2Int(10, 0), grass), "Extend real map.");
@@ -139,25 +141,35 @@ public static class EnvironmentIntegrationAudit
         Check(player != null && grid.TryPlaceTile(new Vector2Int(11, 0), grass),
             "Player technology controller and land target");
         var land = new Vector2Int(11, 0);
-        var kinds = new[]
+        var choices = new[]
         {
-            DarwinFarm.Environment.EnvironmentTechnologyKind.HeatInjection,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.RadiativeCooling,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.CloudSeeding,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.VaporRecovery,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.GrowthCatalyst,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSeeding,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSuppression,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.CrustUplift,
-            DarwinFarm.Environment.EnvironmentTechnologyKind.StrataSubsidence
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.TemperatureChange, 2),
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.TemperatureChange, -2),
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.HumidityChange, 2),
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.HumidityChange, -2),
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantChange, 2),
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantChange, -2),
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.ElevationChange, 1),
+            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.ElevationChange, -1)
         };
-        foreach (var kind in kinds)
+        foreach (var choice in choices)
         {
-            var choice = new DarwinFarm.Environment.EnvironmentTechnologyChoice(kind,
-                kind == DarwinFarm.Environment.EnvironmentTechnologyKind.CrustUplift ||
-                kind == DarwinFarm.Environment.EnvironmentTechnologyKind.StrataSubsidence ? 1 : 2);
+            var before = Read(c, land.x);
             Check(player.TryDeploy(land, choice, out var preview) && preview.Cost == 0,
-                "Zero-cost land technology " + kind + ": " + preview.Error);
+                "Zero-cost land technology " + choice.Kind + " " + choice.Tier + ": " + preview.Error);
+            if (choice.Kind == EnvironmentTechnologyKind.PlantChange)
+            {
+                var after = Read(c, land.x);
+                float fraction = EnvironmentTechnologyCatalog.Fraction(choice);
+                double expectedStock = EnvironmentRules.MultiplyStock(before.PlantStock,
+                    EnvironmentRules.PlantCapacity, choice.Tier > 0 ? fraction : -fraction);
+                double expectedRecovery = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+                    before.Environment.Recovery.Value + (choice.Tier > 0 ? 1 : -1) *
+                    EnvironmentTechnologyCatalog.GrowthAmount(choice));
+                Check(Math.Abs(after.PlantStock - expectedStock) < .1f &&
+                      Math.Abs(after.Environment.Recovery.Value - expectedRecovery) < .1f,
+                    "Plant tier must change stock and daily recovery together");
+            }
         }
         var lake = ScriptableObject.CreateInstance<MapTileDefinition>();
         lake.biome = BiomeType.Grassland;
@@ -168,33 +180,30 @@ public static class EnvironmentIntegrationAudit
             grid.TryPlaceTile(new Vector2Int(13, 0), lake), "Two connected water cells");
         var water = new Vector2Int(12, 0);
         Check(!player.Preview(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
-            DarwinFarm.Environment.EnvironmentTechnologyKind.HeatInjection)).IsValid,
+            DarwinFarm.Environment.EnvironmentTechnologyKind.TemperatureChange)).IsValid,
             "Water rejects climate technology");
         Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
-            DarwinFarm.Environment.EnvironmentTechnologyKind.GrowthCatalyst), out _),
-            "Whole-water catalyst");
+            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantChange), out _),
+            "Whole-water positive plant tier");
         Check(Read(c, 12).Environment.Recovery.Value == 100000 &&
-            Read(c, 13).Environment.Recovery.Value == 100000, "Water catalyst reaches both cells");
+            Read(c, 13).Environment.Recovery.Value == 100000, "Water positive tier reaches both cells");
+        Check(Read(c, 12).PlantStock + Read(c, 13).PlantStock == 187500,
+            "Whole-water positive tier multiplies existing stock");
         Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
-            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSeeding), out _),
-            "Whole-water seeding");
-        Check(Read(c, 12).PlantStock + Read(c, 13).PlantStock == 900000,
-            "Whole-water seeding uses total capacity");
-        Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
-            DarwinFarm.Environment.EnvironmentTechnologyKind.EcologicalSuppression), out _),
-            "Whole-water suppression");
+            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantChange, -1), out _),
+            "Whole-water negative plant tier");
         Check(Read(c, 12).Environment.Recovery.Value == 75000 &&
-            Read(c, 12).PlantStock + Read(c, 13).PlantStock == 675000,
+            Read(c, 12).PlantStock + Read(c, 13).PlantStock == 140625,
             "Whole-water suppression changes R and S together");
         Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
-            DarwinFarm.Environment.EnvironmentTechnologyKind.CrustUplift), out _),
+            DarwinFarm.Environment.EnvironmentTechnologyKind.ElevationChange), out _),
             "Whole-water height transaction");
         Check(Read(c, 12).Environment.Elevation == 1 &&
             Read(c, 13).Environment.Elevation == 1, "All water heights committed");
         Check(player.TryDeploy(land, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
-            DarwinFarm.Environment.EnvironmentTechnologyKind.MonsoonAnchor, 1, 20, -40), out _),
-            "Monsoon anchor is tenth technology");
-        Check(c.Monsoons.Count == 1 && player.CurrentApplied(land).Contains("季风锚"),
+            DarwinFarm.Environment.EnvironmentTechnologyKind.MonsoonAnchor, 1, 20, -20), out _),
+            "Hot-dry monsoon preset");
+        Check(c.Monsoons.Count == 1 && player.CurrentApplied(land).Contains("季风工具"),
             "Current technology readback includes wind");
         SimulationTime time = c.GetComponent<SimulationTime>();
         time.Play(); time.DoubleSpeed();
