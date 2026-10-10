@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "peacock",
+    "description": "Single cute peacock, full-body true left-facing side view, fully spread fan tail, three slender crest feathers",
+    "base_image": "base-source.png"
+  },
+  "cell": {
+    "shape": "square",
+    "width": 512,
+    "height": 512,
+    "safe_margin_x": 26,
+    "safe_margin_y": 26,
+    "size": 512,
+    "safe_margin": 26
+  },
+  "chroma_key": {
+    "name": "magenta",
+    "hex": "#FF00FF",
+    "rgb": [
+      255,
+      0,
+      255
+    ],
+    "selection": "auto",
+    "score": 230.56,
+    "min_subject_distance": 208.7,
+    "background": {
+      "mode": "transparent",
+      "opaque_border_fraction": 0.0,
+      "subject_pixels": 19025
+    },
+    "candidates": [
+      {
+        "name": "magenta",
+        "hex": "#FF00FF",
+        "score": 230.56,
+        "min_subject_distance": 208.7,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "green",
+        "hex": "#00FF00",
+        "score": 170.19,
+        "min_subject_distance": 155.59,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "cyan",
+        "hex": "#00FFFF",
+        "score": 58.73,
+        "min_subject_distance": 56.59,
+        "clears_erase_radius": false
+      },
+      {
+        "name": "blue",
+        "hex": "#004DFF",
+        "score": 59.55,
+        "min_subject_distance": 55.08,
+        "clears_erase_radius": false
+      }
+    ],
+    "selection_reason": "highest 1st-percentile subject distance among the 2 candidate(s) clearing the 96 erase radius"
+  },
+  "states": {
+    "walk": {
+      "frames": 8,
+      "fps": 8,
+      "loop": true,
+      "action": "Exactly eight sequential poses of ONE slow walking cycle for the same peacock, strict left-facing 90-degree side profile throughout. Frame 1 is a brief both-feet-grounded stance. Alternate near and far legs with clearly visible forward/back exchange; across the cycle each foot supports, lifts, swings forward, extends, lands, and pushes off. At least one foot stays planted in every pose; never airborne with both feet up. Small body bob, a little lower at support and higher during step exchange. Bird walking head bob: neck retracts slightly, head thrusts forward briefly, then returns to center in sync with steps. Keep the enormous fully spread peacock fan open and stable, pivoting only a few degrees at its base with subtle delayed sway. Exactly three slender flexible head crest plumes. One very brief blink in only one frame. Frame 8 flows naturally into frame 1 with no duplicated terminal frame. Preserve the reference's sketchy painterly blue body, teal-green eye-spotted fan, yellow tips, brown legs and cute proportions in every frame. Full character including all fan tips, crest and both feet visible in every frame. No perspective change, no turning, no additional characters, props, text or shadows."
+    }
+  },
+  "style": "Preserve the supplied reference image hand-painted sketch style and original palette exactly",
+  "layout": "taxonomy/v1",
+  "fit": {
+    "align_y": "bottom"
+  },
+  "chroma": {
+    "mode": "rgb",
+    "unmix_reach": 4,
+    "spill_max_fraction": 0.005
+  }
+}

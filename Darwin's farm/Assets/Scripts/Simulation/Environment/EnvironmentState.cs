@@ -57,7 +57,7 @@ namespace DarwinFarm.Environment
         internal EnvironmentSnapshot(EnvironmentTile tile)
         {
             Position = tile.Position; Elevation = tile.Elevation; Terrain = tile.Terrain; IsWater = tile.IsWater;
-            NaturalDefaults = EnvironmentRules.Defaults(tile.BaselineTerrain);
+            NaturalDefaults = EnvironmentRules.Defaults(tile.Terrain);
             Temperature = tile.Attribute(0); Humidity = tile.Attribute(1); Recovery = tile.Attribute(2);
             MonsoonId = tile.MonsoonId; HasLocalClimate = tile.HasLocalClimate;
             MonsoonTemperatureOffset = tile.WindOffsets[0];
@@ -142,7 +142,6 @@ namespace DarwinFarm.Environment
         internal int Elevation;
         internal bool IsWater;
         internal TerrainKind Terrain;
-        internal TerrainKind BaselineTerrain;
         internal readonly double[] Values = new double[3];
         internal readonly Transition[] Tracks = { new Transition(), new Transition(), new Transition() };
         internal readonly LocalClimateEffect[] Locals = new LocalClimateEffect[2];
@@ -151,6 +150,10 @@ namespace DarwinFarm.Environment
         internal bool RecoveryReturning;
         internal bool RecoveryCancelIssued;
         internal bool RecoveryDetached;
+        // The climate potential already reflected in Values[2]. A plant command
+        // owns an absolute recovery value, while subsequent climate changes add
+        // their daily difference to it instead of being masked for 50 days.
+        internal double RecoveryClimateReference;
         internal long? MonsoonId;
         internal readonly double[] WindOffsets = new double[2];
         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
@@ -159,10 +162,10 @@ namespace DarwinFarm.Environment
             Position = node.Position; Elevation = node.Elevation; IsWater = node.IsWater;
             var defaults = EnvironmentRules.Defaults(node.InitialTerrain);
             Terrain = EnvironmentRules.Classify(Elevation, defaults.Temperature, defaults.Humidity, defaults.Recovery);
-            BaselineTerrain = Terrain;
             defaults = EnvironmentRules.Defaults(Terrain);
             Values[0] = defaults.Temperature; Values[1] = defaults.Humidity;
             Values[2] = IsWater ? EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
+            RecoveryClimateReference = Values[2];
             for (int i = 0; i < 3; i++) Tracks[i].Stop(Values[i]);
         }
         internal AttributeSnapshot Attribute(int index)
@@ -176,8 +179,10 @@ namespace DarwinFarm.Environment
                 index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays ?
                     EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
             double offset = index < 2 ? WindOffsets[index] : 0;
+            double target = index == 2 && RecoveryReturning &&
+                RecoveryAge < EnvironmentRules.RecoveryHoldDays ? Values[2] : track.Target;
             return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index] + offset),
-                EnvironmentRules.Clamp((EnvironmentAttribute)index, track.Target + offset),
+                EnvironmentRules.Clamp((EnvironmentAttribute)index, target + offset),
                 phase, remaining, track.Progress);
         }
     }

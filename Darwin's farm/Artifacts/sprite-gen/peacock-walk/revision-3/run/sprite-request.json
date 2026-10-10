@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "peacock",
+    "description": "Single cute peacock, full-body true left-facing side view, fully spread fan tail, three slender crest feathers",
+    "base_image": "base-source.png"
+  },
+  "cell": {
+    "shape": "square",
+    "width": 512,
+    "height": 512,
+    "safe_margin_x": 26,
+    "safe_margin_y": 26,
+    "size": 512,
+    "safe_margin": 26
+  },
+  "chroma_key": {
+    "name": "magenta",
+    "hex": "#FF00FF",
+    "rgb": [
+      255,
+      0,
+      255
+    ],
+    "selection": "auto",
+    "score": 230.56,
+    "min_subject_distance": 208.7,
+    "background": {
+      "mode": "transparent",
+      "opaque_border_fraction": 0.0,
+      "subject_pixels": 19025
+    },
+    "candidates": [
+      {
+        "name": "magenta",
+        "hex": "#FF00FF",
+        "score": 230.56,
+        "min_subject_distance": 208.7,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "green",
+        "hex": "#00FF00",
+        "score": 170.19,
+        "min_subject_distance": 155.59,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "cyan",
+        "hex": "#00FFFF",
+        "score": 58.73,
+        "min_subject_distance": 56.59,
+        "clears_erase_radius": false
+      },
+      {
+        "name": "blue",
+        "hex": "#004DFF",
+        "score": 59.55,
+        "min_subject_distance": 55.08,
+        "clears_erase_radius": false
+      }
+    ],
+    "selection_reason": "highest 1st-percentile subject distance among the 2 candidate(s) clearing the 96 erase radius"
+  },
+  "states": {
+    "walk": {
+      "frames": 8,
+      "fps": 8,
+      "loop": true,
+      "action": "Make ONE physically readable 8-pose left-facing SIDE-VIEW slow WALK cycle for the SAME peacock. The legs and feet are the main animation; preserve the exact reference design, blue body, open eye-spotted fan and three slender crest feathers. Image left is forward. Show TWO distinct brown legs in EVERY frame, one NEAR leg slightly darker and in front of the body, one FAR leg slightly lighter and behind; maintain their identity across poses. Exactly two alternating steps, in this precise order: (1) DOUBLE CONTACT: near foot planted FORWARD on the left, far foot planted BACK on the right, both on one ground line. (2) NEAR foot stays planted and bears weight; FAR heel lifts behind, far toes still touch ground. (3) NEAR foot remains planted; FAR foot lifts clear and swings forward under the belly. (4) NEAR foot remains planted; FAR leg reaches forward to the left with foot low, about to land. (5) DOUBLE CONTACT: FAR foot has landed FORWARD on the left, NEAR foot is BACK on the right and still touching ground. (6) FAR foot stays planted and bears weight; NEAR heel lifts behind, near toes still touch ground. (7) FAR foot remains planted; NEAR foot lifts clear and swings forward under the belly. (8) FAR foot remains planted; NEAR leg reaches forward to the left with foot low, about to land; the NEXT frame is frame 1's near-foot landing. Both feet must visibly exchange front and back positions between poses 1 and 5. At least one foot must touch the SAME ground line in every frame. Do not keep using the same leg for both steps. Do not make feet float together, teleport, reverse direction, merge, disappear, or add extra legs. Frame 8 must lead smoothly into frame 1, not repeat it. Keep torso scale and position stable with very small walking bob, slight walking head-bob, a tiny delayed sway of the ALWAYS FULLY SPREAD fan, and one single-frame blink. Single character, no shadows, marks, lettering or props."
+    }
+  },
+  "style": "Preserve the supplied reference image hand-painted sketch style and original palette exactly",
+  "layout": "taxonomy/v1",
+  "fit": {
+    "align_y": "bottom"
+  },
+  "chroma": {
+    "mode": "rgb",
+    "unmix_reach": 4,
+    "spill_max_fraction": 0.005
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-request",
+  "engine": "component-row",
+  "character": {
+    "id": "peacock",
+    "description": "Single peacock left-facing side view, open fan, three crest feathers",
+    "base_image": "base-source.png"
+  },
+  "cell": {
+    "shape": "square",
+    "width": 512,
+    "height": 512,
+    "safe_margin_x": 26,
+    "safe_margin_y": 26,
+    "size": 512,
+    "safe_margin": 26
+  },
+  "chroma_key": {
+    "name": "magenta",
+    "hex": "#FF00FF",
+    "rgb": [
+      255,
+      0,
+      255
+    ],
+    "selection": "auto",
+    "score": 230.56,
+    "min_subject_distance": 208.7,
+    "background": {
+      "mode": "transparent",
+      "opaque_border_fraction": 0.0,
+      "subject_pixels": 19025
+    },
+    "candidates": [
+      {
+        "name": "magenta",
+        "hex": "#FF00FF",
+        "score": 230.56,
+        "min_subject_distance": 208.7,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "green",
+        "hex": "#00FF00",
+        "score": 170.19,
+        "min_subject_distance": 155.59,
+        "clears_erase_radius": true
+      },
+      {
+        "name": "cyan",
+        "hex": "#00FFFF",
+        "score": 58.73,
+        "min_subject_distance": 56.59,
+        "clears_erase_radius": false
+      },
+      {
+        "name": "blue",
+        "hex": "#004DFF",
+        "score": 59.55,
+        "min_subject_distance": 55.08,
+        "clears_erase_radius": false
+      }
+    ],
+    "selection_reason": "highest 1st-percentile subject distance among the 2 candidate(s) clearing the 96 erase radius"
+  },
+  "states": {
+    "far_step": {
+      "frames": 4,
+      "fps": 8,
+      "loop": false,
+      "action": "Four consecutive poses of the FAR (lighter brown) leg taking a step while the NEAR (darker brown) leg is planted. Left-facing side view; image left is forward. Pose 1: near dark foot planted in front and far light foot planted behind, double contact. Pose 2: dark near foot remains planted in front while light far heel lifts behind. Pose 3: dark near foot remains planted while light far foot is clearly airborne and SWINGS PAST the support foot toward image LEFT. Pose 4: light far foot is EXTENDED IN FRONT OF the dark near planted foot, toes almost at the ground, about to land. The far foot must move steadily right-to-left through poses 2, 3, 4. In pose 4, the light far foot must be the leftmost foot, not behind the dark near foot. Preserve the exact single peacock reference appearance, full open tail, all three crest feathers and stable proportions. Both distinct legs visible every pose; no ground line or shadows."
+    },
+    "near_step": {
+      "frames": 4,
+      "fps": 8,
+      "loop": false,
+      "action": "Four consecutive poses of the NEAR (darker brown) leg taking a step while the FAR (lighter brown) leg is planted. Left-facing side view; image left is forward. Pose 1: light far foot planted in front and dark near foot planted behind, double contact. Pose 2: light far foot remains planted in front while dark near heel lifts behind. Pose 3: light far foot remains planted while dark near foot is clearly airborne and SWINGS PAST the support foot toward image LEFT. Pose 4: dark near foot is EXTENDED IN FRONT OF the light far planted foot, toes almost at the ground, about to land. The near foot must move steadily right-to-left through poses 2, 3, 4. In pose 4, the dark near foot must be the leftmost foot, not behind the light far foot. Preserve the exact single peacock reference appearance, full open tail, all three crest feathers and stable proportions. Both distinct legs visible every pose; no ground line or shadows."
+    }
+  },
+  "style": "Original reference hand-painted sketch style and palette",
+  "layout": "taxonomy/v1",
+  "fit": {
+    "align_y": "bottom"
+  }
+}

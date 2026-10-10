@@ -222,9 +222,9 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         EnvironmentSnapshot state = read.Environment;
         if (applied.TryGetValue(coordinate, out var channels))
         {
-            if (state.HasLocalTemperature) AddActive(channels, 0, state.Temperature.Phase, labels);
-            if (state.HasLocalHumidity) AddActive(channels, 1, state.Humidity.Phase, labels);
-            if (state.HasRecoveryCommand) AddActive(channels, 2, state.Recovery.Phase, labels);
+            if (state.HasLocalTemperature) AddActive(channels, 0, state.Temperature, labels);
+            if (state.HasLocalHumidity) AddActive(channels, 1, state.Humidity, labels);
+            if (state.HasRecoveryCommand) AddActive(channels, 2, state.Recovery, labels);
             if (channels.TryGetValue(3, out var instant))
                 recent = EnvironmentTechnologyCatalog.Name(instant.Kind) +
                     "(" + TierLabel(instant) + ")";
@@ -303,13 +303,15 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     }
 
     private static void AddActive(Dictionary<int, EnvironmentTechnologyChoice> channels,
-        int channel, EffectPhase phase, List<string> labels)
+        int channel, AttributeSnapshot attribute, List<string> labels)
     {
+        EffectPhase phase = attribute.Phase;
         if (phase == EffectPhase.None || phase == EffectPhase.Automatic ||
             !channels.TryGetValue(channel, out var choice)) return;
         labels.Add(EnvironmentTechnologyCatalog.Name(choice.Kind) + " " + TierLabel(choice) +
             (phase == EffectPhase.Entering ? "(进入)" : phase == EffectPhase.Holding ?
-                "(维持)" : "(恢复)"));
+                "(维持)" : "(恢复)") + " 剩余" + attribute.RemainingDays +
+            "天，目标" + attribute.Target.ToString("F0"));
     }
     private bool HasRecorded(Vector2Int coordinate, int channel,
         EnvironmentTechnologyKind kind) =>
@@ -340,11 +342,14 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         return total;
     }
     private static string LandSummary(EnvironmentReadSnapshot read) =>
-        "温 " + read.Environment.Temperature.Value.ToString("F0") +
+        "地形 " + read.Environment.Terrain +
+        "；温 " + read.Environment.Temperature.Value.ToString("F0") +
         " 湿 " + read.Environment.Humidity.Value.ToString("F0") +
         " 海 " + read.Environment.Elevation +
         " 库存 " + read.PlantStock.ToString("F0") +
-        " 增量 " + read.Environment.Recovery.Value.ToString("F0");
+        " 增量 " + read.Environment.Recovery.Value.ToString("F0") +
+        "；默认温/湿/增量 " + read.Environment.Defaults.Temperature + "/" +
+        read.Environment.Defaults.Humidity + "/" + read.Environment.Defaults.Recovery;
     private static string Signed(int value) => value > 0 ? "+" + value : value.ToString();
     private static string TierLabel(EnvironmentTechnologyChoice choice) =>
         choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?

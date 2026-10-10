@@ -1,0 +1,52 @@
+Create a single horizontal sprite strip for the game character `peacock` in the state `walk`.
+
+If this is a pre-idle/simple run, the attached base image may be used as the canonical character design. In direction-anchor mode, do not use base images for final action rows; accepted idle/direction anchors own row identity. Use the attached accepted idle/direction anchor as the canonical character design for this row. If a state anchor is attached for a non-locomotion state, treat it as approved state vocabulary only. Use the attached layout guide image only for frame count, slot spacing, centering, and safe padding. If an additional generated row strip is attached, use it only as a motion reference, never as a replacement identity source. Do not simply copy the still reference pose. Generate distinct animation poses that create a readable cycle or action.
+
+Character: Single cute peacock, full-body true left-facing side view, fully spread fan tail, three slender crest feathers.
+Style contract: Preserve the supplied reference image hand-painted sketch style and original palette exactly.
+
+Use this prompt as an authoritative sprite-production spec.
+
+Animation action: Make ONE physically readable 8-pose left-facing SIDE-VIEW slow WALK cycle for the SAME peacock. The legs and feet are the main animation; preserve the exact reference design, blue body, open eye-spotted fan and three slender crest feathers. Image left is forward. Show TWO distinct brown legs in EVERY frame, one NEAR leg slightly darker and in front of the body, one FAR leg slightly lighter and behind; maintain their identity across poses. Exactly two alternating steps, in this precise order: (1) DOUBLE CONTACT: near foot planted FORWARD on the left, far foot planted BACK on the right, both on one ground line. (2) NEAR foot stays planted and bears weight; FAR heel lifts behind, far toes still touch ground. (3) NEAR foot remains planted; FAR foot lifts clear and swings forward under the belly. (4) NEAR foot remains planted; FAR leg reaches forward to the left with foot low, about to land. (5) DOUBLE CONTACT: FAR foot has landed FORWARD on the left, NEAR foot is BACK on the right and still touching ground. (6) FAR foot stays planted and bears weight; NEAR heel lifts behind, near toes still touch ground. (7) FAR foot remains planted; NEAR foot lifts clear and swings forward under the belly. (8) FAR foot remains planted; NEAR leg reaches forward to the left with foot low, about to land; the NEXT frame is frame 1's near-foot landing. Both feet must visibly exchange front and back positions between poses 1 and 5. At least one foot must touch the SAME ground line in every frame. Do not keep using the same leg for both steps. Do not make feet float together, teleport, reverse direction, merge, disappear, or add extra legs. Frame 8 must lead smoothly into frame 1, not repeat it. Keep torso scale and position stable with very small walking bob, slight walking head-bob, a tiny delayed sway of the ALWAYS FULLY SPREAD fan, and one single-frame blink. Single character, no shadows, marks, lettering or props..
+
+Anchor lock:
+- Accepted idle/direction anchors own character identity, outfit details, colors, face design, asymmetric markings, and side-specific accessories for final action rows.
+- Base character images and original character sheets are pre-idle sources only. Do not reinterpret or reintroduce base-character details inside a direction-anchor action row.
+- This row owns motion only. Spend the variation budget on limb contacts, arm counter-swing, body height, torso lean, head bob, hair bounce, and loop continuity.
+- Do not redesign or reinterpret identity details while animating. Keep face, hair shape, markings, palette, outline weight, body proportions, outfit, props, and silhouette copied from the approved anchors.
+- Preserve side-specific features exactly as the approved anchors show them. Do not solve hairpin side, earring side, logos, handed props, scars, one-sided markings, asymmetric clothing, or lighting cues from scratch inside the row.
+- When generating a paired left/right row, use the paired row reference only for timing, scale, and animation intensity. Rotate the body, feet, shoulders, face angle, and gaze to the target facing, but keep identity details attached according to the accepted target-direction anchor.
+- For cyclic locomotion, do not let a single running/walking pose anchor determine every frame's leg phase. When a multi-pose motion reference is attached, use it for foot contacts.
+- Prefer a subtler animation over any change that mutates the character identity.
+
+
+State-specific requirements:
+- Show locomotion through body, arm, leg, hair, and prop movement only.
+- Use distinct gait poses that create a readable cycle instead of repeated standing or static bobbing.
+- Do not draw speed lines, dust clouds, floor shadows, motion trails, or detached motion effects.
+
+Transparency and artifact rules:
+- Prefer pose, expression, and silhouette changes over decorative effects.
+- Effects are allowed only when state-relevant, opaque, hard-edged, sprite-like, fully inside the same frame slot, and physically touching or overlapping the character silhouette.
+- Do not draw detached effects: floating stars, loose sparkles, floating punctuation, floating icons, separated smoke clouds, loose dust, disconnected outline bits, or stray pixels.
+- Do not draw wave marks, motion arcs, speed lines, action streaks, afterimages, blur, smears, halos, glows, auras, floor patches, cast shadows, contact shadows, drop shadows, oval floor shadows, landing marks, or impact bursts.
+- Do not include text, labels, frame numbers, visible grids, guide marks, speech bubbles, thought bubbles, UI panels, code snippets, scenery, checkerboard transparency, white backgrounds, or black backgrounds.
+- Reject any pose that is cropped, overlaps another pose, crosses into a neighboring frame slot, or creates a separate disconnected component that is not attached to the character.
+
+Layout requirements:
+- Exactly 8 full-body frames, left to right, in one horizontal row.
+- The attached layout guide shows the 8 frame boxes, inner safe area, and centers for this row. Follow its slot count, spacing, centering, and padding.
+- Do not reproduce the layout guide itself: no visible boxes, guide lines, center marks, labels, guide colors, or guide background may appear in the output.
+- Treat the image as 8 equal-width invisible 512x512 frame slots. Fill every slot: each requested slot must contain exactly one complete full-body pose.
+- Spread the 8 poses evenly across the whole image width. Do not leave any requested slot blank or create large empty gaps between poses.
+- Center one complete pose in each slot. No pose may cross into the neighboring slot.
+- Use a perfectly flat pure magenta #FF00FF chroma-key background across the whole image.
+- Do not use #FF00FF, pure magenta, or chroma-adjacent colors in the character, highlights, props, shadows, or effects.
+- Keep the rendering faithful to the attached reference sprite: same outline weight, same palette, same detail level — do not restyle it.
+- Keep every frame self-contained with at least 26 px horizontal and 26 px vertical safe padding. No character body part should be clipped by the frame slot.
+- Avoid motion blur. Use clear pose changes readable at 512x512.
+- Preserve the same silhouette, face, proportions, palette, material, and props across every frame.
+
+Output only the sprite strip image.
+
+Reference order: 1 = original peacock design, 2 = empty layout guide, 3 = previous peacock row for consistent appearance ONLY, 4 = eight-panel leg movement diagram for FEET/LEG POSES. The prior row is wrong at the foot exchange: do not copy its foot positions in panels 4 and 8. In panel 4, the LIGHT FAR leg must stretch AHEAD OF the dark near planted foot to the LEFT, with its toes nearly at the ground. In panel 5, the light far foot LANDS at that same forward position while the dark near foot trails behind. In panel 8, the DARK NEAR leg must stretch AHEAD OF the light far planted foot to the LEFT, with its toes nearly at the ground. Panel 1 lands that dark near foot. Follow the fourth reference's dark/light leg identity exactly. A foot should move continuously toward the left during its swing, never jump across the body between consecutive panels. The character body and tail should look like the third reference, but the third reference's old foot poses must be corrected. Do not copy colored guide blobs, ground line, or reference panel border into final art.

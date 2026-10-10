@@ -262,8 +262,11 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                     (attribute == EnvironmentAttribute.Temperature ? state.MonsoonTemperatureOffset :
                         state.MonsoonHumidityOffset));
                 if (attribute == EnvironmentAttribute.Temperature) t = EnvironmentRules.Round(target); else h = EnvironmentRules.Round(target);
-                r = EnvironmentRules.Round(EnvironmentRules.PotentialRecovery(
-                    state.NaturalDefaults, t, h));
+                double potential = EnvironmentRules.PotentialRecovery(state.Defaults, t, h);
+                if (state.HasRecoveryCommand)
+                    potential += state.Recovery.Value - EnvironmentRules.PotentialRecovery(
+                        state.Defaults, state.Temperature.Value, state.Humidity.Value);
+                r = EnvironmentRules.Round(EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, potential));
                 enter = EnvironmentRules.TransitionDays;
                 hold = EnvironmentRules.ClimateHoldDays;
                 returning = EnvironmentRules.ClimateReturnDays;

@@ -44,8 +44,8 @@ namespace DarwinFarm.Environment
         public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
         public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 150;
         public const int RecoveryHoldDays = 50, RecoveryReturnDays = 50;
-        // Existing baseline profiles also drive return targets; their elevation is
-        // only a placement preset, not an intrinsic property of a terrain kind.
+        // The committed terrain supplies return targets; elevation is only a
+        // placement preset, not an intrinsic property of a terrain kind.
         public static TerrainDefaults Defaults(TerrainKind kind)
         {
             switch (kind)
@@ -80,16 +80,19 @@ namespace DarwinFarm.Environment
             if (temperature <= 34)
             {
                 if (elevation == 0) return temperature <= 14 || humidity <= 34 ? TerrainKind.Desert : TerrainKind.Forest;
-                if (humidity <= 34) return TerrainKind.Highland;
+                if (humidity <= 65) return TerrainKind.Highland;
                 return recovery <= 100000 ? TerrainKind.Tundra : TerrainKind.Forest;
             }
-            if (humidity <= 34) return recovery <= 50000 ? TerrainKind.Desert : TerrainKind.Grassland;
+            // Dry lowland climate is desert even when a temporary plant command
+            // raises production. This also keeps the desert profile stable when
+            // its natural production catches up after a conversion.
+            if (humidity <= 34) return TerrainKind.Desert;
             if (recovery <= 100000)
             {
                 if (elevation == 1 && temperature <= 65 && humidity <= 65 && recovery > 50000) return TerrainKind.Highland;
                 return TerrainKind.Grassland;
             }
-            if (temperature <= 49 || temperature <= 65 && humidity <= 65) return TerrainKind.Forest;
+            if (temperature <= 65) return TerrainKind.Forest;
             return TerrainKind.Rainforest;
         }
 
@@ -102,9 +105,13 @@ namespace DarwinFarm.Environment
         public static bool IsRecoveryStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25000 || Math.Abs(value) == 50000);
         public static double PotentialRecovery(TerrainDefaults baseline, double temperature, double humidity)
         {
-            double moisture = baseline.Humidity == 0 ? 1 : Math.Min(1.5, humidity / baseline.Humidity);
-            double warmth = Math.Max(0, 1 - Math.Abs(temperature - baseline.Temperature) / 100);
-            return Clamp(EnvironmentAttribute.Recovery, baseline.Recovery * moisture * warmth);
+            // Drying is stronger than extra rainfall, while a temperature
+            // mismatch reduces productivity in either direction. The additive
+            // response avoids multiplying a newly committed biome's baseline.
+            double moistureDifference = humidity - baseline.Humidity;
+            return Clamp(EnvironmentAttribute.Recovery, baseline.Recovery +
+                moistureDifference * (moistureDifference < 0 ? 500 : 100) -
+                Math.Abs(temperature - baseline.Temperature) * 250);
         }
         public static double ChangeStock(double stock, double signedFraction)
             => ChangeStock(stock, PlantCapacity, signedFraction);
