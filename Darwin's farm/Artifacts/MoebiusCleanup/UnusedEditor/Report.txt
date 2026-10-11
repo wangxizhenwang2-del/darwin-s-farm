@@ -1,0 +1,26 @@
+PASS: Production editor compiles without the archived waterfall builder
+PASS: Template welcome-page editor is absent
+PASS: Retained tool compiles: MoebiusWaterfallShaderGUI
+PASS: Retained tool compiles: MoebiusWaterShaderGUI
+PASS: Retained tool compiles: MoebiusRampThresholdDrawer
+PASS: Retained tool compiles: MoebiusBillboardCameraInitialization
+PASS: Retained tool compiles: MoebiusWaterPreview
+PASS: Retained tool compiles: MoebiusWaterSetup
+PASS: Retained tool compiles: MoebiusWaterfallImpactSetup
+PASS: Retained tool compiles: MoebiusPaintAssets
+PASS: Retained tool compiles: MoebiusPaintMesh
+PASS: Retained tool compiles: MoebiusPaintSession
+PASS: Retained tool compiles: MoebiusPaintTool
+PASS: Retained tool compiles: MoebiusPaintWindow
+PASS: Sample generation menu entries are removed
+PASS: Required menu remains: Tools/Moebius/Paint
+PASS: Required menu remains: Tools/Moebius/Water Setup
+PASS: Required menu remains: Tools/Moebius/Waterfall/Bind Impact to Water
+PASS: Existing waterfall scene opens with mesh and material references intact
+PASS: Existing automatic impact association remains intact
+PASS: Shader remains valid: Darwin/Moebius NPR
+PASS: Shader remains valid: Darwin/Moebius Water
+PASS: Shader remains valid: Darwin/Moebius Waterfall
+PASS: Shader remains valid: Darwin/Moebius Waterfall Splash
+Rendered the existing sample without regenerating meshes, materials or scene layouts.
+Errors: 0

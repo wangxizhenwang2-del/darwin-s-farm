@@ -16,12 +16,20 @@ float WaterfallEdgeDistance(float2 uv)
     float t = WaterfallTime()*_FlowSpeed*0.25;
     float left = PrintNoise(float2(2.3,y+t))*clamp(_EdgeBreakupStrength,0,0.15);
     float right = PrintNoise(float2(8.7,y+t))*clamp(_EdgeBreakupStrength,0,0.15);
+    // Keep the upstream join full-width while retaining the hand-drawn sides below it.
+    if(_LipStartV<0.999)
+    {
+        float join=1-smoothstep(0.65,1,saturate((uv.y-_LipStartV)/max(1-_LipStartV,0.001)));
+        left*=join;right*=join;
+    }
     return min(uv.x-left,1-uv.x-right);
 }
 void WaterfallClip(float2 uv,float3 positionOS) { clip(WaterfallEdgeDistance(uv)); }
 float2 WaterfallFlowCoordinates(float2 uv)
 {
     // UV V increases upwards: positive time makes visible marks move downwards.
-    return float2(uv.x*max(_SheetSize.x,0.01),uv.y*max(_SheetSize.y,0.01)+WaterfallTime()*_FlowSpeed);
+    // Curved meshes use arc-length UVs; their path is longer than their vertical height.
+    float length=_SurfaceLength>0?max(_SurfaceLength,0.01):max(_SheetSize.y,0.01);
+    return float2(uv.x*max(_SheetSize.x,0.01),uv.y*length+WaterfallTime()*_FlowSpeed);
 }
 #endif

@@ -8,6 +8,9 @@ Shader "Darwin/Moebius Waterfall"
         _FlowLineColor("Flow Line Color",Color)=(0.83,0.91,0.80,1)
         _InkLineColor("Ink Line Color",Color)=(0.20,0.36,0.41,1)
         _SheetSize("Sheet Size (Local Width / Height)",Vector)=(5,6,0,0)
+        _SurfaceLength("Surface Length (0 = Sheet Height)",Float)=0
+        _LipStartV("Curved Lip Start V (1 = Flat Sheet)",Range(0,1))=1
+        _UpstreamColor("Upstream Water Color",Color)=(0.49,0.72,0.74,1)
         _FlowSpeed("Downward Flow Speed (Local Metres / Second)",Range(0,6))=1.4
         _FlowScale("Vertical Pattern Scale",Range(0.1,4))=1
         _DistortionStrength("Line Distortion",Range(0,0.5))=0.15
