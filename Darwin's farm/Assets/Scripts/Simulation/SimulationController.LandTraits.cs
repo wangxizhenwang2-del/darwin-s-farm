@@ -23,34 +23,38 @@ public partial class SimulationController
     private float ForecastLandGrowth(BlockInfo block, PopulationData p, LandTraits v)
     {
         float fitness = LandLifeRules.Fitness(block, v.t, v.h);
+        // Compare the whole group's candidate adults against the current
+        // community. Young are not allowed to relax their own birth pressure;
+        // adult body size and movement do change the real maintenance load.
+        float adultLoad = LandLifeRules.HerbivoreAdultDemand(block, LandRules);
+        if (p.trophicLevel == 0)
+            adultLoad += p.speciesAmount *
+                (LandLifeRules.AdultNeed(v.s, v.m, LandRules)
+                - LandLifeRules.AdultNeed(p.size, p.movementAbility,
+                    LandRules));
+        float birthFactor = p.trophicLevel == 0
+            ? LandLifeRules.DensityBirthMultiplier(
+                adultLoad, block.habitatRecovery, LandRules) : 1f;
         float demand = LandLifeRules.Demand(p.speciesAmount, v.s, v.m, v.f,
-            fitness, LandRules);
+            fitness, LandRules, birthFactor);
         float food = p.trophicLevel == 0
             ? LandLifeRules.ForecastPlantIntake(block, p, v.t, v.h, v.m,
-                v.s, v.f, false, LandRules)
-            : Mathf.Min(demand, p.allocatedBiomass +
-                Mathf.Max(0f, PredatorPotential(block, p, v) -
+                v.s, v.f, true, LandRules, birthFactor)
+            : Mathf.Clamp(p.allocatedBiomass +
+                (PredatorPotential(block, p, v) -
                     PredatorPotential(block, p, ReadLandTraits(p)))
-                    * p.speciesAmount);
+                    * p.speciesAmount, 0f, demand);
         float ratio = demand > 0f ? Mathf.Clamp01(food / demand) : 1f;
         float births = p.speciesAmount * LandRules.birthRate
-            * v.f / 100f * fitness * ratio;
-        if (p.trophicLevel == 0)
-        {
-            float totalDemand = demand;
-            foreach (PopulationData other in block.community)
-                if (other != p && other != null && other.trophicLevel == 0 &&
-                    other.speciesAmount > 0)
-                    totalDemand += LandLifeRules.Demand(other,
-                        other.speciesAmount, LandLifeRules.Fitness(block,
-                            other.fitTemperature, other.fitHumidity), LandRules);
-            births *= LandLifeRules.DensityBirthMultiplier(totalDemand,
-                block.habitatRecovery, LandRules);
-        }
+            * v.f / 100f * fitness * ratio * birthFactor;
         float deaths = p.speciesAmount * LandRules.starvationDeathRate
             * (1f - ratio) + LandRules.coldDeathRate * p.speciesAmount
                 * Mathf.Max(0f, (50f - block.temperature) / 50f)
-                * (1f - v.s / 100f);
+                * (1f - v.s / 100f)
+            + LandRules.climateMismatchDeathRate * p.speciesAmount
+                * (1f - fitness)
+            + LandLifeRules.ReproductionStressDeaths(p.speciesAmount,
+                v.s, v.f, LandRules);
         float preyRisk = 0f;
         foreach (PopulationData hunter in block.community)
             if (hunter != null && hunter.speciesAmount > 0 &&
@@ -88,8 +92,7 @@ public partial class SimulationController
             weighted += score * score;
             scoreSum += score;
         }
-        return (scoreSum > 0f ? weighted / scoreSum : 0f)
-            - LandLifeRules.AdultNeed(traits.s, traits.m, LandRules);
+        return scoreSum > 0f ? weighted / scoreSum : 0f;
     }
 
     private float BestNeighborAttraction(BlockInfo source, PopulationData p,
@@ -100,10 +103,6 @@ public partial class SimulationController
         if (source.Neighbors == null) return 0f;
         int migrants = StandardMigrationAmount(p.speciesAmount);
         if (migrants <= 0) return 0f;
-        float migrantDemand = LandLifeRules.Demand(migrants, p.size,
-            p.movementAbility, p.fertility,
-            LandLifeRules.Fitness(source, p.fitTemperature, p.fitHumidity),
-            LandRules);
         foreach (BlockInfo neighbor in source.Neighbors)
         {
             if (neighbor == null || neighbor.waterCoverage != WaterCoverage.Land ||
@@ -111,11 +110,7 @@ public partial class SimulationController
                 HasSameSpeciesResident(neighbor, p)) continue;
             int height = Mathf.Abs(neighbor.elevation - source.elevation);
             if (height > 1) continue;
-            float free = NeighborFreeFood(neighbor, p);
-            float attraction = free / Mathf.Max(1f, free + migrantDemand)
-                * (1f - 0.2f * Mathf.Abs(source.temperature - neighbor.temperature)
-                    / 100f - 0.2f * Mathf.Abs(source.humidity - neighbor.humidity)
-                    / 100f);
+            float attraction = NeighborAttraction(source, neighbor, p, migrants);
             if (attraction > best)
             { best = Mathf.Clamp01(attraction); ceiling = height == 0
                 ? LandRules.flatAttractionCeiling : LandRules.slopeAttractionCeiling; }
@@ -125,19 +120,15 @@ public partial class SimulationController
 
     private float NeighborFreeFood(BlockInfo neighbor, PopulationData migrant)
     {
-        float food = migrant.trophicLevel == 0
-            ? Mathf.Max(0f, neighbor.plantBiomass +
-                Mathf.Min(neighbor.habitatRecovery,
-                    neighbor.maxPlantBiomass - neighbor.plantBiomass)) : 0f;
         if (migrant.trophicLevel > 0)
-            foreach (PopulationData prey in neighbor.community)
-                if (prey != null && prey.speciesAmount > 0 &&
-                    FoodWeb.CanEat(migrant, prey))
-                    food += prey.speciesAmount
-                        * LandLifeRules.PreyEnergy(migrant, prey, LandRules);
+            return LandLifeRules.AvailableSustainablePreyFood(neighbor,
+                migrant, LandRules);
+        float food = Mathf.Max(0f, neighbor.plantBiomass +
+            Mathf.Min(neighbor.habitatRecovery,
+                neighbor.maxPlantBiomass - neighbor.plantBiomass));
         foreach (PopulationData resident in neighbor.community)
             if (resident != null && resident.speciesAmount > 0 &&
-                resident.trophicLevel == migrant.trophicLevel)
+                resident.trophicLevel == 0)
                 food -= LandLifeRules.Demand(resident, resident.speciesAmount,
                     LandLifeRules.Fitness(neighbor, resident.fitTemperature,
                         resident.fitHumidity), LandRules);
@@ -186,8 +177,8 @@ public partial class SimulationController
                     if (Mathf.Abs(proposed - previous) < 0.0001f) continue;
                     float score = ForecastLandGrowth(block, p, candidate);
                     if (p.trophicLevel > 0 && trait >= 2)
-                        score += p.speciesAmount * 0.01f * Mathf.Max(0f,
-                            PredatorPotential(block, p, candidate)
+                        score += p.speciesAmount * 0.01f *
+                            (PredatorPotential(block, p, candidate)
                             - PredatorPotential(block, p, current));
                     if (trait == 2 && d > 0 &&
                         attraction >= LandRules.neighborAttractionThreshold &&

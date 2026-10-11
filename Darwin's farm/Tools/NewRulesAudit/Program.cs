@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 internal static class Program
@@ -44,6 +45,25 @@ internal static class Program
         Console.WriteLine("PASS " + message);
     }
 
+    private static float Forecast(SimulationController simulation, BlockInfo block,
+        PopulationData population, int temperature, int humidity, int movement,
+        int size, int fertility)
+    {
+        Type traits = typeof(SimulationController).GetNestedType("LandTraits",
+            BindingFlags.NonPublic);
+        object values = Activator.CreateInstance(traits);
+        foreach ((string name, float value) in new[] {
+            ("t", (float)temperature), ("h", (float)humidity),
+            ("m", (float)movement), ("s", (float)size),
+            ("f", (float)fertility) })
+            traits.GetField(name, BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.Instance).SetValue(values, value);
+        MethodInfo method = typeof(SimulationController).GetMethod(
+            "ForecastLandGrowth", BindingFlags.NonPublic |
+            BindingFlags.Instance);
+        return (float)method.Invoke(simulation, new[] { block, population, values });
+    }
+
     private static void Main(string[] args)
     {
         var defaults = new SimulationController();
@@ -70,6 +90,16 @@ internal static class Program
         Controller(noFood).SimulateBlock(noFood);
         Check(starving.speciesAmount == 40 && starving.deathsToday == 60,
             "starvation counted once without overload deaths");
+        var doomed = Pop(Species(0, t: 0, h: 0), 10);
+        BlockInfo lethalBlock = Block(0, 0, doomed);
+        var lethalSimulation = Controller(lethalBlock);
+        var lethalRules = lethalSimulation.ReadLandRules();
+        lethalRules.starvationDeathRate = 1f;
+        lethalRules.climateMismatchDeathRate = 1f;
+        lethalSimulation.ApplyLandRules(lethalRules);
+        lethalSimulation.SimulateBlock(lethalBlock);
+        Check(doomed.speciesAmount == 0 && doomed.deathRemainder < 1f,
+            "lethal day cannot leave deferred deaths after all adults die");
         var shock = Pop(Species(0), 5000);
         BlockInfo drought = Block(0, 10000, shock);
         Controller(drought).SimulateBlock(drought);
@@ -94,7 +124,7 @@ internal static class Program
         BlockInfo splitBlock = Block(125000, 1000000, splitSource);
         var splitController = Controller(splitBlock);
         var splitRules = splitController.ReadLandRules();
-        splitRules.splitMinimumRenewalPressure = 0.4f;
+        splitRules.splitMinimumRenewalPressure = 0.3f;
         splitController.ApplyLandRules(splitRules);
         int splitEvents = 0;
         splitController.OnLocalSplitResolved += _ => splitEvents++;
@@ -125,7 +155,7 @@ internal static class Program
             currentGroup.speciesAmount <
                 .9f * currentGroup.environmentalCarryingCapacity,
             "other consumers cannot make current group reach ninety percent K");
-        currentGroup.speciesAmount = 650;
+        currentGroup.speciesAmount = 720;
         mixedController.SimulateDay(2);
         Check(mixedSplits == 1,
             "current group may split after its own count reaches ninety percent K");
@@ -188,6 +218,14 @@ internal static class Program
         Check(occupiedAttraction == 0f && emptyAttraction > 0.2f &&
             otherSpeciesAttraction > 0.2f,
             "same-species neighbor gives no movement attraction");
+        mover.fitTemperature = 0;
+        mover.fitHumidity = 0;
+        float hostileAttraction = (float)attractionMethod.Invoke(
+            attractionSimulation, attractionArgs);
+        Check(hostileAttraction < otherSpeciesAttraction,
+            "climate mismatch cannot increase migration attraction");
+        mover.fitTemperature = chicken.baseFitTemperature;
+        mover.fitHumidity = chicken.baseFitHumidity;
         attractionTarget.community.Clear();
         attractionTarget.community.Add(residentChicken);
         attractionSimulation.SetMigrationParameters(true, 1, 100, .8f,
@@ -211,6 +249,95 @@ internal static class Program
         Check(victim.predationDeathsToday <= 100 && victim.speciesAmount >= 0
             && victim.speciesAmount == 100 + victim.birthsToday - victim.deathsToday,
             "L2 and L1 consume one prey ledger before newborns arrive");
+
+        var firstPrey = Pop(chicken, 1000);
+        var firstHunter = Pop(civet, 20);
+        var preyFirst = Block(100000, 1000000, firstPrey, firstHunter);
+        var secondPrey = Pop(chicken, 1000);
+        var secondHunter = Pop(civet, 20);
+        var hunterFirst = Block(100000, 1000000, secondHunter, secondPrey);
+        Controller(preyFirst).SimulateBlock(preyFirst);
+        Controller(hunterFirst).SimulateBlock(hunterFirst);
+        Check(Math.Abs(firstHunter.renewalSatisfactionHistory[^1] -
+            secondHunter.renewalSatisfactionHistory[^1]) < 0.0001f,
+            "prey renewal history is independent of community list order");
+
+        var sharedPrey = Pop(chicken, 1000);
+        sharedPrey.preyNetRenewalHistory.Add(20f);
+        var lowerHunter = Pop(civet, 20);
+        var upperHunter = Pop(lion, 10);
+        var sharedPreyBlock = Block(100000, 1000000,
+            sharedPrey, lowerHunter, upperHunter);
+        float grossUpperSupply = 20f * LandLifeRules.PreyEnergy(upperHunter,
+            sharedPrey);
+        float upperSupply = LandLifeRules.AvailableSustainablePreyFood(
+            sharedPreyBlock, upperHunter, defaults.ReadLandRules());
+        Check(upperSupply < grossUpperSupply && upperSupply >= 0f,
+            "L2 cannot claim prey renewal already needed by L1");
+
+        var saturatedSmall = Pop(Species(0, 68, 68, 2, 8, 90), 9540);
+        var saturatedLarge = Pop(Species(0, 68, 68, 2, 38, 60), 335);
+        BlockInfo saturatedTile = Block(100000, 904890,
+            saturatedSmall, saturatedLarge);
+        saturatedTile.temperature = saturatedTile.humidity = 68;
+        var saturatedSimulation = Controller(saturatedTile);
+        saturatedSimulation.SimulateBlock(saturatedTile);
+        float matched = Forecast(saturatedSimulation, saturatedTile,
+            saturatedSmall, 68, 68, 2, 8, 90);
+        float colder = Forecast(saturatedSimulation, saturatedTile,
+            saturatedSmall, 67, 68, 2, 8, 90);
+        float drier = Forecast(saturatedSimulation, saturatedTile,
+            saturatedSmall, 68, 67, 2, 8, 90);
+        Check(matched > colder && matched > drier,
+            "saturated herbivore cannot gain by lowering climate fitness");
+        saturatedSmall.fitTemperature = 64;
+        float towardClimate = Forecast(saturatedSimulation, saturatedTile,
+            saturatedSmall, 65, 68, 2, 8, 90);
+        float awayFromClimate = Forecast(saturatedSimulation, saturatedTile,
+            saturatedSmall, 63, 68, 2, 8, 90);
+        Check(towardClimate > awayFromClimate,
+            "mismatched herbivore favors local climate under food pressure");
+        saturatedSmall.fitTemperature = 68;
+        saturatedSimulation.SetMutationEnabled(true);
+        for (int day = 1; day <= 120; day++)
+            saturatedSimulation.SimulateBlock(saturatedTile);
+        Check(saturatedSmall.fitTemperature == 68 &&
+            saturatedSmall.fitHumidity == 68 &&
+            saturatedLarge.fitTemperature == 68 &&
+            saturatedLarge.fitHumidity == 68,
+            "constant climate retains matching traits near carrying capacity");
+
+        var huntingPrey = Pop(chicken, 300);
+        var huntingPredator = Pop(civet, 20);
+        BlockInfo huntingTile = Block(100000, 1000000,
+            huntingPrey, huntingPredator);
+        var huntingSimulation = Controller(huntingTile);
+        huntingSimulation.SimulateBlock(huntingTile);
+        float hunterBaseline = Forecast(huntingSimulation, huntingTile,
+            huntingPredator, 50, 50, 20, 20, 60);
+        float slowerHunter = Forecast(huntingSimulation, huntingTile,
+            huntingPredator, 50, 50, 19, 20, 60);
+        Check(hunterBaseline > slowerHunter,
+            "predator forecast includes lost hunting from slower movement");
+
+        // Re-run the supplied 19:12 report from its first exported population.
+        var reportedChicken = Pop(Species(0, 64, 50, 20, 8, 75), 187);
+        BlockInfo reportedTile = Block(100000, 395726.375f,
+            reportedChicken);
+        reportedTile.temperature = reportedTile.humidity = 68;
+        var reportReplay = new SimulationController();
+        reportReplay.SetBlocks(new List<BlockInfo> { reportedTile });
+        reportReplay.SetMigrationParameters(false, 7, 100, .8f,
+            .5f, .2f, 7);
+        for (int day = 4; day <= 366; day++) reportReplay.SimulateDay(day);
+        Check(reportedTile.community.Count == 2 &&
+            reportedTile.community.All(p => p.fitTemperature == 68 &&
+                p.fitHumidity == 68 &&
+                p.environmentalFitness == Mathf.RoundToInt(100f *
+                    LandLifeRules.Fitness(reportedTile,
+                        p.fitTemperature, p.fitHumidity))) &&
+            reportedTile.plantBiomass >= 100000f,
+            "report replay adapts to stable 68/68 without reverse drift");
 
         var starter = Pop(chicken, 160);
         BlockInfo grass = Block(100000, 100000, starter);
@@ -291,6 +418,91 @@ internal static class Program
             Console.WriteLine("WHITEBOX birth=" + birthRate + " split=" + split);
         }
 
+        if (args.Contains("--route-smoke"))
+        {
+            SpeciesData routeChicken = Species(0, 61, 50, 20, 8, 75);
+            SpeciesData routeDeer = Species(0, 40, 25, 75, 60, 30);
+            routeChicken.evolutionTargets.Add(routeDeer);
+            PopulationData founder = Pop(routeChicken, 160);
+            BlockInfo home = Block(125000, 1000000, founder);
+            home.temperature = 58; home.humidity = 50; home.elevation = 1;
+            BlockInfo nearby = Block(125000, 1000000);
+            nearby.temperature = 58; nearby.humidity = 50; nearby.elevation = 0;
+            home.SetNeighbors(new List<BlockInfo> { nearby });
+            nearby.SetNeighbors(new List<BlockInfo> { home });
+            var route = new SimulationController();
+            route.SetBlocks(new List<BlockInfo> { home, nearby });
+            route.SetEvolutionNetworkSpecies(new[] { routeChicken, routeDeer });
+            route.SetMigrationParameters(false, 7, 100, .8f,
+                .5f, .2f, 7);
+            var routeRules = route.ReadLandRules();
+            int routeRecovery = 106250;
+            int routeTemperature = 33, routeHumidity = 25;
+            foreach (string option in args)
+            {
+                if (option.StartsWith("--climate="))
+                    routeRules.climateMismatchDeathRate = float.Parse(
+                        option.Substring(10),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                if (option.StartsWith("--cold="))
+                    routeRules.coldDeathRate = float.Parse(
+                        option.Substring(7),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                if (option.StartsWith("--recovery="))
+                    routeRecovery = int.Parse(option.Substring(11),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                if (option.StartsWith("--stress="))
+                    routeRules.reproductionStressDeathRate = float.Parse(
+                        option.Substring(9),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                if (option.StartsWith("--temperature="))
+                    routeTemperature = int.Parse(option.Substring(14),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                if (option.StartsWith("--humidity="))
+                    routeHumidity = int.Parse(option.Substring(11),
+                        System.Globalization.CultureInfo.InvariantCulture);
+            }
+            route.ApplyLandRules(routeRules);
+            int routeSplit = 0, routeDeerDay = 0;
+            route.OnLocalSplitResolved += result => routeSplit = result.Day;
+            route.OnPresetEvolutionResolved += result =>
+            {
+                if (result.TargetSpecies == routeDeer)
+                    routeDeerDay = result.Day;
+            };
+            for (int day = 1; day <= 900 && routeDeerDay == 0; day++)
+            {
+                if (routeSplit > 0)
+                {
+                    int elapsed = Math.Min(25, day - routeSplit);
+                    home.temperature = nearby.temperature = 58 -
+                        Math.Min(58 - routeTemperature, elapsed);
+                    home.humidity = nearby.humidity = 50 -
+                        Math.Min(50 - routeHumidity, elapsed);
+                    home.habitatRecovery = routeRecovery;
+                }
+                route.SimulateDay(day);
+                if (day % 100 == 0)
+                    Console.WriteLine("ROUTE day=" + day + " split=" + routeSplit
+                        + " deer=" + routeDeerDay + " stock=" +
+                        Math.Round(home.plantBiomass) + " " +
+                        string.Join(";", home.community.Select(p =>
+                            p.speciesAmount + ":" + p.fitTemperature + "/"
+                            + p.fitHumidity + "/" + p.movementAbility + "/"
+                            + p.size + "/" + p.fertility)));
+            }
+            Console.WriteLine("ROUTE RESULT split=" + routeSplit +
+                " deer=" + routeDeerDay + " " +
+                string.Join(";", home.community.Select(p =>
+                    (p.species == routeDeer ? "deer" : "chicken") + ":"
+                    + p.speciesAmount + "-" + p.fitTemperature + "/"
+                    + p.fitHumidity + "/" + p.movementAbility + "/"
+                    + p.size + "/" + p.fertility)));
+            if (args.Contains("--expect-deer"))
+                Check(routeDeerDay > 0 && routeDeerDay <= 900,
+                    "configured chicken route produces deer");
+            return;
+        }
         if (!args.Contains("--sweep")) return;
         foreach (float rate in new[] { 0.1f, 0.02f, 0.005f })
         {

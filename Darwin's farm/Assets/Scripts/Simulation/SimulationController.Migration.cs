@@ -109,6 +109,21 @@ public partial class SimulationController
             resident.ecologicalNiche == migrant.ecologicalNiche &&
             SameSpecies(resident, migrant));
 
+    private float NeighborAttraction(BlockInfo source, BlockInfo neighbor,
+        PopulationData migrant, int migrants)
+    {
+        float free = NeighborFreeFood(neighbor, migrant);
+        float adultDemand = migrants * LandLifeRules.AdultNeed(migrant.size,
+            migrant.movementAbility, LandRules);
+        float climate = LandLifeRules.Fitness(neighbor,
+            migrant.fitTemperature, migrant.fitHumidity);
+        float continuity = 1f - 0.2f * Mathf.Abs(source.temperature
+            - neighbor.temperature) / 100f - 0.2f * Mathf.Abs(source.humidity
+            - neighbor.humidity) / 100f;
+        return Mathf.Clamp01(free / Mathf.Max(1f, free + adultDemand)
+            * Mathf.Max(0f, continuity) * climate);
+    }
+
     public float CalculateOverloadPressure(PopulationData population)
     {
         if (population == null || population.speciesAmount <= 0) return 0f;
@@ -186,15 +201,8 @@ public partial class SimulationController
                     !neighbor.community.Exists(existing => existing != null &&
                         SameSpecies(existing, move.population))) reserved++;
             if (neighbor.community.Count + reserved >= 5) continue;
-            float free = NeighborFreeFood(neighbor, population);
-            float migrantDemand = LandLifeRules.Demand(amount, population.size,
-                population.movementAbility, population.fertility,
-                LandLifeRules.Fitness(neighbor, population.fitTemperature,
-                    population.fitHumidity), LandRules);
-            float attraction = free / Mathf.Max(1f, free + migrantDemand)
-                * (1f - 0.2f * Mathf.Abs(source.temperature - neighbor.temperature)
-                    / 100f - 0.2f * Mathf.Abs(source.humidity - neighbor.humidity)
-                    / 100f);
+            float attraction = NeighborAttraction(source, neighbor,
+                population, amount);
             float chance = Mathf.Clamp01(attraction)
                 * population.movementAbility / 100f;
             if (neighbor.community.Count == 4)
@@ -286,9 +294,9 @@ public partial class SimulationController
             resultPopulation.splitStrategy = 0;
             resultPopulation.splitSizeAnchor = 0;
             resultPopulation.splitFertilityAnchor = 0;
-            LandLifeRules.RefreshEnvironmentalCarryingCapacities(
+            LandLifeRules.RefreshEnvironmentMetrics(
                 plans[i].source, LandRules);
-            LandLifeRules.RefreshEnvironmentalCarryingCapacities(target, LandRules);
+            LandLifeRules.RefreshEnvironmentMetrics(target, LandRules);
             OnMigrationResolved?.Invoke(new PopulationTransitionResult(
                 PopulationTransitionKind.Migration, day, plans[i].source, target,
                 plans[i].population, resultPopulation, plans[i].amount,

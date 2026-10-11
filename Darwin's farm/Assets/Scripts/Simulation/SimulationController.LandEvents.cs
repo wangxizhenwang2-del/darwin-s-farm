@@ -75,23 +75,29 @@ public partial class SimulationController
                     (float)(largeSize * largeSize + smallSize * smallSize));
                 float sustainable = source.trophicLevel == 0
                     ? Mathf.Max(0, block.habitatRecovery)
-                    : LandLifeRules.SustainablePreyFood(block, source, LandRules);
+                    : LandLifeRules.AvailableSustainablePreyFood(block,
+                        source, LandRules, subtractSameLevel: false);
+                float birthFactor = source.trophicLevel == 0
+                    ? LandLifeRules.DensityBirthMultiplier(
+                        LandLifeRules.HerbivoreAdultDemand(block, LandRules),
+                        sustainable, LandRules) : 1f;
                 float smallDemand = LandLifeRules.Demand(source.speciesAmount,
                     smallSize, source.movementAbility, smallFertility,
-                    fitness, LandRules);
+                    fitness, LandRules, birthFactor);
                 float additionalPerLarge = LandLifeRules.Demand(1, largeSize,
-                    source.movementAbility, largeFertility, fitness, LandRules)
+                    source.movementAbility, largeFertility, fitness, LandRules,
+                    birthFactor)
                     - LandLifeRules.Demand(1, smallSize, source.movementAbility,
-                        smallFertility, fitness, LandRules);
+                        smallFertility, fitness, LandRules, birthFactor);
                 float before = 0f;
                 foreach (PopulationData consumer in block.community)
                     if (consumer != null && consumer.trophicLevel == source.trophicLevel)
                         before += LandLifeRules.Demand(consumer,
                             consumer.speciesAmount, LandLifeRules.Fitness(block,
                                 consumer.fitTemperature, consumer.fitHumidity),
-                            LandRules);
+                            LandRules, birthFactor);
                 float original = LandLifeRules.Demand(source,
-                    source.speciesAmount, fitness, LandRules);
+                    source.speciesAmount, fitness, LandRules, birthFactor);
                 if (additionalPerLarge > 0f)
                     largeCount = Mathf.Min(largeCount, Mathf.FloorToInt(
                         (sustainable - (before - original + smallDemand))
@@ -101,9 +107,11 @@ public partial class SimulationController
                 if (largeCount < 10 || smallCount < 10) continue;
                 float after = before - original
                     + LandLifeRules.Demand(largeCount, largeSize,
-                        source.movementAbility, largeFertility, fitness, LandRules)
+                        source.movementAbility, largeFertility, fitness, LandRules,
+                        birthFactor)
                     + LandLifeRules.Demand(smallCount, smallSize,
-                        source.movementAbility, smallFertility, fitness, LandRules);
+                        source.movementAbility, smallFertility, fitness, LandRules,
+                        birthFactor);
                 float stock = block.plantBiomass;
                 if (source.trophicLevel > 0)
                 {
@@ -136,7 +144,7 @@ public partial class SimulationController
                 source.evolutionConversions.Clear();
                 large.evolutionConversions.Clear();
                 block.community.Add(large);
-                LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
+                LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
                 block.nextLocalSplitDay = day + LandRules.splitCooldownDays;
                 OnLocalSplitResolved?.Invoke(new PopulationTransitionResult(
                     PopulationTransitionKind.LocalSplit, day, block, block,

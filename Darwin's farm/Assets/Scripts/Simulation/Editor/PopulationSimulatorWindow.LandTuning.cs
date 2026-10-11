@@ -14,6 +14,8 @@ public partial class PopulationSimulatorWindow
         new Dictionary<string, string>
         {
             { nameof(LandRuleTuning.coldDeathRate), "寒冷死亡系数" },
+            { nameof(LandRuleTuning.climateMismatchDeathRate), "气候失配死亡系数" },
+            { nameof(LandRuleTuning.reproductionStressDeathRate), "高生育生理负担死亡系数" },
             { nameof(LandRuleTuning.movementFoodCost), "运动耗食系数" },
             { nameof(LandRuleTuning.youngLinearCost), "幼体线性耗食" },
             { nameof(LandRuleTuning.youngQuadraticCost), "幼体平方耗食" },
@@ -22,7 +24,7 @@ public partial class PopulationSimulatorWindow
             { nameof(LandRuleTuning.movementForagingGain), "运动觅食增益" },
             { nameof(LandRuleTuning.minimumPlantReserveFraction), "植物最低库存比例" },
             { nameof(LandRuleTuning.dailyPlantStockDrawFraction), "每日库存最大消耗比例" },
-            { nameof(LandRuleTuning.densityBirthDampingStart), "出生减速起点：可持续 K 比例" },
+            { nameof(LandRuleTuning.densityBirthDampingStart), "出生减速起点：成年耗食 / 日补充" },
             { nameof(LandRuleTuning.baseCaptureChance), "基础捕获率" },
             { nameof(LandRuleTuning.chaseScale), "追逃能力尺度" },
             { nameof(LandRuleTuning.preyEnergyPerSize), "每体型猎物能量" },

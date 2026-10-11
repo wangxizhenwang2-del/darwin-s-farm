@@ -32,7 +32,7 @@ public partial class SimulationController : MonoBehaviour
         reproductionScale = landRules.birthRate;
         maxStarvationDeathRate = landRules.starvationDeathRate;
         foreach (BlockInfo block in blockInfos)
-            LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
+            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
     private LandRuleTuning LandRules =>
         landRules ?? (landRules = new LandRuleTuning());
@@ -94,7 +94,7 @@ public partial class SimulationController : MonoBehaviour
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
-            LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
+            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
 
     // Model identity is repaired at the same boundary that registers blocks.
@@ -242,7 +242,7 @@ public partial class SimulationController : MonoBehaviour
         block.community = merged;
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
-        LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
+        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         NotifyEnvironmentChanged();
         OnBlockCommunityChanged?.Invoke(block);
         return true;
@@ -282,7 +282,7 @@ public partial class SimulationController : MonoBehaviour
         block.temperature = temperature;
         block.humidity = humidity;
         block.habitatRecovery = recovery;
-        LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
+        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         NotifyEnvironmentChanged();
         RetryMutationSoon(block);
         OnBlockEnvironmentChanged?.Invoke(block);
@@ -324,7 +324,7 @@ public partial class SimulationController : MonoBehaviour
         }
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
-            LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
+            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         OnDaySimulated?.Invoke(day);
     }
 
@@ -340,7 +340,7 @@ public partial class SimulationController : MonoBehaviour
 
         LandLifeRules.Simulate(block, LandRules);
         EvolveCommunityNewRules(block);
-        LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
+        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
 
     // 种群适应度、出生与死亡。

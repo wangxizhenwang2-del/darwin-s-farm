@@ -9,6 +9,8 @@ public sealed class LandRuleTuning
     [Min(0f)] public float birthRate = 0.1f;
     [Range(0f, 1f)] public float starvationDeathRate = 0.6f;
     [Min(0f)] public float coldDeathRate = 0.005f;
+    [Min(0f)] public float climateMismatchDeathRate = 0.01f;
+    [Min(0f)] public float reproductionStressDeathRate = 0.012f;
     [Min(0f)] public float movementFoodCost = 0.4f;
     [Min(0f)] public float youngLinearCost = 0.4f;
     [Min(0f)] public float youngQuadraticCost = 0.045f;
@@ -51,6 +53,9 @@ public sealed class LandRuleTuning
         birthRate = NonNegative(birthRate, 0.1f);
         starvationDeathRate = Unit(starvationDeathRate, 0.6f);
         coldDeathRate = NonNegative(coldDeathRate, 0.005f);
+        climateMismatchDeathRate = NonNegative(climateMismatchDeathRate, 0.01f);
+        reproductionStressDeathRate = NonNegative(reproductionStressDeathRate,
+            0.012f);
         movementFoodCost = NonNegative(movementFoodCost, 0.4f);
         youngLinearCost = NonNegative(youngLinearCost, 0.4f);
         youngQuadraticCost = NonNegative(youngQuadraticCost, 0.045f);
