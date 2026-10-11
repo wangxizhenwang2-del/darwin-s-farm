@@ -62,12 +62,23 @@ internal static class Program
             abundant.consumedBiomassToday <= 1000000 &&
             Math.Abs(abundant.plantBiomass + abundant.consumedBiomassToday
                 - 1000000) < 0.1f, "one plant ledger conserves food");
+        Check(Math.Abs(defaults.ReadLandRules().splitMinimumRenewalPressure
+            - 0.9f) < 1e-6f, "split requires ninety percent of sustainable K");
 
         var starving = Pop(Species(0), 100);
         BlockInfo noFood = Block(0, 0, starving);
         Controller(noFood).SimulateBlock(noFood);
         Check(starving.speciesAmount == 40 && starving.deathsToday == 60,
             "starvation counted once without overload deaths");
+        var shock = Pop(Species(0), 5000);
+        BlockInfo drought = Block(0, 10000, shock);
+        Controller(drought).SimulateBlock(drought);
+        Check(drought.plantBiomass == 0f,
+            "nonsteady drought can temporarily empty plant stock");
+        drought.habitatRecovery = 100000;
+        Controller(drought).SimulateBlock(drought);
+        Check(drought.plantBiomass > 0f,
+            "plant stock rebuilds after recovery resumes");
 
         var left = Pop(chicken, 1000);
         left.size = 10; left.fertility = 90;
@@ -82,6 +93,9 @@ internal static class Program
         for (int i = 0; i < 10; i++) splitSource.foodSatisfactionHistory.Add(1f);
         BlockInfo splitBlock = Block(125000, 1000000, splitSource);
         var splitController = Controller(splitBlock);
+        var splitRules = splitController.ReadLandRules();
+        splitRules.splitMinimumRenewalPressure = 0.4f;
+        splitController.ApplyLandRules(splitRules);
         int splitEvents = 0;
         splitController.OnLocalSplitResolved += _ => splitEvents++;
         splitController.SimulateDay(1);
@@ -157,6 +171,65 @@ internal static class Program
             + " traits=" + string.Join(";", grass.community.Select(p =>
                 p.fitTemperature + "/" + p.fitHumidity + "/"
                 + p.movementAbility + "/" + p.size + "/" + p.fertility)));
+
+        // Reproduce the supplied day-192 whitebox case with its initial traits.
+        foreach (float birthRate in new[] { 0.1f, 0.05f })
+        {
+            var sample = Pop(Species(0, 62, 51, 19, 10, 76), 160);
+            BlockInfo tile = Block(100000, 100000, sample);
+            tile.temperature = 68; tile.humidity = 68;
+            var sim = new SimulationController();
+            sim.SetBlocks(new List<BlockInfo> { tile });
+            sim.SetMigrationParameters(false, 7, 100, .8f, .5f, .2f, 7);
+            var rules = sim.ReadLandRules();
+            rules.birthRate = birthRate;
+            sim.ApplyLandRules(rules);
+            int split = 0;
+            sim.OnLocalSplitResolved += result => split = result.Day;
+            float minimumAfterSplit = float.MaxValue;
+            int largestDailyChanges = 0;
+            for (int day = 1; day <= 192; day++)
+            {
+                var before = tile.community.ToDictionary(p => p.PopulationId,
+                    p => new[] { p.fitTemperature, p.fitHumidity,
+                        p.movementAbility, p.size, p.fertility });
+                sim.SimulateDay(day);
+                foreach (var p in tile.community)
+                    if (before.TryGetValue(p.PopulationId, out int[] prior))
+                    {
+                        int[] now = { p.fitTemperature, p.fitHumidity,
+                            p.movementAbility, p.size, p.fertility };
+                        int changed = Enumerable.Range(0, 5).Count(i => now[i] != prior[i]);
+                        largestDailyChanges = Math.Max(largestDailyChanges, changed);
+                    }
+                if (split > 0) minimumAfterSplit = Math.Min(minimumAfterSplit,
+                    tile.plantBiomass);
+                if (day == 40 || day == 60 || day == 80 || day == 120 ||
+                    day == 160 || day == 192)
+                    Console.WriteLine("WHITEBOX birth=" + birthRate + " day=" + day
+                        + " stock=" + Math.Round(tile.plantBiomass)
+                        + " " + string.Join(";", tile.community.Select(p =>
+                            p.speciesAmount + "/" + p.size + "/" + p.fertility)));
+            }
+            Check(split > 0 && tile.community.Count == 2 &&
+                largestDailyChanges <= 1 &&
+                tile.community.Min(p => p.splitStrategy) == -1 &&
+                tile.community.Max(p => p.splitStrategy) == 1,
+                "whitebox split persists with one trait mutated per day");
+            Check(minimumAfterSplit >= rules.minimumPlantReserveFraction *
+                tile.maxPlantBiomass - 0.1f,
+                "whitebox plant stock stays above reserve");
+            PopulationData largeBranch = tile.community.Single(p =>
+                p.splitStrategy > 0);
+            PopulationData smallBranch = tile.community.Single(p =>
+                p.splitStrategy < 0);
+            Check(largeBranch.size > smallBranch.size &&
+                largeBranch.fertility < smallBranch.fertility &&
+                largeBranch.speciesAmount < smallBranch.speciesAmount / 3 &&
+                !string.IsNullOrEmpty(largeBranch.lastMutationEffect),
+                "whitebox branches retain different traits and plateaus");
+            Console.WriteLine("WHITEBOX birth=" + birthRate + " split=" + split);
+        }
 
         if (!args.Contains("--sweep")) return;
         foreach (float rate in new[] { 0.1f, 0.02f, 0.005f })

@@ -94,4 +94,9 @@ public class PopulationData
     public float predationRemainder;
     public int endangeredDays;
     public bool localSplitBranch;
+    // -1: small/high-fertility branch; +1: large/low-fertility branch.
+    public int splitStrategy;
+    public int splitSizeAnchor;
+    public int splitFertilityAnchor;
+    public string lastMutationEffect;
 }

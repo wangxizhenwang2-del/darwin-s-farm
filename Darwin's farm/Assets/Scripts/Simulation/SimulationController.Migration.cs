@@ -275,6 +275,9 @@ public partial class SimulationController
             }
             PopulationData resultPopulation = resident ?? arrival;
             resultPopulation.localSplitBranch = false;
+            resultPopulation.splitStrategy = 0;
+            resultPopulation.splitSizeAnchor = 0;
+            resultPopulation.splitFertilityAnchor = 0;
             OnMigrationResolved?.Invoke(new PopulationTransitionResult(
                 PopulationTransitionKind.Migration, day, plans[i].source, target,
                 plans[i].population, resultPopulation, plans[i].amount,
@@ -686,6 +689,10 @@ internal static class PopulationTransfer
             predationRemainder = source.predationRemainder,
             endangeredDays = source.endangeredDays,
             localSplitBranch = source.localSplitBranch,
+            splitStrategy = source.splitStrategy,
+            splitSizeAnchor = source.splitSizeAnchor,
+            splitFertilityAnchor = source.splitFertilityAnchor,
+            lastMutationEffect = source.lastMutationEffect,
             foodSatisfactionHistory = new List<float>(source.foodSatisfactionHistory ?? new List<float>()),
             renewalSatisfactionHistory = new List<float>(source.renewalSatisfactionHistory ?? new List<float>()),
             preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>())
@@ -769,6 +776,9 @@ internal static class PopulationTransfer
         resident.endangeredDays = total < 10
             ? Mathf.Min(resident.endangeredDays, arrival.endangeredDays) : 0;
         resident.localSplitBranch = false;
+        resident.splitStrategy = 0;
+        resident.splitSizeAnchor = 0;
+        resident.splitFertilityAnchor = 0;
         resident.nextMigrationDay = Mathf.Max(resident.nextMigrationDay,
             arrival.nextMigrationDay);
         resident.nextEvolutionDay = Mathf.Max(resident.nextEvolutionDay,

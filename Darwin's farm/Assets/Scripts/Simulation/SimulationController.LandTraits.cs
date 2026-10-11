@@ -5,32 +5,10 @@ public partial class SimulationController
 {
     private string GetLandTraitDirection(BlockInfo block, PopulationData p)
     {
-        if (!mutationEnabled || mutationStep <= 0f) return "进化方向：已关闭";
-        if (block == null || p == null || p.speciesAmount <= 0)
-            return "进化方向：无存活个体";
-        string t = block.temperature > p.fitTemperature ? "适温↑" :
-            block.temperature < p.fitTemperature ? "适温↓" : "适温·";
-        string h = block.humidity > p.fitHumidity ? "适湿↑" :
-            block.humidity < p.fitHumidity ? "适湿↓" : "适湿·";
-        LandTraits current = ReadLandTraits(p);
-        float baseline = ForecastLandGrowth(block, p, current);
-        LandTraits larger = current, smaller = current;
-        larger.s = Mathf.Min(90f, larger.s + mutationStep);
-        smaller.s = Mathf.Max(10f, smaller.s - mutationStep);
-        float up = ForecastLandGrowth(block, p, larger);
-        float down = ForecastLandGrowth(block, p, smaller);
-        string size = up > baseline && up > down ? "体型↑" :
-            down > baseline && down > up ? "体型↓" : "体型·";
-        int ceiling;
-        float attraction = BestNeighborAttraction(block, p, out ceiling);
-        string movement = attraction >= LandRules.neighborAttractionThreshold
-            && p.movementAbility < ceiling ? "运动↑" : "运动按本地收益";
-        bool lessFertility = LandLifeRules.Average(p.renewalSatisfactionHistory, 1f)
-            < 0.995f && LandRules.starvationDeathRate
-                * LandLifeRules.YoungNeed(p.size, LandRules)
-                > LandLifeRules.AdultNeed(p.size, p.movementAbility, LandRules);
-        return "下一轮趋势：" + t + " " + h + " " + movement + " "
-            + size + " 生育" + (lessFertility ? "↓" : "↑");
+        if (p == null) return "当前变异：无种群";
+        if (!mutationEnabled || mutationStep <= 0f) return "当前变异：已关闭";
+        return "当前变异：" + (string.IsNullOrEmpty(p.lastMutationEffect)
+            ? "暂无记录" : p.lastMutationEffect);
     }
 
     private struct LandTraits
@@ -57,6 +35,18 @@ public partial class SimulationController
         float ratio = demand > 0f ? Mathf.Clamp01(food / demand) : 1f;
         float births = p.speciesAmount * LandRules.birthRate
             * v.f / 100f * fitness * ratio;
+        if (p.trophicLevel == 0)
+        {
+            float totalDemand = demand;
+            foreach (PopulationData other in block.community)
+                if (other != p && other != null && other.trophicLevel == 0 &&
+                    other.speciesAmount > 0)
+                    totalDemand += LandLifeRules.Demand(other,
+                        other.speciesAmount, LandLifeRules.Fitness(block,
+                            other.fitTemperature, other.fitHumidity), LandRules);
+            births *= LandLifeRules.DensityBirthMultiplier(totalDemand,
+                block.habitatRecovery, LandRules);
+        }
         float deaths = p.speciesAmount * LandRules.starvationDeathRate
             * (1f - ratio) + LandRules.coldDeathRate * p.speciesAmount
                 * Mathf.Max(0f, (50f - block.temperature) / 50f)
@@ -155,9 +145,10 @@ public partial class SimulationController
 
     private void EvolveCommunityNewRules(BlockInfo block)
     {
-        if (!mutationEnabled) return;
+        if (!mutationEnabled || mutationStep <= 0f || selectionStrength <= 0f) return;
         var decisions = new List<LandTraits>(block.community.Count);
         var subjects = new List<PopulationData>(block.community.Count);
+        var effects = new List<string>(block.community.Count);
         foreach (PopulationData p in block.community)
         {
             if (p == null || p.speciesAmount <= 0) continue;
@@ -167,12 +158,12 @@ public partial class SimulationController
             LandTraits current = ReadLandTraits(p);
             LandTraits next = current;
             float baseline = ForecastLandGrowth(block, p, current);
-            for (int trait = 0; trait < 4; trait++)
+            float bestGain = 0.00001f;
+            string effect = null;
+            int ceiling;
+            float attraction = BestNeighborAttraction(block, p, out ceiling);
+            for (int trait = 0; trait < 5; trait++)
             {
-                float best = baseline;
-                int direction = 0;
-                float chosen = trait == 0 ? current.t : trait == 1
-                    ? current.h : trait == 2 ? current.m : current.s;
                 for (int d = -1; d <= 1; d += 2)
                 {
                     LandTraits candidate = current;
@@ -180,44 +171,43 @@ public partial class SimulationController
                     if (trait == 1) candidate.h = Mathf.Clamp(candidate.h + d * mutationStep, 0f, 100f);
                     if (trait == 2) candidate.m = Mathf.Clamp(candidate.m + d * mutationStep, 0f, 100f);
                     if (trait == 3) candidate.s = Mathf.Clamp(candidate.s + d * mutationStep, 10f, 90f);
+                    if (trait == 4) candidate.f = Mathf.Clamp(candidate.f + d * mutationStep, 10f, 90f);
+                    if (p.localSplitBranch && p.splitStrategy > 0 &&
+                        (candidate.s < p.splitSizeAnchor ||
+                         candidate.f > p.splitFertilityAnchor)) continue;
+                    if (p.localSplitBranch && p.splitStrategy < 0 &&
+                        (candidate.s > p.splitSizeAnchor ||
+                         candidate.f < p.splitFertilityAnchor)) continue;
+                    float previous = trait == 0 ? current.t : trait == 1 ? current.h :
+                        trait == 2 ? current.m : trait == 3 ? current.s : current.f;
+                    float proposed = trait == 0 ? candidate.t : trait == 1 ? candidate.h :
+                        trait == 2 ? candidate.m : trait == 3 ? candidate.s : candidate.f;
+                    if (Mathf.Abs(proposed - previous) < 0.0001f) continue;
                     float score = ForecastLandGrowth(block, p, candidate);
                     if (p.trophicLevel > 0 && trait >= 2)
                         score += p.speciesAmount * 0.01f * Mathf.Max(0f,
                             PredatorPotential(block, p, candidate)
                             - PredatorPotential(block, p, current));
-                    if (score > best + 0.00001f ||
-                        Mathf.Abs(score - best) <= 0.00001f && d < direction)
+                    if (trait == 2 && d > 0 &&
+                        attraction >= LandRules.neighborAttractionThreshold &&
+                        current.m < ceiling)
+                        score += p.speciesAmount *
+                            LandRules.attractionMovementGain * attraction * 0.001f;
+                    float gain = (score - baseline) * selectionStrength;
+                    if (gain > bestGain)
                     {
-                        best = score; direction = d;
-                        chosen = trait == 0 ? candidate.t : trait == 1
-                            ? candidate.h : trait == 2 ? candidate.m : candidate.s;
+                        bestGain = gain;
+                        next = candidate;
+                        string name = trait == 0 ? "适温" : trait == 1 ? "适湿" :
+                            trait == 2 ? "运动" : trait == 3 ? "体型" : "繁殖";
+                        effect = name + (d > 0 ? "↑ " : "↓ ") +
+                            Mathf.RoundToInt(previous) + "→" + Mathf.RoundToInt(proposed);
                     }
                 }
-                if (trait == 0) next.t = chosen;
-                if (trait == 1) next.h = chosen;
-                if (trait == 2) next.m = chosen;
-                if (trait == 3) next.s = chosen;
-            }
-            float renewal = LandLifeRules.Average(p.renewalSatisfactionHistory, 1f);
-            float young = LandLifeRules.YoungNeed(p.size, LandRules);
-            float adultNeed = LandLifeRules.AdultNeed(p.size,
-                p.movementAbility, LandRules);
-            next.f = Mathf.Clamp(current.f + (renewal < 0.995f &&
-                LandRules.starvationDeathRate * young > adultNeed ?
-                    -mutationStep : mutationStep), 10f, 90f);
-            int ceiling;
-            float attraction = BestNeighborAttraction(block, p, out ceiling);
-            if (attraction >= LandRules.neighborAttractionThreshold &&
-                current.m < ceiling)
-            {
-                float moved = Mathf.Min(ceiling, current.m +
-                    p.movementMutationRemainder +
-                    LandRules.attractionMovementGain * attraction);
-                next.m = Mathf.FloorToInt(moved);
-                p.movementMutationRemainder = moved - next.m;
             }
             decisions.Add(next);
             subjects.Add(p);
+            effects.Add(effect);
         }
         for (int i = 0; i < subjects.Count; i++)
         {
@@ -228,6 +218,7 @@ public partial class SimulationController
             p.movementAbility = Mathf.RoundToInt(next.m);
             p.size = Mathf.RoundToInt(next.s);
             p.fertility = Mathf.RoundToInt(next.f);
+            if (effects[i] != null) p.lastMutationEffect = effects[i];
         }
     }
 }

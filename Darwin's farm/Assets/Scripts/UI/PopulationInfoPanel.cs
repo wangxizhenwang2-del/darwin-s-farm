@@ -81,8 +81,9 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         portrait.sprite = image; portrait.enabled = true; portrait.color = image != null ? Color.white : new Color(.86f, .88f, .82f, .8f);
         placeholder.gameObject.SetActive(image == null);
         count.text = "数量：" + (data != null ? data.speciesAmount : visual.Count);
-        // Mutation accumulators are fractional calculation state, not mutation history.
-        mutation.text = "变异：暂无记录";
+        mutation.text = "变异：" + (data != null &&
+            !string.IsNullOrEmpty(data.lastMutationEffect)
+            ? data.lastMutationEffect : "暂无记录");
         SetScrollText(description, species != null ? species.Description : "暂无物种介绍");
         if (data == null)
         {

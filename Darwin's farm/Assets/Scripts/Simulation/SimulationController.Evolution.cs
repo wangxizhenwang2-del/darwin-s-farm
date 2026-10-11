@@ -417,6 +417,10 @@ public partial class SimulationController
         descendant.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
 
         descendant.localSplitBranch = false;
+        descendant.splitStrategy = 0;
+        descendant.splitSizeAnchor = 0;
+        descendant.splitFertilityAnchor = 0;
+        descendant.lastMutationEffect = "转化为" + target.SpeciesName;
         if (!wholeBranch)
         {
             ancestor.nextEvolutionDay = day + LandRules.evolutionCooldownDays;

@@ -479,6 +479,9 @@ public sealed class PlayerEconomyController : MonoBehaviour
             target.community.RemoveAt(i);
         }
         survivor.localSplitBranch = false;
+        survivor.splitStrategy = 0;
+        survivor.splitSizeAnchor = 0;
+        survivor.splitFertilityAnchor = 0;
     }
 
     private static bool ValidDelta(int delta) =>

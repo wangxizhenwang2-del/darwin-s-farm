@@ -56,15 +56,27 @@ public partial class SimulationController
                         SameSpecies(source, other)) { alreadyBranched = true; break; }
                 if (alreadyBranched) continue;
                 int largeSize = Mathf.Clamp(source.size + 30, 10, 90);
-                int smallSize = Mathf.Clamp(source.size - 30, 10, 90);
+                int smallSize = Mathf.Min(source.size,
+                    Mathf.Clamp(source.size - 30, 10, 90));
                 int largeFertility = Mathf.Clamp(source.fertility - 30, 10, 90);
                 int smallFertility = Mathf.Clamp(source.fertility + 30, 10, 90);
-                int largeCount = Mathf.RoundToInt(source.speciesAmount
-                    * smallSize / (float)(largeSize + smallSize));
-                int smallCount = source.speciesAmount - largeCount;
-                if (largeCount < 10 || smallCount < 10) continue;
                 float fitness = LandLifeRules.Fitness(block,
                     source.fitTemperature, source.fitHumidity);
+                // Seed by inverse squared size, then keep the resulting
+                // population under daily renewable supply at the split.
+                int largeCount = Mathf.RoundToInt(source.speciesAmount
+                    * smallSize * smallSize /
+                    (float)(largeSize * largeSize + smallSize * smallSize));
+                float sustainable = source.trophicLevel == 0
+                    ? Mathf.Max(0, block.habitatRecovery)
+                    : LandLifeRules.SustainablePreyFood(block, source, LandRules);
+                float smallDemand = LandLifeRules.Demand(source.speciesAmount,
+                    smallSize, source.movementAbility, smallFertility,
+                    fitness, LandRules);
+                float additionalPerLarge = LandLifeRules.Demand(1, largeSize,
+                    source.movementAbility, largeFertility, fitness, LandRules)
+                    - LandLifeRules.Demand(1, smallSize, source.movementAbility,
+                        smallFertility, fitness, LandRules);
                 float before = 0f;
                 foreach (PopulationData consumer in block.community)
                     if (consumer != null && consumer.trophicLevel == source.trophicLevel)
@@ -74,14 +86,18 @@ public partial class SimulationController
                             LandRules);
                 float original = LandLifeRules.Demand(source,
                     source.speciesAmount, fitness, LandRules);
+                if (additionalPerLarge > 0f)
+                    largeCount = Mathf.Min(largeCount, Mathf.FloorToInt(
+                        (sustainable - (before - original + smallDemand))
+                        * LandRules.splitHeadroomUse
+                        / additionalPerLarge));
+                int smallCount = source.speciesAmount - largeCount;
+                if (largeCount < 10 || smallCount < 10) continue;
                 float after = before - original
                     + LandLifeRules.Demand(largeCount, largeSize,
                         source.movementAbility, largeFertility, fitness, LandRules)
                     + LandLifeRules.Demand(smallCount, smallSize,
                         source.movementAbility, smallFertility, fitness, LandRules);
-                float sustainable = source.trophicLevel == 0
-                    ? Mathf.Max(0, block.habitatRecovery)
-                    : LandLifeRules.SustainablePreyFood(block, source, LandRules);
                 float stock = block.plantBiomass;
                 if (source.trophicLevel > 0)
                 {
@@ -105,6 +121,13 @@ public partial class SimulationController
                 large.size = largeSize;
                 large.fertility = largeFertility;
                 source.localSplitBranch = large.localSplitBranch = true;
+                source.splitStrategy = -1;
+                source.splitSizeAnchor = smallSize;
+                source.splitFertilityAnchor = smallFertility;
+                large.splitStrategy = 1;
+                large.splitSizeAnchor = largeSize;
+                large.splitFertilityAnchor = largeFertility;
+                source.lastMutationEffect = large.lastMutationEffect = "分化形成：体型 / 繁殖力";
                 source.evolutionConversions.Clear();
                 large.evolutionConversions.Clear();
                 block.community.Add(large);

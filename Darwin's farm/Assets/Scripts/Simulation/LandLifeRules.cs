@@ -141,6 +141,34 @@ internal static class LandLifeRules
         return ratio < 30f ? -1 : ratio >= 60f ? 1 : 0;
     }
 
+    // Growth can be eaten today, but the standing stock is drawn down gradually.
+    // The floor is measured against capacity so a sudden population boom cannot
+    // empty a tile in one update. Both simulation and mutation forecasts use this.
+    internal static float PlantFoodBudget(BlockInfo block, float stockAfterGrowth,
+        LandRuleTuning rules = null)
+    {
+        float floor = block.habitatRecovery > 0f
+            ? Mathf.Min(Mathf.Max(0f, block.maxPlantBiomass) *
+                (rules != null ? rules.minimumPlantReserveFraction : 0.1f),
+                stockAfterGrowth * 0.5f)
+            : 0f;
+        float growth = Mathf.Clamp(block.plantGrowthToday, 0f, stockAfterGrowth);
+        float standing = Mathf.Max(0f, stockAfterGrowth - growth);
+        float draw = block.habitatRecovery <= 0f ? standing :
+            Mathf.Min(Mathf.Max(0f, standing - floor), standing *
+                (rules != null ? rules.dailyPlantStockDrawFraction : 0.1f));
+        return Mathf.Max(0f, Mathf.Min(stockAfterGrowth - floor, growth + draw));
+    }
+
+    internal static float DensityBirthMultiplier(float herbivoreDemand,
+        float recovery, LandRuleTuning rules)
+    {
+        if (recovery <= 0f) return 0f;
+        float start = Mathf.Min(0.999f, rules.densityBirthDampingStart);
+        return Mathf.Clamp01((1f - herbivoreDemand / recovery) /
+            (1f - start));
+    }
+
     internal static float ForecastPlantIntake(BlockInfo block, PopulationData target,
         float temperature, float humidity, float movement, float size,
         float fertility, bool renewalOnly, LandRuleTuning rules = null)
@@ -152,7 +180,8 @@ internal static class LandLifeRules
         int index = groups.IndexOf(target);
         if (index < 0) return 0f;
         float food = renewalOnly ? Mathf.Max(0, block.habitatRecovery)
-            : block.plantBiomass + block.consumedBiomassToday;
+            : PlantFoodBudget(block, block.plantBiomass +
+                block.consumedBiomassToday, rules);
         return AllocatePlants(groups, food, block.habitatRecovery, block,
             target, temperature, humidity, movement, size, fertility, rules)[index];
     }
@@ -288,12 +317,14 @@ internal static class LandLifeRules
         HuntLevel(block, 1, rules);
         foreach (PopulationData p in block.community)
             if (p.trophicLevel == 0 && p.speciesAmount > 0) herbivores.Add(p);
-        float[] allocation = AllocatePlants(herbivores, block.plantBiomass,
+        float[] allocation = AllocatePlants(herbivores,
+            PlantFoodBudget(block, block.plantBiomass, rules),
             block.habitatRecovery, block, rules: rules);
         float[] renewal = AllocatePlants(herbivores,
             Mathf.Max(0, block.habitatRecovery), block.habitatRecovery, block,
             rules: rules);
         float eaten = 0f;
+        float totalHerbivoreDemand = 0f;
         for (int i = 0; i < herbivores.Count; i++)
         {
             PopulationData p = herbivores[i];
@@ -301,6 +332,7 @@ internal static class LandLifeRules
             eaten += allocation[i];
             float demand = Demand(p, p.speciesAmount,
                 Fitness(block, p.fitTemperature, p.fitHumidity), rules);
+            totalHerbivoreDemand += demand;
             AddHistory(p.renewalSatisfactionHistory, demand > 0f
                 ? Mathf.Clamp01(renewal[i] / demand) : 1f);
         }
@@ -337,6 +369,9 @@ internal static class LandLifeRules
                 ? p.allocatedBiomass / p.energyNeed : 0f;
             float births = count * rules.birthRate * p.fertility / 100f
                 * fitness * satisfaction;
+            if (p.trophicLevel == 0)
+                births *= DensityBirthMultiplier(totalHerbivoreDemand,
+                    block.habitatRecovery, rules);
             float deaths = rules.starvationDeathRate * count * (1f - satisfaction)
                 + rules.coldDeathRate * count * Mathf.Max(0f, (50f - block.temperature) / 50f)
                     * (1f - p.size / 100f);
