@@ -36,7 +36,7 @@ public class TilePaletteItemUI : MonoBehaviour,
         {
             if (mapLabelFont == null)
             {
-                Font sourceFont = Resources.Load<Font>("Fonts/NotoSansSC-MapLabels");
+                Font sourceFont = GameUITheme.Font;
                 if (sourceFont != null)
                     mapLabelFont = TMP_FontAsset.CreateFontAsset(sourceFont, 48, 4,
                         GlyphRenderMode.SDFAA, 512, 512, AtlasPopulationMode.Dynamic, false);

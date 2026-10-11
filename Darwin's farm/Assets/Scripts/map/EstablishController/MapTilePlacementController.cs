@@ -30,6 +30,8 @@ public class MapTilePlacementController : MonoBehaviour
 
     private GameObject previewObject;
     private Renderer[] previewRenderers;
+    private Mesh previewGroundMesh;
+    [SerializeField] private MapTileColorTransitionSystem terrainVisuals;
 
     private MaterialPropertyBlock properties;
 
@@ -270,8 +272,21 @@ public class MapTilePlacementController : MonoBehaviour
             new Vector3(-8f, -0.25f, 0f),
             new Vector3(1f, 0.5f, 15f));
 
-        previewRenderers =
-            previewObject.GetComponentsInChildren<Renderer>();
+        if (terrainVisuals == null)
+        {
+            terrainVisuals = gridManager.GetComponent<MapTileColorTransitionSystem>();
+            if (terrainVisuals == null)
+                terrainVisuals = FindFirstObjectByType<MapTileColorTransitionSystem>();
+        }
+        if (terrainVisuals != null)
+        {
+            Renderer[] flatGround = previewObject.GetComponentsInChildren<Renderer>();
+            GameObject visual = terrainVisuals.CreatePlacementVisualPreview(
+                previewObject.transform, draggingDefinition.biome, previewMaterial, out previewGroundMesh);
+            if (visual != null)
+                foreach (Renderer part in flatGround) part.enabled = false;
+        }
+        previewRenderers = previewObject.GetComponentsInChildren<Renderer>(true);
 
         CreatePreviewPart(
     "DirectionMarker",
@@ -322,6 +337,8 @@ public class MapTilePlacementController : MonoBehaviour
             Destroy(previewObject);
         }
 
+        if (previewGroundMesh != null) Destroy(previewGroundMesh);
+        previewGroundMesh = null;
         previewObject = null;
         previewRenderers = null;
     }

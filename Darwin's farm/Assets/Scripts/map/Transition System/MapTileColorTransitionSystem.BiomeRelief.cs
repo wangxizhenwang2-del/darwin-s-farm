@@ -18,8 +18,11 @@ public partial class MapTileColorTransitionSystem
         new Dictionary<GameObject, float[,]>();
 
     private float SampleBiomeRelief(MapTileInstance tile, float localX, float localZ)
+        => SampleBiomeRelief(VisibleBiome(tile), localX, localZ);
+
+    private float SampleBiomeRelief(BiomeType biome, float localX, float localZ)
     {
-        GameObject prefab = BiomePrefab(VisibleBiome(tile));
+        GameObject prefab = BiomePrefab(biome);
         if (prefab == null || biomeReliefStrength <= 0f || biomeReliefLimit <= 0f)
             return 0f;
 
@@ -29,7 +32,7 @@ public partial class MapTileColorTransitionSystem
 
         if (!biomeRelief.TryGetValue(prefab, out float[,] heights))
         {
-            heights = MeasureBiomeRelief(prefab, VisibleBiome(tile));
+            heights = MeasureBiomeRelief(prefab, biome);
             biomeRelief.Add(prefab, heights);
         }
         if (heights == null) return 0f;

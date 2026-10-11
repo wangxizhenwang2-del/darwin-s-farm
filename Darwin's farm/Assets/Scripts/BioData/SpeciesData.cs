@@ -9,6 +9,35 @@ public class SpeciesData: ScriptableObject
     [SerializeField] private Sprite sprite;
     public Sprite Sprite => sprite;
 
+    [Header("Species presentation (shared by all populations)")]
+    [SerializeField] private string speciesId;
+    [SerializeField] private Sprite portrait;
+    [SerializeField, TextArea(4, 12)] private string description;
+    public string SpeciesId => speciesId;
+    public Sprite Portrait => portrait != null ? portrait : sprite;
+    public string Description => string.IsNullOrWhiteSpace(description) ? "暂无物种介绍" : description;
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (string.IsNullOrWhiteSpace(speciesId)) speciesId = Guid.NewGuid().ToString("N");
+        // Asset queries must run on the editor thread, after serialization finishes.
+        UnityEditor.EditorApplication.delayCall += CheckPresentationId;
+    }
+
+    private void CheckPresentationId()
+    {
+        if (this == null) return;
+        foreach (string guid in UnityEditor.AssetDatabase.FindAssets("t:SpeciesData"))
+        {
+            var other = UnityEditor.AssetDatabase.LoadAssetAtPath<SpeciesData>(
+                UnityEditor.AssetDatabase.GUIDToAssetPath(guid));
+            if (other != null && other != this && other.speciesId == speciesId)
+                Debug.LogWarning("Duplicate Species ID: " + speciesId + " (" + name + ", " + other.name + ")", this);
+        }
+    }
+#endif
+
     // 只有列出的目标才会触发预设物种的进化。
     public List<SpeciesData> evolutionTargets = new List<SpeciesData>();
     // Empty means the legacy adjacent-trophic-level food web. Test bioweb
