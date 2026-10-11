@@ -11,6 +11,7 @@
 ## JSON v1
 
 - `species`：物种 ID、名称、物种简介 `description`、图片、进化图坐标 `x/y`、食物图坐标 `foodX/foodY`，以及初始参数和 0–100 的资源价值 `value`。旧 JSON 若没有 `foodX/foodY`，首次打开时会使用 `x/y` 作为食物图初始位置；之后两张图的位置独立保存。旧字段 `scientificName` 会在读取时转入 `description`，缺少 `value` 时默认 50。旧 `baseHabitatNiche` 字段不再出现在网页导出的 JSON 中。
+- `baseEcologicalNiche: "Water"` 的物种无需填写 `baseFitTemperature` 和 `baseFitHumidity`。网页读取旧 JSON 时会移除水域物种的这两个字段，导出时也不包含它们；若切回陆地或空中，页面会以 50 作为可编辑的起始值。Unity 导入器会为其旧版 `SpeciesData` 字段写入 50 以保持兼容。
 - `evolutionLinks`：每条记录连接两个可相互演化的物种。`from`、`to` 仅保存端点，不表示方向；网站显示无箭头实线，Unity 导入器会向双方的 `evolutionTargets` 都加入对方。导入旧版单向记录时也按双向关系处理。
 - `foodLinks`：猎物 `from` 指向捕食者 `to`。
 - 图片可以是 HTTPS URL 或上传后内嵌的 data URL。图片上传接受最大 10 MB 的 PNG、JPEG、WebP、GIF 原图；超过 256 KiB 的图片会缩到最长边不超过 768 像素并转成 WebP，压缩后的图片不超过 256 KiB。大 GIF 会变为静态首帧。团队长期维护建议把图片文件提交到仓库，再填其 HTTPS 地址，避免 JSON 膨胀。
