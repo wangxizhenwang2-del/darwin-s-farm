@@ -97,7 +97,7 @@ Shader "Darwin/Moebius NPR"
                 half3 albedoSample = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).rgb;
                 half3 baseColor = albedoSample * _BaseColor.rgb;
                 baseColor = ApplySpatialColorGradient(baseColor,albedoSample,input.positionWS);
-                baseColor = ApplyPaintedColor(baseColor,input.uv);
+                baseColor = ApplyPaintedColor(baseColor,input.paintUV);
                 // A little exposed paper lifts dark swatches without replacing the artist's palette.
                 baseColor = lerp(baseColor,_HighlightColor.rgb,_PaperLift);
                 half4 control = SAMPLE_TEXTURE2D(_ControlMap, sampler_ControlMap, input.uv);

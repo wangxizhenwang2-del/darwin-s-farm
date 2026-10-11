@@ -18,6 +18,7 @@ namespace Darwin.Rendering.Editor
                 "_EnableFoamInk", "_FoamInkColor", "_FoamInkStrength", "_FoamInkWidth", "_EnableFoamPatches", "_FoamPatchStrength", "_EnableShoreMotion", "_ShoreMotionStrength");
             Group("Shoreline Mapping", "_EnableShoreMask", "_ShorelineMask", "_ShoreWorldRect", "_ShoreDistanceRange", "_ShoreWaveFade");
             Group("Cast Shadows", "_ReceiveWaterShadows", "_WaterShadowColor", "_WaterShadowStrength", "_WaterShadowDensity");
+            MoebiusWaterfallShaderGUI.DrawImpact(editor,properties);
             EditorGUILayout.HelpBox("Select the water surface, then use Tools > Moebius > Water Setup > Update Shoreline. Actual land, rocks and Terrain are detected automatically; open water-mesh edges do not create foam. No shore list is needed. Update again after changing water placement or ground geometry.", MessageType.Info);
             if (GUILayout.Button("Open Water Setup")) MoebiusWaterSetup.Open();
             Group("Advanced", "_AnimationPhase", "_DebugView");

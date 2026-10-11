@@ -1,4 +1,4 @@
-param([ValidateSet('Before','After','Reload','Sphere')][string]$Label='After',[string]$UnityPath='C:/Program Files/Unity/Hub/Editor/6000.2.9f1/Editor/Unity.exe')
+param([ValidateSet('Before','After','Reload','Sphere','UV')][string]$Label='After',[string]$UnityPath='C:/Program Files/Unity/Hub/Editor/6000.2.9f1/Editor/Unity.exe')
 $ErrorActionPreference='Stop'
 $projectRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 . (Join-Path $PSScriptRoot 'PrepareMoebiusValidation.ps1')

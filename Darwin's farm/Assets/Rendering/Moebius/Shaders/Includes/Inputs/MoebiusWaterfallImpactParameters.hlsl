@@ -1,0 +1,7 @@
+// Included inside UnityPerMaterial by receiving water and the optional legacy impact material.
+half4 _ImpactFoamColor,_ImpactRippleColor;
+float4 _ImpactPointA,_ImpactPointB,_ImpactFlowDirection;
+float _EnableWaterfallImpact,_ImpactRadius,_ImpactTurbulence,_ImpactNoiseScale,_ImpactFoamDensity,_ImpactFoamSpeed;
+float _ImpactRippleSpeed,_ImpactSpawnInterval,_ImpactLifetime,_ImpactMaxDistance,_ImpactRippleCount;
+float _ImpactRippleWidth,_ImpactDistortion,_ImpactRippleNoiseScale,_ImpactArcBreakup,_ImpactArcVariation;
+float _ImpactRippleIntensity,_ImpactDistanceFade,_ImpactLifetimeFade,_ImpactPhase,_ImpactFoamInkStrength;

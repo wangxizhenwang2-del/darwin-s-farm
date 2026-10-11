@@ -18,6 +18,7 @@ float _EnableFoamPatches, _FoamPatchStrength, _EnableShoreMotion, _ShoreMotionSt
 float _EnableShoreMask, _ShoreDistanceRange, _ShoreWaveFade;
 float _ReceiveWaterShadows, _WaterShadowStrength, _WaterShadowDensity;
 float _DebugView, _AnimationPhase;
+#include "Assets/Rendering/Moebius/Shaders/Includes/Inputs/MoebiusWaterfallImpactParameters.hlsl"
 CBUFFER_END
 float2 WaterDirection(float2 direction)
 {
