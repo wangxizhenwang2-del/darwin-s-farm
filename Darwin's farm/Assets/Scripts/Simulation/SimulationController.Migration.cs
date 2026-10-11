@@ -100,6 +100,15 @@ public partial class SimulationController
         return Mathf.Clamp01(1f - residents / capacity);
     }
 
+    // Shared by migration planning and mutation attraction. A destination
+    // already holding this species offers no expansion opportunity.
+    private static bool HasSameSpeciesResident(BlockInfo target,
+        PopulationData migrant) =>
+        target != null && target.community != null &&
+        target.community.Exists(resident => resident != null &&
+            resident.ecologicalNiche == migrant.ecologicalNiche &&
+            SameSpecies(resident, migrant));
+
     public float CalculateOverloadPressure(PopulationData population)
     {
         if (population == null || population.speciesAmount <= 0) return 0f;
@@ -165,19 +174,18 @@ public partial class SimulationController
                 ? LandRules.flatMigrationThreshold : LandRules.slopeMigrationThreshold))
                 continue;
 
-            bool occupied = neighbor.community.Exists(resident =>
-                resident != null &&
-                resident.ecologicalNiche == population.ecologicalNiche &&
-                SameSpecies(resident, population)) || planned.Exists(move =>
+            bool occupied = HasSameSpeciesResident(neighbor, population) ||
+                planned.Exists(move =>
                 move.target == neighbor &&
                 move.population.ecologicalNiche == population.ecologicalNiche &&
                 SameSpecies(move.population, population));
+            if (occupied) continue;
             int reserved = 0;
             foreach (MovePlan move in planned)
                 if (move.target == neighbor &&
                     !neighbor.community.Exists(existing => existing != null &&
                         SameSpecies(existing, move.population))) reserved++;
-            if (!occupied && neighbor.community.Count + reserved >= 5) continue;
+            if (neighbor.community.Count + reserved >= 5) continue;
             float free = NeighborFreeFood(neighbor, population);
             float migrantDemand = LandLifeRules.Demand(amount, population.size,
                 population.movementAbility, population.fertility,
@@ -189,7 +197,7 @@ public partial class SimulationController
                     / 100f);
             float chance = Mathf.Clamp01(attraction)
                 * population.movementAbility / 100f;
-            if (!occupied && neighbor.community.Count == 4)
+            if (neighbor.community.Count == 4)
                 chance *= LandRules.fourEntryMigrationFactor;
             if (chance <= 0f) continue;
             candidates.Add(new MoveCandidate

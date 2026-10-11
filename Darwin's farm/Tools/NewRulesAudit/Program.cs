@@ -139,6 +139,40 @@ internal static class Program
             && target.community.Single(p => p.species == chicken).speciesAmount == 65,
             "arrival collapses only the migrant's same-species branches");
 
+        var mover = Pop(chicken, 300);
+        mover.movementAbility = 100;
+        var residentChicken = Pop(chicken, 30);
+        BlockInfo attractionSource = Block(100000, 1000000, mover);
+        BlockInfo attractionTarget = Block(100000, 1000000, residentChicken);
+        attractionSource.SetNeighbors(new List<BlockInfo> { attractionTarget });
+        var attractionSimulation = Controller(attractionSource, attractionTarget);
+        var attractionMethod = typeof(SimulationController).GetMethod(
+            "BestNeighborAttraction",
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.NonPublic);
+        object[] attractionArgs = { attractionSource, mover, 0 };
+        float occupiedAttraction = (float)attractionMethod.Invoke(
+            attractionSimulation, attractionArgs);
+        attractionTarget.community.Clear();
+        float emptyAttraction = (float)attractionMethod.Invoke(
+            attractionSimulation, attractionArgs);
+        attractionTarget.community.Add(Pop(deer, 10));
+        float otherSpeciesAttraction = (float)attractionMethod.Invoke(
+            attractionSimulation, attractionArgs);
+        Check(occupiedAttraction == 0f && emptyAttraction > 0.2f &&
+            otherSpeciesAttraction > 0.2f,
+            "same-species neighbor gives no movement attraction");
+        attractionTarget.community.Clear();
+        attractionTarget.community.Add(residentChicken);
+        attractionSimulation.SetMigrationParameters(true, 1, 100, .8f,
+            .5f, .2f, 0);
+        int naturalArrivals = 0;
+        attractionSimulation.OnMigrationResolved += _ => naturalArrivals++;
+        attractionSimulation.SimulateDay(1);
+        Check(naturalArrivals == 0 &&
+            attractionTarget.community.Count == 1,
+            "natural migration skips same-species destination");
+
         SpeciesData civet = Species(1, size: 20, fertility: 60);
         SpeciesData lion = Species(2, size: 80, fertility: 20);
         civet.preySpecies.Add(chicken);

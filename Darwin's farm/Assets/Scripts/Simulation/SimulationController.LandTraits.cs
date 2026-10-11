@@ -107,7 +107,8 @@ public partial class SimulationController
         foreach (BlockInfo neighbor in source.Neighbors)
         {
             if (neighbor == null || neighbor.waterCoverage != WaterCoverage.Land ||
-                neighbor.community == null) continue;
+                neighbor.community == null ||
+                HasSameSpeciesResident(neighbor, p)) continue;
             int height = Mathf.Abs(neighbor.elevation - source.elevation);
             if (height > 1) continue;
             float free = NeighborFreeFood(neighbor, p);
