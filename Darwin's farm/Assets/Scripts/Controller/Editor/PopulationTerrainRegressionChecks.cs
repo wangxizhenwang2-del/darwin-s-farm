@@ -49,10 +49,13 @@ public static class PopulationTerrainRegressionChecks
         if (tile.Coordinate == Vector2Int.zero && tile.Biome == BiomeType.Grassland)
         {
             Vector3 from = new Vector3(-2.70f, 0f, 3.93f), to = new Vector3(-6.10f, 0f, -3.54f);
-            if (space.CanTraverse(from, to, 0.8f))
-                for (int i = 0; i <= 200; i++)
-                    if (!space.TryPose(Vector3.Lerp(from, to, i / 200f), 0.8f, out _, out _))
-                        throw new InvalidOperationException("A planned segment contains an invalid terrain pose.");
+            CheckReliefSegment(space, from, to, 0.8f);
+            // Captured from the stuck chicken follower on (0,0). Its coarse
+            // polygon was >0.6m above the ground, but the detail height was
+            // only ~0.19m above it. Planning accepted the full segment while
+            // the follower's first 2cm step was incorrectly rejected.
+            CheckReliefSegment(space, new Vector3(-6.447054f, 0f, 5.641203f),
+                new Vector3(-6.808251f, 0f, 4.772966f), 0.45f);
         }
         string result = "Real terrain movement checks:";
         for (int count = 3; count <= 4; count++)
@@ -65,6 +68,20 @@ public static class PopulationTerrainRegressionChecks
             result += "\n" + Simulate(space, members, count, controller.Settings);
         }
         return result;
+    }
+
+    private static void CheckReliefSegment(PopulationTileSpace space, Vector3 from, Vector3 to, float size)
+    {
+        // Other map layouts may intentionally block this captured segment.
+        if (!space.CanTraverse(from, to, size)) return;
+        Vector3 previous = from;
+        for (int i = 0; i <= 200; i++)
+        {
+            Vector3 point = Vector3.Lerp(from, to, i / 200f);
+            if (!space.TryPose(point, size, out _, out _) || !space.CanTraverse(previous, point, size))
+                throw new InvalidOperationException("A planned relief segment contains an invalid movement step.");
+            previous = point;
+        }
     }
 
     private static string Simulate(PopulationTileSpace space, PopulationFormationMotion.Body[] source,

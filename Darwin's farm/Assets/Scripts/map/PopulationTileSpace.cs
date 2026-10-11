@@ -87,7 +87,7 @@ public sealed class PopulationTileSpace
 
     // SamplePosition returns the nearest point in 3D. On a slope, voxel height
     // error moves that point sideways even when the requested XZ is walkable.
-    // Cache the actual NavMesh footprint and interpolate its height at fixed XZ.
+    // Cache the NavMesh footprint; query its detail height separately at fixed XZ.
     private void CacheNavigationSurface()
     {
         NavMeshTriangulation mesh = NavMesh.CalculateTriangulation();
@@ -125,7 +125,7 @@ public sealed class PopulationTileSpace
         point = default;
         if (!navigationCells.TryGetValue(NavigationCell(groundPoint),
             out List<NavigationTriangle> triangles)) return false;
-        float closest = 0.6f; // Allows bake voxel height error, not horizontal snapping.
+        float closest = 0.6f; // Allows actual bake height error, not polygon-plane error.
         bool found = false;
         foreach (NavigationTriangle triangle in triangles)
         {
@@ -136,16 +136,16 @@ public sealed class PopulationTileSpace
             float u = Cross(offset, ac) / determinant;
             float v = Cross(ab, offset) / determinant;
             if (u < -0.00001f || v < -0.00001f || u + v > 1.00001f) continue;
-            float y = triangle.a.y + u * (triangle.b.y - triangle.a.y) +
-                v * (triangle.c.y - triangle.a.y);
-            float difference = Mathf.Abs(y - groundPoint.y);
-            if (difference >= closest) continue;
-            Vector3 candidate = new Vector3(groundPoint.x, y, groundPoint.z);
             // Triangulation contains every agent type; verify against this filter.
-            // The detail height mesh can differ from the triangulated polygon's
-            // plane. Keep the footprint test exact, but allow this bake offset.
-            if (!NavMesh.SamplePosition(candidate, out NavMeshHit hit, 0.6f, filter) ||
-                Flat(hit.position - candidate).sqrMagnitude > 0.04f) continue;
+            // A large polygon can bridge a relief valley while its detail mesh
+            // follows the ground. Comparing the coarse plane with the ground
+            // creates false holes inside otherwise valid movement segments.
+            // Validate the actual detail height, retaining the footprint test
+            // and the existing limit on horizontal snapping.
+            if (!NavMesh.SamplePosition(groundPoint, out NavMeshHit hit, 0.6f, filter) ||
+                Flat(hit.position - groundPoint).sqrMagnitude > 0.04f) continue;
+            float difference = Mathf.Abs(hit.position.y - groundPoint.y);
+            if (difference >= closest) continue;
             closest = difference;
             point = new Vector3(groundPoint.x, hit.position.y, groundPoint.z);
             found = true;
