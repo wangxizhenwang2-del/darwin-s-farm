@@ -2,8 +2,7 @@ using System;
 
 namespace DarwinFarm.Environment
 {
-    // Five player-facing tools. Prices are deliberately absent until
-    // the economy system is implemented; every current deployment costs zero.
+    // Five player-facing tools.
     public enum EnvironmentTechnologyKind
     {
         TemperatureChange, HumidityChange, PlantChange, ElevationChange, MonsoonAnchor
@@ -22,6 +21,24 @@ namespace DarwinFarm.Environment
 
     public static class EnvironmentTechnologyCatalog
     {
+        public static int Price(EnvironmentTechnologyChoice choice)
+        {
+            BioenergySettings settings = BioenergySettings.Current;
+            int tier = Math.Abs(choice.Tier);
+            switch (choice.Kind)
+            {
+                case EnvironmentTechnologyKind.TemperatureChange:
+                case EnvironmentTechnologyKind.HumidityChange:
+                    return tier == 1 ? settings.climateSmallCost : settings.climateLargeCost;
+                case EnvironmentTechnologyKind.PlantChange:
+                    return choice.Tier > 0 ?
+                        (tier == 1 ? settings.plantIncreaseSmallCost : settings.plantIncreaseLargeCost) :
+                        (tier == 1 ? settings.plantDecreaseSmallCost : settings.plantDecreaseLargeCost);
+                case EnvironmentTechnologyKind.ElevationChange: return settings.elevationCost;
+                case EnvironmentTechnologyKind.MonsoonAnchor: return settings.monsoonCost;
+                default: return 0;
+            }
+        }
         public static readonly EnvironmentTechnologyKind[] All =
         {
             EnvironmentTechnologyKind.TemperatureChange,

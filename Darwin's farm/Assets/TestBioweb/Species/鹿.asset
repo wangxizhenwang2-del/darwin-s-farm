@@ -20,10 +20,12 @@ MonoBehaviour:
   evolutionTargets: []
   preySpecies: []
   trophicLevel: 0
-  baseMovementAbility: 55
+  bioenergyValue: 10
+  economyId: deer
+  baseMovementAbility: 75
   baseHabitatNiche: 50
-  baseFitTemperature: 54
-  baseFitHumidity: 34
-  baseSize: 35
-  baseFertility: 45
+  baseFitTemperature: 40
+  baseFitHumidity: 25
+  baseSize: 60
+  baseFertility: 30
   baseEcologicalNiche: 0

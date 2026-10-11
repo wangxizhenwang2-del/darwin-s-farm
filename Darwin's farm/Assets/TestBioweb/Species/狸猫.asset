@@ -26,10 +26,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
   - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
   trophicLevel: 1
-  baseMovementAbility: 72
+  bioenergyValue: 20
+  economyId: civet
+  baseMovementAbility: 50
   baseHabitatNiche: 50
-  baseFitTemperature: 32
-  baseFitHumidity: 52
-  baseSize: 12
-  baseFertility: 58
+  baseFitTemperature: 60
+  baseFitHumidity: 70
+  baseSize: 20
+  baseFertility: 60
   baseEcologicalNiche: 0

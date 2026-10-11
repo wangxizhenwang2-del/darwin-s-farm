@@ -8,7 +8,7 @@
   const $ = id => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   const uuid = () => crypto.randomUUID ? crypto.randomUUID() : `sp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const DEFAULT_TRAITS = {trophicLevel:0,baseMovementAbility:50,baseHabitatNiche:50,baseFitTemperature:50,baseFitHumidity:50,baseSize:10,baseFertility:50,baseEcologicalNiche:'Land'};
+  const DEFAULT_TRAITS = {trophicLevel:0,baseMovementAbility:50,baseFitTemperature:50,baseFitHumidity:50,baseSize:10,baseFertility:50,value:50,baseEcologicalNiche:'Land'};
   let data = {schemaVersion:1,species:[],evolutionLinks:[],foodLinks:[]};
   let view = 'evolution', lastGraphView = 'evolution', selected = null, connectFrom = null, connecting = false;
   let transform = {x:100,y:60,scale:1};
@@ -112,13 +112,13 @@
   }
   function render() {
     renderCounts();
-    $('nodes').innerHTML=data.species.map(s=>{const p=position(s);return `<div class="node${selected===s.id?' selected':''}${connectFrom===s.id?' connect-source':''}" data-id="${esc(s.id)}" style="left:${p.x}px;top:${p.y}px" role="button" tabindex="0" aria-label="物种 ${esc(s.name)}"><div class="node-image">${imageMarkup(s)}</div><strong>${esc(s.name)}</strong><span class="node-description" title="${esc(s.description)}">${esc(s.description || '暂无简介')}</span><div class="traits"><span class="trait">☀ ${s.baseFitTemperature}</span><span class="trait level">层级 ${s.trophicLevel}</span></div></div>`;}).join('');
+    $('nodes').innerHTML=data.species.map(s=>{const p=position(s);return `<div class="node${selected===s.id?' selected':''}${connectFrom===s.id?' connect-source':''}" data-id="${esc(s.id)}" style="left:${p.x}px;top:${p.y}px" role="button" tabindex="0" aria-label="物种 ${esc(s.name)}"><div class="node-image">${imageMarkup(s)}</div><strong>${esc(s.name)}</strong><span class="node-description" title="${esc(s.description)}">${esc(s.description || '暂无简介')}</span><div class="traits"><span class="trait">☀ ${s.baseFitTemperature}</span><span class="trait level">层级 ${s.trophicLevel}</span><span class="trait value">◆ ${s.value}</span></div></div>`;}).join('');
     $('edge-lines').innerHTML=edgeMarkup();
     $('world').style.transform=`translate(${transform.x}px,${transform.y}px) scale(${transform.scale})`;
     $('zoom-label').textContent=$('zoom-badge').textContent=`${Math.round(transform.scale*100)}%`;
     if(view==='table'){document.querySelector('.app').classList.remove('show-inspector');renderTable();}else renderInspector();
   }
-  const TABLE_NUMBERS=[['baseFitTemperature',0,100],['baseFitHumidity',0,100],['baseMovementAbility',0,100],['baseHabitatNiche',0,100],['baseSize',1,100],['baseFertility',0,100]];
+  const TABLE_NUMBERS=[['baseFitTemperature',0,100],['baseFitHumidity',0,100],['baseMovementAbility',0,100],['baseSize',1,100],['baseFertility',0,100],['value',0,100]];
   function renderTable() {
     const query=$('table-search').value.trim().toLocaleLowerCase();
     const rows=data.species.filter(s=>`${s.name} ${s.description}`.toLocaleLowerCase().includes(query));
@@ -155,13 +155,13 @@
         ${input('baseFitTemperature','适宜温度','与地块温度越接近，适应度越高。0 极寒、100 极热；常温地块可从 50 左右试填。')}
         ${input('baseFitHumidity','适宜湿度','陆地上与地块湿度越接近，适应度越高。0 干燥、100 潮湿；可从 50 左右试填。水域当前只计算温度。')}
         ${input('baseMovementAbility','移动能力','提高觅食、捕获机会，也增加每日能耗。可从 30–60 试填；敏捷物种再向上调。')}
-        ${input('baseHabitatNiche','栖息倾向','旧数值字段：0 偏水域、100 偏空中。当前模拟暂未使用它，建议保持 50。')}
         ${input('baseSize','体型','越大通常能量需求越高，也影响猎物能量和捕食。1–7 属小型赛道；先按相对大小试填。',1)}
         ${input('baseFertility','繁殖能力','越高基础出生率越高；超过 80 会增加能耗。可从 40–80 试填，再看种群变化。')}
+        ${input('value','价值','经济系统的价值基数，0–100，默认 50。未来可按一定比例形成每日自然产值；日产比例由经济系统决定，网站目前不计算。')}
       </div>
       <label class="field trait-field"><span>营养级</span><select data-field="trophicLevel"><option value="0" ${s.trophicLevel===0?'selected':''}>0 · 食草</option><option value="1" ${s.trophicLevel===1?'selected':''}>1 · 一级捕食者</option><option value="2" ${s.trophicLevel===2?'selected':''}>2 · 二级捕食者</option></select><small class="field-help">0 吃植物，1 吃 0 级，2 吃 1 级。当前模拟只按等级捕食，尚不读取食物网箭头。</small></label>
-      <label class="field trait-field"><span>基础生态位</span><select data-field="baseEcologicalNiche"><option value="Land" ${s.baseEcologicalNiche==='Land'?'selected':''}>陆地</option><option value="Water" ${s.baseEcologicalNiche==='Water'?'selected':''}>水域</option><option value="Air" ${s.baseEcologicalNiche==='Air'?'selected':''}>空中</option></select><small class="field-help">选择物种初始生活区域；它与上面的保留字段「栖息倾向」不同。</small></label>
-      <p class="field-note">节点位置和图片用于网站展示。建议值是试填参考，不保证在所有地图都最优。</p>
+      <label class="field trait-field"><span>基础生态位</span><select data-field="baseEcologicalNiche"><option value="Land" ${s.baseEcologicalNiche==='Land'?'selected':''}>陆地</option><option value="Water" ${s.baseEcologicalNiche==='Water'?'selected':''}>水域</option><option value="Air" ${s.baseEcologicalNiche==='Air'?'selected':''}>空中</option></select><small class="field-help">选择物种初始生活区域。</small></label>
+      <p class="field-note">价值会保存在 JSON 中，供经济系统使用；当前网页和 Unity 模拟尚未计算日产值。</p>
       <button class="danger" id="delete-species">删除物种及其所有连线</button>`;
   }
   function toWorld(clientX,clientY){const rect=$('viewport').getBoundingClientRect();return {x:(clientX-rect.left-transform.x)/transform.scale,y:(clientY-rect.top-transform.y)/transform.scale};}
@@ -249,7 +249,7 @@
       else{ctx.fillStyle='#749277';ctx.font='29px sans-serif';ctx.textAlign='center';ctx.fillText('✳',x+82,y+63);}
       ctx.textAlign='center';ctx.fillStyle='#324b39';ctx.font='bold 13px "Noto Sans SC",sans-serif';ctx.fillText(shortText(ctx,s.name,145),x+82,y+110);
       ctx.fillStyle='#91a194';ctx.font='10px "Noto Sans SC",sans-serif';ctx.fillText(shortText(ctx,s.description||'暂无简介',145),x+82,y+127);
-      ctx.fillStyle='#557c5f';ctx.font='10px "Noto Sans SC",sans-serif';ctx.fillText(`☀ ${s.baseFitTemperature}     层级 ${s.trophicLevel}`,x+82,y+148);
+      ctx.fillStyle='#557c5f';ctx.font='10px "Noto Sans SC",sans-serif';ctx.fillText(`☀ ${s.baseFitTemperature}   层级 ${s.trophicLevel}   ◆ ${s.value}`,x+82,y+148);
     });
     canvas.toBlob(blob=>{if(!blob){toast('图片导出失败');return;}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=kind==='evolution'?'darwin-evolution-network.png':'darwin-food-web.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('图片已导出');},'image/png');
   }

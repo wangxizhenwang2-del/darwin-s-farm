@@ -220,6 +220,36 @@ public class MapGridManager : MonoBehaviour
         return true;
     }
 
+    // Low-level map mutations are invoked by the paid player operation controller.
+    public bool TryRemoveTile(Vector2Int coordinate)
+    {
+        if (!initialized || coordinate == Vector2Int.zero ||
+            !tiles.TryGetValue(coordinate, out MapTileInstance tile)) return false;
+        tiles.Remove(coordinate);
+        tile.gameObject.SetActive(false);
+        Destroy(tile.gameObject);
+        TilesChanged?.Invoke();
+        mapNavigation.RequestUpdate();
+        return true;
+    }
+
+    public bool TryChangeWaterShape(Vector2Int coordinate, MapTileDefinition definition,
+        int rotationSteps)
+    {
+        if (!initialized || definition == null ||
+            definition.initialWaterCoverage == WaterCoverage.Land ||
+            !tiles.TryGetValue(coordinate, out MapTileInstance tile) ||
+            tile.Block == null || tile.Block.waterCoverage == WaterCoverage.Land ||
+            (tile.Definition == definition &&
+             WaterBodyTopology.OpeningMask(tile.Definition, tile.RotationSteps) ==
+             WaterBodyTopology.OpeningMask(definition, rotationSteps)))
+            return false;
+        tile.SetWaterShape(definition, rotationSteps);
+        TilesChanged?.Invoke();
+        mapNavigation.RequestUpdate();
+        return true;
+    }
+
     // The future player operation layer validates cost and permission before calling this.
     public bool TrySetTileHeight(Vector2Int coordinate, int level)
     {

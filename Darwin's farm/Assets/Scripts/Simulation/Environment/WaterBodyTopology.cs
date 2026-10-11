@@ -52,18 +52,35 @@ internal static class WaterBodyTopology
         return areas;
     }
 
+    public static bool HasReciprocalOpenings(MapTileInstance left, MapTileInstance right)
+    {
+        if (left == null || right == null || left.Block == null || right.Block == null ||
+            !HabitatTopology.IsWater(left.Block) || !HabitatTopology.IsWater(right.Block) ||
+            Mathf.Abs(left.HeightLevel - right.HeightLevel) > 1) return false;
+        Vector2Int direction = right.Coordinate - left.Coordinate;
+        if (Mathf.Abs(direction.x) + Mathf.Abs(direction.y) != 1) return false;
+        return Open(left, direction) && Open(right, -direction);
+    }
+
     private static bool Open(MapTileInstance tile, Vector2Int gridDirection)
     {
         WaterCoverage coverage = tile.Block.waterCoverage;
         if (coverage == WaterCoverage.Lake || coverage == WaterCoverage.Sea) return true;
-        int mask = tile.Definition != null && tile.Definition.riverOpenings != 0
-            ? tile.Definition.riverOpenings : ShapeMask(coverage);
-        Vector2Int local = gridDirection;
-        for (int i = 0; i < tile.RotationSteps; i++)
-            local = new Vector2Int(-local.y, local.x);
-        int bit = local == Vector2Int.up ? 1 : local == Vector2Int.right ? 2 :
-            local == Vector2Int.down ? 4 : local == Vector2Int.left ? 8 : 0;
+        int mask = OpeningMask(tile.Definition, tile.RotationSteps);
+        int bit = gridDirection == Vector2Int.up ? 1 : gridDirection == Vector2Int.right ? 2 :
+            gridDirection == Vector2Int.down ? 4 : gridDirection == Vector2Int.left ? 8 : 0;
         return (mask & bit) != 0;
+    }
+
+    public static int OpeningMask(MapTileDefinition definition, int rotation)
+    {
+        if (definition == null) return 0;
+        WaterCoverage coverage = definition.initialWaterCoverage;
+        if (coverage == WaterCoverage.Lake || coverage == WaterCoverage.Sea) return 15;
+        int local = definition.riverOpenings != 0 ? definition.riverOpenings : ShapeMask(coverage);
+        for (int step = 0; step < ((rotation % 4 + 4) % 4); step++)
+            local = ((local << 1) & 15) | ((local >> 3) & 1);
+        return local;
     }
 
     private static int ShapeMask(WaterCoverage coverage)
@@ -76,7 +93,7 @@ internal static class WaterBodyTopology
             case WaterCoverage.SouthEastRiver: return 4 | 2;
             case WaterCoverage.VerticalRiver: return 1 | 4;
             case WaterCoverage.horizontalRiver: return 2 | 8;
-            case WaterCoverage.CrossingRiver: return 15;
+            case WaterCoverage.CrossingRiver: return 1 | 2 | 8;
             default: return 0;
         }
     }

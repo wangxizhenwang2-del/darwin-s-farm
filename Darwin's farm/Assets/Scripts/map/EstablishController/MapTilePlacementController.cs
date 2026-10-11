@@ -25,6 +25,7 @@ public class MapTilePlacementController : MonoBehaviour
     private Color invalidColor =
         new Color(1f, 0.2f, 0.2f);
 
+    private PlayerEconomyController economy;
     private MapTileDefinition draggingDefinition;
     private ScreenEdgeCamera screenEdgeCamera;
 
@@ -49,6 +50,8 @@ public class MapTilePlacementController : MonoBehaviour
     {
 
         properties = new MaterialPropertyBlock();
+
+        if (gridManager != null) economy = gridManager.GetComponent<PlayerEconomyController>();
 
         if (viewCamera == null)
             viewCamera = Camera.main;
@@ -152,10 +155,10 @@ public class MapTilePlacementController : MonoBehaviour
         {
             if (canPlace)
             {
-                gridManager.TryPlaceTile(
-                    currentCoordinate,
-                    draggingDefinition,
-                    rotationSteps);
+                if (economy == null && gridManager != null)
+                    economy = gridManager.GetComponent<PlayerEconomyController>();
+                if (economy != null)
+                    economy.TryExpand(currentCoordinate, draggingDefinition, rotationSteps, out _);
             }
 
             CancelDrag();
@@ -193,7 +196,11 @@ public class MapTilePlacementController : MonoBehaviour
         Vector3 worldPosition = ray.GetPoint(distance);
 
         currentCoordinate = gridManager.WorldToGrid(worldPosition);
-        canPlace = gridManager.CanPlaceAt(currentCoordinate);
+        if (economy == null && gridManager != null)
+            economy = gridManager.GetComponent<PlayerEconomyController>();
+        BioenergyAccount wallet = gridManager.GetComponent<BioenergyAccount>();
+        canPlace = gridManager.CanPlaceAt(currentCoordinate) &&
+            wallet != null && (!wallet.CostsEnabled || wallet.Balance >= BioenergySettings.Current.expandTileCost);
 
         previewObject.transform.position =
     gridManager.GridToWorld(currentCoordinate) +
@@ -218,7 +225,8 @@ public class MapTilePlacementController : MonoBehaviour
 
     private bool IsPointerOverUI(Vector2 mousePosition)
     {
-        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(mousePosition)) return true;
+        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(mousePosition) ||
+            EconomyOperationsView.IsPointerOverUi(mousePosition)) return true;
         if (EventSystem.current == null)
             return false;
 

@@ -21,10 +21,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
   preySpecies: []
   trophicLevel: 0
-  baseMovementAbility: 35
+  bioenergyValue: 10
+  economyId: chicken
+  baseMovementAbility: 20
   baseHabitatNiche: 50
   baseFitTemperature: 61
-  baseFitHumidity: 81
-  baseSize: 6
+  baseFitHumidity: 50
+  baseSize: 8
   baseFertility: 75
   baseEcologicalNiche: 0

@@ -10,6 +10,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
     [SerializeField] private Camera viewCamera;
     [SerializeField] private EnvironmentTechnologyController technology;
     [SerializeField] private SimulationTime clock;
+    [SerializeField] private BioenergyAccount account;
     [SerializeField, Range(9, 18)] private int fontSize = 11;
     [SerializeField] private float heightAboveTile = 2.5f;
     private GUIStyle textStyle;
@@ -50,6 +51,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         if (viewCamera == null) viewCamera = Camera.main;
         if (technology == null) technology = GetComponent<EnvironmentTechnologyController>();
         if (clock == null) clock = GetComponent<SimulationTime>();
+        if (account == null) account = GetComponent<BioenergyAccount>();
     }
 
     private void OnGUI()
@@ -81,6 +83,15 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         string speed = clock == null ? "" : clock.IsPaused ? "暂停" : clock.Speed.ToString("F0") + "倍速";
         GUI.Label(new Rect(12f, 8f, 330f, 22f),
             $"第{controller.Day}天  {speed}  空格播放/暂停 · 2两倍速 · 4四倍速", textStyle);
+        if (account == null) account = GetComponent<BioenergyAccount>();
+        if (account != null)
+        {
+            GUI.Label(new Rect(12f, 30f, 230f, 22f),
+                $"生物能 {account.Balance}  预计日收 {account.PreviewDailyIncome()}", textStyle);
+            Rect toggle = new Rect(12f, 53f, 230f, 22f);
+            interactiveRects.Add(toggle);
+            account.CostsEnabled = GUI.Toggle(toggle, account.CostsEnabled, "启用经济限制（扣费）");
+        }
 
         foreach (WhiteboxEcologyDebugController.TileLabel label in controller.Labels)
         {
@@ -186,13 +197,13 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
             preview.Before ?? "", wrappedStyle);
         GUI.Label(new Rect(x + 5f, y + 232f, width - 10f, 65f), effect, wrappedStyle);
         GUI.Label(new Rect(x + 5f, y + 300f, width - 10f, 32f),
-            preview.IsValid ? preview.Timing + " · 费用 0" : "不可投放", wrappedStyle);
+            preview.IsValid ? preview.Timing + " · 费用 " + preview.Cost : "不可投放", wrappedStyle);
         bool enabled = GUI.enabled;
         GUI.enabled = enabled && preview.IsValid;
         if (GUI.Button(new Rect(x + 5f, y + 337f, 90f, 24f), "投放"))
         {
             bool success = technology.TryDeploy(coordinate, choice, out var committed);
-            notices[coordinate] = success ? "已投放（费用 0）" : committed.Error;
+            notices[coordinate] = success ? "已投放（费用 " + committed.Cost + "）" : committed.Error;
             openTechnologyMenu = null;
         }
         GUI.enabled = enabled;

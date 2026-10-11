@@ -34,6 +34,12 @@ public sealed class MapSimulationBridge : MonoBehaviour
             gameObject.AddComponent<SimulationEnvironmentController>();
         if (GetComponent<EnvironmentTechnologyController>() == null)
             gameObject.AddComponent<EnvironmentTechnologyController>();
+        if (GetComponent<BioenergyAccount>() == null)
+            gameObject.AddComponent<BioenergyAccount>();
+        if (GetComponent<PlayerEconomyController>() == null)
+            gameObject.AddComponent<PlayerEconomyController>();
+        if (GetComponent<EconomyOperationsView>() == null)
+            gameObject.AddComponent<EconomyOperationsView>();
     }
 
     private void OnEnable()
@@ -94,6 +100,13 @@ public sealed class MapSimulationBridge : MonoBehaviour
                         out MapTileInstance neighbor) && neighbor.Block != null)
                     neighbors.Add(neighbor.Block);
             tile.Block.SetNeighbors(neighbors);
+            var waterLinks = new List<BlockInfo>(4);
+            foreach (Vector2Int direction in Directions)
+                if (gridManager.TryGetNeighbor(tile.Coordinate, direction,
+                        out MapTileInstance neighbor) && neighbor.Block != null &&
+                    WaterBodyTopology.HasReciprocalOpenings(tile, neighbor))
+                    waterLinks.Add(neighbor.Block);
+            tile.Block.SetWaterLinks(waterLinks);
         }
 
         simulationController.SetBlocks(blocks);
