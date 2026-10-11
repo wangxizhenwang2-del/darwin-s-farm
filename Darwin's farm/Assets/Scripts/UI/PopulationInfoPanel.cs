@@ -66,13 +66,15 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         portrait.enabled = true; portrait.sprite = null; portrait.color = new Color(.86f, .88f, .82f, .8f); placeholder.gameObject.SetActive(true);
         SetScrollText(description, "暂无物种介绍"); SetScrollText(additional, "目标已不可用");
         SetScrollText(sources, "--"); SetScrollText(predators, "--"); current.text = "--"; trophic.text = "营养级：--";
-        radar.SetValues(0, 0, 0, 0, 0); foreach (var label in labels) label.text = "--";
+        radar.SetValues(0, 0, 0, 0, 0); radar.SetBaseline(null);
+        foreach (var label in labels) label.text = "--";
     }
 
     public void Refresh(WhiteboxPopulation visual, PopulationData data, BlockInfo block)
     {
         foodGraphic.enabled = data != null && data.ecologicalNiche == EcologicalNiche.Land;
         SpeciesData species = data != null ? data.species : null;
+        radar.SetBaseline(species);
         string name = species != null ? species.SpeciesName :
             data != null && !string.IsNullOrWhiteSpace(data.lineageName) ? data.lineageName : "测试种群";
         if (string.IsNullOrWhiteSpace(name)) name = "未命名物种";
@@ -92,14 +94,14 @@ public sealed class PopulationInfoPanel : MonoBehaviour
             SetScrollText(predators, "未接入"); current.text = name; trophic.text = "营养级：未接入";
             return;
         }
-        radar.SetValues(data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.environmentalFitness);
-        int[] values = { data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.environmentalFitness };
-        string[] names = { "适温", "适湿", "运动", "繁殖", "适应度" };
+        radar.SetValues(data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.size);
+        int[] values = { data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.size };
+        string[] names = { "适温", "适湿", "运动", "繁殖", "体型" };
         for (int i = 0; i < 5; i++) labels[i].text = names[i] + " " + values[i];
         SetScrollText(additional, "所属地块：" + visual.TileId + "   生态位：" + data.ecologicalNiche +
             "\n今日出生 / 死亡：" + data.birthsToday + " / " + data.deathsToday +
             "\n体型：" + data.size + "   承载量 K：" + data.carryingCapacity.ToString("F0") +
-            "\n种群 ID：" + data.PopulationId);
+            "\n综合适应度：" + data.environmentalFitness + "\n种群 ID：" + data.PopulationId);
         current.text = name; trophic.text = "营养级：L" + data.trophicLevel;
         var foods = new List<string>(); var hunters = new List<string>();
         if (block != null && block.community != null && data.ecologicalNiche == EcologicalNiche.Land)
