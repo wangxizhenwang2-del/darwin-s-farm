@@ -12,6 +12,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field)] public class MinAttribute : Attribute { public MinAttribute(float value) { } }
     [AttributeUsage(AttributeTargets.Field)] public class RangeAttribute : Attribute { public RangeAttribute(float min, float max) { } }
     [AttributeUsage(AttributeTargets.Field)] public class HeaderAttribute : Attribute { public HeaderAttribute(string value) { } }
+    [AttributeUsage(AttributeTargets.Field)] public class TextAreaAttribute : Attribute { public TextAreaAttribute(int minLines, int maxLines) { } }
     [AttributeUsage(AttributeTargets.Class)] public class CreateAssetMenuAttribute : Attribute { public string menuName; }
 
     public static class Mathf

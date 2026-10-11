@@ -226,59 +226,20 @@ public partial class PopulationSimulatorWindow : EditorWindow
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("固定关键变量", EditorStyles.boldLabel);
         reproductionScale = Mathf.Max(0f, EditorGUILayout.FloatField("繁殖系数", reproductionScale));
-        maxOverCapacityDeathRate = EditorGUILayout.Slider("超载衰退上限", maxOverCapacityDeathRate, 0f, 1f);
         maxStarvationDeathRate = EditorGUILayout.Slider("最大饥饿死亡率", maxStarvationDeathRate, 0f, 1f);
-        levelOnePreyFraction = EditorGUILayout.Slider("一级捕食比例 (%)",
-            levelOnePreyFraction * 100f, 0f, 100f) / 100f;
-        levelTwoPreyFraction = EditorGUILayout.Slider("二级捕食比例 (%)",
-            levelTwoPreyFraction * 100f, 0f, 100f) / 100f;
         mutationEnabled = EditorGUILayout.Toggle("启用变异", mutationEnabled);
         mutationInterval = Mathf.Max(1, EditorGUILayout.IntField("变异间隔（天）", mutationInterval));
         mutationStep = Mathf.Max(0f, EditorGUILayout.FloatField("变异步长", mutationStep));
-        selectionStrength = Mathf.Max(0f, EditorGUILayout.FloatField("选择强度", selectionStrength));
         migrationInterval = Mathf.Max(1, EditorGUILayout.IntField("迁徙间隔（天）", migrationInterval));
-        migrationPopulationScale = Mathf.Max(0.01f,
-            EditorGUILayout.FloatField("基础概率规模系数", migrationPopulationScale));
-        EditorGUILayout.LabelField("高度差跨越概率：0 → 1，1 → 0.5，2 → 0",
-            EditorStyles.miniLabel);
-        overloadThreshold = EditorGUILayout.Slider("超载阈值", overloadThreshold, 0f, 0.99f);
-        baseOverloadProbability = EditorGUILayout.Slider("基础超载概率",
-            baseOverloadProbability, 0f, 1f);
-        overloadMigrationFraction = EditorGUILayout.Slider("超载迁出比例",
-            overloadMigrationFraction, 0f, 1f);
         migrationCooldownDays = Mathf.Max(0,
             EditorGUILayout.IntField("迁徙冷却（天）", migrationCooldownDays));
         secondsPerDay = Mathf.Max(0.05f, EditorGUILayout.FloatField("每模拟日秒数", secondsPerDay));
         DrawLandTuning();
 
-        EditorGUILayout.LabelField("基础概率 = 数量 ÷（数量 + 规模系数）", EditorStyles.miniLabel);
         if (controller != null && GUILayout.Button("应用固定数值修改到模拟"))
             ApplyFixedParameters();
         EditorGUILayout.LabelField("每个周期各性状分别评估；默认间隔 1 天、步长 1。", EditorStyles.miniLabel);
-        EditorGUILayout.HelpBox("达到 K 后数量可以保持水平，但每天仍有出生和死亡；当天的两个整数显示在当前状态和每日输出中。", MessageType.Info);
         EditorGUILayout.HelpBox("植物每日实际生长量不超过恢复量和剩余库容；同一食物由所有消费者共同分配。", MessageType.Info);
-        if (populations.Count == 1 && populations[0].data != null &&
-            (populations[0].data.trophicLevelInitialized
-                ? populations[0].data.trophicLevel == 0
-                : populations[0].data.species == null || populations[0].data.species.trophicLevel == 0))
-        {
-            PopulationData input = populations[0].data;
-            float energyNeed = SimulationController.CalculateEnergyNeed(
-                input.size, input.movementAbility, input.fertility);
-            float fitness = Mathf.Clamp01(1f - (Mathf.Abs(temperature - input.fitTemperature)
-                + Mathf.Abs(humidity - input.fitHumidity)) / 90f);
-            float projectedStock = plantBiomass + SimulationController.CalculatePlantGrowth(
-                plantBiomass, maxPlantBiomass, habitatRecovery);
-            float supportFood = Mathf.Min(projectedStock,
-                Mathf.Min(habitatRecovery, maxPlantBiomass));
-            float availableFood = projectedStock
-                * (0.75f + 0.0025f * Mathf.Clamp(input.movementAbility, 0, 100))
-                * fitness;
-            float capacity = Mathf.Min(supportFood * fitness, availableFood)
-                / energyNeed;
-            EditorGUILayout.LabelField("当前输入预估：个体能耗 " + energyNeed.ToString("F1")
-                + "    K " + capacity.ToString("F2") + "    K/2 " + (capacity / 2f).ToString("F2"));
-        }
     }
 
     private void DrawPopulations()

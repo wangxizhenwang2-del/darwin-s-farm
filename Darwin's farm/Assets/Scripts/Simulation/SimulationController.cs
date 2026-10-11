@@ -28,7 +28,7 @@ public partial class SimulationController : MonoBehaviour
     public void ApplyLandRules(LandRuleTuning values)
     {
         if (values == null) return;
-        landRules = values.Copy();
+        landRules = values.Copy().Sanitize();
         reproductionScale = landRules.birthRate;
         maxStarvationDeathRate = landRules.starvationDeathRate;
     }

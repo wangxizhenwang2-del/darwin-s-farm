@@ -280,13 +280,35 @@ public partial class SimulationController
         {
             if (prey == null || prey.speciesAmount <= 0 ||
                 !FoodWeb.CanEat(candidate, prey)) continue;
+            int available = prey.speciesAmount;
+            if (prey == source) available = wholeBranch ? 0 :
+                Mathf.Max(0, available - amount);
+            if (available <= 0) continue;
             hasPrey = true;
             float energy = LandLifeRules.PreyEnergy(candidate, prey,
                 LandRules);
-            expectedEnergy += amount * Mathf.Min(1f, 10f / Mathf.Max(1f, prey.size))
-                * LandLifeRules.CaptureChance(candidate, prey, LandRules) * energy;
-            sustainableEnergy += Mathf.Max(0f,
-                LandLifeRules.Average(prey.preyNetRenewalHistory)) * energy;
+            float candidateKills = amount * Mathf.Min(1f,
+                10f / Mathf.Max(1f, prey.size))
+                * LandLifeRules.CaptureChance(candidate, prey, LandRules);
+            expectedEnergy += Mathf.Min(available, candidateKills) * energy;
+            float renewal = Mathf.Max(0f,
+                LandLifeRules.Average(prey.preyNetRenewalHistory));
+            foreach (PopulationData other in block.community)
+            {
+                if (other == null || other == candidate ||
+                    other.speciesAmount <= 0 || !FoodWeb.CanEat(other, prey))
+                    continue;
+                int otherAmount = other == source
+                    ? (wholeBranch ? 0 : source.speciesAmount - amount)
+                    : other.speciesAmount;
+                if (otherAmount <= 0) continue;
+                float otherNeed = LandLifeRules.Demand(other,
+                    otherAmount, LandLifeRules.Fitness(block,
+                        other.fitTemperature, other.fitHumidity), LandRules);
+                renewal -= otherNeed / Mathf.Max(1f,
+                    LandLifeRules.PreyEnergy(other, prey, LandRules));
+            }
+            sustainableEnergy += Mathf.Max(0f, renewal) * energy;
         }
         return hasPrey && Mathf.Min(demand, expectedEnergy) / demand
                 >= LandRules.evolutionTodaySatisfaction
