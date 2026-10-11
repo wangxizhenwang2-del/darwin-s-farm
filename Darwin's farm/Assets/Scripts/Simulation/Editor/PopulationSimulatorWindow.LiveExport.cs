@@ -164,6 +164,7 @@ public partial class PopulationSimulatorWindow
             liveSimulation.OnMigrationResolved += OnExportTransition;
             liveSimulation.OnNicheConversionResolved += OnExportTransition;
             liveSimulation.OnPresetEvolutionResolved += OnExportTransition;
+            liveSimulation.OnLocalSplitResolved += OnExportTransition;
             liveInterventions.OperationCommitted += OnExportIntervention;
             liveTime.OnSpeedChanged += OnExportSpeedChanged;
             liveExportTechnology = liveBridge.GetComponent<EnvironmentTechnologyController>();
@@ -191,6 +192,7 @@ public partial class PopulationSimulatorWindow
             liveSimulation.OnMigrationResolved -= OnExportTransition;
             liveSimulation.OnNicheConversionResolved -= OnExportTransition;
             liveSimulation.OnPresetEvolutionResolved -= OnExportTransition;
+            liveSimulation.OnLocalSplitResolved -= OnExportTransition;
         }
         if (liveInterventions != null)
             liveInterventions.OperationCommitted -= OnExportIntervention;

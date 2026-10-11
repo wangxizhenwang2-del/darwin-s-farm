@@ -9,6 +9,7 @@ internal static class FoodWeb
     public const int MaxTrophicLevel = 2;
     public const float PredatorReserveDays = 10f;
     private const float SharedPlantFraction = 0.1f;
+    internal const int LargeHerbivoreTrackSize = 30;
 
     // 2026-10-09 13:49 +08:00: explicit species links take priority; the
     // V4.3 level fallback allows L2 to hunt either lower level.
@@ -326,7 +327,9 @@ internal static class FoodWeb
         return eaten;
     }
 
-    private static float SmallTrack(float size) => size < 8f ? 1f : 0f;
+    internal static bool IsSmallTrack(float size) => size < LargeHerbivoreTrackSize;
+
+    private static float SmallTrack(float size) => IsSmallTrack(size) ? 1f : 0f;
 
     private static float PlantWeight(PopulationData population) =>
         population.energyNeed * population.speciesAmount

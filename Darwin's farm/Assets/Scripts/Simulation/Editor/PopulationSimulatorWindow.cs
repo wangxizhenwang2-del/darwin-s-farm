@@ -27,15 +27,15 @@ public partial class PopulationSimulatorWindow : EditorWindow
     [SerializeField] private float maxPlantBiomass = 10000f;
     [SerializeField] private int habitatRecovery = 100;
 
-    [SerializeField] private float reproductionScale = 0.05f;
+    [SerializeField] private float reproductionScale = 0.1f;
     [SerializeField] private float maxOverCapacityDeathRate = 0.1f;
     [SerializeField] private float maxStarvationDeathRate = 0.6f;
     [SerializeField] private float levelOnePreyFraction = SimulationController.DefaultLevelOnePreyFraction;
     [SerializeField] private float levelTwoPreyFraction = SimulationController.DefaultLevelTwoPreyFraction;
     [SerializeField] private bool mutationEnabled = true;
     [SerializeField] private bool ecologicalNichesEnabled;
-    [SerializeField] private int mutationInterval = 7;
-    [SerializeField] private float mutationStep = 2f;
+    [SerializeField] private int mutationInterval = 1;
+    [SerializeField] private float mutationStep = 1f;
     [SerializeField] private float selectionStrength = 1f;
     [SerializeField] private float secondsPerDay = 1f;
     [SerializeField] private List<PopulationInput> populations = new List<PopulationInput>();
@@ -249,13 +249,14 @@ public partial class PopulationSimulatorWindow : EditorWindow
         migrationCooldownDays = Mathf.Max(0,
             EditorGUILayout.IntField("迁徙冷却（天）", migrationCooldownDays));
         secondsPerDay = Mathf.Max(0.05f, EditorGUILayout.FloatField("每模拟日秒数", secondsPerDay));
+        DrawLandTuning();
 
         EditorGUILayout.LabelField("基础概率 = 数量 ÷（数量 + 规模系数）", EditorStyles.miniLabel);
         if (controller != null && GUILayout.Button("应用固定数值修改到模拟"))
             ApplyFixedParameters();
-        EditorGUILayout.LabelField("每周期只变异一个性状；推荐间隔 7 天、步长 2。", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField("每个周期各性状分别评估；默认间隔 1 天、步长 1。", EditorStyles.miniLabel);
         EditorGUILayout.HelpBox("达到 K 后数量可以保持水平，但每天仍有出生和死亡；当天的两个整数显示在当前状态和每日输出中。", MessageType.Info);
-        EditorGUILayout.HelpBox("植物库存低于上限 40% 时按最大恢复量生长，之后逐渐减速；食草者 K 仍由恢复上限和个体能耗决定。体型 <8 与 ≥8 使用不同觅食赛道。捕食比例是期望捕获数的基础系数，仍会乘觅食效率与捕获机会。", MessageType.Info);
+        EditorGUILayout.HelpBox("植物每日实际生长量不超过恢复量和剩余库容；同一食物由所有消费者共同分配。", MessageType.Info);
         if (populations.Count == 1 && populations[0].data != null &&
             (populations[0].data.trophicLevelInitialized
                 ? populations[0].data.trophicLevel == 0
@@ -577,6 +578,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
         controller = runtimeObject.AddComponent<SimulationController>();
         controller.SetParameters(reproductionScale,
             maxOverCapacityDeathRate, maxStarvationDeathRate);
+        ApplyLandTuning();
         controller.SetPredationFractions(levelOnePreyFraction, levelTwoPreyFraction);
         controller.SetMutationParameters(mutationInterval, mutationStep, selectionStrength);
         controller.SetMutationEnabled(mutationEnabled);

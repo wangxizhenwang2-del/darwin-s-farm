@@ -75,6 +75,7 @@ public partial class PopulationSimulatorWindow
     {
         controller.SetParameters(reproductionScale,
             maxOverCapacityDeathRate, maxStarvationDeathRate);
+        ApplyLandTuning();
         controller.SetPredationFractions(levelOnePreyFraction, levelTwoPreyFraction);
         controller.SetMutationParameters(mutationInterval, mutationStep, selectionStrength);
         controller.SetMutationEnabled(mutationEnabled);

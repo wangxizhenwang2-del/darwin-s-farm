@@ -87,4 +87,11 @@ public class PopulationData
     public float deathRemainder; //累计不足一个体的死亡量
     public int birthsToday; //当天出生数量
     public int deathsToday; //当天死亡数量
+    // New land rules: bounded ten-day observations survive model serialization.
+    public System.Collections.Generic.List<float> foodSatisfactionHistory = new System.Collections.Generic.List<float>();
+    public System.Collections.Generic.List<float> renewalSatisfactionHistory = new System.Collections.Generic.List<float>();
+    public System.Collections.Generic.List<float> preyNetRenewalHistory = new System.Collections.Generic.List<float>();
+    public float predationRemainder;
+    public int endangeredDays;
+    public bool localSplitBranch;
 }

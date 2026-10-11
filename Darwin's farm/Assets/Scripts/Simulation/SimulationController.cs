@@ -22,11 +22,28 @@ public struct SimulationTuning
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
+    [SerializeField] private LandRuleTuning landRules = new LandRuleTuning();
+    public LandRuleTuning ReadLandRules() =>
+        (landRules ?? (landRules = new LandRuleTuning())).Copy();
+    public void ApplyLandRules(LandRuleTuning values)
+    {
+        if (values == null) return;
+        landRules = values.Copy();
+        reproductionScale = landRules.birthRate;
+        maxStarvationDeathRate = landRules.starvationDeathRate;
+    }
+    private LandRuleTuning LandRules =>
+        landRules ?? (landRules = new LandRuleTuning());
     // A deterministic environment step before ecology; avoids Unity event subscription-order dependencies.
     public event System.Action<int> OnBeforeDaySimulated;
     public event System.Action<int> OnDaySimulated;
     public event System.Action<BlockInfo> OnBlockEnvironmentChanged;
     public event System.Action<BlockInfo> OnBlockCommunityChanged;
+    public IReadOnlyList<BlockInfo> ReadBlocks() => blockInfos.AsReadOnly();
+    public void NotifyPlayerCommunityChanged(BlockInfo block)
+    {
+        if (block != null) OnBlockCommunityChanged?.Invoke(block);
+    }
 
     [SerializeField] private SimulationTime simulationTime;
     [SerializeField] private List<BlockInfo> blockInfos = new List<BlockInfo>();
@@ -292,6 +309,8 @@ public partial class SimulationController : MonoBehaviour
         {
             SimulateBlock(block);
         }
+        RemoveEndangered(day);
+        RunLocalSplits(day);
         RunPresetEvolution(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
@@ -311,14 +330,8 @@ public partial class SimulationController : MonoBehaviour
         foreach (PopulationData population in block.community)
             InitializeMutationState(population);
 
-        FoodWeb.GrowPlants(block);
-        PreparePopulations(block);
-        float eaten = FoodWeb.FeedCommunity(block, reproductionScale,
-            maxOverCapacityDeathRate, maxStarvationDeathRate,
-            levelOnePreyFraction, levelTwoPreyFraction);
-        UpdatePopulations(block);
-        FoodWeb.SpendPlants(block, eaten);
-        EvolveCommunity(block);
+        LandLifeRules.Simulate(block, LandRules);
+        EvolveCommunityNewRules(block);
     }
 
     // 种群适应度、出生与死亡。
@@ -335,8 +348,8 @@ public partial class SimulationController : MonoBehaviour
     public const float DefaultLevelTwoPreyFraction = 0.1f;
 
     [Header("Population")]
-    [SerializeField] private float reproductionScale = 0.05f;
-    [SerializeField] private float maxOverCapacityDeathRate = 0.1f;
+    [SerializeField] private float reproductionScale = 0.1f;
+    [SerializeField] private float maxOverCapacityDeathRate = 0f;
     [SerializeField] private float maxStarvationDeathRate = 0.6f;
     [SerializeField] private float levelOnePreyFraction = DefaultLevelOnePreyFraction;
     [SerializeField] private float levelTwoPreyFraction = DefaultLevelTwoPreyFraction;
@@ -348,6 +361,8 @@ public partial class SimulationController : MonoBehaviour
         reproductionScale = Mathf.Max(0f, newReproductionScale);
         maxOverCapacityDeathRate = Mathf.Clamp01(newMaxOverCapacityDeathRate);
         maxStarvationDeathRate = Mathf.Clamp01(newMaxStarvationDeathRate);
+        LandRules.birthRate = reproductionScale;
+        LandRules.starvationDeathRate = maxStarvationDeathRate;
     }
 
     public static float CalculateFitness(BlockInfo block, PopulationData population)
