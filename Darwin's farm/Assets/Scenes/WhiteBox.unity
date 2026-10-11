@@ -6318,7 +6318,7 @@ MonoBehaviour:
   placedTiles: {fileID: 1227533140}
   mapNavigation: {fileID: 267322164}
   tileMaterial: {fileID: 2100000, guid: a8b939c6a1a18164b81f08d238b315c7, type: 2}
-  initialTile: {fileID: 11400000, guid: 786bdc6d0231451dbb3df13286b1a477, type: 2}
+  initialTile: {fileID: 11400000, guid: 015789cd96df421cbdf7bdf8d9030566, type: 2}
   testTile: {fileID: 11400000, guid: 015789cd96df421cbdf7bdf8d9030566, type: 2}
   testCoordinate: {x: 0, y: 0}
   showAvailablePositions: 0
@@ -8339,12 +8339,22 @@ MonoBehaviour:
   bridge: {fileID: 1541449673}
   simulation: {fileID: 1541449672}
   species:
-  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
-  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
-  - {fileID: 11400000, guid: ad78dccedcc75ea39c6dd15c18f62412, type: 2}
-  - {fileID: 11400000, guid: 31e3fbb824575f1eb43191539c0f254b, type: 2}
-  - {fileID: 11400000, guid: f069c1edb4be5d87af4a6c26b73563b4, type: 2}
-  initialChickenSpecies: {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
+  - {fileID: 11400000, guid: 429810441742500882c32391600ac543, type: 2}
+  - {fileID: 11400000, guid: 6e1e96d44b6f5b27849484f085712633, type: 2}
+  - {fileID: 11400000, guid: db2228498752598ba128f9c3256bc974, type: 2}
+  - {fileID: 11400000, guid: 3dfbd8b4615b52c385549ed445040814, type: 2}
+  - {fileID: 11400000, guid: 4bc595423ac25179a9337b2918089aae, type: 2}
+  - {fileID: 11400000, guid: ae62c1ccc7cb5cda83283e79e8dafe17, type: 2}
+  - {fileID: 11400000, guid: ea0db3fa3c6455699c6e829aab8ebf74, type: 2}
+  - {fileID: 11400000, guid: 53baba3f960e5da5b0893a5ed12a2f77, type: 2}
+  - {fileID: 11400000, guid: a0ef66e9614a5275aa886a78ae635a33, type: 2}
+  - {fileID: 11400000, guid: bdf70218bc1656ed8f36a436a25fe0a9, type: 2}
+  - {fileID: 11400000, guid: 88246f62504c5f20b51ef68a0c2f169b, type: 2}
+  - {fileID: 11400000, guid: b10cfa4fe1a451aaa71ea21da806a80d, type: 2}
+  - {fileID: 11400000, guid: 5fb909650e6c5a078b6d1a497d197141, type: 2}
+  - {fileID: 11400000, guid: 521e745613e9577f90aa7ae171fc0ea2, type: 2}
+  - {fileID: 11400000, guid: b17d9012c94855b780c5a26689b96359, type: 2}
+  initialChickenSpecies: {fileID: 11400000, guid: 6e1e96d44b6f5b27849484f085712633, type: 2}
   initialChickenCount: 160
 --- !u!114 &2200000004
 MonoBehaviour:
@@ -8362,11 +8372,21 @@ MonoBehaviour:
   movement: {fileID: 1541449675}
   simulation: {fileID: 1541449672}
   presetSpecies:
-  - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
-  - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
-  - {fileID: 11400000, guid: ad78dccedcc75ea39c6dd15c18f62412, type: 2}
-  - {fileID: 11400000, guid: 31e3fbb824575f1eb43191539c0f254b, type: 2}
-  - {fileID: 11400000, guid: f069c1edb4be5d87af4a6c26b73563b4, type: 2}
+  - {fileID: 11400000, guid: 429810441742500882c32391600ac543, type: 2}
+  - {fileID: 11400000, guid: 6e1e96d44b6f5b27849484f085712633, type: 2}
+  - {fileID: 11400000, guid: db2228498752598ba128f9c3256bc974, type: 2}
+  - {fileID: 11400000, guid: 3dfbd8b4615b52c385549ed445040814, type: 2}
+  - {fileID: 11400000, guid: 4bc595423ac25179a9337b2918089aae, type: 2}
+  - {fileID: 11400000, guid: ae62c1ccc7cb5cda83283e79e8dafe17, type: 2}
+  - {fileID: 11400000, guid: ea0db3fa3c6455699c6e829aab8ebf74, type: 2}
+  - {fileID: 11400000, guid: 53baba3f960e5da5b0893a5ed12a2f77, type: 2}
+  - {fileID: 11400000, guid: a0ef66e9614a5275aa886a78ae635a33, type: 2}
+  - {fileID: 11400000, guid: bdf70218bc1656ed8f36a436a25fe0a9, type: 2}
+  - {fileID: 11400000, guid: 88246f62504c5f20b51ef68a0c2f169b, type: 2}
+  - {fileID: 11400000, guid: b10cfa4fe1a451aaa71ea21da806a80d, type: 2}
+  - {fileID: 11400000, guid: 5fb909650e6c5a078b6d1a497d197141, type: 2}
+  - {fileID: 11400000, guid: 521e745613e9577f90aa7ae171fc0ea2, type: 2}
+  - {fileID: 11400000, guid: b17d9012c94855b780c5a26689b96359, type: 2}
   presetColors:
   - {r: 0.15, g: 0.75, b: 0.95, a: 1}
   - {r: 1, g: 0.84, b: 0.12, a: 1}

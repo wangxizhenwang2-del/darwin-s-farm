@@ -211,7 +211,7 @@ public sealed class BioenergyAccount : MonoBehaviour
                 count.level = Mathf.Clamp(population.species != null ?
                     population.species.trophicLevel : population.trophicLevel, 0, 2);
                 count.value = population.species != null ?
-                    Mathf.Clamp(population.species.bioenergyValue, 10, 100) :
+                    Mathf.Clamp(population.species.bioenergyValue, 1, 100) :
                     BioenergySettings.Current.FallbackSpeciesValue(count.level);
                 result[key] = count;
             }

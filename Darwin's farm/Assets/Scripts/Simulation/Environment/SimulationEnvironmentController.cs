@@ -17,12 +17,15 @@ public sealed class EnvironmentOperationPreview
     public EnvironmentReadSnapshot Before { get; }
     public double Target { get; }
     public TerrainKind EstimatedTerrain { get; }
+    public HabitatState EstimatedHabitat { get; }
     public int EnterDays { get; }
     public int HoldDays { get; }
     public int ReturnDays { get; }
-    internal EnvironmentOperationPreview(EnvironmentReadSnapshot before, double target, TerrainKind terrain,
+    internal EnvironmentOperationPreview(EnvironmentReadSnapshot before, double target, HabitatState habitat,
         int enter, int hold, int returning)
-    { Before = before; Target = target; EstimatedTerrain = terrain; EnterDays = enter; HoldDays = hold; ReturnDays = returning; }
+    { Before = before; Target = target; EstimatedHabitat = habitat;
+      EstimatedTerrain = EnvironmentRules.VisualTerrain(habitat);
+      EnterDays = enter; HoldDays = hold; ReturnDays = returning; }
 }
 
 // Controller is the sole bridge between the pure environment Model and live ecology/map data.
@@ -97,7 +100,8 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     public static TerrainDefaults InitialDefaults(MapTileDefinition preset, int actualElevation)
     {
         var defaults = EnvironmentRules.Defaults(TerrainFromPreset(preset.biome));
-        return EnvironmentRules.Defaults(EnvironmentRules.Classify(actualElevation, defaults.Temperature, defaults.Humidity, defaults.Recovery));
+        return EnvironmentRules.Defaults(EnvironmentRules.ClassifyHabitat(
+            actualElevation, defaults.Temperature, defaults.Humidity));
     }
 
     public void Synchronize()
@@ -225,12 +229,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         if (world == null || !world.TryRead(position, out var state) || !blocks.TryGetValue(position, out var block)) return false;
         snapshot = new EnvironmentReadSnapshot(state, block.plantBiomass); return true;
     }
-    public IReadOnlyList<TerrainKind> GetTerrainNeighbors(Vector2Int coordinate)
-    {
-        return TryRead(coordinate, out var snapshot) && !snapshot.Environment.IsWater
-            ? TerrainTransitionGraph.Neighbors(snapshot.Environment.Terrain)
-            : Array.Empty<TerrainKind>();
-    }
     public IReadOnlyList<EnvironmentReadSnapshot> ReadAll()
     {
         var result = new List<EnvironmentReadSnapshot>();
@@ -249,8 +247,8 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         var state = snapshot.Environment;
         double target;
         int enter = 0, hold = 0, returning = 0;
-        int t = EnvironmentRules.Round(state.Temperature.Value), h = EnvironmentRules.Round(state.Humidity.Value),
-            r = EnvironmentRules.Round(state.Recovery.Value), z = state.Elevation;
+        double t = state.Temperature.Value, h = state.Humidity.Value;
+        int z = state.Elevation;
         switch (kind)
         {
             case SimulationInterventionKind.Temperature:
@@ -261,12 +259,7 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount +
                     (attribute == EnvironmentAttribute.Temperature ? state.MonsoonTemperatureOffset :
                         state.MonsoonHumidityOffset));
-                if (attribute == EnvironmentAttribute.Temperature) t = EnvironmentRules.Round(target); else h = EnvironmentRules.Round(target);
-                double potential = EnvironmentRules.PotentialRecovery(state.Defaults, t, h);
-                if (state.HasRecoveryCommand)
-                    potential += state.Recovery.Value - EnvironmentRules.PotentialRecovery(
-                        state.Defaults, state.Temperature.Value, state.Humidity.Value);
-                r = EnvironmentRules.Round(EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, potential));
+                if (attribute == EnvironmentAttribute.Temperature) t = target; else h = target;
                 enter = EnvironmentRules.TransitionDays;
                 hold = EnvironmentRules.ClimateHoldDays;
                 returning = EnvironmentRules.ClimateReturnDays;
@@ -275,7 +268,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (!EnvironmentRules.IsRecoveryStrength(amount)) { error = "增量强度必须为 ±25000 或 ±50000"; return false; }
                 target = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, state.Recovery.Value + amount);
-                r = EnvironmentRules.Round(target);
                 hold = EnvironmentRules.RecoveryHoldDays;
                 returning = EnvironmentRules.RecoveryReturnDays; break;
             case SimulationInterventionKind.PlantBiomass:
@@ -288,7 +280,8 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 target = z + (int)amount; z = (int)target; break;
             default: error = "该操作由原有专用入口处理"; return false;
         }
-        preview = new EnvironmentOperationPreview(snapshot, target, EnvironmentRules.Classify(z, t, h, r), enter, hold, returning);
+        preview = new EnvironmentOperationPreview(snapshot, target,
+            EnvironmentRules.ClassifyHabitat(z, t, h), enter, hold, returning);
         return true;
     }
 

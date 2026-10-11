@@ -96,7 +96,7 @@ public sealed class BioenergySettingsWindow : EditorWindow
         }
         EditorGUILayout.Space(12);
         EditorGUILayout.LabelField("物种价值 V", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("直接编辑 SpeciesData 资产的生物能价值；范围 10～100。新增物种后点击刷新。", MessageType.None);
+        EditorGUILayout.HelpBox("直接编辑 SpeciesData 资产的生物能价值；范围 1～100。新增物种后点击刷新。", MessageType.None);
         if (GUILayout.Button("刷新物种列表")) RefreshSpecies();
         foreach (SpeciesData entry in species)
         {

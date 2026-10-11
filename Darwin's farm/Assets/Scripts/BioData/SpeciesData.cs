@@ -45,7 +45,7 @@ public class SpeciesData: ScriptableObject
     public List<SpeciesData> preySpecies = new List<SpeciesData>();
 
     [Range(0, 2)] public int trophicLevel; //0 食草，1、2 分别捕食低一级，最多三级食物链
-    [Range(10, 100)] public int bioenergyValue = 10;
+    [Range(1, 100)] public int bioenergyValue = 10;
     [SerializeField] private string economyId;
     public string EconomyId => string.IsNullOrWhiteSpace(economyId) ? speciesName : economyId;
     [Range(0, 100)] public int baseMovementAbility;

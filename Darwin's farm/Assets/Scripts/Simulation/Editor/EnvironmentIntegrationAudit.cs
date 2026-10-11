@@ -58,11 +58,10 @@ public static class EnvironmentIntegrationAudit
               SimulationTime.StandardLoopDays * SimulationTime.DefaultSecondsPerDay /
               SimulationTime.StandardLoopSpeed == 900f,
             "The standard loop must cover 1800 days in 15 minutes at 2x.");
-        Check(Read(c, 0).Environment.Terrain == TerrainKind.Grassland, "Initial terrain must be canonical grassland.");
-        Check(c.GetTerrainNeighbors(Vector2Int.zero).Count == 4 &&
-              TerrainTransitionGraph.AreAdjacent(TerrainKind.Grassland, TerrainKind.Desert),
-            "Runtime terrain graph must expose the grassland neighbors.");
-        Check(Read(c, 0).PlantStock == 100000, "Initial stock must equal default increment.");
+        Check(Read(c, 0).Environment.Terrain == TerrainKind.Desert, "Initial terrain must be desert.");
+        Check(Read(c, 0).Environment.Habitat == HabitatState.Z0MiddleDry,
+            "Initial desert must use its V4.6 placement habitat.");
+        Check(Read(c, 0).PlantStock == 50000, "Initial stock must equal default increment.");
         string[] assets = { "森林", "雨林", "草原", "荒漠", "苔原", "高山", "雪山", "火山" };
         for (int i = 0; i < assets.Length; i++)
         {

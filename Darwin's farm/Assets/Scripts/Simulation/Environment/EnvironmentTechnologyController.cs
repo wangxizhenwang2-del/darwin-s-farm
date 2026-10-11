@@ -78,7 +78,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                     out EnvironmentOperationPreview climate, out validationError))
                 { result.Error = validationError; return result; }
                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
-                    climate.Target.ToString("F0") + "；预计地形 " + climate.EstimatedTerrain;
+                    climate.Target.ToString("F0") + "；预计生境 " +
+                    EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
                 result.Timing = "25天进入 · 150天维持 · 150天恢复";
                 break;
             case EnvironmentTechnologyKind.PlantChange:
@@ -101,7 +102,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                         { result.Error = validationError; return result; }
                         result.After = "库存 " + nextStock.ToString("F0") +
                             "；日增量 " + increased.Target.ToString("F0") +
-                            "；预计地形 " + increased.EstimatedTerrain;
+                            "；预计生境 " + EnvironmentRules.Profile(increased.EstimatedHabitat).Title;
                     }
                     result.Timing = "库存立即乘算 · 日增量立即提高并维持50天，再用50天恢复";
                 }
@@ -142,7 +143,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                         SimulationInterventionKind.Elevation, shift,
                         out EnvironmentOperationPreview height, out validationError))
                     { result.Error = validationError; return result; }
-                    result.After += "；预计地形 " + height.EstimatedTerrain;
+                    result.After += "；预计生境 " + EnvironmentRules.Profile(height.EstimatedHabitat).Title;
                 }
                 result.Timing = "立即生效 · 不回滚";
                 break;
@@ -364,6 +365,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         " 海 " + read.Environment.Elevation +
         " 库存 " + read.PlantStock.ToString("F0") +
         " 增量 " + read.Environment.Recovery.Value.ToString("F0") +
+        "；生境 " + read.Environment.HabitatTitle +
         "；默认温/湿/增量 " + read.Environment.Defaults.Temperature + "/" +
         read.Environment.Defaults.Humidity + "/" + read.Environment.Defaults.Recovery;
     private static string Signed(int value) => value > 0 ? "+" + value : value.ToString();

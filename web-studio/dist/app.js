@@ -66,6 +66,7 @@
         if (key === 'baseEcologicalNiche') s[key] = ['Land','Water','Air'].includes(raw[key]) ? raw[key] : 'Land';
         else s[key] = range(raw[key], key === 'baseSize' ? 1 : 0, key === 'trophicLevel' ? 2 : 100,DEFAULT_TRAITS[key]);
       }
+      if (s.baseEcologicalNiche === 'Water') { delete s.baseFitTemperature; delete s.baseFitHumidity; }
       return s;
     });
     const links = key => (Array.isArray(input[key]) ? input[key] : []).filter(l => ids.has(l.from) && ids.has(l.to) && l.from !== l.to).map(l => key === 'evolutionLinks' && l.from > l.to ? {from:l.to,to:l.from} : {from:l.from,to:l.to}).filter((l,i,a)=>a.findIndex(t=>t.from===l.from&&t.to===l.to)===i);
@@ -80,6 +81,11 @@
   function graphView() { return view==='table' ? lastGraphView : view; }
   function position(s) { return graphView()==='food' ? {x:s.foodX,y:s.foodY} : {x:s.x,y:s.y}; }
   function currentLinks() { return data[graphView() === 'evolution' ? 'evolutionLinks' : 'foodLinks']; }
+  function setEcologicalNiche(s,niche) {
+    s.baseEcologicalNiche=['Land','Water','Air'].includes(niche)?niche:'Land';
+    if(s.baseEcologicalNiche==='Water'){delete s.baseFitTemperature;delete s.baseFitHumidity;}
+    else{s.baseFitTemperature=range(s.baseFitTemperature,0,100,50);s.baseFitHumidity=range(s.baseFitHumidity,0,100,50);}
+  }
   function setView(next) {
     if(!['evolution','food','table'].includes(next))return;
     if(next!=='table')lastGraphView=next;
@@ -112,25 +118,92 @@
   }
   function render() {
     renderCounts();
-    $('nodes').innerHTML=data.species.map(s=>{const p=position(s);return `<div class="node${selected===s.id?' selected':''}${connectFrom===s.id?' connect-source':''}" data-id="${esc(s.id)}" style="left:${p.x}px;top:${p.y}px" role="button" tabindex="0" aria-label="物种 ${esc(s.name)}"><div class="node-image">${imageMarkup(s)}</div><strong>${esc(s.name)}</strong><span class="node-description" title="${esc(s.description)}">${esc(s.description || '暂无简介')}</span><div class="traits"><span class="trait">☀ ${s.baseFitTemperature}</span><span class="trait level">层级 ${s.trophicLevel}</span><span class="trait value">◆ ${s.value}</span></div></div>`;}).join('');
+    $('nodes').innerHTML=data.species.map(s=>{const p=position(s);return `<div class="node${selected===s.id?' selected':''}${connectFrom===s.id?' connect-source':''}" data-id="${esc(s.id)}" style="left:${p.x}px;top:${p.y}px" role="button" tabindex="0" aria-label="物种 ${esc(s.name)}"><div class="node-image">${imageMarkup(s)}</div><strong>${esc(s.name)}</strong><span class="node-description" title="${esc(s.description)}">${esc(s.description || '暂无简介')}</span><div class="traits"><span class="trait">${s.baseEcologicalNiche==='Water'?'≈ 水域':`☀ ${s.baseFitTemperature}`}</span><span class="trait level">层级 ${s.trophicLevel}</span><span class="trait value">◆ ${s.value}</span></div></div>`;}).join('');
     $('edge-lines').innerHTML=edgeMarkup();
     $('world').style.transform=`translate(${transform.x}px,${transform.y}px) scale(${transform.scale})`;
     $('zoom-label').textContent=$('zoom-badge').textContent=`${Math.round(transform.scale*100)}%`;
     if(view==='table'){document.querySelector('.app').classList.remove('show-inspector');renderTable();}else renderInspector();
   }
   const TABLE_NUMBERS=[['baseFitTemperature',0,100],['baseFitHumidity',0,100],['baseMovementAbility',0,100],['baseSize',1,100],['baseFertility',0,100],['value',0,100]];
-  function renderTable() {
+  const TABLE_SORT_KEYS=['name','description','trophicLevel',...TABLE_NUMBERS.map(([key])=>key),'baseEcologicalNiche'];
+  let tableSort={key:null,direction:null}, tableDrag=null;
+  document.querySelectorAll('.species-table th').forEach((th,index)=>{
+    const key=TABLE_SORT_KEYS[index];if(!key)return;
+    const label=th.textContent.trim();
+    th.innerHTML=`<button type="button" class="sort-heading" data-sort="${key}" aria-label="按${label}排序">${label}<span class="sort-arrow" aria-hidden="true">↕</span></button>`;
+  });
+  function canDragTableRows() { return !$('table-search').value.trim(); }
+  function sortedSpecies() {
     const query=$('table-search').value.trim().toLocaleLowerCase();
     const rows=data.species.filter(s=>`${s.name} ${s.description}`.toLocaleLowerCase().includes(query));
-    const numberCell=(s,[key,min,max])=>`<td><input type="number" data-id="${esc(s.id)}" data-field="${key}" min="${min}" max="${max}" value="${s[key]}" aria-label="${esc(s.name)} ${key}"></td>`;
-    $('table-body').innerHTML=rows.map(s=>`<tr><td class="species-cell"><div class="table-species"><span class="table-avatar">${imageMarkup(s)}</span><strong>${esc(s.name)}</strong></div></td><td><input data-id="${esc(s.id)}" data-field="description" maxlength="240" value="${esc(s.description)}" aria-label="${esc(s.name)} 物种简介" title="${esc(s.description)}"></td><td><select data-id="${esc(s.id)}" data-field="trophicLevel" aria-label="${esc(s.name)} 营养级"><option value="0" ${s.trophicLevel===0?'selected':''}>0 · 食草</option><option value="1" ${s.trophicLevel===1?'selected':''}>1 · 一级捕食</option><option value="2" ${s.trophicLevel===2?'selected':''}>2 · 二级捕食</option></select></td>${TABLE_NUMBERS.map(col=>numberCell(s,col)).join('')}<td><select data-id="${esc(s.id)}" data-field="baseEcologicalNiche" aria-label="${esc(s.name)} 基础生态位"><option value="Land" ${s.baseEcologicalNiche==='Land'?'selected':''}>陆地</option><option value="Water" ${s.baseEcologicalNiche==='Water'?'selected':''}>水域</option><option value="Air" ${s.baseEcologicalNiche==='Air'?'selected':''}>空中</option></select></td><td><button class="table-detail" data-detail="${esc(s.id)}">编辑详情 ↗</button></td></tr>`).join('') || '<tr><td colspan="11" class="table-empty">没有匹配的物种</td></tr>';
-    $('table-foot').textContent=`显示 ${rows.length} / ${data.species.length} 个物种 · 修改后自动保存在本浏览器，请导出 JSON 与组员共享。`;
+    if(!tableSort.key)return rows;
+    const key=tableSort.key, factor=tableSort.direction==='asc'?1:-1;
+    return rows.sort((a,b)=>{
+      const left=a[key],right=b[key];
+      if(left==null)return right==null?String(a.id).localeCompare(String(b.id)):1;
+      if(right==null)return -1;
+      const comparison=typeof left==='number'?left-right:String(left).localeCompare(String(right),'zh-CN');
+      return comparison*factor || String(a.id).localeCompare(String(b.id));
+    });
   }
+  function renderTable() {
+    const rows=sortedSpecies(),canDrag=canDragTableRows();
+    document.querySelectorAll('.species-table th').forEach(th=>{
+      const button=th.querySelector('[data-sort]');if(!button)return;
+      const active=button.dataset.sort===tableSort.key;
+      th.setAttribute('aria-sort',active?(tableSort.direction==='asc'?'ascending':'descending'):'none');
+      button.classList.toggle('active',active);
+      button.querySelector('.sort-arrow').textContent=active?(tableSort.direction==='asc'?'↑':'↓'):'↕';
+    });
+    $('reset-table-sort').hidden=!tableSort.key;
+    const numberCell=(s,[key,min,max])=>s.baseEcologicalNiche==='Water'&&['baseFitTemperature','baseFitHumidity'].includes(key)?'<td class="table-na" title="水域物种无需填写">—</td>':`<td><input type="number" data-id="${esc(s.id)}" data-field="${key}" min="${min}" max="${max}" value="${s[key]}" aria-label="${esc(s.name)} ${key}"></td>`;
+    $('table-body').innerHTML=rows.map(s=>`<tr data-row-id="${esc(s.id)}"><td class="species-cell"><div class="table-species"><button type="button" class="row-grip" data-drag-id="${esc(s.id)}" aria-label="调整${esc(s.name)}的顺序" title="${canDrag?'拖动后切换为手动顺序；也可按方向键上下移动':'清除搜索后可拖动'}" ${canDrag?'':'disabled'}>⋮⋮</button><span class="table-avatar">${imageMarkup(s)}</span><strong>${esc(s.name)}</strong></div></td><td><input data-id="${esc(s.id)}" data-field="description" maxlength="240" value="${esc(s.description)}" aria-label="${esc(s.name)} 物种简介" title="${esc(s.description)}"></td><td><select data-id="${esc(s.id)}" data-field="trophicLevel" aria-label="${esc(s.name)} 营养级"><option value="0" ${s.trophicLevel===0?'selected':''}>0 · 食草</option><option value="1" ${s.trophicLevel===1?'selected':''}>1 · 一级捕食</option><option value="2" ${s.trophicLevel===2?'selected':''}>2 · 二级捕食</option></select></td>${TABLE_NUMBERS.map(col=>numberCell(s,col)).join('')}<td><select data-id="${esc(s.id)}" data-field="baseEcologicalNiche" aria-label="${esc(s.name)} 基础生态位"><option value="Land" ${s.baseEcologicalNiche==='Land'?'selected':''}>陆地</option><option value="Water" ${s.baseEcologicalNiche==='Water'?'selected':''}>水域</option><option value="Air" ${s.baseEcologicalNiche==='Air'?'selected':''}>空中</option></select></td><td><button class="table-detail" data-detail="${esc(s.id)}">编辑详情 ↗</button></td></tr>`).join('') || '<tr><td colspan="11" class="table-empty">没有匹配的物种</td></tr>';
+    const mode=tableSort.key?`按${document.querySelector(`[data-sort="${tableSort.key}"]`).textContent.replace(/[↕↑↓]/g,'').trim()}${tableSort.direction==='asc'?'升序':'降序'}排列整行；拖动可切换为手动顺序`:canDrag?'可拖动行首把手调整手动顺序':'搜索中暂停手动排序';
+    $('table-foot').textContent=`显示 ${rows.length} / ${data.species.length} 个物种 · ${mode} · 手动顺序会写入导出的 JSON。`;
+  }
+  document.querySelector('.species-table thead').addEventListener('click',e=>{
+    const key=e.target.closest('[data-sort]')?.dataset.sort;if(!key)return;
+    tableSort=tableSort.key===key?(tableSort.direction==='asc'?{key,direction:'desc'}:{key:null,direction:null}):{key,direction:'asc'};
+    renderTable();
+  });
+  $('reset-table-sort').onclick=()=>{tableSort={key:null,direction:null};renderTable();};
   $('table-search').addEventListener('input',renderTable);
+  function moveSpecies(id,targetId,after=false) {
+    if(!canDragTableRows()||id===targetId)return false;
+    if(tableSort.key){data.species=sortedSpecies();tableSort={key:null,direction:null};}
+    const from=data.species.findIndex(s=>s.id===id);if(from<0)return false;
+    const [item]=data.species.splice(from,1),at=data.species.findIndex(s=>s.id===targetId);
+    if(at<0){data.species.splice(from,0,item);return false;}
+    data.species.splice(at+(after?1:0),0,item);
+    changed();renderTable();return true;
+  }
+  const clearTableDrag=()=>{$('table-body').querySelectorAll('.dragging,.drop-before,.drop-after').forEach(el=>el.classList.remove('dragging','drop-before','drop-after'));tableDrag=null;};
+  $('table-body').addEventListener('pointerdown',e=>{
+    const grip=e.target.closest('[data-drag-id]');if(!grip||grip.disabled||e.pointerType==='mouse'&&e.button!==0)return;
+    tableDrag={id:grip.dataset.dragId,startY:e.clientY,targetId:null,after:false,moved:false};
+    grip.setPointerCapture(e.pointerId);e.preventDefault();
+  });
+  $('table-body').addEventListener('pointermove',e=>{
+    if(!tableDrag)return;
+    if(Math.abs(e.clientY-tableDrag.startY)>4)tableDrag.moved=true;
+    if(!tableDrag.moved)return;
+    $('table-body').querySelectorAll('.drop-before,.drop-after').forEach(el=>el.classList.remove('drop-before','drop-after'));
+    const row=document.elementFromPoint(e.clientX,e.clientY)?.closest('#table-body tr[data-row-id]');
+    tableDrag.targetId=row?.dataset.rowId===tableDrag.id?null:row?.dataset.rowId||null;
+    if(row&&tableDrag.targetId){tableDrag.after=e.clientY>row.getBoundingClientRect().top+row.getBoundingClientRect().height/2;row.classList.add(tableDrag.after?'drop-after':'drop-before');}
+    $('table-body').querySelector(`[data-row-id="${CSS.escape(tableDrag.id)}"]`)?.classList.add('dragging');
+  });
+  $('table-body').addEventListener('pointerup',()=>{if(!tableDrag)return;const {id,targetId,after,moved}=tableDrag;clearTableDrag();if(moved&&targetId)moveSpecies(id,targetId,after);});
+  $('table-body').addEventListener('pointercancel',clearTableDrag);
+  $('table-body').addEventListener('keydown',e=>{
+    const grip=e.target.closest('[data-drag-id]');if(!grip||!['ArrowUp','ArrowDown'].includes(e.key)||!canDragTableRows())return;
+    e.preventDefault();const rows=sortedSpecies(),from=rows.findIndex(s=>s.id===grip.dataset.dragId),target=rows[from+(e.key==='ArrowUp'?-1:1)];
+    if(target&&moveSpecies(grip.dataset.dragId,target.id,e.key==='ArrowDown'))$('table-body').querySelector(`[data-drag-id="${CSS.escape(grip.dataset.dragId)}"]`)?.focus();
+  });
   $('table-body').addEventListener('change',e=>{
     const input=e.target, s=data.species.find(item=>item.id===input.dataset.id),key=input.dataset.field;if(!s||!key)return;
     if(key==='description')s[key]=String(input.value).trim().slice(0,240);
-    else if(key==='baseEcologicalNiche')s[key]=['Land','Water','Air'].includes(input.value)?input.value:'Land';
+    else if(key==='baseEcologicalNiche')setEcologicalNiche(s,input.value);
     else s[key]=range(input.value,key==='baseSize'?1:0,key==='trophicLevel'?2:100,DEFAULT_TRAITS[key]);
     changed();render();
   });
@@ -152,8 +225,7 @@
       <div class="inspector-divider"></div>
       <div class="guide-banner"><b>如何填写初始属性</b><p>数值是游戏内的 0–100 刻度，不是现实单位。以下区间只是第一轮试填起点，请结合目标地块和模拟结果调整。</p></div>
       <div class="field-grid">
-        ${input('baseFitTemperature','适宜温度','与地块温度越接近，适应度越高。0 极寒、100 极热；常温地块可从 50 左右试填。')}
-        ${input('baseFitHumidity','适宜湿度','陆地上与地块湿度越接近，适应度越高。0 干燥、100 潮湿；可从 50 左右试填。水域当前只计算温度。')}
+        ${s.baseEcologicalNiche==='Water'?'<p class="water-note">水域物种无需填写适宜温度和适宜湿度。</p>':`${input('baseFitTemperature','适宜温度','与地块温度越接近，适应度越高。0 极寒、100 极热；常温地块可从 50 左右试填。')}${input('baseFitHumidity','适宜湿度','与地块湿度越接近，适应度越高。0 干燥、100 潮湿；可从 50 左右试填。')}`}
         ${input('baseMovementAbility','移动能力','提高觅食、捕获机会，也增加每日能耗。可从 30–60 试填；敏捷物种再向上调。')}
         ${input('baseSize','体型','越大通常能量需求越高，也影响猎物能量和捕食。1–7 属小型赛道；先按相对大小试填。',1)}
         ${input('baseFertility','繁殖能力','越高基础出生率越高；超过 80 会增加能耗。可从 40–80 试填，再看种群变化。')}
@@ -198,7 +270,7 @@
     if(key==='name')s[key]=String(e.target.value).trim().slice(0,40)||'未命名物种';
     else if(key==='description')s[key]=String(e.target.value).trim().slice(0,240);
     else if(key==='image')s.image=safeImage(e.target.value.trim());
-    else if(key==='baseEcologicalNiche')s[key]=['Land','Water','Air'].includes(e.target.value)?e.target.value:'Land';
+    else if(key==='baseEcologicalNiche')setEcologicalNiche(s,e.target.value);
     else s[key]=range(e.target.value,key==='baseSize'?1:0,key==='trophicLevel'?2:100,DEFAULT_TRAITS[key]);
     changed();render();
   });
@@ -249,7 +321,7 @@
       else{ctx.fillStyle='#749277';ctx.font='29px sans-serif';ctx.textAlign='center';ctx.fillText('✳',x+82,y+63);}
       ctx.textAlign='center';ctx.fillStyle='#324b39';ctx.font='bold 13px "Noto Sans SC",sans-serif';ctx.fillText(shortText(ctx,s.name,145),x+82,y+110);
       ctx.fillStyle='#91a194';ctx.font='10px "Noto Sans SC",sans-serif';ctx.fillText(shortText(ctx,s.description||'暂无简介',145),x+82,y+127);
-      ctx.fillStyle='#557c5f';ctx.font='10px "Noto Sans SC",sans-serif';ctx.fillText(`☀ ${s.baseFitTemperature}   层级 ${s.trophicLevel}   ◆ ${s.value}`,x+82,y+148);
+      ctx.fillStyle='#557c5f';ctx.font='10px "Noto Sans SC",sans-serif';ctx.fillText(`${s.baseEcologicalNiche==='Water'?'≈ 水域':`☀ ${s.baseFitTemperature}`}   层级 ${s.trophicLevel}   ◆ ${s.value}`,x+82,y+148);
     });
     canvas.toBlob(blob=>{if(!blob){toast('图片导出失败');return;}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=kind==='evolution'?'darwin-evolution-network.png':'darwin-food-web.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('图片已导出');},'image/png');
   }

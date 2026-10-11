@@ -267,7 +267,7 @@ public sealed class PlayerEconomyController : MonoBehaviour
             ((long)count * settings.harvestPercent + 99) / 100);
         int harvested = Math.Min(count, Math.Max(percentageCount, settings.minimumHarvestCount));
         int value = population.species != null ?
-            Mathf.Clamp(population.species.bioenergyValue, 10, 100) :
+            Mathf.Clamp(population.species.bioenergyValue, 1, 100) :
             settings.FallbackSpeciesValue(population.trophicLevel);
         long earned = harvested > 1 ? (long)Math.Floor(
             settings.harvestIncomeMultiplier * (double)value * Math.Log(harvested)) : 0;

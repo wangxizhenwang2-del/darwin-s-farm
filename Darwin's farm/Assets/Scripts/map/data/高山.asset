@@ -15,10 +15,10 @@ MonoBehaviour:
   displayName: "\u9ad8\u5c71"
   biome: 8
   mainColor: {r: 0.53725490, g: 0.65098039, b: 0.61176471, a: 1}
-  heightLevel: 2
-  initialTemperature: 50
+  heightLevel: 1
+  initialTemperature: 70
   initialHumidity: 50
-  initialPlantBiomass: 100000
+  initialPlantBiomass: 80000
   maxPlantBiomass: 1000000
-  habitatRecovery: 100000
+  habitatRecovery: 80000
   initialWaterCoverage: 0

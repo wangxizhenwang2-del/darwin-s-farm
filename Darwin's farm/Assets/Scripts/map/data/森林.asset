@@ -16,9 +16,9 @@ MonoBehaviour:
   biome: 3
   mainColor: {r: 0.20392157, g: 0.54509804, b: 0.33333333, a: 1}
   heightLevel: 1
-  initialTemperature: 58
-  initialHumidity: 50
-  initialPlantBiomass: 125000
+  initialTemperature: 30
+  initialHumidity: 70
+  initialPlantBiomass: 80000
   maxPlantBiomass: 1000000
-  habitatRecovery: 125000
+  habitatRecovery: 80000
   initialWaterCoverage: 0
