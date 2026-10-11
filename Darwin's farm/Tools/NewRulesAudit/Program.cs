@@ -452,7 +452,7 @@ internal static class Program
                     routeRecovery = int.Parse(option.Substring(11),
                         System.Globalization.CultureInfo.InvariantCulture);
                 if (option.StartsWith("--stress="))
-                    routeRules.reproductionStressDeathRate = float.Parse(
+                    routeRules.reproductionStressPerBirth = float.Parse(
                         option.Substring(9),
                         System.Globalization.CultureInfo.InvariantCulture);
                 if (option.StartsWith("--temperature="))

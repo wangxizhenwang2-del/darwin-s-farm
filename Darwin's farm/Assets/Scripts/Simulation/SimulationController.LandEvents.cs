@@ -70,9 +70,8 @@ public partial class SimulationController
                     source.fitTemperature, source.fitHumidity);
                 // Seed by inverse squared size, then keep the resulting
                 // population under daily renewable supply at the split.
-                int largeCount = Mathf.RoundToInt(source.speciesAmount
-                    * smallSize * smallSize /
-                    (float)(largeSize * largeSize + smallSize * smallSize));
+                int largeCount = Mathf.RoundToInt(source.speciesAmount *
+                    LandRules.splitFounderFraction);
                 float sustainable = source.trophicLevel == 0
                     ? Mathf.Max(0, block.habitatRecovery)
                     : LandLifeRules.AvailableSustainablePreyFood(block,
@@ -135,11 +134,9 @@ public partial class SimulationController
                 large.fertility = largeFertility;
                 source.localSplitBranch = large.localSplitBranch = true;
                 source.splitStrategy = -1;
-                source.splitSizeAnchor = smallSize;
-                source.splitFertilityAnchor = smallFertility;
                 large.splitStrategy = 1;
-                large.splitSizeAnchor = largeSize;
-                large.splitFertilityAnchor = largeFertility;
+                source.mutationSelectionProgress = large.mutationSelectionProgress = 0f;
+                source.mutationSelectionCandidate = large.mutationSelectionCandidate = -1;
                 source.lastMutationEffect = large.lastMutationEffect = "分化形成：体型 / 繁殖力";
                 source.evolutionConversions.Clear();
                 large.evolutionConversions.Clear();

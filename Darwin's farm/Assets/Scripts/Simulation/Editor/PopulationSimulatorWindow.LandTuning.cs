@@ -15,12 +15,23 @@ public partial class PopulationSimulatorWindow
         {
             { nameof(LandRuleTuning.coldDeathRate), "寒冷死亡系数" },
             { nameof(LandRuleTuning.climateMismatchDeathRate), "气候失配死亡系数" },
-            { nameof(LandRuleTuning.reproductionStressDeathRate), "高生育生理负担死亡系数" },
+            { nameof(LandRuleTuning.reproductionStressPerBirth), "每次实际出生的生理负担" },
+            { nameof(LandRuleTuning.baselineAdultDeathRate), "成年基础死亡系数" },
+            { nameof(LandRuleTuning.smallBodyFrailtyRate), "小体型脆弱死亡系数" },
+            { nameof(LandRuleTuning.adultSizeMortalityScale), "成年死亡体型尺度" },
+            { nameof(LandRuleTuning.forageAccessLossAtZero), "零运动觅食损失" },
+            { nameof(LandRuleTuning.forageSizeScale), "觅食体型尺度" },
+            { nameof(LandRuleTuning.forageMovementScale), "运动改善觅食尺度" },
             { nameof(LandRuleTuning.movementFoodCost), "运动耗食系数" },
+            { nameof(LandRuleTuning.smallBodyMaintenance), "小体型额外维持耗食" },
             { nameof(LandRuleTuning.youngLinearCost), "幼体线性耗食" },
             { nameof(LandRuleTuning.youngQuadraticCost), "幼体平方耗食" },
             { nameof(LandRuleTuning.competitionPressure), "同食物竞争强度" },
             { nameof(LandRuleTuning.oppositeStrategyCompetition), "异策略互压系数" },
+            { nameof(LandRuleTuning.smallPlantNicheShare), "底层植物更新量份额" },
+            { nameof(LandRuleTuning.unspecializedPlantEfficiency), "未分化植物利用效率" },
+            { nameof(LandRuleTuning.smallPlantSizeScale), "底层植物体型尺度" },
+            { nameof(LandRuleTuning.largePlantSizeScale), "上层植物体型尺度" },
             { nameof(LandRuleTuning.movementForagingGain), "运动觅食增益" },
             { nameof(LandRuleTuning.minimumPlantReserveFraction), "植物最低库存比例" },
             { nameof(LandRuleTuning.dailyPlantStockDrawFraction), "每日库存最大消耗比例" },
@@ -34,6 +45,7 @@ public partial class PopulationSimulatorWindow
             { nameof(LandRuleTuning.splitMinimumRenewalPressure), "分化门槛：当前种群 / 环境 K" },
             { nameof(LandRuleTuning.splitMaximumRenewalLoad), "分支后最高补充负载" },
             { nameof(LandRuleTuning.splitHeadroomUse), "分化时大体型占用剩余 K 比例" },
+            { nameof(LandRuleTuning.splitFounderFraction), "分化大体型创始比例" },
             { nameof(LandRuleTuning.splitStockDays), "分支最低库存天数" },
             { nameof(LandRuleTuning.splitCooldownDays), "原地分支冷却天数" },
             { nameof(LandRuleTuning.evolutionTodaySatisfaction), "转化当日最低吃饱率" },
@@ -49,12 +61,15 @@ public partial class PopulationSimulatorWindow
             { nameof(LandRuleTuning.slopeMigrationThreshold), "坡地迁徙运动门槛" },
             { nameof(LandRuleTuning.flatAttractionCeiling), "平地吸引运动上限" },
             { nameof(LandRuleTuning.slopeAttractionCeiling), "坡地吸引运动上限" },
-            { nameof(LandRuleTuning.fourEntryMigrationFactor), "四群迁入概率倍率" }
+            { nameof(LandRuleTuning.fourEntryMigrationFactor), "四群迁入概率倍率" },
+            { nameof(LandRuleTuning.mutationGainThreshold), "最低人均净增长收益 / 天" },
+            { nameof(LandRuleTuning.mutationGainDailyScale), "变异收益累计尺度" }
         };
 
     private void DrawLandTuning()
     {
         if (landRuleTuning == null) landRuleTuning = new LandRuleTuning();
+        landRuleTuning.Sanitize();
         showLandTuning = EditorGUILayout.Foldout(showLandTuning,
             "陆地规则详细参数", true);
         if (!showLandTuning) return;

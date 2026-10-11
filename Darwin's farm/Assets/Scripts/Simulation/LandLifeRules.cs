@@ -13,7 +13,9 @@ internal static class LandLifeRules
         LandRuleTuning rules = null)
     {
         float m = Mathf.Clamp(movement, 0f, 100f) / 100f;
-        return Mathf.Max(0f, size) * (1f +
+        return (Mathf.Max(0f, size) +
+            (rules != null ? rules.smallBodyMaintenance : 0f) /
+            Mathf.Max(1f, size)) * (1f +
             (rules != null ? rules.movementFoodCost : 0.4f) * m * m);
     }
 
@@ -21,11 +23,34 @@ internal static class LandLifeRules
         (rules != null ? rules.youngLinearCost : 0.4f) * size
         + (rules != null ? rules.youngQuadraticCost : 0.045f) * size * size;
 
+    internal static float ForagingAccess(float size, float movement,
+        LandRuleTuning rules)
+    {
+        float reach = rules.forageSizeScale /
+            (rules.forageSizeScale + Mathf.Max(1f, size));
+        float mobility = 1f + Mathf.Clamp(movement, 0f, 100f) /
+            Mathf.Max(1f, rules.forageMovementScale);
+        return Mathf.Clamp01(1f - rules.forageAccessLossAtZero * reach /
+            (mobility * mobility));
+    }
+
+    internal static float NaturalAdultDeaths(int count, float size,
+        LandRuleTuning rules) => count * (rules.baselineAdultDeathRate
+            * rules.adultSizeMortalityScale /
+            (rules.adultSizeMortalityScale + Mathf.Max(1f, size)) +
+            rules.smallBodyFrailtyRate /
+            ((1f + Mathf.Max(1f, size)) *
+             (1f + Mathf.Max(1f, size))));
+
     internal static float ReproductionStressDeaths(int count, float size,
-        float fertility, LandRuleTuning rules)
+        float fertility, LandRuleTuning rules, float birthFactor = 1f,
+        float satisfaction = 1f, float fitness = 1f)
     {
         float drive = Mathf.Clamp01(fertility / 100f);
-        return count * rules.reproductionStressDeathRate * drive * drive
+        float realizedBirths = count * rules.birthRate * drive
+            * Mathf.Clamp01(birthFactor) * Mathf.Clamp01(satisfaction)
+            * Mathf.Clamp01(fitness);
+        return realizedBirths * rules.reproductionStressPerBirth * drive
             * YoungNeed(size, rules) / Mathf.Max(1f, size);
     }
 
@@ -62,21 +87,56 @@ internal static class LandLifeRules
         return demand;
     }
 
+    internal static float GroupBirthFactor(BlockInfo block,
+        PopulationData target, float size, float movement, float fertility,
+        LandRuleTuning rules, PopulationData changed = null,
+        float changedSize = 0f, float changedMovement = 0f)
+    {
+        if (target.trophicLevel != 0) return 1f;
+        float nicheLoad = 0f;
+        int niche = PlantNiche(target);
+        foreach (PopulationData other in block.community)
+            if (other != null && other.speciesAmount > 0 &&
+                other.trophicLevel == 0 && PlantNiche(other) == niche)
+            {
+                float otherSize = other == target ? size :
+                    other == changed ? changedSize : other.size;
+                float otherMovement = other == target ? movement :
+                    other == changed ? changedMovement : other.movementAbility;
+                float otherLoad = other.speciesAmount *
+                    AdultNeed(otherSize, otherMovement, rules);
+                nicheLoad += otherLoad;
+            }
+        float capacity = block.habitatRecovery *
+            (niche <= 0 ? rules.smallPlantNicheShare :
+                1f - rules.smallPlantNicheShare) * NicheEfficiency(size, niche, rules);
+        if (niche == 0) capacity *= rules.unspecializedPlantEfficiency;
+        return DensityBirthMultiplier(nicheLoad, capacity, rules);
+    }
+
     internal static float EnvironmentalCarryingCapacity(BlockInfo block,
         PopulationData target, LandRuleTuning rules)
     {
         if (block == null || target == null || block.community == null)
             return 0f;
+        int niche = PlantNiche(target);
         float renewable = target.trophicLevel == 0
-            ? Mathf.Max(0f, block.habitatRecovery)
+            ? Mathf.Max(0f, block.habitatRecovery) *
+                (niche <= 0 ? rules.smallPlantNicheShare :
+                    1f - rules.smallPlantNicheShare) *
+                NicheEfficiency(target.size, niche, rules) *
+                (niche == 0 ? rules.unspecializedPlantEfficiency : 1f)
             : AvailableSustainablePreyFood(block, target, rules);
         if (renewable <= 0f) return 0f;
         float competitorDemand = 0f;
         foreach (PopulationData other in block.community)
             if (other != null && other != target && other.speciesAmount > 0 &&
-                target.trophicLevel == 0 && other.trophicLevel == 0)
-                competitorDemand += other.speciesAmount * AdultNeed(other.size,
-                    other.movementAbility, rules);
+                target.trophicLevel == 0 && other.trophicLevel == 0 &&
+                PlantNiche(other) == niche)
+            {
+                competitorDemand += other.speciesAmount *
+                    AdultNeed(other.size, other.movementAbility, rules);
+            }
         float perIndividual = AdultNeed(target.size, target.movementAbility,
             rules);
         return Mathf.Max(0f, renewable - competitorDemand) /
@@ -137,6 +197,7 @@ internal static class LandLifeRules
     {
         int count = groups.Count;
         var demand = new float[count];
+        var accessible = new float[count];
         var adult = new float[count];
         var weight = new float[count];
         var allocation = new float[count];
@@ -152,8 +213,6 @@ internal static class LandLifeRules
             int individuals = p == countOverride ? overrideCount : p.speciesAmount;
             float fitness = Fitness(block, t, humid);
             adult[i] = individuals * AdultNeed(sz, mov, rules);
-            demand[i] = Demand(individuals, sz, mov, fert, fitness,
-                rules, birthFactor);
             float pressure = adult[i];
             for (int j = 0; j < count; j++)
                 if (i != j)
@@ -171,28 +230,56 @@ internal static class LandLifeRules
                         * AdultNeed(otherSize, other == changed ? movement : other.movementAbility,
                             rules);
                 }
+            float individualBirthFactor = GroupBirthFactor(block, p,
+                sz, mov, fert, rules, changed, size, movement);
+            demand[i] = Demand(individuals, sz, mov, fert, fitness,
+                rules, individualBirthFactor);
+            accessible[i] = demand[i] * ForagingAccess(sz, mov, rules);
             weight[i] = adult[i] * fitness
                 * (1f + (rules != null ? rules.movementForagingGain : 0.002f)
-                    * (mov - 20f))
+                    * mov)
                 / (1f + (rules != null ? rules.competitionPressure : 2f)
                     * Mathf.Max(0f, pressure / Mathf.Max(1f, renewal) - 1f));
         }
-        for (int pass = 0; pass < count && food > Epsilon; pass++)
+        float available = renewal > 0f
+            ? Mathf.Min(food, renewal) : Mathf.Max(0f, food);
+        var nicheDemand = new float[count];
+        var nicheAllocated = new float[count];
+        for (int niche = 0; niche < 2; niche++)
         {
-            float total = 0f;
-            for (int i = 0; i < count; i++)
-                if (demand[i] - allocation[i] > Epsilon) total += weight[i];
-            if (total <= Epsilon) break;
-            float spent = 0f;
+            float nicheFood = available * (niche == 0
+                ? rules.smallPlantNicheShare : 1f - rules.smallPlantNicheShare);
             for (int i = 0; i < count; i++)
             {
-                float share = Mathf.Min(Mathf.Max(0f, demand[i] - allocation[i]),
-                    food * weight[i] / total);
-                allocation[i] += share;
-                spent += share;
+                nicheAllocated[i] = 0f;
+                float sz = groups[i] == changed ? size : groups[i].size;
+                int groupNiche = PlantNiche(groups[i]);
+                bool inLayer = niche == 0 ? groupNiche <= 0 : groupNiche > 0;
+                nicheDemand[i] = inLayer
+                    ? Mathf.Min(accessible[i], nicheFood *
+                        NicheEfficiency(sz, groupNiche, rules) *
+                        (groupNiche == 0 ? rules.unspecializedPlantEfficiency : 1f)) : 0f;
             }
-            food -= spent;
-            if (spent <= Epsilon) break;
+            for (int pass = 0; pass < count && nicheFood > Epsilon; pass++)
+            {
+                float totalWeight = 0f;
+                for (int i = 0; i < count; i++)
+                    if (nicheDemand[i] - nicheAllocated[i] > Epsilon)
+                        totalWeight += weight[i];
+                if (totalWeight <= Epsilon) break;
+                float spent = 0f;
+                for (int i = 0; i < count; i++)
+                {
+                    float share = Mathf.Min(Mathf.Max(0f,
+                        nicheDemand[i] - nicheAllocated[i]),
+                        nicheFood * weight[i] / totalWeight);
+                    nicheAllocated[i] += share;
+                    spent += share;
+                }
+                nicheFood -= spent;
+                if (spent <= Epsilon) break;
+            }
+            for (int i = 0; i < count; i++) allocation[i] += nicheAllocated[i];
         }
         return allocation;
     }
@@ -201,6 +288,24 @@ internal static class LandLifeRules
     {
         float ratio = 100f * size / Mathf.Max(10f, fertility);
         return ratio < 30f ? -1 : ratio >= 60f ? 1 : 0;
+    }
+
+    private static int PlantNiche(PopulationData p)
+    {
+        if (p.splitStrategy != 0) return p.splitStrategy;
+        // Preset large-bodied species start in the upper plant layer even
+        // when created directly in the simulator without a local split.
+        return p.species != null && p.species.baseSize >= 25 ? 1 : 0;
+    }
+
+    private static float NicheEfficiency(float size, int niche,
+        LandRuleTuning rules)
+    {
+        float x = Mathf.Max(1f, size) / (niche <= 0
+            ? rules.smallPlantSizeScale : rules.largePlantSizeScale);
+        float x2 = x * x;
+        float x4 = x2 * x2;
+        return niche <= 0 ? 1f / (1f + x4) : x4 / (1f + x4);
     }
 
     // Growth can be eaten today, but the standing stock is drawn down gradually.
@@ -250,6 +355,21 @@ internal static class LandLifeRules
         return AllocatePlants(groups, food, block.habitatRecovery, block,
             target, temperature, humidity, movement, size, fertility, rules,
             birthFactor)[index];
+    }
+
+    internal static float ForecastWholePlantSatisfaction(BlockInfo block,
+        PopulationData target, float temperature, float humidity,
+        float movement, float size, float fertility, LandRuleTuning rules,
+        out float birthFactor)
+    {
+        birthFactor = GroupBirthFactor(block, target, size, movement,
+            fertility, rules);
+        float fitness = Fitness(block, temperature, humidity);
+        float demand = Demand(target.speciesAmount, size, movement,
+            fertility, fitness, rules, birthFactor);
+        float food = ForecastPlantIntake(block, target, temperature, humidity,
+            movement, size, fertility, false, rules, birthFactor);
+        return demand > 0f ? Mathf.Clamp01(food / demand) : 1f;
     }
 
     internal static void ForecastEvolutionPlantSupport(BlockInfo block,
@@ -478,8 +598,7 @@ internal static class LandLifeRules
         HuntLevel(block, 1, rules);
         foreach (PopulationData p in block.community)
             if (p.trophicLevel == 0 && p.speciesAmount > 0) herbivores.Add(p);
-        float herbivoreBirthFactor = DensityBirthMultiplier(
-            HerbivoreAdultDemand(block, rules), block.habitatRecovery, rules);
+        float herbivoreBirthFactor = 1f;
         float[] allocation = AllocatePlants(herbivores,
             PlantFoodBudget(block, block.plantBiomass, rules),
             block.habitatRecovery, block, rules: rules,
@@ -495,7 +614,8 @@ internal static class LandLifeRules
             eaten += allocation[i];
             float demand = Demand(p, p.speciesAmount,
                 Fitness(block, p.fitTemperature, p.fitHumidity), rules,
-                herbivoreBirthFactor);
+                GroupBirthFactor(block, p, p.size, p.movementAbility,
+                    p.fertility, rules));
             AddHistory(p.renewalSatisfactionHistory, demand > 0f
                 ? Mathf.Clamp01(renewal[i] / demand) : 1f);
         }
@@ -521,8 +641,11 @@ internal static class LandLifeRules
                 continue;
             }
             float fitness = Fitness(block, p.fitTemperature, p.fitHumidity);
+            float groupBirthFactor = p.trophicLevel == 0
+                ? GroupBirthFactor(block, p, p.size, p.movementAbility,
+                    p.fertility, rules) : 1f;
             float demandToday = Demand(p, count, fitness, rules,
-                p.trophicLevel == 0 ? herbivoreBirthFactor : 1f);
+                groupBirthFactor);
             float satisfaction = demandToday > 0f
                 ? Mathf.Clamp01(p.allocatedBiomass / demandToday) : 1f;
             p.actualEnergySatisfactionToday = p.energySatisfactionToday = satisfaction;
@@ -531,12 +654,14 @@ internal static class LandLifeRules
             float births = count * rules.birthRate * p.fertility / 100f
                 * fitness * satisfaction;
             if (p.trophicLevel == 0)
-                births *= herbivoreBirthFactor;
+                births *= groupBirthFactor;
             float deaths = rules.starvationDeathRate * count * (1f - satisfaction)
                 + rules.coldDeathRate * count * Mathf.Max(0f, (50f - block.temperature) / 50f)
                     * (1f - p.size / 100f)
                 + rules.climateMismatchDeathRate * count * (1f - fitness)
-                + ReproductionStressDeaths(count, p.size, p.fertility, rules);
+                + NaturalAdultDeaths(count, p.size, rules)
+                + ReproductionStressDeaths(count, p.size, p.fertility, rules,
+                    groupBirthFactor, satisfaction, fitness);
             p.birthRemainder += births;
             // A day's lethal pressure cannot become a debt that kills later
             // migrants or newborns after every current adult has died.

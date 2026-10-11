@@ -99,7 +99,7 @@ public class PopulationData
     public bool localSplitBranch;
     // -1: small/high-fertility branch; +1: large/low-fertility branch.
     public int splitStrategy;
-    public int splitSizeAnchor;
-    public int splitFertilityAnchor;
     public string lastMutationEffect;
+    public float mutationSelectionProgress;
+    public int mutationSelectionCandidate = -1;
 }

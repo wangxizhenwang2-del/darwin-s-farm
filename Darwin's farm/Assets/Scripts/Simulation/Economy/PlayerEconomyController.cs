@@ -480,8 +480,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         }
         survivor.localSplitBranch = false;
         survivor.splitStrategy = 0;
-        survivor.splitSizeAnchor = 0;
-        survivor.splitFertilityAnchor = 0;
+        survivor.mutationSelectionProgress = 0f;
+        survivor.mutationSelectionCandidate = -1;
     }
 
     private static bool ValidDelta(int delta) =>

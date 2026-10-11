@@ -23,19 +23,31 @@ public struct SimulationTuning
 public partial class SimulationController : MonoBehaviour
 {
     [SerializeField] private LandRuleTuning landRules = new LandRuleTuning();
-    public LandRuleTuning ReadLandRules() =>
-        (landRules ?? (landRules = new LandRuleTuning())).Copy();
+    private bool landRulesValidated;
+    public LandRuleTuning ReadLandRules() => LandRules.Copy();
     public void ApplyLandRules(LandRuleTuning values)
     {
         if (values == null) return;
         landRules = values.Copy().Sanitize();
+        landRulesValidated = true;
         reproductionScale = landRules.birthRate;
         maxStarvationDeathRate = landRules.starvationDeathRate;
         foreach (BlockInfo block in blockInfos)
             LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
-    private LandRuleTuning LandRules =>
-        landRules ?? (landRules = new LandRuleTuning());
+    private LandRuleTuning LandRules
+    {
+        get
+        {
+            if (landRules == null) landRules = new LandRuleTuning();
+            if (!landRulesValidated)
+            {
+                landRules.Sanitize();
+                landRulesValidated = true;
+            }
+            return landRules;
+        }
+    }
     // A deterministic environment step before ecology; avoids Unity event subscription-order dependencies.
     public event System.Action<int> OnBeforeDaySimulated;
     public event System.Action<int> OnDaySimulated;
@@ -310,6 +322,7 @@ public partial class SimulationController : MonoBehaviour
 
     public void SimulateDay(int day)
     {
+        currentSimulationDay = day;
         OnBeforeDaySimulated?.Invoke(day);
         foreach (BlockInfo block in blockInfos)
         {
@@ -327,6 +340,8 @@ public partial class SimulationController : MonoBehaviour
             LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         OnDaySimulated?.Invoke(day);
     }
+
+    private int currentSimulationDay;
 
     public void SimulateBlock(BlockInfo block)
     {

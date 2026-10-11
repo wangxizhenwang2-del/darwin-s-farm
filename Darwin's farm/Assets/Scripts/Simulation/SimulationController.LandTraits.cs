@@ -26,25 +26,21 @@ public partial class SimulationController
         // Compare the whole group's candidate adults against the current
         // community. Young are not allowed to relax their own birth pressure;
         // adult body size and movement do change the real maintenance load.
-        float adultLoad = LandLifeRules.HerbivoreAdultDemand(block, LandRules);
+        float birthFactor = 1f;
+        float ratio;
         if (p.trophicLevel == 0)
-            adultLoad += p.speciesAmount *
-                (LandLifeRules.AdultNeed(v.s, v.m, LandRules)
-                - LandLifeRules.AdultNeed(p.size, p.movementAbility,
-                    LandRules));
-        float birthFactor = p.trophicLevel == 0
-            ? LandLifeRules.DensityBirthMultiplier(
-                adultLoad, block.habitatRecovery, LandRules) : 1f;
-        float demand = LandLifeRules.Demand(p.speciesAmount, v.s, v.m, v.f,
-            fitness, LandRules, birthFactor);
-        float food = p.trophicLevel == 0
-            ? LandLifeRules.ForecastPlantIntake(block, p, v.t, v.h, v.m,
-                v.s, v.f, true, LandRules, birthFactor)
-            : Mathf.Clamp(p.allocatedBiomass +
+            ratio = LandLifeRules.ForecastWholePlantSatisfaction(block, p,
+                v.t, v.h, v.m, v.s, v.f, LandRules, out birthFactor);
+        else
+        {
+            float demand = LandLifeRules.Demand(p.speciesAmount, v.s, v.m,
+                v.f, fitness, LandRules);
+            float food = Mathf.Clamp(p.allocatedBiomass +
                 (PredatorPotential(block, p, v) -
                     PredatorPotential(block, p, ReadLandTraits(p)))
                     * p.speciesAmount, 0f, demand);
-        float ratio = demand > 0f ? Mathf.Clamp01(food / demand) : 1f;
+            ratio = demand > 0f ? Mathf.Clamp01(food / demand) : 1f;
+        }
         float births = p.speciesAmount * LandRules.birthRate
             * v.f / 100f * fitness * ratio * birthFactor;
         float deaths = p.speciesAmount * LandRules.starvationDeathRate
@@ -53,8 +49,10 @@ public partial class SimulationController
                 * (1f - v.s / 100f)
             + LandRules.climateMismatchDeathRate * p.speciesAmount
                 * (1f - fitness)
+            + LandLifeRules.NaturalAdultDeaths(p.speciesAmount, v.s,
+                LandRules)
             + LandLifeRules.ReproductionStressDeaths(p.speciesAmount,
-                v.s, v.f, LandRules);
+                v.s, v.f, LandRules, birthFactor, ratio, fitness);
         float preyRisk = 0f;
         foreach (PopulationData hunter in block.community)
             if (hunter != null && hunter.speciesAmount > 0 &&
@@ -141,6 +139,7 @@ public partial class SimulationController
         var decisions = new List<LandTraits>(block.community.Count);
         var subjects = new List<PopulationData>(block.community.Count);
         var effects = new List<string>(block.community.Count);
+        var gains = new List<float>(block.community.Count);
         foreach (PopulationData p in block.community)
         {
             if (p == null || p.speciesAmount <= 0) continue;
@@ -150,8 +149,9 @@ public partial class SimulationController
             LandTraits current = ReadLandTraits(p);
             LandTraits next = current;
             float baseline = ForecastLandGrowth(block, p, current);
-            float bestGain = 0.00001f;
+            float bestGain = LandRules.mutationGainThreshold;
             string effect = null;
+            int selectedCandidate = -1;
             int ceiling;
             float attraction = BestNeighborAttraction(block, p, out ceiling);
             for (int trait = 0; trait < 5; trait++)
@@ -162,14 +162,8 @@ public partial class SimulationController
                     if (trait == 0) candidate.t = Mathf.Clamp(candidate.t + d * mutationStep, 0f, 100f);
                     if (trait == 1) candidate.h = Mathf.Clamp(candidate.h + d * mutationStep, 0f, 100f);
                     if (trait == 2) candidate.m = Mathf.Clamp(candidate.m + d * mutationStep, 0f, 100f);
-                    if (trait == 3) candidate.s = Mathf.Clamp(candidate.s + d * mutationStep, 10f, 90f);
+                    if (trait == 3) candidate.s = Mathf.Clamp(candidate.s + d * mutationStep, 1f, 100f);
                     if (trait == 4) candidate.f = Mathf.Clamp(candidate.f + d * mutationStep, 10f, 90f);
-                    if (p.localSplitBranch && p.splitStrategy > 0 &&
-                        (candidate.s < p.splitSizeAnchor ||
-                         candidate.f > p.splitFertilityAnchor)) continue;
-                    if (p.localSplitBranch && p.splitStrategy < 0 &&
-                        (candidate.s > p.splitSizeAnchor ||
-                         candidate.f < p.splitFertilityAnchor)) continue;
                     float previous = trait == 0 ? current.t : trait == 1 ? current.h :
                         trait == 2 ? current.m : trait == 3 ? current.s : current.f;
                     float proposed = trait == 0 ? candidate.t : trait == 1 ? candidate.h :
@@ -185,11 +179,13 @@ public partial class SimulationController
                         current.m < ceiling)
                         score += p.speciesAmount *
                             LandRules.attractionMovementGain * attraction * 0.001f;
-                    float gain = (score - baseline) * selectionStrength;
+                    float gain = (score - baseline) * selectionStrength
+                        / Mathf.Max(1, p.speciesAmount);
                     if (gain > bestGain)
                     {
                         bestGain = gain;
                         next = candidate;
+                        selectedCandidate = trait * 2 + (d > 0 ? 1 : 0);
                         string name = trait == 0 ? "适温" : trait == 1 ? "适湿" :
                             trait == 2 ? "运动" : trait == 3 ? "体型" : "繁殖";
                         effect = name + (d > 0 ? "↑ " : "↓ ") +
@@ -197,9 +193,34 @@ public partial class SimulationController
                     }
                 }
             }
+            if (selectedCandidate < 0)
+            {
+                p.mutationSelectionProgress = 0f;
+                p.mutationSelectionCandidate = -1;
+            }
+            else
+            {
+                if (p.mutationSelectionCandidate != selectedCandidate)
+                    p.mutationSelectionProgress = 0f;
+                p.mutationSelectionCandidate = selectedCandidate;
+                p.mutationSelectionProgress += Mathf.Clamp01(
+                    (bestGain - LandRules.mutationGainThreshold) /
+                    LandRules.mutationGainDailyScale);
+                if (p.mutationSelectionProgress < 1f)
+                {
+                    next = current;
+                    effect = null;
+                }
+                else
+                {
+                    p.mutationSelectionProgress -= 1f;
+                    p.mutationSelectionCandidate = -1;
+                }
+            }
             decisions.Add(next);
             subjects.Add(p);
             effects.Add(effect);
+            gains.Add(bestGain);
         }
         for (int i = 0; i < subjects.Count; i++)
         {
@@ -210,7 +231,15 @@ public partial class SimulationController
             p.movementAbility = Mathf.RoundToInt(next.m);
             p.size = Mathf.RoundToInt(next.s);
             p.fertility = Mathf.RoundToInt(next.f);
-            if (effects[i] != null) p.lastMutationEffect = effects[i];
+            if (effects[i] != null)
+            {
+                p.lastMutationEffect = effects[i];
+                LogEcology(currentSimulationDay, block, p, "trait_mutation",
+                    effects[i] + " perCapitaGain=" + gains[i].ToString("F7") +
+                    " threshold=" + LandRules.mutationGainThreshold.ToString("F7") +
+                    " stock=" + block.plantBiomass.ToString("F0") +
+                    " count=" + p.speciesAmount);
+            }
         }
     }
 }

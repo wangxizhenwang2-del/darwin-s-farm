@@ -291,9 +291,8 @@ public partial class SimulationController
             }
             PopulationData resultPopulation = resident ?? arrival;
             resultPopulation.localSplitBranch = false;
-            resultPopulation.splitStrategy = 0;
-            resultPopulation.splitSizeAnchor = 0;
-            resultPopulation.splitFertilityAnchor = 0;
+            resultPopulation.mutationSelectionProgress = 0f;
+            resultPopulation.mutationSelectionCandidate = -1;
             LandLifeRules.RefreshEnvironmentMetrics(
                 plans[i].source, LandRules);
             LandLifeRules.RefreshEnvironmentMetrics(target, LandRules);
@@ -709,9 +708,9 @@ internal static class PopulationTransfer
             endangeredDays = source.endangeredDays,
             localSplitBranch = source.localSplitBranch,
             splitStrategy = source.splitStrategy,
-            splitSizeAnchor = source.splitSizeAnchor,
-            splitFertilityAnchor = source.splitFertilityAnchor,
             lastMutationEffect = source.lastMutationEffect,
+            mutationSelectionProgress = source.mutationSelectionProgress,
+            mutationSelectionCandidate = source.mutationSelectionCandidate,
             foodSatisfactionHistory = new List<float>(source.foodSatisfactionHistory ?? new List<float>()),
             renewalSatisfactionHistory = new List<float>(source.renewalSatisfactionHistory ?? new List<float>()),
             preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>())
@@ -750,6 +749,8 @@ internal static class PopulationTransfer
         origin.deathRemainder -= branch.deathRemainder;
         origin.predationRemainder -= branch.predationRemainder;
         origin.speciesAmount -= amount;
+        branch.mutationSelectionProgress = 0f;
+        branch.mutationSelectionCandidate = -1;
         // 2026-10-09 13:47 +08:00: a newly split migration branch starts with
         // zero target progress; its inherited evolution cooldown still applies.
         if (origin.speciesAmount > 0) branch.evolutionConversions.Clear();
@@ -795,9 +796,10 @@ internal static class PopulationTransfer
         resident.endangeredDays = total < 10
             ? Mathf.Min(resident.endangeredDays, arrival.endangeredDays) : 0;
         resident.localSplitBranch = false;
-        resident.splitStrategy = 0;
-        resident.splitSizeAnchor = 0;
-        resident.splitFertilityAnchor = 0;
+        resident.splitStrategy = resident.splitStrategy == arrival.splitStrategy
+            ? resident.splitStrategy : 0;
+        resident.mutationSelectionProgress = 0f;
+        resident.mutationSelectionCandidate = -1;
         resident.nextMigrationDay = Mathf.Max(resident.nextMigrationDay,
             arrival.nextMigrationDay);
         resident.nextEvolutionDay = Mathf.Max(resident.nextEvolutionDay,
