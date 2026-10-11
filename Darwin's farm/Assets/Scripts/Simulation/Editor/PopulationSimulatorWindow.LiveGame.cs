@@ -120,6 +120,7 @@ public partial class PopulationSimulatorWindow
         if (GUILayout.Button("继续")) liveTime.Play();
         if (GUILayout.Button("暂停")) liveTime.Pause();
         if (GUILayout.Button("2 倍速")) liveTime.DoubleSpeed();
+        if (GUILayout.Button("4 倍速")) liveTime.QuadrupleSpeed();
         if (GUILayout.Button("下一天"))
         {
             WriteExportAction("simulator_window", "next_day", liveCoordinate, "manual step");

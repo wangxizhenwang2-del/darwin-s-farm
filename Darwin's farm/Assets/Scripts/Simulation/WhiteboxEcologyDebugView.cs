@@ -80,7 +80,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         }
         string speed = clock == null ? "" : clock.IsPaused ? "暂停" : clock.Speed.ToString("F0") + "倍速";
         GUI.Label(new Rect(12f, 8f, 330f, 22f),
-            $"第{controller.Day}天  {speed}  空格播放/暂停 · 2两倍速", textStyle);
+            $"第{controller.Day}天  {speed}  空格播放/暂停 · 2两倍速 · 4四倍速", textStyle);
 
         foreach (WhiteboxEcologyDebugController.TileLabel label in controller.Labels)
         {

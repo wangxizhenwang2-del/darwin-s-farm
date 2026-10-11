@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-// WhiteBox composition root for two read-only information windows.
-// Scene input and presentation live here; ecological state remains in the existing controllers.
+// WhiteBox composition root for information windows and the speed control.
+// Presentation forwards commands to SimulationTime; ecological state stays in the model.
 [RequireComponent(typeof(Canvas))]
 public sealed class GameInformationUI : MonoBehaviour
 {
@@ -30,6 +30,7 @@ public sealed class GameInformationUI : MonoBehaviour
     [SerializeField] private PopulationInfoPanel populationPanel;
     [SerializeField] private Text dayText;
     [SerializeField] private Text speedText;
+    [SerializeField] private UnityEngine.UI.Button speedButton;
     [SerializeField] private UnityEngine.UI.Button tileCloseButton;
     [SerializeField] private UnityEngine.UI.Button populationCloseButton;
     [SerializeField] private TileTrendHistory tileHistory;
@@ -64,6 +65,7 @@ public sealed class GameInformationUI : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         EnsureLayout();
         BindWindows();
+        BindSpeedControl();
         tileHistory.Initialize(grid, simulation, clock);
         biomeVisibility = gameObject.GetComponent<BiomeOcclusionVisibility>();
         if (biomeVisibility == null) biomeVisibility = gameObject.AddComponent<BiomeOcclusionVisibility>();
@@ -76,6 +78,18 @@ public sealed class GameInformationUI : MonoBehaviour
         canvasRect = (RectTransform)transform;
         font = GameUITheme.Font;
         if (dayText == null && speedText == null) BuildHud();
+        if (speedButton == null && speedText != null)
+        {
+            speedButton = speedText.GetComponentInParent<UnityEngine.UI.Button>();
+            if (speedButton == null)
+                speedButton = speedText.transform.parent.gameObject.AddComponent<UnityEngine.UI.Button>();
+        }
+        if (speedButton != null)
+        {
+            UnityEngine.UI.Image image = speedButton.GetComponent<UnityEngine.UI.Image>();
+            if (image != null) image.raycastTarget = true;
+            speedButton.targetGraphic = image;
+        }
         if (tileWindow == null && populationWindow == null) BuildWindows();
         if (tileHistory == null)
         {
@@ -115,6 +129,7 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void OnEnable()
     {
+        BindSpeedControl();
         if (grid != null) grid.TilesChanged += RefreshVisible;
         if (simulation != null)
         {
@@ -126,6 +141,8 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void OnDisable()
     {
+        if (speedButton != null) speedButton.onClick.RemoveListener(CycleSpeed);
+        if (clock != null) clock.OnSpeedChanged -= RefreshSpeed;
         if (grid != null) grid.TilesChanged -= RefreshVisible;
         if (simulation != null)
         {
@@ -322,8 +339,9 @@ public sealed class GameInformationUI : MonoBehaviour
         RectTransform speed = NewPanel("SpeedHUD", Vector2.one, Vector2.one,
             new Vector2(100f, 56f), "GameUI/倍速ui", new Rect(502f, 764f, 1048f, 586f), root);
         speed.anchoredPosition = new Vector2(-24f, -30f);
-        speed.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
-        speedText = NewText("Speed", speed, "1X", 24, Ink(),
+        speedButton = speed.gameObject.AddComponent<UnityEngine.UI.Button>();
+        speedButton.targetGraphic = speed.GetComponent<UnityEngine.UI.Image>();
+        speedText = NewText("Speed", speed, "1x", 24, Ink(),
             new Vector2(13f, -9f), new Vector2(74f, 38f), false);
         speedText.alignment = TextAnchor.MiddleCenter;
     }
@@ -429,10 +447,35 @@ public sealed class GameInformationUI : MonoBehaviour
     private void RefreshVisible()
     {
         if (dayText != null) dayText.text = "Day " + (clock == null ? "--" : clock.currentDay.ToString());
-        if (speedText != null) speedText.text = clock == null ? "--" :
-            clock.IsPaused ? "暂停" : clock.Speed.ToString("0.#") + "X";
+        RefreshSpeed(clock == null ? 0f : clock.Speed);
         if (tileWindow != null && tileWindow.IsOpen) RefreshTile();
         if (populationWindow != null && populationWindow.IsOpen) RefreshPopulation();
+    }
+
+    private void BindSpeedControl()
+    {
+        if (speedButton != null)
+        {
+            speedButton.onClick.RemoveListener(CycleSpeed);
+            speedButton.onClick.AddListener(CycleSpeed);
+        }
+        if (clock != null)
+        {
+            clock.OnSpeedChanged -= RefreshSpeed;
+            clock.OnSpeedChanged += RefreshSpeed;
+        }
+        RefreshSpeed(clock == null ? 0f : clock.Speed);
+    }
+
+    private void CycleSpeed()
+    {
+        if (clock != null) clock.CycleSpeed();
+    }
+
+    private void RefreshSpeed(float _)
+    {
+        if (speedText == null) return;
+        speedText.text = clock == null ? "--" : clock.RunningSpeed.ToString("0") + "x";
     }
 
     private void RefreshTile()

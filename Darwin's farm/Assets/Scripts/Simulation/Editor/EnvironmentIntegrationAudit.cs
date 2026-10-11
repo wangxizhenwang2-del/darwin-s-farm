@@ -208,8 +208,13 @@ public static class EnvironmentIntegrationAudit
         SimulationTime time = c.GetComponent<SimulationTime>();
         time.Play(); time.DoubleSpeed();
         Check(time.Speed == 2f, "2x speed command");
+        time.CycleSpeed(); Check(time.Speed == 4f, "SpeedHUD cycles 2x to 4x");
+        time.CycleSpeed(); Check(time.Speed == 1f, "SpeedHUD cycles 4x to 1x");
+        time.CycleSpeed(); Check(time.Speed == 2f, "SpeedHUD cycles 1x to 2x");
         time.TogglePause(); Check(time.IsPaused, "space pauses the day clock");
         time.TogglePause(); Check(time.Speed == 2f, "space resumes the previous speed");
+        time.Pause(); time.CycleSpeed();
+        Check(time.Speed == 4f, "SpeedHUD advances and resumes while paused");
         time.Pause();
     }
     private static void Finish(Exception error)

@@ -44,7 +44,7 @@ internal static class Program
         Console.WriteLine("PASS " + message);
     }
 
-    private static void Main()
+    private static void Main(string[] args)
     {
         var defaults = new SimulationController();
         Check(Math.Abs(defaults.ReadLandRules().birthRate - 0.1f) < 1e-6f
@@ -158,6 +158,7 @@ internal static class Program
                 p.fitTemperature + "/" + p.fitHumidity + "/"
                 + p.movementAbility + "/" + p.size + "/" + p.fertility)));
 
+        if (!args.Contains("--sweep")) return;
         foreach (float rate in new[] { 0.1f, 0.02f, 0.005f })
         {
             var founder = Pop(chicken, 160);
@@ -230,6 +231,64 @@ internal static class Program
                         + p.speciesAmount + "-" + p.fitTemperature + "/"
                         + p.fitHumidity + "/" + p.movementAbility + "/"
                         + p.size + "/" + p.fertility)));
+        }
+
+        foreach (float rate in new[] { 0.1f, 0.02f, 0.005f })
+        foreach (float cold in new[] { 0.005f, 0.02f, 0.05f, 0.1f })
+        foreach (float opposite in new[] { 0.5f, 0.1f, 0f })
+        foreach (float competition in new[] { 2f, 5f, 10f })
+        foreach (int interval in new[] { 1, 5 })
+        {
+            SpeciesData routeChicken = Species(0, 61, 50, 20, 8, 75);
+            routeChicken.evolutionTargets.Add(deer);
+            PopulationData routeFounder = Pop(routeChicken, 160);
+            BlockInfo routeHome = Block(125000, 1000000, routeFounder);
+            routeHome.temperature = 58; routeHome.humidity = 50;
+            routeHome.elevation = 1;
+            BlockInfo routeNeighbor = Block(125000, 1000000);
+            routeNeighbor.temperature = 58; routeNeighbor.humidity = 50;
+            routeNeighbor.elevation = 0;
+            routeHome.SetNeighbors(new List<BlockInfo> { routeNeighbor });
+            var routeController = Controller(routeHome);
+            routeController.SetMutationEnabled(true);
+            routeController.SetMutationParameters(interval, 1f, 1f);
+            routeController.SetEvolutionNetworkSpecies(new[] { routeChicken, deer });
+            var rules = routeController.ReadLandRules();
+            rules.birthRate = rate; rules.coldDeathRate = cold;
+            rules.oppositeStrategyCompetition = opposite;
+            rules.competitionPressure = competition;
+            rules.splitMinimumRenewalPressure = 0.1f;
+            routeController.ApplyLandRules(rules);
+            int splitAt = 0, deerAt = 0;
+            routeController.OnLocalSplitResolved += result => splitAt = result.Day;
+            routeController.OnPresetEvolutionResolved += result => deerAt = result.Day;
+            for (int day = 1; day <= 3600 && deerAt == 0; day++)
+            {
+                if (splitAt > 0)
+                {
+                    routeHome.temperature = 33;
+                    routeHome.humidity = 25;
+                    routeHome.habitatRecovery = day - splitAt < 100
+                        ? 200000 : 90000;
+                    routeNeighbor.temperature = 33;
+                    routeNeighbor.humidity = 25;
+                }
+                routeController.SimulateDay(day);
+                if (rate == 0.005f && cold == 0.1f && opposite == 0f
+                    && competition == 10f && interval == 5 &&
+                    (day == 200 || day == 300 || day == 500 || day == 550
+                        || day == 600 || day == 700 || day == 900))
+                    Console.WriteLine("SWEEPTRACE day=" + day + " split=" + splitAt
+                        + " stock=" + routeHome.plantBiomass + " "
+                        + string.Join(";", routeHome.community.Select(p =>
+                            p.speciesAmount + "-" + p.fitTemperature + "/"
+                            + p.fitHumidity + "/" + p.movementAbility + "/"
+                            + p.size + "/" + p.fertility)));
+            }
+            if (deerAt > 0) Console.WriteLine("SWEEP deer=" + deerAt
+                + " split=" + splitAt + " birth=" + rate + " cold=" + cold
+                + " opposite=" + opposite + " competition=" + competition
+                + " interval=" + interval);
         }
     }
 }
