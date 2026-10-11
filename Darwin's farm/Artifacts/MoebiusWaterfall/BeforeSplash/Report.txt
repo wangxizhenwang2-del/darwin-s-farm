@@ -1,0 +1,59 @@
+PASS: Sheet and four clouds retained; both legacy overlay renderers are inactive (two fewer draw calls)
+PASS: Animation requires no runtime scripts or per-frame MaterialPropertyBlock updates
+Camera images captured: overview, closeup, opposite side, low angle and perspective; visual review required
+PASS: Zero turbulence and ripple intensity preserve water pixels exactly
+PASS: Impact foam and ripples render in the original receiving water mesh
+PASS: World-space impact repeats exactly at fixed time
+PASS: Integrated turbulence and ripples change at every sampled 1/60 second
+Integrated impact changed pixels/frame: min=6067 mean=6141.6
+PASS: Periodic ripple queue has no abrupt birth/removal jump (max channel delta=1)
+PASS: GPU wave propagates outward about one metre in one second (1.75 -> 2.83)
+PASS: Ripple consists of broken arc coverage rather than a complete ring (15.9%)
+PASS: Old wave fades to zero before new wave is born
+PASS: Waterfall Sheet renders visible opaque geometry
+PASS: Waterfall Sheet repeated time produces identical pixels (no random flicker)
+PASS: Waterfall Sheet animates at every sampled 1/60 second interval
+Waterfall Sheet changed pixels/frame: min=41099 mean=41320.0 max=41751
+PASS: Waterfall Sheet forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Waterfall Sheet uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 1 renders visible opaque geometry
+PASS: Splash Cloud Layer 1 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 1 animates at every sampled 1/60 second interval
+Splash Cloud Layer 1 changed pixels/frame: min=439 mean=454.1 max=466
+PASS: Splash Cloud Layer 1 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 1 uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 2 renders visible opaque geometry
+PASS: Splash Cloud Layer 2 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 2 animates at every sampled 1/60 second interval
+Splash Cloud Layer 2 changed pixels/frame: min=412 mean=447.6 max=470
+PASS: Splash Cloud Layer 2 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 2 uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 3 renders visible opaque geometry
+PASS: Splash Cloud Layer 3 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 3 animates at every sampled 1/60 second interval
+Splash Cloud Layer 3 changed pixels/frame: min=591 mean=632.1 max=681
+PASS: Splash Cloud Layer 3 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 3 uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 4 renders visible opaque geometry
+PASS: Splash Cloud Layer 4 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 4 animates at every sampled 1/60 second interval
+Splash Cloud Layer 4 changed pixels/frame: min=394 mean=426.7 max=447
+PASS: Splash Cloud Layer 4 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 4 uses opaque/cutout depth ordering
+PASS: Positive sheet flow follows a feature towards lower local Y
+PASS: Waterfall Sheet shadow strength zero matches disabled pixels
+PASS: Waterfall Sheet receives real main-light cast shadows (23197 pixels)
+PASS: Waterfall Sheet shadow follows moving caster
+PASS: Splash Cloud Layer 4 shadow strength zero matches disabled pixels
+PASS: Splash Cloud Layer 4 receives real main-light cast shadows (9198 pixels)
+PASS: Splash Cloud Layer 4 shadow follows moving caster
+PASS: Darwin/Moebius Waterfall compiles without errors
+PASS: Darwin/Moebius Waterfall is SRP Batcher compatible
+PASS: Darwin/Moebius Waterfall Splash compiles without errors
+PASS: Darwin/Moebius Waterfall Splash is SRP Batcher compatible
+PASS: Darwin/Moebius Waterfall Impact compiles without errors
+PASS: Darwin/Moebius Waterfall Impact is SRP Batcher compatible
+PASS: Darwin/Moebius Water compiles without errors
+PASS: Darwin/Moebius Water is SRP Batcher compatible
+PASS: Saved scene reopens with all mesh/material references
+Shader/runtime/test errors: 0

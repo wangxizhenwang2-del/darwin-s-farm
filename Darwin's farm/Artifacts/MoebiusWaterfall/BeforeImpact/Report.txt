@@ -1,0 +1,53 @@
+PASS: Prefab has a sheet, four mesh clouds, contact foam and downstream outflow
+PASS: Animation requires no runtime scripts or per-frame MaterialPropertyBlock updates
+PASS: Waterfall Sheet renders visible opaque geometry
+PASS: Waterfall Sheet repeated time produces identical pixels (no random flicker)
+PASS: Waterfall Sheet animates at every sampled 1/60 second interval
+Waterfall Sheet changed pixels/frame: min=41099 mean=41320.0 max=41751
+PASS: Waterfall Sheet forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Waterfall Sheet uses opaque/cutout depth ordering
+PASS: Impact Foam renders visible opaque geometry
+PASS: Impact Foam repeated time produces identical pixels (no random flicker)
+PASS: Impact Foam animates at every sampled 1/60 second interval
+Impact Foam changed pixels/frame: min=4259 mean=4304.3 max=4374
+PASS: Impact Foam forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Impact Foam uses opaque/cutout depth ordering
+PASS: Downstream Outflow renders visible opaque geometry
+PASS: Downstream Outflow repeated time produces identical pixels (no random flicker)
+PASS: Downstream Outflow animates at every sampled 1/60 second interval
+Downstream Outflow changed pixels/frame: min=7764 mean=7934.6 max=8046
+PASS: Downstream Outflow forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Downstream Outflow uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 1 renders visible opaque geometry
+PASS: Splash Cloud Layer 1 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 1 animates at every sampled 1/60 second interval
+Splash Cloud Layer 1 changed pixels/frame: min=439 mean=454.1 max=466
+PASS: Splash Cloud Layer 1 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 1 uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 2 renders visible opaque geometry
+PASS: Splash Cloud Layer 2 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 2 animates at every sampled 1/60 second interval
+Splash Cloud Layer 2 changed pixels/frame: min=412 mean=447.6 max=470
+PASS: Splash Cloud Layer 2 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 2 uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 3 renders visible opaque geometry
+PASS: Splash Cloud Layer 3 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 3 animates at every sampled 1/60 second interval
+Splash Cloud Layer 3 changed pixels/frame: min=591 mean=632.1 max=681
+PASS: Splash Cloud Layer 3 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 3 uses opaque/cutout depth ordering
+PASS: Splash Cloud Layer 4 renders visible opaque geometry
+PASS: Splash Cloud Layer 4 repeated time produces identical pixels (no random flicker)
+PASS: Splash Cloud Layer 4 animates at every sampled 1/60 second interval
+Splash Cloud Layer 4 changed pixels/frame: min=394 mean=426.7 max=447
+PASS: Splash Cloud Layer 4 forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
+PASS: Splash Cloud Layer 4 uses opaque/cutout depth ordering
+PASS: Positive sheet flow follows a feature towards lower local Y
+PASS: Darwin/Moebius Waterfall compiles without errors
+PASS: Darwin/Moebius Waterfall is SRP Batcher compatible
+PASS: Darwin/Moebius Waterfall Splash compiles without errors
+PASS: Darwin/Moebius Waterfall Splash is SRP Batcher compatible
+PASS: Darwin/Moebius Waterfall Impact compiles without errors
+PASS: Darwin/Moebius Waterfall Impact is SRP Batcher compatible
+PASS: Saved scene reopens with all mesh/material references
+Shader/runtime/test errors: 0

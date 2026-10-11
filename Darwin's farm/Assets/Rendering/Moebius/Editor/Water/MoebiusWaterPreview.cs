@@ -30,7 +30,7 @@ namespace Darwin.Rendering.Editor
                 {
                     if (EditorUtility.IsPersistent(renderer) || !renderer.enabled || !renderer.gameObject.activeInHierarchy || !renderer.gameObject.scene.isLoaded) continue;
                     foreach (var material in renderer.sharedMaterials)
-                        if (material && material.shader && material.shader.name == "Darwin/Moebius Water") { hasWater = true; break; }
+                        if (material && material.shader && (material.shader.name == "Darwin/Moebius Water" || material.shader.name.StartsWith("Darwin/Moebius Waterfall", StringComparison.Ordinal))) { hasWater = true; break; }
                     if (hasWater) break;
                 }
             }
