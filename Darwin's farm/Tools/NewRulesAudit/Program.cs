@@ -63,7 +63,7 @@ internal static class Program
             Math.Abs(abundant.plantBiomass + abundant.consumedBiomassToday
                 - 1000000) < 0.1f, "one plant ledger conserves food");
         Check(Math.Abs(defaults.ReadLandRules().splitMinimumRenewalPressure
-            - 0.9f) < 1e-6f, "split requires ninety percent of sustainable K");
+            - 0.9f) < 1e-6f, "split requires ninety percent of environmental K");
 
         var starving = Pop(Species(0), 100);
         BlockInfo noFood = Block(0, 0, starving);
@@ -103,6 +103,32 @@ internal static class Program
             splitBlock.community.Sum(p => p.speciesAmount)
                 == 5500 + splitSource.birthsToday - splitSource.deathsToday,
             "local split creates two groups and conserves population");
+
+        var currentGroup = Pop(Species(0, size: 10, fertility: 90), 630);
+        var competingGroup = Pop(Species(0, size: 10, fertility: 50), 200);
+        for (int i = 0; i < 10; i++)
+            currentGroup.foodSatisfactionHistory.Add(1f);
+        BlockInfo mixedBlock = Block(10000, 1000000,
+            currentGroup, competingGroup);
+        var mixedController = Controller(mixedBlock);
+        var mixedRules = mixedController.ReadLandRules();
+        mixedRules.splitHeadroomUse = 1f;
+        mixedController.ApplyLandRules(mixedRules);
+        int mixedSplits = 0;
+        mixedController.OnLocalSplitResolved += _ => mixedSplits++;
+        mixedController.SimulateDay(1);
+        float mixedDemand = mixedBlock.community.Sum(p =>
+            LandLifeRules.Demand(p, p.speciesAmount,
+                LandLifeRules.Fitness(mixedBlock, p.fitTemperature,
+                    p.fitHumidity), mixedRules));
+        Check(mixedDemand >= 9000f && mixedSplits == 0 &&
+            currentGroup.speciesAmount <
+                .9f * currentGroup.environmentalCarryingCapacity,
+            "other consumers cannot make current group reach ninety percent K");
+        currentGroup.speciesAmount = 650;
+        mixedController.SimulateDay(2);
+        Check(mixedSplits == 1,
+            "current group may split after its own count reaches ninety percent K");
 
         SpeciesData deer = Species(0, 40, 25, 75, 60, 30);
         chicken.evolutionTargets.Add(deer);

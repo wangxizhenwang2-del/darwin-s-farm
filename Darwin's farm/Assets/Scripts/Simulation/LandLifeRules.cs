@@ -40,6 +40,39 @@ internal static class LandLifeRules
         + count * (rules != null ? rules.birthRate : BirthRate)
             * fertility / 100f * fitness * YoungNeed(size, rules);
 
+    internal static float EnvironmentalCarryingCapacity(BlockInfo block,
+        PopulationData target, LandRuleTuning rules)
+    {
+        if (block == null || target == null || block.community == null)
+            return 0f;
+        float renewable = target.trophicLevel == 0
+            ? Mathf.Max(0f, block.habitatRecovery)
+            : SustainablePreyFood(block, target, rules);
+        if (renewable <= 0f) return 0f;
+        float competitorDemand = 0f;
+        foreach (PopulationData other in block.community)
+            if (other != null && other != target && other.speciesAmount > 0 &&
+                other.trophicLevel == target.trophicLevel)
+                competitorDemand += Demand(other, other.speciesAmount,
+                    Fitness(block, other.fitTemperature, other.fitHumidity),
+                    rules);
+        float perIndividual = Demand(1, target.size,
+            target.movementAbility, target.fertility,
+            Fitness(block, target.fitTemperature, target.fitHumidity), rules);
+        return Mathf.Max(0f, renewable - competitorDemand) /
+            Mathf.Max(0.0001f, perIndividual);
+    }
+
+    internal static void RefreshEnvironmentalCarryingCapacities(
+        BlockInfo block, LandRuleTuning rules)
+    {
+        if (block == null || block.community == null) return;
+        foreach (PopulationData population in block.community)
+            if (population != null)
+                population.environmentalCarryingCapacity =
+                    EnvironmentalCarryingCapacity(block, population, rules);
+    }
+
     internal static void AddHistory(List<float> history, float value)
     {
         if (history == null) return;

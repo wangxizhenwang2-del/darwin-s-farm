@@ -286,6 +286,9 @@ public partial class SimulationController
             resultPopulation.splitStrategy = 0;
             resultPopulation.splitSizeAnchor = 0;
             resultPopulation.splitFertilityAnchor = 0;
+            LandLifeRules.RefreshEnvironmentalCarryingCapacities(
+                plans[i].source, LandRules);
+            LandLifeRules.RefreshEnvironmentalCarryingCapacities(target, LandRules);
             OnMigrationResolved?.Invoke(new PopulationTransitionResult(
                 PopulationTransitionKind.Migration, day, plans[i].source, target,
                 plans[i].population, resultPopulation, plans[i].amount,

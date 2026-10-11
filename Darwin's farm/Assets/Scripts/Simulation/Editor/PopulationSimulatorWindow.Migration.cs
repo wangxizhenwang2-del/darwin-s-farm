@@ -379,7 +379,9 @@ public partial class PopulationSimulatorWindow
                 GUILayout.Width(105f))) departing = population;
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.LabelField("K " + population.carryingCapacity.ToString("F2")
+            EditorGUILayout.LabelField("环境 K " +
+                population.environmentalCarryingCapacity.ToString("F2")
+                + "    当日可供养 " + population.carryingCapacity.ToString("F2")
                 + "    出生 " + population.birthsToday + "    死亡 " + population.deathsToday);
             EditorGUILayout.LabelField("适温 " + population.fitTemperature
                 + "    适湿 " + population.fitHumidity + "    运动 " + population.movementAbility);

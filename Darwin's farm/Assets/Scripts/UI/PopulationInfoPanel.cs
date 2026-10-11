@@ -99,7 +99,9 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         for (int i = 0; i < 5; i++) labels[i].text = names[i] + " " + values[i];
         SetScrollText(additional, "所属地块：" + visual.TileId + "   生态位：" + data.ecologicalNiche +
             "\n今日出生 / 死亡：" + data.birthsToday + " / " + data.deathsToday +
-            "\n体型：" + data.size + "   承载量 K：" + data.carryingCapacity.ToString("F0") +
+            "\n体型：" + data.size + "   环境容纳量 K：" +
+                data.environmentalCarryingCapacity.ToString("F0") +
+            "\n当日食物可供养：" + data.carryingCapacity.ToString("F0") +
             "\n种群 ID：" + data.PopulationId);
         current.text = name; trophic.text = "营养级：L" + data.trophicLevel;
         var foods = new List<string>(); var hunters = new List<string>();

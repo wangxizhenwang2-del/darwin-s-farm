@@ -173,7 +173,8 @@ public partial class PopulationSimulatorWindow
                     : string.IsNullOrEmpty(population.lineageName)
                         ? "未命名种群" : population.lineageName;
                 EditorGUILayout.LabelField(name + "  数量 " + population.speciesAmount +
-                    "  K " + population.carryingCapacity.ToString("F1") +
+                    "  环境 K " + population.environmentalCarryingCapacity.ToString("F1") +
+                    "  当日可供养 " + population.carryingCapacity.ToString("F1") +
                     "  适应 " + population.environmentalFitness);
                 EditorGUILayout.LabelField("出生 " + population.birthsToday +
                     "  死亡 " + population.deathsToday +

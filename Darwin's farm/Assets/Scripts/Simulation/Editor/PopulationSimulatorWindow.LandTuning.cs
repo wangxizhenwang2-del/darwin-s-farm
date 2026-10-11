@@ -29,7 +29,7 @@ public partial class PopulationSimulatorWindow
             { nameof(LandRuleTuning.reserveHuntFraction), "额外储备捕猎比例" },
             { nameof(LandRuleTuning.reserveDays), "捕食者储备天数" },
             { nameof(LandRuleTuning.splitMinimumFoodSatisfaction), "分支最低吃饱率" },
-            { nameof(LandRuleTuning.splitMinimumRenewalPressure), "分化门槛：可持续 K 比例" },
+            { nameof(LandRuleTuning.splitMinimumRenewalPressure), "分化门槛：当前种群 / 环境 K" },
             { nameof(LandRuleTuning.splitMaximumRenewalLoad), "分支后最高补充负载" },
             { nameof(LandRuleTuning.splitHeadroomUse), "分化时大体型占用剩余 K 比例" },
             { nameof(LandRuleTuning.splitStockDays), "分支最低库存天数" },

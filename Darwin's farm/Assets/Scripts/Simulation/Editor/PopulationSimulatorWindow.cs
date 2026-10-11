@@ -317,8 +317,10 @@ public partial class PopulationSimulatorWindow : EditorWindow
             else
             {
                 EditorGUILayout.LabelField(history[i].name + "    数量 " + population.speciesAmount
-                    + "    K " + population.carryingCapacity.ToString("F2")
-                    + "    K/2 " + (population.carryingCapacity / 2f).ToString("F2"));
+                    + "    环境容纳量 K " +
+                        population.environmentalCarryingCapacity.ToString("F2")
+                    + "    当日食物可供养 " +
+                        population.carryingCapacity.ToString("F2"));
             }
             EditorGUILayout.LabelField("当日出生 " + population.birthsToday + "    当日死亡 " + population.deathsToday);
             EditorGUILayout.LabelField("适温 " + (population.fitTemperature + population.temperatureMutationRemainder).ToString("F2")

@@ -31,6 +31,8 @@ public partial class SimulationController : MonoBehaviour
         landRules = values.Copy().Sanitize();
         reproductionScale = landRules.birthRate;
         maxStarvationDeathRate = landRules.starvationDeathRate;
+        foreach (BlockInfo block in blockInfos)
+            LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
     }
     private LandRuleTuning LandRules =>
         landRules ?? (landRules = new LandRuleTuning());
@@ -91,6 +93,8 @@ public partial class SimulationController : MonoBehaviour
         blockInfos = blocks ?? new List<BlockInfo>();
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
+        foreach (BlockInfo block in blockInfos)
+            LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
     }
 
     // Model identity is repaired at the same boundary that registers blocks.
@@ -238,6 +242,7 @@ public partial class SimulationController : MonoBehaviour
         block.community = merged;
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
+        LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
         NotifyEnvironmentChanged();
         OnBlockCommunityChanged?.Invoke(block);
         return true;
@@ -277,6 +282,7 @@ public partial class SimulationController : MonoBehaviour
         block.temperature = temperature;
         block.humidity = humidity;
         block.habitatRecovery = recovery;
+        LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
         NotifyEnvironmentChanged();
         RetryMutationSoon(block);
         OnBlockEnvironmentChanged?.Invoke(block);
@@ -317,6 +323,8 @@ public partial class SimulationController : MonoBehaviour
             RunMigration(day);
         }
         UpdateSpeciesStatuses();
+        foreach (BlockInfo block in blockInfos)
+            LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
         OnDaySimulated?.Invoke(day);
     }
 
@@ -332,6 +340,7 @@ public partial class SimulationController : MonoBehaviour
 
         LandLifeRules.Simulate(block, LandRules);
         EvolveCommunityNewRules(block);
+        LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
     }
 
     // 种群适应度、出生与死亡。

@@ -55,6 +55,12 @@ public partial class SimulationController
                     if (other != source && other != null &&
                         SameSpecies(source, other)) { alreadyBranched = true; break; }
                 if (alreadyBranched) continue;
+                float environmentalK = LandLifeRules.EnvironmentalCarryingCapacity(
+                    block, source, LandRules);
+                if (environmentalK <= 0f ||
+                    source.speciesAmount <
+                        environmentalK * LandRules.splitMinimumRenewalPressure)
+                    continue;
                 int largeSize = Mathf.Clamp(source.size + 30, 10, 90);
                 int smallSize = Mathf.Min(source.size,
                     Mathf.Clamp(source.size - 30, 10, 90));
@@ -109,7 +115,6 @@ public partial class SimulationController
                                 * LandLifeRules.PreyEnergy(source, prey, LandRules);
                 }
                 if (sustainable <= 0f ||
-                    before < sustainable * LandRules.splitMinimumRenewalPressure ||
                     after > sustainable * LandRules.splitMaximumRenewalLoad ||
                     stock < after * LandRules.splitStockDays)
                     continue;
@@ -131,6 +136,7 @@ public partial class SimulationController
                 source.evolutionConversions.Clear();
                 large.evolutionConversions.Clear();
                 block.community.Add(large);
+                LandLifeRules.RefreshEnvironmentalCarryingCapacities(block, LandRules);
                 block.nextLocalSplitDay = day + LandRules.splitCooldownDays;
                 OnLocalSplitResolved?.Invoke(new PopulationTransitionResult(
                     PopulationTransitionKind.LocalSplit, day, block, block,
@@ -141,7 +147,9 @@ public partial class SimulationController
                     + " size=" + largeSize + " fertility=" + largeFertility
                     + " small=" + smallCount + " size=" + smallSize
                     + " fertility=" + smallFertility + " demandBefore="
-                    + before.ToString("F1") + " demandAfter=" + after.ToString("F1"));
+                    + before.ToString("F1") + " demandAfter=" + after.ToString("F1")
+                    + " countToEnvironmentalK="
+                    + (countBefore / environmentalK).ToString("F3"));
                 break; // one split per tile per day, cooldown applies immediately
             }
         }

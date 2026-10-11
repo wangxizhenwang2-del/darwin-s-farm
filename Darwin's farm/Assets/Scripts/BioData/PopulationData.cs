@@ -73,7 +73,10 @@ public class PopulationData
     public int environmentalFitness;    //0~100，越强越利于繁殖
     public float energyNeed;
     public float allocatedBiomass;
-    public float carryingCapacity; //潜在资源份额可支撑的种群规模
+    public float carryingCapacity; //当日实际食物份额 / 单只成年耗食；保留旧导出 k 的口径
+    // Renewable food available to this population after other consumers,
+    // expressed as a count of its current individuals rather than plant mass.
+    public float environmentalCarryingCapacity;
     public float energySatisfactionToday; //资源分配后、数量变化前的能量满足率
     public float actualEnergySatisfactionToday; //当日实际摄食率，用于运动选择
     public int populationBeforePredation; //捕食前数量，避免捕食后分母缩小造成虚假盈余
