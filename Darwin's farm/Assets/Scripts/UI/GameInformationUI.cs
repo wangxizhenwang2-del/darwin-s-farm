@@ -23,12 +23,17 @@ public sealed class GameInformationUI : MonoBehaviour
     private RectTransform canvasRect;
     private SimulationEnvironmentController environment;
     private Font font;
-    private InformationWindow tileWindow;
-    private InformationWindow populationWindow;
-    private Text tileText;
-    private Text populationText;
-    private Text dayText;
-    private Text speedText;
+    [Header("Scene UI references (editable in the Hierarchy)")]
+    [SerializeField] private InformationWindow tileWindow;
+    [SerializeField] private InformationWindow populationWindow;
+    [SerializeField] private Text tileText;
+    [SerializeField] private PopulationInfoPanel populationPanel;
+    [SerializeField] private Text dayText;
+    [SerializeField] private Text speedText;
+    [SerializeField] private UnityEngine.UI.Button tileCloseButton;
+    [SerializeField] private UnityEngine.UI.Button populationCloseButton;
+    [SerializeField] private TileTrendHistory tileHistory;
+    [SerializeField] private TileTrendPanel tileTrendPanel;
     private MapTileInstance selectedTile;
     private WhiteboxPopulation selectedVisual;
     private string selectedPopulationId;
@@ -51,18 +56,61 @@ public sealed class GameInformationUI : MonoBehaviour
             if (buildMode == null) buildMode = grid.GetComponent<MapBuildModeController>();
             environment = grid.GetComponent<SimulationEnvironmentController>();
         }
-        font = Resources.Load<Font>("Fonts/NotoSansSC-MapLabels");
-        if (font == null) font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        font = GameUITheme.Font;
     }
 
     private void Start()
     {
         Canvas.ForceUpdateCanvases();
-        BuildHud();
-        BuildWindows();
+        EnsureLayout();
+        BindWindows();
+        tileHistory.Initialize(grid, simulation, clock);
         biomeVisibility = gameObject.GetComponent<BiomeOcclusionVisibility>();
         if (biomeVisibility == null) biomeVisibility = gameObject.AddComponent<BiomeOcclusionVisibility>();
         biomeVisibility.Initialize(viewCamera, grid, movement, canvasRect, font);
+    }
+
+    // Used once by the Editor installation tool; existing authored objects are retained.
+    public void EnsureLayout()
+    {
+        canvasRect = (RectTransform)transform;
+        font = GameUITheme.Font;
+        if (dayText == null && speedText == null) BuildHud();
+        if (tileWindow == null && populationWindow == null) BuildWindows();
+        if (tileHistory == null)
+        {
+            tileHistory = GetComponent<TileTrendHistory>();
+            if (tileHistory == null) tileHistory = gameObject.AddComponent<TileTrendHistory>();
+        }
+        if (tileTrendPanel == null)
+        {
+            tileTrendPanel = tileWindow.GetComponent<TileTrendPanel>();
+            if (tileTrendPanel == null) tileTrendPanel = tileWindow.gameObject.AddComponent<TileTrendPanel>();
+            tileTrendPanel.Initialize();
+            // Only the initial installation moves the existing detail text below the chart.
+            Vector2 position = tileText.rectTransform.anchoredPosition;
+            position.y = -454f;
+            tileText.rectTransform.anchoredPosition = position;
+            tileText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 236f);
+        }
+    }
+
+    private void BindWindows()
+    {
+        tileWindow.Initialize(canvasRect, ((RectTransform)tileWindow.transform).anchoredPosition);
+        populationWindow.Initialize(canvasRect, ((RectTransform)populationWindow.transform).anchoredPosition);
+        populationPanel.Initialize(populationWindow);
+        foreach (InformationTextDragHandle handle in GetComponentsInChildren<InformationTextDragHandle>(true))
+            // Initialize() hides windows before binding; include inactive parents.
+            handle.Initialize(handle.GetComponentInParent<InformationWindow>(true));
+        tileCloseButton.onClick.AddListener(CloseTile);
+        populationCloseButton.onClick.AddListener(ClosePopulation);
+    }
+
+    private void CloseTile() { tileWindow.Close(); selectedTile = null; }
+    private void ClosePopulation()
+    {
+        populationWindow.Close(); selectedVisual = null; selectedPopulationId = null;
     }
 
     private void OnEnable()
@@ -254,22 +302,30 @@ public sealed class GameInformationUI : MonoBehaviour
         root.anchorMax = Vector2.one;
         root.offsetMin = Vector2.zero;
         root.offsetMax = Vector2.zero;
-        NewText("FundsPlaceholder", root, "生物能：未接入", 22, new Color(0.15f, 0.18f, 0.19f),
-            new Vector2(24f, -12f), new Vector2(260f, 42f), false);
-        Text news = NewText("NewsPlaceholder", root, "生态新闻：未接入", 22,
-            new Color(0.15f, 0.18f, 0.19f), new Vector2(330f, -12f),
-            new Vector2(490f, 42f), false);
+        RectTransform funds = NewPanel("EconomyHUD", new Vector2(0f, 1f), Vector2.up,
+            new Vector2(300f, 98f), "GameUI/经济ui", new Rect(155f, 482f, 1453f, 473f), root);
+        funds.anchoredPosition = new Vector2(24f, -14f);
+        funds.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
+        Text money = NewText("FundsPlaceholder", funds, "生物能\n未接入", 22, Ink(),
+            new Vector2(116f, -22f), new Vector2(168f, 62f), false);
+        money.alignment = TextAnchor.MiddleCenter;
+        Text news = NewText("NewsPlaceholder", root, "生态新闻：未接入", 22, Ink(),
+            new Vector2(350f, -25f), new Vector2(450f, 42f), false);
         news.alignment = TextAnchor.MiddleCenter;
-        dayText = NewText("Day", root, "Day 0", 23, new Color(0.15f, 0.18f, 0.19f),
-            new Vector2(860f, -12f), new Vector2(160f, 42f), false);
-        dayText.rectTransform.anchorMin = dayText.rectTransform.anchorMax = Vector2.one;
-        dayText.rectTransform.pivot = Vector2.one;
-        dayText.rectTransform.anchoredPosition = new Vector2(-155f, -12f);
-        speedText = NewText("Speed", root, "1X", 23, new Color(0.15f, 0.18f, 0.19f),
-            new Vector2(0f, 0f), new Vector2(95f, 42f), false);
-        speedText.rectTransform.anchorMin = speedText.rectTransform.anchorMax = Vector2.one;
-        speedText.rectTransform.pivot = Vector2.one;
-        speedText.rectTransform.anchoredPosition = new Vector2(-24f, -12f);
+        RectTransform time = NewPanel("TimeHUD", Vector2.one, Vector2.one,
+            new Vector2(230f, 92f), "GameUI/时间ui", new Rect(320f, 1315f, 1317f, 528f), root);
+        time.anchoredPosition = new Vector2(-138f, -14f);
+        time.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
+        dayText = NewText("Day", time, "Day 0", 26, Ink(),
+            new Vector2(40f, -16f), new Vector2(150f, 52f), false);
+        dayText.alignment = TextAnchor.MiddleCenter;
+        RectTransform speed = NewPanel("SpeedHUD", Vector2.one, Vector2.one,
+            new Vector2(100f, 56f), "GameUI/倍速ui", new Rect(502f, 764f, 1048f, 586f), root);
+        speed.anchoredPosition = new Vector2(-24f, -30f);
+        speed.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
+        speedText = NewText("Speed", speed, "1X", 24, Ink(),
+            new Vector2(13f, -9f), new Vector2(74f, 38f), false);
+        speedText.alignment = TextAnchor.MiddleCenter;
     }
 
     private void BuildWindows()
@@ -277,34 +333,31 @@ public sealed class GameInformationUI : MonoBehaviour
         float width = Mathf.Max(320f, canvasRect.rect.width);
         RectTransform tile = NewPanel("TileInformation", new Vector2(0f, 1f),
             new Vector2(0f, 1f), new Vector2(Mathf.Min(790f, width * 0.57f), 366f),
-            "GameUI/TilePanel", new Rect(180f, 455f, 1690f, 710f));
+            "GameUI/环境信息ui", new Rect(180f, 455f, 1690f, 710f));
         tileWindow = tile.gameObject.AddComponent<InformationWindow>();
         tileText = NewText("TileDetails", tile, "", 23, Ink(),
             new Vector2(96f, -67f), new Vector2(tile.rect.width - 180f, tile.rect.height - 112f), true);
         tileText.GetComponent<InformationTextDragHandle>().Initialize(tileWindow);
         tileText.lineSpacing = 1.25f;
-        NewCloseButton(tile, () => { tileWindow.Close(); selectedTile = null; });
+        tileCloseButton = NewCloseButton(tile);
+        tile.anchoredPosition = new Vector2(28f, -139f);
         tileWindow.Initialize(canvasRect, new Vector2(28f, -139f));
 
         RectTransform population = NewPanel("PopulationInformation", new Vector2(1f, 1f),
-            new Vector2(1f, 1f), new Vector2(Mathf.Min(440f, width * 0.37f), 690f),
-            "GameUI/PopulationPanel", new Rect(500f, 215f, 1050f, 1720f));
+            new Vector2(1f, 1f), new Vector2(Mathf.Min(520f, width * 0.42f), 840f),
+            "GameUI/生物信息ui", new Rect(500f, 215f, 1050f, 1720f));
         populationWindow = population.gameObject.AddComponent<InformationWindow>();
-        populationText = NewText("PopulationDetails", population, "", 22, Ink(),
-            new Vector2(45f, -133f), new Vector2(population.rect.width - 90f, population.rect.height - 180f), true);
-        populationText.GetComponent<InformationTextDragHandle>().Initialize(populationWindow);
-        populationText.lineSpacing = 1.22f;
-        NewCloseButton(population, () =>
-        {
-            populationWindow.Close(); selectedVisual = null; selectedPopulationId = null;
-        }, 72f);
+        populationPanel = population.gameObject.AddComponent<PopulationInfoPanel>();
+        populationPanel.Initialize(populationWindow);
+        populationCloseButton = NewCloseButton(population, 72f);
+        population.anchoredPosition = new Vector2(-26f, -130f);
         populationWindow.Initialize(canvasRect, new Vector2(-26f, -130f));
     }
 
     private RectTransform NewPanel(string name, Vector2 anchor, Vector2 pivot,
-        Vector2 size, string resource, Rect crop)
+        Vector2 size, string resource, Rect crop, RectTransform parent = null)
     {
-        RectTransform rect = NewRect(name, canvasRect, anchor, pivot, size, Vector2.zero);
+        RectTransform rect = NewRect(name, parent != null ? parent : canvasRect, anchor, pivot, size, Vector2.zero);
         UnityEngine.UI.Image image = rect.gameObject.AddComponent<UnityEngine.UI.Image>();
         Texture2D texture = Resources.Load<Texture2D>(resource);
         if (texture != null)
@@ -320,7 +373,7 @@ public sealed class GameInformationUI : MonoBehaviour
         return rect;
     }
 
-    private void NewCloseButton(RectTransform parent, UnityEngine.Events.UnityAction onClick,
+    private UnityEngine.UI.Button NewCloseButton(RectTransform parent,
         float topInset = 22f)
     {
         RectTransform buttonRect = NewRect("Close", parent, new Vector2(1f, 1f),
@@ -328,10 +381,10 @@ public sealed class GameInformationUI : MonoBehaviour
         UnityEngine.UI.Image image = buttonRect.gameObject.AddComponent<UnityEngine.UI.Image>();
         image.color = new Color(0.16f, 0.21f, 0.22f, 0.9f);
         UnityEngine.UI.Button button = buttonRect.gameObject.AddComponent<UnityEngine.UI.Button>();
-        button.onClick.AddListener(onClick);
         Text label = NewText("X", buttonRect, "×", 30, Color.white,
             new Vector2(0f, 0f), new Vector2(42f, 42f), false);
         label.alignment = TextAnchor.MiddleCenter;
+        return button;
     }
 
     private Text NewText(string name, RectTransform parent, string value, int size,
@@ -385,6 +438,7 @@ public sealed class GameInformationUI : MonoBehaviour
     private void RefreshTile()
     {
         if (tileText == null) return;
+        if (tileTrendPanel != null) tileTrendPanel.Show(selectedTile, tileHistory);
         if (selectedTile == null)
         {
             tileText.text = "该地块已不在场景中";
@@ -423,35 +477,13 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void RefreshPopulation()
     {
-        if (populationText == null) return;
-        if (selectedVisual == null)
-        {
-            populationText.text = "该种群已不在场景中";
-            return;
-        }
+        if (populationPanel == null) return;
+        if (selectedVisual == null) { populationPanel.ShowUnavailable("该种群已不在场景中"); return; }
         PopulationData data = selectedVisual.EcologicalPopulation;
-        string currentId = data != null ? data.PopulationId : selectedVisual.UniqueId;
-        if (currentId != selectedPopulationId)
-        {
-            populationText.text = "该种群已迁出或消失";
-            return;
-        }
-        if (data == null)
-        {
-            populationText.text = $"测试种群\n\n种群 ID：{selectedVisual.UniqueId}\n" +
-                $"所属地块：{selectedVisual.TileId}\n数量：{selectedVisual.Count}\n" +
-                "生态数据：未接入";
-            return;
-        }
-        string name = data.species != null ? data.species.SpeciesName :
-            string.IsNullOrEmpty(data.lineageName) ? "未命名种群" : data.lineageName;
-        populationText.text = $"{name}\n\n种群 ID：{data.PopulationId}\n" +
-            $"所属地块：{selectedVisual.TileId}\n数量：{data.speciesAmount}\n" +
-            $"今日出生 / 死亡：{data.birthsToday} / {data.deathsToday}\n" +
-            $"生态位：{data.ecologicalNiche}    营养级：L{data.trophicLevel}\n" +
-            $"适温 / 适湿：{data.fitTemperature} / {data.fitHumidity}\n" +
-            $"体型 / 运动：{data.size} / {data.movementAbility}\n" +
-            $"繁殖：{data.fertility}    适应度：{data.environmentalFitness}\n" +
-            $"承载量 K：{data.carryingCapacity:F0}\n\n物种描述：未接入";
+        string id = data != null ? data.PopulationId : selectedVisual.UniqueId;
+        if (id != selectedPopulationId) { populationPanel.ShowUnavailable("该种群已迁出或消失"); return; }
+        BlockInfo block = null;
+        if (grid != null && grid.TryGetTile(selectedVisual.TileId, out MapTileInstance tile)) block = tile.Block;
+        populationPanel.Refresh(selectedVisual, data, block);
     }
 }

@@ -112,7 +112,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         GameObject text = new GameObject("PopulationCount");
         text.transform.SetParent(transform, false);
         label = text.AddComponent<TextMesh>();
-        label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        label.font = GameUITheme.Font;
         label.GetComponent<MeshRenderer>().sharedMaterial = label.font.material;
         label.anchor = TextAnchor.MiddleCenter; label.alignment = TextAlignment.Center;
         label.fontSize = 64; label.characterSize = 0.075f; label.color = Color.white;

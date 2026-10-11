@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
   speciesName: "\u72F8\u732B"
   sprite: {fileID: 21300000, guid: 2117c47ab991902489b94b61ab672c8a, type: 3}
+  speciesId: d2d57b28a18e414e981f0433e3d34e57
+  portrait: {fileID: 21300000, guid: 2117c47ab991902489b94b61ab672c8a, type: 3}
+  description:
   evolutionTargets:
   - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
   - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}

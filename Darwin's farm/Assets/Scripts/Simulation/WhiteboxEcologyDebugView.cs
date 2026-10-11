@@ -54,6 +54,17 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
 
     private void OnGUI()
     {
+        Font previous = GUI.skin.font;
+        try
+        {
+            GUI.skin.font = GameUITheme.Font;
+            DrawGUI();
+        }
+        finally { GUI.skin.font = previous; }
+    }
+
+    private void DrawGUI()
+    {
         if (controller == null || viewCamera == null) return;
         if (technology == null) technology = GetComponent<EnvironmentTechnologyController>();
         interactiveRects.Clear();
@@ -61,7 +72,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         {
             textStyle = new GUIStyle(GUI.skin.label)
             {
-                fontSize = fontSize, alignment = TextAnchor.UpperLeft,
+                font = GameUITheme.Font, fontSize = fontSize, alignment = TextAnchor.UpperLeft,
                 normal = { textColor = Color.white }
             };
             backgroundStyle = new GUIStyle(GUI.skin.box);

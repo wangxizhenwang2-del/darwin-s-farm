@@ -137,7 +137,8 @@ public partial class MapTileColorTransitionSystem
         }
     }
 
-    private static void ProjectDecorations(GameObject root, MeshCollider surface, BiomeType biome)
+    private static void ProjectDecorations(GameObject root, MeshCollider surface, BiomeType biome,
+        bool createObstacles = true)
     {
         Transform oldObstacles = root.transform.Find("BiomeObstacles");
         if (oldObstacles != null)
@@ -147,6 +148,7 @@ public partial class MapTileColorTransitionSystem
             else DestroyImmediate(oldObstacles.gameObject);
         }
         Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+        if (biome == BiomeType.Forest) ThinForestTrees(root, renderers);
         var grounds = new List<MeshCollider>();
         foreach (Renderer renderer in renderers)
         {
@@ -158,10 +160,14 @@ public partial class MapTileColorTransitionSystem
             grounds.Add(probe);
         }
 
-        var obstacleRoot = new GameObject("BiomeObstacles");
-        obstacleRoot.transform.SetParent(root.transform.parent, false);
-        obstacleRoot.transform.localPosition = Vector3.zero;
-        obstacleRoot.transform.localRotation = Quaternion.identity;
+        GameObject obstacleRoot = null;
+        if (createObstacles)
+        {
+            obstacleRoot = new GameObject("BiomeObstacles");
+            obstacleRoot.transform.SetParent(root.transform.parent, false);
+            obstacleRoot.transform.localPosition = Vector3.zero;
+            obstacleRoot.transform.localRotation = Quaternion.identity;
+        }
         var used = new List<Vector2>();
         int obstacleCount = 0;
         foreach (Renderer renderer in renderers)
@@ -193,7 +199,7 @@ public partial class MapTileColorTransitionSystem
                 sourceY > float.NegativeInfinity)
                 renderer.transform.position += Vector3.up * (target.point.y - sourceY);
 
-            if (!IsMajorObstacle(biome, renderer) ||
+            if (!createObstacles || !IsMajorObstacle(biome, renderer) ||
                 !surface.Raycast(ray, out target, 160f)) continue;
             Vector2 flat = new Vector2(local.x, local.z);
             bool duplicate = false;
@@ -222,9 +228,60 @@ public partial class MapTileColorTransitionSystem
             volume.size = new Vector3(diameter + 0.15f, height + 0.3f, diameter + 0.15f);
         }
         foreach (MeshCollider probe in grounds)
+        {
+            probe.enabled = false;
             if (Application.isPlaying) Destroy(probe);
             else DestroyImmediate(probe);
+        }
         // Keep obstacle proxies as a sibling of the visual prefab so their scale stays 1.
-        obstacleRoot.transform.SetParent(root.transform, true);
+        if (obstacleRoot != null) obstacleRoot.transform.SetParent(root.transform, true);
+    }
+
+    // Prefer the source model's mature trees; keep the same layout in build previews.
+    private static void ThinForestTrees(GameObject root, Renderer[] renderers)
+    {
+        Transform tileSpace = root.transform.parent;
+        var trees = new List<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            Vector3 position = tileSpace.InverseTransformPoint(renderer.bounds.center);
+            if (Mathf.Abs(position.x) > 7.25f || Mathf.Abs(position.z) > 7.25f) continue;
+            if (renderer.enabled && renderer.name.StartsWith("Tree")) trees.Add(renderer);
+            bool inLane = Mathf.Abs(position.x) < 1.8f || Mathf.Abs(position.z) < 1.8f;
+            // Bushes are visual ground cover, not navigation obstacles. Clear only the lanes.
+            if (inLane && (renderer.name.StartsWith("Bush") ||
+                (renderer.name.StartsWith("Stone") && renderer.bounds.size.x > 0.8f)))
+                renderer.enabled = false;
+        }
+        trees.Sort((a, b) =>
+        {
+            int order = b.bounds.size.y.CompareTo(a.bounds.size.y);
+            return order != 0 ? order : string.CompareOrdinal(a.name, b.name);
+        });
+        var kept = new List<Vector2>();
+        foreach (Renderer tree in trees)
+        {
+            Vector3 local = tileSpace.InverseTransformPoint(tree.bounds.center);
+            Vector2 point = new Vector2(local.x, local.z);
+            bool mature = tree.bounds.size.y >= 3f;
+            if (mature)
+            {
+                // Move mature trees slightly to the side rather than deleting them for a lane.
+                Vector2 shifted = new Vector2(
+                    Mathf.Abs(point.x) < 1.8f ? (point.x < 0f ? -2.1f : 2.1f) : point.x,
+                    Mathf.Abs(point.y) < 1.8f ? (point.y < 0f ? -2.1f : 2.1f) : point.y);
+                Vector3 offset = new Vector3(shifted.x - point.x, 0f, shifted.y - point.y);
+                tree.transform.position += tileSpace.TransformVector(offset);
+                point = shifted;
+            }
+            bool remove = !mature && (Mathf.Abs(point.x) < 1.8f || Mathf.Abs(point.y) < 1.8f);
+            // Thin saplings more strongly; mature trees always take priority.
+            float spacing = tree.bounds.size.y < 1.8f ? 1.9f : 1.25f;
+            if (!mature)
+                foreach (Vector2 other in kept)
+                    if ((point - other).sqrMagnitude < spacing * spacing) { remove = true; break; }
+            if (remove) tree.enabled = false;
+            else kept.Add(point);
+        }
     }
 }

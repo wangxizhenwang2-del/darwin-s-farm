@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public sealed class InformationTextDragHandle : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
-    private InformationWindow window;
+    [SerializeField] private InformationWindow window;
     private Vector2 offset;
 
     public void Initialize(InformationWindow owner) => window = owner;
