@@ -6428,16 +6428,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SimulationController
   simulationTime: {fileID: 1541449671}
   blockInfos: []
-  reproductionScale: 0.05
-  maxOverCapacityDeathRate: 0.1
+  reproductionScale: 0.1
+  maxOverCapacityDeathRate: 0
   maxStarvationDeathRate: 0.6
   levelOnePreyFraction: 0.08
   levelTwoPreyFraction: 0.1
   presetEvolutionEnabled: 1
   evolutionNetworkSpecies: []
   mutationEnabled: 1
-  mutationInterval: 7
-  mutationStep: 2
+  mutationInterval: 1
+  mutationStep: 1
   selectionStrength: 1
   migrationEnabled: 1
   migrationInterval: 7
