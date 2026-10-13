@@ -42,7 +42,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PaintColorMap:
-        m_Texture: {fileID: 2800000, guid: c1c5a32ba7b59354f8b0b38adbfd42fa, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6a53db566d991b84ea0ab737916e5164, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -84,7 +84,7 @@ Material:
     - _SurfaceTintStrength: 0.12
     - _UseHatchTexture: 0
     - _UseHatching: 1
-    - _UsePaintColor: 0
+    - _UsePaintColor: 1
     - _UseRamp: 0
     - _UseStipple: 1
     - _UseTriplanar: 0
