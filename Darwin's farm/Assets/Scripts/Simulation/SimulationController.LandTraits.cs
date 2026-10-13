@@ -154,7 +154,10 @@ public partial class SimulationController
             int selectedCandidate = -1;
             int ceiling;
             float attraction = BestNeighborAttraction(block, p, out ceiling);
-            for (int trait = 0; trait < 5; trait++)
+            // A directed split has already committed movement, body size and
+            // fertility to its graph neighbor. Only climate traits keep adapting.
+            int mutableTraitCount = p.directedSplitTarget != null ? 2 : 5;
+            for (int trait = 0; trait < mutableTraitCount; trait++)
             {
                 for (int d = -1; d <= 1; d += 2)
                 {

@@ -324,7 +324,7 @@ public sealed class PlayerEconomyController : MonoBehaviour
                     resident.ecologicalNiche == EcologicalNiche.Air &&
                     !PopulationTransfer.IsSameSpecies(resident, population))
                 { error = "目标天空槽位已被其他物种占用"; return false; }
-        if (target.community.Count >= 5 && !target.community.Exists(resident =>
+        if (SimulationController.LivingPopulationCount(target) >= 5 && !target.community.Exists(resident =>
             resident != null &&
             resident.ecologicalNiche == population.ecologicalNiche &&
             PopulationTransfer.IsSameSpecies(resident, population)))
@@ -479,6 +479,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
             target.community.RemoveAt(i);
         }
         survivor.localSplitBranch = false;
+        survivor.directedSplitTarget = null;
+        survivor.sameSpeciesCoexistenceDays = 0;
         survivor.splitStrategy = 0;
         survivor.mutationSelectionProgress = 0f;
         survivor.mutationSelectionCandidate = -1;

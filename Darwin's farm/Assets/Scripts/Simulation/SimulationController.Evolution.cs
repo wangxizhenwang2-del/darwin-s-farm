@@ -112,11 +112,14 @@ public partial class SimulationController
                 {
                     EvolutionConversionRecord record = GetEvolutionRecord(ancestor,
                         target, true);
+                    if (ancestor.directedSplitTarget != null &&
+                        target != ancestor.directedSplitTarget)
+                    { record.effectiveDays = 0; continue; }
                     if (!IsEligibleEvolutionTarget(block, ancestor, target, day))
                     { record.effectiveDays = 0; continue; }
                     if (record.effectiveDays < int.MaxValue) record.effectiveDays++;
                     bool wholeBranch = IsLocalSplitPair(block, ancestor);
-                    int required = block.community.Count == 4 && !wholeBranch
+                    int required = LivingPopulationCount(block) == 4 && !wholeBranch
                         ? LandRules.evolutionRequiredDaysAtFour
                         : LandRules.evolutionRequiredDays;
                     if (record.effectiveDays >= required &&
@@ -241,11 +244,17 @@ public partial class SimulationController
             !EachTraitWithinTolerance(source, target) ||
             HasLivingSpecies(block, target)) return false;
         bool wholeBranch = IsLocalSplitPair(block, source);
-        if (!wholeBranch && (block.community.Count >= 5 ||
+        if (!wholeBranch && (LivingPopulationCount(block) >= 5 ||
             source.speciesAmount <= 10)) return false;
         int amount = wholeBranch ? source.speciesAmount :
             Mathf.Clamp(Mathf.RoundToInt(source.speciesAmount * 0.1f), 10, 100);
         if (!wholeBranch && amount >= source.speciesAmount) return false;
+        return HasEvolutionFoodSupport(block, source, target, amount, wholeBranch);
+    }
+
+    private bool HasEvolutionFoodSupport(BlockInfo block, PopulationData source,
+        SpeciesData target, int amount, bool wholeBranch)
+    {
         PopulationData candidate = TargetPopulation(target, amount);
         float fitness = LandLifeRules.Fitness(block,
             candidate.fitTemperature, candidate.fitHumidity);
@@ -343,8 +352,18 @@ public partial class SimulationController
     private static bool HasLivingSpecies(BlockInfo block, SpeciesData species)
     {
         foreach (PopulationData population in block.community)
-            if (population != null && population.species == species) return true;
+            if (population != null && population.speciesAmount > 0 &&
+                population.species == species) return true;
         return false;
+    }
+
+    internal static int LivingPopulationCount(BlockInfo block)
+    {
+        if (block == null || block.community == null) return 0;
+        int count = 0;
+        foreach (PopulationData population in block.community)
+            if (population != null && population.speciesAmount > 0) count++;
+        return count;
     }
 
     private void ConvertToPresetSpecies(BlockInfo block, PopulationData ancestor,
@@ -378,6 +397,8 @@ public partial class SimulationController
         descendant.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
 
         descendant.localSplitBranch = false;
+        descendant.directedSplitTarget = null;
+        descendant.sameSpeciesCoexistenceDays = 0;
         descendant.splitStrategy = descendant.trophicLevel == 0 &&
             target.baseSize >= 25 ? 1 : 0;
         descendant.mutationSelectionProgress = 0f;

@@ -205,11 +205,12 @@ public sealed class GameInformationUI : MonoBehaviour
         WhiteboxPopulation visual = PickPopulation(position);
         if (visual != null)
         {
-            if (populationWindow.IsOpen) return;
             selectedVisual = visual;
             selectedPopulationId = visual.EcologicalPopulation != null
                 ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
             RefreshPopulation();
+            // Open() is idempotent. When the panel is already open this still
+            // switches it to a newly split or migrated population.
             populationWindow.Open();
             return;
         }
@@ -227,7 +228,7 @@ public sealed class GameInformationUI : MonoBehaviour
             tile = candidate;
             nearest = groundHits[i].distance;
         }
-        if (tile == null || tileWindow.IsOpen) return;
+        if (tile == null) return;
         selectedTile = tile;
         RefreshTile();
         tileWindow.Open();

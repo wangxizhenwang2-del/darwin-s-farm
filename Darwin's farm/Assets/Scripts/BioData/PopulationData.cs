@@ -99,6 +99,12 @@ public class PopulationData
     public bool localSplitBranch;
     // -1: small/high-fertility branch; +1: large/low-fertility branch.
     public int splitStrategy;
+    // A directed local split keeps these three target traits stable while
+    // temperature and humidity continue adapting toward the named neighbor.
+    public SpeciesData directedSplitTarget;
+    // Synchronized across same-species residents on one tile. It resets when
+    // only one population remains or after they are merged.
+    public int sameSpeciesCoexistenceDays;
     public string lastMutationEffect;
     public float mutationSelectionProgress;
     public int mutationSelectionCandidate = -1;

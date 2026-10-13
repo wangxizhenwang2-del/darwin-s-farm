@@ -205,7 +205,7 @@ public partial class SimulationController
                 population, amount);
             float chance = Mathf.Clamp01(attraction)
                 * population.movementAbility / 100f;
-            if (neighbor.community.Count == 4)
+            if (LivingPopulationCount(neighbor) == 4)
                 chance *= LandRules.fourEntryMigrationFactor;
             if (chance <= 0f) continue;
             candidates.Add(new MoveCandidate
@@ -259,7 +259,7 @@ public partial class SimulationController
             PopulationData resident = target.community.Find(population =>
                 population != null && population.ecologicalNiche == arrival.ecologicalNiche &&
                 SameSpecies(population, arrival));
-            if (resident == null && target.community.Count >= 5)
+            if (resident == null && LivingPopulationCount(target) >= 5)
             {
                 PopulationData origin = plans[i].population;
                 if (!plans[i].source.community.Contains(origin))
@@ -291,6 +291,8 @@ public partial class SimulationController
             }
             PopulationData resultPopulation = resident ?? arrival;
             resultPopulation.localSplitBranch = false;
+            resultPopulation.directedSplitTarget = null;
+            resultPopulation.sameSpeciesCoexistenceDays = 0;
             resultPopulation.mutationSelectionProgress = 0f;
             resultPopulation.mutationSelectionCandidate = -1;
             LandLifeRules.RefreshEnvironmentMetrics(
@@ -708,6 +710,8 @@ internal static class PopulationTransfer
             endangeredDays = source.endangeredDays,
             localSplitBranch = source.localSplitBranch,
             splitStrategy = source.splitStrategy,
+            directedSplitTarget = source.directedSplitTarget,
+            sameSpeciesCoexistenceDays = 0,
             lastMutationEffect = source.lastMutationEffect,
             mutationSelectionProgress = source.mutationSelectionProgress,
             mutationSelectionCandidate = source.mutationSelectionCandidate,
@@ -796,6 +800,8 @@ internal static class PopulationTransfer
         resident.endangeredDays = total < 10
             ? Mathf.Min(resident.endangeredDays, arrival.endangeredDays) : 0;
         resident.localSplitBranch = false;
+        resident.directedSplitTarget = null;
+        resident.sameSpeciesCoexistenceDays = 0;
         resident.splitStrategy = resident.splitStrategy == arrival.splitStrategy
             ? resident.splitStrategy : 0;
         resident.mutationSelectionProgress = 0f;

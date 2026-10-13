@@ -256,6 +256,12 @@ public partial class PopulationSimulatorWindow
                 liveTuning.overloadMigrationFraction, 0f, 1f);
             liveTuning.migrationCooldownDays = Mathf.Max(0,
                 EditorGUILayout.IntField("迁徙冷却（天）", liveTuning.migrationCooldownDays));
+            liveTuning.sameSpeciesMergeDays = Mathf.Max(1,
+                EditorGUILayout.IntField("同种群自动合并等待（天）",
+                    liveTuning.sameSpeciesMergeDays));
+            liveTuning.postMergeSplitCooldownDays = Mathf.Max(0,
+                EditorGUILayout.IntField("合并后禁止分化（天）",
+                    liveTuning.postMergeSplitCooldownDays));
             liveSecondsPerDay = Mathf.Max(0.05f,
                 EditorGUILayout.FloatField("每模拟日秒数", liveSecondsPerDay));
             EditorGUILayout.LabelField("这些参数作用于整张地图。", EditorStyles.miniLabel);

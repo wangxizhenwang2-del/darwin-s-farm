@@ -84,11 +84,14 @@ public partial class PopulationSimulatorWindow : EditorWindow
         lastUpdate = EditorApplication.timeSinceStartup;
         EditorApplication.update -= UpdateSimulation;
         EditorApplication.update += UpdateSimulation;
+        EditorApplication.playModeStateChanged -= OnLiveExportPlayModeChanged;
+        EditorApplication.playModeStateChanged += OnLiveExportPlayModeChanged;
     }
 
     private void OnDisable()
     {
         EditorApplication.update -= UpdateSimulation;
+        EditorApplication.playModeStateChanged -= OnLiveExportPlayModeChanged;
         StopLiveExport();
         StopLiveRecording();
         if (liveInterventions != null) liveInterventions.ClearPreview();

@@ -15,6 +15,7 @@ public struct SimulationTuning
     public float levelOnePreyFraction, levelTwoPreyFraction;
     public bool mutationEnabled, migrationEnabled, ecologicalNichesEnabled;
     public int mutationInterval, migrationInterval, migrationCooldownDays;
+    public int sameSpeciesMergeDays, postMergeSplitCooldownDays;
     public float mutationStep, selectionStrength, migrationPopulationScale;
     public float overloadThreshold, baseOverloadProbability, overloadMigrationFraction;
 }
@@ -145,6 +146,8 @@ public partial class SimulationController : MonoBehaviour
         baseOverloadProbability = baseOverloadProbability,
         overloadMigrationFraction = overloadMigrationFraction,
         migrationCooldownDays = migrationCooldownDays,
+        sameSpeciesMergeDays = LandRules.sameSpeciesMergeDays,
+        postMergeSplitCooldownDays = LandRules.postMergeSplitCooldownDays,
         ecologicalNichesEnabled = ecologicalNichesEnabled
     };
 
@@ -161,6 +164,10 @@ public partial class SimulationController : MonoBehaviour
             tuning.baseOverloadProbability, tuning.overloadMigrationFraction,
             tuning.migrationCooldownDays);
         SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
+        LandRuleTuning nextLandRules = LandRules.Copy();
+        nextLandRules.sameSpeciesMergeDays = tuning.sameSpeciesMergeDays;
+        nextLandRules.postMergeSplitCooldownDays = tuning.postMergeSplitCooldownDays;
+        ApplyLandRules(nextLandRules);
     }
 
     public bool ApplyPlantCapacity(BlockInfo block, float maximum)
@@ -331,6 +338,7 @@ public partial class SimulationController : MonoBehaviour
         RemoveEndangered(day);
         RunLocalSplits(day);
         RunPresetEvolution(day);
+        RunSameSpeciesMerges(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);

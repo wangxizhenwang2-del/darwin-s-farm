@@ -98,7 +98,7 @@ public partial class PopulationSimulatorWindow
     {
         EditorGUILayout.LabelField("导出测试数据", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox(
-            "记录全地图每日状态、成功操作、地图变化、迁徙/分化/进化和错误。只生成一个 JSONL 文件；不采集逐帧鼠标与键盘输入。请在测试前开始记录。",
+            "开始测试后记录全地图每日状态、成功操作、地图变化、迁徙/分化/进化和错误。退出 Play 模式前会自动写入最终快照并关闭 JSONL 文件。",
             MessageType.Info);
         liveExportCase = EditorGUILayout.TextField("测试编号", liveExportCase);
         liveExportTester = EditorGUILayout.TextField("测试者", liveExportTester);
@@ -110,7 +110,7 @@ public partial class PopulationSimulatorWindow
         if (liveExportWriter == null)
         {
             using (new EditorGUI.DisabledScope(!EditorApplication.isPlaying))
-                if (GUILayout.Button("开始记录（选择单个文件）")) StartLiveExport();
+                if (GUILayout.Button("开始测试（选择导出文件）")) StartLiveExport();
         }
         else
         {
@@ -206,6 +206,27 @@ public partial class PopulationSimulatorWindow
         catch (Exception exception) { liveExportStatus = "关闭文件失败：" + exception.Message; }
         finally { liveExportWriter = null; }
         if (!liveExportStatus.StartsWith("关闭文件失败")) liveExportStatus = "已导出";
+    }
+
+    private void OnLiveExportPlayModeChanged(PlayModeStateChange state)
+    {
+        if (state != PlayModeStateChange.ExitingPlayMode || liveExportWriter == null) return;
+
+        // ExitingPlayMode is the last editor callback where the live scene and
+        // its runtime ecology still exist. Capture once before domain teardown,
+        // then close the stream so stopping Play mode always produces a valid file.
+        if (liveMapRefreshQueued)
+        {
+            EditorApplication.delayCall -= FinishExportMapChange;
+            FinishExportMapChange();
+        }
+        WriteExportSnapshot("play_mode_exit");
+        liveExportWriter?.Flush();
+        StopLiveExport();
+        if (!liveExportStatus.StartsWith("关闭文件失败") &&
+            !liveExportStatus.StartsWith("写入中断"))
+            liveExportStatus = "已在游戏结束前自动导出";
+        Repaint();
     }
 
     private void WriteExport(object record)

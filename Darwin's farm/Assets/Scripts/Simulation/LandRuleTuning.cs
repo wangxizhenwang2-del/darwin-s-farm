@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public sealed class LandRuleTuning
 {
-    [SerializeField] private int ruleVersion = 2;
+    [SerializeField] private int ruleVersion = 3;
     [Min(0f)] public float birthRate = 0.1f;
     [Range(0f, 1f)] public float starvationDeathRate = 0.6f;
     [Min(0f)] public float coldDeathRate = 0.005f;
@@ -38,12 +38,14 @@ public sealed class LandRuleTuning
     [Range(0f, 1f)] public float reserveHuntFraction = 0.1f;
     [Min(0f)] public float reserveDays = 10f;
     [Range(0f, 1f)] public float splitMinimumFoodSatisfaction = 0.95f;
-    [Range(0f, 1f)] public float splitMinimumRenewalPressure = 0.9f;
+    [Range(0f, 1f)] public float splitMinimumRenewalPressure = 0.95f;
     [Min(0f)] public float splitMaximumRenewalLoad = 1.2f;
     [Range(0f, 1f)] public float splitHeadroomUse = 0.5f;
     [Range(0f, 1f)] public float splitFounderFraction = 0.05f;
     [Min(0f)] public float splitStockDays = 3f;
     [Min(1)] public int splitCooldownDays = 300;
+    [Min(1)] public int sameSpeciesMergeDays = 100;
+    [Min(0)] public int postMergeSplitCooldownDays = 200;
     [Range(0f, 1f)] public float evolutionTodaySatisfaction = 0.9f;
     [Range(0f, 1f)] public float evolutionRenewalSatisfaction = 0.8f;
     [Range(0f, 1f)] public float evolutionPreyRenewalCoverage = 0.8f;
@@ -89,6 +91,13 @@ public sealed class LandRuleTuning
             mutationGainDailyScale = 0.0002f;
             ruleVersion = 2;
         }
+        if (ruleVersion < 3)
+        {
+            splitMinimumRenewalPressure = 0.95f;
+            sameSpeciesMergeDays = 100;
+            postMergeSplitCooldownDays = 200;
+            ruleVersion = 3;
+        }
         birthRate = NonNegative(birthRate, 0.1f);
         starvationDeathRate = Unit(starvationDeathRate, 0.6f);
         coldDeathRate = NonNegative(coldDeathRate, 0.005f);
@@ -122,12 +131,14 @@ public sealed class LandRuleTuning
         reserveHuntFraction = Unit(reserveHuntFraction, 0.1f);
         reserveDays = NonNegative(reserveDays, 10f);
         splitMinimumFoodSatisfaction = Unit(splitMinimumFoodSatisfaction, 0.95f);
-        splitMinimumRenewalPressure = Unit(splitMinimumRenewalPressure, 0.9f);
+        splitMinimumRenewalPressure = Unit(splitMinimumRenewalPressure, 0.95f);
         splitMaximumRenewalLoad = NonNegative(splitMaximumRenewalLoad, 1.2f);
         splitHeadroomUse = Unit(splitHeadroomUse, 0.5f);
         splitFounderFraction = Unit(splitFounderFraction, 0.05f);
         splitStockDays = NonNegative(splitStockDays, 3f);
         splitCooldownDays = Mathf.Max(1, splitCooldownDays);
+        sameSpeciesMergeDays = Mathf.Max(1, sameSpeciesMergeDays);
+        postMergeSplitCooldownDays = Mathf.Max(0, postMergeSplitCooldownDays);
         evolutionTodaySatisfaction = Unit(evolutionTodaySatisfaction, 0.9f);
         evolutionRenewalSatisfaction = Unit(evolutionRenewalSatisfaction, 0.8f);
         evolutionPreyRenewalCoverage = Unit(evolutionPreyRenewalCoverage, 0.8f);
