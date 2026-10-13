@@ -7,6 +7,7 @@ The existing commands in Tools/ use PrepareMoebiusValidation.ps1 to inject the s
 ```powershell
 .\Tools\ValidateMoebiusPaint.ps1 -Label Sphere
 .\Tools\ValidateHighlandPaint.ps1
+.\Tools\ValidateMoebiusLava.ps1
 ```
 
 No validation sources are required for playing the game, rendering existing materials, or painting with Tools > Moebius > Paint. The validators may depend on old scene fixtures and source snapshots; commands for removed fixtures cannot be rerun until those fixtures are restored.
