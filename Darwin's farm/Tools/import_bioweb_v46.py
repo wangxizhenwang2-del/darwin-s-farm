@@ -52,11 +52,12 @@ def main(source_path):
     rows = data["species"]
     by_id = {row["id"]: row for row in rows}
     assert len(rows) == len(by_id) == 15
-    # V4.6 revision: the original export includes this one withdrawn edge.
+    # Approved V4.6 revisions, including later removal of chicken <-> peacock.
+    withdrawn = ({"鸡", "鹿"}, {"鸡", "孔雀"}, {"鲨母", "虾兔"})
     data["evolutionLinks"] = [edge for edge in data["evolutionLinks"]
                               if {by_id[edge["from"]]["name"],
-                                  by_id[edge["to"]]["name"]} != {"鸡", "鹿"}]
-    assert len(data["evolutionLinks"]) == 22 and len(data["foodLinks"]) == 25
+                                  by_id[edge["to"]]["name"]} not in withdrawn]
+    assert len(data["evolutionLinks"]) == 20 and len(data["foodLinks"]) == 25
     assert all(edge["from"] in by_id and edge["to"] in by_id
                for edge in data["evolutionLinks"] + data["foodLinks"])
     folder(OUT)
@@ -94,6 +95,8 @@ def main(source_path):
         prey_refs = "\n".join(
             "  - {fileID: 11400000, guid: " + guid("species", other) + ", type: 2}"
             for other in sorted(prey[key]))
+        evo_yaml = "\n" + evo_refs if evo_refs else " []"
+        prey_yaml = "\n" + prey_refs if prey_refs else " []"
         ref = f"{{fileID: 21300000, guid: {sprite_guid}, type: 3}}"
         text = f"""%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
@@ -114,8 +117,8 @@ MonoBehaviour:
   speciesId: {key.replace('-', '')}
   portrait: {ref}
   description: {yaml_string(row.get('description', ''))}
-  evolutionTargets:{evo_refs if evo_refs else ' []'}
-  preySpecies:{prey_refs if prey_refs else ' []'}
+  evolutionTargets:{evo_yaml}
+  preySpecies:{prey_yaml}
   trophicLevel: {row['trophicLevel']}
   bioenergyValue: {row['value']}
   economyId: {key.replace('-', '')}

@@ -293,7 +293,13 @@ public partial class SimulationController
             float candidateKills = amount *
                 LandLifeRules.HuntPreference(candidate, prey, LandRules)
                 / totalPreference * attempt;
-            expectedEnergy += Mathf.Min(available, candidateKills) * energy;
+            float claim = LandLifeRules.WholePreyClaim(candidateKills,
+                Mathf.Max(0f, predatorDemand - expectedEnergy), energy);
+            float expected = Mathf.Min(available,
+                claim + prey.predationRemainder);
+            int wholeCatches = Mathf.Min(available,
+                Mathf.FloorToInt(expected));
+            expectedEnergy += wholeCatches * energy;
         }
         float sustainableEnergy = LandLifeRules.AvailableSustainablePreyFood(
             block, candidate, LandRules, replaced: source,

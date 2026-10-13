@@ -17,10 +17,11 @@ MonoBehaviour:
   speciesId: 6b5c947b323443df96d66db63a30aa48
   portrait: {fileID: 21300000, guid: 8ad1db706a305bc2a57d4e2f6b95880b, type: 3}
   description: ""
-  evolutionTargets:  - {fileID: 11400000, guid: 88246f62504c5f20b51ef68a0c2f169b, type: 2}
+  evolutionTargets:
+  - {fileID: 11400000, guid: 88246f62504c5f20b51ef68a0c2f169b, type: 2}
   - {fileID: 11400000, guid: ae62c1ccc7cb5cda83283e79e8dafe17, type: 2}
+  preySpecies:
   - {fileID: 11400000, guid: 429810441742500882c32391600ac543, type: 2}
-  preySpecies:  - {fileID: 11400000, guid: 429810441742500882c32391600ac543, type: 2}
   trophicLevel: 1
   bioenergyValue: 7
   economyId: 6b5c947b323443df96d66db63a30aa48
@@ -31,3 +32,5 @@ MonoBehaviour:
   baseSize: 10
   baseFertility: 45
   baseEcologicalNiche: 1
+  evolutionGridPos: {x: 2, y: 1}
+  foodGridPos: {x: 2, y: 2}

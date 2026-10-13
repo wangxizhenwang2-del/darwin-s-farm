@@ -1,0 +1,963 @@
+{
+  "formalEvolutionEdges": 20,
+  "directedConversions": 40,
+  "selectedLandEdges": 9,
+  "selectedLandDirections": 18,
+  "foodEdges": 25,
+  "prohibitedExistingTargetRule": "preserved",
+  "witnessCriteria": "600 days; source and chosen prey remain >=10; last100 mean hunter satisfaction>=0.9; prey net renewal>0; last100 prey count loss<=20%",
+  "experimentScope": "food coexistence only, formal conversion disabled; normal mutation/local splits active; template initial traits; no species B in witness",
+  "supplyCases": 7481,
+  "rows": [
+    {
+      "from": "鹿飞",
+      "to": "鹿",
+      "sourceNiche": "Air",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "孔雀",
+        "灵感菇狸",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "孔雀",
+        "灵感菇狸",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→孔雀→鹿飞",
+        "鸡→灵感菇狸→鹿飞",
+        "彩鸡→灵感菇狸→鹿飞",
+        "彩鸡→鹿飞"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿",
+      "to": "鹿飞",
+      "sourceNiche": "Land",
+      "targetNiche": "Air",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿游",
+      "to": "鹿",
+      "sourceNiche": "Water",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿",
+      "to": "鹿游",
+      "sourceNiche": "Land",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "大鲨母",
+      "to": "鲨鹿",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鹿游",
+        "虾兔"
+      ],
+      "localAlternatives": [
+        "鹿游",
+        "虾兔"
+      ],
+      "completeFoodPaths": [
+        "鹿游→大鲨母",
+        "虾兔→大鲨母"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鲨鹿",
+      "to": "大鲨母",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "鹿游",
+        "鲨母"
+      ],
+      "localAlternatives": [
+        "鹿游",
+        "鲨母"
+      ],
+      "completeFoodPaths": [
+        "鹿游→鲨鹿",
+        "虾兔→鲨母→鲨鹿"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鲨鹿",
+      "to": "鹿游",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "大鲨母",
+        "鲨母"
+      ],
+      "localAlternatives": [
+        "大鲨母",
+        "鲨母"
+      ],
+      "completeFoodPaths": [
+        "虾兔→大鲨母→鲨鹿",
+        "虾兔→鲨母→鲨鹿"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿游",
+      "to": "鲨鹿",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿驯",
+      "to": "鹿",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→鹿驯",
+        "彩鸡→鹿驯"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "鹿驯",
+        "prey": "鸡",
+        "habitat": "宜人的山地",
+        "initialPredator": 20,
+        "initialPrey": 713,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 71,
+        "minimumPreyLast100": 1993,
+        "finalPredator": 139,
+        "finalPrey": 1993,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 18.864998,
+        "finalStock": 917622.9,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鹿",
+      "to": "鹿驯",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鲨鹿",
+      "to": "鹿驯",
+      "sourceNiche": "Water",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "鹿游",
+        "大鲨母",
+        "鲨母"
+      ],
+      "localAlternatives": [
+        "鹿游",
+        "大鲨母",
+        "鲨母"
+      ],
+      "completeFoodPaths": [
+        "鹿游→鲨鹿",
+        "鹿游→大鲨母→鲨鹿",
+        "虾兔→大鲨母→鲨鹿",
+        "虾兔→鲨母→鲨鹿"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿驯",
+      "to": "鲨鹿",
+      "sourceNiche": "Land",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→鹿驯",
+        "彩鸡→鹿驯"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "鹿驯",
+        "prey": "鸡",
+        "habitat": "宜人的山地",
+        "initialPredator": 20,
+        "initialPrey": 713,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 71,
+        "minimumPreyLast100": 1993,
+        "finalPredator": 139,
+        "finalPrey": 1993,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 18.864998,
+        "finalStock": 917622.9,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "灵感菇狸",
+      "to": "飞狸",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→灵感菇狸",
+        "彩鸡→灵感菇狸"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "飞狸",
+      "to": "灵感菇狸",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→飞狸",
+        "彩鸡→飞狸"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "飞狸",
+        "prey": "鸡",
+        "habitat": "阴热的雨林",
+        "initialPredator": 20,
+        "initialPrey": 1499,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 37,
+        "minimumPreyLast100": 854,
+        "finalPredator": 148,
+        "finalPrey": 2588,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 25.731997,
+        "finalStock": 916109.25,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "灵感菇狸",
+      "to": "鹿",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→灵感菇狸",
+        "彩鸡→灵感菇狸"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鹿",
+      "to": "灵感菇狸",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "飞狸",
+      "to": "孔雀",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "灵感菇狸",
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "灵感菇狸",
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→灵感菇狸→飞狸",
+        "彩鸡→灵感菇狸→飞狸",
+        "鸡→飞狸",
+        "彩鸡→飞狸"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "飞狸",
+        "prey": "鸡",
+        "habitat": "阴热的雨林",
+        "initialPredator": 20,
+        "initialPrey": 1499,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 37,
+        "minimumPreyLast100": 854,
+        "finalPredator": 148,
+        "finalPrey": 2588,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 25.731997,
+        "finalStock": 916109.25,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "孔雀",
+      "to": "飞狸",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡"
+      ],
+      "localAlternatives": [
+        "鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→孔雀"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "孔雀",
+        "prey": "鸡",
+        "habitat": "阴热的雨林",
+        "initialPredator": 20,
+        "initialPrey": 562,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 48,
+        "minimumPreyLast100": 369,
+        "finalPredator": 90,
+        "finalPrey": 404,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 4.636,
+        "finalStock": 968488.7,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿飞",
+      "to": "鹿驯",
+      "sourceNiche": "Air",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "孔雀",
+        "灵感菇狸",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "孔雀",
+        "灵感菇狸",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→孔雀→鹿飞",
+        "鸡→灵感菇狸→鹿飞",
+        "彩鸡→灵感菇狸→鹿飞",
+        "彩鸡→鹿飞"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鹿驯",
+      "to": "鹿飞",
+      "sourceNiche": "Land",
+      "targetNiche": "Air",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→鹿驯",
+        "彩鸡→鹿驯"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "鹿驯",
+        "prey": "鸡",
+        "habitat": "宜人的山地",
+        "initialPredator": 20,
+        "initialPrey": 713,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 71,
+        "minimumPreyLast100": 1993,
+        "finalPredator": 139,
+        "finalPrey": 1993,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 18.864998,
+        "finalStock": 917622.9,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "灵感菇狸",
+      "to": "鸡",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "彩鸡→灵感菇狸"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鸡",
+      "to": "灵感菇狸",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鹿游",
+      "to": "虾兔",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "虾兔",
+      "to": "鹿游",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "雀狮",
+      "to": "孔雀",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "鹿驯",
+        "灵感菇狸",
+        "鹿"
+      ],
+      "localAlternatives": [
+        "鹿驯",
+        "灵感菇狸",
+        "鹿"
+      ],
+      "completeFoodPaths": [
+        "鸡→鹿驯→雀狮",
+        "彩鸡→鹿驯→雀狮",
+        "鸡→灵感菇狸→雀狮",
+        "彩鸡→灵感菇狸→雀狮",
+        "鹿→雀狮"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "孔雀",
+      "to": "雀狮",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡"
+      ],
+      "localAlternatives": [
+        "鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→孔雀"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "孔雀",
+        "prey": "鸡",
+        "habitat": "阴热的雨林",
+        "initialPredator": 20,
+        "initialPrey": 562,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 48,
+        "minimumPreyLast100": 369,
+        "finalPredator": 90,
+        "finalPrey": 404,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 4.636,
+        "finalStock": 968488.7,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "雀狮",
+      "to": "鹿驯",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "孔雀",
+        "灵感菇狸",
+        "鹿"
+      ],
+      "localAlternatives": [
+        "孔雀",
+        "灵感菇狸",
+        "鹿"
+      ],
+      "completeFoodPaths": [
+        "鸡→孔雀→雀狮",
+        "鸡→灵感菇狸→雀狮",
+        "彩鸡→灵感菇狸→雀狮",
+        "鹿→雀狮"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鹿驯",
+      "to": "雀狮",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→鹿驯",
+        "彩鸡→鹿驯"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "鹿驯",
+        "prey": "鸡",
+        "habitat": "宜人的山地",
+        "initialPredator": 20,
+        "initialPrey": 713,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 71,
+        "minimumPreyLast100": 1993,
+        "finalPredator": 139,
+        "finalPrey": 1993,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 18.864998,
+        "finalStock": 917622.9,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鹿驯",
+      "to": "雪狼",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "localAlternatives": [
+        "鸡",
+        "彩鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→鹿驯",
+        "彩鸡→鹿驯"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "鹿驯",
+        "prey": "鸡",
+        "habitat": "宜人的山地",
+        "initialPredator": 20,
+        "initialPrey": 713,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 71,
+        "minimumPreyLast100": 1993,
+        "finalPredator": 139,
+        "finalPrey": 1993,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 18.864998,
+        "finalStock": 917622.9,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "雪狼",
+      "to": "鹿驯",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "灵感菇狸",
+        "孔雀",
+        "鹿"
+      ],
+      "localAlternatives": [
+        "灵感菇狸",
+        "孔雀",
+        "鹿"
+      ],
+      "completeFoodPaths": [
+        "鸡→灵感菇狸→雪狼",
+        "彩鸡→灵感菇狸→雪狼",
+        "鸡→孔雀→雪狼",
+        "鹿→雪狼"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "雀狮",
+      "to": "雪狼",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "鹿驯",
+        "孔雀",
+        "灵感菇狸",
+        "鹿"
+      ],
+      "localAlternatives": [
+        "鹿驯",
+        "孔雀",
+        "灵感菇狸",
+        "鹿"
+      ],
+      "completeFoodPaths": [
+        "鸡→鹿驯→雀狮",
+        "彩鸡→鹿驯→雀狮",
+        "鸡→孔雀→雀狮",
+        "鸡→灵感菇狸→雀狮",
+        "彩鸡→灵感菇狸→雀狮",
+        "鹿→雀狮"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "雪狼",
+      "to": "雀狮",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 2,
+      "alternatives": [
+        "灵感菇狸",
+        "孔雀",
+        "鹿",
+        "鹿驯"
+      ],
+      "localAlternatives": [
+        "灵感菇狸",
+        "孔雀",
+        "鹿",
+        "鹿驯"
+      ],
+      "completeFoodPaths": [
+        "鸡→灵感菇狸→雪狼",
+        "彩鸡→灵感菇狸→雪狼",
+        "鸡→孔雀→雪狼",
+        "鹿→雪狼",
+        "鸡→鹿驯→雪狼",
+        "彩鸡→鹿驯→雪狼"
+      ],
+      "status": "结构具备：尚未找到满足标准的当地供给配置",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "鹿游",
+      "to": "鲨母",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鲨母",
+      "to": "鹿游",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "虾兔"
+      ],
+      "localAlternatives": [
+        "虾兔"
+      ],
+      "completeFoodPaths": [
+        "虾兔→鲨母"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "大鲨母",
+      "to": "鲨母",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鹿游",
+        "虾兔"
+      ],
+      "localAlternatives": [
+        "鹿游",
+        "虾兔"
+      ],
+      "completeFoodPaths": [
+        "鹿游→大鲨母",
+        "虾兔→大鲨母"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鲨母",
+      "to": "大鲨母",
+      "sourceNiche": "Water",
+      "targetNiche": "Water",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "虾兔"
+      ],
+      "localAlternatives": [
+        "虾兔"
+      ],
+      "completeFoodPaths": [
+        "虾兔→鲨母"
+      ],
+      "status": "结构具备：水域或空中当地维持待运行时验证",
+      "witness": null,
+      "isSelectedLandDirection": false
+    },
+    {
+      "from": "鸡",
+      "to": "彩鸡",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "彩鸡",
+      "to": "鸡",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "彩鸡",
+      "to": "孔雀",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 0,
+      "alternatives": [],
+      "localAlternatives": [],
+      "completeFoodPaths": [],
+      "status": "不适用：源物种食植物",
+      "witness": null,
+      "isSelectedLandDirection": true
+    },
+    {
+      "from": "孔雀",
+      "to": "彩鸡",
+      "sourceNiche": "Land",
+      "targetNiche": "Land",
+      "sourceTrophicLevel": 1,
+      "alternatives": [
+        "鸡"
+      ],
+      "localAlternatives": [
+        "鸡"
+      ],
+      "completeFoodPaths": [
+        "鸡→孔雀"
+      ],
+      "status": "满足：已有600日当地供给见证",
+      "witness": {
+        "predator": "孔雀",
+        "prey": "鸡",
+        "habitat": "阴热的雨林",
+        "initialPredator": 20,
+        "initialPrey": 562,
+        "initialStock": 500000,
+        "days": 600,
+        "minimumPredatorLast100": 48,
+        "minimumPreyLast100": 369,
+        "finalPredator": 90,
+        "finalPrey": 404,
+        "averageSatisfactionLast100": 1,
+        "averagePreyNetRenewalLast100": 4.636,
+        "finalStock": 968488.7,
+        "initialCommunity": null
+      },
+      "isSelectedLandDirection": true
+    }
+  ]
+}

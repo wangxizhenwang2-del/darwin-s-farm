@@ -63,6 +63,10 @@ public class SpeciesData: ScriptableObject
     public bool IsExtinct => isExtinct;
     public string SpeciesName => speciesName;
 
+    // One-based column (x), row (y); independent layouts for the two maps.
+    public Vector2Int evolutionGridPos;
+    public Vector2Int foodGridPos;
+
     internal void SetLivingPopulation(bool living)
     {
         if (living) hasEverUnlocked = true;

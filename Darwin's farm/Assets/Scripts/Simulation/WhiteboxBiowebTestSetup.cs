@@ -10,6 +10,7 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
     [SerializeField] private SimulationController simulation;
     [Header("V4.6 formal bioweb: 15 species in export order")]
     [SerializeField] private SpeciesData[] species = new SpeciesData[15];
+    public IReadOnlyList<SpeciesData> MapSpecies => species;
     [SerializeField] private SpeciesData initialChickenSpecies;
     [SerializeField, Min(1)] private int initialChickenCount = 160;
 

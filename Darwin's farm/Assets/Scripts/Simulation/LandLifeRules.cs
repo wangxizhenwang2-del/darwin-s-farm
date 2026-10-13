@@ -241,8 +241,10 @@ internal static class LandLifeRules
                 / (1f + (rules != null ? rules.competitionPressure : 2f)
                     * Mathf.Max(0f, pressure / Mathf.Max(1f, renewal) - 1f));
         }
-        float available = renewal > 0f
-            ? Mathf.Min(food, renewal) : Mathf.Max(0f, food);
+        // The caller supplies either today's growth + drawable stock budget,
+        // or R alone for renewable-support forecasts. Keep stock available to
+        // today's consumers; R still governs density, competition and long-term K.
+        float available = Mathf.Max(0f, food);
         var nicheDemand = new float[count];
         var nicheAllocated = new float[count];
         for (int niche = 0; niche < 2; niche++)
@@ -435,6 +437,19 @@ internal static class LandLifeRules
             * PreyEnergy(hunter, prey, rules);
     }
 
+    // Hunting resolves whole animals. A group that can catch at least one prey
+    // may take the final animal needed to cover its remaining energy target;
+    // the unused energy stays in the existing reserve ledger. Fractional
+    // capture ability is still accumulated by the victim's predation remainder.
+    internal static float WholePreyClaim(float captureIntent,
+        float targetEnergy, float preyEnergy)
+    {
+        if (captureIntent <= Epsilon || targetEnergy <= Epsilon ||
+            preyEnergy <= Epsilon) return 0f;
+        int preyNeeded = Mathf.Max(1, Mathf.CeilToInt(targetEnergy / preyEnergy));
+        return Mathf.Min(captureIntent, preyNeeded);
+    }
+
     // Allocate each competing hunter's demand across its available prey once.
     // The remaining renewable prey are then valued for this hunter.
     internal static float AvailableSustainablePreyFood(BlockInfo block,
@@ -536,8 +551,8 @@ internal static class LandLifeRules
                 for (int i = 0; i < h; i++)
                     if (targetEnergy[i] > Epsilon && intent[i, j] > 0f)
                     {
-                        claims[i] = Mathf.Min(intent[i, j], targetEnergy[i]
-                            / Mathf.Max(1f, PreyEnergy(hunters[i], victim, rules)));
+                        claims[i] = WholePreyClaim(intent[i, j],
+                            targetEnergy[i], PreyEnergy(hunters[i], victim, rules));
                         total += claims[i];
                         lastEligible = i;
                     }

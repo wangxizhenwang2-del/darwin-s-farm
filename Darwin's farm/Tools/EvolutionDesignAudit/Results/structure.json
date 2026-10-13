@@ -1,0 +1,702 @@
+[
+  {
+    "from": "鹿驯",
+    "to": "鹿",
+    "source": {
+      "temperature": 25,
+      "humidity": 20,
+      "movement": 67,
+      "size": 75,
+      "fertility": 20,
+      "trophicLevel": 1
+    },
+    "target": {
+      "temperature": 30,
+      "humidity": 70,
+      "movement": 72,
+      "size": 50,
+      "fertility": 35,
+      "trophicLevel": 0
+    },
+    "traitGapOutsideTolerance": [
+      0,
+      45,
+      0,
+      20,
+      10
+    ],
+    "sourceFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetFood": [],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "鹿",
+    "to": "鹿驯",
+    "source": {
+      "temperature": 30,
+      "humidity": 70,
+      "movement": 72,
+      "size": 50,
+      "fertility": 35,
+      "trophicLevel": 0
+    },
+    "target": {
+      "temperature": 25,
+      "humidity": 20,
+      "movement": 67,
+      "size": 75,
+      "fertility": 20,
+      "trophicLevel": 1
+    },
+    "traitGapOutsideTolerance": [
+      0,
+      45,
+      0,
+      20,
+      10
+    ],
+    "sourceFood": [],
+    "targetFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "灵感菇狸",
+    "to": "鹿",
+    "source": {
+      "temperature": 75,
+      "humidity": 80,
+      "movement": 35,
+      "size": 20,
+      "fertility": 65,
+      "trophicLevel": 1
+    },
+    "target": {
+      "temperature": 30,
+      "humidity": 70,
+      "movement": 72,
+      "size": 50,
+      "fertility": 35,
+      "trophicLevel": 0
+    },
+    "traitGapOutsideTolerance": [
+      40,
+      5,
+      32,
+      25,
+      25
+    ],
+    "sourceFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetFood": [],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "鹿",
+    "to": "灵感菇狸",
+    "source": {
+      "temperature": 30,
+      "humidity": 70,
+      "movement": 72,
+      "size": 50,
+      "fertility": 35,
+      "trophicLevel": 0
+    },
+    "target": {
+      "temperature": 75,
+      "humidity": 80,
+      "movement": 35,
+      "size": 20,
+      "fertility": 65,
+      "trophicLevel": 1
+    },
+    "traitGapOutsideTolerance": [
+      40,
+      5,
+      32,
+      25,
+      25
+    ],
+    "sourceFood": [],
+    "targetFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "灵感菇狸",
+    "to": "鸡",
+    "source": {
+      "temperature": 75,
+      "humidity": 80,
+      "movement": 35,
+      "size": 20,
+      "fertility": 65,
+      "trophicLevel": 1
+    },
+    "target": {
+      "temperature": 55,
+      "humidity": 35,
+      "movement": 10,
+      "size": 8,
+      "fertility": 70,
+      "trophicLevel": 0
+    },
+    "traitGapOutsideTolerance": [
+      15,
+      40,
+      20,
+      7,
+      0
+    ],
+    "sourceFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetFood": [],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "鸡",
+    "to": "灵感菇狸",
+    "source": {
+      "temperature": 55,
+      "humidity": 35,
+      "movement": 10,
+      "size": 8,
+      "fertility": 70,
+      "trophicLevel": 0
+    },
+    "target": {
+      "temperature": 75,
+      "humidity": 80,
+      "movement": 35,
+      "size": 20,
+      "fertility": 65,
+      "trophicLevel": 1
+    },
+    "traitGapOutsideTolerance": [
+      15,
+      40,
+      20,
+      7,
+      0
+    ],
+    "sourceFood": [],
+    "targetFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetCanEatSource": true,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "雀狮",
+    "to": "孔雀",
+    "source": {
+      "temperature": 52,
+      "humidity": 66,
+      "movement": 63,
+      "size": 80,
+      "fertility": 15,
+      "trophicLevel": 2
+    },
+    "target": {
+      "temperature": 58,
+      "humidity": 58,
+      "movement": 25,
+      "size": 40,
+      "fertility": 60,
+      "trophicLevel": 1
+    },
+    "traitGapOutsideTolerance": [
+      1,
+      3,
+      33,
+      35,
+      40
+    ],
+    "sourceFood": [
+      "鹿驯",
+      "孔雀",
+      "灵感菇狸",
+      "鹿"
+    ],
+    "targetFood": [
+      "鸡"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "孔雀",
+    "to": "雀狮",
+    "source": {
+      "temperature": 58,
+      "humidity": 58,
+      "movement": 25,
+      "size": 40,
+      "fertility": 60,
+      "trophicLevel": 1
+    },
+    "target": {
+      "temperature": 52,
+      "humidity": 66,
+      "movement": 63,
+      "size": 80,
+      "fertility": 15,
+      "trophicLevel": 2
+    },
+    "traitGapOutsideTolerance": [
+      1,
+      3,
+      33,
+      35,
+      40
+    ],
+    "sourceFood": [
+      "鸡"
+    ],
+    "targetFood": [
+      "鹿驯",
+      "孔雀",
+      "灵感菇狸",
+      "鹿"
+    ],
+    "targetCanEatSource": true,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "雀狮",
+    "to": "鹿驯",
+    "source": {
+      "temperature": 52,
+      "humidity": 66,
+      "movement": 63,
+      "size": 80,
+      "fertility": 15,
+      "trophicLevel": 2
+    },
+    "target": {
+      "temperature": 25,
+      "humidity": 20,
+      "movement": 67,
+      "size": 75,
+      "fertility": 20,
+      "trophicLevel": 1
+    },
+    "traitGapOutsideTolerance": [
+      22,
+      41,
+      0,
+      0,
+      0
+    ],
+    "sourceFood": [
+      "鹿驯",
+      "孔雀",
+      "灵感菇狸",
+      "鹿"
+    ],
+    "targetFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "鹿驯",
+    "to": "雀狮",
+    "source": {
+      "temperature": 25,
+      "humidity": 20,
+      "movement": 67,
+      "size": 75,
+      "fertility": 20,
+      "trophicLevel": 1
+    },
+    "target": {
+      "temperature": 52,
+      "humidity": 66,
+      "movement": 63,
+      "size": 80,
+      "fertility": 15,
+      "trophicLevel": 2
+    },
+    "traitGapOutsideTolerance": [
+      22,
+      41,
+      0,
+      0,
+      0
+    ],
+    "sourceFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetFood": [
+      "鹿驯",
+      "孔雀",
+      "灵感菇狸",
+      "鹿"
+    ],
+    "targetCanEatSource": true,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "鹿驯",
+    "to": "雪狼",
+    "source": {
+      "temperature": 25,
+      "humidity": 20,
+      "movement": 67,
+      "size": 75,
+      "fertility": 20,
+      "trophicLevel": 1
+    },
+    "target": {
+      "temperature": 28,
+      "humidity": 28,
+      "movement": 68,
+      "size": 70,
+      "fertility": 25,
+      "trophicLevel": 2
+    },
+    "traitGapOutsideTolerance": [
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "sourceFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetFood": [
+      "灵感菇狸",
+      "孔雀",
+      "鹿",
+      "鹿驯"
+    ],
+    "targetCanEatSource": true,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "雪狼",
+    "to": "鹿驯",
+    "source": {
+      "temperature": 28,
+      "humidity": 28,
+      "movement": 68,
+      "size": 70,
+      "fertility": 25,
+      "trophicLevel": 2
+    },
+    "target": {
+      "temperature": 25,
+      "humidity": 20,
+      "movement": 67,
+      "size": 75,
+      "fertility": 20,
+      "trophicLevel": 1
+    },
+    "traitGapOutsideTolerance": [
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "sourceFood": [
+      "灵感菇狸",
+      "孔雀",
+      "鹿",
+      "鹿驯"
+    ],
+    "targetFood": [
+      "鸡",
+      "彩鸡"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "雀狮",
+    "to": "雪狼",
+    "source": {
+      "temperature": 52,
+      "humidity": 66,
+      "movement": 63,
+      "size": 80,
+      "fertility": 15,
+      "trophicLevel": 2
+    },
+    "target": {
+      "temperature": 28,
+      "humidity": 28,
+      "movement": 68,
+      "size": 70,
+      "fertility": 25,
+      "trophicLevel": 2
+    },
+    "traitGapOutsideTolerance": [
+      19,
+      33,
+      0,
+      5,
+      5
+    ],
+    "sourceFood": [
+      "鹿驯",
+      "孔雀",
+      "灵感菇狸",
+      "鹿"
+    ],
+    "targetFood": [
+      "灵感菇狸",
+      "孔雀",
+      "鹿",
+      "鹿驯"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "雪狼",
+    "to": "雀狮",
+    "source": {
+      "temperature": 28,
+      "humidity": 28,
+      "movement": 68,
+      "size": 70,
+      "fertility": 25,
+      "trophicLevel": 2
+    },
+    "target": {
+      "temperature": 52,
+      "humidity": 66,
+      "movement": 63,
+      "size": 80,
+      "fertility": 15,
+      "trophicLevel": 2
+    },
+    "traitGapOutsideTolerance": [
+      19,
+      33,
+      0,
+      5,
+      5
+    ],
+    "sourceFood": [
+      "灵感菇狸",
+      "孔雀",
+      "鹿",
+      "鹿驯"
+    ],
+    "targetFood": [
+      "鹿驯",
+      "孔雀",
+      "灵感菇狸",
+      "鹿"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "鸡",
+    "to": "彩鸡",
+    "source": {
+      "temperature": 55,
+      "humidity": 35,
+      "movement": 10,
+      "size": 8,
+      "fertility": 70,
+      "trophicLevel": 0
+    },
+    "target": {
+      "temperature": 70,
+      "humidity": 49,
+      "movement": 15,
+      "size": 15,
+      "fertility": 75,
+      "trophicLevel": 0
+    },
+    "traitGapOutsideTolerance": [
+      10,
+      9,
+      0,
+      2,
+      0
+    ],
+    "sourceFood": [],
+    "targetFood": [],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "彩鸡",
+    "to": "鸡",
+    "source": {
+      "temperature": 70,
+      "humidity": 49,
+      "movement": 15,
+      "size": 15,
+      "fertility": 75,
+      "trophicLevel": 0
+    },
+    "target": {
+      "temperature": 55,
+      "humidity": 35,
+      "movement": 10,
+      "size": 8,
+      "fertility": 70,
+      "trophicLevel": 0
+    },
+    "traitGapOutsideTolerance": [
+      10,
+      9,
+      0,
+      2,
+      0
+    ],
+    "sourceFood": [],
+    "targetFood": [],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "彩鸡",
+    "to": "孔雀",
+    "source": {
+      "temperature": 70,
+      "humidity": 49,
+      "movement": 15,
+      "size": 15,
+      "fertility": 75,
+      "trophicLevel": 0
+    },
+    "target": {
+      "temperature": 58,
+      "humidity": 58,
+      "movement": 25,
+      "size": 40,
+      "fertility": 60,
+      "trophicLevel": 1
+    },
+    "traitGapOutsideTolerance": [
+      7,
+      4,
+      5,
+      20,
+      10
+    ],
+    "sourceFood": [],
+    "targetFood": [
+      "鸡"
+    ],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": true,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  },
+  {
+    "from": "孔雀",
+    "to": "彩鸡",
+    "source": {
+      "temperature": 58,
+      "humidity": 58,
+      "movement": 25,
+      "size": 40,
+      "fertility": 60,
+      "trophicLevel": 1
+    },
+    "target": {
+      "temperature": 70,
+      "humidity": 49,
+      "movement": 15,
+      "size": 15,
+      "fertility": 75,
+      "trophicLevel": 0
+    },
+    "traitGapOutsideTolerance": [
+      7,
+      4,
+      5,
+      20,
+      10
+    ],
+    "sourceFood": [
+      "鸡"
+    ],
+    "targetFood": [],
+    "targetCanEatSource": false,
+    "additionalTargetPreyRequired": false,
+    "onlySourcePreyIsTarget": false,
+    "possibleSplitJump": "body +/-30 and fertility -/+30; requires real split gates",
+    "status": "structure recorded; player reachability not yet established"
+  }
+]

@@ -22,6 +22,25 @@ public class SimulationTime : MonoBehaviour
     public float Speed => simulationSpeed;
     public float RunningSpeed => IsPaused ? lastRunningSpeed : simulationSpeed;
     public bool IsPaused => simulationSpeed <= 0f;
+    private bool modalPause;
+    private bool wasPausedBeforeModal;
+    private float speedBeforeModal;
+
+    public void AcquireModalPause()
+    {
+        if (modalPause) return;
+        wasPausedBeforeModal = IsPaused;
+        speedBeforeModal = RunningSpeed;
+        modalPause = true;
+        Pause();
+    }
+
+    public void ReleaseModalPause()
+    {
+        if (!modalPause) return;
+        modalPause = false;
+        if (!wasPausedBeforeModal) SetSpeed(speedBeforeModal);
+    }
 
     public void SetSecondsPerDay(float seconds)
     {
@@ -46,7 +65,7 @@ public class SimulationTime : MonoBehaviour
         // only; Unity rendering and map controls continue while paused.
 #if ENABLE_INPUT_SYSTEM
         Keyboard keyboard = Keyboard.current;
-        if (keyboard != null)
+        if (keyboard != null && !modalPause)
         {
             if (keyboard.spaceKey.wasPressedThisFrame) TogglePause();
             if (keyboard.digit2Key.wasPressedThisFrame ||
@@ -55,9 +74,9 @@ public class SimulationTime : MonoBehaviour
                 keyboard.numpad4Key.wasPressedThisFrame) QuadrupleSpeed();
         }
 #else
-        if (Input.GetKeyDown(KeyCode.Space)) TogglePause();
-        if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) DoubleSpeed();
-        if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4)) QuadrupleSpeed();
+        if (!modalPause && Input.GetKeyDown(KeyCode.Space)) TogglePause();
+        if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))) DoubleSpeed();
+        if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))) QuadrupleSpeed();
 #endif
         time += Time.deltaTime * simulationSpeed;
         // 一帧跨过多天时逐天补算
@@ -80,12 +99,14 @@ public class SimulationTime : MonoBehaviour
     public void CycleSpeed() => SetSpeed(RunningSpeed < 2f ? 2f : RunningSpeed < 4f ? 4f : 1f);
     private void SetSpeed(float speed)
     {
+        if (modalPause) return;
         simulationSpeed = speed;
         lastRunningSpeed = speed;
         OnSpeedChanged?.Invoke(simulationSpeed);
     }
     public void TogglePause()
     {
+        if (modalPause) return;
         if (IsPaused) simulationSpeed = lastRunningSpeed > 0f ? lastRunningSpeed : 1f;
         else Pause();
         if (!IsPaused) OnSpeedChanged?.Invoke(simulationSpeed);
