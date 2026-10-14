@@ -5,6 +5,8 @@
 CBUFFER_START(UnityPerMaterial)
 half4 _BaseColor,_ShadowColor,_HighlightColor,_FlowLineColor,_InkLineColor;
 float4 _SheetSize;
+float _SurfaceLength,_LipStartV;
+half4 _UpstreamColor;
 float _FlowSpeed,_FlowScale,_DistortionStrength,_DistortionScale;
 float _VerticalLineDensity,_VerticalLineWidth,_FlowLineStrength,_InkLineStrength,_BandStrength;
 float _EdgeBreakupStrength,_EdgeBreakupScale,_SheetWobbleStrength,_SheetWobbleSpeed;

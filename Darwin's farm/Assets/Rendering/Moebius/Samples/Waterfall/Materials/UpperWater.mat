@@ -16,7 +16,6 @@ Material:
   - _ENABLEFLOW_ON
   - _ENABLEFOAMINK_ON
   - _ENABLEFOAMPATCHES_ON
-  - _ENABLEFOAM_ON
   - _ENABLERIPPLES_ON
   - _ENABLESHOREMOTION_ON
   - _ENABLEWAVES_ON
@@ -48,6 +47,7 @@ Material:
     - _EnableShoreMask: 0
     - _EnableShoreMotion: 1
     - _EnableVariation: 0
+    - _EnableWaterfallImpact: 0
     - _EnableWaves: 1
     - _FlowDistortion: 0.2
     - _FlowScale: 1
@@ -61,6 +61,26 @@ Material:
     - _FoamPatchStrength: 0.8
     - _FoamSpeed: 0.28
     - _FoamWidth: 0.38
+    - _ImpactArcBreakup: 0.58
+    - _ImpactArcVariation: 0.55
+    - _ImpactDistanceFade: 0.4
+    - _ImpactDistortion: 0.2
+    - _ImpactFoamDensity: 0.68
+    - _ImpactFoamInkStrength: 0.12
+    - _ImpactFoamSpeed: 0.65
+    - _ImpactLifetime: 6.6
+    - _ImpactLifetimeFade: 0.35
+    - _ImpactMaxDistance: 6
+    - _ImpactNoiseScale: 0.85
+    - _ImpactPhase: 0
+    - _ImpactRadius: 2.1
+    - _ImpactRippleCount: 6
+    - _ImpactRippleIntensity: 0.85
+    - _ImpactRippleNoiseScale: 0.7
+    - _ImpactRippleSpeed: 0.9
+    - _ImpactRippleWidth: 0.065
+    - _ImpactSpawnInterval: 1.1
+    - _ImpactTurbulence: 0.95
     - _ReceiveWaterShadows: 1
     - _RippleDensity: 1.5
     - _RippleDistortion: 0.45
@@ -76,13 +96,18 @@ Material:
     - _VariationScale: 0.35
     - _WaterShadowDensity: 8
     - _WaterShadowStrength: 0.65
-    - _WaveHeight: 0.015
+    - _WaveHeight: 0
     - _WaveLength: 3.2
     - _WaveSpeed: 1.4
     m_Colors:
-    - _FlowDirection: {r: 0.2, g: 1, b: 0, a: 0}
+    - _FlowDirection: {r: 0, g: -1, b: 0, a: 0}
     - _FoamColor: {r: 0.94, g: 0.95, b: 0.81, a: 1}
     - _FoamInkColor: {r: 0.22999996, g: 0.32999998, b: 0.30999997, a: 1}
+    - _ImpactFlowDirection: {r: 0, g: -1, b: 0, a: 0}
+    - _ImpactFoamColor: {r: 0.9, g: 0.96999997, b: 0.96, a: 1}
+    - _ImpactPointA: {r: -2.9, g: 0, b: 1.7, a: 0}
+    - _ImpactPointB: {r: 2.9, g: 0, b: 1.7, a: 0}
+    - _ImpactRippleColor: {r: 0.86, g: 0.95, b: 0.95, a: 1}
     - _RippleColor: {r: 0.24999997, g: 0.38999996, b: 0.39999998, a: 1}
     - _ShoreWorldRect: {r: -8, g: -8, b: 16, a: 16}
     - _WaterColor: {r: 0.49, g: 0.72, b: 0.74, a: 1}

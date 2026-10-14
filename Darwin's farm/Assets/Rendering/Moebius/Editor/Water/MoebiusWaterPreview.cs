@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Darwin.Rendering.Editor
 {
-    /// <summary>Continuously redraw loaded water scenes in Edit Mode, independent of tool windows.</summary>
+    /// <summary>Continuously redraw loaded animated Moebius surfaces in Edit Mode.</summary>
     [InitializeOnLoad]
     public static class MoebiusWaterPreview
     {
@@ -30,7 +30,7 @@ namespace Darwin.Rendering.Editor
                 {
                     if (EditorUtility.IsPersistent(renderer) || !renderer.enabled || !renderer.gameObject.activeInHierarchy || !renderer.gameObject.scene.isLoaded) continue;
                     foreach (var material in renderer.sharedMaterials)
-                        if (material && material.shader && (material.shader.name == "Darwin/Moebius Water" || material.shader.name.StartsWith("Darwin/Moebius Waterfall", StringComparison.Ordinal))) { hasWater = true; break; }
+                        if (material && material.shader && (material.shader.name == "Darwin/Moebius Water" || material.shader.name == "Darwin/Moebius Lava" || material.shader.name.StartsWith("Darwin/Moebius Waterfall", StringComparison.Ordinal))) { hasWater = true; break; }
                     if (hasWater) break;
                 }
             }

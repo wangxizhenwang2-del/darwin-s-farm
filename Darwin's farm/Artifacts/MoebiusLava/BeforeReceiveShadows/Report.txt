@@ -1,0 +1,41 @@
+PASS: Demo renders without Bloom or post processing
+PASS: Readable crust and molten area coverage (crust 68.4%)
+PASS: Both large solid crust regions and clear open molten channels exist
+PASS: Crust pattern repeats exactly at fixed time
+PASS: Crust drifts/deforms visibly over eight seconds
+PASS: Crust changes continuously at every sampled 1/60 second
+Crust changed pixels/frame: 14087 / mean 14118.1 / max 14181
+PASS: Crust freezes independently of molten flow when drift and deformation are zero
+PASS: Molten layer keeps flowing while crust is frozen
+PASS: Molten advection freezes independently when its flow speed is zero
+PASS: Crust still evolves with molten advection disabled
+PASS: Zero direction has a stable default downstream direction
+PASS: Default lava composite is independent of mesh UV0
+PASS: Composite animation has no held frames at sampled 60 Hz
+PASS: Crust Coverage controls island area monotonically
+PASS: Crack Width opens wider molten channels
+PASS: Emission zero strength exactly matches disabled pixels
+PASS: Emission enhances hot regions without Bloom
+PASS: Emission does not brighten fully cooled crust
+PASS: Shared hand-drawn hatch utility adds visible crust ink
+PASS: Hatching is excluded from fully molten regions
+PASS: Hatching toggle cleanly disables its mask
+PASS: Shared stipple utility works on crust
+PASS: Zero stipple strength disables its mask
+PASS: Forward, depth, raw normals and oct normals use identical opaque geometry
+PASS: Opaque depth order and URP ShadowCaster pass are present
+PASS: Surface motion never writes animated fake normals into the outline buffer
+PASS: Existing fullscreen outline renderer is active on lava demo geometry
+PASS: Lava crust receives real main-light shadows through shared NPR lighting
+PASS: Shadow ink follows a moving caster
+PASS: Lava geometry casts real URP shadows on surrounding ground
+PASS: Darwin/Moebius Lava compiles without errors
+PASS: Darwin/Moebius NPR compiles without errors
+PASS: Darwin/Moebius Water compiles without errors
+PASS: Darwin/Moebius Waterfall compiles without errors
+PASS: Darwin/Moebius Waterfall Splash compiles without errors
+PASS: Lava maintains SRP Batcher compatible material layout
+PASS: Lava animation requires no runtime controller or per-frame material writes
+PASS: Saved lava scene reopens with valid material and mesh references
+PASS: Existing waterfall scene still opens without rebuilding its resources
+Errors: 0

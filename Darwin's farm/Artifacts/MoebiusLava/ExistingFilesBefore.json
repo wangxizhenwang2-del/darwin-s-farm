@@ -1,0 +1,2478 @@
+[
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content.meta",
+    "Hash": "80C6CB066E636E94C38F5DC88F2090C991607A06345EC254C784A4B6872A21E2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor.meta",
+    "Hash": "D86BB5E434FF87656C1644F8952CE4C0E9AEB7686C255B07EDF99780806AB268"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime.meta",
+    "Hash": "9610B43547C7F7F0BB9D52E32E6798E5BEBBF49C7C2895B8F47515E357532B22"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples.meta",
+    "Hash": "1F04FAA8801FCBFC20546C542B19BA96C5F2135C58F99A156952DCC12BC4C688"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders.meta",
+    "Hash": "01EFE53163500CC187E2AEFB9C09867450FDC88AE7A3CB0B44A8A313A7C0A8B9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Defaults.meta",
+    "Hash": "0187B75FF5B66C1CA52559CE833D0D8B68F030212EE5965B247135AE4C659DC9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint.meta",
+    "Hash": "46936B4F5D14EFA57AA681EB8C2C313F1C42EDE8A7D37900D799AC443B5DE1FE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Water.meta",
+    "Hash": "D7799CDBB4FDC6FD48FAE416E66133444641C91377447FE19997C18BDAF8C52B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Defaults\\Materials.meta",
+    "Hash": "7F11A42A907CE8F3EA43F27C1D8015EAB69715E425216C0FB787DAFBE2FA70EE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Defaults\\Textures.meta",
+    "Hash": "184EC9698464825CF09A4ECF745982C03FAE2AD83981BC6523985DCFB558C029"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Defaults\\Materials\\MoebiusWater.mat",
+    "Hash": "76582E8E013F5828B1F66719A1F9AFBF21627B1658C35944B85B5A392CB188F8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Defaults\\Materials\\MoebiusWater.mat.meta",
+    "Hash": "621081F29FC010B8AF6717D2AA20EA65B96D469F0BCE02AC01DB058806273FFD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Defaults\\Textures\\TransparentPaint.png",
+    "Hash": "CA4F36DF22F506C59072ADE5A8B96907AB04A587C0F52CF2155A21D16A446760"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Defaults\\Textures\\TransparentPaint.png.meta",
+    "Hash": "A1E52456117132FB80E54D569A9BF9D01D6B1EEC66D3B4B161222C0257EED68E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials.meta",
+    "Hash": "44D894CBA3580F4A3BF0317E93F64C1BE710B99B122CAB2F344F52585CA2611B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures.meta",
+    "Hash": "01D70D5DDF951825A1E8A284196588C2F3AA7A73166721B8BBF1AC59187A25ED"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Coral cube_Coral_Paint.mat",
+    "Hash": "AB08748CB823F00B7F07BE4D1B5BE6B1766EF1B9C83D1D69A579ADDBB9AA22A9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Coral cube_Coral_Paint.mat.meta",
+    "Hash": "AAA7284629DFCF695D009936946A0307793440F0518C5EA2C56807E44CB7526C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Cube_Coral_Paint.mat",
+    "Hash": "63B0DE63BF081808B69516E640005270B0D92863E97F505726FF19FA196EA0F1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Cube_Coral_Paint.mat.meta",
+    "Hash": "07C067DDAEBD1DB1FA8367B3A22B3305994F1C8A20533B0B89A528C729E19F8F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland.meta",
+    "Hash": "3AD6990C983724FD2CA52B31B4880E174FC9D41D6BE22566ED1B5B32BA8624C1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored.meta",
+    "Hash": "8DDE2B7B3D2F8AB6C0CEE13A8FF6395CC7BAF1AF91CB895CBAB738526B7C16D5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Moebius Paint Surface_Ivory_Paint 10.mat",
+    "Hash": "C2F1C839BB9E9F01320CFCF91F821F9444E57B7B92B05B3BF7D785CE53327CA8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Moebius Paint Surface_Ivory_Paint 10.mat.meta",
+    "Hash": "821A1F0A677F24E17D2146F625BD28152D3D3E8F119EA9AA3E7A57F27E52A1B4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Sphere_Blue_Paint.mat",
+    "Hash": "4E824F9207EA197FC7DFA3976B32E94F99967D3F65B4DA50970A60A175B7BE93"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Sphere_Blue_Paint.mat.meta",
+    "Hash": "34878261C90A2D9AE32CA58A31642E995E66F713E43EDE08F5A8443045C5FFC4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_00_Slot0.mat",
+    "Hash": "3C6B9036170B371275FC2029A479AA1F62F51A333E5A2330C940815C881718B0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_00_Slot0.mat.meta",
+    "Hash": "625F82ED012967C8CCB035098F4BAEC991CC369647D908D0203C9CA7E7A1196F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_01_Slot0.mat",
+    "Hash": "06FDA9D483C2F72350DDDEE72253096E7F4F79F4C9613622D762BEC66E40F25F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_01_Slot0.mat.meta",
+    "Hash": "2E8A8146292F3344AC114F250AD3D2B3FA88FF02B051702C2F8169D59C9690D5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_02_Slot0.mat",
+    "Hash": "A246B2DD2517F67914159D675D1BAEBA81D15119957A4DD542423193D0987FAD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_02_Slot0.mat.meta",
+    "Hash": "606657C167294C8B560E9A2660584E80C67FB5A834AEC07017434741860244E4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_03_Slot0.mat",
+    "Hash": "957AC0B416A23D5653CC936CA4676E4342A1E484B0A211CB857AC5E01EAE0EA9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_03_Slot0.mat.meta",
+    "Hash": "FE8469DA0CDBAD1D5CBFA123B9CEBD1CB2C26415E6A00FC41836C5D48EDAB710"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_04_Slot0.mat",
+    "Hash": "EE1950D870B242E53983BCF6969BFF64865146B2A7485E7AAEC5A66E3DEB45A6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_04_Slot0.mat.meta",
+    "Hash": "18B9D90F647965C194CF2BE368A7B13116FF4074792086DF67A120F122A58D13"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_05_Slot0.mat",
+    "Hash": "50B6CEE08EAAC0719046EEF603B8949CBE896B8CA8C0B2507C61CAA0FF6F801D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_05_Slot0.mat.meta",
+    "Hash": "B7B5A56B6CE20AB76C2C15302A22614D49D7EAE9704D1AAD53B9D76CC9BFAF40"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_06_Slot0.mat",
+    "Hash": "D57829B27866A75C21BF86A7A2264387637ECE3844E7A1E7D4DAA057B0F43EC7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_06_Slot0.mat.meta",
+    "Hash": "B0677F17AA4EA94BDD82BDAE3FC488B1623B59004CA7BBE726114A1FFD9011DC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_07_Slot0.mat",
+    "Hash": "436B1A8EF58AE73509CEE00B8766E00DBFF573AC0B5CBE5D32AAB5D53AFD0157"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_07_Slot0.mat.meta",
+    "Hash": "8C3ED09104773EF16935846EA06FC5C8ED3F657B00F3C0DA0D4867CF32C4DE78"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_08_Slot0.mat",
+    "Hash": "1EDD4BAC09E481963CB718BC92F35C291E57AADB74EECAE1F1B986D152CFA0EE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_08_Slot0.mat.meta",
+    "Hash": "9A45A749FB3D40355767BEADA05C5FFFF01E314DE2949D491D00AFE369852537"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_09_Slot0.mat",
+    "Hash": "B383B92FEF38C4D56DCD66C52586A43CC0BE66DABC7756413A19D4E7BD64B9FC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_09_Slot0.mat.meta",
+    "Hash": "644D5937E9D11535C26196AD6865F4759FF3B8874494AE3583BD26A04A09ABB0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_10_Slot0.mat",
+    "Hash": "53EAE969C834B3B5A5130D9E75B8E03F5385BEF9E96E3BF5EE7B3E01EB44A42B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_10_Slot0.mat.meta",
+    "Hash": "F7F9FCDE6F6B16176E2949D5B208CD4E2B02A1523799215F9346E6BE9910EEF8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_11_Slot0.mat",
+    "Hash": "212C5EE677E88FE0E00CE2AD84F9AE3FD6D8F3B88510ACC6BCC43975824FE1AB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_11_Slot0.mat.meta",
+    "Hash": "D521331DE19B95BA957FCA759EAA513CC914B18FA5129BAAFDA092954FBFB9B1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_12_Slot0.mat",
+    "Hash": "A9577A4B923EF44F8DF4EA51AC75025D9FDF6F91685AA67CE60474590F490C8E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_12_Slot0.mat.meta",
+    "Hash": "0BCEA30D6E27C8FFCC220F32E1D725AD408822A40AD640E6ED3F22EE5C493606"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_13_Slot0.mat",
+    "Hash": "248CFD7CF39AECBB59817E0E8E52E9D12AE18A13A9184B9C912DC966748B784E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_13_Slot0.mat.meta",
+    "Hash": "E7995959C49B61A65DF0775B0A21D1653D5D4A0541A26A84DB3009ED92F0FEC1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_14_Slot0.mat",
+    "Hash": "FAD696F4EB6F93ED76DA437D6C071ABD82224037044CEED387C4681A44D93DA8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_14_Slot0.mat.meta",
+    "Hash": "2E3F98148B5E8E358B9F91F8848804EF5FE68080A8798C19998909EE6E50246B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_15_Slot0.mat",
+    "Hash": "DF4230E55B50F8790CF29836AB176A172326AC52B288128846F743A8909820DF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_15_Slot0.mat.meta",
+    "Hash": "64FBF34B52C653591B330FA2A2F043C22B6BB4F9EAF1D5C37BDF2CAB98473336"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_16_Slot0.mat",
+    "Hash": "97D7C149DC695A389EA309A08ECFAD4D8E5EA7B3DE85F9818944A8EEB377827A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_16_Slot0.mat.meta",
+    "Hash": "241A49B9FAF53FB33B94E9E33E7F779F1A54F09A43A6C4BE772239D5384BBA36"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_17_Slot0.mat",
+    "Hash": "A9E89C0508252E8FC5FF4425DA57F7B340DBADB4D9562E5C2DE74ABDA6532192"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_17_Slot0.mat.meta",
+    "Hash": "E3F9CA7974DC19E14E1AA4BAAA9FFDF761031947509D642B985F6D4699C2ED91"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_18_Slot0.mat",
+    "Hash": "93EFDACE4696B1C292A2C140DC38FD10A65C971E10C1755536788F9FE7526F2D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_18_Slot0.mat.meta",
+    "Hash": "52E35CD1DD5583580AF6EE5ADC246069579A91D49CC90661D992D7ED1F9125D7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_19_Slot0.mat",
+    "Hash": "B7655AEBE7326F5EBAA63D1F032C7CC50F11FB67FE6D6B4D7CACD1643D8DA4AF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_19_Slot0.mat.meta",
+    "Hash": "B88277B29A1A6AFBDC395454928546099FF1C3E327C4F3CB586955148D8CD900"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_20_Slot0.mat",
+    "Hash": "326F4DF8E273A332685023C6444C0AEC3BFCB7A684C74EEB30B774DF0937A90D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_20_Slot0.mat.meta",
+    "Hash": "A951742A07370D99323F18A23A334E4DB53748F2DFA633D84D9553C4BD838FA9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_21_Slot0.mat",
+    "Hash": "A4DBE82D4ECDD46BF3774C848EB692136F8B1446091FF69365340C4F014B9480"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_21_Slot0.mat.meta",
+    "Hash": "CA1C265D5DDF7EEAE71E495EF6306DD0F620B6079D6F34560B9A8720C7DBA713"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_22_Slot0.mat",
+    "Hash": "ABBEA4F04728F1099571793078E28FAF0C4A0B4A084120C3241E13CC94F3F914"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_22_Slot0.mat.meta",
+    "Hash": "D9A5896BD7C39C0D0515A1B61A0A10D82029A648CB6FD202FC141FC47E3DC57A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_23_Slot0.mat",
+    "Hash": "D0F1F17A5818CA85F159755DE640ED0EEFEA45A9CBF8A060FB0CE4231F148C81"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_23_Slot0.mat.meta",
+    "Hash": "8185873C7BCF98542FC69D17CC116B1421790B2DE206B967DBA57BB270AC0027"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_24_Slot0.mat",
+    "Hash": "FB2FBA82B496CC9F5665C5F3BC0E309D9F255635047A3B41EA16DF186A5B6AF1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_24_Slot0.mat.meta",
+    "Hash": "E690CF592A1CAD54AF87E560CFBF7ACB266E64B2B4F61D694F5B6EF14D74F74A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_25_Slot0.mat",
+    "Hash": "6D6788ECE8F49CAF03FAA36A0DB28767BDC8F3A10B466C9E9C89A0DF468815DD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_25_Slot0.mat.meta",
+    "Hash": "9ABA7166FB802B41CD619B1E60D370F74952D7F516474CAF63E17544A6312337"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_26_Slot0.mat",
+    "Hash": "6C52922F4B04E3170A020A097A94DE5C4A67A25CFFAD1F2C72EA3479265450EF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_26_Slot0.mat.meta",
+    "Hash": "A7CA9C2F7B1205C58D324606D9C52D31D7B6053E139D02E086F16B06C8731A05"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_27_Slot0.mat",
+    "Hash": "C7D98DE5076919C9BDC875F19FE12A97B0927C88D88C957CA802FA4E4EB8C437"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_27_Slot0.mat.meta",
+    "Hash": "0440E734E525EE11466C1FF729C69751C80FC6C3F1432AB85D15D6B3AD15E53C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_28_Slot0.mat",
+    "Hash": "DD3152050604DAF3367E10FE7AF3A6B7AC0B3DA277E93388FE6725858CD9BD76"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_28_Slot0.mat.meta",
+    "Hash": "78933201E9524D933DA55BF57D6C9EEE761448A36562B9B3CB69AE6A861DA8E7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_29_Slot0.mat",
+    "Hash": "B76EB14B5C9F185A99ED26CA6502CD97D35338CAF13295ABED2C07B6B3F4307A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_29_Slot0.mat.meta",
+    "Hash": "9CD7338F56CDFAB5A8F9F44886F5FCB97B395D4BE6FAEE7A531E0FDB1AF66619"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_30_Slot0.mat",
+    "Hash": "774B179AF6ABB6D6CD8193C2CE060CD3FED37877E1F3DDBC336B67E2F33CC06B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_30_Slot0.mat.meta",
+    "Hash": "DC433A6BE419397A814D593C9D82A17F0AEA7209D02BB199F0675ED95FD82E95"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_31_Slot0.mat",
+    "Hash": "6F0D008C7BB87438346EB39ACB419D6C3169E3FE93CFF9F23BDE9E45C3ABDDBA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_31_Slot0.mat.meta",
+    "Hash": "6EC774380A71D1131D3D8562098C39C250C053A662B5F2B0AE8D3310A8EF97C8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_32_Slot0.mat",
+    "Hash": "9BBFBFAEAFF46A83CFAC89E928FB0F21A2BE6BA4666F3D6E00821B975CC79E0A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_32_Slot0.mat.meta",
+    "Hash": "402520EE0239A8F37BE2150B41030762B63BC4FECF8D2C95862651050002EAA4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_33_Slot0.mat",
+    "Hash": "D2768F4D7A12B66BC0CDFCD07A68DECE6BABA96C7FFB5AD117B196FDA79351A4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_33_Slot0.mat.meta",
+    "Hash": "814AE08CD6DB7D3A66E63B96AA6D706EDD1E0A1B95224D2DE46E88C9FD9AE08E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_34_Slot0.mat",
+    "Hash": "0193129433B5EEBD23F100509CDBE7521B3BFD8EF58B2F7D02EB690B52F4B476"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_34_Slot0.mat.meta",
+    "Hash": "887679E5F7BC3AEA9E5699AD943168A5AF1EBE45F7AB2E69449F6C483647FF2C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_35_Slot0.mat",
+    "Hash": "153591F206B7BE26492C03923E82DE5ECC27B80AB8087D447133BDB69DF53A83"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_35_Slot0.mat.meta",
+    "Hash": "7984A1BBBA4800D7D787E45778ECB56596565A0B8F71A608ABCEFCC647478B70"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_36_Slot0.mat",
+    "Hash": "A1A1B98DF18B4211CEA6E3C6CA8CCF8CF3C86EF50C7B4B9C7798685508C04F97"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_36_Slot0.mat.meta",
+    "Hash": "F62AC81C94AFECF5E57B29FCE7C3F261DE23D0D2795CBB956E0D1D7AA2FEB63A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_37_Slot0.mat",
+    "Hash": "41F130A8229AFE9883D23CE83808361A3DA22004C4CB316B3BDEB8F2EFB59FE5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_37_Slot0.mat.meta",
+    "Hash": "F25CD4E36D1C98D257CD509B9475D7972F9FD0A0376742AD5A0C6E0C930C1A24"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_Ground_GradientExample.mat",
+    "Hash": "384B776C1BB896045D295F0058C59226F76F49DB9B681C020971A78DFE5458A8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\Highland\\Highland_Ground_GradientExample.mat.meta",
+    "Hash": "D7FCF4F99ABAC9C7174F9F7DA1870572467A078BA8CE1B77C26906C569FF1074"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_00_Rock_0.mat",
+    "Hash": "321E5D11EF7591EC7589F7FE4E4942426252E3ABC4DC587C2018C7133B473060"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_00_Rock_0.mat.meta",
+    "Hash": "BDADBCE6185D58DDC88772640CDBC18161EDCDECF6B027F31A9A768D079BB076"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_01_Rock_0.mat",
+    "Hash": "C705CFB6C03CB12B1A60D333B1741BBEE313573AB5DE96D0730473A3991FD8D8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_01_Rock_0.mat.meta",
+    "Hash": "C0BECB705533EFBEF3B85ECEF3865E48E80B463D5705C00848DB3C4E3C91829A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_02_Rock_0.mat",
+    "Hash": "ABE2F74393FA60C9884EFFD3840DD7AF5C55166F34999339A2103CB4596EEDA9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_02_Rock_0.mat.meta",
+    "Hash": "024F6AAE0C810CA6E9508F8AB0A8AC0F667E633321191E4D7C89D8BFD5C70BF4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_03_Rock_0.mat",
+    "Hash": "4B362BA1577F44A682CA898650712822F1DFD0760273AC9ABEF4D58CE974821C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_03_Rock_0.mat.meta",
+    "Hash": "AF792B89F570C981E52B65D8B8B28F7B607097103573642403ABF6BF403773B7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_04_Rock_0.mat",
+    "Hash": "40F50B9E65BC78FAE8293C54B8A0A2915EC6E07EA9087C71AB6492D91194D76B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_04_Rock_0.mat.meta",
+    "Hash": "4F62494F4ED63D127A219562E59ED614A8F7BA353C736A0A162C553F272EA874"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_05_Rock_0.mat",
+    "Hash": "FBCC535AD5F09DFD0E8F3986580B1827213B8184BD458B09F93CF97EB1B6F066"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_05_Rock_0.mat.meta",
+    "Hash": "28421415C80DE4DEFE62E8E9915F5CC3A604252246160E11976FB688D3E715C5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_06_Rock_0.mat",
+    "Hash": "4C900EC67F3BA1EC75D9E8701E75B1EC06C523DC0A7D02ABD4BE9FBBF3634762"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_06_Rock_0.mat.meta",
+    "Hash": "737BBFE7856B27607DACCDAF09FD8CE3B91215AC4EB25050FE19838EBC13E3C1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_07_Mountain_0.mat",
+    "Hash": "DFB1E04E94B07D45BDC78A16F180D614DBB5E681E788845A3FAEDE7E0A041736"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_07_Mountain_0.mat.meta",
+    "Hash": "23FAAD15BF359DC07E20AB4EF85D1A8F7F0155730284E3D0150780623462730D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_08_Mountain_0.mat",
+    "Hash": "2DE9C4FF6EDF00AD1CB201777214D3852F4ADC7EA5C6F626A52B010A7B347B07"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_08_Mountain_0.mat.meta",
+    "Hash": "221827A049962DE85BF235C494B93E32B20F91A954F11CE0A57C47F37F14F7DE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_09_Shrub_0.mat",
+    "Hash": "97438E5C9F1F296DB18A2B85A83425C94AEC3DC2B0C12A8474C4031CFCC3406E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_09_Shrub_0.mat.meta",
+    "Hash": "CA99E5164608A078C1892ED8E88BF381255EF5C9CEABB2B704497DC4C6C96EFF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_10_Shrub_0.mat",
+    "Hash": "230149576342EF95CE192F03A1709477B53718F636AC4A7E963E1AD832CB7033"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_10_Shrub_0.mat.meta",
+    "Hash": "968BF41F54833D3F1C57BBEA0226225EC131D0092080C3D66828E631444E3BE5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_11_Shrub_0.mat",
+    "Hash": "AAE2C59DF043EC151A8FA7009E5D98FA939E7AF9F6B1CAC74792C94BD41BCC54"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_11_Shrub_0.mat.meta",
+    "Hash": "72BFA4A8C44D53BAECDDB88866DED00AC3E13469071D566C3066652570D3DF37"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_12_Shrub_0.mat",
+    "Hash": "8EFFF5E8D24E3D03C72F4A9C6702B1B8794CD6E0E77A9EE7EEF61E397E620AC9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_12_Shrub_0.mat.meta",
+    "Hash": "BEFD858457981CC88AC72947A75A1418C635B856EF372A4F858EEAE1DB31A407"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_13_Shrub_0.mat",
+    "Hash": "05806A07E36E536554B332BD4EA9A5AF3E73F05A17E717C35248B11D15719486"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_13_Shrub_0.mat.meta",
+    "Hash": "947DC7EC31EE1CC7ED97D1E258FD6DD5DE105C033652CABC948F05021BAD7744"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_14_Shrub_0.mat",
+    "Hash": "BEFD3CEAF6CC9DD8BB8274E10EFB5D16E0F2F62E1E747A2CC9DD5A3E514DF3E7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_14_Shrub_0.mat.meta",
+    "Hash": "E355C39280533401FFFE92D9B1E3D878EF3D8F9BA0B42B6C0192F56A314566EF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_15_DryGrass_0.mat",
+    "Hash": "1854EFF11835871CDCE7AE9711412731D63DB05179F8739697A545BB984B01AB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_15_DryGrass_0.mat.meta",
+    "Hash": "94662FDE40A698C84FFC855EC136C3BCA4A77D29B93DD1C3C0368AFC608E0813"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_16_DryGrass_0.mat",
+    "Hash": "FAA1AB8D77C3A3D4A96D9E48A9A1D32FF21A953EF8B4B3B4785442B6B2AF9B6B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_16_DryGrass_0.mat.meta",
+    "Hash": "9CEF7BA699FE6E7C2E553E160826B23AB5D8127EC389A4DB05AB8C105664D6E3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_17_DryGrass_0.mat",
+    "Hash": "055A28A15F99F53E8DA374C3BFAB89476E8493738A8021469CCC13B13C51AF1E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_17_DryGrass_0.mat.meta",
+    "Hash": "7D667B6CF58B9AB283A5942ADC9C4510DEDD4792081AF66050534A3D9BF2BB32"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_18_DryGrass_0.mat",
+    "Hash": "3E4885E58A993C4EF4DAAF604DDE63145D20E8CEDE565BCC30C0D88B1EB2CC29"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_18_DryGrass_0.mat.meta",
+    "Hash": "A6E31FE31FB7694AE4CAA694F8A797164135525825B462DE8DFF44B1AB4E44F4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_19_DryGrass_0.mat",
+    "Hash": "1DF08EEB95391DF08753A4A5E53156B6F485AAE192945B20905CEB45D3D2E98C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_19_DryGrass_0.mat.meta",
+    "Hash": "D2A71A3AF8F9EA61A659C9E935348EB9D018E26D954A14B39FF1677040A8E71D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_20_DryGrass_0.mat",
+    "Hash": "876CDBA942AFD015B90CE8B3D6F35C585FCB5385E3615221F172F886D9027818"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_20_DryGrass_0.mat.meta",
+    "Hash": "54924D6E413BFF5750DFDBCFEF8BA4B9F10F22E46D6242EA9F7E362F7BDCE1A9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_21_DryGrass_0.mat",
+    "Hash": "3646CC834379730FB3AA4F523D10B71F872756EF8C332F04C87C2A613042037C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_21_DryGrass_0.mat.meta",
+    "Hash": "9103F3ADAF56A6968E5140DF6F50035A133A06B8D71F94D08B2DB1DE8D9E4F4A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_22_DryGrass_0.mat",
+    "Hash": "EB61D71AAD8DFB0C99F261B50B0F73DA075CE735FD22018D12D2BFF515D38999"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_22_DryGrass_0.mat.meta",
+    "Hash": "17F19125BF426145F1E425974A8D03C4E1B054BA14148B55389D7205387E7C0B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_23_DryGrass_0.mat",
+    "Hash": "ED5AA86D963A2900786E358CB387035D156738DCD2AD4FCA20D497110B6141FD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_23_DryGrass_0.mat.meta",
+    "Hash": "D22AB554AD49E7C17CA892D79334F57A447B349C13194192381646D86E5EA35B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_24_DryGrass_0.mat",
+    "Hash": "F9D067F77CD1AD1D7571BA9F25BEF750C7F8E8CFD57522021CAE1469F974BE24"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_24_DryGrass_0.mat.meta",
+    "Hash": "289F98D2F3E3A4847595EF4F8708F8DE1CEBCD8C78BC94444C62FCDC58CF530D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_25_DryGrass_0.mat",
+    "Hash": "E273FBBD676754AFA55F911600E276FE6AF9FDAD46C41D8CB6214EEDD0C69C9D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_25_DryGrass_0.mat.meta",
+    "Hash": "C7171CEDC74ED6297EA1E65D0ABE2F50B9173E999A9ABE9A9C1B83DCC6E59575"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_26_DryGrass_0.mat",
+    "Hash": "6EDDE966342189176F1AD33B45F1C58036FDB14E556B37018143DFEE0A3B2121"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_26_DryGrass_0.mat.meta",
+    "Hash": "E3548CD4A2AD51DFCB48D69A7C76FCA75133E67BFC985BDE9787BCA9276AC3CB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_27_DryGrass_0.mat",
+    "Hash": "78EBCC14C4E32B8170676B9DA34558D77542EB07BE7A5CD778DECBE4C7A957EC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_27_DryGrass_0.mat.meta",
+    "Hash": "4FCE840919BAF5111604B5D23B2A01692639B1502AA0DF08C08A27A50CF8AFEC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_28_DryGrass_0.mat",
+    "Hash": "FCD9183E57EA90DD1E5F74B22792E9B0AEC39B776696336FC0112AC5A8FF7E3A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_28_DryGrass_0.mat.meta",
+    "Hash": "6F8ABA4EC35542EAB8470686438D97964B2716974C507EEB3FB8F670E2046073"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_29_DryGrass_0.mat",
+    "Hash": "E34166A3C418D7339FF2AB970AFD53DCC6D6F3ED791A103FDD6F86FFA2503F30"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_29_DryGrass_0.mat.meta",
+    "Hash": "F0EB0A244EF8497C351BCFBE004F84435AD92456273DB4FFCF874E3D8FD5D382"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_30_DryGrass_0.mat",
+    "Hash": "2B6CFBF34A0ADE08944F5D9E9F6277CC4DE5787C2AFF1957F11D3B806136ED9C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_30_DryGrass_0.mat.meta",
+    "Hash": "8A2024985DFDC0B30B4D2710A63EBD4A80FF21E206D97F85A7CC9204182CAB93"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_31_DryGrass_0.mat",
+    "Hash": "BA1A52DC1A34BCE9C6333C68E4B53FC75886101A28776B39F1ACF073382225EE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_31_DryGrass_0.mat.meta",
+    "Hash": "4FC2AE5CC2DF0EC02409378F5BE574BF583A6A1172E154A65629571AB63EFF71"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_32_DryGrass_0.mat",
+    "Hash": "092A8FE0CD7FFE374B40A0DAFEAC293E05F8A6EDC6F0E69D86EF92408800E4DE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_32_DryGrass_0.mat.meta",
+    "Hash": "812986232BB738E8173636D27A935BF648B41DF30FD4CD5A9F0DFCBDFCDECFE9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_33_DryGrass_0.mat",
+    "Hash": "EBEEB349C2EF482355466A1115535A033DAD28ECB6FE6EB7193ED37C47030DED"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_33_DryGrass_0.mat.meta",
+    "Hash": "16CB3519D2096848AA98BA6BA46CE95AFE37A89805F1FD9FC7055AD9F9A3CCC8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_34_DryGrass_0.mat",
+    "Hash": "ABDB14987B43FFC9CDECCC90A0218AB7FEE98EEAB4AAEE5D140398570DFA9194"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_34_DryGrass_0.mat.meta",
+    "Hash": "B4FDC3F44D6536607239CCF336C7F42A2D3EE46BE1EA70F280FC4F516D19ADE5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_35_DryGrass_0.mat",
+    "Hash": "A747D2E9842C5AD05828348F6941357898DE6F53D37E457F023EE56C0E77876B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_35_DryGrass_0.mat.meta",
+    "Hash": "04AB9BC7F49501BC3CED2FE39304DBF44F9C4633B180FDE268B67D6A927ED6F9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_36_SummitStone_0.mat",
+    "Hash": "76CF19AE0F0247B16B9A664433C2F7566E4B473FEB917DF51293AE0C759323D7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_36_SummitStone_0.mat.meta",
+    "Hash": "6865CFE6C1249FCC18A2F3DE9CFAF01150721B8F0B81340AF766AF20DBE1E051"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_37_Meadow_0.mat",
+    "Hash": "BCFF82BB7CD67017483D15451F80E38D92639D1A64C98310FA0FD62481541898"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Materials\\HighlandColored\\HighlandColored_37_Meadow_0.mat.meta",
+    "Hash": "5839332562C826BF67056DE0FD9B648126EF61A74D28004C63F9AAE4E7FFF6DA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Cube_Cube_Coral_Paint_Color 1.png",
+    "Hash": "6B5AC167CB03C6AF38E20BDADB18A39840208B18D6EC37B36721556FE67A7BF1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Cube_Cube_Coral_Paint_Color 1.png.meta",
+    "Hash": "9BE8FEB4B8FB58F0160008DD7DF34B8F4B5ADF263BE338E213066A768303D194"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Cube_Cube_Coral_Paint_Color.png",
+    "Hash": "1AB39F7827B8E6450AB295F5ED7D98F40D75C9FD286980B1F6F61B47DEDBF653"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Cube_Cube_Coral_Paint_Color.png.meta",
+    "Hash": "17648E0737C88C918DF596EAF7079D2F858FA0E46E73DBBD1310319E8335B0FF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_Highland_Ground_GradientExample_Color 1.png",
+    "Hash": "50E5610AE6F9965972B7A5C720FAD13AD81F0145A24A01836ECDA5F411FCC8AB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_Highland_Ground_GradientExample_Color 1.png.meta",
+    "Hash": "11A722082FA2DECEDB4FA8589713F6BC809A31DEBEFA30774388356D04FB7129"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_Highland_Ground_GradientExample_Color.png",
+    "Hash": "C40EE058BF07B1721878DF412322CEC66BF17C1EC58C178D17BAE593C58A9465"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_Highland_Ground_GradientExample_Color.png.meta",
+    "Hash": "76FF484CD817BDA3917E1DA06DDFA8A323B10ED613C40E860528C41F5D8946CF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_HighlandColored_37_Meadow_0_Color 1.png",
+    "Hash": "2CBB0DE208DA020D681DF21F94E91E4E62F7B2A933B46C95DB1BA2B4650F795A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_HighlandColored_37_Meadow_0_Color 1.png.meta",
+    "Hash": "5FD6B05563D3CD144C07709E0EB872D0F842C2E4B07B9921293E2085F70CC68E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_HighlandColored_37_Meadow_0_Color.png",
+    "Hash": "0EC73D424F582AB51748B491FF38CFC08E6862173BB81373E5581E5C33E7958C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Ground - Paint Here_HighlandColored_37_Meadow_0_Color.png.meta",
+    "Hash": "E659B68B55E585AA5BA48EB743E0D2CF482335C7B95A787B985241F15CBD0D4C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 10_Color 1.png",
+    "Hash": "51C3AECEDEE5A9311DE39EBE0F69D2A4FB7E010E197717F5687D1BD098585196"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 10_Color 1.png.meta",
+    "Hash": "B1E5A6A03BC9B095066BA58479D6AFD4E137EBB0511A243BC3BDC1231C0BF48C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 10_Color.png",
+    "Hash": "757AA0F621A9C48B7DBF3A38B8948B2F5E05126ECCD22994B66472BBF4E42F0E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 10_Color.png.meta",
+    "Hash": "37D8B92EA38090F178BC20B74BF5CC53B46DDDE61554E87A981E143B0213279B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 10_Control.png",
+    "Hash": "62634E368D3BBE787D60FC838471ACB21CEF453BD5E81A92EA85A4B38FB28F7D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Moebius Paint Surface_Moebius Paint Surface_Ivory_Paint 10_Control.png.meta",
+    "Hash": "4481485E9483EF111FAA0D63E413926AA5D9A4CCBC6555354722681C3BA29199"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Mountain 1 - Paintable_HighlandColored_07_Mountain_0_Color.png",
+    "Hash": "FC7BB52809C88F11B524DC61FBE207DCB3EFB1ACC8C4687EADB16599A4731317"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Mountain 1 - Paintable_HighlandColored_07_Mountain_0_Color.png.meta",
+    "Hash": "A2FBEF0F2B6E35586ABBB773D80B5DDEBF5F72AD916E9320AEDFFD1F80273613"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Mountain 2 - Paintable_HighlandColored_08_Mountain_0_Color.png",
+    "Hash": "557000FF84E55E929CB5E987C3F21B36241842E194228774A3CB6DD7B0E5B88D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\Mountain 2 - Paintable_HighlandColored_08_Mountain_0_Color.png.meta",
+    "Hash": "0C21A8465AF5EF834AFF1FC6A5559C693F8BF2654D8C5402A3E47B69251AAA6C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.020_HighlandColored_00_Rock_0_Color.png",
+    "Hash": "9F885C598214DDCB27F6F1714F1AD0626786C97205EA456C85C11ADF03C5ED01"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.020_HighlandColored_00_Rock_0_Color.png.meta",
+    "Hash": "E8D16731F2ADFFAC5FA6CEC0C50AECB199C2656499E90F039E55777B3258B0E9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.021_HighlandColored_01_Rock_0_Color.png",
+    "Hash": "34E636B00038DCD88CE0F0F1BBC9771C1AD16EE068F0C160FEB39097BDB0E048"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.021_HighlandColored_01_Rock_0_Color.png.meta",
+    "Hash": "D315EBC657AD43D4B01B75A1FD53530D7A7F382A7C0389D03B3DE58700B509E4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.022_HighlandColored_02_Rock_0_Color.png",
+    "Hash": "34E636B00038DCD88CE0F0F1BBC9771C1AD16EE068F0C160FEB39097BDB0E048"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.022_HighlandColored_02_Rock_0_Color.png.meta",
+    "Hash": "B468DC29E51DBB928655AE72C2BFC36B7918D278CCDC8856450D2F470ED5DB9C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.023_HighlandColored_03_Rock_0_Color.png",
+    "Hash": "4FEEEA145FC8A9E2F634CA13679BBF06AFE5E677595248C71F269B82FACB92AD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.023_HighlandColored_03_Rock_0_Color.png.meta",
+    "Hash": "033124475D6C0119E908A9E7B59032A9D11DF380886761FBFD49C3A6A7A28D2A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.024_HighlandColored_04_Rock_0_Color.png",
+    "Hash": "9AB44710A9B0E6B145F54C421005FC077C519F76E8707696F8B3D0644DA86716"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.024_HighlandColored_04_Rock_0_Color.png.meta",
+    "Hash": "C94E67BCC0AF385A24B93940A88F73C831DC53C99E10F3EA78FDA55095A563EF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.025_HighlandColored_05_Rock_0_Color.png",
+    "Hash": "B14F764884AD1B8A635C19CFE14F3013EDC47BAF93218B362921B5F5BCA5255E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.025_HighlandColored_05_Rock_0_Color.png.meta",
+    "Hash": "6168F7EF8B8C94EED98F358AF071827FEB685188E7DACEFC7A6D6BC8AC482158"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.026_HighlandColored_06_Rock_0_Color.png",
+    "Hash": "5C1247BBA490AA85387917A0D3993502C7EB701FE920400090C6574E05E428DB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Paint\\Textures\\pasted__pasted__Cube.026_HighlandColored_06_Rock_0_Color.png.meta",
+    "Hash": "90FAE7119E1A9195764276C73CCF54752482B0DD50DB0EC7B62FBBB6FA0B9BB3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Water\\MoebiusWaterSurface_Shore.mat",
+    "Hash": "3EDBA9CF2B3AEC9C83F8B7462BB0D31336C2CDC0AFA42BE4928B8A9B79E71EE9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Water\\MoebiusWaterSurface_Shore.mat.meta",
+    "Hash": "DD0D0E46BDFFBF73B041F22D644FD5F558916765D08359378D435868A3C67778"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Water\\MoebiusWaterSurface_Shore.png",
+    "Hash": "FC4650D41FE62A5CABA4D91A2468969C76824F42AB54C03D4A5F834395E2AA84"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Content\\Water\\MoebiusWaterSurface_Shore.png.meta",
+    "Hash": "22C1540E3AACC367CB935D9E347C575793020632F092CE469A6AC7CE619F724A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector.meta",
+    "Hash": "045238E0957563D4490DD6F7F303417D44C3B802D241FE2D8CF7F36D6AE88634"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint.meta",
+    "Hash": "5D1354F5DE8A95011AE8324AB45E79073D7B32C9A659B9CB2D21FBAED2CC9D68"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Water.meta",
+    "Hash": "3B2BBEF16B4F1CC5E7748674EFBC910CCA579FF24E435DDBFFB9998871A88DC4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Waterfall.meta",
+    "Hash": "08D77E50710A5B9E274EFC01730A5FBB86FFA69A15A3D6934D06931A8B90B991"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusBillboardCameraInitialization.cs",
+    "Hash": "D30AA8E276D50129654D01B4444A2229FD266BD2AD571D3E35E1A263FD0E4302"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusBillboardCameraInitialization.cs.meta",
+    "Hash": "E98A4295452055BE72326BC2040A0E757F4FF2C476E8495F464083A9771811E4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusRampThresholdDrawer.cs",
+    "Hash": "0EA4AB8721B1C7435D78446211B7F0FF22B1AC98A89CCFC68B0F71A29385A2E8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusRampThresholdDrawer.cs.meta",
+    "Hash": "BF9EC5A431B3C64795DB5DAAD1E47DC992747A828BAA740B7B64210580754992"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusWaterfallShaderGUI.cs",
+    "Hash": "0582A24608DCBC931649F7BA9FE4063C42F4E12FA50A7878BADCA7FB5446976F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusWaterfallShaderGUI.cs.meta",
+    "Hash": "0B518601F1A7B7ED259C823F0AEED055EADF36B3ECF8FBDF182143AC7D696C3D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusWaterShaderGUI.cs",
+    "Hash": "3F76CFA0B115A7B93D86BC6E3819DE5382A500F31DC7CD36E36C23EB4230792E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Inspector\\MoebiusWaterShaderGUI.cs.meta",
+    "Hash": "1D44FC1BCD4FF80467A2DF42645BDCBA3F174E421E197B1525EF27EF82EEA8AB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintAssets.cs",
+    "Hash": "6D6BD65C917A98254D5E9F9032AEA3E38EF7FE1D2E8C86FF6C278A61EF749187"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintAssets.cs.meta",
+    "Hash": "7891E180C581F158D42BA25F2873A874CEF1DDD7256A133EC88A0844A206C58E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintMesh.cs",
+    "Hash": "AD6A6A78065C7A4C8142A5A82D0919AEED2D313866FABA36339B5DDCD4B9BB94"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintMesh.cs.meta",
+    "Hash": "2CEDBCDBCC1D3AAA93ABA3E368B09AAD55C29389D2743AC5962CBD1EF36A1FCC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintSession.cs",
+    "Hash": "5228F06A446744E6CCC94AAECF6BA39A38225856383694FC2ACAD135B4D8107D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintSession.cs.meta",
+    "Hash": "0F1CDC3A75B2DF16942EB2A8D4D20940B9480A50A092BB7A9B544C6AE5004664"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintTool.cs",
+    "Hash": "8D6DCA0E4B9367AF1622A39A20282D98A0DF712EBB29A3E8AF39270464B0DEDF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintTool.cs.meta",
+    "Hash": "837177698FE95189569E11354D1E3EB1FBAFCDAB719C92F34D3985FD9223DD05"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintWindow.cs",
+    "Hash": "0715B6F3587C9D7695F433482692484326415C51A7A8FC783B6AA87B343BF041"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\MoebiusPaintWindow.cs.meta",
+    "Hash": "49FFEB87730BA178B491F1A61C8CFA3CDDCE9A45168DA495601062F5383B7564"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\Shaders.meta",
+    "Hash": "D277520F2DCFFCCBAB269757A417F7059C75342F0F94226B6E00A0BEB921FFFE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\Shaders\\MoebiusPaintBrush.shader",
+    "Hash": "3DBD3CCD9D8754D5570991127D9BF117F2F9AA04AADA033097A65BE86F042728"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Paint\\Shaders\\MoebiusPaintBrush.shader.meta",
+    "Hash": "A634FCA3E49C3F79E8AF569CC5876993BE66C1F03C2F3B5FCBDAB77D49E2B4C4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Water\\MoebiusWaterPreview.cs",
+    "Hash": "9F66D24051A12F96CD4D52C6E5975D231E3B799C306381861C87C70B64D8452B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Water\\MoebiusWaterPreview.cs.meta",
+    "Hash": "A8F4BD7B2EF5BB005845D0C95BC4C8DB2258D932D8BB7CB155F80E9FCCEE0C39"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Water\\MoebiusWaterSetup.cs",
+    "Hash": "67DFBFFD65854742AA0CD420F8BDD35F5572A82D5BDBC58F77F0BB6DC1CCCAEA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Water\\MoebiusWaterSetup.cs.meta",
+    "Hash": "4843420F53738ACA482E200716B8CF7A8887300166E2D56195FB11EF827A42BD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Waterfall\\MoebiusWaterfallImpactSetup.cs",
+    "Hash": "10BFF1433D66733B634E105EC2FAE68273445B14A6ACC43D8BA75D4FDA811A16"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Editor\\Waterfall\\MoebiusWaterfallImpactSetup.cs.meta",
+    "Hash": "760DE61672040C9DC5CABCD4F14EF01EACD580144CBC48DA93D51E9CC376A646"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Controllers.meta",
+    "Hash": "4BB2FF569D39B802FAC005930DF5F43C3F0082C4369E8C024DE07040945D41B2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Rendering.meta",
+    "Hash": "5F6E2A6E9254D299504D14DCFF793F3426C8F06388F160179EBDDD62C3EDA491"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Controllers\\MoebiusSpatialColorGradient.cs",
+    "Hash": "D6218412E3BCE8616B1F9A86E08AAE71E685F3545489D526D7FA7B1B11125451"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Controllers\\MoebiusSpatialColorGradient.cs.meta",
+    "Hash": "A8722C8E2E7954066984930820F5A20A6448BF90BC2F4888DD58AC45190E196B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Controllers\\MoebiusWaterfallImpactBinding.cs",
+    "Hash": "7A0A6AA90EF6A711704395102FECEC8C9697A5AFB298CB5EDAB6F15DDB7D6284"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Controllers\\MoebiusWaterfallImpactBinding.cs.meta",
+    "Hash": "DF77F71F5A43FAB2DD331E2F552AAD4975FB53DC45A687E2B191C9C573EC65CE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Rendering\\MoebiusBillboardCameraGlobals.cs",
+    "Hash": "0AEED9FD6AA01011D007134C148D0A8B768BD4D8C0D89C6F76E3E169918D1087"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Rendering\\MoebiusBillboardCameraGlobals.cs.meta",
+    "Hash": "2951C475416005E0B8AA869F64C35874DD16DF6C33CBEBC5E070D5BFC9532B90"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Rendering\\MoebiusOutlineRendererFeature.cs",
+    "Hash": "B57A0B0917E63D4C9BB6FC662ADD046435903A481E33F79E95603D32489E89A3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Runtime\\Rendering\\MoebiusOutlineRendererFeature.cs.meta",
+    "Hash": "AAF2B1B65AB88CEC153E090FC7A49ECBB77F625533C588B526B5AC8AAE8933BB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard.meta",
+    "Hash": "D445C3A263B778F2BDB4C0AEDD07D62464A2F4DF8D71641A616108784CDAB12E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes.meta",
+    "Hash": "667B18E6C5B280295944BF61EF97145057C375F9B2F41452E110E277AAB4EDA6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\MoebiusComicDemo.unity",
+    "Hash": "5D601D6DE7F6F3650B115DCB2B99613D94C1CD77E790401FDDE0A3B864D8E207"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\MoebiusComicDemo.unity.meta",
+    "Hash": "C7F9E066D686081E542A156947752DEBD87F53A2A9C4D95B93F14263B16A14A4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Paint.meta",
+    "Hash": "9DE9B64F5FFBC99820DB81EABBBFB8CB681BBA27341B710E6A77C9504CE9887D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared.meta",
+    "Hash": "38EC87EE643DDF95276478AE2694EEE5512590EAD2DB25140E1B3FAC18D7B562"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water.meta",
+    "Hash": "199F2369A8A7787827EC0A5157E286998F97F2C396EB002039398211077AA892"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall.meta",
+    "Hash": "89001933CB512B2FAB06C4F6CC371DB916E4654EDD7D08C83E41C97178E74FC5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals.meta",
+    "Hash": "06FF6314A73E5A4283D27DF5D6BAA61E4AC9BB33ADC48BAE5E2ED246BCFE410A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Materials.meta",
+    "Hash": "4A814D42B64F1D758C20929F6E22B71D11D3FAA15D273B718200A0731F09C019"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Meshes.meta",
+    "Hash": "6585F314EF2B66543A3F9E8DA0ED64E88A631CCA0FEFFDC93EBD0326C2AFCE16"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Prefabs.meta",
+    "Hash": "1420994008FD074A9DFA75C94203BEFE76F86842C7818C3BCF2823246893261E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Scripts.meta",
+    "Hash": "C6BC3115329FA1D75E99400426C832B174A968E115BDD3097150875E8D0BD85E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Textures.meta",
+    "Hash": "7D605E3EFCBC5903C9C033D504B3A61DB3D64B133561F2F3FCE1E4F3625F5A00"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\BillboardAnimalQuad.asset",
+    "Hash": "7FED30452CCAF60CE2C059A7A8F776C44C918F27E8BAEDD85DE9B580F45BEE87"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\BillboardAnimalQuad.asset.meta",
+    "Hash": "C23251B211FA4A557908F5790D03514D088FC3DCF2105C91EDBF6AF6B600D423"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials.meta",
+    "Hash": "15BDD7FF0053E406B3949AA2B15F5847050719C7DC103AC8BBC5267B2829E455"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs.meta",
+    "Hash": "D63568B2447B43A094A0D0C560B96C7CFBC0222813434EC0924DC1251D388712"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\README.md",
+    "Hash": "E6F13D3BFC0B2A378C56C318B8CA995D90CA23E5041A09F7F5D503E792DAFA19"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\README.md.meta",
+    "Hash": "B58C6CEB34C70CBBDAF1378DA904F05BBA89FE563243C41EDC924E81203CC125"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\ForestDeer.mat",
+    "Hash": "930B3890FC976B8259A165D4E27F20023CDF10DB46212EE16030149557C565A0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\ForestDeer.mat.meta",
+    "Hash": "E784C982E6FFC7872DBC16F89FD05FBB9A58BC3A90DB391C68956A77FF37C5D2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\MushroomFox.mat",
+    "Hash": "3E01C9A7B48501C1BF0655C3873203EB80A43E7FBD6C658914E75EB8C0792F64"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\MushroomFox.mat.meta",
+    "Hash": "ADE93674AEA299CF26B0FFE5FA0FE3461BF9A5905BAF9084618372625F2CD79E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\OceanDeer.mat",
+    "Hash": "C840106DEF04CA2E6062EA3CFBA2F7A097AA1113BAB7FDB95009CE507B7E101C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\OceanDeer.mat.meta",
+    "Hash": "F5E2224B94A198AED6D0EB1FAE127B6FCECB3BDD3BF584E225EDE19E2743968A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\PeacockSnakeLion.mat",
+    "Hash": "DA8B13AA57DFE6233039E1F7594694BEDE1B04D775FFC92EEAEF6D3E43F5C076"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\PeacockSnakeLion.mat.meta",
+    "Hash": "72EF29E0496930FC97EE5F5947EC6DBC1321355EBC086A1C4329AA7E43765CEA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\Wolf.mat",
+    "Hash": "A44EE40CE1CB0197C18476BA2699C99B3501CF5F4985A78FFDDC5D6869DE998C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Materials\\Wolf.mat.meta",
+    "Hash": "34C6AEDBBBA9665951F7581CDFEB453D8CCAEF9C7606B97629BE163A202A7521"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\ForestDeer.prefab",
+    "Hash": "03DD776CCB9A14FDD2D642F1921CCC67FE62D7DEAED54C8C4A498BF1C39995E2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\ForestDeer.prefab.meta",
+    "Hash": "DA94BED4F4066F2D2186052DCCDA4C3E7407C020FA1758CC04FFBC149E330F36"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\MushroomFox.prefab",
+    "Hash": "17CACCA35A6A3FE145BA569DF8F8C273994436A68231C4D13E882A05E0DC6158"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\MushroomFox.prefab.meta",
+    "Hash": "E993D40962BFBDCA88438CCECEE7CBC52B070E33517655BA966D073D389ED0D7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\OceanDeer.prefab",
+    "Hash": "61BDD08F1B109BC1946CAD90C24587FE4C044F002AE927F7AC55F2FF79D998AF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\OceanDeer.prefab.meta",
+    "Hash": "0C922F09E20142C2068B0E22DCB2046583E6820BD100A7217057BC59A705D65E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\PeacockSnakeLion.prefab",
+    "Hash": "52B1DA02EFED33FE2BE50D2222645F95F6FCA337B880B58385DD6BFD35948882"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\PeacockSnakeLion.prefab.meta",
+    "Hash": "ED077D59AFDED80F9FEBC9DEF201ADAAE60EE497763CD90A2200259DF9C0F6DA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\Wolf.prefab",
+    "Hash": "8358EB2076A20375144632DEA44237D096F77256826F0D23E4E4EB24BA0E2938"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Animals\\Prefabs\\Wolf.prefab.meta",
+    "Hash": "63772144CA8AEC77D8421592874A9CEEAE9BBE2C88A96CE5F0B3017477A4D2F1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Materials\\BillboardCharacterMaterial 1.mat",
+    "Hash": "892E543CFB9CAEF55264D4830FD2DDBADC448EA13649376831CBB24C8EC06CAF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Materials\\BillboardCharacterMaterial 1.mat.meta",
+    "Hash": "F03A27FBF052CC9694A4D5C5D1047E54ACE77E4763906B2EC5992926ED09582B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Materials\\BillboardCharacterMaterial.mat",
+    "Hash": "78BC89F174C8C84044B9050EECA75E2F1E904116464AC11CB7F88285E89E28E7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Materials\\BillboardCharacterMaterial.mat.meta",
+    "Hash": "3C3E7336A4615505C4FC27C08101F5D03970AC508415A0D19D3A93B29B143044"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Meshes\\FeetPivotQuad.asset",
+    "Hash": "8D73A34618A3A425769A705CB7CF442C666FE80B167D263C6E21E185CC5E0683"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Meshes\\FeetPivotQuad.asset.meta",
+    "Hash": "5B5837CCD0C95114BE60FC2563540C23BFB1C9C1059867745C062933ED2A2673"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Prefabs\\BillboardCharacter 1.prefab",
+    "Hash": "E262828A9534CA8589DFBF8683BD9E6AA98D1283AFA128C47B4CA22B715F0B15"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Prefabs\\BillboardCharacter 1.prefab.meta",
+    "Hash": "FF83FA6F001CD40A659394A1A5FF8FAF73BCB092F62BA7FCD02A2130EF9B64A6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Prefabs\\BillboardCharacter.prefab",
+    "Hash": "2CC0EA9592EBA1153D51147B1425E575B835DDEB187A8143278D44F69190D33D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Prefabs\\BillboardCharacter.prefab.meta",
+    "Hash": "4394A8F257BF3771E9E6937B3C4749B19D071CA9F0C25365E5D7C5BFF1766BAB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Scripts\\MoebiusBillboardTestOrbit.cs",
+    "Hash": "A9DB57C84D89D3E6B77B9B4212A73D665330902CE300A7DBA6A14A80F5E0C243"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Scripts\\MoebiusBillboardTestOrbit.cs.meta",
+    "Hash": "FCEF0D074FA0DB567A02B6824F66BA9E666E23D928973243DDD1A65B64534D48"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Textures\\d8fe8425c96e998a5b4532ab152bddac.jpg",
+    "Hash": "8739166A95E6EC702BBA9764488322C190AB7E1038169439E7369B0C84C6EA2A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Textures\\d8fe8425c96e998a5b4532ab152bddac.jpg.meta",
+    "Hash": "0009298B13305FAC2AE9187769EABA420C0238ECD25140374DAC711E78A449AD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Textures\\PlaceholderCharacter.png",
+    "Hash": "E8F8D4D1B8007828170EB2AE8882B74F7639D72F2818C370F60117721FB7F9B6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Billboard\\Textures\\PlaceholderCharacter.png.meta",
+    "Hash": "C61EE50008F5D38986329911A7241C62329ABB9F1C75D530AD55E3A74F3731A1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials.meta",
+    "Hash": "09BAB467FDD3FD5632C28096CEE6B5E222C4267B4E9E617EC5DABF96C74035D5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes.meta",
+    "Hash": "F337F6190B40C14AC84F97ED98DBF7124E4F024AED5607B15EA7D3AF549F5F15"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs.meta",
+    "Hash": "2B44C4212481DAD8AB9ABDE12F5E0D451CC12267E6F0CE31656B8F3D73BD8460"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes.meta",
+    "Hash": "EF590DD85BDD7EE9E48D110D41D751CCA779574B5321FFB9787EB3F0152B7549"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Desert_Desert_lambert1.mat",
+    "Hash": "3ACB23E20AA1986707CC2AD4AA868A7B85D30A320FBE8E0D0B887F2AC13517F8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Desert_Desert_lambert1.mat.meta",
+    "Hash": "B08511BB432CDE44418A8A7D2DD3F7EF9EF36943509F4814445FC976EF7E0B40"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert1.mat",
+    "Hash": "66A3EA53D02A0B76B101C728F44A14400C2F2C041DD54795B42C24C3FDBD76B5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert1.mat.meta",
+    "Hash": "843EBAE90B4C4E58C59BCD04B3179FD0556A6A60703D85F48F3F0000046EA2DB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert11.mat",
+    "Hash": "7A937252613E13972F7B89C2E5AD706E329CCEAFFB8FC15CFDFF9D89C78F0D40"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert11.mat.meta",
+    "Hash": "3C604D183C6C40F099C89E18495A42075E2D319EA263A89A831BEA7C026DA408"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert12.mat",
+    "Hash": "6F1EBFB80402835FF80B3551182ED1D0A650D40071AC85B441E72D9E9B99768A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert12.mat.meta",
+    "Hash": "3F28A0C9232D8411B91421645710B764BE03F2ABF841CD1FF502CA82E72BBE7C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert13.mat",
+    "Hash": "4D783778F3993F5060CDAE54C9FE6A8EE86DD143DD5D92BE67088D1A23F981EA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert13.mat.meta",
+    "Hash": "84D8E36AF9157E3C4E7F2FC48F37175F095B5B160B7D3925EFF7D384D6C42349"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert14.mat",
+    "Hash": "01DFBD4357A8AE0F7EA0852FF4CE6F86D7D8AC4D96175FE6BA3FCBC512A76236"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert14.mat.meta",
+    "Hash": "2F79EF0C5BC5AB77F75DD7621CEC4FE761C7A8F4821ACE20D3BFC570FF093544"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert15.mat",
+    "Hash": "8ADE93C14BFAC18831457FF2087ACECF4BDC8F348272D773F091341AFA98892E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert15.mat.meta",
+    "Hash": "63410EDF2386704BF9F6E3522CBD4444F74B99E96413E3F54155A80079749316"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert16.mat",
+    "Hash": "3D4270D74F97FADE1159944220EB2EB97111AE80C5CD83D3C1D2156D20FC8BB1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert16.mat.meta",
+    "Hash": "99D5FADDF0798753C168093B04101AFA878E7F9CE3188EEF6BA9240BBD61489C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert17.mat",
+    "Hash": "2496F4F6FBC2E7508664855AAF431267178C7AD286DC0D5F9E97436AC5517709"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert17.mat.meta",
+    "Hash": "312AE5F4253E11F55FB78F757912290DAE7C8B10F89D520189ED4E2DD803771C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert18.mat",
+    "Hash": "54CC50AD11CAEBDBFB338938ACEA9544E6D00A811A103D7D2294DE93040BF017"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert18.mat.meta",
+    "Hash": "A936B4A2C46723F2A37E6F69F15A9B89C84E2DE39E6B2CB86F5DACB35CD62B28"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert19.mat",
+    "Hash": "B1EA5022C4396446239C3A34FCBCA5F83C9E477923E066463494B06AC4BA73B0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_Maya_Lambert19.mat.meta",
+    "Hash": "DE103668D6CB185B1F8C7089ACB4820F8EFEC9BA83516653BE71642CE5923EE7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_openPBR_shader1.mat",
+    "Hash": "1FDF3ADC3725FAA07FE415F9BF108F75174AA33E1302F7A0D40DC153394E2954"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Forest_Forest_openPBR_shader1.mat.meta",
+    "Hash": "58DC255867122BCDC2D50256F56562A1FDA4045A69E024591588C5D251DFA275"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Grassland_Grassland_lambert2.mat",
+    "Hash": "3EC4ACE456736149EF5947B2CB08663433646F289637296FFE61558060837101"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Grassland_Grassland_lambert2.mat.meta",
+    "Hash": "BB1A660158E820D71886C5DBBEF09761CA164504E291CFB61CEA645402F47046"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Grassland_Grassland_openPBR_shader1 1.mat",
+    "Hash": "212F0CBDD69B12434F9C9EF4C3F0E10FA4D90199E46B3794E3C503E6B34A9A58"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Grassland_Grassland_openPBR_shader1 1.mat.meta",
+    "Hash": "11CA96AD7439D34BC272C83D7A61B8F10AF0F9BD21C613C552C0821B4B2A5C37"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Grassland_Grassland_openPBR_shader1.mat",
+    "Hash": "A92FD8B17AE76CD9E79F6BE279594407A9047711FACC70EE1AFBFFE7748AB4C4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\Grassland_Grassland_openPBR_shader1.mat.meta",
+    "Hash": "F892FC52B38F16C09409DBB0B250656DD73EE377E1D32454F6612FC8B0AB50B2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\RainForest_RainForest_Lowpoly_tree_sample_Bark1.mat",
+    "Hash": "FCC5776291DC2043467A16EE7C57DC2EEDC091E00543E75C74EC53C4DEE15959"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\RainForest_RainForest_Lowpoly_tree_sample_Bark1.mat.meta",
+    "Hash": "C9E829C4D7BB10578E1F9510BB7EAA7FE0264B3D002533FC90F295DBC1D039E4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\RainForest_RainForest_Lowpoly_tree_sample_Tree1.mat",
+    "Hash": "94EFA93FEA821ECAA9C2357A176D737D288D3AAB653BEA9D44498043205A8B2D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\RainForest_RainForest_Lowpoly_tree_sample_Tree1.mat.meta",
+    "Hash": "924A0ADDBB9BFB980D38E5D204A628A7F441C4A0B5C7FE036C7D3267147CFC0F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\RainForest_RainForest_openPBR_shader1.mat",
+    "Hash": "920F26658352F21624408116DC7D176A63982A77A9D2538BB016916F2A24A83C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Materials\\RainForest_RainForest_openPBR_shader1.mat.meta",
+    "Hash": "011B8694BA4CC256B258F35B32A96D687EC967BB68F03CDEFBE8850196D6C1EC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_00.asset",
+    "Hash": "19D10A3F5B254FE8C5A1CD67DAD61D0C3365A017236754B694CD62228D013F12"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_00.asset.meta",
+    "Hash": "A1ECB3707D2823BA6A72B4EED82ABB1C4F86DD38D6641636555DCD411EC45AE8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_01.asset",
+    "Hash": "C8E7E2DEC22E8B0D210CB3637F73BD28C794C458B44C9911973CA0D3CEE2A6A8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_01.asset.meta",
+    "Hash": "3C5050F508C421A637E20691E0BFFC67268E98247C4D0728BA7BE8370C6ABBE9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_02.asset",
+    "Hash": "899D1FC5D69FF3188D86A8177DE18EF489488044EFB7F70E350A79065318A4D1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_02.asset.meta",
+    "Hash": "520ED537972FADAFEFF04C9BD839ACFF19E16E4736D2470D0CF82A42A19F0AC2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_03.asset",
+    "Hash": "3DD55C8F5A393DD13A9584F8540AC6CE8D3805581D90C21B4C5B542F266FB775"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_03.asset.meta",
+    "Hash": "084C3815BE62DB3BEB6E3E870BF5C2AC173D6DA40992C40C86BCFFCEE8B1C1B0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_04.asset",
+    "Hash": "F4F4617DAE6D6371A0E1790004E0E76DCE64915C8F76FB54E047073BA49D70EA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_04.asset.meta",
+    "Hash": "BC93D9B531E9185B37551A4B5FE3D82134A8207A1836162E901476D33F94070C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_05.asset",
+    "Hash": "29003D9DB88C519A82F2C61C345EB0FB60C75BB7726443BBBA767E257E9B29C0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_05.asset.meta",
+    "Hash": "9ADC29D9BCA53763869807ECC2348090BC9A3EA4ABE82A30814CAC65D3345E77"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_06.asset",
+    "Hash": "5958F232EA29F1AA1EC7B900EBDB9971F3E09BD65EAB154020ED92C047EC51FC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_06.asset.meta",
+    "Hash": "E2801FBA7042093898D0DD2839384AF1BE5736D7DD27DBBDD72231E6AF74AC3F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_07.asset",
+    "Hash": "9DF6592DF24112172EC52132E190E1A1F5B0A8594EA6F7AA33264B0C1843F0F2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_07.asset.meta",
+    "Hash": "CA0572D2A3C1A21335D04D96DBCEFB8B8F8265664211DED5549EE44C92DF8C42"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_08.asset",
+    "Hash": "FB568067FA45D85C0AC3B2A147C7C034CDE5095FB2287E9B422B35519B692F4A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_08.asset.meta",
+    "Hash": "0FE44FA62E121730BAF60FBF785258A4EEA1EF1CC6498A2A5EEB80562C98E847"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_09.asset",
+    "Hash": "FF060C059BEE67084E6A88365E1AFB720A008A83AD85A078C74583D4AEF119EB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_09.asset.meta",
+    "Hash": "D76C21579A55124E3C1C2537FC521FF5D1421A5E6AEED1EC308C472FBF6E4B39"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_10.asset",
+    "Hash": "8C77E55EF8D40066D3D920C89B8DE50D862B7A73F0832CDC4F31626950D9B8FA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_10.asset.meta",
+    "Hash": "762043C81D8FE3832AA8D73D121B0CD440DAA9EF947ECCBBA71E9F11A21A6F11"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_11.asset",
+    "Hash": "F2B26E5BC524D29F4F6910B80E4B3A1D60CE42184CDCCC6037D4C88B10A7A585"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_11.asset.meta",
+    "Hash": "1F2C79BD0432E3123E5DD400BE6ED6D056066E85BCFB3AE0C6A9877162E1CFFA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_12.asset",
+    "Hash": "8F2919796A5FF0D8D851B6D4D9B7109C931440B7F532E05A63FC8AC1FC3582FD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_12.asset.meta",
+    "Hash": "07032FF0BA559250434461D764C198C39E50EA3DEB60FB6E1C104BD8159FF76B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_13.asset",
+    "Hash": "40736C290E11D392CA8210B3D3FFA980151007692A8F9EBC094F7255A5BED747"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_13.asset.meta",
+    "Hash": "E10DD02D44CB0E27B76AE409575F45CFAFF3F558C2D443CE06DFFEBD97A4F45D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_14.asset",
+    "Hash": "43B60A5AF3BC0041DDCB428C3A85144855F9DD370E397070CE0E92B4BD4959A6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_14.asset.meta",
+    "Hash": "3CBAF45BF50A31310D7F9C63574379212A08D58D7ABF324EAC685BCC473B8D7A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_15.asset",
+    "Hash": "364A2CFF0352736C3B26061E3A1252D7892CE2AF6B1D53718933A4E7084DFDDC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_15.asset.meta",
+    "Hash": "E23812F6602371E38842557E1C0D20FCB19EA57C926C6207D2869FEC5F6E8349"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_16.asset",
+    "Hash": "5F63B9570BE878D50CBE524AEDC38B803B00AD817150771508F737F32EE9756E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_16.asset.meta",
+    "Hash": "38FFE2432996677C3DFB20E96175989216ADE48B78794E9568C7AACC9F207864"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_17.asset",
+    "Hash": "5F0783428815F85D75ABA079FD13EF4078576DF0D1CE8DC899E2EE5A2545EAD1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_17.asset.meta",
+    "Hash": "C2E4A806772381957EBC78CC7B754E70CDA387BCD9A147623242A9EE18C81F51"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_18.asset",
+    "Hash": "47C9C1EB9FCA860FC49809404F7C3F954AC39C57E3EEA29CBD3C4E0433AFE819"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_18.asset.meta",
+    "Hash": "FFDFDF6C93DBCB876574B0D023385CECFB90C8AF768C26B17C8049D12F8CF2DE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_19.asset",
+    "Hash": "6D52C47B38B5E7FB72898E137800DA1EFF39D38FC5DFB0A6E81065F91C558808"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_19.asset.meta",
+    "Hash": "C42BF93FB8B452DDB55DDBE99F07AEE42F3BD13FB83AF449689C97F6FA25C824"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_20.asset",
+    "Hash": "8DD7C34864F22801E5B54150E745A4D1D90486E5966018D35FF18D07342AFC2A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_20.asset.meta",
+    "Hash": "8C27175A446694A0C360F982059D9B0B90F42973063D595FCC7E214B6357866A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_21.asset",
+    "Hash": "98BA8808EA18C9DD4D26ECC639DE9FA14C2BFEA68C981803954514E18DD0C0A3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_21.asset.meta",
+    "Hash": "2D80253C2E6571E039C44B7E30B9B0175E8417E9C4BAA1651F13A03A5FA44EF1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_22.asset",
+    "Hash": "239FD0A9E4B1BB6FDFA03F9B1F2E1FABE95DF4427D50CBB00E392501779563E6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_22.asset.meta",
+    "Hash": "54D982A9022C4821CD63F9B8AA0DDCD74A8C5DFC4DD51429B10E8588FBD574ED"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_23.asset",
+    "Hash": "98F9657098ED5107A98E7EF1F5D6418A06D0BB7F4F967540658BE54149FE8F71"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_23.asset.meta",
+    "Hash": "6264860F49FBFE52C646AA85F47F7E5D657F6D7099E559E293967C7357317436"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_24.asset",
+    "Hash": "ABA8FDE9E9E07837B46C7DCF29A01A12D52CE35CEB9C0F73D029F61F8A96DAC8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_24.asset.meta",
+    "Hash": "616631D987F207935B659475F316F3E6CF52A83E9A992E8065D0BBEC15AFD4A1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_25.asset",
+    "Hash": "1D7D6C7EAD2E6A3309044BA685737F8027E8221760277E866BEECD9D6C4266A3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_25.asset.meta",
+    "Hash": "C53D52BA1306F410B207BA72338F7F32BE188A000A52427D57E8891B7B1E4A38"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_26.asset",
+    "Hash": "F0D3D9ADE027BB570B90E21BB86872B5613EBA5E722EC9B05917C264552EF43C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_26.asset.meta",
+    "Hash": "D19CF889CC531F2CB07DC0C9CE23C88BFD724CC658C064CB2D23E3BD8E740A1D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_27.asset",
+    "Hash": "25B4D9BB9B20D3C0CABE2D6DE2F6C98B5BDF839D34B41C177D9D3904C823BF29"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_27.asset.meta",
+    "Hash": "B111AFBCBD0FDFAEC89C59C6CFE2A3DBFBCB7363B036588A8CF999BE0BDB3797"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_28.asset",
+    "Hash": "EC190FEE384D56A1340B6B5DBB6429306EB6ADC83CF9B5EA06BBD7186A5E4A45"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_28.asset.meta",
+    "Hash": "5CE28F8FC177496668C3B8C68399EA30C64CDA79E655F6D0E5C8AE9B74E0CAF5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_29.asset",
+    "Hash": "0D609D2AD7A39CBCDACD6D9C7B33F037AAF6FA53FFFC38B5F520A7F00C72721E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_29.asset.meta",
+    "Hash": "B9CEE5F16DE1F8B28604355983BD1F28C19B426CFA17EADEAC94CE93005D8476"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_30.asset",
+    "Hash": "B199211CE32CA94D655CEC317D56DB4BC8DEC3263001D20DC72989A95D1696AC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_30.asset.meta",
+    "Hash": "3A6BE8AB55EC8BD79292B97907F13C61EA9C0864BE3EE346EA72694F59075563"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_31.asset",
+    "Hash": "1A41A8592E314DBAA39A7F24FFC032B0DCCF550E0A3FA8279E34434630F1D70F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_31.asset.meta",
+    "Hash": "DA1DD770E79B9549707E8CEC05D31CC224DCFFDC4A7ADA77BA34EBA8F7034A79"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_32.asset",
+    "Hash": "97BCCA6B6B49B35E95D28375D7964572AE06E4267CDE2772E47DADC77AB213FB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_32.asset.meta",
+    "Hash": "0E4717E7298942BF264A101F454F0B00F3DC4E593734616D7F38FDACC7632DA4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_33.asset",
+    "Hash": "8F97C641575CCF71FDA0CBC3AEEDA67BB492E1AFC5E0BEBE41C49D4CE597F4B0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_33.asset.meta",
+    "Hash": "A10A4DBDF988CA11B1A95C9BD57838AD6DCCF181AF10C00CD17018E661DE4730"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_34.asset",
+    "Hash": "DD8720B976DBD4816372F71C8C11C25B00497694F0CBB688F671DCCB63BB31D5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_34.asset.meta",
+    "Hash": "A601B58D4161D61F5EAEB0CA5C46679A2352360A32AA806D9F2DE173D30DDB87"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_35.asset",
+    "Hash": "9CE6D7E97E1F5118944774F3100DA37C91F949E46F193BF6541E5EE81BB48185"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_35.asset.meta",
+    "Hash": "D078127490DFE57E89A2F6A087BECA974B4E9C3E6FF18F5B4E55260AD2FC5AE3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_36.asset",
+    "Hash": "3DE12FFA70912EC8DF2CE47351A4F9F833094625FC01C13F282646B0206CAACB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_36.asset.meta",
+    "Hash": "5DBF059AF79F0B3A2E17D6F5054F41718451982C5D595845EB976993D6337E5C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_37.asset",
+    "Hash": "7E5DCB6815D9C113401B37B79A3194503F2A312F1F3574F963BB8633D36E2B66"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Meshes\\Highland_PaintMesh_37.asset.meta",
+    "Hash": "7102C36DCEE526695ECEFB8EF8191ABED5C92CE3BAA6DBD3D6FBC540711C7A18"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Desert_Moebius.prefab",
+    "Hash": "2A42A0FF6BB05D729A48A6EC3969290113E4D6E9EA91D6C8214A500ED6963942"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Desert_Moebius.prefab.meta",
+    "Hash": "9F16343A32486944D94F5F24B24702EFEB2D4D1B19698A66CE1F17F2037F7DB9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Forest_Moebius.prefab",
+    "Hash": "536BDF0ABF7A645EC909B916FD78BE65BCF941A814B64D363194551ABAC00CA2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Forest_Moebius.prefab.meta",
+    "Hash": "2C39300F77895AD7C16AE189EB11FF1B1B23CC4351E97EEBBD5F2AE2D13CFE06"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Grassland_Moebius.prefab",
+    "Hash": "F843A5CFF9F272D87AA43D8CFBF008AC3E24DCB2B650989EBEEA96A9ABE801BC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Grassland_Moebius.prefab.meta",
+    "Hash": "D8A0446A67D195CEA8B7AFE1CD593927F052E585E45CA99E17E6D758AD81B036"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Highland_Colored.prefab",
+    "Hash": "79DA8E0D39B56B1B31651AED8C864FD1C6E910015B9A521D2389747342523595"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Highland_Colored.prefab.meta",
+    "Hash": "D9A871CD3B72AD89CB27DC0E8A63408548BC87755F48F38E85F75FDA44370D32"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Highland_Paintable.prefab",
+    "Hash": "BF7608E62267A8DAA3A475DF7AFB887DFF68C17B656548C34A522B5774BEA18E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\Highland_Paintable.prefab.meta",
+    "Hash": "5F7F66A5539B546328259F31FFE6221855B4E2B7A78EDEF493F8CF9D8738EBF9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\RainForest_Moebius.prefab",
+    "Hash": "F8636E2519B1303C72A2E410201601AF6061329E07B63734A30C594C75FF362C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Prefabs\\RainForest_Moebius.prefab.meta",
+    "Hash": "8D66D0257995BFE1AA869E447CCF25CFF53BB80F05A80124F19A1B66C5CD32FB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Desert_Moebius.unity",
+    "Hash": "5375B8CA1FFA872F7929D6D2EB913EF780DAEC90EAC67CB6C466FC46EFC08AD8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Desert_Moebius.unity.meta",
+    "Hash": "35D50ADDD55087D3CA7F580E2A1C893615E5C099B4DC342A3CD7005A8A37969E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Forest_Moebius.unity",
+    "Hash": "FD73B77F82C0B397920F8FB2DBA93A210CC3264146CE69809655A4D74E1CBAF0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Forest_Moebius.unity.meta",
+    "Hash": "FB2CE1A763E85B92C1A80B77C9F576DF66B0DE56116A94523FB5A2DC6EEC7F02"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Grassland_Moebius.unity",
+    "Hash": "50E2783DC461380A4E38CD9773E8691701BE47E7066D12CCAAED5C5142EE06E6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Grassland_Moebius.unity.meta",
+    "Hash": "83A46A336F45B140AA479A3FCD61D82A631C53583010C90E7BCEBC9220034555"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Highland_Animals.unity",
+    "Hash": "DDF5AFADB5D3F0D023CE303BB477CCE32AFE25B5B690352C75DD541A4D806AF5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Highland_Animals.unity.meta",
+    "Hash": "0ABF7DF6CE8A06913E18F010DAFFBCA04525B501D9F65977017677E3EF8B4C76"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Highland_Colored.unity",
+    "Hash": "87A573334B4EA853EA13A3413129F7C9EF387F8AB73BA611FC10B7D8CC98E9AB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Highland_Colored.unity.meta",
+    "Hash": "E4F734812ABDD7C9ADA0B1BCDD9B004F0D891FECC90685678B9CBAC767872B3A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Highland_GradientExample.unity",
+    "Hash": "9146C1071EB3BC3867B758835994E6EFE0176D81984A3A86C397E5BFD4D6F444"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\Highland_GradientExample.unity.meta",
+    "Hash": "2545195AEC88CA7C245765CF5157A47574D3079BEC0FAECB5BA841BF20445AB5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\RainForest_Moebius.unity",
+    "Hash": "7850C5C7591B7636388C4EF2C0B94A5BED336051029F1570F316308F91FCB35B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Biomes\\Scenes\\RainForest_Moebius.unity.meta",
+    "Hash": "707A7938C0E765C315D0E6A2BF9317F81C59595D626EE69FDC400A358DCB981A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Paint\\MoebiusPaintDemo.unity",
+    "Hash": "0E8081B9022F29DA3C1F812AD4F19D6E226FE908D4D7B608360B355280327BEF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Paint\\MoebiusPaintDemo.unity.meta",
+    "Hash": "12B6DB449C2634F510368A60E77AC6A3EBC910E1CC8CF9FFB11A08DBBC736461"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials.meta",
+    "Hash": "128BC599D745A1A3CCEE46222802DDDBBB905737D42EC7FA1C4365A2466D1462"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Preview.png",
+    "Hash": "9C9C49AE151C844488D0191DD997FBE99407EAB613DE80FF3001FBC5FC29B072"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Preview.png.meta",
+    "Hash": "7A2D3CA5FB6443DEDEE4C57745493B6EC68452B98AC97611E186721A539E6830"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Rendering.meta",
+    "Hash": "835A50FDD7CB4B9B00DDFC0ED0EA0BC86AD1E9E11FB0FB42E2B2B14610D0F94E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Blue.mat",
+    "Hash": "73A304041C785238DA2BA9FF743CF7BB91E31D96C515C3E09FF43C08049B5A39"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Blue.mat.meta",
+    "Hash": "C1AE4FFAEE97CF21008909E66FB35B2BE49B3219429DC0A9351076A89122F92E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Coral.mat",
+    "Hash": "9D215B960AB6578EBB31B5D75FFBD9C0F57DBA5F3DD2C9894D0598F3E1B220B0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Coral.mat.meta",
+    "Hash": "92B3E5550554B222D4591D57A44FC8CD3027DF95776BABA1C085F75108DD368C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\InkOutline.mat",
+    "Hash": "E5A5F67F1B2ED718052F8D0AC311917EE8C054C404D569BE8160BD35B320446A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\InkOutline.mat.meta",
+    "Hash": "CC4CE3353DA1D8D10703A7DF97D20A6D5D832AF142542105120FA3FE356A6247"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Ivory.mat",
+    "Hash": "E76497CCB34274844ADD393787729EC1E17E248B26923F7DCFCD6617E36AD5A3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Ivory.mat.meta",
+    "Hash": "DAB9B1CC8FE5D79A2E485B6C55FDDD8773233555F3DD7338F3AF4D4988DA1C3F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Peach.mat",
+    "Hash": "0727D24807E7194DF5318A2187689F3E232CBD405FE34E21D4E75DF679E234AB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Peach.mat.meta",
+    "Hash": "0127368FAAB86EDA7A687AE585BE84ADBBE0940C3D90F32CC4E8466624805CC9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Sandstone.mat",
+    "Hash": "8E71FAA78A9B2608DA4C2476017088081B23F206028C0A078A388E745E8D65D9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\Sandstone.mat.meta",
+    "Hash": "989D718056D3A23F802698CDC359F9F9AA0BC8C6111284F8E94813FEEFE56773"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\SpatialGradientCoolTest.mat",
+    "Hash": "BE457A36B502E53002B1586622C51C4754B3F7C22324F16039D335F0346BA4E6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Materials\\SpatialGradientCoolTest.mat.meta",
+    "Hash": "D0F6512F85BD34119B9AB2C8245DC167B526FA1747983B4904C73F3110276089"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Rendering\\MoebiusRenderer.asset",
+    "Hash": "7E0FA648037EA7AEB96B1890BF867E68F5466A215686ED7229D925595C9B2FE6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Shared\\Rendering\\MoebiusRenderer.asset.meta",
+    "Hash": "838BB5433509B12774F0AB5B25F3DC9AEAE99EB2F95538B4D431AAECCE72237A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials.meta",
+    "Hash": "3D7AF2A9B81248E6883C0DF4DCA7815EB6E20F986B32EDEDB2EDB3FD83160F35"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Meshes.meta",
+    "Hash": "1A3419B37541309165873A455353D0B2F60C6D3C61E4DDC9EABCB5D83069F73E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\MoebiusWaterDemo.unity",
+    "Hash": "9DFDD2848F7AB4BA341C0A1CB34C7066568A8C4F7D0014814D8F0282DD383F28"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\MoebiusWaterDemo.unity.meta",
+    "Hash": "40A97A6576B7195F0E5673A6F1EAA1ED62605058CFAFEC356FC5F7996E886279"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\MoebiusWaterSurface.prefab",
+    "Hash": "DF3FEA660A2CD64C1344D04BA66443D3853854ADD601014EE5816515FCA18430"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\MoebiusWaterSurface.prefab.meta",
+    "Hash": "D43A7223320E26F591DC5DAC93048DD1C14F203C6FB3588718B08E27574A51E9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Textures.meta",
+    "Hash": "24BDBAEC204D8790B99C341D07233127F1F674498F163823027A68FF3A1BB7D9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\CoastalWater.mat",
+    "Hash": "426589345822E0CE068853E5BD1091E4927512BA6168896D22313AB0D3DAA4BA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\CoastalWater.mat.meta",
+    "Hash": "38C2264A9B9E5425D92EA894A1EEED9E13EA5521C000C6C958C2B27D3FF337ED"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\LavenderStone.mat",
+    "Hash": "9A4EE85F9B056AEB13C014D10D1A8620ADBA09DD3D9F252D9396F7B488029DE2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\LavenderStone.mat.meta",
+    "Hash": "D30955CFBEC509C9C273B8716BC3252A7E6B2FECDEEC243152702040748A8AF1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\PeachStone.mat",
+    "Hash": "80066660A5ED754C4E663E31D37C62C9ECC0E74CA84F0A80AC9F4F7D225A6174"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\PeachStone.mat.meta",
+    "Hash": "38DE9B0576F3932A0D7BB91A002E25809B3DA84630E97E6A7FE1BF2DA0341EA0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\Sand.mat",
+    "Hash": "8EC86D2B65C4A268122DDE13B6AC595063189E92572F8755673E4B9913DDBDDC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Materials\\Sand.mat.meta",
+    "Hash": "44C81D77175345988FD11B6C7D361455EDC3FB3B35B9E29BF8C438976CABAEFE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Meshes\\Rock.asset",
+    "Hash": "3E633A24E4F7919BBD90557DC70803B2A7FCCF887E7DBC6D11E6EFF4340B893B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Meshes\\Rock.asset.meta",
+    "Hash": "07AAFCC0012118B93FD49A9B97A378F4DC0A84226A9AB59E8A92575CFBBF5E1A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Meshes\\Shore.asset",
+    "Hash": "E3B52D7B66DB4FF19C469D9693E2DA38120903279579D7A136CFF96EDD20323F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Meshes\\Shore.asset.meta",
+    "Hash": "BBD760ADC564C4D9DA943BC9112DC26B8F93D634FB9DE9578ED19757757EC026"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Meshes\\WaterGrid.asset",
+    "Hash": "0DA0F46BAC304B4A3DB5A06F632F69A7E6D4AF07AE8682E3210B311CF2983519"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Meshes\\WaterGrid.asset.meta",
+    "Hash": "882017D3E74C66F30BD2F555C9795DFFA59461D75693DA62D3B73CCC2265BA5F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Textures\\ShoreDistance.png",
+    "Hash": "92D7BA0D8B5775530ABE548611AB87551F895A035FF84C97278160D94B52DA40"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Water\\Textures\\ShoreDistance.png.meta",
+    "Hash": "1051DA36D1A41F1C4874E0809AD13D9D64AAE3818F4702FB1AF04D7EAE9809AF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials.meta",
+    "Hash": "CCE93AE457B2608FEAF787F0D44335A319D5E29829E15C907B03D3A08CE77E71"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes.meta",
+    "Hash": "215225AE9545EF914A19DAFC8D7F46534C8A39461C425C9DDF9039155332A5B4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\MoebiusWaterfall.prefab",
+    "Hash": "D2CAF088AD0837A0F57961BCCEAE34C7DF76259E16F18E0D8A3FA1486AAC7D9D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\MoebiusWaterfall.prefab.meta",
+    "Hash": "ACB48700C13668F2D5445F62799875E0683B4CE343756D4EF8921B052575A5C8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\MoebiusWaterfallDemo.unity",
+    "Hash": "3D674076D8B877191E10749FB9A02C0FDB0843B8D9873A6DC57FA6B11DA0381A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\MoebiusWaterfallDemo.unity.meta",
+    "Hash": "0131BA3E2230ED6F816FFBD8CDA6614EA60A3AD45020D51F513325660C3B8AF6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\README.md",
+    "Hash": "6D7AD633D5E3BB10FF6F7CBC4CDBF3F650E796C763CDA763AA252213970ACE45"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\README.md.meta",
+    "Hash": "ABBD72E3BAC71453CD2D46432ACA60C70C9155F09DC226BF7D29ED12CA815094"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\DownstreamRipples.mat",
+    "Hash": "8E38C194849D163BD1225C6505CD5E1C07C4241431F5A40E68D9DBB8301DDDAB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\DownstreamRipples.mat.meta",
+    "Hash": "287F9A7C3B5D203F62867E5C8A3C44AE12A206A071EAD46EC7F0BA3B8F100CE1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\ImpactFoam.mat",
+    "Hash": "CBB3E6553C47DED6CCAFAB02AA81B2B8A5B2B37A11C730BA6CE69EDE09AD0C41"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\ImpactFoam.mat.meta",
+    "Hash": "F165B0FB4EBE4C26054D613E4DFA9D3332DF1FD2C5D7E283AC624639282E10BE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\LavenderRocks.mat",
+    "Hash": "C5030EDC2020F88CD6C14C38E5CB509A3D5C77DAF55E7458FD825B4EEC3D63FD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\LavenderRocks.mat.meta",
+    "Hash": "C7485DF84EA7C9FF7BF39456FBF67B8C809EA34EB2C69443E9DF4DB4977575B8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\LowerWater.mat",
+    "Hash": "A256540F50014F819A1980D89B96F88A6E7FE2D93C7F85272DBCB3F63AEA3B8B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\LowerWater.mat.meta",
+    "Hash": "9A3A3E4E791CBBDE0CFA3008DFFF3A7F45177B5210046A1B3F8B378A5E8FFC23"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\PeachCliff.mat",
+    "Hash": "CF4FCCC345B85899A1836C03EBA8FAADEC353C0307BCBCE2982A8B2EE49DFB54"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\PeachCliff.mat.meta",
+    "Hash": "4C53F64182C730CCB400E077DEDF111A94FD213A5431231719F4377A10DF06E4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer0.mat",
+    "Hash": "B8B759067311429EC0D6485F9683D6A08A1621498097961ACA4E5621E53EDD16"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer0.mat.meta",
+    "Hash": "106D10B774085274F4221C3738BDA3213DCDC0BA5487CE87ED96BFA3F4CA8D1A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer1.mat",
+    "Hash": "559FF4A9FBC74F4066B0041E0316484C2DBA3E0F3161F6328598EB676BB4BC56"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer1.mat.meta",
+    "Hash": "2BE8FA86BF392AB6FBC1DC5232710BA050861481B2553707F5CD627B60AE9614"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer2.mat",
+    "Hash": "C0CB70A8A4935BC983320314C11C5E0D1EA9A7C69EDC9B4987C84BAA420BCE9B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer2.mat.meta",
+    "Hash": "B006DB0E2BB8AE15D51D1D0D47547801D919C6881531F80F2DCCD1065F0D1397"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer3.mat",
+    "Hash": "8001348727A5FE63C21E5034A2F4AEF0AEB8053BA0339FED2E6A524FD4041BC3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\SplashLayer3.mat.meta",
+    "Hash": "9352C5BC255AB2B0838AD46B56F52830BB1F088DD15370DFCE0A39248F848C92"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\UpperWater.mat",
+    "Hash": "C4270A0C043CBDAC7F4DBF0540339479488AD5412A25BFBFEF78C1B6A9F18C6C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\UpperWater.mat.meta",
+    "Hash": "2100D61956078F609C3954CFC7A05E2FD0FF8A41918C8F8E10190130E79E9340"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\WaterfallBody.mat",
+    "Hash": "7158F70A9444B063B7E19149455F9FC3608996FF919F61D3E17FE72D67E15531"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Materials\\WaterfallBody.mat.meta",
+    "Hash": "8E487AF5F2E30F8EFDDDF1B2E3F581396D03A7B4B35451D0A1741CF11610B7A5"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\ImpactPlane.asset",
+    "Hash": "15A3DC6D44127CBD18A6A17293E14AD5754886CEBBEBD514A3B1548F661E440E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\ImpactPlane.asset.meta",
+    "Hash": "FC557BFA1BB8FBB64D6D4478AD5634FDE835A5EF2E1A279A0F5E77376E1BF4F0"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\LowerWaterGrid.asset",
+    "Hash": "829B27BA443DCC0BDA8B90E827BD6105BF887558DC83F1B3BF729B5416AF4512"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\LowerWaterGrid.asset.meta",
+    "Hash": "9C5028C90F0561B577DED8E22F426099B359B6EB7BED60104003E1D2B6AD09D8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud0.asset",
+    "Hash": "C205D73E93166FB09182FAA9A427F8D898FCB3651388B0AF41BAE6FAAB46AE3D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud0.asset.meta",
+    "Hash": "471061A6D690CFFBEFAC9475F01C6C703FEF10128DEF0BE935BA5956262F43B9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud1.asset",
+    "Hash": "28FCFFF5F6C2D30D8839EFBE465D6EA7BFD1DC1789CFDAB998A5485B21B1974D"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud1.asset.meta",
+    "Hash": "F8650D9DCAF2148B8C6F9CC641C35CFC8245CADD013A5C92D69BBE0A0AAA0DC1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud2.asset",
+    "Hash": "79B2B5970E49387C6567CA9D02BEED6E905171BEE0EA92BA7DD5FA9328F7556A"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud2.asset.meta",
+    "Hash": "0C4EFE514946E8556CB712A8B7976077844D327C99DDB6C8B800459E0B41B64F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud3.asset",
+    "Hash": "8919144B2BE7651C84650238EC1ADD68DFE079ADA85C54C2B47C731AD5DAC4FB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\SplashCloud3.asset.meta",
+    "Hash": "3436E9236B03DF4A04F70A0E67A68AFF02436B345D10A5AFE702A758BBC448EA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\UpperWaterGrid.asset",
+    "Hash": "A68B828E14C55B76CFF38F30A897C7A00D41A3A7537D709B1D50C21F7A41D970"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\UpperWaterGrid.asset.meta",
+    "Hash": "6AE7916CCA7F03C4AFA95EAC797ED4658EF21EC0126AD7A2A63DD48E22CA2F4B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\WaterfallSheet.asset",
+    "Hash": "FF4937BE7DFABF1F03236A3A9733D0EA8A2370118318372A71A5E0BA9284245B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Samples\\Waterfall\\Meshes\\WaterfallSheet.asset.meta",
+    "Hash": "E8A2305627E6A15CDC2A2F2F72CB372E2DD6B65F166F34E17B764972BF99B161"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Fullscreen.meta",
+    "Hash": "C93513597F197754BAB88AB7CCEF82156B905B9E121D845E3EB0EA400A1C27B8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes.meta",
+    "Hash": "417F72B0AAEA3A67B073B487FA2B0215AE581AC996C333088D8D3B818816EE0E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials.meta",
+    "Hash": "2980369AEA56E1D17EACB4B79C9D91CCE4C3BCA240C7ABA09860C0617313FA79"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Fullscreen\\MoebiusOutline.shader",
+    "Hash": "85C9B614E6FDE1BC85F51B4AA1332E16943969D36AE7CB524049FBA8AF444799"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Fullscreen\\MoebiusOutline.shader.meta",
+    "Hash": "6617DB7AB76F16294DA46B9D3540A859F50EFA0CD074853B360D6C17E5F6D82E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features.meta",
+    "Hash": "228EDF372DC3FFBE478D6901AF81B9C94582CF1E1397D13E71AB043BBAD9293E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs.meta",
+    "Hash": "D6B39E2771AFC1A9C588500FAE8136275336B16B8B64D45CB49676FE3DDAB6E2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusBillboardStyle.hlsl",
+    "Hash": "6EA77F40015A765E6FB3D11283E6F55274645640003F6ABE54FF45A8828317D4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusBillboardStyle.hlsl.meta",
+    "Hash": "B88B6D114A837D8FA917CBAD59AB4EBB50477F5A98BD2B74C865E1B4FBAD3CA8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNoise.hlsl",
+    "Hash": "1AA3572018DCEB2EEC126188D892AE7A0A60BBC715E9BD7E3CE605124982E890"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNoise.hlsl.meta",
+    "Hash": "DFB4C2955C39C35D001D06E2AB5AAB00561085C96683699A7782DDC5A6627D9C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNPRDetail.hlsl",
+    "Hash": "123F76A60EBE9EC957F9195671FA3AC7689FC67DFCCDF014DAE29F0636520DFD"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNPRDetail.hlsl.meta",
+    "Hash": "32D6EDB2F78076B3C5F82C83532FFC98DA26E618C3CA418EB7E638DDD464FE62"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNPRHatching.hlsl",
+    "Hash": "E3570705D27ED1897BDA63F0B081B8B61E9760E1BCB231B8BE5EFE50C9DE3679"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNPRHatching.hlsl.meta",
+    "Hash": "8D579B18508C5C594AB906F9CE69B6162FC30968D5F09CF26D918141D3356458"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNPRLighting.hlsl",
+    "Hash": "7742D161597ECC9AB7DF229031E64E7BC47AB38D66458540EBD45D67BF7F1553"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusNPRLighting.hlsl.meta",
+    "Hash": "3F211051159000683809D63968F089792CC7A0C98A765691C9C8990976F1C7AF"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusPaintColor.hlsl",
+    "Hash": "3A8A852BA6A2DE30A91C7FB6365476FC6D1398E16BFACFD434C5FDB871AE687B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusPaintColor.hlsl.meta",
+    "Hash": "B5FD7948E79495B85C05D22E4F90319AE1EB9F90ED92762ECEC97BE8B432B2EA"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusPrint.hlsl",
+    "Hash": "52AC72A159036454F0C3CEE5655E2CB5629F02769BBB0E3C59C67EBB934F16E1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusPrint.hlsl.meta",
+    "Hash": "F213ECD2D303DC153D117D35AF7BA1E0ADF88D2502D9E5A06DA74428A0AC377B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusSpatialGradient.hlsl",
+    "Hash": "D0831E6D6B1AE211BB4796F51D358E8F1506AB3470E4E423144610AA201529AB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusSpatialGradient.hlsl.meta",
+    "Hash": "267E81570CF8D54A2075CF73065D914D3B05778A4A9FEA4E1925B5F84538F515"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallFlow.hlsl",
+    "Hash": "706F355D9020EE88E947BBEF410818EFD8D2C25B4D645798932954D362BA0F1E"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallFlow.hlsl.meta",
+    "Hash": "1E981FC852C8B3FAD809B8F52DDD99A83CCF4B85AAC20D2D0520D77E83BE36FB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallFoam.hlsl",
+    "Hash": "9F8F56E8EDBC8E184951CF071F26B9E8660E885E60FC36AE40452ABD78EBE45F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallFoam.hlsl.meta",
+    "Hash": "86E87F429CFEE0462D0A04E99FFBAA682E76688909F6D677AA3E66CC94A1B741"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallLines.hlsl",
+    "Hash": "ADD3734E261A0F0F7DAB49BFB4A472E133F1F77C8876C20BBAE52355C095E6DE"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallLines.hlsl.meta",
+    "Hash": "378EB767852CD743F7027F57DD3E4D4C5773BBB26269B711E947E9A82AFA94D3"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallShadows.hlsl",
+    "Hash": "1E2E505D8F1AA087C55496C5495393265BB7E077B9C75E3B6DE19AF71CA49007"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallShadows.hlsl.meta",
+    "Hash": "54E7E6C020CB955B21D75411E6267D0AA068688B13297183B9F32F480BAF8D22"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallSplashMotion.hlsl",
+    "Hash": "C0272FA35B722754187396168A67A707A991B2199DF76D5B51B4D8F9B3AC5861"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterfallSplashMotion.hlsl.meta",
+    "Hash": "D6692F13C22063DE662B83FAC17B918A6BBA50DB1533C72FCFF668A7B91623D1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterFlow.hlsl",
+    "Hash": "8D53BFFC1706185F47789EEE7CB3D9406B330EFEBABA2D710F0FFA32CD6D10FB"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterFlow.hlsl.meta",
+    "Hash": "08F08CEE09131C3594FBCBB95D7B75AC70AEAB453261F31C4C6458AD1C603758"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterFoam.hlsl",
+    "Hash": "74D9EF14A04DEB7AFFF35D96C40A43E990A0959750624BB73B3FADB4C2134B1B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterFoam.hlsl.meta",
+    "Hash": "5A3B361FC744CE8F5BD88EF94A59609E4D9597DBE1FFD08640BBB826FE4E5C75"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterRipples.hlsl",
+    "Hash": "2D7E1807FDD9143B36F2EDEA4F5465A3024B60AB26CF47041393CCE07AD3919F"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterRipples.hlsl.meta",
+    "Hash": "998FE8A6C288426F2D72BA4B70B9700F130885FC534295F8E7A2DF17239A7051"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterShadows.hlsl",
+    "Hash": "2448A864748E9EF1BF5404FF7B68AD65CC60B71541059E549411B2B4865A1691"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterShadows.hlsl.meta",
+    "Hash": "94EB95FEC1CEB1279DA9DABDAE4444E0441B21BF32713AA7486C9557BCFE5D14"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterWaves.hlsl",
+    "Hash": "AA89151164325545067614CFC111A51FF664CFEEA4881AE8122B08E57F769DE7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Features\\MoebiusWaterWaves.hlsl.meta",
+    "Hash": "0130D129B6A145FB29746598E5FD2ECFE2F649858ADBD818608D66A448DF79C1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusNPRInput.hlsl",
+    "Hash": "0B5524564182F3743760274E253E94803AD56608CF3A51638D5371BD9D5A2071"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusNPRInput.hlsl.meta",
+    "Hash": "63EE4818BFC34D8200550B960878AE5C9E35776BC44E6776BE9AABC64A9DC8A8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallImpactInput.hlsl",
+    "Hash": "9B6A36568852D84CEDAF4691388B486731B4A8C29AAE25EE6B17C67385DEF42B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallImpactInput.hlsl.meta",
+    "Hash": "2E304D3050915B7B45FDF60B00FF3ED65848D341D0D5B79602692B52040025F1"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallImpactParameters.hlsl",
+    "Hash": "107C3D72C11F04A51FAB7984DA5F2537A3ED3E6222CC9837882880027F349DF8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallImpactParameters.hlsl.meta",
+    "Hash": "2805239DB7EC8169469548350EC8D2E4EB1429532FDC7C6EC133A1F9537B8231"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallInput.hlsl",
+    "Hash": "9D69CF7470FA3633DD68A36F7275D1D1E157051604BD1E34B99098E3C9798BC8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallInput.hlsl.meta",
+    "Hash": "5069A9B177708ECFD8E1F06DA848B2A1516C9B9F6F24BCE02A5B1CA88B422D17"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallPasses.hlsl",
+    "Hash": "3AF83671A7E986E91599D15637D5169EF04D69509DE3B1DD32BBF23C7B6F759C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallPasses.hlsl.meta",
+    "Hash": "B2164850442A581AB7BB2273409970957EB4B43597D6F275171388987B37CEB7"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallSplashInput.hlsl",
+    "Hash": "52BC3FA8821239A266CDD0AE89750EF96BB897316A2F72FE5F0EF554101D9309"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterfallSplashInput.hlsl.meta",
+    "Hash": "BC0E99C8AE02BF5B9C91B00A12B1E7B4DAB6EA714B37D41DB7DF969C046D3A3C"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterInput.hlsl",
+    "Hash": "A76267AB613C4553A94F7C6E716CB1908BAE3523A2D214EAC05A87B702793CAC"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Includes\\Inputs\\MoebiusWaterInput.hlsl.meta",
+    "Hash": "8E69DE4F581651CB75927283506DC2E0162BEFB46FBEF4F33B38C3EB3A0506E4"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusBillboardCharacter.shader",
+    "Hash": "9486D1CB720F13C7784371831B9AE11AC0A3B719D23C8C71DDCC037D6911B366"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusBillboardCharacter.shader.meta",
+    "Hash": "0F9786E81676AB79FE8A29DB5E76FA2FFF018E9A019B03358E56F603B6C35F42"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusNPR.shader",
+    "Hash": "B878FD22FD8E814CF064816CE3310CA7FB944DDCF5BCCC445A6674B2CB1456D2"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusNPR.shader.meta",
+    "Hash": "9CB8CBED62845F71F4DD69A00494A7D305EA0C5AC0C9958630933DC7C06146E6"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWater.shader",
+    "Hash": "750B115B063AEA4D49BDABCF0AE44F0B61A983C7F2D9D04DA5F7EC4B25B91D7B"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWater.shader.meta",
+    "Hash": "60C44C9E80EF2F69DCAE9809769E73BFD9EF3FCAEBFFBE6BD647A585E98C94D9"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWaterfall.shader",
+    "Hash": "9E089D223F90F98D546C33114C823BC6389A7DA2CD14045C0D3AD10D8B630B98"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWaterfall.shader.meta",
+    "Hash": "2AC519E3707B48B7D2E0E36E421F618CEBBD9FE3DD66B4E1C5E7ED96D67D6BE8"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWaterfallImpact.shader",
+    "Hash": "F9BCD526AEBB6B1E8AA2CFCB48439C0885EDEDFED826215C888EB4DCAD653B97"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWaterfallImpact.shader.meta",
+    "Hash": "DC6C2F2343E19361447335F74DB7EA97116D9A73F7C7967EB51AB45A60508D57"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWaterfallSplash.shader",
+    "Hash": "5156F9D423990F859D7E79D8ECCC8999ACF3884ADEF238D5FF5BA890A86F7F11"
+  },
+  {
+    "Path": "D:\\GameAssignment\\darwin-s-farm\\Darwin's farm\\Assets\\Rendering\\Moebius\\Shaders\\Materials\\MoebiusWaterfallSplash.shader.meta",
+    "Hash": "D7211C2A6A30392F2E18FE1AC0A31ED0620EED8378494BEC79B5BAD17EE380B8"
+  }
+]
