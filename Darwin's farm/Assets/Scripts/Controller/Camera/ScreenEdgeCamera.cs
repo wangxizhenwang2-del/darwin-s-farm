@@ -55,6 +55,7 @@ public class ScreenEdgeCamera : MonoBehaviour
     private bool returningToPlayer;
 
     private Camera viewCamera;
+    private MapTouchInput touchInput;
 
     private bool moving;
     private bool followEnabled = true;
@@ -74,6 +75,7 @@ public class ScreenEdgeCamera : MonoBehaviour
     {
         get
         {
+            if (touchInput != null && touchInput.SuppressesMouseInput) return false;
             Mouse mouse = Mouse.current;
             if (!Application.isFocused || tileDragging || mouse == null ||
                 !CanBrowseMap())
@@ -98,6 +100,7 @@ public class ScreenEdgeCamera : MonoBehaviour
     private void Awake()
     {
         viewCamera = GetComponent<Camera>();
+        touchInput = GetComponent<MapTouchInput>();
     }
 
     private void LateUpdate()
@@ -115,7 +118,8 @@ public class ScreenEdgeCamera : MonoBehaviour
 
         UpdateMapBrowsing();
 
-        if (returningToPlayer || (!buildModeEnabled && followEnabled))
+        if ((touchInput == null || !touchInput.HasWorldGesture) &&
+            (returningToPlayer || (!buildModeEnabled && followEnabled)))
             UpdatePlayerFollow();
     }
 
@@ -132,7 +136,8 @@ public class ScreenEdgeCamera : MonoBehaviour
     private void UpdateMapBrowsing()
     {
         Mouse mouse = Mouse.current;
-        if (mouse == null || !CanBrowseMap() || tileDragging)
+        if ((touchInput != null && touchInput.SuppressesMouseInput) ||
+            mouse == null || !CanBrowseMap() || tileDragging)
         {
             mapDragging = false;
             draggingWithLeft = false;
@@ -168,18 +173,7 @@ public class ScreenEdgeCamera : MonoBehaviour
 
         if (mapDragging)
         {
-            if (TryGetMapPoint(previousMousePosition, out Vector3 previous) &&
-                TryGetMapPoint(position, out Vector3 current))
-            {
-                Vector3 movement = previous - current;
-                movement.y = 0f;
-                movement *= buildMoveSpeed / 30f;
-                if (movement.sqrMagnitude > 0.000001f)
-                {
-                    transform.position += movement;
-                    PauseFollow();
-                }
-            }
+            PanMap(previousMousePosition, position);
             previousMousePosition = position;
         }
         else if (mouse.middleButton.wasPressedThisFrame && IsOverMap(position))
@@ -197,6 +191,37 @@ public class ScreenEdgeCamera : MonoBehaviour
             return;
 
         float factor = Mathf.Exp(-Mathf.Sign(scroll) * zoomStep);
+        ZoomMap(factor);
+    }
+
+    // Both input devices use the same map plane, speed and zoom limits.
+    public bool PanMap(Vector2 previousPosition, Vector2 position)
+    {
+        if (!isActiveAndEnabled || tileDragging ||
+            !TryGetMapPoint(previousPosition, out Vector3 previous) ||
+            !TryGetMapPoint(position, out Vector3 current)) return false;
+        Vector3 movement = previous - current;
+        movement.y = 0f;
+        movement *= buildMoveSpeed / 30f;
+        if (movement.sqrMagnitude <= 0.000001f) return false;
+        transform.position += movement;
+        PauseFollow();
+        return true;
+    }
+
+    public void ZoomMap(float factor, Vector2 screenPivot)
+    {
+        bool anchored = TryGetMapPoint(screenPivot, out Vector3 before);
+        if (!ZoomMap(factor) || !anchored || !TryGetMapPoint(screenPivot, out Vector3 after)) return;
+        Vector3 correction = before - after;
+        correction.y = 0f;
+        transform.position += correction;
+    }
+
+    public bool ZoomMap(float factor)
+    {
+        if (!isActiveAndEnabled || tileDragging || viewCamera == null || factor <= 0f ||
+            float.IsNaN(factor) || float.IsInfinity(factor)) return false;
         if (viewCamera.orthographic)
         {
             float size = Mathf.Clamp(viewCamera.orthographicSize * factor,
@@ -205,6 +230,7 @@ public class ScreenEdgeCamera : MonoBehaviour
             {
                 viewCamera.orthographicSize = size;
                 PauseFollow();
+                return true;
             }
         }
         else
@@ -215,8 +241,10 @@ public class ScreenEdgeCamera : MonoBehaviour
             {
                 viewCamera.fieldOfView = fieldOfView;
                 PauseFollow();
+                return true;
             }
         }
+        return false;
     }
 
     private bool TryGetMapPoint(Vector2 position, out Vector3 point)
@@ -373,7 +401,7 @@ public class ScreenEdgeCamera : MonoBehaviour
         returningToPlayer = false;
     }
 
-    private void ReturnToPlayer()
+    public void ReturnToPlayer()
     {
         if (player == null)
             return;

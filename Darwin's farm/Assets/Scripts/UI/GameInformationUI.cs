@@ -42,11 +42,13 @@ public sealed class GameInformationUI : MonoBehaviour
     private bool dragged;
     private float nextRefresh;
     private BiomeOcclusionVisibility biomeVisibility;
+    private MapTouchInput touchInput;
 
     private void Awake()
     {
         canvasRect = (RectTransform)transform;
         if (viewCamera == null) viewCamera = Camera.main;
+        if (viewCamera != null) touchInput = viewCamera.GetComponent<MapTouchInput>();
         if (grid == null) grid = FindFirstObjectByType<MapGridManager>();
         if (grid != null)
         {
@@ -143,6 +145,8 @@ public sealed class GameInformationUI : MonoBehaviour
             nextRefresh = Time.unscaledTime + refreshSeconds;
             RefreshVisible();
         }
+        if (touchInput != null && touchInput.SuppressesMouseInput)
+        { awaitingRelease = false; return; }
         Mouse mouse = Mouse.current;
         Keyboard keyboard = Keyboard.current;
         bool alt = keyboard != null &&
@@ -181,22 +185,40 @@ public sealed class GameInformationUI : MonoBehaviour
         return false;
     }
 
-    private void SelectSceneTarget(Vector2 position)
+    private void SelectSceneTarget(Vector2 position) => TrySelectSceneAt(position);
+
+    public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f)
     {
+        if (TrySelectPopulationAt(position, populationPaddingPixels)) return true;
+        return TrySelectTileAt(position);
+    }
+
+    private bool CanSelectAt(Vector2 position) => isActiveAndEnabled &&
+        viewCamera != null && grid != null && tileWindow != null && populationWindow != null &&
+        (buildMode == null || !buildMode.IsBuildMode) && viewCamera.pixelRect.Contains(position) &&
+        !PointerOverUi(position);
+
+    // A hit consumes the tap even when that window is occupied. It must not
+    // fall through into a player move or replace the previously selected target.
+    public bool TrySelectPopulationAt(Vector2 position, float paddingPixels = 0f)
+    {
+        if (!CanSelectAt(position)) return false;
         // The existing population cubes intentionally have no colliders. Pick their
         // visible sprite rectangles before querying the terrain colliders below.
-        WhiteboxPopulation visual = PickPopulation(position);
-        if (visual != null)
-        {
-            if (populationWindow.IsOpen) return;
-            selectedVisual = visual;
-            selectedPopulationId = visual.EcologicalPopulation != null
-                ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
-            RefreshPopulation();
-            populationWindow.Open();
-            return;
-        }
+        WhiteboxPopulation visual = PickPopulation(position, Mathf.Max(0f, paddingPixels));
+        if (visual == null) return false;
+        if (populationWindow.IsOpen) return true;
+        selectedVisual = visual;
+        selectedPopulationId = visual.EcologicalPopulation != null
+            ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
+        RefreshPopulation();
+        populationWindow.Open();
+        return true;
+    }
 
+    public bool TrySelectTileAt(Vector2 position)
+    {
+        if (!CanSelectAt(position)) return false;
         Ray ray = viewCamera.ScreenPointToRay(position);
         int count = Physics.RaycastNonAlloc(ray, groundHits, 1000f,
             LayerMask.GetMask("Ground"), QueryTriggerInteraction.Ignore);
@@ -210,13 +232,15 @@ public sealed class GameInformationUI : MonoBehaviour
             tile = candidate;
             nearest = groundHits[i].distance;
         }
-        if (tile == null || tileWindow.IsOpen) return;
+        if (tile == null) return false;
+        if (tileWindow.IsOpen) return true;
         selectedTile = tile;
         RefreshTile();
         tileWindow.Open();
+        return true;
     }
 
-    private WhiteboxPopulation PickPopulation(Vector2 position)
+    private WhiteboxPopulation PickPopulation(Vector2 position, float paddingPixels = 0f)
     {
         if (biomeVisibility != null && biomeVisibility.TryPickMarker(position, out WhiteboxPopulation marked))
             return marked;
@@ -232,18 +256,18 @@ public sealed class GameInformationUI : MonoBehaviour
             {
                 if (sprite == null || !sprite.enabled || sprite.sprite == null) continue;
                 hasSprite = true;
-                TestSprite(sprite, position, population, ref closest, ref depth);
+                TestSprite(sprite, position, population, ref closest, ref depth, paddingPixels);
             }
             if (hasSprite) continue;
             foreach (MeshRenderer cube in population.GetComponentsInChildren<MeshRenderer>())
                 if (cube != null && cube.enabled && cube.gameObject.name != "PopulationCount")
-                    TestBounds(cube.bounds, position, population, ref closest, ref depth);
+                    TestBounds(cube.bounds, position, population, ref closest, ref depth, paddingPixels);
         }
         return closest;
     }
 
     private void TestSprite(SpriteRenderer sprite, Vector2 position, WhiteboxPopulation owner,
-        ref WhiteboxPopulation closest, ref float nearestDepth)
+        ref WhiteboxPopulation closest, ref float nearestDepth, float paddingPixels)
     {
         Bounds bounds = sprite.sprite.bounds;
         Vector3 min = bounds.min, max = bounds.max;
@@ -252,7 +276,13 @@ public sealed class GameInformationUI : MonoBehaviour
         Vector3 c = viewCamera.WorldToScreenPoint(sprite.transform.TransformPoint(max.x, max.y, 0f));
         Vector3 d = viewCamera.WorldToScreenPoint(sprite.transform.TransformPoint(min.x, max.y, 0f));
         if (a.z <= 0f || b.z <= 0f || c.z <= 0f || d.z <= 0f) return;
-        if (!InsideQuad(position, a, b, c, d)) return;
+        if (!InsideQuad(position, a, b, c, d) &&
+            (paddingPixels <= 0f || Mathf.Min(
+                PopulationTileSpace.SegmentDistanceSquared(position, position, a, b),
+                PopulationTileSpace.SegmentDistanceSquared(position, position, b, c),
+                PopulationTileSpace.SegmentDistanceSquared(position, position, c, d),
+                PopulationTileSpace.SegmentDistanceSquared(position, position, d, a)) >
+                paddingPixels * paddingPixels)) return;
         float candidateDepth = viewCamera.WorldToScreenPoint(sprite.bounds.center).z;
         if (candidateDepth >= nearestDepth) return;
         nearestDepth = candidateDepth;
@@ -272,7 +302,7 @@ public sealed class GameInformationUI : MonoBehaviour
     private static float Cross(Vector2 a, Vector2 b) => a.x * b.y - a.y * b.x;
 
     private void TestBounds(Bounds bounds, Vector2 position, WhiteboxPopulation owner,
-        ref WhiteboxPopulation closest, ref float nearestDepth)
+        ref WhiteboxPopulation closest, ref float nearestDepth, float paddingPixels)
     {
         Vector3 min = bounds.min, max = bounds.max;
         float left = float.PositiveInfinity, right = float.NegativeInfinity;
@@ -285,7 +315,7 @@ public sealed class GameInformationUI : MonoBehaviour
             left = Mathf.Min(left, point.x); right = Mathf.Max(right, point.x);
             bottom = Mathf.Min(bottom, point.y); top = Mathf.Max(top, point.y);
         }
-        const float padding = 7f;
+        float padding = Mathf.Max(7f, paddingPixels);
         if (position.x < left - padding || position.x > right + padding ||
             position.y < bottom - padding || position.y > top + padding) return;
         float candidateDepth = viewCamera.WorldToScreenPoint(bounds.center).z;

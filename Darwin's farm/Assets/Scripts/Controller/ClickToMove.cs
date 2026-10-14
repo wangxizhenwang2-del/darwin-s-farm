@@ -21,6 +21,9 @@ public class ClickToMove : MonoBehaviour
     private NavMeshAgent agent;
     private PopulationPlayerBarrier populationBarrier;
     private ScreenEdgeCamera screenEdgeCamera;
+    private MapTouchInput touchInput;
+    private readonly System.Collections.Generic.List<RaycastResult> uiHits =
+        new System.Collections.Generic.List<RaycastResult>();
     private NavMeshPath path;
     private Vector3 destination;
     private Vector3[] waypoints;
@@ -42,7 +45,10 @@ public class ClickToMove : MonoBehaviour
             viewCamera = Camera.main;
 
         if (viewCamera != null)
+        {
             screenEdgeCamera = viewCamera.GetComponent<ScreenEdgeCamera>();
+            touchInput = viewCamera.GetComponent<MapTouchInput>();
+        }
 
         agent.autoRepath = true;
     }
@@ -66,6 +72,10 @@ public class ClickToMove : MonoBehaviour
 
         UpdateRoute();
 
+        // Touch taps are dispatched on release. Existing path following still
+        // updates while the touch router owns scene input.
+        if (touchInput != null && touchInput.SuppressesMouseInput) return;
+
         if (EventSystem.current != null &&
             EventSystem.current.IsPointerOverGameObject())
         {
@@ -82,10 +92,24 @@ public class ClickToMove : MonoBehaviour
         }
 
         mousePosition = Mouse.current.position.ReadValue();
-        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(mousePosition)) return;
+        TryMoveToScreenPosition(mousePosition);
+    }
 
-
-        Ray ray = viewCamera.ScreenPointToRay(mousePosition);
+    public bool TryMoveToScreenPosition(Vector2 screenPosition)
+    {
+        if (!isActiveAndEnabled || !movementInputEnabled || viewCamera == null || agent == null ||
+            !agent.isActiveAndEnabled || !agent.isOnNavMesh || !viewCamera.pixelRect.Contains(screenPosition) ||
+            (mapNavigation != null && mapNavigation.IsUpdating) ||
+            WhiteboxEcologyDebugView.IsPointerOverTestUi(screenPosition)) return false;
+        if (EventSystem.current != null)
+        {
+            var pointer = new PointerEventData(EventSystem.current) { position = screenPosition };
+            uiHits.Clear();
+            EventSystem.current.RaycastAll(pointer, uiHits);
+            foreach (RaycastResult uiHit in uiHits)
+                if (uiHit.module is UnityEngine.UI.GraphicRaycaster) return false;
+        }
+        Ray ray = viewCamera.ScreenPointToRay(screenPosition);
 
         if (!Physics.Raycast(
                 ray,
@@ -94,7 +118,7 @@ public class ClickToMove : MonoBehaviour
                 groundLayer,
                 QueryTriggerInteraction.Ignore))
         {
-            return;
+            return false;
         }
 
         NavMeshQueryFilter filter = new NavMeshQueryFilter
@@ -109,13 +133,14 @@ public class ClickToMove : MonoBehaviour
                 sampleDistance,
                 filter))
         {
-            return;
+            return false;
         }
 
         destination = navHit.position;
         hasDestination = true;
         nextReplanAt = 0f;
         if (!PlanRoute()) Debug.Log("The destination is currently blocked; waiting for a safe route.", this);
+        return true;
     }
 
     private void UpdateRoute()
