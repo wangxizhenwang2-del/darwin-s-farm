@@ -74,6 +74,9 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private int displayedCount = -1;
     private int activeMemberCount;
     private PopulationFormationMotion motion;
+    private bool terrainRecoveryPending;
+    private float terrainRecoveryAt;
+    internal int ActiveMemberCount => activeMemberCount;
     [SerializeField] private bool waitingForFollowers;
     [SerializeField] private bool wanderingPaused;
 
@@ -192,7 +195,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private void LateUpdate()
     {
         RefreshLabel(); // Also supports live Inspector edits.
-        SyncVisibleMembers(false);
+        if (controller != null && controller.NavigationReady) SyncVisibleMembers(false);
         if (label == null || Leader == null) return;
         label.transform.position = Leader.position + Vector3.up *
             (members[0].size * 0.5f + controller.Settings.labelHeight);
@@ -206,6 +209,23 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     internal void Tick(float deltaTime)
     {
         if (members == null || tile == null || motion == null) return;
+        if (terrainRecoveryPending)
+        {
+            if (Time.time < terrainRecoveryAt) return;
+            bool recoveryValid = true;
+            for (int i = 0; i < activeMemberCount; i++)
+                recoveryValid &= space.CanTraverse(members[i].groundPosition, members[i].groundPosition, members[i].size);
+            if (!recoveryValid)
+            {
+                if (!controller.TryRecoverFormation(this, out Vector3[] positions))
+                { terrainRecoveryAt = Time.time + .5f; Wait(true); return; }
+                for (int i = 0; i < activeMemberCount; i++)
+                    Place(members[i], positions[i], members[i].heading, 1f);
+            }
+            motion.ResetNavigation();
+            terrainRecoveryPending = false;
+            chooseAt = Time.time;
+        }
         SyncVisibleMembers(false);
         bool valid = true;
         for (int i = 0; i < activeMemberCount; i++)
@@ -216,7 +236,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             valid &= placed;
         }
         if (label != null) label.gameObject.SetActive(members[0].visual.gameObject.activeSelf);
-        if (!valid) { Wait(true); return; }
+        if (!valid) { terrainRecoveryPending = true; terrainRecoveryAt = Time.time + .5f; Wait(true); return; }
         if (!wanderingPaused && !motion.HasLeaderRoute && Time.time >= chooseAt) ChooseTarget();
         bool hadRoute = motion.HasLeaderRoute;
         motion.Tick(deltaTime, Time.time);
@@ -230,9 +250,16 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         }
     }
 
-    private bool PlanRoute(int index, Vector3 from, Vector3 target, out Vector3[] path) =>
-        space.TryPath(from, target, members[index].size, out path,
-            (a, b) => motion.Allowed(index, a, b));
+    private bool PlanRoute(int index, Vector3 from, Vector3 target, out Vector3[] path)
+    {
+        if (space.TryPath(from, target, members[index].size, out path,
+            (a, b) => motion.Allowed(index, a, b))) return true;
+        // A follower can temporarily occupy the only exit. Keep a terrain-valid
+        // leader route so the formation driver's bounded retreat can make room.
+        // Every actual movement step still checks all members and the player.
+        return index == 0 && controller.HasSeparation(this, members[index], target, target) &&
+            space.TryPath(from, target, members[index].size, out path);
+    }
 
     private void ChooseTarget()
     {
@@ -338,7 +365,15 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         return true;
     }
 
-    internal void NavigationChanged() { space.Rebuild(); Wait(true); }
+    internal void NavigationChanged()
+    {
+        if (space == null || motion == null) return;
+        space.Rebuild();
+        terrainRecoveryPending = true;
+        terrainRecoveryAt = Time.time;
+        motion.ResetNavigation();
+        Wait(true);
+    }
     private void OnDestroy()
     {
         if (controller != null) controller.Unregister(this);

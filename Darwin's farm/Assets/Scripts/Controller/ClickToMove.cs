@@ -22,6 +22,7 @@ public class ClickToMove : MonoBehaviour
     private PopulationPlayerBarrier populationBarrier;
     private ScreenEdgeCamera screenEdgeCamera;
     private MapTouchInput touchInput;
+    private GameInformationUI information;
     private readonly System.Collections.Generic.List<RaycastResult> uiHits =
         new System.Collections.Generic.List<RaycastResult>();
     private NavMeshPath path;
@@ -35,6 +36,7 @@ public class ClickToMove : MonoBehaviour
 
     private void Awake()
     {
+        information = FindFirstObjectByType<GameInformationUI>();
         agent = GetComponent<NavMeshAgent>();
         if (GetComponent<PopulationPlayerBarrier>() == null)
             gameObject.AddComponent<PopulationPlayerBarrier>();
@@ -97,6 +99,7 @@ public class ClickToMove : MonoBehaviour
 
     public bool TryMoveToScreenPosition(Vector2 screenPosition)
     {
+        if (information != null && information.ToolModeActive) return false;
         if (!isActiveAndEnabled || !movementInputEnabled || viewCamera == null || agent == null ||
             !agent.isActiveAndEnabled || !agent.isOnNavMesh || !viewCamera.pixelRect.Contains(screenPosition) ||
             (mapNavigation != null && mapNavigation.IsUpdating) ||

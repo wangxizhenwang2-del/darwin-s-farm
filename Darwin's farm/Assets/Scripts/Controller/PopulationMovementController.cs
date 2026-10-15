@@ -20,6 +20,7 @@ public sealed class PopulationMovementController : MonoBehaviour
     private readonly List<WhiteboxPopulation> populations = new List<WhiteboxPopulation>();
     private readonly List<WhiteboxPopulation> debugPopulations = new List<WhiteboxPopulation>();
     private bool navigationWasUpdating;
+    private int navigationRevision = -1;
     public PopulationMovementSettings Settings => settings;
     public Camera ViewCamera => viewCamera;
     public Sprite FallbackSprite => fallbackSprite;
@@ -79,7 +80,7 @@ public sealed class PopulationMovementController : MonoBehaviour
         }
         return true;
     }
-    private bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
+    internal bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
 
     public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount)
     {
@@ -137,19 +138,70 @@ public sealed class PopulationMovementController : MonoBehaviour
 
     private static float HorizontalDistance(Vector3 a, Vector3 b)
     { a.y = 0f; b.y = 0f; return Vector3.Distance(a, b); }
-    private bool SpawnSeparated(Vector3 point, float size)
+    private bool SpawnSeparated(Vector3 point, float size, WhiteboxPopulation ignore = null)
     {
         foreach (PopulationPlayerBarrier player in PopulationPlayerBarrier.Players)
             if (player != null && player.isActiveAndEnabled &&
                 HorizontalDistance(point, player.transform.position) <
                 PopulationTileSpace.Clearance(size) + player.Radius + Mathf.Max(0f, settings.playerGap)) return false;
         foreach (WhiteboxPopulation population in populations)
-            if (population != null && population.members != null)
+            if (population != null && population != ignore && population.members != null)
                 foreach (WhiteboxPopulation.Member member in population.members)
                     if (member.visual.gameObject.activeInHierarchy && HorizontalDistance(point, member.groundPosition) <
                         PopulationTileSpace.Clearance(size) + PopulationTileSpace.Clearance(member.size) +
                         Mathf.Max(0f, settings.populationGap)) return false;
         return true;
+    }
+
+    // Terrain engineering can put a new rock/tree on an old valid standing spot.
+    // Repack only for invalid terrain, within the same tile, keeping the entity,
+    // ecology and member count intact. Normal wandering never teleports members.
+    internal bool TryRecoverFormation(WhiteboxPopulation owner, out Vector3[] positions)
+    {
+        positions = null;
+        if (owner == null || owner.members == null || !owner.space.IsReady) return false;
+        int count = owner.ActiveMemberCount;
+        var space = owner.space;
+        Vector3 hint = owner.members[0].groundPosition;
+        var candidates = new List<Vector3> { hint };
+        Bounds bounds = space.Bounds;
+        for (float z = bounds.min.z + 1f; z < bounds.max.z; z += 1.25f)
+            for (float x = bounds.min.x + 1f; x < bounds.max.x; x += 1.25f)
+                candidates.Add(new Vector3(x, bounds.max.y, z));
+        candidates.Sort((a, b) => HorizontalDistance(a, hint).CompareTo(HorizontalDistance(b, hint)));
+        foreach (Vector3 leader in candidates)
+        {
+            if (!space.CanTraverse(leader, leader, owner.members[0].size) ||
+                !SpawnSeparated(leader, owner.members[0].size, owner)) continue;
+            for (int direction = 0; direction < 16; direction++)
+            {
+                var packed = new Vector3[count]; packed[0] = leader;
+                float angle = direction * Mathf.PI * .125f;
+                Vector3 backward = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                bool fits = true;
+                for (int i = 1; i < count; i++)
+                {
+                    float spacing = Mathf.Max(settings.spacing,
+                        PopulationTileSpace.Clearance(owner.members[i].size) +
+                        PopulationTileSpace.Clearance(owner.members[i - 1].size) + settings.memberGap + .08f);
+                    packed[i] = packed[i - 1] + backward * spacing;
+                    if (!space.CanTraverse(packed[i - 1], packed[i], owner.members[i].size) ||
+                        !SpawnSeparated(packed[i], owner.members[i].size, owner))
+                    { fits = false; break; }
+                }
+                if (!fits) continue;
+                // Reject isolated legal poses with no room to start wandering.
+                bool exit = false;
+                for (int d = 0; d < 8 && !exit; d++)
+                {
+                    float yaw = d * Mathf.PI * .25f;
+                    Vector3 target = leader + new Vector3(Mathf.Sin(yaw), 0f, Mathf.Cos(yaw)) * 2f;
+                    exit = space.TryPath(leader, target, owner.members[0].size, out _);
+                }
+                if (exit) { positions = packed; return true; }
+            }
+        }
+        return false;
     }
 
     internal bool HasSeparation(WhiteboxPopulation owner, WhiteboxPopulation.Member moving, Vector3 target)
@@ -185,7 +237,13 @@ public sealed class PopulationMovementController : MonoBehaviour
     private void Update()
     {
         if (!NavigationReady) { navigationWasUpdating = true; return; }
-        if (navigationWasUpdating) { OnTilesChanged(); navigationWasUpdating = false; }
+        if (navigationWasUpdating || navigationRevision != gridManager.Navigation.Revision)
+        {
+            foreach (WhiteboxPopulation population in populations)
+                if (population != null) population.NavigationChanged();
+            navigationRevision = gridManager.Navigation.Revision;
+            navigationWasUpdating = false;
+        }
         for (int i = populations.Count - 1; i >= 0; i--)
         {
             WhiteboxPopulation population = populations[i];
@@ -202,8 +260,9 @@ public sealed class PopulationMovementController : MonoBehaviour
     }
     private void OnTilesChanged()
     {
-        foreach (WhiteboxPopulation population in populations)
-            if (population != null) population.NavigationChanged();
+        // TilesChanged precedes the bake. Rebuild local caches only after the
+        // completed navigation revision, never against the previous mesh.
+        navigationWasUpdating = true;
     }
     public void DestroyPopulation(WhiteboxPopulation population)
     {

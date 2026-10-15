@@ -65,6 +65,12 @@ public sealed class PopulationFormationMotion
         count = Mathf.Clamp(count, 1, bodies.Length);
         if (activeCount == count) return;
         activeCount = count;
+        ResetNavigation();
+    }
+
+    // Old trails and follower routes describe the previous ground/obstacles.
+    public void ResetNavigation()
+    {
         CancelLeaderRoute();
         leaderProgress = 0f;
         for (int i = 0; i < bodies.Length; i++)
@@ -72,8 +78,9 @@ public sealed class PopulationFormationMotion
             bodies[i].path = null;
             bodies[i].blockedSeconds = 0f;
             bodies[i].retreatDistance = 0f;
-            if (i >= count) continue;
-            Vector3 tail = i + 1 < count ? bodies[i + 1].groundPosition : bodies[i].groundPosition;
+            if (i >= activeCount) continue;
+            bodies[i].goal = bodies[i].groundPosition;
+            Vector3 tail = i + 1 < activeCount ? bodies[i + 1].groundPosition : bodies[i].groundPosition;
             trails[i] = new Trail(tail, bodies[i].groundPosition);
         }
     }

@@ -43,18 +43,33 @@ public sealed class GameInformationUI : MonoBehaviour
     private float nextRefresh;
     private BiomeOcclusionVisibility biomeVisibility;
     private MapTouchInput touchInput;
+    private EnvironmentToolSession tools;
+    private bool mobilePresentation;
+    public bool ToolModeActive => tools != null && tools.Active;
+    public WhiteboxPopulation SelectedPopulation
+    {
+        get
+        {
+            if (!PopulationIsOpen || selectedVisual == null || !selectedVisual.gameObject.activeInHierarchy) return null;
+            var data = selectedVisual.EcologicalPopulation;
+            return (data != null ? data.PopulationId : selectedVisual.UniqueId) == selectedPopulationId &&
+                (data == null || data.speciesAmount > 0) ? selectedVisual : null;
+        }
+    }
     public MapTileInstance SelectedTile => selectedTile;
     public bool TileIsOpen => tileWindow != null && tileWindow.IsOpen;
     public bool PopulationIsOpen => populationWindow != null && populationWindow.IsOpen;
     public event System.Action<bool> SelectionChanged;
     public void SetMobilePresentation(bool mobile)
     {
+        mobilePresentation = mobile;
         if (tileWindow != null) tileWindow.SetPresentationVisible(!mobile);
         if (populationWindow != null) populationWindow.SetPresentationVisible(!mobile);
     }
 
     private void Awake()
     {
+        tools = GetComponent<EnvironmentToolSession>();
         canvasRect = (RectTransform)transform;
         if (viewCamera == null) viewCamera = Camera.main;
         if (viewCamera != null) touchInput = viewCamera.GetComponent<MapTouchInput>();
@@ -170,11 +185,11 @@ public sealed class GameInformationUI : MonoBehaviour
         {
             pressPosition = mouse.position.ReadValue();
             dragged = false;
-            awaitingRelease = alt && (buildMode == null || !buildMode.IsBuildMode) &&
+            awaitingRelease = (alt || ToolModeActive) && (buildMode == null || !buildMode.IsBuildMode) &&
                 viewCamera.pixelRect.Contains(pressPosition) && !PointerOverUi(pressPosition);
         }
         if (!awaitingRelease) return;
-        if (!alt) { awaitingRelease = false; return; }
+        if (!alt && !ToolModeActive) { awaitingRelease = false; return; }
         Vector2 position = mouse.position.ReadValue();
         if ((position - pressPosition).sqrMagnitude > clickDistancePixels * clickDistancePixels)
             dragged = true;
@@ -199,6 +214,7 @@ public sealed class GameInformationUI : MonoBehaviour
 
     public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f)
     {
+        if (ToolModeActive) return TrySelectTileAt(position);
         if (TrySelectPopulationAt(position, populationPaddingPixels)) return true;
         return TrySelectTileAt(position);
     }
@@ -208,8 +224,7 @@ public sealed class GameInformationUI : MonoBehaviour
         (buildMode == null || !buildMode.IsBuildMode) && viewCamera.pixelRect.Contains(position) &&
         !PointerOverUi(position);
 
-    // A hit consumes the tap even when that window is occupied. It must not
-    // fall through into a player move or replace the previously selected target.
+    // Selection replaces the corresponding window's target on both platforms.
     public bool TrySelectPopulationAt(Vector2 position, float paddingPixels = 0f)
     {
         if (!CanSelectAt(position)) return false;
@@ -217,7 +232,6 @@ public sealed class GameInformationUI : MonoBehaviour
         // visible sprite rectangles before querying the terrain colliders below.
         WhiteboxPopulation visual = PickPopulation(position, Mathf.Max(0f, paddingPixels));
         if (visual == null) return false;
-        if (populationWindow.IsOpen) return true;
         selectedVisual = visual;
         selectedPopulationId = visual.EcologicalPopulation != null
             ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
@@ -244,10 +258,12 @@ public sealed class GameInformationUI : MonoBehaviour
             nearest = groundHits[i].distance;
         }
         if (tile == null) return false;
-        if (tileWindow.IsOpen) return true;
         selectedTile = tile;
         RefreshTile();
-        tileWindow.Open();
+        // Desktop tool targeting needs a selected tile, not an information window.
+        // Mobile keeps its logical window open to drive the existing drawer.
+        if (ToolModeActive && !mobilePresentation) tileWindow.Close();
+        else tileWindow.Open();
         SelectionChanged?.Invoke(false);
         return true;
     }

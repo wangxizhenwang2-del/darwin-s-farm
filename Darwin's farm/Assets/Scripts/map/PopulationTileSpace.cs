@@ -17,6 +17,7 @@ public sealed class PopulationTileSpace
     private readonly MapTileInstance tile;
     private readonly NavMeshQueryFilter filter;
     private readonly Dictionary<float, PopulationLocalNavigation> routes = new Dictionary<float, PopulationLocalNavigation>();
+    private readonly Dictionary<float, PopulationLocalNavigation> fineRoutes = new Dictionary<float, PopulationLocalNavigation>();
     private struct NavigationTriangle
     {
         public Vector3 a, b, c;
@@ -38,6 +39,7 @@ public sealed class PopulationTileSpace
         ground.Clear();
         boundary.Clear();
         routes.Clear();
+        fineRoutes.Clear();
         navigationCells.Clear();
         if (tile == null) return;
         var edges = new Dictionary<(Vector2Int, Vector2Int), Edge>();
@@ -293,7 +295,7 @@ public sealed class PopulationTileSpace
         return new Vector3(inward.x, 0f, inward.y).normalized;
     }
 
-    public void InvalidateRoutes() => routes.Clear();
+    public void InvalidateRoutes() { routes.Clear(); fineRoutes.Clear(); }
 
     public bool TryPath(Vector3 from, Vector3 target, float size, out Vector3[] corners,
         System.Func<Vector3, Vector3, bool> bodyMove = null)
@@ -305,7 +307,17 @@ public sealed class PopulationTileSpace
             navigation = new PopulationLocalNavigation(Bounds, 0.65f, (a, b) => CanTraverse(a, b, size));
             routes.Add(size, navigation);
         }
-        if (!navigation.TryPath(from, end.point, bodyMove, out corners)) return false;
+        if (!navigation.TryPath(from, end.point, bodyMove, out corners))
+        {
+            // A valid body can stand between the coarse samples after a biome
+            // changes around it. Retry a denser grid with identical safety checks.
+            if (!fineRoutes.TryGetValue(size, out navigation))
+            {
+                navigation = new PopulationLocalNavigation(Bounds, 0.325f, (a, b) => CanTraverse(a, b, size));
+                fineRoutes.Add(size, navigation);
+            }
+            if (!navigation.TryPath(from, end.point, bodyMove, out corners)) return false;
+        }
         // Sampling does not supply height: every returned waypoint uses this tile.
         for (int i = 0; i < corners.Length; i++)
         {

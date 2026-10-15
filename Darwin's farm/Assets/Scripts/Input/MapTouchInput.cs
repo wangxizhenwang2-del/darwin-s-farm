@@ -110,6 +110,8 @@ public sealed class MapTouchInput : MonoBehaviour
                 if (placing || !viewCamera.pixelRect.Contains(action.Position) || IsPointerOverUI(action.Position)) break;
                 if (building)
                 { if (persistent) placement.TrySetTouchPosition(action.Position); break; }
+                if (information != null && information.ToolModeActive)
+                { information.TrySelectTileAt(action.Position); break; }
                 if (information != null && information.TrySelectPopulationAt(action.Position,
                     populationPickPaddingPixels * ResolutionScale)) break;
                 if (playerMovement != null) playerMovement.TryMoveToScreenPosition(action.Position);

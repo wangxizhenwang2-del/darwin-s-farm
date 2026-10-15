@@ -58,6 +58,9 @@ public sealed class MobileGameUI : MonoBehaviour
     private float nextRefresh;
     private InformationTab lastTab;
     private readonly float[] scrollPositions = { 1f, 1f };
+    [SerializeField] private UnityEngine.UI.Button environmentToolsButton;
+    private EnvironmentToolSession toolSession;
+    private bool previousToolMode;
 
     public bool IsMobileActive => isActiveAndEnabled && mobile;
     public DisplayMode Mode
@@ -118,6 +121,8 @@ public sealed class MobileGameUI : MonoBehaviour
         foreach (InformationTextDragHandle handle in GetComponentsInChildren<InformationTextDragHandle>(true))
             handle.Initialize(drawer);
         technologyPanel.Initialize();
+        toolSession = information.GetComponent<EnvironmentToolSession>();
+        if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
         pauseButton.onClick.AddListener(() => { if (clock != null) clock.TogglePause(); });
         speedButton.onClick.AddListener(() => { if (clock != null) { if (clock.Speed == 2f) clock.Play(); else clock.DoubleSpeed(); } });
@@ -143,6 +148,16 @@ public sealed class MobileGameUI : MonoBehaviour
         if (!Application.isPlaying)
         { if (lastTab != informationTab) ShowTab(); return; }
         if (!bound || !mobile) return;
+        bool toolMode = toolSession != null && toolSession.Active;
+        if (toolMode != previousToolMode)
+        {
+            previousToolMode = toolMode;
+            technologyPanel.Refresh();
+            RefreshLayout();
+            if (toolMode) { SelectTab(InformationTab.Environment); ScrollToTools(); }
+        }
+        if (environmentToolsButton != null)
+            environmentToolsButton.GetComponentInChildren<TextMeshProUGUI>().text = toolMode ? "退出工具" : "环境工具";
         // The desktop build Controller owns its mode; mobile only supplies a view.
         if (desktopBuildPanel != null && desktopBuildPanel.activeSelf) desktopBuildPanel.SetActive(false);
         if (Time.unscaledTime < nextRefresh) return;
@@ -189,7 +204,8 @@ public sealed class MobileGameUI : MonoBehaviour
         safeArea.offsetMin = safeArea.offsetMax = Vector2.zero;
         Canvas.ForceUpdateCanvases();
         float width = Mathf.Clamp(safeArea.rect.width * drawerWidthFraction, 320f, maximumDrawerWidth);
-        float height = Mathf.Max(240f, safeArea.rect.height + drawerDefaultPosition.y - drawerBottomClearance);
+        float clearance = Application.isPlaying && toolSession != null && toolSession.Active ? 20f : drawerBottomClearance;
+        float height = Mathf.Max(240f, safeArea.rect.height + drawerDefaultPosition.y - clearance);
         drawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
         drawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
         titleLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width - 24f);
@@ -240,6 +256,7 @@ public sealed class MobileGameUI : MonoBehaviour
             scrollPositions[(int)tab] = 1f;
             informationScroll.StopMovement();
             informationScroll.verticalNormalizedPosition = 1f;
+            if (!population && toolSession != null && toolSession.Active) ScrollToTools();
         }
         else
         {
@@ -250,6 +267,7 @@ public sealed class MobileGameUI : MonoBehaviour
     }
     private void CloseActiveInformation()
     {
+        if (toolSession != null && toolSession.Active) toolSession.End();
         if (informationTab == InformationTab.Environment) information.CloseTile();
         else information.ClosePopulation();
     }
@@ -263,14 +281,17 @@ public sealed class MobileGameUI : MonoBehaviour
     {
         if (!mobile || !bound) return;
         if (lastTab != informationTab) ShowTab();
-        bool any = information.TileIsOpen || information.PopulationIsOpen;
+        bool any = information.TileIsOpen || information.PopulationIsOpen || (toolSession != null && toolSession.Active);
         if (any && !drawer.IsOpen) { ShowTab(); drawer.Open(); }
         else if (!any && drawer.IsOpen) drawer.Close();
         bool tile = informationTab == InformationTab.Environment;
         titleLabel.text = tile ? "环境信息 · 拖标题移动，滑正文查看更多" : "生物信息 · 拖标题移动，滑正文查看更多";
-        closeButton.interactable = tile ? information.TileIsOpen : information.PopulationIsOpen;
+        closeButton.interactable = (toolSession != null && toolSession.Active) || (tile ? information.TileIsOpen : information.PopulationIsOpen);
         if (tile)
         {
+            bool operating = toolSession != null && toolSession.Active;
+            trendPanel.Chart.transform.parent.gameObject.SetActive(!operating);
+            tileDetails.gameObject.SetActive(!operating);
             tileDetails.text = information.TileIsOpen ? information.ReadTileDetails() : "长按地图地块查看环境信息";
             trendPanel.Show(information.TileIsOpen ? information.SelectedTile : null, history);
             technologyPanel.SetTarget(information.TileIsOpen ? information.SelectedTile : null);
@@ -287,6 +308,14 @@ public sealed class MobileGameUI : MonoBehaviour
         placementControls.SetActive(placing);
         confirmButton.interactable = placing && placement.CanConfirmTouchPlacement;
         if (placing) placementLabel.text = placement.TouchPreviewStatus;
+    }
+    private void ScrollToTools()
+    {
+        technologyPanel.Refresh();
+        Canvas.ForceUpdateCanvases();
+        scrollPositions[0] = 1f;
+        informationScroll.StopMovement();
+        informationScroll.verticalNormalizedPosition = 1f;
     }
     private void OnDisable()
     {
