@@ -6,14 +6,15 @@ using UnityEngine;
 public sealed class SelectionOutlinePresenter : MonoBehaviour
 {
     [SerializeField] private Material lineMaterial, spriteMaterial;
-    [SerializeField] private Color tileColor = new Color(1f,.8f,.18f), populationColor = new Color(.15f,1f,1f);
-    [SerializeField] private Color areaColor = new Color(1f,.85f,.4f,.5f);
-    [SerializeField, Range(1f, 8f)] private float linePixels = 3f;
+    [SerializeField] private Color tileColor = new Color(1f,.93f,.08f), populationColor = new Color(.15f,1f,1f);
+    [SerializeField] private Color areaColor = new Color(1f,.9f,.25f,.7f);
+    [SerializeField, Range(1f, 12f)] private float linePixels = 6f;
     private GameInformationUI information;
     private EnvironmentToolSession tools;
     private MapGridManager grid;
     private Camera viewCamera;
     private readonly Dictionary<MapTileInstance, LineRenderer> lines = new Dictionary<MapTileInstance, LineRenderer>();
+    private readonly Dictionary<MapTileInstance, LineRenderer> contrastLines = new Dictionary<MapTileInstance, LineRenderer>();
     private readonly HashSet<MapTileInstance> wanted = new HashSet<MapTileInstance>();
     private readonly List<MapTileInstance> expired = new List<MapTileInstance>();
     private readonly List<SpriteRenderer> sources = new List<SpriteRenderer>(), outlines = new List<SpriteRenderer>();
@@ -42,7 +43,8 @@ public sealed class SelectionOutlinePresenter : MonoBehaviour
                 if (grid.TryGetTile(coordinate, out var tile)) wanted.Add(tile);
         expired.Clear();
         foreach (var pair in lines) if (pair.Key == null || !wanted.Contains(pair.Key)) expired.Add(pair.Key);
-        foreach (var tile in expired) { if (lines[tile] != null) Destroy(lines[tile].gameObject); lines.Remove(tile); }
+        foreach (var tile in expired)
+        { if (lines[tile] != null) Destroy(lines[tile].gameObject); lines.Remove(tile); contrastLines.Remove(tile); }
         bool rebuild = Time.unscaledTime >= nextGeometry;
         if (rebuild) nextGeometry = Time.unscaledTime + .2f;
         foreach (var tile in wanted)
@@ -54,17 +56,29 @@ public sealed class SelectionOutlinePresenter : MonoBehaviour
                 line = go.AddComponent<LineRenderer>(); line.sharedMaterial = lineMaterial;
                 line.useWorldSpace = true; line.loop = true; line.positionCount = points.Length;
                 line.numCornerVertices = 3; line.numCapVertices = 2;
+                line.sortingOrder = 2;
                 line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; line.receiveShadows = false;
                 lines.Add(tile,line);
+                var backing = new GameObject("BoundaryContrast"); backing.transform.SetParent(go.transform, false);
+                var contrast = backing.AddComponent<LineRenderer>(); contrast.sharedMaterial = lineMaterial;
+                contrast.useWorldSpace = true; contrast.loop = true; contrast.positionCount = points.Length;
+                contrast.numCornerVertices = 3; contrast.numCapVertices = 2; contrast.sortingOrder = 1;
+                contrast.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; contrast.receiveShadows = false;
+                contrastLines.Add(tile, contrast);
             }
-            if (created || rebuild) SetTileGeometry(tile,line);
+            var backingLine = contrastLines[tile];
+            if (created || rebuild) { SetTileGeometry(tile,line); backingLine.SetPositions(points); }
             Color color = tile == information.SelectedTile ? tileColor : areaColor;
             line.startColor = line.endColor = color;
+            backingLine.startColor = backingLine.endColor = new Color(.06f,.09f,.06f,
+                tile == information.SelectedTile ? 1f : .55f);
             float worldPerPixel = viewCamera == null ? .03f : viewCamera.orthographic ?
                 2f * viewCamera.orthographicSize / Mathf.Max(1,viewCamera.pixelHeight) :
                 2f * Vector3.Distance(viewCamera.transform.position,tile.transform.position) *
                 Mathf.Tan(viewCamera.fieldOfView * Mathf.Deg2Rad * .5f) / Mathf.Max(1,viewCamera.pixelHeight);
-            line.startWidth = line.endWidth = worldPerPixel * linePixels;
+            float width = tile == information.SelectedTile ? linePixels : linePixels * .75f;
+            line.startWidth = line.endWidth = worldPerPixel * width;
+            backingLine.startWidth = backingLine.endWidth = worldPerPixel * (width + 4f);
         }
         var selected = information.SelectedPopulation;
         if (selected != population) { ClearSprites(); population = selected; if (population != null) CreateSprites(); }
@@ -113,7 +127,7 @@ public sealed class SelectionOutlinePresenter : MonoBehaviour
     private void ClearSprites()
     { foreach(var outline in outlines) if(outline!=null) Destroy(outline.gameObject); sources.Clear(); outlines.Clear(); population=null; }
     private void Clear()
-    { foreach(var line in lines.Values) if(line!=null) Destroy(line.gameObject); lines.Clear(); ClearSprites(); }
+    { foreach(var line in lines.Values) if(line!=null) Destroy(line.gameObject); lines.Clear(); contrastLines.Clear(); ClearSprites(); }
     private void OnDisable() => Clear();
     private void OnDestroy() { if(runtimeSpriteMaterial!=null) Destroy(runtimeSpriteMaterial); }
 }

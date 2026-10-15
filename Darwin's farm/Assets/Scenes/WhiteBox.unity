@@ -1972,7 +1972,6 @@ MonoBehaviour:
   buildMode: {fileID: 1541449668}
   placement: {fileID: 1541449669}
   clock: {fileID: 1541449671}
-  debugView: {fileID: 2200000002}
   history: {fileID: 1640010072}
   desktopCanvas: {fileID: 1640010069}
   desktopHud: {fileID: 600754721}
@@ -22089,8 +22088,6 @@ GameObject:
   - component: {fileID: 1541449672}
   - component: {fileID: 1541449673}
   - component: {fileID: 1541449674}
-  - component: {fileID: 2200000001}
-  - component: {fileID: 2200000002}
   - component: {fileID: 1541449675}
   - component: {fileID: 2200000003}
   - component: {fileID: 2200000004}
@@ -24082,10 +24079,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SelectionOutlinePresenter
   lineMaterial: {fileID: 2100000, guid: 8f90b71f12737d24e84082efad43f658, type: 2}
   spriteMaterial: {fileID: 2100000, guid: 843b08861ab51c14bb1a15c96c9eb143, type: 2}
-  tileColor: {r: 1, g: 0.8, b: 0.18, a: 1}
+  tileColor: {r: 1, g: 0.93, b: 0.08, a: 1}
   populationColor: {r: 0.15, g: 1, b: 1, a: 1}
-  areaColor: {r: 1, g: 0.85, b: 0.4, a: 0.5}
-  linePixels: 3
+  areaColor: {r: 1, g: 0.9, b: 0.25, a: 0.7}
+  linePixels: 6
 --- !u!1 &1643398223
 GameObject:
   m_ObjectHideFlags: 0
@@ -29578,41 +29575,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2131358600}
   m_CullTransparentMesh: 1
---- !u!114 &2200000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1541449665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9302c9afeb84463588d539116eab4621, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugController
-  grid: {fileID: 1541449667}
-  simulation: {fileID: 1541449672}
-  clock: {fileID: 1541449671}
---- !u!114 &2200000002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1541449665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac3448232014d82ad450b32f576c302, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WhiteboxEcologyDebugView
-  controller: {fileID: 2200000001}
-  populationVisuals: {fileID: 2200000004}
-  viewCamera: {fileID: 1669876467}
-  technology: {fileID: 0}
-  clock: {fileID: 0}
-  account: {fileID: 0}
-  fontSize: 11
-  heightAboveTile: 2.5
 --- !u!114 &2200000003
 MonoBehaviour:
   m_ObjectHideFlags: 0

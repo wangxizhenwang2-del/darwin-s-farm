@@ -200,7 +200,7 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private bool PointerOverUi(Vector2 position)
     {
-        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(position)) return true;
+        if (EconomyOperationsView.IsPointerOverUi(position)) return true;
         if (EventSystem.current == null) return false;
         var pointer = new PointerEventData(EventSystem.current) { position = position };
         uiHits.Clear();

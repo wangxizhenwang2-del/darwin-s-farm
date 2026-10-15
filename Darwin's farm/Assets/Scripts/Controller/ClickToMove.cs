@@ -103,7 +103,7 @@ public class ClickToMove : MonoBehaviour
         if (!isActiveAndEnabled || !movementInputEnabled || viewCamera == null || agent == null ||
             !agent.isActiveAndEnabled || !agent.isOnNavMesh || !viewCamera.pixelRect.Contains(screenPosition) ||
             (mapNavigation != null && mapNavigation.IsUpdating) ||
-            WhiteboxEcologyDebugView.IsPointerOverTestUi(screenPosition)) return false;
+            EconomyOperationsView.IsPointerOverUi(screenPosition)) return false;
         if (EventSystem.current != null)
         {
             var pointer = new PointerEventData(EventSystem.current) { position = screenPosition };

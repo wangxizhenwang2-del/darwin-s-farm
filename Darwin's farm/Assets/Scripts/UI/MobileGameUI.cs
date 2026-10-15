@@ -18,7 +18,6 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private MapBuildModeController buildMode;
     [SerializeField] private MapTilePlacementController placement;
     [SerializeField] private SimulationTime clock;
-    [SerializeField] private WhiteboxEcologyDebugView debugView;
     [SerializeField] private TileTrendHistory history;
     [Header("Saved desktop presentation")]
     [SerializeField] private Canvas desktopCanvas;
@@ -187,7 +186,6 @@ public sealed class MobileGameUI : MonoBehaviour
         if (desktopCanvas != null) desktopCanvas.enabled = true; // Keep world population markers.
         if (desktopHud != null) desktopHud.SetActive(!mobile);
         if (desktopBuildPanel != null) desktopBuildPanel.SetActive(!mobile && buildMode.IsBuildMode);
-        if (debugView != null) debugView.PresentationEnabled = !mobile;
         information.SetMobilePresentation(mobile);
         if (touchInput != null) touchInput.CancelGesture();
         if (placement != null && placement.IsDragging) placement.CancelDrag();
@@ -332,7 +330,6 @@ public sealed class MobileGameUI : MonoBehaviour
             if (information != null) information.SetMobilePresentation(false);
             if (desktopHud != null) desktopHud.SetActive(true);
             if (desktopBuildPanel != null && buildMode != null) desktopBuildPanel.SetActive(buildMode.IsBuildMode);
-            if (debugView != null) debugView.PresentationEnabled = true;
         }
     }
 }

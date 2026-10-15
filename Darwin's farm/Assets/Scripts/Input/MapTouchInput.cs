@@ -136,7 +136,7 @@ public sealed class MapTouchInput : MonoBehaviour
 
     private bool IsPointerOverUI(Vector2 position)
     {
-        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(position)) return true;
+        if (EconomyOperationsView.IsPointerOverUi(position)) return true;
         EventSystem events = EventSystem.current;
         if (events == null) return false;
         if (pointerEventSystem != events)

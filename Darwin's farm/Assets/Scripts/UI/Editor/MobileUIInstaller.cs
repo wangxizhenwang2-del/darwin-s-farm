@@ -39,7 +39,6 @@ public static class MobileUIInstaller
         Set(saved, "mapCamera", Object.FindFirstObjectByType<ScreenEdgeCamera>());
         Set(saved, "buildMode", build); Set(saved, "placement", placement);
         Set(saved, "clock", Object.FindFirstObjectByType<SimulationTime>());
-        Set(saved, "debugView", Object.FindFirstObjectByType<WhiteboxEcologyDebugView>());
         Set(saved, "history", information.GetComponent<TileTrendHistory>());
         var buildSettings = new SerializedObject(build);
         Set(saved, "desktopBuildPanel", buildSettings.FindProperty("buildPanel").objectReferenceValue);
