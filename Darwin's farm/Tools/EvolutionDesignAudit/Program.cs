@@ -21,6 +21,11 @@ internal static class Program
 
     private static void Main(string[] args)
     {
+        if (args.Contains("--rule-change-smoke"))
+        {
+            RuleChangeSmoke.Run();
+            return;
+        }
         Root = Directory.GetCurrentDirectory();
         if (!Directory.Exists(Path.Combine(Root, "Assets", "BiowebV46")))
             throw new Exception("Run from the Unity project directory.");

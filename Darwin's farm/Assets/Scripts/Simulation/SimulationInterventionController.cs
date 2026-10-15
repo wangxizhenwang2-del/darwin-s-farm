@@ -290,7 +290,14 @@ public sealed class SimulationInterventionController : MonoBehaviour
             ";reproduction=" + tuning.reproductionScale +
             ";migration=" + tuning.migrationEnabled +
             ";mutation=" + tuning.mutationEnabled +
-            ";niches=" + tuning.ecologicalNichesEnabled);
+            ";niches=" + tuning.ecologicalNichesEnabled +
+            ";splitK=" + tuning.splitMinimumRenewalPressure +
+            ";founder=" + tuning.splitFounderFraction +
+            ";approach=" + tuning.directedSplitTraitFraction +
+            ";traitLockDays=" + tuning.directedSplitTraitLockDays +
+            ";mergeDays=" + tuning.sameSpeciesMergeDays +
+            ";postMergeSplitCooldownDays=" + tuning.postMergeSplitCooldownDays +
+            ";resourceTraitGain=" + tuning.resourceTraitGain);
     }
 
     private static string FormatValue(SimulationInterventionKind kind, float value)

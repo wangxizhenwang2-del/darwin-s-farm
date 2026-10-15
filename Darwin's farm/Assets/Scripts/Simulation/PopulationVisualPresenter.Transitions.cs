@@ -11,6 +11,7 @@ public sealed partial class PopulationVisualPresenter
     [SerializeField, Min(0.1f)] private float transitionSpeed = 5f;
     [SerializeField, Min(0.1f)] private float minimumTransitionSeconds = 0.8f;
     [SerializeField, Min(0.1f)] private float maximumTransitionSeconds = 4.5f;
+    [SerializeField, Min(0.1f)] private float splitEvolutionMinimumSeconds = 3f;
     [SerializeField, Min(0f)] private float fallbackArcHeight = 2.5f;
 
     private sealed class TransitionHold
@@ -49,6 +50,7 @@ public sealed partial class PopulationVisualPresenter
         simulation.OnMigrationResolved += OnTransitionResolved;
         simulation.OnNicheConversionResolved += OnTransitionResolved;
         simulation.OnPresetEvolutionResolved += OnTransitionResolved;
+        simulation.OnLocalSplitResolved += OnTransitionResolved;
     }
 
     private void UnsubscribeTransitions()
@@ -57,6 +59,7 @@ public sealed partial class PopulationVisualPresenter
         simulation.OnMigrationResolved -= OnTransitionResolved;
         simulation.OnNicheConversionResolved -= OnTransitionResolved;
         simulation.OnPresetEvolutionResolved -= OnTransitionResolved;
+        simulation.OnLocalSplitResolved -= OnTransitionResolved;
     }
 
     private void OnTransitionResolved(PopulationTransitionResult result)
@@ -129,6 +132,20 @@ public sealed partial class PopulationVisualPresenter
         // All holds are in place before one model-to-view reconciliation.
         SyncNow();
 
+        // Whole-branch evolution retains its population ID and existing view.
+        // Stage that view too, so the new sprite appears after the transition.
+        foreach (PendingTransition pending in ready)
+            if (pending.Held && pending.Result.TargetCountBefore == 0 &&
+                transitionHolds.TryGetValue(pending.Result.ResultPopulationId,
+                    out TransitionHold hold) && hold.StagedView == null &&
+                visuals.TryGetValue(pending.Result.ResultPopulationId,
+                    out WhiteboxPopulation existing) && existing != null)
+            {
+                existing.PauseWandering(true);
+                existing.gameObject.SetActive(false);
+                hold.StagedView = existing;
+            }
+
         foreach (PendingTransition pending in ready)
         {
             PopulationTransitionResult result = pending.Result;
@@ -162,9 +179,12 @@ public sealed partial class PopulationVisualPresenter
                 hasRoute = false;
             }
             float distance = PathLength(path);
+            bool keyChange = result.Kind == PopulationTransitionKind.LocalSplit ||
+                result.Kind == PopulationTransitionKind.PresetEvolution;
+            float minimum = Mathf.Max(0.1f, minimumTransitionSeconds,
+                keyChange ? splitEvolutionMinimumSeconds : 0f);
             float duration = Mathf.Clamp(distance / Mathf.Max(0.1f, transitionSpeed),
-                Mathf.Max(0.1f, minimumTransitionSeconds),
-                Mathf.Max(minimumTransitionSeconds, maximumTransitionSeconds));
+                minimum, Mathf.Max(minimum, maximumTransitionSeconds));
             GameObject objectRoot = new GameObject($"{result.Kind}_Transition");
             objectRoot.transform.SetParent(transform, true);
             PopulationTransitionVisual transition =
@@ -199,8 +219,10 @@ public sealed partial class PopulationVisualPresenter
         foreach (RunningTransition running in activeTransitions.ToArray())
             if (running.View == null ||
                 !TryFindTile(running.Result.TargetBlock, out _) ||
-                FindPopulation(running.Result.TargetBlock,
-                    running.Result.ResultPopulationId) == null)
+                (running.Result.Kind != PopulationTransitionKind.LocalSplit &&
+                 running.Result.Kind != PopulationTransitionKind.PresetEvolution &&
+                 FindPopulation(running.Result.TargetBlock,
+                     running.Result.ResultPopulationId) == null))
             {
                 if (running.View != null) running.View.Cancel();
                 else FinishTransition(running);

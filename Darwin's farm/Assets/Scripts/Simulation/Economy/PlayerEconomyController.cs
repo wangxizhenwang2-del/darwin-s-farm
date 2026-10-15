@@ -480,6 +480,7 @@ public sealed class PlayerEconomyController : MonoBehaviour
         }
         survivor.localSplitBranch = false;
         survivor.directedSplitTarget = null;
+        survivor.directedTraitUnlockDay = 0;
         survivor.sameSpeciesCoexistenceDays = 0;
         survivor.splitStrategy = 0;
         survivor.mutationSelectionProgress = 0f;

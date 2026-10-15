@@ -20,6 +20,52 @@ public partial class SimulationController
     { t = p.fitTemperature, h = p.fitHumidity, m = p.movementAbility,
       s = p.size, f = p.fertility };
 
+    public struct LandSelectionSignals
+    {
+        public float stockDays, renewalCoverage, neighborAttraction;
+        public float sizePressure, fertilityPressure, movementPressure;
+        public int movementCeiling;
+    }
+
+    public LandSelectionSignals ReadLandSelectionSignals(BlockInfo block,
+        PopulationData p)
+    {
+        if (block == null || p == null || p.speciesAmount <= 0)
+            return new LandSelectionSignals();
+        float stockDays = LandLifeRules.AccessibleFoodStockDays(block, p, LandRules);
+        float capacity = LandLifeRules.EnvironmentalCarryingCapacity(
+            block, p, LandRules);
+        float renewalCoverage = capacity / Mathf.Max(1, p.speciesAmount);
+        float attraction = BestNeighborAttraction(block, p, out int ceiling);
+        bool neighborOpportunity = attraction >= LandRules.neighborAttractionThreshold
+            && p.movementAbility < ceiling;
+        return new LandSelectionSignals
+        {
+            stockDays = stockDays,
+            renewalCoverage = renewalCoverage,
+            neighborAttraction = attraction,
+            movementCeiling = ceiling,
+            sizePressure = ResourcePressure(stockDays,
+                LandRules.lowStockDays, LandRules.highStockDays),
+            fertilityPressure = ResourcePressure(renewalCoverage,
+                LandRules.lowRenewalCoverage, LandRules.highRenewalCoverage),
+            movementPressure = neighborOpportunity ? attraction : -1f
+        };
+    }
+
+    private static float ResourcePressure(float value, float low, float high)
+    {
+        if (value < low)
+            return -Mathf.Clamp01((low - value) / Mathf.Max(0.001f, low));
+        if (value > high)
+            return Mathf.Clamp01((value - high) / Mathf.Max(0.001f, high));
+        return 0f;
+    }
+
+    public static bool IsDirectedTraitLocked(PopulationData p, int day) =>
+        p != null && p.directedSplitTarget != null &&
+        day < p.directedTraitUnlockDay;
+
     private float ForecastLandGrowth(BlockInfo block, PopulationData p, LandTraits v)
     {
         float fitness = LandLifeRules.Fitness(block, v.t, v.h);
@@ -140,6 +186,7 @@ public partial class SimulationController
         var subjects = new List<PopulationData>(block.community.Count);
         var effects = new List<string>(block.community.Count);
         var gains = new List<float>(block.community.Count);
+        var signalHistory = new List<LandSelectionSignals>(block.community.Count);
         foreach (PopulationData p in block.community)
         {
             if (p == null || p.speciesAmount <= 0) continue;
@@ -152,11 +199,11 @@ public partial class SimulationController
             float bestGain = LandRules.mutationGainThreshold;
             string effect = null;
             int selectedCandidate = -1;
-            int ceiling;
-            float attraction = BestNeighborAttraction(block, p, out ceiling);
-            // A directed split has already committed movement, body size and
-            // fertility to its graph neighbor. Only climate traits keep adapting.
-            int mutableTraitCount = p.directedSplitTarget != null ? 2 : 5;
+            LandSelectionSignals signals = ReadLandSelectionSignals(block, p);
+            // Only the directed branch keeps these traits fixed, and only until
+            // the configured day. Its climate traits adapt throughout.
+            int mutableTraitCount = IsDirectedTraitLocked(p,
+                currentSimulationDay) ? 2 : 5;
             for (int trait = 0; trait < mutableTraitCount; trait++)
             {
                 for (int d = -1; d <= 1; d += 2)
@@ -177,11 +224,19 @@ public partial class SimulationController
                         score += p.speciesAmount * 0.01f *
                             (PredatorPotential(block, p, candidate)
                             - PredatorPotential(block, p, current));
-                    if (trait == 2 && d > 0 &&
-                        attraction >= LandRules.neighborAttractionThreshold &&
-                        current.m < ceiling)
-                        score += p.speciesAmount *
-                            LandRules.attractionMovementGain * attraction * 0.001f;
+                    if (trait == 2)
+                        score += p.speciesAmount * d * 0.001f *
+                            (signals.movementPressure > 0f
+                                ? LandRules.attractionMovementGain
+                                    * signals.movementPressure
+                                : LandRules.localMovementGain
+                                    * signals.movementPressure);
+                    if (trait == 3)
+                        score += p.speciesAmount * d *
+                            LandRules.resourceTraitGain * signals.sizePressure;
+                    if (trait == 4)
+                        score += p.speciesAmount * d *
+                            LandRules.resourceTraitGain * signals.fertilityPressure;
                     float gain = (score - baseline) * selectionStrength
                         / Mathf.Max(1, p.speciesAmount);
                     if (gain > bestGain)
@@ -224,6 +279,7 @@ public partial class SimulationController
             subjects.Add(p);
             effects.Add(effect);
             gains.Add(bestGain);
+            signalHistory.Add(signals);
         }
         for (int i = 0; i < subjects.Count; i++)
         {
@@ -241,7 +297,13 @@ public partial class SimulationController
                     effects[i] + " perCapitaGain=" + gains[i].ToString("F7") +
                     " threshold=" + LandRules.mutationGainThreshold.ToString("F7") +
                     " stock=" + block.plantBiomass.ToString("F0") +
-                    " count=" + p.speciesAmount);
+                    " count=" + p.speciesAmount +
+                    " stockDays=" + signalHistory[i].stockDays.ToString("F2") +
+                    " renewalCoverage=" + signalHistory[i].renewalCoverage.ToString("F2") +
+                    " neighborAttraction=" + signalHistory[i].neighborAttraction.ToString("F2") +
+                    " sizePressure=" + signalHistory[i].sizePressure.ToString("F2") +
+                    " fertilityPressure=" + signalHistory[i].fertilityPressure.ToString("F2") +
+                    " movementPressure=" + signalHistory[i].movementPressure.ToString("F2"));
             }
         }
     }

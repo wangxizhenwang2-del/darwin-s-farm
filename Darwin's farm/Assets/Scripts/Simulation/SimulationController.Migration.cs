@@ -292,6 +292,7 @@ public partial class SimulationController
             PopulationData resultPopulation = resident ?? arrival;
             resultPopulation.localSplitBranch = false;
             resultPopulation.directedSplitTarget = null;
+            resultPopulation.directedTraitUnlockDay = 0;
             resultPopulation.sameSpeciesCoexistenceDays = 0;
             resultPopulation.mutationSelectionProgress = 0f;
             resultPopulation.mutationSelectionCandidate = -1;
@@ -711,6 +712,7 @@ internal static class PopulationTransfer
             localSplitBranch = source.localSplitBranch,
             splitStrategy = source.splitStrategy,
             directedSplitTarget = source.directedSplitTarget,
+            directedTraitUnlockDay = source.directedTraitUnlockDay,
             sameSpeciesCoexistenceDays = 0,
             lastMutationEffect = source.lastMutationEffect,
             mutationSelectionProgress = source.mutationSelectionProgress,
@@ -801,6 +803,7 @@ internal static class PopulationTransfer
             ? Mathf.Min(resident.endangeredDays, arrival.endangeredDays) : 0;
         resident.localSplitBranch = false;
         resident.directedSplitTarget = null;
+        resident.directedTraitUnlockDay = 0;
         resident.sameSpeciesCoexistenceDays = 0;
         resident.splitStrategy = resident.splitStrategy == arrival.splitStrategy
             ? resident.splitStrategy : 0;

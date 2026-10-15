@@ -11,13 +11,14 @@ public partial class PopulationSimulatorWindow
     private sealed class ExportHeader
     {
         public string type = "header";
-        public int schema = 1;
+        public int schema = 2;
         public string createdAt;
         public string scene;
         public string unity;
         public string caseId;
         public string tester;
         public string sampling = "initial, after successful operation, and once per simulated day";
+        public LandRuleTuning landRules;
     }
 
     [Serializable]
@@ -34,6 +35,16 @@ public partial class PopulationSimulatorWindow
     }
 
     [Serializable]
+    private sealed class ExportEnd
+    {
+        public string type = "end";
+        public string reason;
+        public int day;
+        public string time;
+        public int recordedDays;
+    }
+
+    [Serializable]
     private sealed class ExportTransition
     {
         public string type = "transition";
@@ -46,6 +57,14 @@ public partial class PopulationSimulatorWindow
     }
 
     [Serializable]
+    private sealed class ExportEcology
+    {
+        public string type = "ecology";
+        public int day, x, y;
+        public string populationId, species, kind, detail;
+    }
+
+    [Serializable]
     private sealed class ExportPopulation
     {
         public string id, species, speciesId, niche;
@@ -53,6 +72,10 @@ public partial class PopulationSimulatorWindow
         public int births, deaths, predationDeaths, migrationReadyDay;
         public int mutationDays;
         public float k, fitness, foodSatisfaction, energyNeed, allocatedFood, energyReserve;
+        public float environmentalK, foodAverage10, stockDays, renewalCoverage;
+        public float sizePressure, fertilityPressure, movementPressure, neighborAttraction;
+        public int splitFounders, directedTraitUnlockDay, coexistenceDays;
+        public string splitGate, splitTarget, directedTarget;
     }
 
     [Serializable]
@@ -65,6 +88,7 @@ public partial class PopulationSimulatorWindow
         public float temperatureTarget, humidityTarget, recoveryTarget;
         public float plants, plantCapacity, plantGrowth, plantConsumed, algae;
         public int algaeRecovery;
+        public int nextSplitDay;
         public long monsoonId;
         public List<ExportPopulation> populations = new List<ExportPopulation>();
     }
@@ -120,7 +144,7 @@ public partial class PopulationSimulatorWindow
                     liveExportNote, false);
                 liveExportNote = "";
             }
-            if (GUILayout.Button("完成并导出")) StopLiveExport();
+            if (GUILayout.Button("提前结束记录并导出")) StopLiveExport("manual_finish");
         }
         if (!string.IsNullOrEmpty(liveExportPath))
         {
@@ -132,7 +156,7 @@ public partial class PopulationSimulatorWindow
                 EditorUtility.RevealInFinder(liveExportPath);
             }
         }
-        EditorGUILayout.LabelField("格式：每行一个 JSON 对象，type 为 header / action / transition / snapshot。",
+        EditorGUILayout.LabelField("格式：每行一个 JSON 对象，type 为 header / action / ecology / transition / snapshot / end。",
             EditorStyles.wordWrappedMiniLabel);
     }
 
@@ -157,7 +181,8 @@ public partial class PopulationSimulatorWindow
                 createdAt = DateTime.Now.ToString("O"),
                 scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
                 unity = Application.unityVersion,
-                caseId = liveExportCase, tester = liveExportTester
+                caseId = liveExportCase, tester = liveExportTester,
+                landRules = liveSimulation.ReadLandRules()
             });
             liveGrid.TilesChanged += OnExportTilesChanged;
             liveSimulation.OnDaySimulated += OnExportDay;
@@ -165,12 +190,14 @@ public partial class PopulationSimulatorWindow
             liveSimulation.OnNicheConversionResolved += OnExportTransition;
             liveSimulation.OnPresetEvolutionResolved += OnExportTransition;
             liveSimulation.OnLocalSplitResolved += OnExportTransition;
+            liveSimulation.OnEcologyEvent += OnExportEcology;
             liveInterventions.OperationCommitted += OnExportIntervention;
             liveTime.OnSpeedChanged += OnExportSpeedChanged;
             liveExportTechnology = liveBridge.GetComponent<EnvironmentTechnologyController>();
             if (liveExportTechnology != null)
                 liveExportTechnology.OperationCommitted += OnExportTechnology;
             Application.logMessageReceived += OnExportUnityLog;
+            AssemblyReloadEvents.beforeAssemblyReload += OnExportBeforeReload;
             CaptureExportMap();
             WriteExportSnapshot("initial");
             liveExportWriter.Flush();
@@ -178,13 +205,14 @@ public partial class PopulationSimulatorWindow
         }
         catch (Exception exception)
         {
-            StopLiveExport();
+            StopLiveExport("start_failed");
             liveExportStatus = "无法开始记录：" + exception.Message;
         }
     }
 
-    private void StopLiveExport()
+    private void StopLiveExport(string reason = "manual_finish")
     {
+        AssemblyReloadEvents.beforeAssemblyReload -= OnExportBeforeReload;
         if (liveGrid != null) liveGrid.TilesChanged -= OnExportTilesChanged;
         if (liveSimulation != null)
         {
@@ -193,6 +221,7 @@ public partial class PopulationSimulatorWindow
             liveSimulation.OnNicheConversionResolved -= OnExportTransition;
             liveSimulation.OnPresetEvolutionResolved -= OnExportTransition;
             liveSimulation.OnLocalSplitResolved -= OnExportTransition;
+            liveSimulation.OnEcologyEvent -= OnExportEcology;
         }
         if (liveInterventions != null)
             liveInterventions.OperationCommitted -= OnExportIntervention;
@@ -202,9 +231,25 @@ public partial class PopulationSimulatorWindow
         liveExportTechnology = null;
         Application.logMessageReceived -= OnExportUnityLog;
         if (liveExportWriter == null) return;
-        try { liveExportWriter.Flush(); liveExportWriter.Dispose(); }
+        StreamWriter writer = liveExportWriter;
+        liveExportWriter = null;
+        try
+        {
+            writer.WriteLine(JsonUtility.ToJson(new ExportEnd
+            {
+                reason = reason,
+                day = liveTime != null ? liveTime.currentDay : -1,
+                time = DateTime.Now.ToString("O"),
+                recordedDays = liveExportDays
+            }));
+            writer.Flush();
+        }
         catch (Exception exception) { liveExportStatus = "关闭文件失败：" + exception.Message; }
-        finally { liveExportWriter = null; }
+        finally
+        {
+            try { writer.Dispose(); }
+            catch (Exception exception) { liveExportStatus = "关闭文件失败：" + exception.Message; }
+        }
         if (!liveExportStatus.StartsWith("关闭文件失败")) liveExportStatus = "已导出";
     }
 
@@ -222,11 +267,18 @@ public partial class PopulationSimulatorWindow
         }
         WriteExportSnapshot("play_mode_exit");
         liveExportWriter?.Flush();
-        StopLiveExport();
+        StopLiveExport("play_mode_exit");
         if (!liveExportStatus.StartsWith("关闭文件失败") &&
             !liveExportStatus.StartsWith("写入中断"))
             liveExportStatus = "已在游戏结束前自动导出";
         Repaint();
+    }
+
+    private void OnExportBeforeReload()
+    {
+        if (liveExportWriter == null) return;
+        WriteExportSnapshot("before_assembly_reload");
+        StopLiveExport("assembly_reload");
     }
 
     private void WriteExport(object record)
@@ -235,7 +287,7 @@ public partial class PopulationSimulatorWindow
         try { liveExportWriter.WriteLine(JsonUtility.ToJson(record)); }
         catch (IOException exception)
         {
-            StopLiveExport();
+            StopLiveExport("write_error");
             liveExportStatus = "写入中断：" + exception.Message;
         }
     }
@@ -273,7 +325,8 @@ public partial class PopulationSimulatorWindow
                 plants = block.plantBiomass, plantCapacity = block.maxPlantBiomass,
                 plantGrowth = block.plantGrowthToday,
                 plantConsumed = block.consumedBiomassToday,
-                algae = block.algaeBiomass, algaeRecovery = block.algaeRecovery
+                algae = block.algaeBiomass, algaeRecovery = block.algaeRecovery,
+                nextSplitDay = block.nextLocalSplitDay
             };
             if (environment != null && environment.TryRead(tile.Coordinate, out var state))
             {
@@ -293,6 +346,10 @@ public partial class PopulationSimulatorWindow
                 foreach (PopulationData population in block.community)
                 {
                     if (population == null || population.speciesAmount <= 0) continue;
+                    SimulationController.SplitGateInfo split = liveSimulation.ReadSplitGate(
+                        block, population, snapshot.day);
+                    SimulationController.LandSelectionSignals signals =
+                        liveSimulation.ReadLandSelectionSignals(block, population);
                     row.populations.Add(new ExportPopulation
                     {
                         id = population.PopulationId,
@@ -312,7 +369,23 @@ public partial class PopulationSimulatorWindow
                         foodSatisfaction = population.actualEnergySatisfactionToday,
                         energyNeed = population.energyNeed,
                         allocatedFood = population.allocatedBiomass,
-                        energyReserve = population.energyReserve
+                        energyReserve = population.energyReserve,
+                        environmentalK = split.environmentalK,
+                        foodAverage10 = split.foodAverage10,
+                        splitFounders = split.founders,
+                        splitGate = split.reason,
+                        splitTarget = split.target != null
+                            ? split.target.SpeciesName : "",
+                        directedTarget = population.directedSplitTarget != null
+                            ? population.directedSplitTarget.SpeciesName : "",
+                        directedTraitUnlockDay = population.directedTraitUnlockDay,
+                        coexistenceDays = population.sameSpeciesCoexistenceDays,
+                        stockDays = signals.stockDays,
+                        renewalCoverage = signals.renewalCoverage,
+                        neighborAttraction = signals.neighborAttraction,
+                        sizePressure = signals.sizePressure,
+                        fertilityPressure = signals.fertilityPressure,
+                        movementPressure = signals.movementPressure
                     });
                 }
             snapshot.tiles.Add(row);
@@ -370,6 +443,22 @@ public partial class PopulationSimulatorWindow
             sourceAfter = result.SourceCountAfter,
             targetBefore = result.TargetCountBefore,
             targetAfter = result.TargetCountAfter
+        });
+        liveExportTransitions++;
+    }
+
+    private void OnExportEcology(int day, BlockInfo block,
+        PopulationData population, string kind, string detail)
+    {
+        if (liveExportWriter == null) return;
+        Vector2Int coordinate = ExportCoordinate(block);
+        WriteExport(new ExportEcology
+        {
+            day = day, x = coordinate.x, y = coordinate.y,
+            populationId = population != null ? population.PopulationId : "",
+            species = population != null && population.species != null
+                ? population.species.SpeciesName : "",
+            kind = kind, detail = detail
         });
         liveExportTransitions++;
     }

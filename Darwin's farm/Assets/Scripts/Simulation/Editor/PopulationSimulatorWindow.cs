@@ -91,8 +91,14 @@ public partial class PopulationSimulatorWindow : EditorWindow
     private void OnDisable()
     {
         EditorApplication.update -= UpdateSimulation;
-        EditorApplication.playModeStateChanged -= OnLiveExportPlayModeChanged;
-        StopLiveExport();
+        // Maximizing Game View temporarily disables this EditorWindow. Keep
+        // the export subscriptions and the Play-mode exit hook alive so the
+        // test continues recording while the window is hidden.
+        if (liveExportWriter == null || !EditorApplication.isPlaying)
+        {
+            EditorApplication.playModeStateChanged -= OnLiveExportPlayModeChanged;
+            StopLiveExport("window_disabled");
+        }
         StopLiveRecording();
         if (liveInterventions != null) liveInterventions.ClearPreview();
         DestroyRuntime();
@@ -108,7 +114,6 @@ public partial class PopulationSimulatorWindow : EditorWindow
             if (liveGameMode) running = false;
             else
             {
-                StopLiveExport();
                 StopLiveRecording();
                 if (liveInterventions != null) liveInterventions.ClearPreview();
             }

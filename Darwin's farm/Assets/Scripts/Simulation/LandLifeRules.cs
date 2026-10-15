@@ -329,6 +329,39 @@ internal static class LandLifeRules
         return Mathf.Max(0f, Mathf.Min(stockAfterGrowth - floor, growth + draw));
     }
 
+    // Ten days of food that this group can actually draw from standing stock.
+    // The plant path uses the same niche allocation and daily draw cap as feeding;
+    // the hunter path uses food caught today plus its carried reserve.
+    internal static float AccessibleFoodStockDays(BlockInfo block,
+        PopulationData target, LandRuleTuning rules)
+    {
+        if (block == null || target == null || target.speciesAmount <= 0)
+            return 0f;
+        float adultDemand = target.speciesAmount * AdultNeed(target.size,
+            target.movementAbility, rules);
+        if (adultDemand <= 0f) return 0f;
+        if (target.trophicLevel > 0)
+            return Mathf.Max(0f, target.energyReserve +
+                10f * target.huntingEnergyToday) / adultDemand;
+        float stock = Mathf.Max(0f, block.plantBiomass);
+        float floor = block.habitatRecovery > 0f
+            ? Mathf.Min(Mathf.Max(0f, block.maxPlantBiomass) *
+                rules.minimumPlantReserveFraction, stock * 0.5f) : 0f;
+        float draw = block.habitatRecovery <= 0f ? stock :
+            Mathf.Min(Mathf.Max(0f, stock - floor),
+                stock * rules.dailyPlantStockDrawFraction);
+        if (draw <= 0f) return 0f;
+        var herbivores = new List<PopulationData>();
+        foreach (PopulationData p in block.community)
+            if (p != null && p.speciesAmount > 0 && p.trophicLevel == 0)
+                herbivores.Add(p);
+        int index = herbivores.IndexOf(target);
+        if (index < 0) return 0f;
+        float[] shares = AllocatePlants(herbivores, draw,
+            block.habitatRecovery, block, rules: rules);
+        return 10f * shares[index] / adultDemand;
+    }
+
     // Density is set by adults already alive. A candidate cannot improve its
     // reproductive score by lowering fitness and reducing hypothetical young.
     internal static float DensityBirthMultiplier(float adultHerbivoreDemand,

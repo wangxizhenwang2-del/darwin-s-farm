@@ -223,7 +223,7 @@ public static class PopulationTransitionRegressionChecks
                 "RunSameSpeciesMerges", BindingFlags.Instance | BindingFlags.NonPublic);
             Require(runMerges != null, "Same-species merge entry point was not found.");
             LandRuleTuning mergeRules = simulation.ReadLandRules();
-            Require(Mathf.Approximately(mergeRules.splitMinimumRenewalPressure, 0.95f) &&
+            Require(Mathf.Approximately(mergeRules.splitMinimumRenewalPressure, 0.9f) &&
                     mergeRules.sameSpeciesMergeDays == 100 &&
                     mergeRules.postMergeSplitCooldownDays == 200,
                 "Directed-split or same-species merge defaults did not match the design.");

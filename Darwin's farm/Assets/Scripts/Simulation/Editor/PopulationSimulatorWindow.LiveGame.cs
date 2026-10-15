@@ -76,7 +76,7 @@ public partial class PopulationSimulatorWindow
     {
         if (!EditorApplication.isPlaying)
         {
-            StopLiveExport();
+            StopLiveExport("play_mode_ended");
             hasLiveCoordinate = false;
             liveDraftBlock = null;
             livePopulations.Clear();

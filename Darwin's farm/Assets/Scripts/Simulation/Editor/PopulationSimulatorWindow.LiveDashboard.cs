@@ -262,6 +262,31 @@ public partial class PopulationSimulatorWindow
             liveTuning.postMergeSplitCooldownDays = Mathf.Max(0,
                 EditorGUILayout.IntField("合并后禁止分化（天）",
                     liveTuning.postMergeSplitCooldownDays));
+            liveTuning.splitMinimumRenewalPressure = EditorGUILayout.Slider(
+                "分化数量 / 环境容纳量", liveTuning.splitMinimumRenewalPressure, 0f, 1f);
+            liveTuning.splitFounderFraction = EditorGUILayout.Slider(
+                "分化创始比例", liveTuning.splitFounderFraction, 0f, 1f);
+            liveTuning.directedSplitTraitFraction = EditorGUILayout.Slider(
+                "分化性状靠拢比例", liveTuning.directedSplitTraitFraction, 0f, 1f);
+            liveTuning.directedSplitTraitLockDays = Mathf.Max(0,
+                EditorGUILayout.IntField("分化三性状锁定（天）",
+                    liveTuning.directedSplitTraitLockDays));
+            liveTuning.resourceTraitGain = Mathf.Max(0f,
+                EditorGUILayout.FloatField("食物性状选择增益",
+                    liveTuning.resourceTraitGain));
+            liveTuning.localMovementGain = Mathf.Max(0f,
+                EditorGUILayout.FloatField("原地运动下降增益",
+                    liveTuning.localMovementGain));
+            liveTuning.lowStockDays = Mathf.Max(0f,
+                EditorGUILayout.FloatField("库存偏少天数", liveTuning.lowStockDays));
+            liveTuning.highStockDays = Mathf.Max(liveTuning.lowStockDays,
+                EditorGUILayout.FloatField("库存偏多天数", liveTuning.highStockDays));
+            liveTuning.lowRenewalCoverage = Mathf.Max(0f,
+                EditorGUILayout.FloatField("持续供给偏少比例",
+                    liveTuning.lowRenewalCoverage));
+            liveTuning.highRenewalCoverage = Mathf.Max(liveTuning.lowRenewalCoverage,
+                EditorGUILayout.FloatField("持续供给偏多比例",
+                    liveTuning.highRenewalCoverage));
             liveSecondsPerDay = Mathf.Max(0.05f,
                 EditorGUILayout.FloatField("每模拟日秒数", liveSecondsPerDay));
             EditorGUILayout.LabelField("这些参数作用于整张地图。", EditorStyles.miniLabel);

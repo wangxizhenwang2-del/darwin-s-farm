@@ -16,6 +16,11 @@ public struct SimulationTuning
     public bool mutationEnabled, migrationEnabled, ecologicalNichesEnabled;
     public int mutationInterval, migrationInterval, migrationCooldownDays;
     public int sameSpeciesMergeDays, postMergeSplitCooldownDays;
+    public int directedSplitTraitLockDays;
+    public float splitMinimumRenewalPressure, splitFounderFraction;
+    public float directedSplitTraitFraction, resourceTraitGain, localMovementGain;
+    public float lowStockDays, highStockDays;
+    public float lowRenewalCoverage, highRenewalCoverage;
     public float mutationStep, selectionStrength, migrationPopulationScale;
     public float overloadThreshold, baseOverloadProbability, overloadMigrationFraction;
 }
@@ -148,6 +153,16 @@ public partial class SimulationController : MonoBehaviour
         migrationCooldownDays = migrationCooldownDays,
         sameSpeciesMergeDays = LandRules.sameSpeciesMergeDays,
         postMergeSplitCooldownDays = LandRules.postMergeSplitCooldownDays,
+        directedSplitTraitLockDays = LandRules.directedSplitTraitLockDays,
+        splitMinimumRenewalPressure = LandRules.splitMinimumRenewalPressure,
+        splitFounderFraction = LandRules.splitFounderFraction,
+        directedSplitTraitFraction = LandRules.directedSplitTraitFraction,
+        resourceTraitGain = LandRules.resourceTraitGain,
+        localMovementGain = LandRules.localMovementGain,
+        lowStockDays = LandRules.lowStockDays,
+        highStockDays = LandRules.highStockDays,
+        lowRenewalCoverage = LandRules.lowRenewalCoverage,
+        highRenewalCoverage = LandRules.highRenewalCoverage,
         ecologicalNichesEnabled = ecologicalNichesEnabled
     };
 
@@ -167,6 +182,16 @@ public partial class SimulationController : MonoBehaviour
         LandRuleTuning nextLandRules = LandRules.Copy();
         nextLandRules.sameSpeciesMergeDays = tuning.sameSpeciesMergeDays;
         nextLandRules.postMergeSplitCooldownDays = tuning.postMergeSplitCooldownDays;
+        nextLandRules.directedSplitTraitLockDays = tuning.directedSplitTraitLockDays;
+        nextLandRules.splitMinimumRenewalPressure = tuning.splitMinimumRenewalPressure;
+        nextLandRules.splitFounderFraction = tuning.splitFounderFraction;
+        nextLandRules.directedSplitTraitFraction = tuning.directedSplitTraitFraction;
+        nextLandRules.resourceTraitGain = tuning.resourceTraitGain;
+        nextLandRules.localMovementGain = tuning.localMovementGain;
+        nextLandRules.lowStockDays = tuning.lowStockDays;
+        nextLandRules.highStockDays = tuning.highStockDays;
+        nextLandRules.lowRenewalCoverage = tuning.lowRenewalCoverage;
+        nextLandRules.highRenewalCoverage = tuning.highRenewalCoverage;
         ApplyLandRules(nextLandRules);
     }
 
@@ -331,6 +356,7 @@ public partial class SimulationController : MonoBehaviour
     {
         currentSimulationDay = day;
         OnBeforeDaySimulated?.Invoke(day);
+        LogDirectedTraitUnlocks(day);
         foreach (BlockInfo block in blockInfos)
         {
             SimulateBlock(block);

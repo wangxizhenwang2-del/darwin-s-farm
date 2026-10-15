@@ -398,6 +398,7 @@ public partial class SimulationController
 
         descendant.localSplitBranch = false;
         descendant.directedSplitTarget = null;
+        descendant.directedTraitUnlockDay = 0;
         descendant.sameSpeciesCoexistenceDays = 0;
         descendant.splitStrategy = descendant.trophicLevel == 0 &&
             target.baseSize >= 25 ? 1 : 0;
