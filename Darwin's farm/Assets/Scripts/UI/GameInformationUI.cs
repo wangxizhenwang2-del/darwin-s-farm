@@ -43,6 +43,15 @@ public sealed class GameInformationUI : MonoBehaviour
     private float nextRefresh;
     private BiomeOcclusionVisibility biomeVisibility;
     private MapTouchInput touchInput;
+    public MapTileInstance SelectedTile => selectedTile;
+    public bool TileIsOpen => tileWindow != null && tileWindow.IsOpen;
+    public bool PopulationIsOpen => populationWindow != null && populationWindow.IsOpen;
+    public event System.Action<bool> SelectionChanged;
+    public void SetMobilePresentation(bool mobile)
+    {
+        if (tileWindow != null) tileWindow.SetPresentationVisible(!mobile);
+        if (populationWindow != null) populationWindow.SetPresentationVisible(!mobile);
+    }
 
     private void Awake()
     {
@@ -109,10 +118,11 @@ public sealed class GameInformationUI : MonoBehaviour
         populationCloseButton.onClick.AddListener(ClosePopulation);
     }
 
-    private void CloseTile() { tileWindow.Close(); selectedTile = null; }
-    private void ClosePopulation()
+    public void CloseTile() { tileWindow.Close(); selectedTile = null; SelectionChanged?.Invoke(false); }
+    public void ClosePopulation()
     {
         populationWindow.Close(); selectedVisual = null; selectedPopulationId = null;
+        SelectionChanged?.Invoke(true);
     }
 
     private void OnEnable()
@@ -213,6 +223,7 @@ public sealed class GameInformationUI : MonoBehaviour
             ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
         RefreshPopulation();
         populationWindow.Open();
+        SelectionChanged?.Invoke(true);
         return true;
     }
 
@@ -237,6 +248,7 @@ public sealed class GameInformationUI : MonoBehaviour
         selectedTile = tile;
         RefreshTile();
         tileWindow.Open();
+        SelectionChanged?.Invoke(false);
         return true;
     }
 
@@ -469,13 +481,14 @@ public sealed class GameInformationUI : MonoBehaviour
     {
         if (tileText == null) return;
         if (tileTrendPanel != null) tileTrendPanel.Show(selectedTile, tileHistory);
-        if (selectedTile == null)
-        {
-            tileText.text = "该地块已不在场景中";
-            return;
-        }
+        tileText.text = ReadTileDetails();
+    }
+
+    public string ReadTileDetails()
+    {
+        if (selectedTile == null) return "该地块已不在场景中";
         BlockInfo block = selectedTile.Block;
-        if (block == null) { tileText.text = "地块数据暂不可用"; return; }
+        if (block == null) return "地块数据暂不可用";
         string terrain = selectedTile.Biome.ToString();
         string elevation = block.elevation.ToString();
         string temperature = block.temperature.ToString();
@@ -497,7 +510,7 @@ public sealed class GameInformationUI : MonoBehaviour
         if (block.community != null)
             foreach (PopulationData item in block.community)
                 if (item != null && item.speciesAmount > 0) groups++;
-        tileText.text = $"地块信息  ({selectedTile.Coordinate.x}, {selectedTile.Coordinate.y})\n" +
+        return $"地块信息  ({selectedTile.Coordinate.x}, {selectedTile.Coordinate.y})\n" +
             $"地形：{terrain}    海拔：{elevation}\n" +
             $"温度：{temperature}    湿度：{humidity}\n" +
             $"植物库存：{plants} / {capacity}\n" +
@@ -505,15 +518,16 @@ public sealed class GameInformationUI : MonoBehaviour
             $"水域类型：{block.waterCoverage}";
     }
 
-    private void RefreshPopulation()
+    private void RefreshPopulation() => RefreshPopulationView(populationPanel);
+    public void RefreshPopulationView(PopulationInfoPanel view)
     {
-        if (populationPanel == null) return;
-        if (selectedVisual == null) { populationPanel.ShowUnavailable("该种群已不在场景中"); return; }
+        if (view == null) return;
+        if (selectedVisual == null) { view.ShowUnavailable("该种群已不在场景中"); return; }
         PopulationData data = selectedVisual.EcologicalPopulation;
         string id = data != null ? data.PopulationId : selectedVisual.UniqueId;
-        if (id != selectedPopulationId) { populationPanel.ShowUnavailable("该种群已迁出或消失"); return; }
+        if (id != selectedPopulationId) { view.ShowUnavailable("该种群已迁出或消失"); return; }
         BlockInfo block = null;
         if (grid != null && grid.TryGetTile(selectedVisual.TileId, out MapTileInstance tile)) block = tile.Block;
-        populationPanel.Refresh(selectedVisual, data, block);
+        view.Refresh(selectedVisual, data, block);
     }
 }

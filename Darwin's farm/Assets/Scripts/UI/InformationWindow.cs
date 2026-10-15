@@ -6,14 +6,42 @@ using UnityEngine.EventSystems;
 public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField, Min(0.05f)] private float animationSeconds = 0.35f;
+    [SerializeField] private bool titleOnlyDragging;
     private RectTransform rect;
     private RectTransform canvasRect;
     private CanvasGroup group;
     private Vector2 home;
-    private Coroutine animation;
+    private Coroutine windowAnimation;
     private bool open;
+    private bool presentationVisible = true;
 
     public bool IsOpen => open;
+    public bool TitleOnlyDragging => titleOnlyDragging;
+    public void SetDragBounds(RectTransform bounds, Vector2 defaultPosition)
+    { canvasRect = bounds; home = defaultPosition; if (open) ClampToBounds(); }
+    public void HideImmediately()
+    {
+        if (windowAnimation != null) StopCoroutine(windowAnimation);
+        windowAnimation = null; open = false;
+        if (group != null) { group.alpha = 0f; group.interactable = group.blocksRaycasts = false; }
+        gameObject.SetActive(false);
+    }
+
+    // An occupied desktop window can be represented by the mobile drawer.
+    // Hiding its presentation must not release or replace its selected target.
+    public void SetPresentationVisible(bool visible)
+    {
+        if (presentationVisible == visible) return;
+        presentationVisible = visible;
+        if (windowAnimation != null) StopCoroutine(windowAnimation);
+        windowAnimation = null;
+        if (group == null) return;
+        group.alpha = open && visible ? 1f : 0f;
+        group.interactable = open && visible;
+        group.blocksRaycasts = open && visible;
+        gameObject.SetActive(open && visible);
+        if (open && visible) rect.anchoredPosition = home;
+    }
 
     public void Initialize(RectTransform canvas, Vector2 defaultPosition)
     {
@@ -32,44 +60,52 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
     {
         if (open) return;
         open = true;
+        if (!presentationVisible) return;
         gameObject.SetActive(true);
         transform.SetAsLastSibling();
         rect.anchoredPosition = Offscreen();
         group.alpha = 0f;
         group.interactable = false;
         group.blocksRaycasts = true;
-        if (animation != null) StopCoroutine(animation);
-        animation = StartCoroutine(Animate(home, 1f, false));
+        if (windowAnimation != null) StopCoroutine(windowAnimation);
+        windowAnimation = StartCoroutine(Animate(home, 1f, false));
     }
 
     public void Close()
     {
         if (!open) return;
         open = false;
+        if (!presentationVisible) return;
         group.interactable = false;
         group.blocksRaycasts = false;
-        if (animation != null) StopCoroutine(animation);
-        animation = StartCoroutine(Animate(Offscreen(), 0f, true));
+        if (windowAnimation != null) StopCoroutine(windowAnimation);
+        windowAnimation = StartCoroutine(Animate(Offscreen(), 0f, true));
     }
 
     public void OnPointerDown(PointerEventData eventData) => transform.SetAsLastSibling();
 
-    public void BeginTextDrag(PointerEventData eventData, out Vector2 offset)
+    public bool BeginTextDrag(PointerEventData eventData, out Vector2 offset)
     {
         offset = Vector2.zero;
-        if (!open || animation != null || canvasRect == null) return;
+        if (!open || windowAnimation != null || canvasRect == null) return false;
         transform.SetAsLastSibling();
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRect, eventData.position, eventData.pressEventCamera, out Vector2 local))
-            offset = (Vector2)rect.localPosition - local;
+        { offset = (Vector2)rect.localPosition - local; return true; }
+        return false;
     }
 
     public void DragText(PointerEventData eventData, Vector2 offset)
     {
-        if (!open || animation != null || canvasRect == null) return;
+        if (!open || windowAnimation != null || canvasRect == null) return;
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRect, eventData.position, eventData.pressEventCamera, out Vector2 local)) return;
         Vector2 wanted = local + offset;
+        SetClampedPosition(wanted);
+    }
+    private void ClampToBounds() => SetClampedPosition(rect.localPosition);
+    private void SetClampedPosition(Vector2 wanted)
+    {
         Rect bounds = canvasRect.rect;
         Rect window = rect.rect;
         float xMin = bounds.xMin - window.xMin + 8f;
@@ -101,7 +137,7 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
         rect.anchoredPosition = target;
         group.alpha = targetAlpha;
         group.interactable = !hide;
-        animation = null;
+        windowAnimation = null;
         if (hide) gameObject.SetActive(false);
     }
 }

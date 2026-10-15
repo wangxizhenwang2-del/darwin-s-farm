@@ -29,13 +29,14 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
     private static readonly int[] MonsoonTemperatures = { -20, 20, 20, -20 };
     private static readonly int[] MonsoonHumidities = { 20, 20, -20, -20 };
     private static WhiteboxEcologyDebugView activeView;
+    public bool PresentationEnabled { get; set; } = true;
 
     private void OnEnable() => activeView = this;
     private void OnDisable()
     { if (activeView == this) activeView = null; }
     public static bool IsPointerOverTestUi(Vector2 screenPosition)
     {
-        if (activeView == null) return false;
+        if (activeView == null || !activeView.PresentationEnabled) return false;
         Vector2 guiPosition = new Vector2(screenPosition.x,
             Screen.height - screenPosition.y);
         foreach (Rect rect in activeView.interactiveRects)
@@ -54,6 +55,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!PresentationEnabled) { interactiveRects.Clear(); return; }
         Font previous = GUI.skin.font;
         try
         {

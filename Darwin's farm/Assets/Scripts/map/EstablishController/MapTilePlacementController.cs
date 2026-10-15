@@ -42,8 +42,45 @@ public class MapTilePlacementController : MonoBehaviour
     private bool canPlace;
 
     private int rotationSteps;
+    private bool touchPlacement, touchPositionSet;
 
     public bool IsDragging => draggingDefinition != null;
+    public bool IsTouchPlacement => IsDragging && touchPlacement;
+    public bool CanConfirmTouchPlacement => IsTouchPlacement && touchPositionSet && canPlace &&
+        gridManager.CanPlaceAt(currentCoordinate);
+    public string TouchPreviewStatus => draggingDefinition == null ? "" :
+        draggingDefinition.displayName + " / " + (rotationSteps * 90) + "\u5EA6 / " +
+        (!touchPositionSet ? "\u70B9\u51FB\u5730\u56FE\u5B9A\u4F4D\u9884\u89C8" : canPlace ? "\u4F4D\u7F6E\u53EF\u653E\u7F6E" : "\u4F4D\u7F6E\u5DF2\u5360\u7528");
+
+    public void BeginTouchPlacement(MapTileDefinition definition)
+    {
+        BeginDrag(definition);
+        if (!IsDragging) return;
+        touchPlacement = true;
+        touchPositionSet = false;
+        if (screenEdgeCamera != null) screenEdgeCamera.SetTileDragActive(false);
+    }
+    public bool TrySetTouchPosition(Vector2 position)
+    {
+        if (!IsTouchPlacement || !buildMode.IsBuildMode || IsPointerOverUI(position) ||
+            !viewCamera.pixelRect.Contains(position)) return false;
+        UpdatePreview(position);
+        touchPositionSet = previewObject != null && previewObject.activeSelf;
+        return touchPositionSet;
+    }
+    public void RotateTouchPreview()
+    {
+        if (!IsTouchPlacement) return;
+        rotationSteps = (rotationSteps + 1) % 4;
+        if (previewObject != null) previewObject.transform.rotation = Quaternion.Euler(0f, rotationSteps * 90f, 0f);
+    }
+    public bool ConfirmTouchPlacement()
+    {
+        if (!CanConfirmTouchPlacement || !buildMode.IsBuildMode) return false;
+        if (!gridManager.TryPlaceTile(currentCoordinate, draggingDefinition, rotationSteps)) return false;
+        CancelDrag();
+        return true;
+    }
 
     private void Awake()
     {
@@ -102,6 +139,9 @@ public class MapTilePlacementController : MonoBehaviour
             CancelDrag();
             return;
         }
+
+        // Touch placement is persistent and is confirmed by the saved mobile UI.
+        if (touchPlacement) return;
 
         Vector2 mousePosition;
         bool released;
@@ -323,6 +363,7 @@ public class MapTilePlacementController : MonoBehaviour
     {
 
         rotationSteps = 0;
+        touchPlacement = touchPositionSet = false;
         draggingDefinition = null;
         if (screenEdgeCamera != null)
             screenEdgeCamera.SetTileDragActive(false);
