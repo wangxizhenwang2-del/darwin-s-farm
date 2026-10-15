@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-// WhiteBox composition root for information windows and the speed control.
-// Presentation forwards commands to SimulationTime; ecological state stays in the model.
+// WhiteBox composition root for two read-only information windows.
+// Scene input and presentation live here; ecological state remains in the existing controllers.
 [RequireComponent(typeof(Canvas))]
 public sealed class GameInformationUI : MonoBehaviour
 {
@@ -30,7 +30,6 @@ public sealed class GameInformationUI : MonoBehaviour
     [SerializeField] private PopulationInfoPanel populationPanel;
     [SerializeField] private Text dayText;
     [SerializeField] private Text speedText;
-    [SerializeField] private UnityEngine.UI.Button speedButton;
     [SerializeField] private UnityEngine.UI.Button tileCloseButton;
     [SerializeField] private UnityEngine.UI.Button populationCloseButton;
     [SerializeField] private TileTrendHistory tileHistory;
@@ -43,11 +42,13 @@ public sealed class GameInformationUI : MonoBehaviour
     private bool dragged;
     private float nextRefresh;
     private BiomeOcclusionVisibility biomeVisibility;
+    private MapTouchInput touchInput;
 
     private void Awake()
     {
         canvasRect = (RectTransform)transform;
         if (viewCamera == null) viewCamera = Camera.main;
+        if (viewCamera != null) touchInput = viewCamera.GetComponent<MapTouchInput>();
         if (grid == null) grid = FindFirstObjectByType<MapGridManager>();
         if (grid != null)
         {
@@ -65,7 +66,6 @@ public sealed class GameInformationUI : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         EnsureLayout();
         BindWindows();
-        BindSpeedControl();
         tileHistory.Initialize(grid, simulation, clock);
         biomeVisibility = gameObject.GetComponent<BiomeOcclusionVisibility>();
         if (biomeVisibility == null) biomeVisibility = gameObject.AddComponent<BiomeOcclusionVisibility>();
@@ -78,18 +78,6 @@ public sealed class GameInformationUI : MonoBehaviour
         canvasRect = (RectTransform)transform;
         font = GameUITheme.Font;
         if (dayText == null && speedText == null) BuildHud();
-        if (speedButton == null && speedText != null)
-        {
-            speedButton = speedText.GetComponentInParent<UnityEngine.UI.Button>();
-            if (speedButton == null)
-                speedButton = speedText.transform.parent.gameObject.AddComponent<UnityEngine.UI.Button>();
-        }
-        if (speedButton != null)
-        {
-            UnityEngine.UI.Image image = speedButton.GetComponent<UnityEngine.UI.Image>();
-            if (image != null) image.raycastTarget = true;
-            speedButton.targetGraphic = image;
-        }
         if (tileWindow == null && populationWindow == null) BuildWindows();
         if (tileHistory == null)
         {
@@ -129,7 +117,6 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void OnEnable()
     {
-        BindSpeedControl();
         if (grid != null) grid.TilesChanged += RefreshVisible;
         if (simulation != null)
         {
@@ -141,8 +128,6 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void OnDisable()
     {
-        if (speedButton != null) speedButton.onClick.RemoveListener(CycleSpeed);
-        if (clock != null) clock.OnSpeedChanged -= RefreshSpeed;
         if (grid != null) grid.TilesChanged -= RefreshVisible;
         if (simulation != null)
         {
@@ -160,6 +145,8 @@ public sealed class GameInformationUI : MonoBehaviour
             nextRefresh = Time.unscaledTime + refreshSeconds;
             RefreshVisible();
         }
+        if (touchInput != null && touchInput.SuppressesMouseInput)
+        { awaitingRelease = false; return; }
         Mouse mouse = Mouse.current;
         Keyboard keyboard = Keyboard.current;
         bool alt = keyboard != null &&
@@ -198,23 +185,40 @@ public sealed class GameInformationUI : MonoBehaviour
         return false;
     }
 
-    private void SelectSceneTarget(Vector2 position)
+    private void SelectSceneTarget(Vector2 position) => TrySelectSceneAt(position);
+
+    public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f)
     {
+        if (TrySelectPopulationAt(position, populationPaddingPixels)) return true;
+        return TrySelectTileAt(position);
+    }
+
+    private bool CanSelectAt(Vector2 position) => isActiveAndEnabled &&
+        viewCamera != null && grid != null && tileWindow != null && populationWindow != null &&
+        (buildMode == null || !buildMode.IsBuildMode) && viewCamera.pixelRect.Contains(position) &&
+        !PointerOverUi(position);
+
+    // A hit consumes the tap even when that window is occupied. It must not
+    // fall through into a player move or replace the previously selected target.
+    public bool TrySelectPopulationAt(Vector2 position, float paddingPixels = 0f)
+    {
+        if (!CanSelectAt(position)) return false;
         // The existing population cubes intentionally have no colliders. Pick their
         // visible sprite rectangles before querying the terrain colliders below.
-        WhiteboxPopulation visual = PickPopulation(position);
-        if (visual != null)
-        {
-            selectedVisual = visual;
-            selectedPopulationId = visual.EcologicalPopulation != null
-                ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
-            RefreshPopulation();
-            // Open() is idempotent. When the panel is already open this still
-            // switches it to a newly split or migrated population.
-            populationWindow.Open();
-            return;
-        }
+        WhiteboxPopulation visual = PickPopulation(position, Mathf.Max(0f, paddingPixels));
+        if (visual == null) return false;
+        if (populationWindow.IsOpen) return true;
+        selectedVisual = visual;
+        selectedPopulationId = visual.EcologicalPopulation != null
+            ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
+        RefreshPopulation();
+        populationWindow.Open();
+        return true;
+    }
 
+    public bool TrySelectTileAt(Vector2 position)
+    {
+        if (!CanSelectAt(position)) return false;
         Ray ray = viewCamera.ScreenPointToRay(position);
         int count = Physics.RaycastNonAlloc(ray, groundHits, 1000f,
             LayerMask.GetMask("Ground"), QueryTriggerInteraction.Ignore);
@@ -228,13 +232,15 @@ public sealed class GameInformationUI : MonoBehaviour
             tile = candidate;
             nearest = groundHits[i].distance;
         }
-        if (tile == null) return;
+        if (tile == null) return false;
+        if (tileWindow.IsOpen) return true;
         selectedTile = tile;
         RefreshTile();
         tileWindow.Open();
+        return true;
     }
 
-    private WhiteboxPopulation PickPopulation(Vector2 position)
+    private WhiteboxPopulation PickPopulation(Vector2 position, float paddingPixels = 0f)
     {
         if (biomeVisibility != null && biomeVisibility.TryPickMarker(position, out WhiteboxPopulation marked))
             return marked;
@@ -250,18 +256,18 @@ public sealed class GameInformationUI : MonoBehaviour
             {
                 if (sprite == null || !sprite.enabled || sprite.sprite == null) continue;
                 hasSprite = true;
-                TestSprite(sprite, position, population, ref closest, ref depth);
+                TestSprite(sprite, position, population, ref closest, ref depth, paddingPixels);
             }
             if (hasSprite) continue;
             foreach (MeshRenderer cube in population.GetComponentsInChildren<MeshRenderer>())
                 if (cube != null && cube.enabled && cube.gameObject.name != "PopulationCount")
-                    TestBounds(cube.bounds, position, population, ref closest, ref depth);
+                    TestBounds(cube.bounds, position, population, ref closest, ref depth, paddingPixels);
         }
         return closest;
     }
 
     private void TestSprite(SpriteRenderer sprite, Vector2 position, WhiteboxPopulation owner,
-        ref WhiteboxPopulation closest, ref float nearestDepth)
+        ref WhiteboxPopulation closest, ref float nearestDepth, float paddingPixels)
     {
         Bounds bounds = sprite.sprite.bounds;
         Vector3 min = bounds.min, max = bounds.max;
@@ -270,7 +276,13 @@ public sealed class GameInformationUI : MonoBehaviour
         Vector3 c = viewCamera.WorldToScreenPoint(sprite.transform.TransformPoint(max.x, max.y, 0f));
         Vector3 d = viewCamera.WorldToScreenPoint(sprite.transform.TransformPoint(min.x, max.y, 0f));
         if (a.z <= 0f || b.z <= 0f || c.z <= 0f || d.z <= 0f) return;
-        if (!InsideQuad(position, a, b, c, d)) return;
+        if (!InsideQuad(position, a, b, c, d) &&
+            (paddingPixels <= 0f || Mathf.Min(
+                PopulationTileSpace.SegmentDistanceSquared(position, position, a, b),
+                PopulationTileSpace.SegmentDistanceSquared(position, position, b, c),
+                PopulationTileSpace.SegmentDistanceSquared(position, position, c, d),
+                PopulationTileSpace.SegmentDistanceSquared(position, position, d, a)) >
+                paddingPixels * paddingPixels)) return;
         float candidateDepth = viewCamera.WorldToScreenPoint(sprite.bounds.center).z;
         if (candidateDepth >= nearestDepth) return;
         nearestDepth = candidateDepth;
@@ -290,7 +302,7 @@ public sealed class GameInformationUI : MonoBehaviour
     private static float Cross(Vector2 a, Vector2 b) => a.x * b.y - a.y * b.x;
 
     private void TestBounds(Bounds bounds, Vector2 position, WhiteboxPopulation owner,
-        ref WhiteboxPopulation closest, ref float nearestDepth)
+        ref WhiteboxPopulation closest, ref float nearestDepth, float paddingPixels)
     {
         Vector3 min = bounds.min, max = bounds.max;
         float left = float.PositiveInfinity, right = float.NegativeInfinity;
@@ -303,7 +315,7 @@ public sealed class GameInformationUI : MonoBehaviour
             left = Mathf.Min(left, point.x); right = Mathf.Max(right, point.x);
             bottom = Mathf.Min(bottom, point.y); top = Mathf.Max(top, point.y);
         }
-        const float padding = 7f;
+        float padding = Mathf.Max(7f, paddingPixels);
         if (position.x < left - padding || position.x > right + padding ||
             position.y < bottom - padding || position.y > top + padding) return;
         float candidateDepth = viewCamera.WorldToScreenPoint(bounds.center).z;
@@ -340,9 +352,8 @@ public sealed class GameInformationUI : MonoBehaviour
         RectTransform speed = NewPanel("SpeedHUD", Vector2.one, Vector2.one,
             new Vector2(100f, 56f), "GameUI/倍速ui", new Rect(502f, 764f, 1048f, 586f), root);
         speed.anchoredPosition = new Vector2(-24f, -30f);
-        speedButton = speed.gameObject.AddComponent<UnityEngine.UI.Button>();
-        speedButton.targetGraphic = speed.GetComponent<UnityEngine.UI.Image>();
-        speedText = NewText("Speed", speed, "1x", 24, Ink(),
+        speed.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
+        speedText = NewText("Speed", speed, "1X", 24, Ink(),
             new Vector2(13f, -9f), new Vector2(74f, 38f), false);
         speedText.alignment = TextAnchor.MiddleCenter;
     }
@@ -448,35 +459,10 @@ public sealed class GameInformationUI : MonoBehaviour
     private void RefreshVisible()
     {
         if (dayText != null) dayText.text = "Day " + (clock == null ? "--" : clock.currentDay.ToString());
-        RefreshSpeed(clock == null ? 0f : clock.Speed);
+        if (speedText != null) speedText.text = clock == null ? "--" :
+            clock.IsPaused ? "暂停" : clock.Speed.ToString("0.#") + "X";
         if (tileWindow != null && tileWindow.IsOpen) RefreshTile();
         if (populationWindow != null && populationWindow.IsOpen) RefreshPopulation();
-    }
-
-    private void BindSpeedControl()
-    {
-        if (speedButton != null)
-        {
-            speedButton.onClick.RemoveListener(CycleSpeed);
-            speedButton.onClick.AddListener(CycleSpeed);
-        }
-        if (clock != null)
-        {
-            clock.OnSpeedChanged -= RefreshSpeed;
-            clock.OnSpeedChanged += RefreshSpeed;
-        }
-        RefreshSpeed(clock == null ? 0f : clock.Speed);
-    }
-
-    private void CycleSpeed()
-    {
-        if (clock != null) clock.CycleSpeed();
-    }
-
-    private void RefreshSpeed(float _)
-    {
-        if (speedText == null) return;
-        speedText.text = clock == null ? "--" : clock.RunningSpeed.ToString("0") + "x";
     }
 
     private void RefreshTile()
