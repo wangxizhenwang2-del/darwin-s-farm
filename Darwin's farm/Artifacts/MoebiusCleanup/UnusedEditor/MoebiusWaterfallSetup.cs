@@ -14,6 +14,7 @@ namespace Darwin.Rendering.Editor
         public const string Root="Assets/Rendering/Moebius/Samples/Waterfall";
         public const string PrefabPath=Root+"/MoebiusWaterfall.prefab";
         public const string ScenePath=Root+"/MoebiusWaterfallDemo.unity";
+        public const float SampleLipRadius=.75f;
 
         [MenuItem("Tools/Moebius/Waterfall/Create Waterfall in Scene")]
         public static void CreateInScene()
@@ -36,9 +37,10 @@ namespace Darwin.Rendering.Editor
             var existing=AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);if(existing)return existing;
             foreach(string path in new[]{Root,Root+"/Materials",Root+"/Meshes"})Directory.CreateDirectory(path);
             AssetDatabase.Refresh();
-            var sheet=SaveMesh("WaterfallSheet",CreateSheet(5.8f,6,64,96));
+            var sheet=SaveMesh("WaterfallSheet",CreateSheet(5.8f,6,64,96,SampleLipRadius));
             var impact=SaveMesh("ImpactPlane",CreatePlane(2,2,4));
-            var body=MaterialAsset("WaterfallBody","Darwin/Moebius Waterfall");body.SetVector("_SheetSize",new Vector4(5.8f,6,0,0));
+            var body=MaterialAsset("WaterfallBody","Darwin/Moebius Waterfall");
+            ConfigureCurvedLip(body,5.8f,6,SampleLipRadius);
             var contact=MaterialAsset("ImpactFoam","Darwin/Moebius Waterfall Impact");
             var downstream=MaterialAsset("DownstreamRipples","Darwin/Moebius Waterfall Impact");
             downstream.SetFloat("_FoamWidth",.08f);downstream.SetFloat("_FoamEdgeInkStrength",.22f);downstream.SetFloat("_RippleDensity",6);
@@ -59,6 +61,33 @@ namespace Darwin.Rendering.Editor
             try{ConfigureSplashLayers(root);PrefabUtility.SaveAsPrefabAsset(root,PrefabPath);}
             finally{PrefabUtility.UnloadPrefabContents(root);}
             AssetDatabase.SaveAssets();
+        }
+
+        // Update only the lip assets, preserving scene/prefab transforms and all splash settings.
+        public static void RebuildSampleLip()
+        {
+            EnsurePrefab();
+            SaveMesh("WaterfallSheet",CreateSheet(5.8f,6,64,96,SampleLipRadius));
+            ConfigureCurvedLip(MaterialAsset("WaterfallBody","Darwin/Moebius Waterfall"),5.8f,6,SampleLipRadius);
+            SaveMesh("UpperWaterGrid",CreateUpperWater(10.8f,4.8f,5.8f,SampleLipRadius-.15f,32));
+            var upper=MaterialAsset("UpperWater","Darwin/Moebius Water");
+            // The flat inlet meets the pinned lip exactly; shader flow/ripples still animate.
+            upper.SetFloat("_WaveHeight",0);upper.SetVector("_FlowDirection",new Vector4(0,-1,0,0));EditorUtility.SetDirty(upper);
+            AssetDatabase.SaveAssets();
+        }
+
+        static void ConfigureCurvedLip(Material body,float width,float height,float radius)
+        {
+            // Initialize newly added property defaults/drawers before assigning authoring values.
+            MaterialEditor.ApplyMaterialPropertyDrawers(body);
+            var upper=AssetDatabase.LoadAssetAtPath<Material>(Root+"/Materials/UpperWater.mat");
+            var upstream=upper?upper.GetColor("_WaterColor"):new Color(.49f,.72f,.74f);
+            float length=height-radius+radius*Mathf.PI*.5f;
+            body.SetVector("_SheetSize",new Vector4(width,height,0,0));
+            body.SetFloat("_SurfaceLength",length);
+            body.SetFloat("_LipStartV",(height-radius)/length);
+            body.SetColor("_UpstreamColor",upstream);
+            EditorUtility.SetDirty(body);
         }
 
         static void ConfigureSplashLayers(GameObject root)
@@ -107,8 +136,9 @@ namespace Darwin.Rendering.Editor
             MoebiusWaterfallImpactSetup.Bind(instance.transform.Find("Waterfall Sheet").GetComponent<MeshRenderer>(),receiving);
             lower.SetFloat("_ImpactPhase",5);
             var upper=MaterialAsset("UpperWater","Darwin/Moebius Water");
-            upper.SetFloat("_WaveHeight",.015f);upper.SetFloat("_EnableFoam",0);upper.SetFloat("_EnableShoreMask",0);
-            var upperMesh=SaveMesh("UpperWaterGrid",CreatePlane(10.8f,4.8f,32));
+            upper.SetFloat("_WaveHeight",0);upper.SetFloat("_EnableFoam",0);upper.SetFloat("_EnableShoreMask",0);
+            upper.SetVector("_FlowDirection",new Vector4(0,-1,0,0));
+            var upperMesh=SaveMesh("UpperWaterGrid",CreateUpperWater(10.8f,4.8f,5.8f,SampleLipRadius-.15f,32));
             MeshObject("Upper Moebius Water",null,upperMesh,upper,new Vector3(0,6.2f,4.25f),Vector3.one);
             var cliff=RockMaterial("PeachCliff",new Color(.82f,.65f,.53f));
             var lavender=RockMaterial("LavenderRocks",new Color(.69f,.72f,.82f));
@@ -165,9 +195,46 @@ namespace Darwin.Rendering.Editor
             var go=GameObject.CreatePrimitive(PrimitiveType.Sphere);go.name=name;go.transform.position=position;go.transform.localScale=scale;
             go.GetComponent<Renderer>().sharedMaterial=material;UnityEngine.Object.DestroyImmediate(go.GetComponent<Collider>());
         }
-        static Mesh CreateSheet(float width,float height,int columns,int rows)
+        static Mesh CreateSheet(float width,float height,int columns,int rows,float lipRadius)
         {
-            return Grid(columns,rows,(u,v)=>new Vector3((u-.5f)*width,(v-.5f)*height,.18f*Mathf.Pow(v,8)));
+            float radius=Mathf.Clamp(lipRadius,.01f,height*.4f);
+            float straight=height-radius,arc=radius*Mathf.PI*.5f,length=straight+arc;
+            var mesh=Grid(columns,rows,(u,v)=>
+            {
+                float distance=v*length;
+                if(distance<=straight)return new Vector3((u-.5f)*width,distance-height*.5f,0);
+                float angle=(distance-straight)/radius;
+                return new Vector3((u-.5f)*width,height*.5f-radius+radius*Mathf.Sin(angle),radius*(1-Mathf.Cos(angle)));
+            });
+            // Exact endpoint tangents avoid a normal-buffer outline at either end of the arc.
+            var normals=mesh.normals;
+            for(int y=0;y<=rows;y++)
+            {
+                float angle=Mathf.Clamp(((float)y/rows*length-straight)/radius,0,Mathf.PI*.5f);
+                var normal=new Vector3(0,Mathf.Sin(angle),-Mathf.Cos(angle));
+                for(int x=0;x<=columns;x++)normals[y*(columns+1)+x]=normal;
+            }
+            mesh.normals=normals;
+            return mesh;
+        }
+
+        static Mesh CreateUpperWater(float width,float depth,float openingWidth,float setback,int segments)
+        {
+            // Three strips leave a rectangular opening for the curved lip: no overlapping faces.
+            var pieces=new CombineInstance[3];
+            float[] edges={-width*.5f,-openingWidth*.5f,openingWidth*.5f,width*.5f};
+            for(int i=0;i<3;i++)
+            {
+                float front=-depth*.5f+(i==1?setback:0);
+                int index=i;
+                var strip=Grid(segments,segments,(u,v)=>new Vector3(Mathf.Lerp(edges[index],edges[index+1],u),0,Mathf.Lerp(front,depth*.5f,v)));
+                // Grid's XZ winding and upward normals match the horizontal lip endpoint.
+                pieces[i]=new CombineInstance{mesh=strip,transform=Matrix4x4.identity};
+            }
+            var mesh=new Mesh();mesh.CombineMeshes(pieces,true,false);mesh.RecalculateBounds();
+            var bounds=mesh.bounds;bounds.Expand(1);mesh.bounds=bounds;
+            foreach(var piece in pieces)UnityEngine.Object.DestroyImmediate(piece.mesh);
+            return mesh;
         }
         static Mesh CreatePlane(float width,float depth,int segments)
         {

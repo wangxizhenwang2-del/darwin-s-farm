@@ -41,38 +41,65 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _PaintColorMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BrightThreshold: 0.8
+    - _BrightThreshold: 0.92
     - _CastShadowHatchStrength: 0.9
     - _CastShadowTintStrength: 0.2
     - _DebugMode: 0
-    - _DeepShadowThreshold: 0.12
+    - _DeepShadowThreshold: 0.47
+    - _EnableColorRamp: 0
+    - _EnableSpatialGradient: 0
     - _HatchContrast: 1
+    - _HatchCrossStrength: 0.3
+    - _HatchIrregularity: 0.65
+    - _HatchLineWidth: 1
     - _HatchRotation: -25
     - _HatchScale: 125
     - _HatchStrength: 0.65
+    - _HatchThirdStrength: 0.12
     - _HatchThreshold: 0.65
+    - _HighlightInkStrength: 0.8
+    - _HighlightInkWidth: 0.7
     - _HighlightNoiseStrength: 0.003
     - _HighlightSize: 0.02
     - _HighlightStrength: 0.05
     - _HighlightThreshold: 0.99
-    - _ShadowSoftness: 0.015
-    - _ShadowThreshold: 0.45
+    - _HighlightViewInfluence: 0
+    - _PaperLift: 0.07
+    - _RampLightThreshold: 0.55
+    - _RampShadowThreshold: 0.4
+    - _RampStrength: 0.35
+    - _ShadowSoftness: 0.05
+    - _ShadowThreshold: 1
+    - _SpatialGradientStrength: 1
+    - _SpatialGradientWidth: 1
     - _StippleScale: 65
     - _StippleStrength: 0.06
     - _StippleThreshold: 0.8
+    - _SurfaceTintStrength: 0.12
     - _UseHatchTexture: 0
     - _UseHatching: 1
+    - _UsePaintColor: 0
     - _UseRamp: 0
     - _UseStipple: 1
     - _UseTriplanar: 0
     - _UseVertexColor: 0
     m_Colors:
-    - _BaseColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
+    - _BaseColor: {r: 0.11372549, g: 0.33333334, b: 0.069807075, a: 1}
     - _DeepShadowColor: {r: 0.72, g: 0.75, b: 0.8, a: 1}
     - _HighlightColor: {r: 1, g: 0.99, b: 0.94, a: 1}
     - _InkColor: {r: 0.12, g: 0.1, b: 0.09, a: 1}
-    - _ShadowColor: {r: 0.79, g: 0.83, b: 0.88, a: 1}
+    - _RampLightColor: {r: 1, g: 0.97999996, b: 0.94, a: 1}
+    - _RampShadowColor: {r: 0.94, g: 0.92, b: 1, a: 1}
+    - _ShadowColor: {r: 0.010266166, g: 0.03396219, b: 0.0022427815, a: 1}
+    - _SpatialGradientColorA: {r: 0.95, g: 0.52, b: 0.37999994, a: 1}
+    - _SpatialGradientColorB: {r: 0.6399999, g: 0.63, b: 0.88, a: 1}
+    - _SpatialGradientPointA: {r: -1, g: 0, b: 0, a: 0}
+    - _SpatialGradientPointB: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

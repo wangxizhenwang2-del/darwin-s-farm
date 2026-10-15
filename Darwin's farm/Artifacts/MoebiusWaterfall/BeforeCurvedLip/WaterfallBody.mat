@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterfallBody
+  m_Shader: {fileID: 4800000, guid: 3f239bce462140a8a37efb3465860d05, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _AnimationPhase: 0
+    - _BandStrength: 0.32
+    - _DebugView: 0
+    - _DistortionScale: 1.2
+    - _DistortionStrength: 0.15
+    - _EdgeBreakupScale: 1.8
+    - _EdgeBreakupStrength: 0.015
+    - _FlowLineStrength: 0.75
+    - _FlowScale: 1
+    - _FlowSpeed: 1.4
+    - _InkLineStrength: 0.65
+    - _SheetWobbleSpeed: 0.8
+    - _SheetWobbleStrength: 0.035
+    - _VerticalLineDensity: 9
+    - _VerticalLineWidth: 0.65
+    m_Colors:
+    - _BaseColor: {r: 0.38999996, g: 0.68, b: 0.7, a: 1}
+    - _FlowLineColor: {r: 0.83, g: 0.91, b: 0.8, a: 1}
+    - _HighlightColor: {r: 0.91, g: 0.95, b: 0.8399999, a: 1}
+    - _InkLineColor: {r: 0.19999996, g: 0.35999998, b: 0.40999997, a: 1}
+    - _ShadowColor: {r: 0.27999997, g: 0.53, b: 0.61, a: 1}
+    - _SheetSize: {r: 5.8, g: 6, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

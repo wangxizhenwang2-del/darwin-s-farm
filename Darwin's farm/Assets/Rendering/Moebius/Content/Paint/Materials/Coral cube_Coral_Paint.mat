@@ -47,11 +47,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BrightThreshold: 0.8
+    - _BrightThreshold: 0.47
     - _CastShadowHatchStrength: 0.9
     - _CastShadowTintStrength: 0.2
     - _DebugMode: 0
-    - _DeepShadowThreshold: 0.12
+    - _DeepShadowThreshold: 0.71
     - _EnableColorRamp: 0
     - _EnableSpatialGradient: 0
     - _HatchContrast: 1
@@ -74,8 +74,8 @@ Material:
     - _RampLightThreshold: 0.55
     - _RampShadowThreshold: 0.4
     - _RampStrength: 0.35
-    - _ShadowSoftness: 0.015
-    - _ShadowThreshold: 0.45
+    - _ShadowSoftness: 0.001
+    - _ShadowThreshold: 0.37
     - _SpatialGradientStrength: 1
     - _SpatialGradientWidth: 1
     - _StippleScale: 65
@@ -90,13 +90,13 @@ Material:
     - _UseTriplanar: 0
     - _UseVertexColor: 0
     m_Colors:
-    - _BaseColor: {r: 0.91764706, g: 0.40784314, b: 0.38431373, a: 1}
+    - _BaseColor: {r: 0.4641509, g: 0.12009449, b: 0.10421497, a: 1}
     - _DeepShadowColor: {r: 0.72, g: 0.75, b: 0.8, a: 1}
     - _HighlightColor: {r: 1, g: 0.99, b: 0.94, a: 1}
     - _InkColor: {r: 0.12, g: 0.1, b: 0.09, a: 1}
     - _RampLightColor: {r: 1, g: 0.97999996, b: 0.94, a: 1}
     - _RampShadowColor: {r: 0.94, g: 0.92, b: 1, a: 1}
-    - _ShadowColor: {r: 0.79, g: 0.83, b: 0.88, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpatialGradientColorA: {r: 0.95, g: 0.52, b: 0.37999994, a: 1}
     - _SpatialGradientColorB: {r: 0.6399999, g: 0.63, b: 0.88, a: 1}
     - _SpatialGradientPointA: {r: -1, g: 0, b: 0, a: 0}
