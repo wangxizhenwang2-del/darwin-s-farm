@@ -78,7 +78,13 @@ public partial class PopulationSimulatorWindow
                 int moved = before - selected.speciesAmount;
                 liveMessage = moved > 0 ? $"已迁徙 {moved} 只到 {targets[liveMigrationTargetIndex].Coordinate}；请观察 Game 视图。" :
                     "迁徙未执行，请检查生态位与目标地块。";
-                if (moved > 0) LogLive(source, liveMessage);
+                if (moved > 0)
+                {
+                    LogLive(source, liveMessage);
+                    WriteExportAction("simulator_window", "manual_migration",
+                        liveCoordinate, "population=" + selected.PopulationId +
+                        ";amount=" + moved + ";to=" + targets[liveMigrationTargetIndex].Coordinate);
+                }
             }
         if (!eligible)
             EditorGUILayout.LabelField(selected.speciesAmount < 10 ? "数量不足 10，只能在达到门槛后迁徙。" :

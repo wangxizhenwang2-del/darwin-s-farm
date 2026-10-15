@@ -13,6 +13,21 @@ public static class PopulationTransitionRegressionChecks
     [MenuItem("Tools/Population/Run ecological event regression checks")]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
+    public static void RunBatch()
+    {
+        try
+        {
+            Debug.Log(RunChecks());
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+        catch (Exception exception)
+        {
+            Debug.LogException(exception);
+            if (Application.isBatchMode) EditorApplication.Exit(1);
+            else throw;
+        }
+    }
+
     public static string RunChecks()
     {
         Scene scene = EditorSceneManager.NewPreviewScene();
@@ -147,7 +162,94 @@ public static class PopulationTransitionRegressionChecks
                 legacyEvolution == 2,
                 "Preset evolution did not report merging into its existing target species.");
 
-            return "Ecological event regression checks: 7/7 passed.";
+            MethodInfo hasLivingSpecies = typeof(SimulationController).GetMethod(
+                "HasLivingSpecies", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo livingPopulationCount = typeof(SimulationController).GetMethod(
+                "LivingPopulationCount", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo eligibleEvolution = typeof(SimulationController).GetMethod(
+                "IsEligibleEvolutionTarget", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo matchingTraits = typeof(SimulationController).GetMethod(
+                "EachTraitWithinTolerance", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo evolutionFood = typeof(SimulationController).GetMethod(
+                "HasEvolutionFoodSupport", BindingFlags.Instance | BindingFlags.NonPublic);
+            Require(hasLivingSpecies != null && livingPopulationCount != null &&
+                    eligibleEvolution != null && matchingTraits != null && evolutionFood != null,
+                "Living-population evolution gates were not found.");
+            PopulationData extinctTarget = Draft("Extinct evolved", 0);
+            extinctTarget.species = evolvedSpecies;
+            PopulationData eligibleAncestor = Draft("Eligible ancestor", 200);
+            eligibleAncestor.species = ancestorSpecies;
+            eligibleAncestor.trophicLevel = 0;
+            eligibleAncestor.nextEvolutionDay = 0;
+            evolvedSpecies.trophicLevel = 0;
+            source.temperature = 50;
+            source.humidity = 50;
+            source.maxPlantBiomass = source.plantBiomass = 1000000f;
+            source.habitatRecovery = 1000000;
+            source.community = new List<PopulationData> { eligibleAncestor, extinctTarget };
+            Require(!(bool)hasLivingSpecies.Invoke(null,
+                    new object[] { source, evolvedSpecies }),
+                "An extinct target population still blocked evolution.");
+            Require((bool)matchingTraits.Invoke(simulation,
+                    new object[] { eligibleAncestor, evolvedSpecies }),
+                "The extinct-target fixture did not start with five matching traits.");
+            Require((bool)evolutionFood.Invoke(simulation,
+                    new object[] { source, eligibleAncestor, evolvedSpecies, 20, false }),
+                "The extinct-target fixture did not provide enough renewable plant food.");
+            Require((bool)eligibleEvolution.Invoke(simulation,
+                    new object[] { source, eligibleAncestor, evolvedSpecies, 20 }),
+                "Five matching traits were still blocked by an extinct target record.");
+            extinctTarget.speciesAmount = 1;
+            Require((bool)hasLivingSpecies.Invoke(null,
+                    new object[] { source, evolvedSpecies }),
+                "A living target population did not block duplicate evolution.");
+            extinctTarget.speciesAmount = 0;
+            Require((int)livingPopulationCount.Invoke(null, new object[] { source }) == 1,
+                "Extinct population records still occupied a live community slot.");
+
+            MethodInfo selectSplitTarget = typeof(SimulationController).GetMethod(
+                "SelectLocalSplitTarget", BindingFlags.Instance | BindingFlags.NonPublic);
+            Require(selectSplitTarget != null,
+                "Directed local split target selection was not found.");
+            ancestorSpecies.trophicLevel = 0;
+            ancestorSpecies.evolutionTargets.Add(evolvedSpecies);
+            source.community = new List<PopulationData> { eligibleAncestor };
+            object[] targetArguments = { source, eligibleAncestor, 10, 0f, 0f };
+            Require((SpeciesData)selectSplitTarget.Invoke(simulation,
+                    targetArguments) == evolvedSpecies,
+                "A sustainable adjacent land species was not selected for directed splitting.");
+
+            MethodInfo runMerges = typeof(SimulationController).GetMethod(
+                "RunSameSpeciesMerges", BindingFlags.Instance | BindingFlags.NonPublic);
+            Require(runMerges != null, "Same-species merge entry point was not found.");
+            LandRuleTuning mergeRules = simulation.ReadLandRules();
+            Require(Mathf.Approximately(mergeRules.splitMinimumRenewalPressure, 0.9f) &&
+                    mergeRules.sameSpeciesMergeDays == 100 &&
+                    mergeRules.postMergeSplitCooldownDays == 200,
+                "Directed-split or same-species merge defaults did not match the design.");
+            mergeRules.sameSpeciesMergeDays = 2;
+            mergeRules.postMergeSplitCooldownDays = 7;
+            simulation.ApplyLandRules(mergeRules);
+            PopulationData majority = Draft("Merge timer", 80);
+            majority.species = ancestorSpecies;
+            majority.fitTemperature = 20;
+            PopulationData minority = Draft("Merge timer", 20);
+            minority.species = ancestorSpecies;
+            minority.fitTemperature = 80;
+            source.community = new List<PopulationData> { majority, minority };
+            runMerges.Invoke(simulation, new object[] { 30 });
+            Require(source.community.Count == 2 &&
+                    majority.sameSpeciesCoexistenceDays == 1 &&
+                    minority.sameSpeciesCoexistenceDays == 1,
+                "Same-species populations did not wait for the configured duration.");
+            runMerges.Invoke(simulation, new object[] { 31 });
+            Require(source.community.Count == 1 &&
+                    source.community[0].speciesAmount == 100 &&
+                    source.community[0].fitTemperature == 32 &&
+                    source.nextLocalSplitDay == 38,
+                "Timed merge did not weight traits or apply the configured split cooldown.");
+
+            return "Ecological event regression checks: 15/15 passed.";
         }
         finally
         {

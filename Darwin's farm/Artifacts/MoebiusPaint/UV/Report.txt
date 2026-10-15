@@ -1,0 +1,7 @@
+PASS: Empty paint preserves surface color with transformed base UVs
+PASS: Painting with nonidentity Base Map Tiling and Offset is visible
+PASS: Paint position and coverage are pixel-identical after resetting Base Map transform
+PASS: Changing Base Map scale, mirror and offset leaves painted color fixed
+PASS: Saved paint reopens aligned with nonidentity Base Map transform
+PASS: Base Map still responds to its Tiling and Offset
+Shader/runtime/test errors: 0

@@ -73,7 +73,10 @@ public class PopulationData
     public int environmentalFitness;    //0~100，越强越利于繁殖
     public float energyNeed;
     public float allocatedBiomass;
-    public float carryingCapacity; //潜在资源份额可支撑的种群规模
+    public float carryingCapacity; //当日实际食物份额 / 单只成年耗食；保留旧导出 k 的口径
+    // Renewable food available to this population after other consumers,
+    // expressed as a count of its current individuals rather than plant mass.
+    public float environmentalCarryingCapacity;
     public float energySatisfactionToday; //资源分配后、数量变化前的能量满足率
     public float actualEnergySatisfactionToday; //当日实际摄食率，用于运动选择
     public int populationBeforePredation; //捕食前数量，避免捕食后分母缩小造成虚假盈余
@@ -87,4 +90,23 @@ public class PopulationData
     public float deathRemainder; //累计不足一个体的死亡量
     public int birthsToday; //当天出生数量
     public int deathsToday; //当天死亡数量
+    // New land rules: bounded ten-day observations survive model serialization.
+    public System.Collections.Generic.List<float> foodSatisfactionHistory = new System.Collections.Generic.List<float>();
+    public System.Collections.Generic.List<float> renewalSatisfactionHistory = new System.Collections.Generic.List<float>();
+    public System.Collections.Generic.List<float> preyNetRenewalHistory = new System.Collections.Generic.List<float>();
+    public float predationRemainder;
+    public int endangeredDays;
+    public bool localSplitBranch;
+    // -1: small/high-fertility branch; +1: large/low-fertility branch.
+    public int splitStrategy;
+    // The directed branch keeps its inherited movement, size and fertility
+    // stable until this simulation day; climate traits remain mutable.
+    public SpeciesData directedSplitTarget;
+    public int directedTraitUnlockDay;
+    // Synchronized across same-species residents on one tile. It resets when
+    // only one population remains or after they are merged.
+    public int sameSpeciesCoexistenceDays;
+    public string lastMutationEffect;
+    public float mutationSelectionProgress;
+    public int mutationSelectionCandidate = -1;
 }

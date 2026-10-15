@@ -18,7 +18,7 @@ public static class DarwinAtlasImporter
     [Serializable] private class Species
     {
         public string id, name, description, image, baseEcologicalNiche;
-        public int trophicLevel, baseMovementAbility, baseHabitatNiche,
+        public int trophicLevel, baseMovementAbility, value,
             baseFitTemperature, baseFitHumidity, baseSize, baseFertility;
     }
 
@@ -60,9 +60,13 @@ public static class DarwinAtlasImporter
             serialized.ApplyModifiedPropertiesWithoutUndo();
             asset.trophicLevel = Mathf.Clamp(item.trophicLevel, 0, 2);
             asset.baseMovementAbility = Mathf.Clamp(item.baseMovementAbility, 0, 100);
-            asset.baseHabitatNiche = Mathf.Clamp(item.baseHabitatNiche, 0, 100);
-            asset.baseFitTemperature = Mathf.Clamp(item.baseFitTemperature, 0, 100);
-            asset.baseFitHumidity = Mathf.Clamp(item.baseFitHumidity, 0, 100);
+            // The website no longer exposes this legacy Unity-only trait.
+            asset.baseHabitatNiche = 50;
+            bool isWater = item.baseEcologicalNiche == "Water";
+            // Water species omit these fields in the website JSON. Unity's
+            // legacy SpeciesData still requires concrete integer values.
+            asset.baseFitTemperature = isWater ? 50 : Mathf.Clamp(item.baseFitTemperature, 0, 100);
+            asset.baseFitHumidity = isWater ? 50 : Mathf.Clamp(item.baseFitHumidity, 0, 100);
             asset.baseSize = Mathf.Clamp(item.baseSize, 1, 100);
             asset.baseFertility = Mathf.Clamp(item.baseFertility, 0, 100);
             EcologicalNiche niche;

@@ -45,6 +45,9 @@ public class SpeciesData: ScriptableObject
     public List<SpeciesData> preySpecies = new List<SpeciesData>();
 
     [Range(0, 2)] public int trophicLevel; //0 食草，1、2 分别捕食低一级，最多三级食物链
+    [Range(1, 100)] public int bioenergyValue = 10;
+    [SerializeField] private string economyId;
+    public string EconomyId => string.IsNullOrWhiteSpace(economyId) ? speciesName : economyId;
     [Range(0, 100)] public int baseMovementAbility;
     [Range(0, 100)] public int baseHabitatNiche = 50;
     [Range(0, 100)] public int baseFitTemperature = 50;
@@ -59,6 +62,10 @@ public class SpeciesData: ScriptableObject
     public bool HasEverUnlocked => hasEverUnlocked;
     public bool IsExtinct => isExtinct;
     public string SpeciesName => speciesName;
+
+    // One-based column (x), row (y); independent layouts for the two maps.
+    public Vector2Int evolutionGridPos;
+    public Vector2Int foodGridPos;
 
     internal void SetLivingPopulation(bool living)
     {

@@ -22,6 +22,8 @@ public partial class PopulationSimulatorWindow
 
     private readonly Dictionary<BlockInfo, LiveTileHistory> liveHistory =
         new Dictionary<BlockInfo, LiveTileHistory>();
+    private const int MaxVisibleLiveOutput = 300;
+    private const int MaxLiveChartDays = 600;
     private SimulationController liveRecordingSource;
     private BlockInfo liveEnvironmentBlock;
     private SimulationEnvironmentEdit liveEnvironment;
@@ -103,6 +105,14 @@ public partial class PopulationSimulatorWindow
                         "  出生 " + population.birthsToday +
                         "  死亡 " + population.deathsToday);
                 }
+            TrimLiveOutput(history);
+            if (history.days.Count > MaxLiveChartDays)
+            {
+                history.days.RemoveAt(0);
+                history.plants.RemoveAt(0);
+                foreach (LiveSeries series in history.populations.Values)
+                    series.amounts.RemoveAt(0);
+            }
         }
         Repaint();
     }
@@ -112,6 +122,7 @@ public partial class PopulationSimulatorWindow
         if (block == null || !liveHistory.TryGetValue(block, out LiveTileHistory history))
             return;
         history.output.Add("Day " + liveTime.currentDay + "  " + message);
+        TrimLiveOutput(history);
         if (history.days.Count == 0 ||
             history.days[history.days.Count - 1] != liveTime.currentDay) return;
         int last = history.days.Count - 1;
@@ -140,6 +151,12 @@ public partial class PopulationSimulatorWindow
         }
     }
 
+    private static void TrimLiveOutput(LiveTileHistory history)
+    {
+        int excess = history.output.Count - MaxVisibleLiveOutput;
+        if (excess > 0) history.output.RemoveRange(0, excess);
+    }
+
     private void ReadLiveEnvironment(BlockInfo block)
     {
         liveEnvironment = new SimulationEnvironmentEdit
@@ -158,7 +175,9 @@ public partial class PopulationSimulatorWindow
     {
         if (liveEnvironmentBlock != block) ReadLiveEnvironment(block);
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.LabelField("环境数据 · 单格直接调节", EditorStyles.boldLabel);
+        liveEnvironmentExpanded = EditorGUILayout.Foldout(liveEnvironmentExpanded,
+            "环境数据 · 单格直接调节", true);
+        if (!liveEnvironmentExpanded) { EditorGUILayout.EndVertical(); return; }
         liveEnvironment.temperature = EditorGUILayout.IntSlider("温度",
             liveEnvironment.temperature, 0, 100);
         liveEnvironment.humidity = EditorGUILayout.IntSlider("湿度",
@@ -237,6 +256,37 @@ public partial class PopulationSimulatorWindow
                 liveTuning.overloadMigrationFraction, 0f, 1f);
             liveTuning.migrationCooldownDays = Mathf.Max(0,
                 EditorGUILayout.IntField("迁徙冷却（天）", liveTuning.migrationCooldownDays));
+            liveTuning.sameSpeciesMergeDays = Mathf.Max(1,
+                EditorGUILayout.IntField("同种群自动合并等待（天）",
+                    liveTuning.sameSpeciesMergeDays));
+            liveTuning.postMergeSplitCooldownDays = Mathf.Max(0,
+                EditorGUILayout.IntField("合并后禁止分化（天）",
+                    liveTuning.postMergeSplitCooldownDays));
+            liveTuning.splitMinimumRenewalPressure = EditorGUILayout.Slider(
+                "分化数量 / 环境容纳量", liveTuning.splitMinimumRenewalPressure, 0f, 1f);
+            liveTuning.splitFounderFraction = EditorGUILayout.Slider(
+                "分化创始比例", liveTuning.splitFounderFraction, 0f, 1f);
+            liveTuning.directedSplitTraitFraction = EditorGUILayout.Slider(
+                "分化性状靠拢比例", liveTuning.directedSplitTraitFraction, 0f, 1f);
+            liveTuning.directedSplitTraitLockDays = Mathf.Max(0,
+                EditorGUILayout.IntField("分化三性状锁定（天）",
+                    liveTuning.directedSplitTraitLockDays));
+            liveTuning.resourceTraitGain = Mathf.Max(0f,
+                EditorGUILayout.FloatField("食物性状选择增益",
+                    liveTuning.resourceTraitGain));
+            liveTuning.localMovementGain = Mathf.Max(0f,
+                EditorGUILayout.FloatField("原地运动下降增益",
+                    liveTuning.localMovementGain));
+            liveTuning.lowStockDays = Mathf.Max(0f,
+                EditorGUILayout.FloatField("库存偏少天数", liveTuning.lowStockDays));
+            liveTuning.highStockDays = Mathf.Max(liveTuning.lowStockDays,
+                EditorGUILayout.FloatField("库存偏多天数", liveTuning.highStockDays));
+            liveTuning.lowRenewalCoverage = Mathf.Max(0f,
+                EditorGUILayout.FloatField("持续供给偏少比例",
+                    liveTuning.lowRenewalCoverage));
+            liveTuning.highRenewalCoverage = Mathf.Max(liveTuning.lowRenewalCoverage,
+                EditorGUILayout.FloatField("持续供给偏多比例",
+                    liveTuning.highRenewalCoverage));
             liveSecondsPerDay = Mathf.Max(0.05f,
                 EditorGUILayout.FloatField("每模拟日秒数", liveSecondsPerDay));
             EditorGUILayout.LabelField("这些参数作用于整张地图。", EditorStyles.miniLabel);
@@ -269,7 +319,7 @@ public partial class PopulationSimulatorWindow
             EditorGUILayout.EndVertical();
             return;
         }
-        EditorGUILayout.LabelField("从窗口连接游戏时开始记录", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField("显示最近 600 天；完整历史见导出文件", EditorStyles.miniLabel);
         Rect area = GUILayoutUtility.GetRect(100f, 245f, GUILayout.ExpandWidth(true));
         EditorGUI.DrawRect(area, new Color(0.13f, 0.14f, 0.17f));
         Rect plot = new Rect(area.x + 46f, area.y + 14f,
@@ -331,7 +381,7 @@ public partial class PopulationSimulatorWindow
     private void DrawLiveOutput(BlockInfo block)
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.LabelField("每日输出", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("每日输出（最近 300 行；完整历史见导出文件）", EditorStyles.boldLabel);
         liveOutputScroll = EditorGUILayout.BeginScrollView(liveOutputScroll,
             GUILayout.Height(220f));
         if (liveHistory.TryGetValue(block, out LiveTileHistory history))

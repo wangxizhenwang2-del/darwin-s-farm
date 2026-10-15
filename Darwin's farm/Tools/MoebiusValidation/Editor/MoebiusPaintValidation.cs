@@ -35,6 +35,7 @@ namespace Darwin.Rendering.Editor.Paint
                 var quad=GameObject.CreatePrimitive(PrimitiveType.Quad);quad.name="Moebius Paint Surface";UnityEngine.Object.DestroyImmediate(quad.GetComponent<Collider>());
                 var renderer=quad.GetComponent<MeshRenderer>();renderer.sharedMaterial=AssetDatabase.LoadAssetAtPath<Material>("Assets/Rendering/Moebius/Samples/Shared/Materials/Ivory.mat");
                 var baseline=Capture(camera,"Original");
+                if(label=="UV"){TestPaintUV(camera,renderer);Finish();return;}
                 if(label=="After")
                 {
                     MoebiusPaintAssets.EnsureDefaultTexture();
@@ -256,6 +257,43 @@ namespace Darwin.Rendering.Editor.Paint
             Check(mesh.uv.SequenceEqual(allUV),"Painting and saving preserve the original sphere mesh UVs");
         }
         static Color Sample(Texture2D image,Vector2 uv)=>image.GetPixel(Mathf.Clamp((int)(uv.x*image.width),0,image.width-1),Mathf.Clamp((int)(uv.y*image.height),0,image.height-1));
+        static void TestPaintUV(Camera camera,MeshRenderer renderer)
+        {
+            var material=MoebiusPaintAssets.MakeUnique(renderer,0);
+            material.SetTexture("_BaseMap",Texture2D.whiteTexture);
+            material.SetFloat("_DebugMode",1);material.SetFloat("_PaperLift",0);
+            material.SetFloat("_EnableSpatialGradient",0);
+            var surface=new MoebiusPaintMesh(renderer);
+            var empty=Capture(camera,"UVEmptyIdentity");
+            material.SetTextureScale("_BaseMap",new Vector2(2,3));
+            material.SetTextureOffset("_BaseMap",new Vector2(.17f,-.23f));
+            Check(Same(empty,Capture(camera,"UVEmptyTransformed")),"Empty paint preserves surface color with transformed base UVs");
+            using(var session=new MoebiusPaintSession(surface,0,MoebiusPaintLayer.Color,256))
+            {
+                session.BeginStroke();session.Dab(new Vector3(-.2f,.15f,0),Vector3.back,.13f,1,.6f,Color.red,0,false);session.EndStroke();
+                var painted=Capture(camera,"UVPaintTransformed");
+                Check(!Same(empty,painted),"Painting with nonidentity Base Map Tiling and Offset is visible");
+                material.SetTextureScale("_BaseMap",Vector2.one);material.SetTextureOffset("_BaseMap",Vector2.zero);
+                Check(Same(painted,Capture(camera,"UVPaintIdentity")),"Paint position and coverage are pixel-identical after resetting Base Map transform");
+                material.SetTextureScale("_BaseMap",new Vector2(.6f,-2));material.SetTextureOffset("_BaseMap",new Vector2(-.4f,.31f));
+                Check(Same(painted,Capture(camera,"UVPaintAlternate")),"Changing Base Map scale, mirror and offset leaves painted color fixed");
+                session.Save();
+            }
+            var saved=Capture(camera,"UVPaintSaved");
+            using(var reopened=new MoebiusPaintSession(surface,0,MoebiusPaintLayer.Color,256))
+                Check(Same(saved,Capture(camera,"UVPaintReopened")),"Saved paint reopens aligned with nonidentity Base Map transform");
+            var texture=new Texture2D(8,8,TextureFormat.RGBA32,false);
+            for(int y=0;y<8;y++)for(int x=0;x<8;x++)texture.SetPixel(x,y,new Color(x/7f,y/7f,.5f));
+            texture.wrapMode=TextureWrapMode.Repeat;texture.Apply();
+            material.SetTexture("_BaseMap",texture);material.SetFloat("_UsePaintColor",0);
+            var transformed=Capture(camera,"UVBaseTransformed");
+            material.SetTextureScale("_BaseMap",Vector2.one);material.SetTextureOffset("_BaseMap",Vector2.zero);
+            Check(!Same(transformed,Capture(camera,"UVBaseIdentity")),"Base Map still responds to its Tiling and Offset");
+            foreach(var shader in new[]{material.shader,Shader.Find("Hidden/Darwin/Moebius Paint Brush")})
+                foreach(var item in ShaderUtil.GetShaderMessages(shader))
+                    if(item.severity==UnityEditor.Rendering.ShaderCompilerMessageSeverity.Error)errors.Add(item.message);
+            UnityEngine.Object.DestroyImmediate(texture);
+        }
         static void TestBrush(MoebiusPaintMesh surface)
         {
             using(var session=new MoebiusPaintSession(surface,0,MoebiusPaintLayer.Color,512))

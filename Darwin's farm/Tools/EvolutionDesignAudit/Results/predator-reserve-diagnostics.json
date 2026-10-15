@@ -1,0 +1,3560 @@
+[
+  {
+    "classification": "current production baseline",
+    "reserveHuntFraction": 0.1,
+    "successDay": 226,
+    "targetMinimumFirst100Days": 0,
+    "targetCountAt100Days": 0,
+    "observations": [
+      {
+        "day": 226,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              20,
+              65
+            ],
+            "satisfaction": 0,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 227,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              21,
+              65
+            ],
+            "satisfaction": 0.92443585,
+            "huntingEnergy": 300,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 228,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              22,
+              65
+            ],
+            "satisfaction": 0.98305553,
+            "huntingEnergy": 325.1613,
+            "energyReserve": 0,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 229,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              23,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 350.625,
+            "energyReserve": 13.136688,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 230,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              24,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 376.36362,
+            "energyReserve": 44.870148,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 231,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              25,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 402.35297,
+            "energyReserve": 95.081116,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 232,
+        "amount": 5,
+        "hunters": [
+          {
+            "count": 5,
+            "traits": [
+              75,
+              80,
+              35,
+              26,
+              65
+            ],
+            "satisfaction": 0.24011548,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 6
+          }
+        ]
+      },
+      {
+        "day": 233,
+        "amount": 5,
+        "hunters": [
+          {
+            "count": 5,
+            "traits": [
+              75,
+              80,
+              35,
+              27,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 455,
+            "energyReserve": 270.9417,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 234,
+        "amount": 5,
+        "hunters": [
+          {
+            "count": 5,
+            "traits": [
+              75,
+              80,
+              35,
+              28,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 82.684616,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 235,
+        "amount": 3,
+        "hunters": [
+          {
+            "count": 3,
+            "traits": [
+              75,
+              80,
+              35,
+              29,
+              65
+            ],
+            "satisfaction": 0.4293633,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 2
+          }
+        ]
+      },
+      {
+        "day": 236,
+        "amount": 1,
+        "hunters": [
+          {
+            "count": 1,
+            "traits": [
+              75,
+              80,
+              35,
+              30,
+              65
+            ],
+            "satisfaction": 0,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 2
+          }
+        ]
+      },
+      {
+        "day": 237,
+        "amount": 1,
+        "hunters": [
+          {
+            "count": 1,
+            "traits": [
+              75,
+              80,
+              35,
+              31,
+              65
+            ],
+            "satisfaction": 0,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 238,
+        "amount": 2,
+        "hunters": [
+          {
+            "count": 2,
+            "traits": [
+              75,
+              80,
+              35,
+              32,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 542.5,
+            "energyReserve": 392.86743,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 239,
+        "amount": 2,
+        "hunters": [
+          {
+            "count": 2,
+            "traits": [
+              75,
+              80,
+              35,
+              33,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 308.5329,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 240,
+        "amount": 1,
+        "hunters": [
+          {
+            "count": 1,
+            "traits": [
+              75,
+              80,
+              35,
+              34,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 222.28897,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 241,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 242,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 243,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 244,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 245,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 246,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 247,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 248,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 249,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 250,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 251,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 252,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 253,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 254,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 255,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 256,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 257,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 258,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 259,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 260,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 261,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 262,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 263,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 264,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 265,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 266,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 267,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 268,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 269,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 270,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 271,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 272,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 273,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 274,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 275,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 276,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 277,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 278,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 279,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 280,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 281,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 282,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 283,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 284,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 285,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 286,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 287,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 288,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 289,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 290,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 291,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 292,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 293,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 294,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 295,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 296,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 297,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 298,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 299,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 300,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 301,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 302,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 303,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 304,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 305,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 306,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 307,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 308,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 309,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 310,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 311,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 312,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 313,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 314,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 315,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 316,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 317,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 318,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 319,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 320,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 321,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 322,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 323,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 324,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 325,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 326,
+        "amount": 0,
+        "hunters": []
+      }
+    ]
+  },
+  {
+    "classification": "proposed numeric change only in diagnostic instance",
+    "reserveHuntFraction": 0.5,
+    "successDay": 226,
+    "targetMinimumFirst100Days": 0,
+    "targetCountAt100Days": 0,
+    "observations": [
+      {
+        "day": 226,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              20,
+              65
+            ],
+            "satisfaction": 0,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 227,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              21,
+              65
+            ],
+            "satisfaction": 0.92443585,
+            "huntingEnergy": 300,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 228,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              22,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 650.3226,
+            "energyReserve": 319.55664,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 229,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              35,
+              23,
+              65
+            ],
+            "satisfaction": 0.9468673,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 230,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              24,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 376.36362,
+            "energyReserve": 66.1965,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 231,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              25,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 402.35297,
+            "energyReserve": 116.40747,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 232,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              26,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 428.57144,
+            "energyReserve": 184.99637,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 233,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              27,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 455,
+            "energyReserve": 271.8798,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 234,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              28,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 481.6216,
+            "energyReserve": 339.33582,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 235,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              29,
+              65
+            ],
+            "satisfaction": 0.8810487,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 236,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              30,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 535.38464,
+            "energyReserve": 141.38309,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 237,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              31,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 562.5,
+            "energyReserve": 300.83304,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 238,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              32,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 589.7561,
+            "energyReserve": 478.31052,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 239,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              33,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 56.637787,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 240,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              34,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 644.6512,
+            "energyReserve": 270.06934,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 241,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              35,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 672.2727,
+            "energyReserve": 501.43414,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 242,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              36,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 5.6337585,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 243,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              37,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 727.82605,
+            "energyReserve": 272.79004,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 244,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              35,
+              38,
+              65
+            ],
+            "satisfaction": 0.5795085,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 2
+          }
+        ]
+      },
+      {
+        "day": 245,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              35,
+              39,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 776.1702,
+            "energyReserve": 391.45764,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 246,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              35,
+              40,
+              65
+            ],
+            "satisfaction": 0.99626595,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 247,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              35,
+              41,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 817.0213,
+            "energyReserve": 415.80795,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 248,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              35,
+              42,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 6.234009,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 249,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              36,
+              42,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 857.8724,
+            "energyReserve": 446.1034,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 250,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              37,
+              42,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 27.038025,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 251,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              38,
+              42,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 857.8724,
+            "energyReserve": 464.75266,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 252,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              39,
+              42,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 43.472626,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 253,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 254,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 255,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 256,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 257,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 258,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 259,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 260,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 261,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 262,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 263,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 264,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 265,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 266,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 267,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 268,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 269,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 270,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 271,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 272,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 273,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 274,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 275,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 276,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 277,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 278,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 279,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 280,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 281,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 282,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 283,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 284,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 285,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 286,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 287,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 288,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 289,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 290,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 291,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 292,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 293,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 294,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 295,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 296,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 297,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 298,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 299,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 300,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 301,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 302,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 303,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 304,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 305,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 306,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 307,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 308,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 309,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 310,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 311,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 312,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 313,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 314,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 315,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 316,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 317,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 318,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 319,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 320,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 321,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 322,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 323,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 324,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 325,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 326,
+        "amount": 0,
+        "hunters": []
+      }
+    ]
+  },
+  {
+    "classification": "proposed numeric change only in diagnostic instance",
+    "reserveHuntFraction": 1,
+    "successDay": 226,
+    "targetMinimumFirst100Days": 0,
+    "targetCountAt100Days": 0,
+    "observations": [
+      {
+        "day": 226,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              20,
+              65
+            ],
+            "satisfaction": 0,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 227,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              21,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 600,
+            "energyReserve": 275.47775,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 228,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              22,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 325.1613,
+            "energyReserve": 269.8731,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 229,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              35,
+              23,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 350.625,
+            "energyReserve": 249.26099,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 230,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              24,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 376.36362,
+            "energyReserve": 280.99448,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 231,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              25,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 402.35297,
+            "energyReserve": 295.9912,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 232,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              26,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 857.1429,
+            "energyReserve": 757.15326,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 233,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              27,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 352.22507,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 234,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              28,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 481.6216,
+            "energyReserve": 419.6811,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 235,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              29,
+              65
+            ],
+            "satisfaction": 0.99059683,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 236,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              30,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1070.7693,
+            "energyReserve": 637.36755,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 237,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              31,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 194.01251,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 238,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              32,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1179.5122,
+            "energyReserve": 878.79034,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 239,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              33,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 372.78305,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 240,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              34,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 644.6512,
+            "energyReserve": 543.09265,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 241,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              35,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 14.003174,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 242,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              35,
+              36,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1400,
+            "energyReserve": 873.13,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 243,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              37,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 366.39322,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 244,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              38,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 755.7447,
+            "energyReserve": 557.2661,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 245,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              39,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 783.75,
+            "energyReserve": 763.9472,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 246,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              40,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 174.56,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 247,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              41,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 832.6531,
+            "energyReserve": 405.39307,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 248,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              42,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 853.4694,
+            "energyReserve": 644.5016,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 249,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              43,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 874.2857,
+            "energyReserve": 891.78284,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 250,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              35,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 252.03741,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 251,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              36,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1431.2947,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 252,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              37,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 777.061,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 253,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              38,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 121.12622,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 254,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              39,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 434.16907,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 255,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              40,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 690.6108,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 256,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              41,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 945.2116,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 257,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              42,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 282.0067,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 258,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              43,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 588.2144,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 259,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              44,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 837.0132,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 260,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              45,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 167.86627,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 261,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              46,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1328.4822,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 262,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              47,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 711.25275,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 263,
+        "amount": 12,
+        "hunters": [
+          {
+            "count": 12,
+            "traits": [
+              75,
+              80,
+              48,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 35.744507,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 264,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              49,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1189.8593,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 265,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              50,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 566.54224,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 266,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              51,
+              44,
+              65
+            ],
+            "satisfaction": 0.905842,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 267,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              52,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1204.2477,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 268,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              53,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 631.7121,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 269,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              54,
+              44,
+              65
+            ],
+            "satisfaction": 0.9994941,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 270,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              55,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1197.5193,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 271,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              56,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 618.7505,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 272,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              57,
+              44,
+              65
+            ],
+            "satisfaction": 0.96828544,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 273,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              58,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1190.4064,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 274,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              59,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 605.0548,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 275,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              60,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 17.431335,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 276,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              61,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1259.3337,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 277,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              62,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 667.0499,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 278,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              63,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 72.377686,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 279,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              64,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 391.19653,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 280,
+        "amount": 11,
+        "hunters": [
+          {
+            "count": 11,
+            "traits": [
+              75,
+              80,
+              65,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 707.5492,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 281,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              66,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 961.1899,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 282,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              67,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 356.5755,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 283,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              68,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 915.91833,
+            "energyReserve": 665.29694,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 284,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              69,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 55.478455,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 285,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              70,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1274.8364,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 286,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              71,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 659.65857,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 287,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              72,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 41.742737,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 288,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              73,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1252.8867,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 289,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              74,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 629.3784,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 290,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              75,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 3.015625,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 291,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              76,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1205.5962,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 292,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              77,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 636.6268,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 293,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              78,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 1.4675903,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 294,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              79,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1831.8367,
+            "energyReserve": 1195.1351,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 295,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              80,
+              44,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 618.0392,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 296,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              80,
+              45,
+              65
+            ],
+            "satisfaction": 0.95923364,
+            "huntingEnergy": 0,
+            "energyReserve": 0,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 297,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              81,
+              45,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 945,
+            "energyReserve": 353.7588,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 298,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              82,
+              45,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 945,
+            "energyReserve": 704.6518,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 299,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              82,
+              46,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 952.94116,
+            "energyReserve": 1060.5846,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 300,
+        "amount": 10,
+        "hunters": [
+          {
+            "count": 10,
+            "traits": [
+              75,
+              80,
+              82,
+              47,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 452.0324,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 301,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              82,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1003.2692,
+            "energyReserve": 766.22943,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 302,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              83,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 134.3855,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 303,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              84,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1024.6154,
+            "energyReserve": 524.05817,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 304,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              85,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1024.6154,
+            "energyReserve": 910.5947,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 305,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              86,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 269.34198,
+            "births": 0,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 306,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              87,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1024.6154,
+            "energyReserve": 649.49316,
+            "births": 1,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 307,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              88,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1024.6154,
+            "energyReserve": 1026.3955,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 308,
+        "amount": 9,
+        "hunters": [
+          {
+            "count": 9,
+            "traits": [
+              75,
+              80,
+              89,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 0,
+            "energyReserve": 447.72925,
+            "births": 1,
+            "deaths": 0
+          }
+        ]
+      },
+      {
+        "day": 309,
+        "amount": 8,
+        "hunters": [
+          {
+            "count": 8,
+            "traits": [
+              75,
+              80,
+              90,
+              48,
+              65
+            ],
+            "satisfaction": 1,
+            "huntingEnergy": 1024.6154,
+            "energyReserve": 818.02106,
+            "births": 0,
+            "deaths": 1
+          }
+        ]
+      },
+      {
+        "day": 310,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 311,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 312,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 313,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 314,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 315,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 316,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 317,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 318,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 319,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 320,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 321,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 322,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 323,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 324,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 325,
+        "amount": 0,
+        "hunters": []
+      },
+      {
+        "day": 326,
+        "amount": 0,
+        "hunters": []
+      }
+    ]
+  }
+]

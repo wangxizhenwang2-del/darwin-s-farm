@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "stock": 50000,
+      "actualConsumption": 23888.457,
+      "satisfaction": 0.3605043,
+      "died": 791,
+      "predictedToday": 23888.457,
+      "predictedRenewable": 23888.457,
+      "capacity": 721.0086,
+      "candidateDemand": 1429.4165,
+      "candidateToday": 1418.9614,
+      "candidateRenewal": 1418.9614
+    },
+    {
+      "stock": 500000,
+      "actualConsumption": 47776.914,
+      "satisfaction": 0.7210086,
+      "died": 358,
+      "predictedToday": 47776.914,
+      "predictedRenewable": 23888.457,
+      "capacity": 721.0086,
+      "candidateDemand": 1429.4165,
+      "candidateToday": 1418.9614,
+      "candidateRenewal": 1418.9614
+    }
+  ],
+  "evolutionRows": [
+    {
+      "stock": 1000,
+      "recovery": 1000,
+      "demand": 2858.833,
+      "today": 222.23087,
+      "renewable": 222.23087
+    },
+    {
+      "stock": 500000,
+      "recovery": 1000,
+      "demand": 2858.833,
+      "today": 2837.9229,
+      "renewable": 222.23087
+    }
+  ],
+  "mixedBudget": 100000,
+  "mixedConsumption": 47109.42,
+  "mixedStockAfter": 502890.56,
+  "checks": "today forecast=actual; R forecast and K unchanged; evolution budgets separated; shared ledger conserved"
+}

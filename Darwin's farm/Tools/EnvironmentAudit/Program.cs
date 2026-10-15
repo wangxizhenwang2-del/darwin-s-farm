@@ -34,23 +34,21 @@ static class Program
     {
         if (z == 0 && t <= 14) yield return TerrainKind.Desert;
         if (z == 0 && t >= 15 && t <= 34 && h <= 34) yield return TerrainKind.Desert;
-        if (z <= 1 && t >= 35 && h <= 34 && r <= 50000) yield return TerrainKind.Desert;
+        if (z <= 1 && t >= 35 && h <= 34) yield return TerrainKind.Desert;
         if (z == 0 && t >= 15 && t <= 34 && h >= 35) yield return TerrainKind.Forest;
-        if (z == 1 && t <= 34 && h >= 35 && r > 100000) yield return TerrainKind.Forest;
+        if (z == 1 && t <= 34 && h >= 66 && r > 100000) yield return TerrainKind.Forest;
         if (z <= 1 && t >= 35 && t <= 49 && h >= 35 && r > 100000) yield return TerrainKind.Forest;
-        if (z <= 1 && t >= 50 && t <= 65 && h >= 35 && h <= 65 && r > 100000) yield return TerrainKind.Forest;
-        if (z <= 1 && t >= 35 && h <= 34 && r > 50000) yield return TerrainKind.Grassland;
+        if (z <= 1 && t >= 50 && t <= 65 && h >= 35 && r > 100000) yield return TerrainKind.Forest;
         if (z <= 1 && t >= 35 && h >= 35 && r <= 100000 &&
             !(z == 1 && t <= 65 && h <= 65 && r > 50000)) yield return TerrainKind.Grassland;
-        if (z <= 1 && t >= 50 && h >= 66 && r > 100000) yield return TerrainKind.Rainforest;
-        if (z <= 1 && t >= 66 && h >= 35 && h <= 65 && r > 100000) yield return TerrainKind.Rainforest;
-        if (z == 1 && t <= 34 && h <= 34) yield return TerrainKind.Highland;
+        if (z <= 1 && t >= 66 && h >= 35 && r > 100000) yield return TerrainKind.Rainforest;
+        if (z == 1 && t <= 34 && h <= 65) yield return TerrainKind.Highland;
         if (z == 1 && t >= 35 && t <= 65 && h >= 35 && h <= 65 && r > 50000 && r <= 100000) yield return TerrainKind.Highland;
         if (z == 2 && t <= 34 && h <= 34 && r > 50000) yield return TerrainKind.Highland;
         if (z == 2 && t <= 34 && h >= 35 && r > 100000) yield return TerrainKind.Highland;
         if (z == 2 && t >= 35 && t <= 65) yield return TerrainKind.Highland;
         if (z == 2 && t >= 66 && r > 50000) yield return TerrainKind.Highland;
-        if (z == 1 && t <= 34 && h >= 35 && r <= 100000) yield return TerrainKind.Tundra;
+        if (z == 1 && t <= 34 && h >= 66 && r <= 100000) yield return TerrainKind.Tundra;
         if (z == 2 && t <= 34 && h >= 35 && r > 50000 && r <= 100000) yield return TerrainKind.Tundra;
         if (z == 2 && t <= 34 && r <= 50000) yield return TerrainKind.SnowMountain;
         if (z == 2 && t >= 66 && r <= 50000) yield return TerrainKind.Volcano;
@@ -346,7 +344,7 @@ static class Program
     }
     static void Main()
     {
-        Classification(); TerrainGraph(); NewToolRules(); TopologyAndRefunds(); TechnologyTools();
+        Classification(); TerrainGraph(); NewToolRules(); ConversionScenarios(); StabilitySweep(); CombinationSweep(); TopologyAndRefunds(); TechnologyTools();
         Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, terrain graph, tool slots, timelines, causality, topology, refunds)");
     }
 
@@ -372,11 +370,11 @@ static class Program
         Near(125000, Read(plant).Recovery.Value, "plant holds for 50 days");
         Check(Read(plant).Recovery.Phase == EffectPhase.Returning, "plant return starts day50");
         plant.AdvanceToDay(100);
-        Near(100000, Read(plant).Recovery.Value, "plant returns in 50 days");
+        Near(115750, Read(plant).Recovery.Value, "plant returns to the converted climate potential in 50 days");
         Check(!Read(plant).HasRecoveryCommand, "plant slot released");
         Check(plant.TrySetRecovery(Origin, 25000, out _), "plant reapplied");
         Check(plant.TrySetRecovery(Origin, -50000, out _), "plant switches tier");
-        Near(75000, Read(plant).Recovery.Value, "reapplication uses current recovery");
+        Near(90750, Read(plant).Recovery.Value, "reapplication uses current recovery");
         Near(125000, EnvironmentRules.MultiplyStock(100000, 1000000, .25),
             "positive tier multiplies current stock");
         Near(62500, EnvironmentRules.MultiplyStock(125000, 1000000, -.5),
@@ -425,10 +423,203 @@ static class Program
         dry.AdvanceToDay(25);
         Check(Read(dry).Recovery.Value < 100000, "dry climate lowers potential recovery");
         dry.AdvanceToDay(140);
-        Check(Read(dry).Terrain == TerrainKind.Desert && Read(dry).Recovery.Value <= 50000,
+        Check(Read(dry).Terrain == TerrainKind.Desert && Read(dry).Recovery.Value < 100000,
             "climate drives recovery then terrain conversion within 240 days");
         dry.AdvanceToDay(480);
-        Check(Read(dry).Terrain == TerrainKind.Grassland,
-            "terrain can recover after the technology ends");
+        Check(Read(dry).Terrain == TerrainKind.Desert &&
+            Read(dry).NaturalDefaults.Recovery == EnvironmentRules.Defaults(TerrainKind.Desert).Recovery,
+            "converted terrain keeps its own recovery baseline after technology ends");
+    }
+
+    static void ConversionScenarios()
+    {
+        var climate = Single(TerrainKind.Grassland);
+        Climate(climate, EnvironmentAttribute.Humidity, -50);
+        int desertDay = 0;
+        for (int day = 1; day <= 240; day++)
+        {
+            climate.AdvanceToDay(day);
+            if (desertDay == 0 && Read(climate).Terrain == TerrainKind.Desert) desertDay = day;
+        }
+        Check(desertDay > 0, "drying changes grassland to desert within the opening 240 days");
+        climate.AdvanceToDay(480);
+        var dry = Read(climate);
+        Check(dry.Terrain == TerrainKind.Desert && dry.Defaults.Humidity == 17 &&
+            dry.NaturalDefaults.Humidity == 17, "converted desert persists and owns its defaults");
+        Near(17, dry.Humidity.Value, "humidity returns to the desert default");
+        Climate(climate, EnvironmentAttribute.Humidity, 50);
+        int grassDay = 0;
+        for (int day = 481; day <= 720; day++)
+        {
+            climate.AdvanceToDay(day);
+            if (grassDay == 0 && Read(climate).Terrain == TerrainKind.Grassland) grassDay = day;
+        }
+        Check(grassDay > 0, "reverse humidity tool restores grassland");
+        climate.AdvanceToDay(1050);
+        Check(Read(climate).Terrain == TerrainKind.Grassland &&
+            Read(climate).NaturalDefaults.Humidity == 68,
+            "reversed grassland remains stable after its command expires");
+
+        var plant = Single(TerrainKind.Grassland);
+        Check(plant.TrySetRecovery(Origin, 25000, out _), "plant conversion begins");
+        Check(Read(plant).Terrain == TerrainKind.Rainforest &&
+            Read(plant).NaturalDefaults.Recovery == 125000,
+            "plant production converts and commits the rainforest baseline immediately");
+        Near(68, Read(plant).Temperature.Value, "plant conversion does not change untouched temperature");
+        Near(68, Read(plant).Humidity.Value, "plant conversion does not change untouched humidity");
+        plant.AdvanceToDay(200);
+        Check(Read(plant).Terrain == TerrainKind.Rainforest &&
+            Read(plant).Recovery.Value > 100000,
+            "plant-only conversion remains after its 50-day return");
+        Near(68, Read(plant).Temperature.Value,
+            "new terrain defaults do not move untouched temperature");
+        Near(68, Read(plant).Humidity.Value,
+            "new terrain defaults do not move untouched humidity");
+        Check(plant.TrySetRecovery(Origin, -50000, out _), "reverse plant operation");
+        Check(Read(plant).Terrain == TerrainKind.Grassland,
+            "reverse plant operation can undo a plant-driven conversion");
+        plant.AdvanceToDay(400);
+        Check(Read(plant).Terrain == TerrainKind.Grassland,
+            "grassland persists after reverse plant command ends");
+
+        var parallel = Single(TerrainKind.Grassland);
+        Check(parallel.TrySetRecovery(Origin, 25000, out _), "parallel plant command");
+        double before = Read(parallel).Recovery.Value;
+        Climate(parallel, EnvironmentAttribute.Humidity, -25);
+        parallel.AdvanceToDay(10);
+        Check(Read(parallel).Recovery.Value < before &&
+            Read(parallel).Recovery.Phase == EffectPhase.Holding,
+            "climate changes production while the plant command holds");
+
+        var entering = Single(TerrainKind.Grassland);
+        Climate(entering, EnvironmentAttribute.Humidity, -50);
+        entering.AdvanceToDay(10);
+        double oldTarget = Read(entering).Humidity.Target;
+        int remaining = Read(entering).Humidity.RemainingDays;
+        Check(entering.TrySetRecovery(Origin, 50000, out _), "terrain changes during climate entry");
+        Check(Read(entering).Terrain != TerrainKind.Grassland &&
+            Read(entering).Humidity.Target == oldTarget &&
+            Read(entering).Humidity.RemainingDays == remaining,
+            "conversion preserves an entering command's target and time");
+
+        var returning = Single(TerrainKind.Grassland);
+        Climate(returning, EnvironmentAttribute.Temperature, 25);
+        returning.AdvanceToDay(180);
+        Check(Read(returning).Temperature.Phase == EffectPhase.Returning,
+            "temperature is returning before terrain switch");
+        Check(returning.TrySetRecovery(Origin, 50000, out _),
+            "plant operation converts terrain during temperature return");
+        Check(Read(returning).Terrain == TerrainKind.Rainforest &&
+            Read(returning).Temperature.RemainingDays == 150 &&
+            Read(returning).Temperature.Target == 75,
+            "terrain change restarts climate return toward the new default");
+
+        var plantReturn = Single(TerrainKind.Grassland);
+        Check(plantReturn.TrySetRecovery(Origin, 25000, out _), "plant return scenario starts");
+        plantReturn.AdvanceToDay(60);
+        Check(Read(plantReturn).Recovery.Phase == EffectPhase.Returning &&
+            Read(plantReturn).Recovery.RemainingDays == 40,
+            "plant command is forty days from return completion");
+        double stockBeforeWind = Read(plantReturn).Recovery.Value;
+        Wind(plantReturn, 0, -20, -20);
+        Check(Read(plantReturn).Terrain == TerrainKind.Forest &&
+            Read(plantReturn).Recovery.RemainingDays == 50 &&
+            Read(plantReturn).Recovery.Target == 121500,
+            "terrain change restarts plant recovery toward the new climate potential");
+        Near(stockBeforeWind, Read(plantReturn).Recovery.Value,
+            "new terrain defaults do not overwrite actual production instantly");
+        Console.WriteLine($"SCENARIOS: grass→desert day {desertDay}; desert→grass day {grassDay}; plant conversion and parallel climate verified");
+    }
+
+    static void StabilitySweep()
+    {
+        int scenarios = 0, repeatedChanges = 0;
+        foreach (TerrainKind kind in Enum.GetValues(typeof(TerrainKind)))
+        foreach (EnvironmentAttribute attribute in new[]
+            { EnvironmentAttribute.Temperature, EnvironmentAttribute.Humidity, EnvironmentAttribute.Recovery })
+        foreach (int strength in new[] { -50, -25, 25, 50 })
+        {
+            var world = Single(kind);
+            bool accepted = attribute == EnvironmentAttribute.Recovery
+                ? world.TrySetRecovery(Origin, strength * 1000, out _)
+                : world.TrySetClimate(Origin, attribute, strength, out _);
+            Check(accepted, "sweep command accepted");
+            TerrainKind settled = kind;
+            TerrainKind previous = kind;
+            int changes = 0;
+            string timeline = kind.ToString();
+            bool returnedToOriginal = false;
+            for (int day = 1; day <= 600; day++)
+            {
+                world.AdvanceToDay(day);
+                TerrainKind current = Read(world).Terrain;
+                if (current != previous)
+                {
+                    changes++;
+                    if (changes > 1 && current == kind) returnedToOriginal = true;
+                    previous = current;
+                    timeline += "→" + current + "@" + day;
+                }
+                if (day == 400) settled = Read(world).Terrain;
+            }
+            Check(!returnedToOriginal,
+                "converted terrain returned to the original without a reverse command: " + timeline);
+            if (changes > 1)
+            {
+                repeatedChanges++;
+                if (repeatedChanges <= 12)
+                    Console.WriteLine("REPEATED: " + kind + " " + attribute + " " + strength +
+                        " changed " + changes + " times: " + timeline);
+            }
+            Check(Read(world).Terrain == settled,
+                "terrain changed without player input after commands expired: " +
+                kind + " " + attribute + " " + strength + " " + settled + "→" + Read(world).Terrain);
+            scenarios++;
+        }
+        Console.WriteLine("STABILITY SWEEP: " + scenarios + " one-tool cases through day 600, " +
+            repeatedChanges + " with multiple terrain changes");
+    }
+
+    static void CombinationSweep()
+    {
+        int scenarios = 0;
+        foreach (TerrainKind kind in Enum.GetValues(typeof(TerrainKind)))
+        for (int variant = 0; variant < 5; variant++)
+        {
+            var world = Single(kind);
+            if (variant == 0)
+            {
+                Climate(world, EnvironmentAttribute.Temperature, 50);
+                Climate(world, EnvironmentAttribute.Humidity, -50);
+            }
+            else if (variant == 1)
+            {
+                Climate(world, EnvironmentAttribute.Temperature, -50);
+                Check(world.TrySetRecovery(Origin, 50000, out _), "temperature and plant combination");
+            }
+            else if (variant == 2)
+            {
+                Climate(world, EnvironmentAttribute.Humidity, -50);
+                Check(world.TrySetRecovery(Origin, -50000, out _), "humidity and plant combination");
+            }
+            else if (EnvironmentRules.Defaults(kind).Elevation < 2)
+            {
+                Wind(world, 0, variant == 3 ? 20 : -20, variant == 3 ? -20 : 20);
+                if (variant == 3)
+                    Check(world.TrySetRecovery(Origin, 25000, out _), "monsoon and plant combination");
+                else Climate(world, EnvironmentAttribute.Humidity, -25);
+            }
+            else continue;
+            TerrainKind day400 = kind;
+            for (int day = 1; day <= 600; day++)
+            {
+                world.AdvanceToDay(day);
+                if (day == 400) day400 = Read(world).Terrain;
+            }
+            Check(Read(world).Terrain == day400,
+                "combined effects changed terrain after settling: " + kind + " variant " + variant);
+            scenarios++;
+        }
+        Console.WriteLine("COMBINATION SWEEP: " + scenarios + " two-tool cases through day 600");
     }
 }

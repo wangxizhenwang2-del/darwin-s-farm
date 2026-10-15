@@ -8,8 +8,9 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
     [SerializeField] private MapGridManager grid;
     [SerializeField] private MapSimulationBridge bridge;
     [SerializeField] private SimulationController simulation;
-    [Header("JSON order: deer, chicken, fierce deer, civet, sparrow lion")]
-    [SerializeField] private SpeciesData[] species = new SpeciesData[5];
+    [Header("V4.6 formal bioweb: 15 species in export order")]
+    [SerializeField] private SpeciesData[] species = new SpeciesData[15];
+    public IReadOnlyList<SpeciesData> MapSpecies => species;
     [SerializeField] private SpeciesData initialChickenSpecies;
     [SerializeField, Min(1)] private int initialChickenCount = 160;
 
@@ -26,7 +27,7 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
         // registers it with the simulation before this coroutine resumes.
         yield return null;
         if (grid == null || bridge == null || simulation == null ||
-            initialChickenSpecies == null || species == null || species.Length != 5)
+            initialChickenSpecies == null || species == null || species.Length != 15)
         {
             Debug.LogError("Whitebox bioweb test setup has missing references.", this);
             enabled = false;
@@ -44,7 +45,7 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
         if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) ||
             initialTile.Block == null)
         {
-            Debug.LogError("Whitebox initial grassland tile is unavailable.", this);
+            Debug.LogError("Whitebox initial desert tile is unavailable.", this);
             enabled = false;
             yield break;
         }

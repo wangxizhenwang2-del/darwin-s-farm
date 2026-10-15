@@ -15,6 +15,12 @@ public struct SimulationTuning
     public float levelOnePreyFraction, levelTwoPreyFraction;
     public bool mutationEnabled, migrationEnabled, ecologicalNichesEnabled;
     public int mutationInterval, migrationInterval, migrationCooldownDays;
+    public int sameSpeciesMergeDays, postMergeSplitCooldownDays;
+    public int directedSplitTraitLockDays;
+    public float splitMinimumRenewalPressure, splitFounderFraction;
+    public float directedSplitTraitFraction, resourceTraitGain, localMovementGain;
+    public float lowStockDays, highStockDays;
+    public float lowRenewalCoverage, highRenewalCoverage;
     public float mutationStep, selectionStrength, migrationPopulationScale;
     public float overloadThreshold, baseOverloadProbability, overloadMigrationFraction;
 }
@@ -22,11 +28,42 @@ public struct SimulationTuning
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
+    [SerializeField] private LandRuleTuning landRules = new LandRuleTuning();
+    private bool landRulesValidated;
+    public LandRuleTuning ReadLandRules() => LandRules.Copy();
+    public void ApplyLandRules(LandRuleTuning values)
+    {
+        if (values == null) return;
+        landRules = values.Copy().Sanitize();
+        landRulesValidated = true;
+        reproductionScale = landRules.birthRate;
+        maxStarvationDeathRate = landRules.starvationDeathRate;
+        foreach (BlockInfo block in blockInfos)
+            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+    }
+    private LandRuleTuning LandRules
+    {
+        get
+        {
+            if (landRules == null) landRules = new LandRuleTuning();
+            if (!landRulesValidated)
+            {
+                landRules.Sanitize();
+                landRulesValidated = true;
+            }
+            return landRules;
+        }
+    }
     // A deterministic environment step before ecology; avoids Unity event subscription-order dependencies.
     public event System.Action<int> OnBeforeDaySimulated;
     public event System.Action<int> OnDaySimulated;
     public event System.Action<BlockInfo> OnBlockEnvironmentChanged;
     public event System.Action<BlockInfo> OnBlockCommunityChanged;
+    public IReadOnlyList<BlockInfo> ReadBlocks() => blockInfos.AsReadOnly();
+    public void NotifyPlayerCommunityChanged(BlockInfo block)
+    {
+        if (block != null) OnBlockCommunityChanged?.Invoke(block);
+    }
 
     [SerializeField] private SimulationTime simulationTime;
     [SerializeField] private List<BlockInfo> blockInfos = new List<BlockInfo>();
@@ -74,6 +111,8 @@ public partial class SimulationController : MonoBehaviour
         blockInfos = blocks ?? new List<BlockInfo>();
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
+        foreach (BlockInfo block in blockInfos)
+            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
 
     // Model identity is repaired at the same boundary that registers blocks.
@@ -112,6 +151,18 @@ public partial class SimulationController : MonoBehaviour
         baseOverloadProbability = baseOverloadProbability,
         overloadMigrationFraction = overloadMigrationFraction,
         migrationCooldownDays = migrationCooldownDays,
+        sameSpeciesMergeDays = LandRules.sameSpeciesMergeDays,
+        postMergeSplitCooldownDays = LandRules.postMergeSplitCooldownDays,
+        directedSplitTraitLockDays = LandRules.directedSplitTraitLockDays,
+        splitMinimumRenewalPressure = LandRules.splitMinimumRenewalPressure,
+        splitFounderFraction = LandRules.splitFounderFraction,
+        directedSplitTraitFraction = LandRules.directedSplitTraitFraction,
+        resourceTraitGain = LandRules.resourceTraitGain,
+        localMovementGain = LandRules.localMovementGain,
+        lowStockDays = LandRules.lowStockDays,
+        highStockDays = LandRules.highStockDays,
+        lowRenewalCoverage = LandRules.lowRenewalCoverage,
+        highRenewalCoverage = LandRules.highRenewalCoverage,
         ecologicalNichesEnabled = ecologicalNichesEnabled
     };
 
@@ -128,6 +179,20 @@ public partial class SimulationController : MonoBehaviour
             tuning.baseOverloadProbability, tuning.overloadMigrationFraction,
             tuning.migrationCooldownDays);
         SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
+        LandRuleTuning nextLandRules = LandRules.Copy();
+        nextLandRules.sameSpeciesMergeDays = tuning.sameSpeciesMergeDays;
+        nextLandRules.postMergeSplitCooldownDays = tuning.postMergeSplitCooldownDays;
+        nextLandRules.directedSplitTraitLockDays = tuning.directedSplitTraitLockDays;
+        nextLandRules.splitMinimumRenewalPressure = tuning.splitMinimumRenewalPressure;
+        nextLandRules.splitFounderFraction = tuning.splitFounderFraction;
+        nextLandRules.directedSplitTraitFraction = tuning.directedSplitTraitFraction;
+        nextLandRules.resourceTraitGain = tuning.resourceTraitGain;
+        nextLandRules.localMovementGain = tuning.localMovementGain;
+        nextLandRules.lowStockDays = tuning.lowStockDays;
+        nextLandRules.highStockDays = tuning.highStockDays;
+        nextLandRules.lowRenewalCoverage = tuning.lowRenewalCoverage;
+        nextLandRules.highRenewalCoverage = tuning.highRenewalCoverage;
+        ApplyLandRules(nextLandRules);
     }
 
     public bool ApplyPlantCapacity(BlockInfo block, float maximum)
@@ -221,6 +286,7 @@ public partial class SimulationController : MonoBehaviour
         block.community = merged;
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
+        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         NotifyEnvironmentChanged();
         OnBlockCommunityChanged?.Invoke(block);
         return true;
@@ -260,6 +326,7 @@ public partial class SimulationController : MonoBehaviour
         block.temperature = temperature;
         block.humidity = humidity;
         block.habitatRecovery = recovery;
+        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         NotifyEnvironmentChanged();
         RetryMutationSoon(block);
         OnBlockEnvironmentChanged?.Invoke(block);
@@ -287,21 +354,28 @@ public partial class SimulationController : MonoBehaviour
 
     public void SimulateDay(int day)
     {
+        currentSimulationDay = day;
         OnBeforeDaySimulated?.Invoke(day);
+        LogDirectedTraitUnlocks(day);
         foreach (BlockInfo block in blockInfos)
         {
             SimulateBlock(block);
         }
+        RemoveEndangered(day);
+        RunLocalSplits(day);
         RunPresetEvolution(day);
-        if (ecologicalNichesEnabled && day > 0)
-            RunNicheConversions(day);
+        RunSameSpeciesMerges(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);
         }
         UpdateSpeciesStatuses();
+        foreach (BlockInfo block in blockInfos)
+            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         OnDaySimulated?.Invoke(day);
     }
+
+    private int currentSimulationDay;
 
     public void SimulateBlock(BlockInfo block)
     {
@@ -313,14 +387,9 @@ public partial class SimulationController : MonoBehaviour
         foreach (PopulationData population in block.community)
             InitializeMutationState(population);
 
-        FoodWeb.GrowPlants(block);
-        PreparePopulations(block);
-        float eaten = FoodWeb.FeedCommunity(block, reproductionScale,
-            maxOverCapacityDeathRate, maxStarvationDeathRate,
-            levelOnePreyFraction, levelTwoPreyFraction);
-        UpdatePopulations(block);
-        FoodWeb.SpendPlants(block, eaten);
-        EvolveCommunity(block);
+        LandLifeRules.Simulate(block, LandRules);
+        EvolveCommunityNewRules(block);
+        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
 
     // 种群适应度、出生与死亡。
@@ -337,8 +406,8 @@ public partial class SimulationController : MonoBehaviour
     public const float DefaultLevelTwoPreyFraction = 0.1f;
 
     [Header("Population")]
-    [SerializeField] private float reproductionScale = 0.05f;
-    [SerializeField] private float maxOverCapacityDeathRate = 0.1f;
+    [SerializeField] private float reproductionScale = 0.1f;
+    [SerializeField] private float maxOverCapacityDeathRate = 0f;
     [SerializeField] private float maxStarvationDeathRate = 0.6f;
     [SerializeField] private float levelOnePreyFraction = DefaultLevelOnePreyFraction;
     [SerializeField] private float levelTwoPreyFraction = DefaultLevelTwoPreyFraction;
@@ -350,6 +419,8 @@ public partial class SimulationController : MonoBehaviour
         reproductionScale = Mathf.Max(0f, newReproductionScale);
         maxOverCapacityDeathRate = Mathf.Clamp01(newMaxOverCapacityDeathRate);
         maxStarvationDeathRate = Mathf.Clamp01(newMaxStarvationDeathRate);
+        LandRules.birthRate = reproductionScale;
+        LandRules.starvationDeathRate = maxStarvationDeathRate;
     }
 
     public static float CalculateFitness(BlockInfo block, PopulationData population)

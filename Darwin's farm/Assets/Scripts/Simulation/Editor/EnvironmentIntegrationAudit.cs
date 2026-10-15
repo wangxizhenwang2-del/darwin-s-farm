@@ -58,11 +58,10 @@ public static class EnvironmentIntegrationAudit
               SimulationTime.StandardLoopDays * SimulationTime.DefaultSecondsPerDay /
               SimulationTime.StandardLoopSpeed == 900f,
             "The standard loop must cover 1800 days in 15 minutes at 2x.");
-        Check(Read(c, 0).Environment.Terrain == TerrainKind.Grassland, "Initial terrain must be canonical grassland.");
-        Check(c.GetTerrainNeighbors(Vector2Int.zero).Count == 4 &&
-              TerrainTransitionGraph.AreAdjacent(TerrainKind.Grassland, TerrainKind.Desert),
-            "Runtime terrain graph must expose the grassland neighbors.");
-        Check(Read(c, 0).PlantStock == 100000, "Initial stock must equal default increment.");
+        Check(Read(c, 0).Environment.Terrain == TerrainKind.Desert, "Initial terrain must be desert.");
+        Check(Read(c, 0).Environment.Habitat == HabitatState.Z0MiddleDry,
+            "Initial desert must use its V4.6 placement habitat.");
+        Check(Read(c, 0).PlantStock == 50000, "Initial stock must equal default increment.");
         string[] assets = { "森林", "雨林", "草原", "荒漠", "苔原", "高山", "雪山", "火山" };
         for (int i = 0; i < assets.Length; i++)
         {
@@ -130,6 +129,51 @@ public static class EnvironmentIntegrationAudit
         { center = new Vector2Int(6, 0), kind = SimulationInterventionKind.Humidity, amount = 25, radius = 0 }, out _),
             "Legacy editor adapter must use new controller.");
         AuditPlayerTechnologies(c, grid, grass);
+        AuditEconomy(c, bridge);
+    }
+
+    private static void AuditEconomy(SimulationEnvironmentController environment,
+        MapSimulationBridge bridge)
+    {
+        var account = environment.GetComponent<BioenergyAccount>();
+        var operations = environment.GetComponent<PlayerEconomyController>();
+        BlockInfo source = null;
+        Check(account != null && operations != null &&
+              bridge.TryGetBlock(new Vector2Int(11, 0), out source),
+            "Economy operations are attached to the live map");
+        var chicken = AssetDatabase.LoadAssetAtPath<SpeciesData>(
+            "Assets/TestBioweb/Species/鸡.asset");
+        Check(chicken != null, "Chicken value asset exists");
+        var population = new PopulationData
+        {
+            species = chicken, speciesAmount = 100, lineageName = chicken.SpeciesName,
+            ecologicalNiche = EcologicalNiche.Land, trophicLevel = 0,
+            fitTemperature = 100, fitHumidity = 100, size = 6,
+            movementAbility = 35, fertility = 75
+        };
+        source.community.Add(population);
+        Check(operations.TryPreviewHarvest(source, population, out var preview,
+            out var error) && preview.Harvested == 50 && preview.Remaining == 50 &&
+            preview.Earned == 391, "Harvest preview uses actual removed count: " + error);
+        long beforeHarvest = account.Balance;
+        Check(operations.TryHarvest(source, population, out int harvested,
+            out long earned, out error) && harvested == 50 && earned == 391 &&
+            population.speciesAmount == 50 && account.Balance == beforeHarvest + 391,
+            "Harvest removes residents and credits once: " + error);
+        long beforeNoop = account.Balance;
+        Check(!operations.TryDirectedEvolution(source, population,
+            DirectedTrait.Temperature, 25, DirectedTrait.Humidity, 25, out _) &&
+            account.Balance == beforeNoop, "Clipped zero-change evolution is rejected free");
+        account.CostsEnabled = false;
+        Check(operations.TryStore(source, population, out string backupId, out error) &&
+            source.community.Contains(population) && population.speciesAmount == 50 &&
+            account.Balance == beforeNoop && operations.Storage.Count == 1,
+            "Disabled restrictions make storage free without consuming source: " + error);
+        Check(operations.TryRelease(backupId, source, out error) &&
+            population.speciesAmount == 100 && operations.Storage.Count == 0,
+            "Storage releases once and merges with the resident: " + error);
+        Check(!operations.CanDemolish(new Vector2Int(10, 0), out _),
+            "Demolition cannot disconnect the later tiles");
     }
 
     // 2026-10-09 15:04 +08:00: exercise the actual player Controller and
@@ -138,6 +182,9 @@ public static class EnvironmentIntegrationAudit
         MapGridManager grid, MapTileDefinition grass)
     {
         var player = c.GetComponent<EnvironmentTechnologyController>();
+        var account = c.GetComponent<BioenergyAccount>();
+        Check(account != null, "Bioenergy account is available");
+        account.CostsEnabled = false;
         Check(player != null && grid.TryPlaceTile(new Vector2Int(11, 0), grass),
             "Player technology controller and land target");
         var land = new Vector2Int(11, 0);
@@ -205,11 +252,27 @@ public static class EnvironmentIntegrationAudit
             "Hot-dry monsoon preset");
         Check(c.Monsoons.Count == 1 && player.CurrentApplied(land).Contains("季风工具"),
             "Current technology readback includes wind");
+        long freeBalance = account.Balance;
+        Check(player.TryDeploy(land, new EnvironmentTechnologyChoice(
+            EnvironmentTechnologyKind.HumidityChange, 1), out var freePreview) &&
+            freePreview.Cost == 0 && account.Balance == freeBalance,
+            "Disabled economy restriction must not charge");
+        account.CostsEnabled = true;
+        long paidBalance = account.Balance;
+        Check(player.TryDeploy(land, new EnvironmentTechnologyChoice(
+            EnvironmentTechnologyKind.HumidityChange, -1), out var paidPreview) &&
+            paidPreview.Cost == 220 && account.Balance == paidBalance - 220,
+            "Enabled economy restriction charges the configured tier price");
         SimulationTime time = c.GetComponent<SimulationTime>();
         time.Play(); time.DoubleSpeed();
         Check(time.Speed == 2f, "2x speed command");
+        time.CycleSpeed(); Check(time.Speed == 4f, "SpeedHUD cycles 2x to 4x");
+        time.CycleSpeed(); Check(time.Speed == 1f, "SpeedHUD cycles 4x to 1x");
+        time.CycleSpeed(); Check(time.Speed == 2f, "SpeedHUD cycles 1x to 2x");
         time.TogglePause(); Check(time.IsPaused, "space pauses the day clock");
         time.TogglePause(); Check(time.Speed == 2f, "space resumes the previous speed");
+        time.Pause(); time.CycleSpeed();
+        Check(time.Speed == 4f, "SpeedHUD advances and resumes while paused");
         time.Pause();
     }
     private static void Finish(Exception error)

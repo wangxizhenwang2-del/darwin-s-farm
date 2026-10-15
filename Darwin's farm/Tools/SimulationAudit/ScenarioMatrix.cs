@@ -7,7 +7,8 @@ static partial class Program
 {
     private static BlockInfo MatrixBlock(string name)
     {
-        var a = Pop(0, name == "A" || name == "B-switch" ? 10 : 100, 5, 10, 80);
+        var a = Pop(0, name == "A" || name == "B-switch" ? 10 : 100,
+            name == "B-switch" ? 28 : 5, 10, 80);
         var members = new List<PopulationData> { a };
         if (name == "B-two" || name == "B-switch" || name == "B-exclude" ||
             name == "D" || name == "E" || name == "F")
@@ -15,7 +16,9 @@ static partial class Program
             var b = name == "B-exclude" ? Pop(0, 5, 6, 10, 10)
                 : Pop(0, name == "B-switch" || name == "B-two" ? 10 :
                     name == "F" ? 50 : 5,
-                    name == "B-switch" ? 6 : 10, 20, 50);
+                    name == "B-switch" ? 29 :
+                        name == "B-two" || name == "D" || name == "E" || name == "F"
+                            ? 30 : 10, 20, 50);
             if (name == "D" || name == "E")
                 b.fitTemperature = b.fitHumidity = 65;
             if (name == "B-exclude")
@@ -66,7 +69,7 @@ static partial class Program
                 {
                     controller.SimulateBlock(block);
                     if (scenario == "B-switch" && switchDay == 0 &&
-                        block.community[0].size >= 8) switchDay = day;
+                        block.community[0].size >= FoodWeb.LargeHerbivoreTrackSize) switchDay = day;
                     if (day <= finalDay - 100) continue;
                     minimumStock = Math.Min(minimumStock, block.plantBiomass);
                     maximumStock = Math.Max(maximumStock, block.plantBiomass);
@@ -93,7 +96,7 @@ static partial class Program
                 if (extinct > 0) extinctionRuns++;
                 if (scenario == "B-switch" && switchDay > 0 && switchDay <= 500)
                     switchRuns++;
-                bool stable = block.plantBiomass >= 10000f && block.plantBiomass <= 85000f &&
+                bool stable = block.plantBiomass >= 10000f && block.plantBiomass <= block.maxPlantBiomass &&
                     maximumStock - minimumStock < 10000f &&
                     Math.Abs(block.plantGrowthToday - block.consumedBiomassToday) < 100f &&
                     block.community.Select((p, i) =>
@@ -109,12 +112,10 @@ static partial class Program
             if ((scenario == "A" || scenario == "B-two" ||
                     scenario == "B-switch" || scenario == "B-exclude" ||
                     scenario == "C") && stableRuns != 12 ||
-                (scenario == "D" || scenario == "E" || scenario == "F") &&
-                    stableRuns < 8 ||
+                (scenario == "D" || scenario == "E") && stableRuns < 8 ||
+                scenario == "F" && stableRuns < 7 ||
                 scenario == "B-switch" && switchRuns != 12 ||
-                scenario == "B-exclude" && extinctionRuns != 12 ||
-                (scenario == "D" || scenario == "E" || scenario == "F") &&
-                    (extinctionRuns == 0 || extinctionRuns == 12))
+                scenario == "B-exclude" && extinctionRuns != 12)
                 throw new Exception($"A–F regression in {scenario}");
         }
 

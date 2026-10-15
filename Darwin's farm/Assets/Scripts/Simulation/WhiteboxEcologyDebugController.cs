@@ -121,7 +121,7 @@ public sealed class WhiteboxEcologyDebugController : MonoBehaviour
                     string name = population.species != null ? population.species.SpeciesName :
                         string.IsNullOrEmpty(population.lineageName) ? "未命名" : population.lineageName;
                     populationDelta.TryGetValue(population, out int change);
-                    lines.Add($"{name} {population.speciesAmount}  Δ{Signed(change)}  L{population.trophicLevel}  K{population.carryingCapacity:F0}");
+                    lines.Add($"{name} {population.speciesAmount}  Δ{Signed(change)}  L{population.trophicLevel}  环境K{population.environmentalCarryingCapacity:F0}");
                     lines.Add($"适温{population.fitTemperature} 适湿{population.fitHumidity}  体{population.size} 动{population.movementAbility} 繁{population.fertility}");
                     string mutation = simulation != null ? simulation.GetExpectedEvolutionDirection(block, population) : "";
                     int colon = mutation.IndexOf('：');

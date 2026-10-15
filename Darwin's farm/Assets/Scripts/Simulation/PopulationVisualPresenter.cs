@@ -89,7 +89,11 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                 if (visuals.TryGetValue(id, out WhiteboxPopulation visual) && visual != null &&
                     visual.TileId == tile.Coordinate)
                 {
-                    if (visual.EcologicalPopulation != data)
+                    // A whole-branch evolution changes species on the same
+                    // PopulationData instance and keeps the population ID.
+                    // Refresh the illustration even when the binding is unchanged.
+                    if (visual.EcologicalPopulation != data ||
+                        visual.DisplaySprite != SpriteFor(data))
                         visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data));
                     if (transitionHolds.TryGetValue(id, out TransitionHold hold) &&
                         hold.CountBefore == 0) continue;

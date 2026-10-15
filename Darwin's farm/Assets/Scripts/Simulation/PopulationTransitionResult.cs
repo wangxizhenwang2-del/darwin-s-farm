@@ -4,7 +4,8 @@ public enum PopulationTransitionKind
 {
     Migration,
     NicheConversion,
-    PresetEvolution
+    PresetEvolution,
+    LocalSplit
 }
 
 public enum PopulationArrivalOutcome

@@ -12,7 +12,7 @@ public sealed class EnvironmentTechnologyPreview
     public string After { get; internal set; }
     public string Timing { get; internal set; }
     public IReadOnlyList<Vector2Int> Area { get; internal set; } = Array.Empty<Vector2Int>();
-    public int Cost => 0;
+    public int Cost { get; internal set; }
 }
 
 // 2026-10-09 14:46 +08:00: player Controller validates the immutable V4.3
@@ -21,8 +21,10 @@ public sealed class EnvironmentTechnologyPreview
 [DisallowMultipleComponent]
 public sealed class EnvironmentTechnologyController : MonoBehaviour
 {
+    public event Action<Vector2Int, string> OperationCommitted;
     private SimulationEnvironmentController environment;
     private MapGridManager grid;
+    private BioenergyAccount account;
     private readonly Dictionary<Vector2Int, Dictionary<int, EnvironmentTechnologyChoice>>
         applied = new Dictionary<Vector2Int, Dictionary<int, EnvironmentTechnologyChoice>>();
 
@@ -30,6 +32,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     {
         environment = GetComponent<SimulationEnvironmentController>();
         grid = GetComponent<MapGridManager>();
+        account = GetComponent<BioenergyAccount>();
     }
 
     public EnvironmentTechnologyPreview Preview(Vector2Int coordinate,
@@ -39,11 +42,14 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         string validationError;
         if (environment == null) environment = GetComponent<SimulationEnvironmentController>();
         if (grid == null) grid = GetComponent<MapGridManager>();
+        if (account == null) account = GetComponent<BioenergyAccount>();
         if (environment == null || grid == null || !environment.isActiveAndEnabled ||
             !EnvironmentTechnologyCatalog.Validate(choice))
         { result.Error = "科技选择无效或环境控制器未就绪"; return result; }
         if (!environment.TryRead(coordinate, out EnvironmentReadSnapshot read))
         { result.Error = "目标地块不存在"; return result; }
+        result.Cost = account != null && account.CostsEnabled ?
+            EnvironmentTechnologyCatalog.Price(choice) : 0;
         EnvironmentSnapshot state = read.Environment;
         bool water = state.IsWater;
         var area = new List<Vector2Int> { coordinate };
@@ -72,7 +78,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                     out EnvironmentOperationPreview climate, out validationError))
                 { result.Error = validationError; return result; }
                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
-                    climate.Target.ToString("F0") + "；预计地形 " + climate.EstimatedTerrain;
+                    climate.Target.ToString("F0") + "；预计生境 " +
+                    EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
                 result.Timing = "25天进入 · 150天维持 · 150天恢复";
                 break;
             case EnvironmentTechnologyKind.PlantChange:
@@ -95,7 +102,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                         { result.Error = validationError; return result; }
                         result.After = "库存 " + nextStock.ToString("F0") +
                             "；日增量 " + increased.Target.ToString("F0") +
-                            "；预计地形 " + increased.EstimatedTerrain;
+                            "；预计生境 " + EnvironmentRules.Profile(increased.EstimatedHabitat).Title;
                     }
                     result.Timing = "库存立即乘算 · 日增量立即提高并维持50天，再用50天恢复";
                 }
@@ -136,7 +143,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                         SimulationInterventionKind.Elevation, shift,
                         out EnvironmentOperationPreview height, out validationError))
                     { result.Error = validationError; return result; }
-                    result.After += "；预计地形 " + height.EstimatedTerrain;
+                    result.After += "；预计生境 " + EnvironmentRules.Profile(height.EstimatedHabitat).Title;
                 }
                 result.Timing = "立即生效 · 不回滚";
                 break;
@@ -162,13 +169,22 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         out EnvironmentTechnologyPreview result)
     {
         result = Preview(coordinate, choice);
-        if (!result.IsValid) return false;
+        if (!result.IsValid)
+        {
+            OperationCommitted?.Invoke(coordinate,
+                "rejected:technology_deploy:" + choice.Kind + ";reason=" + result.Error);
+            return false;
+        }
+        if (account == null) account = GetComponent<BioenergyAccount>();
+        if (account == null) { result.Error = "经济账户未就绪"; return false; }
         bool water = environment.TryRead(coordinate, out EnvironmentReadSnapshot read) &&
             read.Environment.IsWater;
         bool success;
         string error;
-        switch (choice.Kind)
+        bool Commit(string receiptId, long paid)
         {
+          switch (choice.Kind)
+          {
             case EnvironmentTechnologyKind.TemperatureChange:
             case EnvironmentTechnologyKind.HumidityChange:
                 success = environment.TryApply(coordinate,
@@ -189,12 +205,28 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                         shift, out error); break;
             case EnvironmentTechnologyKind.MonsoonAnchor:
                 success = environment.TryDeployMonsoon(coordinate,
-                    choice.TemperatureOffset, choice.HumidityOffset, out _, out error); break;
+                    choice.TemperatureOffset, choice.HumidityOffset, out _, out error,
+                    new EnvironmentPayment(receiptId, paid)); break;
             default: success = false; error = "未知科技"; break;
+          }
+          return success;
         }
-        if (!success) { result.Error = error; return false; }
+        success = false; error = null;
+        bool paidAndApplied = account.TryExecute(EnvironmentTechnologyCatalog.Price(choice),
+            "环境科技:" + choice.Kind, Commit, out string accountError);
+        if (!paidAndApplied)
+        {
+            result.Error = error ?? accountError;
+            OperationCommitted?.Invoke(coordinate,
+                "rejected:technology_deploy:" + choice.Kind + ";reason=" + result.Error);
+            return false;
+        }
         if (choice.Kind != EnvironmentTechnologyKind.MonsoonAnchor)
             foreach (Vector2Int member in result.Area) Record(member, choice);
+        account.ConsumePendingSettlements();
+        OperationCommitted?.Invoke(coordinate, "technology_deploy:" + choice.Kind +
+            ";tier=" + choice.Tier + ";temperatureOffset=" + choice.TemperatureOffset +
+            ";humidityOffset=" + choice.HumidityOffset + ";affectedTiles=" + result.Area.Count);
         return true;
     }
 
@@ -207,9 +239,9 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         EnvironmentSnapshot state = read.Environment;
         if (applied.TryGetValue(coordinate, out var channels))
         {
-            if (state.HasLocalTemperature) AddActive(channels, 0, state.Temperature.Phase, labels);
-            if (state.HasLocalHumidity) AddActive(channels, 1, state.Humidity.Phase, labels);
-            if (state.HasRecoveryCommand) AddActive(channels, 2, state.Recovery.Phase, labels);
+            if (state.HasLocalTemperature) AddActive(channels, 0, state.Temperature, labels);
+            if (state.HasLocalHumidity) AddActive(channels, 1, state.Humidity, labels);
+            if (state.HasRecoveryCommand) AddActive(channels, 2, state.Recovery, labels);
             if (channels.TryGetValue(3, out var instant))
                 recent = EnvironmentTechnologyCatalog.Name(instant.Kind) +
                     "(" + TierLabel(instant) + ")";
@@ -261,28 +293,42 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     {
         error = null;
         if (!CanCancel(coordinate, kind))
-        { error = "这里没有可撤销的对应科技"; return false; }
+        {
+            error = "这里没有可撤销的对应科技";
+            OperationCommitted?.Invoke(coordinate,
+                "rejected:technology_cancel:" + kind + ";reason=" + error);
+            return false;
+        }
         if (kind == EnvironmentTechnologyKind.MonsoonAnchor)
         {
             foreach (MonsoonSnapshot wind in environment.Monsoons)
                 if (wind.Source.X == coordinate.x && wind.Source.Y == coordinate.y)
-                    return environment.TryCancelMonsoon(wind.Id, out error);
+                {
+                    bool canceled = environment.TryCancelMonsoon(wind.Id, out error);
+                    if (canceled) OperationCommitted?.Invoke(coordinate,
+                        "technology_cancel:" + kind + ";monsoonId=" + wind.Id);
+                    return canceled;
+                }
             error = "季风已不存在"; return false;
         }
         EnvironmentAttribute attribute = kind == EnvironmentTechnologyKind.TemperatureChange
             ? EnvironmentAttribute.Temperature : kind == EnvironmentTechnologyKind.HumidityChange
                 ? EnvironmentAttribute.Humidity : EnvironmentAttribute.Recovery;
-        return environment.TryCancel(coordinate, attribute, out error);
+        bool result = environment.TryCancel(coordinate, attribute, out error);
+        if (result) OperationCommitted?.Invoke(coordinate, "technology_cancel:" + kind);
+        return result;
     }
 
     private static void AddActive(Dictionary<int, EnvironmentTechnologyChoice> channels,
-        int channel, EffectPhase phase, List<string> labels)
+        int channel, AttributeSnapshot attribute, List<string> labels)
     {
+        EffectPhase phase = attribute.Phase;
         if (phase == EffectPhase.None || phase == EffectPhase.Automatic ||
             !channels.TryGetValue(channel, out var choice)) return;
         labels.Add(EnvironmentTechnologyCatalog.Name(choice.Kind) + " " + TierLabel(choice) +
             (phase == EffectPhase.Entering ? "(进入)" : phase == EffectPhase.Holding ?
-                "(维持)" : "(恢复)"));
+                "(维持)" : "(恢复)") + " 剩余" + attribute.RemainingDays +
+            "天，目标" + attribute.Target.ToString("F0"));
     }
     private bool HasRecorded(Vector2Int coordinate, int channel,
         EnvironmentTechnologyKind kind) =>
@@ -313,11 +359,15 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         return total;
     }
     private static string LandSummary(EnvironmentReadSnapshot read) =>
-        "温 " + read.Environment.Temperature.Value.ToString("F0") +
+        "地形 " + read.Environment.Terrain +
+        "；温 " + read.Environment.Temperature.Value.ToString("F0") +
         " 湿 " + read.Environment.Humidity.Value.ToString("F0") +
         " 海 " + read.Environment.Elevation +
         " 库存 " + read.PlantStock.ToString("F0") +
-        " 增量 " + read.Environment.Recovery.Value.ToString("F0");
+        " 增量 " + read.Environment.Recovery.Value.ToString("F0") +
+        "；生境 " + read.Environment.HabitatTitle +
+        "；默认温/湿/增量 " + read.Environment.Defaults.Temperature + "/" +
+        read.Environment.Defaults.Humidity + "/" + read.Environment.Defaults.Recovery;
     private static string Signed(int value) => value > 0 ? "+" + value : value.ToString();
     private static string TierLabel(EnvironmentTechnologyChoice choice) =>
         choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?

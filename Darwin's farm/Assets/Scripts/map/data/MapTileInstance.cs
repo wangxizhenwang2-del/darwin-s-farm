@@ -61,6 +61,14 @@ public class MapTileInstance : MonoBehaviour
         transform.position = gridOrigin + Vector3.up * level * MapGridManager.HeightStep;
     }
 
+    internal void SetWaterShape(MapTileDefinition tileDefinition, int rotation)
+    {
+        definition = tileDefinition;
+        rotationSteps = ((rotation % 4) + 4) % 4;
+        transform.rotation = Quaternion.Euler(0f, rotationSteps * 90f, 0f);
+        if (Block != null) Block.waterCoverage = tileDefinition.initialWaterCoverage;
+    }
+
     private Renderer FindRenderer(string childName)
     {
         Transform child = transform.Find(childName);

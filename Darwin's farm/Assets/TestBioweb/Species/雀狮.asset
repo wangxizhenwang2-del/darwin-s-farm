@@ -25,10 +25,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
   - {fileID: 11400000, guid: bed329e7284f5eaf9f26d9e19bf80276, type: 2}
   trophicLevel: 2
-  baseMovementAbility: 68
+  bioenergyValue: 40
+  economyId: sparrow-lion
+  baseMovementAbility: 70
   baseHabitatNiche: 50
-  baseFitTemperature: 85
-  baseFitHumidity: 65
-  baseSize: 22
+  baseFitTemperature: 70
+  baseFitHumidity: 50
+  baseSize: 80
   baseFertility: 20
   baseEcologicalNiche: 0

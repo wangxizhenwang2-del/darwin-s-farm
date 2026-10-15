@@ -9,7 +9,7 @@ public partial class SimulationController
     private const float TerrainStepProbability = 0.5f;
 
     [Header("Migration")]
-    [SerializeField] private bool migrationEnabled = false;
+    [SerializeField] private bool migrationEnabled = true;
     [Min(1)] [SerializeField] private int migrationInterval = 7;
     [Min(0.01f)] [SerializeField] private float migrationPopulationScale = 100f;
     [Range(0f, 0.99f)] [SerializeField] private float overloadThreshold = 0.8f;
@@ -100,6 +100,30 @@ public partial class SimulationController
         return Mathf.Clamp01(1f - residents / capacity);
     }
 
+    // Shared by migration planning and mutation attraction. A destination
+    // already holding this species offers no expansion opportunity.
+    private static bool HasSameSpeciesResident(BlockInfo target,
+        PopulationData migrant) =>
+        target != null && target.community != null &&
+        target.community.Exists(resident => resident != null &&
+            resident.ecologicalNiche == migrant.ecologicalNiche &&
+            SameSpecies(resident, migrant));
+
+    private float NeighborAttraction(BlockInfo source, BlockInfo neighbor,
+        PopulationData migrant, int migrants)
+    {
+        float free = NeighborFreeFood(neighbor, migrant);
+        float adultDemand = migrants * LandLifeRules.AdultNeed(migrant.size,
+            migrant.movementAbility, LandRules);
+        float climate = LandLifeRules.Fitness(neighbor,
+            migrant.fitTemperature, migrant.fitHumidity);
+        float continuity = 1f - 0.2f * Mathf.Abs(source.temperature
+            - neighbor.temperature) / 100f - 0.2f * Mathf.Abs(source.humidity
+            - neighbor.humidity) / 100f;
+        return Mathf.Clamp01(free / Mathf.Max(1f, free + adultDemand)
+            * Mathf.Max(0f, continuity) * climate);
+    }
+
     public float CalculateOverloadPressure(PopulationData population)
     {
         if (population == null || population.speciesAmount <= 0) return 0f;
@@ -151,10 +175,6 @@ public partial class SimulationController
         plan = new MovePlan();
         int amount = StandardMigrationAmount(population.speciesAmount);
         if (amount == 0) return false;
-        float currentFitness = CalculateFitness(source, population);
-        float pressure = CalculateOverloadPressure(population);
-        float baseChance = population.speciesAmount /
-            (population.speciesAmount + migrationPopulationScale);
         List<MoveCandidate> candidates = new List<MoveCandidate>();
 
         foreach (BlockInfo neighbor in source.Neighbors)
@@ -165,25 +185,28 @@ public partial class SimulationController
                 neighbor.community == null) continue;
             int heightDifference = Mathf.Abs(neighbor.elevation - source.elevation);
             if (heightDifference >= 2) continue;
-            float terrain = heightDifference == 0 ? 1f : TerrainStepProbability;
-            if (terrain <= 0f) continue;
-            float capacity = TargetCapacityCorrection(neighbor, population);
-            if (capacity <= 0f) continue;
-            float fitness = CalculateFitness(neighbor, population);
+            if (population.movementAbility <= (heightDifference == 0
+                ? LandRules.flatMigrationThreshold : LandRules.slopeMigrationThreshold))
+                continue;
 
-            float normalChance = fitness > currentFitness
-                ? (fitness - currentFitness) * terrain * baseChance * capacity : 0f;
-
-            bool occupied = neighbor.community.Exists(resident =>
-                resident != null &&
-                resident.ecologicalNiche == population.ecologicalNiche &&
-                SameSpecies(resident, population)) || planned.Exists(move =>
+            bool occupied = HasSameSpeciesResident(neighbor, population) ||
+                planned.Exists(move =>
                 move.target == neighbor &&
                 move.population.ecologicalNiche == population.ecologicalNiche &&
                 SameSpecies(move.population, population));
-            float overloadChance = !occupied && pressure > 0f
-                ? pressure * baseOverloadProbability * terrain * capacity : 0f;
-            float chance = Mathf.Max(normalChance, overloadChance);
+            if (occupied) continue;
+            int reserved = 0;
+            foreach (MovePlan move in planned)
+                if (move.target == neighbor &&
+                    !neighbor.community.Exists(existing => existing != null &&
+                        SameSpecies(existing, move.population))) reserved++;
+            if (neighbor.community.Count + reserved >= 5) continue;
+            float attraction = NeighborAttraction(source, neighbor,
+                population, amount);
+            float chance = Mathf.Clamp01(attraction)
+                * population.movementAbility / 100f;
+            if (LivingPopulationCount(neighbor) == 4)
+                chance *= LandRules.fourEntryMigrationFactor;
             if (chance <= 0f) continue;
             candidates.Add(new MoveCandidate
             {
@@ -236,6 +259,16 @@ public partial class SimulationController
             PopulationData resident = target.community.Find(population =>
                 population != null && population.ecologicalNiche == arrival.ecologicalNiche &&
                 SameSpecies(population, arrival));
+            if (resident == null && LivingPopulationCount(target) >= 5)
+            {
+                PopulationData origin = plans[i].population;
+                if (!plans[i].source.community.Contains(origin))
+                    plans[i].source.community.Add(origin);
+                PopulationTransfer.Merge(origin, arrival);
+                LogEcology(day, target, arrival, "migration_blocked",
+                    "capacity=5; individuals returned to source");
+                continue;
+            }
             int targetCountBefore = resident == null ? 0 : resident.speciesAmount;
             if (resident == null)
             {
@@ -246,7 +279,26 @@ public partial class SimulationController
                 InitializeMutationState(resident);
                 PopulationTransfer.Merge(resident, arrival);
             }
+            // A same-species arrival reunites every local branch of that species.
+            for (int j = target.community.Count - 1; j >= 0; j--)
+            {
+                PopulationData other = target.community[j];
+                if (other == null || other == resident || other == arrival ||
+                    other.ecologicalNiche != arrival.ecologicalNiche ||
+                    !SameSpecies(other, arrival)) continue;
+                PopulationTransfer.Merge(resident ?? arrival, other);
+                target.community.RemoveAt(j);
+            }
             PopulationData resultPopulation = resident ?? arrival;
+            resultPopulation.localSplitBranch = false;
+            resultPopulation.directedSplitTarget = null;
+            resultPopulation.directedTraitUnlockDay = 0;
+            resultPopulation.sameSpeciesCoexistenceDays = 0;
+            resultPopulation.mutationSelectionProgress = 0f;
+            resultPopulation.mutationSelectionCandidate = -1;
+            LandLifeRules.RefreshEnvironmentMetrics(
+                plans[i].source, LandRules);
+            LandLifeRules.RefreshEnvironmentMetrics(target, LandRules);
             OnMigrationResolved?.Invoke(new PopulationTransitionResult(
                 PopulationTransitionKind.Migration, day, plans[i].source, target,
                 plans[i].population, resultPopulation, plans[i].amount,
@@ -255,6 +307,9 @@ public partial class SimulationController
                     PopulationArrivalOutcome.Merged));
             OnPopulationMigrated?.Invoke(plans[i].source, target,
                 plans[i].population, plans[i].amount);
+            LogEcology(day, target, resultPopulation, "migration_arrival",
+                "amount=" + plans[i].amount + " resultCount="
+                + resultPopulation.speciesAmount + " merged=" + (resident != null));
         }
     }
 
@@ -651,7 +706,20 @@ internal static class PopulationTransfer
             nextEvolutionDay = source.nextEvolutionDay,
             previousMutationPopulation = amount,
             mutationPopulationInitialized = true,
-            evolutionCheckReady = source.evolutionCheckReady
+            evolutionCheckReady = source.evolutionCheckReady,
+            predationRemainder = source.predationRemainder,
+            endangeredDays = source.endangeredDays,
+            localSplitBranch = source.localSplitBranch,
+            splitStrategy = source.splitStrategy,
+            directedSplitTarget = source.directedSplitTarget,
+            directedTraitUnlockDay = source.directedTraitUnlockDay,
+            sameSpeciesCoexistenceDays = 0,
+            lastMutationEffect = source.lastMutationEffect,
+            mutationSelectionProgress = source.mutationSelectionProgress,
+            mutationSelectionCandidate = source.mutationSelectionCandidate,
+            foodSatisfactionHistory = new List<float>(source.foodSatisfactionHistory ?? new List<float>()),
+            renewalSatisfactionHistory = new List<float>(source.renewalSatisfactionHistory ?? new List<float>()),
+            preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>())
         };
         if (source.evolutionConversions != null)
             foreach (EvolutionConversionRecord record in source.evolutionConversions)
@@ -681,10 +749,14 @@ internal static class PopulationTransfer
         branch.energyReserve = origin.energyReserve * share;
         branch.birthRemainder = origin.birthRemainder * share;
         branch.deathRemainder = origin.deathRemainder * share;
+        branch.predationRemainder = origin.predationRemainder * share;
         origin.energyReserve -= branch.energyReserve;
         origin.birthRemainder -= branch.birthRemainder;
         origin.deathRemainder -= branch.deathRemainder;
+        origin.predationRemainder -= branch.predationRemainder;
         origin.speciesAmount -= amount;
+        branch.mutationSelectionProgress = 0f;
+        branch.mutationSelectionCandidate = -1;
         // 2026-10-09 13:47 +08:00: a newly split migration branch starts with
         // zero target progress; its inherited evolution cooldown still applies.
         if (origin.speciesAmount > 0) branch.evolutionConversions.Clear();
@@ -696,6 +768,7 @@ internal static class PopulationTransfer
         int residentAmount = resident.speciesAmount;
         int arrivalAmount = arrival.speciesAmount;
         int total = residentAmount + arrivalAmount;
+        if (total <= 0) return;
         MergeTrait(ref resident.movementAbility, ref resident.movementMutationRemainder,
             arrival.movementAbility, arrival.movementMutationRemainder,
             residentAmount, arrivalAmount, total);
@@ -719,6 +792,23 @@ internal static class PopulationTransfer
         resident.energyReserve += arrival.energyReserve;
         resident.birthRemainder += arrival.birthRemainder;
         resident.deathRemainder += arrival.deathRemainder;
+        resident.predationRemainder += arrival.predationRemainder;
+        MergeHistory(resident.foodSatisfactionHistory,
+            arrival.foodSatisfactionHistory, residentAmount, arrivalAmount);
+        MergeHistory(resident.renewalSatisfactionHistory,
+            arrival.renewalSatisfactionHistory, residentAmount, arrivalAmount);
+        MergeHistory(resident.preyNetRenewalHistory,
+            arrival.preyNetRenewalHistory, residentAmount, arrivalAmount);
+        resident.endangeredDays = total < 10
+            ? Mathf.Min(resident.endangeredDays, arrival.endangeredDays) : 0;
+        resident.localSplitBranch = false;
+        resident.directedSplitTarget = null;
+        resident.directedTraitUnlockDay = 0;
+        resident.sameSpeciesCoexistenceDays = 0;
+        resident.splitStrategy = resident.splitStrategy == arrival.splitStrategy
+            ? resident.splitStrategy : 0;
+        resident.mutationSelectionProgress = 0f;
+        resident.mutationSelectionCandidate = -1;
         resident.nextMigrationDay = Mathf.Max(resident.nextMigrationDay,
             arrival.nextMigrationDay);
         resident.nextEvolutionDay = Mathf.Max(resident.nextEvolutionDay,
@@ -738,6 +828,27 @@ internal static class PopulationTransfer
     {
         return Mathf.RoundToInt(WeightedValue(resident, residentAmount,
             arrival, arrivalAmount, total));
+    }
+
+    private static void MergeHistory(List<float> resident, List<float> arrival,
+        int residentAmount, int arrivalAmount)
+    {
+        if (resident == null || arrival == null || arrival.Count == 0) return;
+        int length = Mathf.Min(10, Mathf.Max(resident.Count, arrival.Count));
+        var merged = new List<float>(length);
+        for (int i = length - 1; i >= 0; i--)
+        {
+            int left = resident.Count - 1 - i;
+            int right = arrival.Count - 1 - i;
+            float a = left >= 0 ? resident[left] : 0f;
+            float b = right >= 0 ? arrival[right] : 0f;
+            int weightA = left >= 0 ? residentAmount : 0;
+            int weightB = right >= 0 ? arrivalAmount : 0;
+            merged.Add((a * weightA + b * weightB)
+                / Mathf.Max(1, weightA + weightB));
+        }
+        resident.Clear();
+        resident.AddRange(merged);
     }
 
     private static float WeightedValue(float resident, int residentAmount, float arrival,

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ public class TilePaletteUI : MonoBehaviour
 
     [Header("可选择的地块")]
     [SerializeField] private MapTileDefinition[] definitions;
+
+    public IReadOnlyList<MapTileDefinition> Definitions => definitions;
 
     private void Start()
     {

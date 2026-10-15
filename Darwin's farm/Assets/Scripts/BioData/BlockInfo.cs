@@ -46,6 +46,7 @@ public class BlockInfo : MonoBehaviour
     public float plantGrowthToday; //当天实际生长的植物量
     public float consumedBiomassToday; //当天被种群吃掉的植物量
     [SerializeField]public List<PopulationData> community;    //群落，存储了当前地块的种群
+    public int nextLocalSplitDay;
     [SerializeField] public WaterCoverage waterCoverage;
     // 河岸只是陆地种群可到达的位置，资源和种群仍归 landOwner。
     [SerializeField] private List<RiverBankInfo> riverBanks = new List<RiverBankInfo>();

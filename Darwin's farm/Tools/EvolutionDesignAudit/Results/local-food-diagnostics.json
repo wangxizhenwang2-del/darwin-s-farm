@@ -1,0 +1,5187 @@
+[
+  {
+    "predator": "鹿驯",
+    "prey": "鸡",
+    "longest": 600,
+    "completeCases": 1,
+    "lostHunter": 0,
+    "lostPrey": 0,
+    "bestCase": {
+      "habitat": "宜人的山地",
+      "initialPredator": 20,
+      "initialPrey": 713,
+      "initialStock": 500000,
+      "elapsed": 600,
+      "completed": true,
+      "countA": 139,
+      "countP": 1993,
+      "meanTailSatisfaction": 1,
+      "meanTailPreyRenewal": 18.864998,
+      "preyAt500": 2271,
+      "trace": [
+        {
+          "day": 1,
+          "hunterCount": 20,
+          "preyCount": 707,
+          "stock": 566839,
+          "hunterTraits": [
+            [
+              25,
+              20,
+              67,
+              75,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              55,
+              35,
+              11,
+              8,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 25,
+          "hunterCount": 20,
+          "preyCount": 758,
+          "stock": 976546.56,
+          "hunterTraits": [
+            [
+              29,
+              20,
+              67,
+              71,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              14,
+              9,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 50,
+          "hunterCount": 19,
+          "preyCount": 1082,
+          "stock": 965594.3,
+          "hunterTraits": [
+            [
+              35,
+              20,
+              67,
+              66,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              30,
+              9,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 75,
+          "hunterCount": 20,
+          "preyCount": 1571,
+          "stock": 945184.06,
+          "hunterTraits": [
+            [
+              38,
+              20,
+              67,
+              72,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              27,
+              8,
+              85
+            ],
+            [
+              45,
+              45,
+              25,
+              58,
+              40
+            ]
+          ]
+        },
+        {
+          "day": 100,
+          "hunterCount": 21,
+          "preyCount": 1886,
+          "stock": 939734.5,
+          "hunterTraits": [
+            [
+              40,
+              20,
+              64,
+              87,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              21,
+              11,
+              81
+            ],
+            [
+              45,
+              45,
+              25,
+              72,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 125,
+          "hunterCount": 22,
+          "preyCount": 1902,
+          "stock": 936367.06,
+          "hunterTraits": [
+            [
+              40,
+              20,
+              60,
+              100,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              20,
+              11,
+              76
+            ],
+            [
+              45,
+              45,
+              25,
+              94,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 150,
+          "hunterCount": 22,
+          "preyCount": 1919,
+          "stock": 934267.5,
+          "hunterTraits": [
+            [
+              40,
+              20,
+              60,
+              100,
+              18
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              11,
+              73
+            ],
+            [
+              45,
+              45,
+              25,
+              100,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 175,
+          "hunterCount": 23,
+          "preyCount": 1942,
+          "stock": 931904.5,
+          "hunterTraits": [
+            [
+              40,
+              20,
+              54,
+              100,
+              18
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              11,
+              71
+            ],
+            [
+              45,
+              45,
+              27,
+              100,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 200,
+          "hunterCount": 24,
+          "preyCount": 1966,
+          "stock": 929242.75,
+          "hunterTraits": [
+            [
+              40,
+              20,
+              49,
+              100,
+              18
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              11,
+              71
+            ],
+            [
+              45,
+              45,
+              29,
+              100,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 225,
+          "hunterCount": 24,
+          "preyCount": 1993,
+          "stock": 925351.56,
+          "hunterTraits": [
+            [
+              40,
+              20,
+              61,
+              100,
+              16
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              11,
+              71
+            ],
+            [
+              45,
+              45,
+              42,
+              100,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 250,
+          "hunterCount": 25,
+          "preyCount": 2030,
+          "stock": 923097.6,
+          "hunterTraits": [
+            [
+              41,
+              20,
+              67,
+              100,
+              12
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              11,
+              71
+            ],
+            [
+              45,
+              45,
+              47,
+              90,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 275,
+          "hunterCount": 26,
+          "preyCount": 2078,
+          "stock": 923574.3,
+          "hunterTraits": [
+            [
+              43,
+              20,
+              67,
+              97,
+              12
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              47,
+              73,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 300,
+          "hunterCount": 26,
+          "preyCount": 2150,
+          "stock": 924322.44,
+          "hunterTraits": [
+            [
+              44,
+              20,
+              67,
+              94,
+              12
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              47,
+              54,
+              21
+            ]
+          ]
+        },
+        {
+          "day": 325,
+          "hunterCount": 28,
+          "preyCount": 2247,
+          "stock": 925542.2,
+          "hunterTraits": [
+            [
+              45,
+              22,
+              67,
+              88,
+              13
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              38,
+              40,
+              23
+            ]
+          ]
+        },
+        {
+          "day": 350,
+          "hunterCount": 29,
+          "preyCount": 2281,
+          "stock": 924598.8,
+          "hunterTraits": [
+            [
+              45,
+              24,
+              67,
+              84,
+              14
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              26,
+              40,
+              23
+            ]
+          ]
+        },
+        {
+          "day": 375,
+          "hunterCount": 32,
+          "preyCount": 2290,
+          "stock": 924824.9,
+          "hunterTraits": [
+            [
+              45,
+              26,
+              67,
+              78,
+              15
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              22,
+              39,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 400,
+          "hunterCount": 35,
+          "preyCount": 2293,
+          "stock": 924759.2,
+          "hunterTraits": [
+            [
+              45,
+              30,
+              67,
+              72,
+              16
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              20,
+              39,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 425,
+          "hunterCount": 41,
+          "preyCount": 2293,
+          "stock": 924794.06,
+          "hunterTraits": [
+            [
+              45,
+              32,
+              67,
+              62,
+              18
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              19,
+              39,
+              31
+            ]
+          ]
+        },
+        {
+          "day": 450,
+          "hunterCount": 48,
+          "preyCount": 2291,
+          "stock": 924778.06,
+          "hunterTraits": [
+            [
+              45,
+              32,
+              66,
+              54,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              19,
+              39,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 475,
+          "hunterCount": 58,
+          "preyCount": 2282,
+          "stock": 924682.2,
+          "hunterTraits": [
+            [
+              45,
+              34,
+              56,
+              55,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              19,
+              40,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 500,
+          "hunterCount": 69,
+          "preyCount": 2271,
+          "stock": 924611.4,
+          "hunterTraits": [
+            [
+              45,
+              34,
+              46,
+              56,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              11,
+              70
+            ],
+            [
+              45,
+              45,
+              19,
+              41,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 525,
+          "hunterCount": 84,
+          "preyCount": 2236,
+          "stock": 926154.25,
+          "hunterTraits": [
+            [
+              45,
+              34,
+              35,
+              57,
+              20
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              12,
+              69
+            ],
+            [
+              45,
+              45,
+              19,
+              42,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 550,
+          "hunterCount": 100,
+          "preyCount": 2205,
+          "stock": 926018.5,
+          "hunterTraits": [
+            [
+              45,
+              34,
+              52,
+              58,
+              19
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              12,
+              68
+            ],
+            [
+              45,
+              45,
+              39,
+              43,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 575,
+          "hunterCount": 119,
+          "preyCount": 2141,
+          "stock": 923005.8,
+          "hunterTraits": [
+            [
+              45,
+              34,
+              67,
+              68,
+              19
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              18,
+              12,
+              68
+            ],
+            [
+              45,
+              45,
+              53,
+              54,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 600,
+          "hunterCount": 139,
+          "preyCount": 1993,
+          "stock": 917622.9,
+          "hunterTraits": [
+            [
+              45,
+              34,
+              67,
+              93,
+              19
+            ]
+          ],
+          "preyTraits": [
+            [
+              45,
+              45,
+              19,
+              13,
+              67
+            ],
+            [
+              45,
+              45,
+              53,
+              79,
+              32
+            ]
+          ]
+        }
+      ]
+    },
+    "witnessFound": true
+  },
+  {
+    "predator": "灵感菇狸",
+    "prey": "鸡",
+    "longest": 600,
+    "completeCases": 4,
+    "lostHunter": 236,
+    "lostPrey": 84,
+    "bestCase": {
+      "habitat": "寒冷的草原",
+      "initialPredator": 50,
+      "initialPrey": 807,
+      "initialStock": 70000,
+      "elapsed": 600,
+      "completed": true,
+      "countA": 233,
+      "countP": 328,
+      "meanTailSatisfaction": 1,
+      "meanTailPreyRenewal": 12.155998,
+      "preyAt500": 1323,
+      "trace": [
+        {
+          "day": 1,
+          "hunterCount": 49,
+          "preyCount": 793,
+          "stock": 113801.33,
+          "hunterTraits": [
+            [
+              75,
+              80,
+              35,
+              21,
+              65
+            ]
+          ],
+          "preyTraits": [
+            [
+              55,
+              35,
+              10,
+              9,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 25,
+          "hunterCount": 42,
+          "preyCount": 678,
+          "stock": 980389.2,
+          "hunterTraits": [
+            [
+              71,
+              80,
+              35,
+              31,
+              60
+            ]
+          ],
+          "preyTraits": [
+            [
+              42,
+              35,
+              14,
+              16,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 50,
+          "hunterCount": 37,
+          "preyCount": 755,
+          "stock": 978375.94,
+          "hunterTraits": [
+            [
+              65,
+              80,
+              34,
+              30,
+              54
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              52,
+              14,
+              15,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 75,
+          "hunterCount": 35,
+          "preyCount": 1010,
+          "stock": 969550.94,
+          "hunterTraits": [
+            [
+              61,
+              80,
+              33,
+              29,
+              54
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              18,
+              14,
+              89
+            ],
+            [
+              35,
+              55,
+              18,
+              46,
+              40
+            ]
+          ]
+        },
+        {
+          "day": 100,
+          "hunterCount": 33,
+          "preyCount": 1374,
+          "stock": 956243.25,
+          "hunterTraits": [
+            [
+              58,
+              80,
+              44,
+              26,
+              54
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              27,
+              11,
+              82
+            ],
+            [
+              35,
+              55,
+              18,
+              65,
+              34
+            ]
+          ]
+        },
+        {
+          "day": 125,
+          "hunterCount": 34,
+          "preyCount": 1474,
+          "stock": 952449.5,
+          "hunterTraits": [
+            [
+              52,
+              80,
+              41,
+              26,
+              54
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              20,
+              11,
+              79
+            ],
+            [
+              35,
+              55,
+              18,
+              77,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 150,
+          "hunterCount": 36,
+          "preyCount": 1490,
+          "stock": 950799.6,
+          "hunterTraits": [
+            [
+              46,
+              80,
+              34,
+              26,
+              54
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              19,
+              11,
+              75
+            ],
+            [
+              35,
+              55,
+              20,
+              84,
+              23
+            ]
+          ]
+        },
+        {
+          "day": 175,
+          "hunterCount": 41,
+          "preyCount": 1504,
+          "stock": 949140.8,
+          "hunterTraits": [
+            [
+              44,
+              80,
+              34,
+              26,
+              49
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              20,
+              11,
+              75
+            ],
+            [
+              35,
+              55,
+              31,
+              84,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 200,
+          "hunterCount": 46,
+          "preyCount": 1520,
+          "stock": 946980.25,
+          "hunterTraits": [
+            [
+              44,
+              80,
+              35,
+              26,
+              46
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              20,
+              11,
+              75
+            ],
+            [
+              35,
+              55,
+              39,
+              84,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 225,
+          "hunterCount": 53,
+          "preyCount": 1537,
+          "stock": 944361.94,
+          "hunterTraits": [
+            [
+              43,
+              80,
+              37,
+              26,
+              45
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              23,
+              11,
+              75
+            ],
+            [
+              35,
+              55,
+              47,
+              84,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 250,
+          "hunterCount": 61,
+          "preyCount": 1549,
+          "stock": 940192.9,
+          "hunterTraits": [
+            [
+              42,
+              80,
+              50,
+              26,
+              42
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              37,
+              11,
+              75
+            ],
+            [
+              35,
+              55,
+              54,
+              84,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 275,
+          "hunterCount": 70,
+          "preyCount": 1587,
+          "stock": 941906.6,
+          "hunterTraits": [
+            [
+              42,
+              80,
+              37,
+              27,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              24,
+              12,
+              75
+            ],
+            [
+              35,
+              55,
+              55,
+              69,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 300,
+          "hunterCount": 80,
+          "preyCount": 1586,
+          "stock": 942453.5,
+          "hunterTraits": [
+            [
+              42,
+              80,
+              56,
+              27,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              41,
+              12,
+              75
+            ],
+            [
+              35,
+              55,
+              55,
+              50,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 325,
+          "hunterCount": 92,
+          "preyCount": 1691,
+          "stock": 943015.75,
+          "hunterTraits": [
+            [
+              42,
+              80,
+              36,
+              27,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              23,
+              12,
+              75
+            ],
+            [
+              35,
+              55,
+              55,
+              41,
+              28
+            ]
+          ]
+        },
+        {
+          "day": 350,
+          "hunterCount": 106,
+          "preyCount": 1634,
+          "stock": 940960.9,
+          "hunterTraits": [
+            [
+              42,
+              80,
+              61,
+              27,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              48,
+              12,
+              75
+            ],
+            [
+              35,
+              55,
+              55,
+              44,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 375,
+          "hunterCount": 121,
+          "preyCount": 1492,
+          "stock": 941264.8,
+          "hunterTraits": [
+            [
+              42,
+              80,
+              86,
+              27,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              73,
+              12,
+              75
+            ],
+            [
+              35,
+              55,
+              44,
+              47,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 400,
+          "hunterCount": 139,
+          "preyCount": 1466,
+          "stock": 944295.1,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              81,
+              28,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              59,
+              13,
+              75
+            ],
+            [
+              35,
+              55,
+              29,
+              50,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 425,
+          "hunterCount": 161,
+          "preyCount": 1566,
+          "stock": 943810.75,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              61,
+              28,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              34,
+              13,
+              75
+            ],
+            [
+              35,
+              55,
+              23,
+              53,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 450,
+          "hunterCount": 185,
+          "preyCount": 1595,
+          "stock": 943559.56,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              42,
+              28,
+              41
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              22,
+              13,
+              72
+            ],
+            [
+              35,
+              55,
+              21,
+              56,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 475,
+          "hunterCount": 217,
+          "preyCount": 1446,
+          "stock": 947541,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              41,
+              21,
+              70
+            ],
+            [
+              41,
+              80,
+              49,
+              61,
+              10
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              37,
+              15,
+              70
+            ],
+            [
+              35,
+              55,
+              37,
+              51,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 500,
+          "hunterCount": 218,
+          "preyCount": 1323,
+          "stock": 945778.5,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              57,
+              30,
+              70
+            ],
+            [
+              41,
+              80,
+              74,
+              61,
+              10
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              62,
+              15,
+              70
+            ],
+            [
+              35,
+              55,
+              55,
+              58,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 525,
+          "hunterCount": 213,
+          "preyCount": 1173,
+          "stock": 939916.25,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              82,
+              30,
+              70
+            ],
+            [
+              41,
+              80,
+              99,
+              61,
+              10
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              87,
+              15,
+              70
+            ],
+            [
+              35,
+              55,
+              55,
+              83,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 550,
+          "hunterCount": 199,
+          "preyCount": 967,
+          "stock": 940179.5,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              100,
+              32,
+              65
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              100,
+              17,
+              66
+            ],
+            [
+              35,
+              55,
+              55,
+              100,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 575,
+          "hunterCount": 213,
+          "preyCount": 708,
+          "stock": 950338.7,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              100,
+              36,
+              46
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              100,
+              21,
+              57
+            ],
+            [
+              35,
+              55,
+              55,
+              100,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 600,
+          "hunterCount": 233,
+          "preyCount": 328,
+          "stock": 966436.8,
+          "hunterTraits": [
+            [
+              41,
+              80,
+              100,
+              48,
+              37
+            ]
+          ],
+          "preyTraits": [
+            [
+              35,
+              55,
+              100,
+              34,
+              53
+            ],
+            [
+              35,
+              55,
+              55,
+              100,
+              29
+            ]
+          ]
+        }
+      ]
+    },
+    "witnessFound": false
+  },
+  {
+    "predator": "灵感菇狸",
+    "prey": "彩鸡",
+    "longest": 596,
+    "completeCases": 0,
+    "lostHunter": 270,
+    "lostPrey": 54,
+    "bestCase": {
+      "habitat": "阴热的雨林",
+      "initialPredator": 20,
+      "initialPrey": 1354,
+      "initialStock": 500000,
+      "elapsed": 596,
+      "completed": false,
+      "countA": 5,
+      "countP": 159,
+      "meanTailSatisfaction": 0.8960388,
+      "meanTailPreyRenewal": 27.694998,
+      "preyAt500": 2439,
+      "trace": [
+        {
+          "day": 1,
+          "hunterCount": 21,
+          "preyCount": 1356,
+          "stock": 590967.3,
+          "hunterTraits": [
+            [
+              75,
+              80,
+              35,
+              21,
+              65
+            ]
+          ],
+          "preyTraits": [
+            [
+              71,
+              49,
+              15,
+              15,
+              75
+            ]
+          ]
+        },
+        {
+          "day": 25,
+          "hunterCount": 27,
+          "preyCount": 1621,
+          "stock": 953669.9,
+          "hunterTraits": [
+            [
+              75,
+              79,
+              31,
+              28,
+              57
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              66,
+              15,
+              12,
+              75
+            ]
+          ]
+        },
+        {
+          "day": 50,
+          "hunterCount": 41,
+          "preyCount": 2263,
+          "stock": 928923.9,
+          "hunterTraits": [
+            [
+              75,
+              79,
+              42,
+              26,
+              53
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              28,
+              11,
+              89
+            ],
+            [
+              75,
+              74,
+              15,
+              54,
+              42
+            ]
+          ]
+        },
+        {
+          "day": 75,
+          "hunterCount": 62,
+          "preyCount": 2733,
+          "stock": 913591.9,
+          "hunterTraits": [
+            [
+              75,
+              79,
+              35,
+              26,
+              43
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              21,
+              11,
+              83
+            ],
+            [
+              75,
+              74,
+              17,
+              67,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 100,
+          "hunterCount": 94,
+          "preyCount": 2758,
+          "stock": 910895.1,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              37,
+              26,
+              35
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              24,
+              11,
+              79
+            ],
+            [
+              75,
+              74,
+              39,
+              68,
+              30
+            ]
+          ]
+        },
+        {
+          "day": 125,
+          "hunterCount": 143,
+          "preyCount": 2716,
+          "stock": 910497.44,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              38,
+              27,
+              35
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              24,
+              12,
+              79
+            ],
+            [
+              75,
+              74,
+              64,
+              68,
+              30
+            ]
+          ]
+        },
+        {
+          "day": 150,
+          "hunterCount": 218,
+          "preyCount": 2671,
+          "stock": 903826.6,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              55,
+              27,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              42,
+              12,
+              79
+            ],
+            [
+              75,
+              74,
+              89,
+              68,
+              30
+            ]
+          ]
+        },
+        {
+          "day": 175,
+          "hunterCount": 331,
+          "preyCount": 2541,
+          "stock": 903440.8,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              55,
+              28,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              40,
+              13,
+              79
+            ],
+            [
+              75,
+              75,
+              100,
+              68,
+              25
+            ]
+          ]
+        },
+        {
+          "day": 200,
+          "hunterCount": 501,
+          "preyCount": 2426,
+          "stock": 902221.3,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              63,
+              29,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              50,
+              14,
+              79
+            ],
+            [
+              75,
+              75,
+              98,
+              63,
+              25
+            ]
+          ]
+        },
+        {
+          "day": 225,
+          "hunterCount": 749,
+          "preyCount": 1718,
+          "stock": 916513.9,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              84,
+              33,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              70,
+              19,
+              79
+            ],
+            [
+              75,
+              75,
+              100,
+              61,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 250,
+          "hunterCount": 83,
+          "preyCount": 332,
+          "stock": 964224.25,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              87,
+              55,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              72,
+              35,
+              79
+            ],
+            [
+              75,
+              75,
+              100,
+              72,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 275,
+          "hunterCount": 18,
+          "preyCount": 391,
+          "stock": 967937.7,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              94,
+              73,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              100,
+              54,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 300,
+          "hunterCount": 22,
+          "preyCount": 486,
+          "stock": 970712.6,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              100,
+              67,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              94,
+              39,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 325,
+          "hunterCount": 30,
+          "preyCount": 566,
+          "stock": 969900.6,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              99,
+              54,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              69,
+              39,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 350,
+          "hunterCount": 40,
+          "preyCount": 637,
+          "stock": 978547.9,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              87,
+              52,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              46,
+              12,
+              56
+            ],
+            [
+              75,
+              75,
+              46,
+              71,
+              10
+            ]
+          ]
+        },
+        {
+          "day": 375,
+          "hunterCount": 55,
+          "preyCount": 862,
+          "stock": 967485.8,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              80,
+              38,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              45,
+              23,
+              52
+            ],
+            [
+              75,
+              75,
+              46,
+              96,
+              10
+            ]
+          ]
+        },
+        {
+          "day": 400,
+          "hunterCount": 76,
+          "preyCount": 1213,
+          "stock": 957067,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              64,
+              35,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              45,
+              20,
+              52
+            ],
+            [
+              75,
+              75,
+              48,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 425,
+          "hunterCount": 108,
+          "preyCount": 1761,
+          "stock": 939422.06,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              68,
+              31,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              55,
+              16,
+              52
+            ],
+            [
+              75,
+              75,
+              73,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 450,
+          "hunterCount": 153,
+          "preyCount": 2426,
+          "stock": 918561.06,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              58,
+              27,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              43,
+              12,
+              52
+            ],
+            [
+              75,
+              75,
+              96,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 475,
+          "hunterCount": 219,
+          "preyCount": 2579,
+          "stock": 915873.5,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              41,
+              27,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              28,
+              12,
+              52
+            ],
+            [
+              75,
+              75,
+              96,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 500,
+          "hunterCount": 312,
+          "preyCount": 2439,
+          "stock": 918319.75,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              47,
+              28,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              32,
+              13,
+              52
+            ],
+            [
+              75,
+              75,
+              96,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 525,
+          "hunterCount": 445,
+          "preyCount": 2381,
+          "stock": 916638.25,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              55,
+              28,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              42,
+              13,
+              52
+            ],
+            [
+              75,
+              75,
+              96,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 550,
+          "hunterCount": 633,
+          "preyCount": 2009,
+          "stock": 923553.7,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              64,
+              30,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              51,
+              15,
+              52
+            ],
+            [
+              75,
+              75,
+              99,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 575,
+          "hunterCount": 896,
+          "preyCount": 1055,
+          "stock": 945222.6,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              83,
+              36,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              69,
+              22,
+              52
+            ],
+            [
+              75,
+              75,
+              100,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 596,
+          "hunterCount": 5,
+          "preyCount": 159,
+          "stock": 976795.5,
+          "hunterTraits": [
+            [
+              75,
+              75,
+              88,
+              52,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              70,
+              34,
+              52
+            ],
+            [
+              75,
+              75,
+              100,
+              100,
+              17
+            ]
+          ]
+        }
+      ]
+    },
+    "witnessFound": false
+  },
+  {
+    "predator": "飞狸",
+    "prey": "鸡",
+    "longest": 600,
+    "completeCases": 3,
+    "lostHunter": 140,
+    "lostPrey": 88,
+    "bestCase": {
+      "habitat": "阴热的雨林",
+      "initialPredator": 20,
+      "initialPrey": 1499,
+      "initialStock": 500000,
+      "elapsed": 600,
+      "completed": true,
+      "countA": 148,
+      "countP": 2588,
+      "meanTailSatisfaction": 1,
+      "meanTailPreyRenewal": 25.731997,
+      "preyAt500": 840,
+      "trace": [
+        {
+          "day": 1,
+          "hunterCount": 20,
+          "preyCount": 1471,
+          "stock": 581086.75,
+          "hunterTraits": [
+            [
+              67,
+              20,
+              70,
+              45,
+              50
+            ]
+          ],
+          "preyTraits": [
+            [
+              55,
+              35,
+              10,
+              9,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 25,
+          "hunterCount": 18,
+          "preyCount": 1149,
+          "stock": 966366.1,
+          "hunterTraits": [
+            [
+              74,
+              20,
+              70,
+              38,
+              47
+            ]
+          ],
+          "preyTraits": [
+            [
+              67,
+              35,
+              14,
+              17,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 50,
+          "hunterCount": 17,
+          "preyCount": 1147,
+          "stock": 966468.6,
+          "hunterTraits": [
+            [
+              75,
+              26,
+              68,
+              32,
+              47
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              52,
+              14,
+              17,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 75,
+          "hunterCount": 18,
+          "preyCount": 1485,
+          "stock": 957746.6,
+          "hunterTraits": [
+            [
+              75,
+              35,
+              63,
+              30,
+              47
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              74,
+              14,
+              14,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 100,
+          "hunterCount": 20,
+          "preyCount": 2252,
+          "stock": 922841.9,
+          "hunterTraits": [
+            [
+              75,
+              40,
+              59,
+              23,
+              47
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              24,
+              8,
+              89
+            ],
+            [
+              75,
+              75,
+              17,
+              50,
+              36
+            ]
+          ]
+        },
+        {
+          "day": 125,
+          "hunterCount": 24,
+          "preyCount": 2761,
+          "stock": 913670.9,
+          "hunterTraits": [
+            [
+              75,
+              47,
+              51,
+              26,
+              47
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              21,
+              11,
+              83
+            ],
+            [
+              75,
+              75,
+              17,
+              56,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 150,
+          "hunterCount": 30,
+          "preyCount": 2805,
+          "stock": 910691.1,
+          "hunterTraits": [
+            [
+              75,
+              56,
+              44,
+              26,
+              47
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              20,
+              11,
+              78
+            ],
+            [
+              75,
+              75,
+              18,
+              61,
+              28
+            ]
+          ]
+        },
+        {
+          "day": 175,
+          "hunterCount": 41,
+          "preyCount": 2846,
+          "stock": 907554.25,
+          "hunterTraits": [
+            [
+              75,
+              60,
+              33,
+              26,
+              45
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              19,
+              11,
+              75
+            ],
+            [
+              75,
+              75,
+              24,
+              63,
+              27
+            ]
+          ]
+        },
+        {
+          "day": 200,
+          "hunterCount": 57,
+          "preyCount": 2896,
+          "stock": 903091.6,
+          "hunterTraits": [
+            [
+              75,
+              61,
+              35,
+              26,
+              37
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              22,
+              11,
+              74
+            ],
+            [
+              75,
+              75,
+              37,
+              63,
+              27
+            ]
+          ]
+        },
+        {
+          "day": 225,
+          "hunterCount": 80,
+          "preyCount": 2950,
+          "stock": 896802.75,
+          "hunterTraits": [
+            [
+              75,
+              66,
+              39,
+              26,
+              36
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              24,
+              11,
+              74
+            ],
+            [
+              75,
+              75,
+              49,
+              63,
+              27
+            ]
+          ]
+        },
+        {
+          "day": 250,
+          "hunterCount": 116,
+          "preyCount": 3014,
+          "stock": 887851.4,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              46,
+              26,
+              36
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              33,
+              11,
+              74
+            ],
+            [
+              75,
+              75,
+              61,
+              62,
+              27
+            ]
+          ]
+        },
+        {
+          "day": 275,
+          "hunterCount": 168,
+          "preyCount": 3116,
+          "stock": 894460.7,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              41,
+              27,
+              35
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              28,
+              12,
+              74
+            ],
+            [
+              75,
+              75,
+              61,
+              41,
+              27
+            ]
+          ]
+        },
+        {
+          "day": 300,
+          "hunterCount": 241,
+          "preyCount": 2978,
+          "stock": 889794.1,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              66,
+              27,
+              35
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              53,
+              12,
+              74
+            ],
+            [
+              75,
+              75,
+              61,
+              46,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 325,
+          "hunterCount": 346,
+          "preyCount": 2828,
+          "stock": 883828.6,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              56,
+              28,
+              35
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              41,
+              13,
+              74
+            ],
+            [
+              75,
+              75,
+              61,
+              70,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 350,
+          "hunterCount": 495,
+          "preyCount": 2734,
+          "stock": 880226.1,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              47,
+              29,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              34,
+              14,
+              74
+            ],
+            [
+              75,
+              75,
+              76,
+              79,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 375,
+          "hunterCount": 705,
+          "preyCount": 2271,
+          "stock": 883442.9,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              70,
+              31,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              57,
+              16,
+              74
+            ],
+            [
+              75,
+              75,
+              100,
+              79,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 400,
+          "hunterCount": 974,
+          "preyCount": 776,
+          "stock": 939290.5,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              81,
+              45,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              67,
+              31,
+              74
+            ],
+            [
+              75,
+              75,
+              100,
+              69,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 425,
+          "hunterCount": 18,
+          "preyCount": 397,
+          "stock": 967887.06,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              85,
+              66,
+              34
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              100,
+              53,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 450,
+          "hunterCount": 22,
+          "preyCount": 500,
+          "stock": 970276.56,
+          "hunterTraits": [
+            [
+              75,
+              68,
+              100,
+              64,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              91,
+              39,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 475,
+          "hunterCount": 28,
+          "preyCount": 592,
+          "stock": 978446.2,
+          "hunterTraits": [
+            [
+              75,
+              70,
+              98,
+              51,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              69,
+              13,
+              59
+            ],
+            [
+              75,
+              75,
+              69,
+              72,
+              10
+            ]
+          ]
+        },
+        {
+          "day": 500,
+          "hunterCount": 37,
+          "preyCount": 840,
+          "stock": 966043,
+          "hunterTraits": [
+            [
+              75,
+              71,
+              93,
+              37,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              68,
+              22,
+              54
+            ],
+            [
+              75,
+              75,
+              69,
+              97,
+              10
+            ]
+          ]
+        },
+        {
+          "day": 525,
+          "hunterCount": 52,
+          "preyCount": 1245,
+          "stock": 952009.94,
+          "hunterTraits": [
+            [
+              75,
+              71,
+              84,
+              34,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              70,
+              19,
+              53
+            ],
+            [
+              75,
+              75,
+              87,
+              100,
+              14
+            ]
+          ]
+        },
+        {
+          "day": 550,
+          "hunterCount": 73,
+          "preyCount": 1912,
+          "stock": 929448.7,
+          "hunterTraits": [
+            [
+              75,
+              72,
+              87,
+              29,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              73,
+              13,
+              53
+            ],
+            [
+              75,
+              75,
+              100,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 575,
+          "hunterCount": 103,
+          "preyCount": 2408,
+          "stock": 917451,
+          "hunterTraits": [
+            [
+              75,
+              72,
+              65,
+              27,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              50,
+              12,
+              53
+            ],
+            [
+              75,
+              75,
+              100,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 600,
+          "hunterCount": 148,
+          "preyCount": 2588,
+          "stock": 916109.25,
+          "hunterTraits": [
+            [
+              75,
+              72,
+              40,
+              27,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              25,
+              12,
+              53
+            ],
+            [
+              75,
+              75,
+              100,
+              100,
+              17
+            ]
+          ]
+        }
+      ]
+    },
+    "witnessFound": true
+  },
+  {
+    "predator": "孔雀",
+    "prey": "鸡",
+    "longest": 600,
+    "completeCases": 1,
+    "lostHunter": 64,
+    "lostPrey": 96,
+    "bestCase": {
+      "habitat": "阴热的雨林",
+      "initialPredator": 20,
+      "initialPrey": 562,
+      "initialStock": 500000,
+      "elapsed": 600,
+      "completed": true,
+      "countA": 90,
+      "countP": 404,
+      "meanTailSatisfaction": 1,
+      "meanTailPreyRenewal": 4.636,
+      "preyAt500": 367,
+      "trace": [
+        {
+          "day": 1,
+          "hunterCount": 20,
+          "preyCount": 548,
+          "stock": 611751.75,
+          "hunterTraits": [
+            [
+              58,
+              58,
+              25,
+              39,
+              60
+            ]
+          ],
+          "preyTraits": [
+            [
+              55,
+              35,
+              10,
+              9,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 25,
+          "hunterCount": 20,
+          "preyCount": 391,
+          "stock": 986706,
+          "hunterTraits": [
+            [
+              58,
+              58,
+              31,
+              40,
+              59
+            ]
+          ],
+          "preyTraits": [
+            [
+              55,
+              35,
+              18,
+              25,
+              70
+            ]
+          ]
+        },
+        {
+          "day": 50,
+          "hunterCount": 20,
+          "preyCount": 305,
+          "stock": 988986.06,
+          "hunterTraits": [
+            [
+              58,
+              58,
+              40,
+              42,
+              45
+            ]
+          ],
+          "preyTraits": [
+            [
+              69,
+              35,
+              26,
+              27,
+              69
+            ]
+          ]
+        },
+        {
+          "day": 75,
+          "hunterCount": 21,
+          "preyCount": 269,
+          "stock": 990082.25,
+          "hunterTraits": [
+            [
+              62,
+              58,
+              40,
+              43,
+              35
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              47,
+              26,
+              28,
+              63
+            ]
+          ]
+        },
+        {
+          "day": 100,
+          "hunterCount": 25,
+          "preyCount": 280,
+          "stock": 989666.1,
+          "hunterTraits": [
+            [
+              67,
+              58,
+              40,
+              43,
+              28
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              68,
+              26,
+              28,
+              59
+            ]
+          ]
+        },
+        {
+          "day": 125,
+          "hunterCount": 29,
+          "preyCount": 345,
+          "stock": 987515.9,
+          "hunterTraits": [
+            [
+              71,
+              58,
+              50,
+              42,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              37,
+              26,
+              56
+            ]
+          ]
+        },
+        {
+          "day": 150,
+          "hunterCount": 34,
+          "preyCount": 457,
+          "stock": 983011.2,
+          "hunterTraits": [
+            [
+              72,
+              58,
+              72,
+              41,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              59,
+              24,
+              56
+            ]
+          ]
+        },
+        {
+          "day": 175,
+          "hunterCount": 42,
+          "preyCount": 633,
+          "stock": 977326.9,
+          "hunterTraits": [
+            [
+              75,
+              58,
+              79,
+              36,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              66,
+              21,
+              53
+            ]
+          ]
+        },
+        {
+          "day": 200,
+          "hunterCount": 52,
+          "preyCount": 916,
+          "stock": 966773,
+          "hunterTraits": [
+            [
+              75,
+              59,
+              94,
+              33,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              79,
+              17,
+              53
+            ]
+          ]
+        },
+        {
+          "day": 225,
+          "hunterCount": 66,
+          "preyCount": 1371,
+          "stock": 951749.9,
+          "hunterTraits": [
+            [
+              75,
+              63,
+              95,
+              27,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              77,
+              12,
+              54
+            ]
+          ]
+        },
+        {
+          "day": 250,
+          "hunterCount": 86,
+          "preyCount": 1888,
+          "stock": 932662.7,
+          "hunterTraits": [
+            [
+              75,
+              64,
+              83,
+              29,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              69,
+              14,
+              75
+            ],
+            [
+              75,
+              75,
+              70,
+              60,
+              24
+            ]
+          ]
+        },
+        {
+          "day": 275,
+          "hunterCount": 112,
+          "preyCount": 2460,
+          "stock": 913988.25,
+          "hunterTraits": [
+            [
+              75,
+              64,
+              65,
+              27,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              50,
+              12,
+              75
+            ],
+            [
+              75,
+              75,
+              76,
+              79,
+              24
+            ]
+          ]
+        },
+        {
+          "day": 300,
+          "hunterCount": 144,
+          "preyCount": 2666,
+          "stock": 910128.25,
+          "hunterTraits": [
+            [
+              75,
+              64,
+              41,
+              27,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              25,
+              12,
+              75
+            ],
+            [
+              75,
+              75,
+              89,
+              79,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 325,
+          "hunterCount": 188,
+          "preyCount": 2657,
+          "stock": 905961.4,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              53,
+              27,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              40,
+              12,
+              75
+            ],
+            [
+              75,
+              75,
+              89,
+              75,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 350,
+          "hunterCount": 247,
+          "preyCount": 2466,
+          "stock": 900212.44,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              78,
+              27,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              65,
+              12,
+              75
+            ],
+            [
+              75,
+              75,
+              100,
+              76,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 375,
+          "hunterCount": 322,
+          "preyCount": 2510,
+          "stock": 899147.25,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              58,
+              28,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              43,
+              13,
+              75
+            ],
+            [
+              75,
+              75,
+              100,
+              79,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 400,
+          "hunterCount": 421,
+          "preyCount": 2577,
+          "stock": 900878.06,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              48,
+              29,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              35,
+              14,
+              75
+            ],
+            [
+              75,
+              75,
+              98,
+              64,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 425,
+          "hunterCount": 551,
+          "preyCount": 2395,
+          "stock": 903641.2,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              73,
+              29,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              60,
+              14,
+              75
+            ],
+            [
+              75,
+              75,
+              100,
+              50,
+              22
+            ]
+          ]
+        },
+        {
+          "day": 450,
+          "hunterCount": 718,
+          "preyCount": 1639,
+          "stock": 919660.9,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              81,
+              34,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              67,
+              20,
+              75
+            ],
+            [
+              75,
+              75,
+              100,
+              57,
+              25
+            ]
+          ]
+        },
+        {
+          "day": 475,
+          "hunterCount": 191,
+          "preyCount": 358,
+          "stock": 963224.4,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              85,
+              55,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              71,
+              36,
+              75
+            ],
+            [
+              75,
+              75,
+              97,
+              70,
+              25
+            ]
+          ]
+        },
+        {
+          "day": 500,
+          "hunterCount": 47,
+          "preyCount": 367,
+          "stock": 966903.1,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              89,
+              76,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              97,
+              60,
+              25
+            ]
+          ]
+        },
+        {
+          "day": 525,
+          "hunterCount": 57,
+          "preyCount": 390,
+          "stock": 967606.6,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              100,
+              70,
+              24
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              100,
+              54,
+              25
+            ]
+          ]
+        },
+        {
+          "day": 550,
+          "hunterCount": 68,
+          "preyCount": 407,
+          "stock": 968231.2,
+          "hunterTraits": [
+            [
+              75,
+              65,
+              100,
+              66,
+              17
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              100,
+              51,
+              27
+            ]
+          ]
+        },
+        {
+          "day": 575,
+          "hunterCount": 78,
+          "preyCount": 414,
+          "stock": 968255.3,
+          "hunterTraits": [
+            [
+              75,
+              67,
+              100,
+              65,
+              13
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              100,
+              50,
+              29
+            ]
+          ]
+        },
+        {
+          "day": 600,
+          "hunterCount": 90,
+          "preyCount": 404,
+          "stock": 968488.7,
+          "hunterTraits": [
+            [
+              75,
+              67,
+              100,
+              66,
+              13
+            ]
+          ],
+          "preyTraits": [
+            [
+              75,
+              75,
+              100,
+              52,
+              29
+            ]
+          ]
+        }
+      ]
+    },
+    "witnessFound": true
+  },
+  {
+    "predator": "雀狮",
+    "prey": "鹿",
+    "longest": 507,
+    "completeCases": 0,
+    "lostHunter": 124,
+    "lostPrey": 200,
+    "bestCase": {
+      "habitat": "干冷的苔原",
+      "initialPredator": 20,
+      "initialPrey": 207,
+      "initialStock": 500000,
+      "elapsed": 507,
+      "completed": false,
+      "countA": 9,
+      "countP": 114,
+      "meanTailSatisfaction": 0.024028137,
+      "meanTailPreyRenewal": 0.08300001,
+      "preyAt500": 160,
+      "trace": [
+        {
+          "day": 1,
+          "hunterCount": 20,
+          "preyCount": 204,
+          "stock": 546360.1,
+          "hunterTraits": [
+            [
+              52,
+              66,
+              64,
+              80,
+              15
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              70,
+              73,
+              50,
+              35
+            ]
+          ]
+        },
+        {
+          "day": 25,
+          "hunterCount": 18,
+          "preyCount": 174,
+          "stock": 986981.3,
+          "hunterTraits": [
+            [
+              52,
+              66,
+              88,
+              80,
+              15
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              70,
+              97,
+              50,
+              35
+            ]
+          ]
+        },
+        {
+          "day": 50,
+          "hunterCount": 15,
+          "preyCount": 154,
+          "stock": 988217.25,
+          "hunterTraits": [
+            [
+              49,
+              66,
+              100,
+              79,
+              15
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              48,
+              100,
+              50,
+              35
+            ]
+          ]
+        },
+        {
+          "day": 75,
+          "hunterCount": 13,
+          "preyCount": 161,
+          "stock": 987614.6,
+          "hunterTraits": [
+            [
+              42,
+              66,
+              100,
+              77,
+              15
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              100,
+              50,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 100,
+          "hunterCount": 13,
+          "preyCount": 184,
+          "stock": 985520.94,
+          "hunterTraits": [
+            [
+              34,
+              66,
+              100,
+              75,
+              15
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              100,
+              51,
+              31
+            ]
+          ]
+        },
+        {
+          "day": 125,
+          "hunterCount": 13,
+          "preyCount": 219,
+          "stock": 986524.94,
+          "hunterTraits": [
+            [
+              30,
+              62,
+              100,
+              72,
+              15
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              97,
+              39,
+              30
+            ]
+          ]
+        },
+        {
+          "day": 150,
+          "hunterCount": 13,
+          "preyCount": 254,
+          "stock": 986273.8,
+          "hunterTraits": [
+            [
+              30,
+              54,
+              100,
+              70,
+              16
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              72,
+              39,
+              30
+            ]
+          ]
+        },
+        {
+          "day": 175,
+          "hunterCount": 15,
+          "preyCount": 286,
+          "stock": 986033.25,
+          "hunterTraits": [
+            [
+              30,
+              49,
+              100,
+              65,
+              17
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              47,
+              39,
+              30
+            ]
+          ]
+        },
+        {
+          "day": 200,
+          "hunterCount": 16,
+          "preyCount": 328,
+          "stock": 988730.4,
+          "hunterTraits": [
+            [
+              30,
+              45,
+              100,
+              53,
+              17
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              33,
+              21,
+              60
+            ],
+            [
+              30,
+              30,
+              33,
+              80,
+              10
+            ]
+          ]
+        },
+        {
+          "day": 225,
+          "hunterCount": 18,
+          "preyCount": 433,
+          "stock": 984450.06,
+          "hunterTraits": [
+            [
+              30,
+              43,
+              98,
+              37,
+              18
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              32,
+              22,
+              53
+            ],
+            [
+              30,
+              30,
+              33,
+              100,
+              14
+            ]
+          ]
+        },
+        {
+          "day": 250,
+          "hunterCount": 21,
+          "preyCount": 607,
+          "stock": 979536.56,
+          "hunterTraits": [
+            [
+              30,
+              38,
+              92,
+              34,
+              21
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              34,
+              19,
+              53
+            ],
+            [
+              30,
+              30,
+              33,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 275,
+          "hunterCount": 27,
+          "preyCount": 883,
+          "stock": 971734.25,
+          "hunterTraits": [
+            [
+              30,
+              36,
+              82,
+              31,
+              24
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              32,
+              16,
+              54
+            ],
+            [
+              30,
+              30,
+              33,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 300,
+          "hunterCount": 36,
+          "preyCount": 1211,
+          "stock": 961625.5,
+          "hunterTraits": [
+            [
+              30,
+              35,
+              72,
+              26,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              23,
+              11,
+              56
+            ],
+            [
+              30,
+              30,
+              33,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 325,
+          "hunterCount": 48,
+          "preyCount": 1231,
+          "stock": 960845.6,
+          "hunterTraits": [
+            [
+              30,
+              33,
+              60,
+              26,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              20,
+              12,
+              59
+            ],
+            [
+              30,
+              30,
+              33,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 350,
+          "hunterCount": 66,
+          "preyCount": 1215,
+          "stock": 961210.2,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              42,
+              27,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              19,
+              12,
+              61
+            ],
+            [
+              30,
+              30,
+              44,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 375,
+          "hunterCount": 90,
+          "preyCount": 1199,
+          "stock": 959338.4,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              48,
+              27,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              35,
+              12,
+              61
+            ],
+            [
+              30,
+              30,
+              69,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 400,
+          "hunterCount": 125,
+          "preyCount": 1098,
+          "stock": 958318.7,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              70,
+              28,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              55,
+              13,
+              61
+            ],
+            [
+              30,
+              30,
+              94,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 425,
+          "hunterCount": 172,
+          "preyCount": 1134,
+          "stock": 958299.75,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              45,
+              28,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              30,
+              13,
+              61
+            ],
+            [
+              30,
+              30,
+              100,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 450,
+          "hunterCount": 236,
+          "preyCount": 1042,
+          "stock": 957872.56,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              63,
+              29,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              50,
+              14,
+              61
+            ],
+            [
+              30,
+              30,
+              100,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 475,
+          "hunterCount": 325,
+          "preyCount": 787,
+          "stock": 961847.2,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              79,
+              32,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              66,
+              17,
+              61
+            ],
+            [
+              30,
+              30,
+              100,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 500,
+          "hunterCount": 440,
+          "preyCount": 160,
+          "stock": 981024.94,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              89,
+              47,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              75,
+              33,
+              61
+            ],
+            [
+              30,
+              30,
+              100,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 507,
+          "hunterCount": 9,
+          "preyCount": 114,
+          "stock": 983965.4,
+          "hunterTraits": [
+            [
+              30,
+              31,
+              91,
+              52,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              30,
+              75,
+              34,
+              61
+            ],
+            [
+              30,
+              30,
+              100,
+              96,
+              17
+            ]
+          ]
+        }
+      ]
+    },
+    "witnessFound": false
+  },
+  {
+    "predator": "雪狼",
+    "prey": "鹿",
+    "longest": 600,
+    "completeCases": 4,
+    "lostHunter": 144,
+    "lostPrey": 176,
+    "bestCase": {
+      "habitat": "炎热的山地",
+      "initialPredator": 20,
+      "initialPrey": 277,
+      "initialStock": 80000,
+      "elapsed": 600,
+      "completed": true,
+      "countA": 27,
+      "countP": 407,
+      "meanTailSatisfaction": 0.96229005,
+      "meanTailPreyRenewal": 2.867,
+      "preyAt500": 600,
+      "trace": [
+        {
+          "day": 1,
+          "hunterCount": 20,
+          "preyCount": 274,
+          "stock": 141852.3,
+          "hunterTraits": [
+            [
+              28,
+              28,
+              69,
+              70,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              70,
+              73,
+              50,
+              35
+            ]
+          ]
+        },
+        {
+          "day": 25,
+          "hunterCount": 17,
+          "preyCount": 221,
+          "stock": 983489.5,
+          "hunterTraits": [
+            [
+              28,
+              28,
+              93,
+              70,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              30,
+              70,
+              97,
+              50,
+              35
+            ]
+          ]
+        },
+        {
+          "day": 50,
+          "hunterCount": 15,
+          "preyCount": 182,
+          "stock": 985990.75,
+          "hunterTraits": [
+            [
+              31,
+              28,
+              100,
+              69,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              52,
+              70,
+              100,
+              50,
+              35
+            ]
+          ]
+        },
+        {
+          "day": 75,
+          "hunterCount": 14,
+          "preyCount": 179,
+          "stock": 986177.56,
+          "hunterTraits": [
+            [
+              35,
+              28,
+              100,
+              66,
+              25
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              63,
+              100,
+              50,
+              35
+            ]
+          ]
+        },
+        {
+          "day": 100,
+          "hunterCount": 12,
+          "preyCount": 211,
+          "stock": 983812.3,
+          "hunterTraits": [
+            [
+              40,
+              28,
+              100,
+              65,
+              24
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              100,
+              50,
+              32
+            ]
+          ]
+        },
+        {
+          "day": 125,
+          "hunterCount": 12,
+          "preyCount": 264,
+          "stock": 980765.56,
+          "hunterTraits": [
+            [
+              46,
+              28,
+              100,
+              65,
+              22
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              100,
+              46,
+              31
+            ]
+          ]
+        },
+        {
+          "day": 150,
+          "hunterCount": 12,
+          "preyCount": 327,
+          "stock": 981342.7,
+          "hunterTraits": [
+            [
+              53,
+              28,
+              100,
+              61,
+              22
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              83,
+              39,
+              31
+            ]
+          ]
+        },
+        {
+          "day": 175,
+          "hunterCount": 12,
+          "preyCount": 460,
+          "stock": 981287.2,
+          "hunterTraits": [
+            [
+              55,
+              28,
+              100,
+              41,
+              22
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              78,
+              20,
+              57
+            ],
+            [
+              70,
+              50,
+              78,
+              89,
+              10
+            ]
+          ]
+        },
+        {
+          "day": 200,
+          "hunterCount": 13,
+          "preyCount": 715,
+          "stock": 971533.5,
+          "hunterTraits": [
+            [
+              59,
+              28,
+              92,
+              34,
+              22
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              78,
+              19,
+              55
+            ],
+            [
+              70,
+              50,
+              78,
+              100,
+              15
+            ]
+          ]
+        },
+        {
+          "day": 225,
+          "hunterCount": 15,
+          "preyCount": 1179,
+          "stock": 956237,
+          "hunterTraits": [
+            [
+              66,
+              28,
+              92,
+              28,
+              23
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              77,
+              13,
+              55
+            ],
+            [
+              70,
+              50,
+              85,
+              100,
+              16
+            ]
+          ]
+        },
+        {
+          "day": 250,
+          "hunterCount": 16,
+          "preyCount": 1500,
+          "stock": 947608.75,
+          "hunterTraits": [
+            [
+              66,
+              28,
+              70,
+              26,
+              24
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              54,
+              11,
+              55
+            ],
+            [
+              70,
+              50,
+              91,
+              100,
+              16
+            ]
+          ]
+        },
+        {
+          "day": 275,
+          "hunterCount": 19,
+          "preyCount": 1630,
+          "stock": 946547.2,
+          "hunterTraits": [
+            [
+              69,
+              28,
+              54,
+              26,
+              26
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              29,
+              11,
+              55
+            ],
+            [
+              70,
+              50,
+              94,
+              100,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 300,
+          "hunterCount": 24,
+          "preyCount": 1671,
+          "stock": 945638.7,
+          "hunterTraits": [
+            [
+              70,
+              34,
+              45,
+              26,
+              27
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              20,
+              11,
+              56
+            ],
+            [
+              70,
+              50,
+              94,
+              97,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 325,
+          "hunterCount": 31,
+          "preyCount": 1679,
+          "stock": 944732.1,
+          "hunterTraits": [
+            [
+              70,
+              41,
+              34,
+              26,
+              28
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              19,
+              11,
+              58
+            ],
+            [
+              70,
+              50,
+              94,
+              94,
+              17
+            ]
+          ]
+        },
+        {
+          "day": 350,
+          "hunterCount": 44,
+          "preyCount": 1685,
+          "stock": 943438,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              34,
+              26,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              19,
+              11,
+              59
+            ],
+            [
+              70,
+              50,
+              94,
+              91,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 375,
+          "hunterCount": 64,
+          "preyCount": 1686,
+          "stock": 942245.94,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              36,
+              26,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              22,
+              11,
+              59
+            ],
+            [
+              70,
+              50,
+              94,
+              88,
+              18
+            ]
+          ]
+        },
+        {
+          "day": 400,
+          "hunterCount": 94,
+          "preyCount": 1652,
+          "stock": 940896.56,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              49,
+              27,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              36,
+              12,
+              59
+            ],
+            [
+              70,
+              50,
+              94,
+              87,
+              19
+            ]
+          ]
+        },
+        {
+          "day": 425,
+          "hunterCount": 138,
+          "preyCount": 1538,
+          "stock": 938164.6,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              74,
+              27,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              61,
+              12,
+              59
+            ],
+            [
+              70,
+              50,
+              100,
+              86,
+              19
+            ]
+          ]
+        },
+        {
+          "day": 450,
+          "hunterCount": 202,
+          "preyCount": 1500,
+          "stock": 938629.1,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              64,
+              28,
+              29
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              49,
+              13,
+              59
+            ],
+            [
+              70,
+              50,
+              100,
+              89,
+              19
+            ]
+          ]
+        },
+        {
+          "day": 475,
+          "hunterCount": 318,
+          "preyCount": 1342,
+          "stock": 943897.25,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              51,
+              21,
+              59
+            ],
+            [
+              70,
+              50,
+              58,
+              55,
+              10
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              45,
+              16,
+              59
+            ],
+            [
+              70,
+              50,
+              100,
+              75,
+              19
+            ]
+          ]
+        },
+        {
+          "day": 500,
+          "hunterCount": 424,
+          "preyCount": 600,
+          "stock": 964911.5,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              58,
+              39,
+              59
+            ],
+            [
+              70,
+              50,
+              70,
+              44,
+              10
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              56,
+              30,
+              59
+            ],
+            [
+              70,
+              50,
+              96,
+              59,
+              20
+            ]
+          ]
+        },
+        {
+          "day": 525,
+          "hunterCount": 18,
+          "preyCount": 278,
+          "stock": 981258,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              72,
+              50,
+              59
+            ],
+            [
+              70,
+              50,
+              81,
+              58,
+              10
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              97,
+              43,
+              24
+            ]
+          ]
+        },
+        {
+          "day": 550,
+          "hunterCount": 20,
+          "preyCount": 330,
+          "stock": 981656.4,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              99,
+              56,
+              10
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              78,
+              39,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 575,
+          "hunterCount": 23,
+          "preyCount": 376,
+          "stock": 981406.6,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              96,
+              54,
+              12
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              53,
+              39,
+              26
+            ]
+          ]
+        },
+        {
+          "day": 600,
+          "hunterCount": 27,
+          "preyCount": 407,
+          "stock": 981121.6,
+          "hunterTraits": [
+            [
+              70,
+              50,
+              90,
+              54,
+              14
+            ]
+          ],
+          "preyTraits": [
+            [
+              70,
+              50,
+              31,
+              39,
+              26
+            ]
+          ]
+        }
+      ]
+    },
+    "witnessFound": false
+  }
+]

@@ -22,10 +22,12 @@ MonoBehaviour:
   preySpecies:
   - {fileID: 11400000, guid: 785c614992525224827e57a75261f1e7, type: 2}
   trophicLevel: 1
-  baseMovementAbility: 60
+  bioenergyValue: 20
+  economyId: fierce-deer
+  baseMovementAbility: 65
   baseHabitatNiche: 50
   baseFitTemperature: 22
-  baseFitHumidity: 54
-  baseSize: 40
+  baseFitHumidity: 25
+  baseSize: 70
   baseFertility: 30
   baseEcologicalNiche: 0

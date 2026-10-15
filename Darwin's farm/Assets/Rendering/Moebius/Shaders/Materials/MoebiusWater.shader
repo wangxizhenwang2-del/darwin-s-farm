@@ -51,7 +51,33 @@ Shader "Darwin/Moebius Water"
         _WaterShadowColor("Shadow Ink Color", Color) = (0.19,0.32,0.34,1)
         _WaterShadowStrength("Shadow Ink Strength", Range(0,1)) = 0.65
         _WaterShadowDensity("Shadow Hatch Density (Lines / Metre)", Range(1,24)) = 8
-        [Enum(Composite,0,Flow,1,WaveHeight,2,ShoreDistance,3,Foam,4,Normals,5)] _DebugView("Debug View", Float) = 0
+        [Enum(Composite,0,Flow,1,WaveHeight,2,ShoreDistance,3,Foam,4,Normals,5,ImpactFoam,6,ImpactRipples,7)] _DebugView("Debug View", Float) = 0
+        [Toggle] _EnableWaterfallImpact("Enable Waterfall Impact",Float)=0
+        _ImpactPointA("Impact Line Start (World)",Vector)=(-2.9,0,1.7,0)
+        _ImpactPointB("Impact Line End (World)",Vector)=(2.9,0,1.7,0)
+        _ImpactFlowDirection("Outflow Direction (World XZ)",Vector)=(0,-1,0,0)
+        _ImpactRadius("Impact Radius / Half Depth (Metres)",Range(0.1,4))=2.1
+        _ImpactTurbulence("Turbulence Strength",Range(0,1))=0.95
+        _ImpactNoiseScale("Turbulence Noise Scale",Range(0.1,4))=0.85
+        _ImpactFoamDensity("Foam Density",Range(0,1))=0.68
+        _ImpactFoamSpeed("Foam Motion Speed",Range(0,3))=0.65
+        _ImpactFoamColor("Impact Foam Color",Color)=(0.9,0.97,0.96,1)
+        _ImpactFoamInkStrength("Foam Ink Strength",Range(0,0.5))=0.12
+        _ImpactRippleSpeed("Ripple Speed (Metres / Second)",Range(0,3))=0.9
+        _ImpactSpawnInterval("Ripple Spawn Interval (Seconds)",Range(0.1,5))=1.1
+        _ImpactLifetime("Ripple Lifetime (Seconds)",Range(0.2,15))=6.6
+        _ImpactMaxDistance("Ripple Max Distance (Metres)",Range(0.5,15))=6
+        [IntRange] _ImpactRippleCount("Ripple Count (Maximum 8)",Range(1,8))=6
+        _ImpactRippleWidth("Ripple Width (Metres)",Range(0.005,0.15))=0.065
+        _ImpactDistortion("Ripple Distortion (Metres)",Range(0,0.6))=0.2
+        _ImpactRippleNoiseScale("Ripple Noise Scale",Range(0.1,4))=0.7
+        _ImpactArcBreakup("Arc Breakup",Range(0,1))=0.58
+        _ImpactArcVariation("Arc Length Variation",Range(0,1))=0.55
+        _ImpactRippleColor("Ripple Color",Color)=(0.86,0.95,0.95,1)
+        _ImpactRippleIntensity("Ripple Intensity",Range(0,1))=0.85
+        _ImpactDistanceFade("Distance Fade (Range Fraction)",Range(0.05,0.9))=0.4
+        _ImpactLifetimeFade("Lifetime Fade (Life Fraction)",Range(0.05,0.8))=0.35
+        _ImpactPhase("Impact Phase (Seconds)",Float)=0
         _AnimationPhase("Animation Phase Offset (Seconds)", Float) = 0
     }
     SubShader
@@ -77,6 +103,7 @@ Shader "Darwin/Moebius Water"
             #include "Assets/Rendering/Moebius/Shaders/Includes/Features/MoebiusWaterRipples.hlsl"
             #include "Assets/Rendering/Moebius/Shaders/Includes/Features/MoebiusWaterFoam.hlsl"
             #include "Assets/Rendering/Moebius/Shaders/Includes/Features/MoebiusWaterShadows.hlsl"
+            #include "Assets/Rendering/Moebius/Shaders/Includes/Features/MoebiusWaterfallFoam.hlsl"
             half4 WaterFragment(WaterVaryings input) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(input);
@@ -91,12 +118,15 @@ Shader "Darwin/Moebius Water"
                 float2 foam = WaterFoamMask(input.positionWS.xz,shoreDistance);
                 color = lerp(color,_FoamColor.rgb,foam.x);
                 color = lerp(color,_FoamInkColor.rgb,foam.y);
+                color = ApplyWaterfallImpact(color,input.positionWS);
                 color = ApplyWaterCastShadow(color,input.positionWS);
                 if (_DebugView==1) color = half3(frac(flow*0.15),0.5);
                 if (_DebugView==2) color = (input.waveHeight/max(_WaveHeight,0.001)*0.5+0.5).xxx;
                 if (_DebugView==3) color = saturate(shoreDistance/max(_ShoreDistanceRange,0.01)).xxx;
                 if (_DebugView==4) color = foam.xxx;
                 if (_DebugView==5) color = normalize(input.normalWS)*0.5+0.5;
+                if (_DebugView==6) color = WaterfallImpactMasks(input.positionWS).xxx;
+                if (_DebugView==7) color = WaterfallImpactMasks(input.positionWS).yyy;
                 return half4(color,1);
             }
             ENDHLSL

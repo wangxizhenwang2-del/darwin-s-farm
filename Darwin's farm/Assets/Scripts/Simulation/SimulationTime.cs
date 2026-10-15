@@ -6,11 +6,10 @@ using UnityEngine.InputSystem;
 
 public class SimulationTime : MonoBehaviour
 {
-    // Standard game loop: one simulated day per second at 1x, 1800 days in
-    // fifteen minutes at the existing 2x speed.
+    // One simulated day per second at 1x. At 4x, fifteen minutes spans 3600 days.
     public const float DefaultSecondsPerDay = 1f;
-    public const int StandardLoopDays = 1800;
-    public const float StandardLoopSpeed = 2f;
+    public const int StandardLoopDays = 3600;
+    public const float StandardLoopSpeed = 4f;
     private float basicDayLength = DefaultSecondsPerDay;
     private float simulationSpeed = 1f;
     private float lastRunningSpeed = 1f;
@@ -18,9 +17,30 @@ public class SimulationTime : MonoBehaviour
     public int currentDay;
     public event Action<int> OnDayChanged;
     public event Action<int> OnDayReset;
+    public event Action<float> OnSpeedChanged;
     public float SecondsPerDay => basicDayLength;
     public float Speed => simulationSpeed;
+    public float RunningSpeed => IsPaused ? lastRunningSpeed : simulationSpeed;
     public bool IsPaused => simulationSpeed <= 0f;
+    private bool modalPause;
+    private bool wasPausedBeforeModal;
+    private float speedBeforeModal;
+
+    public void AcquireModalPause()
+    {
+        if (modalPause) return;
+        wasPausedBeforeModal = IsPaused;
+        speedBeforeModal = RunningSpeed;
+        modalPause = true;
+        Pause();
+    }
+
+    public void ReleaseModalPause()
+    {
+        if (!modalPause) return;
+        modalPause = false;
+        if (!wasPausedBeforeModal) SetSpeed(speedBeforeModal);
+    }
 
     public void SetSecondsPerDay(float seconds)
     {
@@ -45,15 +65,18 @@ public class SimulationTime : MonoBehaviour
         // only; Unity rendering and map controls continue while paused.
 #if ENABLE_INPUT_SYSTEM
         Keyboard keyboard = Keyboard.current;
-        if (keyboard != null)
+        if (keyboard != null && !modalPause)
         {
             if (keyboard.spaceKey.wasPressedThisFrame) TogglePause();
             if (keyboard.digit2Key.wasPressedThisFrame ||
                 keyboard.numpad2Key.wasPressedThisFrame) DoubleSpeed();
+            if (keyboard.digit4Key.wasPressedThisFrame ||
+                keyboard.numpad4Key.wasPressedThisFrame) QuadrupleSpeed();
         }
 #else
-        if (Input.GetKeyDown(KeyCode.Space)) TogglePause();
-        if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) DoubleSpeed();
+        if (!modalPause && Input.GetKeyDown(KeyCode.Space)) TogglePause();
+        if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))) DoubleSpeed();
+        if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))) QuadrupleSpeed();
 #endif
         time += Time.deltaTime * simulationSpeed;
         // 一帧跨过多天时逐天补算
@@ -68,13 +91,25 @@ public class SimulationTime : MonoBehaviour
     {
         if (!IsPaused) lastRunningSpeed = simulationSpeed;
         simulationSpeed = 0f;
+        OnSpeedChanged?.Invoke(simulationSpeed);
     }
-    public void Play() { simulationSpeed = 1f; lastRunningSpeed = 1f; }
-    public void DoubleSpeed() { simulationSpeed = 2f; lastRunningSpeed = 2f; }
+    public void Play() => SetSpeed(1f);
+    public void DoubleSpeed() => SetSpeed(2f);
+    public void QuadrupleSpeed() => SetSpeed(4f);
+    public void CycleSpeed() => SetSpeed(RunningSpeed < 2f ? 2f : RunningSpeed < 4f ? 4f : 1f);
+    private void SetSpeed(float speed)
+    {
+        if (modalPause) return;
+        simulationSpeed = speed;
+        lastRunningSpeed = speed;
+        OnSpeedChanged?.Invoke(simulationSpeed);
+    }
     public void TogglePause()
     {
+        if (modalPause) return;
         if (IsPaused) simulationSpeed = lastRunningSpeed > 0f ? lastRunningSpeed : 1f;
         else Pause();
+        if (!IsPaused) OnSpeedChanged?.Invoke(simulationSpeed);
     }
     public void ResetDay()  
     {
