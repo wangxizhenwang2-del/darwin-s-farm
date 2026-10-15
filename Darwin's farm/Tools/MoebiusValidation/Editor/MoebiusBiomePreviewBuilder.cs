@@ -22,6 +22,42 @@ namespace Darwin.Rendering.Editor
         static readonly string[] Names = {"Grassland","Desert","Forest","RainForest"};
         static readonly List<string> Notes = new List<string>();
 
+        public static void RunRainForestBatch()
+        {
+            var errors = new List<string>();
+            Application.logMessageReceived += (message,stack,type) =>
+            { if (type==LogType.Error || type==LogType.Exception || type==LogType.Assert) errors.Add(message); };
+            int exit = 0;
+            Directory.CreateDirectory("Validation/RainForest");
+            try
+            {
+                if (!Application.isBatchMode || !File.Exists("BiomeValidation.marker")) throw new Exception("RainForest import requires an isolated validation project.");
+                Directory.CreateDirectory(Output+"/Prefabs"); Directory.CreateDirectory(Output+"/Scenes");
+                AssetDatabase.Refresh(); ShaderUtil.allowAsyncCompilation=false;
+                var pipeline=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/PC_RPAsset.asset");
+                GraphicsSettings.defaultRenderPipeline=pipeline; QualitySettings.renderPipeline=pipeline;
+                var database=JsonUtility.FromJson<SourceDatabase>(File.ReadAllText(Models+"/SourceMaterials.json"));
+                CreatePrefab(database.models.Single(model=>model.name=="RainForest"));
+                var camera=CreateScene("RainForest");
+                Capture(camera,"Validation/RainForest/RainForest.png");
+                AssetDatabase.SaveAssets();
+                var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(Output+"/Prefabs/RainForest_Moebius.prefab");
+                var renderers=prefab.GetComponentsInChildren<MeshRenderer>(true);
+                if(renderers.Length!=12 || !renderers.Any(renderer=>renderer.enabled) || renderers.Any(renderer=>renderer.sharedMaterials.Any(material=>!material || material.shader.name!="Darwin/Moebius NPR")))
+                    throw new Exception("RainForest must retain all 12 renderers with valid Moebius materials.");
+                Notes.Add("PASS: Saved prefab retains all 12 source meshes and Moebius materials; the standalone modelling sample is hidden in the preview.");
+                foreach(var shader in new[]{Shader.Find("Darwin/Moebius NPR"),Shader.Find("Hidden/Darwin/Moebius Outline")})
+                    foreach(var message in ShaderUtil.GetShaderMessages(shader))
+                        if(message.severity==UnityEditor.Rendering.ShaderCompilerMessageSeverity.Error) errors.Add(message.message);
+                if(errors.Count>0) throw new Exception(string.Join("\n",errors));
+                Notes.Add("Shader/runtime errors: 0");
+                File.WriteAllLines("Validation/RainForest/Delivery.txt",new[]{Models+"/RainForest.fbx",Output+"/Prefabs/RainForest_Moebius.prefab",Output+"/Scenes/RainForest_Moebius.unity"});
+            }
+            catch(Exception exception) { Notes.Add(exception.ToString()); exit=1; }
+            File.WriteAllLines("Validation/RainForest/Report.txt",Notes);
+            EditorApplication.Exit(exit);
+        }
+
         public static void RunBatch()
         {
             var errors = new List<string>();
@@ -108,6 +144,8 @@ namespace Darwin.Rendering.Editor
                 if(source.name=="Forest") renderer.enabled &= InBranch(renderer.transform,"Forest_have_edge");
                 if(source.name=="Grassland") renderer.enabled &= renderer.bounds.center.z < 8.5f;
                 if(source.name=="Desert") renderer.enabled &= Mathf.Abs(renderer.bounds.center.x) < 8.5f;
+                // The supplied RainForest file contains a separate modelling sample near the origin.
+                // Preserve it in the FBX/prefab hierarchy while presenting the actual rainforest tile.
                 if(source.name=="RainForest") renderer.enabled &= renderer.bounds.center.z < -20;
             }
             Notes.Add(source.name+": representative preview renderers "+renderers.Count(r=>r.enabled && r.gameObject.activeInHierarchy)+"; full FBX retained.");

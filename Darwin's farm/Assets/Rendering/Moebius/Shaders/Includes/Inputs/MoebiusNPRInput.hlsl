@@ -38,6 +38,7 @@ struct NPRVaryings
     half3 normalWS : TEXCOORD1;
     float2 uv : TEXCOORD2;
     half4 color : TEXCOORD3;
+    float2 paintUV : TEXCOORD4;
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
@@ -52,6 +53,8 @@ NPRVaryings NPRVertex(NPRAttributes input)
     output.positionWS = p.positionWS;
     output.normalWS = TransformObjectToWorldNormal(input.normalOS);
     output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
+    // Painting writes raw UV0; base texture tiling must not move the painted color.
+    output.paintUV = input.uv;
     output.color = input.color;
     return output;
 }

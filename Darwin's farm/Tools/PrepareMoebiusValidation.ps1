@@ -30,7 +30,7 @@ function Install-MoebiusValidationSource {
     # in this verified temporary checkout so they cannot define duplicate C# classes.
     $archive=Join-Path $workspacePath 'Tools/MoebiusValidation/Editor'
     foreach($file in Get-ChildItem -LiteralPath $archive -Filter '*.cs'){
-        foreach($oldFolder in @('Assets/Rendering/Moebius/BiomeTests/Editor','Assets/Rendering/Moebius/Samples/Biomes/Editor','Assets/Rendering/Moebius/Editor/Paint','Assets/Editor/MoebiusValidation')){
+        foreach($oldFolder in @('Assets/Rendering/Moebius/BiomeTests/Editor','Assets/Rendering/Moebius/Samples/Biomes/Editor','Assets/Rendering/Moebius/Editor/Paint','Assets/Rendering/Moebius/Editor/Waterfall','Assets/Editor/MoebiusValidation')){
             $oldFile=Join-Path $targetRoot ($oldFolder+'/'+$file.Name)
             foreach($oldPath in @($oldFile,($oldFile+'.meta'))){if(Test-Path -LiteralPath $oldPath){Remove-Item -LiteralPath $oldPath}}
         }
@@ -48,6 +48,13 @@ function Install-MoebiusValidationSource {
     $destination=Join-Path $targetRoot 'Assets/Editor/MoebiusValidation'
     New-Item -ItemType Directory -Path $destination -Force | Out-Null
     Copy-Item -LiteralPath $source,($source+'.meta') -Destination $destination -Force
+    # The sample mesh/scene factory is no longer compiled in the main Unity project.
+    # Load it only when this validator needs to regenerate its isolated waterfall fixture.
+    if($SourceFile -eq 'MoebiusWaterfallValidation.cs'){
+        $builder=Join-Path $archive 'MoebiusWaterfallSetup.cs'
+        if(-not (Test-Path -LiteralPath $builder)){throw 'Archived waterfall sample builder is unavailable.'}
+        Copy-Item -LiteralPath $builder,($builder+'.meta') -Destination $destination -Force
+    }
 }
 
 # Apply archived flat shader sources to the current modular layout in an isolated fixture.

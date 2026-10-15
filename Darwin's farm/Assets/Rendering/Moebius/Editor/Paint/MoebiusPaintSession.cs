@@ -40,8 +40,9 @@ namespace Darwin.Rendering.Editor.Paint
             if(slot<0 || slot>=mesh.renderer.sharedMaterials.Length || slot>=mesh.mesh.subMeshCount)throw new ArgumentException("The selected material slot has no matching mesh submesh.");
             material=mesh.renderer.sharedMaterials[slot];
             if(!MoebiusPaintAssets.CanEdit(material))throw new InvalidOperationException("Create a unique paint material for this object first. Shared and original materials are protected.");
-            if(material.GetTextureScale("_BaseMap")!=Vector2.one || material.GetTextureOffset("_BaseMap")!=Vector2.zero)
-                throw new InvalidOperationException("Painting requires Base Map Tiling = (1, 1) and Offset = (0, 0).");
+            // Legacy control layers still sample the base UV; color paint uses raw UV0.
+            if(!color && (material.GetTextureScale("_BaseMap")!=Vector2.one || material.GetTextureOffset("_BaseMap")!=Vector2.zero))
+                throw new InvalidOperationException("Control-layer painting requires Base Map Tiling = (1, 1) and Offset = (0, 0). Color painting supports any Base Map Tiling and Offset.");
             property=MoebiusPaintAssets.Property(layer);
             mesh.renderer.GetPropertyBlock(original,slot);
             var existing=new MaterialPropertyBlock();mesh.renderer.GetPropertyBlock(existing,slot);

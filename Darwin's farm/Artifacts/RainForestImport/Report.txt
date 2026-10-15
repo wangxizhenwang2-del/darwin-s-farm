@@ -1,0 +1,4 @@
+RainForest: representative preview renderers 7; full FBX retained.
+RainForest: 12 source meshes; 6080 triangles; 12 Unity renderers; 3 NPR materials; preview scale 0.5566239
+PASS: Saved prefab retains all 12 source meshes and Moebius materials; the standalone modelling sample is hidden in the preview.
+Shader/runtime errors: 0
