@@ -1,0 +1,16 @@
+{
+  "states": {
+    "far_step": {
+      "frames": 4,
+      "fps": 8,
+      "loop": false,
+      "action": "Four consecutive poses of the FAR (lighter brown) leg taking a step while the NEAR (darker brown) leg is planted. Left-facing side view; image left is forward. Pose 1: near dark foot planted in front and far light foot planted behind, double contact. Pose 2: dark near foot remains planted in front while light far heel lifts behind. Pose 3: dark near foot remains planted while light far foot is clearly airborne and SWINGS PAST the support foot toward image LEFT. Pose 4: light far foot is EXTENDED IN FRONT OF the dark near planted foot, toes almost at the ground, about to land. The far foot must move steadily right-to-left through poses 2, 3, 4. In pose 4, the light far foot must be the leftmost foot, not behind the dark near foot. Preserve the exact single peacock reference appearance, full open tail, all three crest feathers and stable proportions. Both distinct legs visible every pose; no ground line or shadows."
+    },
+    "near_step": {
+      "frames": 4,
+      "fps": 8,
+      "loop": false,
+      "action": "Four consecutive poses of the NEAR (darker brown) leg taking a step while the FAR (lighter brown) leg is planted. Left-facing side view; image left is forward. Pose 1: light far foot planted in front and dark near foot planted behind, double contact. Pose 2: light far foot remains planted in front while dark near heel lifts behind. Pose 3: light far foot remains planted while dark near foot is clearly airborne and SWINGS PAST the support foot toward image LEFT. Pose 4: dark near foot is EXTENDED IN FRONT OF the light far planted foot, toes almost at the ground, about to land. The near foot must move steadily right-to-left through poses 2, 3, 4. In pose 4, the dark near foot must be the leftmost foot, not behind the light far foot. Preserve the exact single peacock reference appearance, full open tail, all three crest feathers and stable proportions. Both distinct legs visible every pose; no ground line or shadows."
+    }
+  }
+}

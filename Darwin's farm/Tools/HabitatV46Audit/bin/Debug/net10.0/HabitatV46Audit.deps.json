@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "HabitatV46Audit/1.0.0": {
+        "runtime": {
+          "HabitatV46Audit.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HabitatV46Audit/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

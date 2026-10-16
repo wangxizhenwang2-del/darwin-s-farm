@@ -1,0 +1,27 @@
+{
+  "scenarioId": "formal-evolution-live-model-seed240",
+  "seed": 240,
+  "endDay": 40,
+  "disableCosts": false,
+  "tiles": [
+    {
+      "x": 1,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/草原.asset",
+      "initialStock": 500000,
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/鸡-7f113739.asset",
+          "count": 500,
+          "overrideTraits": true,
+          "fitT": 70,
+          "fitH": 49,
+          "movement": 15,
+          "size": 10,
+          "fertility": 75
+        }
+      ]
+    }
+  ],
+  "actions": []
+}

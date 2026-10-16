@@ -1,0 +1,200 @@
+{
+  "scenarioId": "V05-T3-color-size-pressure-seed240",
+  "seed": 240,
+  "endDay": 750,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "originInitialStock": 1000000,
+  "originInitialChickenCount": 1000,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 1
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange"
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 500,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 507,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 514,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 521,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 528,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 535,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 542,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 549,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 556,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 563,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 570,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 577,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 584,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 591,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 598,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 605,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 612,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 619,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 626,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 633,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 640,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 647,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    }
+  ]
+}

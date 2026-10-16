@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-T5-rich-civet50",
+  "run": 3,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 22.311,
+  "inputSha256": "6024846792dd274f9247518cebb6377741c191db7424cd562e773d873da027be"
+}

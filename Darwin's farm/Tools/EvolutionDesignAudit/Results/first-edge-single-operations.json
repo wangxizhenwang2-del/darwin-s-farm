@@ -1,0 +1,7139 @@
+[
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "baseline",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 165,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 94,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature -50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 42,
+    "bestTraits": [
+      35,
+      35,
+      25,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 271,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1017,
+        "traits": [
+          35,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 274,
+        "traits": [
+          35,
+          35,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 147,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity -50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      23,
+      36,
+      48
+    ],
+    "splits": 1,
+    "mutations": 262,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 109,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant -50000",
+    "days": 21,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 50,
+    "bestTraits": [
+      55,
+      35,
+      13,
+      15,
+      70
+    ],
+    "splits": 0,
+    "mutations": 19,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          8,
+          11,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature -25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 45,
+    "bestTraits": [
+      33,
+      35,
+      24,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 196,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1017,
+        "traits": [
+          35,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 274,
+        "traits": [
+          35,
+          35,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 109,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity -25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 27,
+    "bestTraits": [
+      55,
+      35,
+      21,
+      36,
+      46
+    ],
+    "splits": 1,
+    "mutations": 235,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 102,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant -25000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 163,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 96,
+        "kind": "split",
+        "amount": 32
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature 25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 39,
+    "bestTraits": [
+      78,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 195,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          75,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          75,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 102,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity 25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 12,
+    "bestTraits": [
+      55,
+      68,
+      31,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 223,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 2456,
+        "traits": [
+          55,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 663,
+        "traits": [
+          55,
+          75,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 138,
+        "kind": "split",
+        "amount": 78
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant 25000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 23,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      50
+    ],
+    "splits": 1,
+    "mutations": 165,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 96,
+        "kind": "split",
+        "amount": 34
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature 50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 39,
+    "bestTraits": [
+      75,
+      35,
+      21,
+      36,
+      46
+    ],
+    "splits": 1,
+    "mutations": 250,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          75,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          75,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 118,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity 50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 19,
+    "bestTraits": [
+      55,
+      77,
+      28,
+      35,
+      50
+    ],
+    "splits": 1,
+    "mutations": 239,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 2456,
+        "traits": [
+          55,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 663,
+        "traits": [
+          55,
+          75,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 160,
+        "kind": "split",
+        "amount": 79
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant 50000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 23,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      50
+    ],
+    "splits": 1,
+    "mutations": 169,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 96,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "elevation 1",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 169,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1228,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 332,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 101,
+        "kind": "split",
+        "amount": 39
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Forest",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 23,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 478,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1624,
+        "traits": [
+          30,
+          70,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 437,
+        "traits": [
+          30,
+          70,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 92,
+        "kind": "split",
+        "amount": 30
+      },
+      {
+        "day": 256,
+        "kind": "split",
+        "amount": 48
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Rainforest",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 23,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 390,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 2660,
+        "traits": [
+          75,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 718,
+        "traits": [
+          75,
+          75,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 98,
+        "kind": "split",
+        "amount": 33
+      },
+      {
+        "day": 266,
+        "kind": "split",
+        "amount": 84
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Grassland",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 17,
+    "bestTraits": [
+      75,
+      55,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 379,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1842,
+        "traits": [
+          75,
+          55,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 497,
+        "traits": [
+          75,
+          55,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 97,
+        "kind": "split",
+        "amount": 33
+      },
+      {
+        "day": 233,
+        "kind": "split",
+        "amount": 58
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Desert",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 23,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 340,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 97,
+        "kind": "split",
+        "amount": 33
+      },
+      {
+        "day": 189,
+        "kind": "split",
+        "amount": 32
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Tundra",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 165,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 94,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Highland",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 15,
+    "bestTraits": [
+      70,
+      50,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 445,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1637,
+        "traits": [
+          70,
+          50,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 442,
+        "traits": [
+          70,
+          50,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 92,
+        "kind": "split",
+        "amount": 30
+      },
+      {
+        "day": 212,
+        "kind": "split",
+        "amount": 48
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile SnowMountain",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 165,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 94,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 80,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Volcano",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 165,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 94,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "baseline",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 153,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 65,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature -50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 45,
+    "bestTraits": [
+      35,
+      35,
+      22,
+      36,
+      46
+    ],
+    "splits": 1,
+    "mutations": 259,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1016,
+        "traits": [
+          35,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 274,
+        "traits": [
+          35,
+          35,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 112,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity -50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      22,
+      36,
+      48
+    ],
+    "splits": 1,
+    "mutations": 248,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 80,
+        "kind": "split",
+        "amount": 34
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant -50000",
+    "days": 15,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 56,
+    "bestTraits": [
+      55,
+      35,
+      10,
+      12,
+      70
+    ],
+    "splits": 0,
+    "mutations": 10,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          5,
+          11,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature -25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 46,
+    "bestTraits": [
+      32,
+      35,
+      24,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 184,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1016,
+        "traits": [
+          35,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 274,
+        "traits": [
+          35,
+          35,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 78,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity -25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 27,
+    "bestTraits": [
+      55,
+      35,
+      21,
+      36,
+      46
+    ],
+    "splits": 1,
+    "mutations": 221,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 73,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant -25000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 153,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 36,
+        "kind": "split",
+        "amount": 17
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature 25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 41,
+    "bestTraits": [
+      79,
+      35,
+      29,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 181,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          75,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          75,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 73,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity 25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 9,
+    "bestTraits": [
+      55,
+      65,
+      31,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 217,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 2456,
+        "traits": [
+          55,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 663,
+        "traits": [
+          55,
+          75,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 110,
+        "kind": "split",
+        "amount": 80
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant 25000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 152,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 74,
+        "kind": "split",
+        "amount": 41
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature 50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 39,
+    "bestTraits": [
+      75,
+      35,
+      21,
+      36,
+      46
+    ],
+    "splits": 1,
+    "mutations": 238,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          75,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          75,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 89,
+        "kind": "split",
+        "amount": 34
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity 50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 21,
+    "bestTraits": [
+      55,
+      78,
+      23,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 228,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 2456,
+        "traits": [
+          55,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 664,
+        "traits": [
+          55,
+          75,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 131,
+        "kind": "split",
+        "amount": 79
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant 50000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 156,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 79,
+        "kind": "split",
+        "amount": 47
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "elevation 1",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 1,
+    "mutations": 156,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1227,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 331,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 73,
+        "kind": "split",
+        "amount": 40
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Forest",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 22,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      51
+    ],
+    "splits": 2,
+    "mutations": 470,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1623,
+        "traits": [
+          30,
+          70,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 437,
+        "traits": [
+          30,
+          70,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 64,
+        "kind": "split",
+        "amount": 30
+      },
+      {
+        "day": 223,
+        "kind": "split",
+        "amount": 49
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Rainforest",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 2,
+    "mutations": 490,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 2661,
+        "traits": [
+          75,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 716,
+        "traits": [
+          75,
+          75,
+          20,
+          36,
+          45
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 64,
+        "kind": "split",
+        "amount": 33
+      },
+      {
+        "day": 235,
+        "kind": "evolution",
+        "from": "鸡",
+        "to": "灵感菇狸",
+        "amount": 10
+      },
+      {
+        "day": 345,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Grassland",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 17,
+    "bestTraits": [
+      75,
+      55,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 363,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1842,
+        "traits": [
+          75,
+          55,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 497,
+        "traits": [
+          75,
+          55,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 69,
+        "kind": "split",
+        "amount": 33
+      },
+      {
+        "day": 204,
+        "kind": "split",
+        "amount": 58
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Desert",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 23,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 323,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 69,
+        "kind": "split",
+        "amount": 33
+      },
+      {
+        "day": 160,
+        "kind": "split",
+        "amount": 32
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Tundra",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 153,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 65,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Highland",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 14,
+    "bestTraits": [
+      70,
+      50,
+      30,
+      35,
+      51
+    ],
+    "splits": 2,
+    "mutations": 442,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1637,
+        "traits": [
+          70,
+          50,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 442,
+        "traits": [
+          70,
+          50,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 64,
+        "kind": "split",
+        "amount": 30
+      },
+      {
+        "day": 183,
+        "kind": "split",
+        "amount": 48
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile SnowMountain",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 153,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 65,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 160,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Volcano",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 153,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 65,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "baseline",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 26,
+    "bestTraits": [
+      55,
+      35,
+      28,
+      35,
+      47
+    ],
+    "splits": 1,
+    "mutations": 125,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature -50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 46,
+    "bestTraits": [
+      35,
+      35,
+      22,
+      36,
+      45
+    ],
+    "splits": 1,
+    "mutations": 248,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1017,
+        "traits": [
+          35,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 274,
+        "traits": [
+          35,
+          35,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 52,
+        "kind": "split",
+        "amount": 34
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity -50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 29,
+    "bestTraits": [
+      55,
+      35,
+      21,
+      36,
+      44
+    ],
+    "splits": 1,
+    "mutations": 242,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          17,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant -50000",
+    "days": 14,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 57,
+    "bestTraits": [
+      55,
+      35,
+      10,
+      11,
+      70
+    ],
+    "splits": 0,
+    "mutations": 8,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          5,
+          11,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature -25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 42,
+    "bestTraits": [
+      51,
+      35,
+      13,
+      41,
+      40
+    ],
+    "splits": 1,
+    "mutations": 166,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1016,
+        "traits": [
+          35,
+          35,
+          17,
+          11,
+          70
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 274,
+        "traits": [
+          35,
+          35,
+          19,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity -25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 28,
+    "bestTraits": [
+      55,
+      35,
+      21,
+      36,
+      45
+    ],
+    "splits": 1,
+    "mutations": 204,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          17,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant -25000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      34,
+      49
+    ],
+    "splits": 1,
+    "mutations": 138,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          70
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 11,
+        "kind": "split",
+        "amount": 20
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature 25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 40,
+    "bestTraits": [
+      59,
+      35,
+      13,
+      41,
+      40
+    ],
+    "splits": 1,
+    "mutations": 164,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          75,
+          35,
+          17,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          75,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity 25",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 7,
+    "bestTraits": [
+      55,
+      61,
+      30,
+      35,
+      48
+    ],
+    "splits": 1,
+    "mutations": 192,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 2456,
+        "traits": [
+          55,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 664,
+        "traits": [
+          55,
+          75,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 51,
+        "kind": "split",
+        "amount": 65
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant 25000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 26,
+    "bestTraits": [
+      55,
+      35,
+      28,
+      34,
+      48
+    ],
+    "splits": 1,
+    "mutations": 124,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 24,
+        "kind": "split",
+        "amount": 51
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "temperature 50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 39,
+    "bestTraits": [
+      75,
+      35,
+      21,
+      36,
+      46
+    ],
+    "splits": 1,
+    "mutations": 242,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          75,
+          35,
+          17,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          75,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 34
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "humidity 50",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 26,
+    "bestTraits": [
+      55,
+      75,
+      19,
+      36,
+      42
+    ],
+    "splits": 1,
+    "mutations": 199,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 2456,
+        "traits": [
+          55,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 663,
+        "traits": [
+          55,
+          75,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 74,
+        "kind": "split",
+        "amount": 82
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "plant 50000",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 27,
+    "bestTraits": [
+      55,
+      35,
+      27,
+      34,
+      47
+    ],
+    "splits": 1,
+    "mutations": 158,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 125,
+        "traits": [
+          55,
+          35,
+          43,
+          37,
+          85
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 36,
+        "kind": "split",
+        "amount": 68
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "elevation 1",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 26,
+    "bestTraits": [
+      55,
+      35,
+      28,
+      34,
+      48
+    ],
+    "splits": 1,
+    "mutations": 129,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1228,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 332,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 36
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Forest",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 27,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      46
+    ],
+    "splits": 2,
+    "mutations": 542,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1623,
+        "traits": [
+          30,
+          70,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 436,
+        "traits": [
+          30,
+          70,
+          20,
+          36,
+          44
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      },
+      {
+        "day": 309,
+        "kind": "split",
+        "amount": 19
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Rainforest",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 25,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      48
+    ],
+    "splits": 2,
+    "mutations": 536,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 2660,
+        "traits": [
+          75,
+          75,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 717,
+        "traits": [
+          75,
+          75,
+          20,
+          36,
+          44
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      },
+      {
+        "day": 226,
+        "kind": "evolution",
+        "from": "鸡",
+        "to": "灵感菇狸",
+        "amount": 10
+      },
+      {
+        "day": 337,
+        "kind": "split",
+        "amount": 33
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Grassland",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 17,
+    "bestTraits": [
+      75,
+      55,
+      30,
+      35,
+      50
+    ],
+    "splits": 2,
+    "mutations": 352,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1841,
+        "traits": [
+          75,
+          55,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 498,
+        "traits": [
+          75,
+          55,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      },
+      {
+        "day": 174,
+        "kind": "split",
+        "amount": 84
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Desert",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 24,
+    "bestTraits": [
+      55,
+      35,
+      30,
+      35,
+      49
+    ],
+    "splits": 2,
+    "mutations": 312,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      },
+      {
+        "day": 128,
+        "kind": "split",
+        "amount": 47
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Tundra",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 26,
+    "bestTraits": [
+      55,
+      35,
+      28,
+      35,
+      47
+    ],
+    "splits": 1,
+    "mutations": 125,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Highland",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 18,
+    "bestTraits": [
+      70,
+      50,
+      30,
+      35,
+      47
+    ],
+    "splits": 2,
+    "mutations": 532,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1024,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 276,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1637,
+        "traits": [
+          70,
+          50,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 442,
+        "traits": [
+          70,
+          50,
+          19,
+          36,
+          41
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      },
+      {
+        "day": 259,
+        "kind": "split",
+        "amount": 19
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile SnowMountain",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 26,
+    "bestTraits": [
+      55,
+      35,
+      28,
+      35,
+      47
+    ],
+    "splits": 1,
+    "mutations": 125,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "鸡",
+    "to": "孔雀",
+    "initialCount": 640,
+    "preset": "Desert",
+    "preyPrerequisite": "none",
+    "operation": "new tile Volcano",
+    "days": 600,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 26,
+    "bestTraits": [
+      55,
+      35,
+      28,
+      35,
+      47
+    ],
+    "splits": 1,
+    "mutations": 125,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1023,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          71
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 277,
+        "traits": [
+          55,
+          35,
+          18,
+          36,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 35
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "baseline",
+    "days": 141,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 281,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          100,
+          28,
+          43
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          70,
+          35,
+          91,
+          67,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 122,
+        "kind": "split",
+        "amount": 15
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature -50",
+    "days": 218,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 54,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      34,
+      60
+    ],
+    "splits": 1,
+    "mutations": 462,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          53,
+          58,
+          100,
+          71,
+          30
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 40,
+        "traits": [
+          28,
+          55,
+          30,
+          100,
+          18
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 101,
+        "kind": "split",
+        "amount": 45
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity -50",
+    "days": 140,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      29,
+      29,
+      60
+    ],
+    "splits": 1,
+    "mutations": 361,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          72,
+          58,
+          100,
+          30,
+          49
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 363,
+        "traits": [
+          75,
+          35,
+          100,
+          13,
+          81
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 32,
+        "traits": [
+          75,
+          30,
+          16,
+          100,
+          22
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 60
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant -50000",
+    "days": 105,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      24,
+      29,
+      60
+    ],
+    "splits": 1,
+    "mutations": 268,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          53,
+          76,
+          56
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 11,
+        "kind": "split",
+        "amount": 29
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature -25",
+    "days": 157,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 0,
+    "mutations": 299,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          56,
+          58,
+          100,
+          48,
+          42
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          50,
+          37,
+          100,
+          35,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity -25",
+    "days": 271,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 624,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 93,
+        "traits": [
+          75,
+          33,
+          100,
+          95,
+          18
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 19,
+        "kind": "split",
+        "amount": 56
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant -25000",
+    "days": 125,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      24,
+      29,
+      60
+    ],
+    "splits": 1,
+    "mutations": 322,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          58,
+          58,
+          71,
+          76,
+          58
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 11,
+        "kind": "split",
+        "amount": 44
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature 25",
+    "days": 137,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 277,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          100,
+          45,
+          51
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          68,
+          35,
+          86,
+          33,
+          90
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 108,
+        "kind": "split",
+        "amount": 10
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity 25",
+    "days": 139,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 0,
+    "mutations": 267,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          100,
+          56,
+          40
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          61,
+          35,
+          100,
+          44,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant 25000",
+    "days": 179,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 54,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      34,
+      60
+    ],
+    "splits": 1,
+    "mutations": 425,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 67,
+        "traits": [
+          75,
+          55,
+          33,
+          100,
+          18
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 54,
+        "kind": "split",
+        "amount": 72
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature 50",
+    "days": 137,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 277,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          100,
+          45,
+          51
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          68,
+          35,
+          86,
+          33,
+          90
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 108,
+        "kind": "split",
+        "amount": 10
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity 50",
+    "days": 123,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 309,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 67,
+        "traits": [
+          53,
+          35,
+          88,
+          40,
+          90
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 12,
+        "traits": [
+          63,
+          35,
+          21,
+          100,
+          33
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 21,
+        "kind": "split",
+        "amount": 47
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant 50000",
+    "days": 109,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 57,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      37,
+      60
+    ],
+    "splits": 0,
+    "mutations": 206,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          58,
+          58,
+          100,
+          25,
+          50
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          66,
+          35,
+          100,
+          9,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "elevation 1",
+    "days": 177,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 402,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          85,
+          73,
+          31
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 20,
+        "traits": [
+          75,
+          55,
+          32,
+          100,
+          18
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 86,
+        "kind": "split",
+        "amount": 51
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Forest",
+    "days": 135,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 54,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      34,
+      60
+    ],
+    "splits": 0,
+    "mutations": 323,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          100,
+          52,
+          43
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          58,
+          35,
+          100,
+          40,
+          70
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 155,
+        "traits": [
+          30,
+          70,
+          65,
+          9,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Rainforest",
+    "days": 138,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 54,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      34,
+      60
+    ],
+    "splits": 1,
+    "mutations": 332,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          86,
+          51,
+          48
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          66,
+          35,
+          72,
+          82,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 77,
+        "traits": [
+          75,
+          60,
+          72,
+          13,
+          70
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 100,
+        "kind": "split",
+        "amount": 24
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Grassland",
+    "days": 205,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 54,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      34,
+      60
+    ],
+    "splits": 1,
+    "mutations": 523,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 16,
+        "traits": [
+          75,
+          55,
+          41,
+          24,
+          39
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1815,
+        "traits": [
+          75,
+          55,
+          23,
+          11,
+          85
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 74,
+        "traits": [
+          75,
+          55,
+          41,
+          55,
+          30
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 167,
+        "kind": "split",
+        "amount": 58
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Desert",
+    "days": 459,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 54,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      34,
+      60
+    ],
+    "splits": 2,
+    "mutations": 883,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 1251,
+        "traits": [
+          75,
+          55,
+          39,
+          9,
+          76
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 36,
+        "traits": [
+          75,
+          55,
+          31,
+          54,
+          25
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 1022,
+        "traits": [
+          55,
+          35,
+          18,
+          11,
+          72
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 273,
+        "traits": [
+          55,
+          35,
+          24,
+          37,
+          27
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 115,
+        "kind": "split",
+        "amount": 33
+      },
+      {
+        "day": 413,
+        "kind": "split",
+        "amount": 23
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Tundra",
+    "days": 141,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 281,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          100,
+          28,
+          43
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          70,
+          35,
+          91,
+          67,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 122,
+        "kind": "split",
+        "amount": 15
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Highland",
+    "days": 139,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 54,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      34,
+      60
+    ],
+    "splits": 0,
+    "mutations": 341,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          100,
+          54,
+          41
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          57,
+          35,
+          100,
+          42,
+          70
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 309,
+        "traits": [
+          70,
+          50,
+          65,
+          10,
+          66
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile SnowMountain",
+    "days": 141,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 281,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          100,
+          28,
+          43
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          70,
+          35,
+          91,
+          67,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 122,
+        "kind": "split",
+        "amount": 15
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 80,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Volcano",
+    "days": 141,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 53,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      33,
+      60
+    ],
+    "splits": 1,
+    "mutations": 281,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          100,
+          28,
+          43
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          70,
+          35,
+          91,
+          67,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 122,
+        "kind": "split",
+        "amount": 15
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "baseline",
+    "days": 91,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 232,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          46,
+          61,
+          58
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 53
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature -50",
+    "days": 101,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 251,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          57,
+          58,
+          53,
+          75,
+          57
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 26,
+        "kind": "split",
+        "amount": 44
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity -50",
+    "days": 139,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      27,
+      29,
+      60
+    ],
+    "splits": 1,
+    "mutations": 339,
+    "finalPopulations": [],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 56
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant -50000",
+    "days": 55,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      24,
+      29,
+      60
+    ],
+    "splits": 1,
+    "mutations": 132,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          25,
+          57,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          86,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 11,
+        "kind": "split",
+        "amount": 26
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature -25",
+    "days": 88,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 180,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          57,
+          58,
+          73,
+          35,
+          58
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          59,
+          71,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 64,
+        "kind": "split",
+        "amount": 22
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity -25",
+    "days": 121,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 299,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          58,
+          58,
+          83,
+          78,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 13,
+        "traits": [
+          55,
+          35,
+          50,
+          100,
+          22
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 47,
+        "kind": "split",
+        "amount": 36
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant -25000",
+    "days": 78,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      24,
+      29,
+      60
+    ],
+    "splits": 1,
+    "mutations": 201,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          37,
+          60,
+          58
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 11,
+        "kind": "split",
+        "amount": 40
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature 25",
+    "days": 91,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 233,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          48,
+          64,
+          59
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 52
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity 25",
+    "days": 88,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 1,
+    "mutations": 222,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          47,
+          59,
+          59
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 18,
+        "kind": "split",
+        "amount": 46
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant 25000",
+    "days": 96,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 198,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          76,
+          39,
+          58
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          62,
+          75,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 67,
+        "kind": "split",
+        "amount": 24
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature 50",
+    "days": 91,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 233,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          48,
+          64,
+          59
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 52
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity 50",
+    "days": 90,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 224,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          47,
+          68,
+          59
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          18,
+          100,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 53
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant 50000",
+    "days": 60,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 57,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      37,
+      60
+    ],
+    "splits": 0,
+    "mutations": 107,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          74,
+          36,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          61,
+          9,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "elevation 1",
+    "days": 94,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 239,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          46,
+          62,
+          57
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 53
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Forest",
+    "days": 86,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 182,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          63,
+          42,
+          58
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 52,
+        "kind": "split",
+        "amount": 24
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Rainforest",
+    "days": 82,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 227,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          54,
+          52,
+          58
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          39,
+          83,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 88,
+        "traits": [
+          75,
+          58,
+          35,
+          14,
+          70
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 42,
+        "kind": "split",
+        "amount": 28
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Grassland",
+    "days": 83,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 236,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          50,
+          58,
+          59
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          35,
+          88,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 134,
+        "traits": [
+          75,
+          55,
+          35,
+          10,
+          70
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 37,
+        "kind": "split",
+        "amount": 32
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Desert",
+    "days": 83,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 203,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          49,
+          59,
+          59
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          35,
+          88,
+          40
+        ]
+      },
+      {
+        "block": 1,
+        "species": "鸡",
+        "count": 224,
+        "traits": [
+          55,
+          35,
+          41,
+          9,
+          70
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 37,
+        "kind": "split",
+        "amount": 32
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Tundra",
+    "days": 91,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 232,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          46,
+          61,
+          58
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 53
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Highland",
+    "days": 83,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 52,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      32,
+      60
+    ],
+    "splits": 1,
+    "mutations": 166,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          68,
+          32,
+          58
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          54,
+          70,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 61,
+        "kind": "split",
+        "amount": 17
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile SnowMountain",
+    "days": 91,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 232,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          46,
+          61,
+          58
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 53
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 160,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Volcano",
+    "days": 91,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 48,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      28,
+      60
+    ],
+    "splits": 1,
+    "mutations": 232,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          59,
+          58,
+          46,
+          61,
+          58
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 10,
+        "kind": "split",
+        "amount": 53
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "baseline",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature -50",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          56,
+          58,
+          25,
+          45,
+          59
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity -50",
+    "days": 29,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 1,
+    "mutations": 50,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          32,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          15,
+          90
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          59,
+          40
+        ]
+      }
+    ],
+    "events": [
+      {
+        "day": 15,
+        "kind": "split",
+        "amount": 22
+      }
+    ]
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant -50000",
+    "days": 22,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 27,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          33,
+          60
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature -25",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          56,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity -25",
+    "days": 33,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 53,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          46,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          33,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant -25000",
+    "days": 26,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 39,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          39,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          26,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature 25",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity 25",
+    "days": 31,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 47,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          43,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          30,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant 25000",
+    "days": 22,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 57,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      37,
+      60
+    ],
+    "splits": 0,
+    "mutations": 29,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          35,
+          36,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          22,
+          9,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "temperature 50",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "humidity 50",
+    "days": 30,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 47,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          43,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          30,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "plant 50000",
+    "days": 23,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 57,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      37,
+      60
+    ],
+    "splits": 0,
+    "mutations": 30,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          35,
+          35,
+          60
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "elevation 1",
+    "days": 31,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Forest",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Rainforest",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Grassland",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Desert",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Tundra",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Highland",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile SnowMountain",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  },
+  {
+    "from": "孔雀",
+    "to": "鸡",
+    "initialCount": 640,
+    "preset": "Grassland",
+    "preyPrerequisite": "1600 鸡",
+    "operation": "new tile Volcano",
+    "days": 32,
+    "successDay": 0,
+    "bestDistanceOutsideTolerance": 51,
+    "bestTraits": [
+      58,
+      58,
+      25,
+      31,
+      60
+    ],
+    "splits": 0,
+    "mutations": 49,
+    "finalPopulations": [
+      {
+        "block": 0,
+        "species": "孔雀",
+        "count": 0,
+        "traits": [
+          60,
+          58,
+          25,
+          44,
+          60
+        ]
+      },
+      {
+        "block": 0,
+        "species": "鸡",
+        "count": 0,
+        "traits": [
+          55,
+          35,
+          10,
+          31,
+          70
+        ]
+      }
+    ],
+    "events": []
+  }
+]

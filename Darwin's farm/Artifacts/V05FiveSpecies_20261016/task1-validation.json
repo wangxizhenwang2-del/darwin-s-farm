@@ -1,0 +1,232 @@
+{
+  "scenario": "task1-normal-actions.json",
+  "runs": [
+    {
+      "run": 1,
+      "sha256": "5dc5e8f133ee6c2f1a803ee9a5601de51a5a9ceb48e2a62d651e6ac71332dcce",
+      "records": 126,
+      "actions": [
+        "action day=5 inputIndex=0 sequence=0 tile=0,0 kind=TemperatureChange tier=1 cost=0 accepted=True",
+        "action day=7 inputIndex=1 sequence=0 tile=0,0 kind=CancelTemperatureChange tier=0 cost=0 accepted=True",
+        "action day=10 inputIndex=2 sequence=0 tile=0,0 kind=HumidityChange tier=1 cost=0 accepted=True",
+        "action day=12 inputIndex=3 sequence=0 tile=0,0 kind=CancelHumidityChange tier=0 cost=0 accepted=True",
+        "action day=20 inputIndex=4 sequence=0 tile=0,0 kind=PlantChange tier=1 cost=0 accepted=True"
+      ],
+      "cancelPhases": {
+        "5": {
+          "t": 55.0,
+          "tp": "Entering",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "7": {
+          "t": 57.0,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "8": {
+          "t": 56.98666763305664,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "10": {
+          "t": 56.959999084472656,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "Entering"
+        },
+        "12": {
+          "t": 56.93333435058594,
+          "tp": "Returning",
+          "h": 37.0,
+          "hp": "Returning"
+        },
+        "13": {
+          "t": 56.91999816894531,
+          "tp": "Returning",
+          "h": 36.98666763305664,
+          "hp": "Returning"
+        }
+      },
+      "allModelHashesMatch": true,
+      "allEnvironmentHashesMatch": true,
+      "speciesSeen": [
+        "鸡"
+      ]
+    },
+    {
+      "run": 2,
+      "sha256": "5dc5e8f133ee6c2f1a803ee9a5601de51a5a9ceb48e2a62d651e6ac71332dcce",
+      "records": 126,
+      "actions": [
+        "action day=5 inputIndex=0 sequence=0 tile=0,0 kind=TemperatureChange tier=1 cost=0 accepted=True",
+        "action day=7 inputIndex=1 sequence=0 tile=0,0 kind=CancelTemperatureChange tier=0 cost=0 accepted=True",
+        "action day=10 inputIndex=2 sequence=0 tile=0,0 kind=HumidityChange tier=1 cost=0 accepted=True",
+        "action day=12 inputIndex=3 sequence=0 tile=0,0 kind=CancelHumidityChange tier=0 cost=0 accepted=True",
+        "action day=20 inputIndex=4 sequence=0 tile=0,0 kind=PlantChange tier=1 cost=0 accepted=True"
+      ],
+      "cancelPhases": {
+        "5": {
+          "t": 55.0,
+          "tp": "Entering",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "7": {
+          "t": 57.0,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "8": {
+          "t": 56.98666763305664,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "10": {
+          "t": 56.959999084472656,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "Entering"
+        },
+        "12": {
+          "t": 56.93333435058594,
+          "tp": "Returning",
+          "h": 37.0,
+          "hp": "Returning"
+        },
+        "13": {
+          "t": 56.91999816894531,
+          "tp": "Returning",
+          "h": 36.98666763305664,
+          "hp": "Returning"
+        }
+      },
+      "allModelHashesMatch": true,
+      "allEnvironmentHashesMatch": true,
+      "speciesSeen": [
+        "鸡"
+      ]
+    },
+    {
+      "run": 3,
+      "sha256": "5dc5e8f133ee6c2f1a803ee9a5601de51a5a9ceb48e2a62d651e6ac71332dcce",
+      "records": 126,
+      "actions": [
+        "action day=5 inputIndex=0 sequence=0 tile=0,0 kind=TemperatureChange tier=1 cost=0 accepted=True",
+        "action day=7 inputIndex=1 sequence=0 tile=0,0 kind=CancelTemperatureChange tier=0 cost=0 accepted=True",
+        "action day=10 inputIndex=2 sequence=0 tile=0,0 kind=HumidityChange tier=1 cost=0 accepted=True",
+        "action day=12 inputIndex=3 sequence=0 tile=0,0 kind=CancelHumidityChange tier=0 cost=0 accepted=True",
+        "action day=20 inputIndex=4 sequence=0 tile=0,0 kind=PlantChange tier=1 cost=0 accepted=True"
+      ],
+      "cancelPhases": {
+        "5": {
+          "t": 55.0,
+          "tp": "Entering",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "7": {
+          "t": 57.0,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "8": {
+          "t": 56.98666763305664,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "None"
+        },
+        "10": {
+          "t": 56.959999084472656,
+          "tp": "Returning",
+          "h": 35.0,
+          "hp": "Entering"
+        },
+        "12": {
+          "t": 56.93333435058594,
+          "tp": "Returning",
+          "h": 37.0,
+          "hp": "Returning"
+        },
+        "13": {
+          "t": 56.91999816894531,
+          "tp": "Returning",
+          "h": 36.98666763305664,
+          "hp": "Returning"
+        }
+      },
+      "allModelHashesMatch": true,
+      "allEnvironmentHashesMatch": true,
+      "speciesSeen": [
+        "鸡"
+      ]
+    }
+  ],
+  "initialTile": {
+    "x": 0,
+    "y": 0,
+    "stock": 50000.0,
+    "detritus": 0.0,
+    "recovery": 50000,
+    "temperature": 55.0,
+    "humidity": 35.0,
+    "temperaturePhase": "None",
+    "humidityPhase": "None",
+    "temperatureRemainingDays": 0,
+    "humidityRemainingDays": 0,
+    "populations": [
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0",
+        "species": "鸡",
+        "count": 160,
+        "fitT": 55,
+        "fitH": 35,
+        "movement": 10,
+        "size": 8,
+        "fertility": 71,
+        "births": 0,
+        "deaths": 0,
+        "predationDeaths": 0,
+        "body": 38400.0,
+        "reserve": 0.0
+      }
+    ]
+  },
+  "finalTile": {
+    "x": 0,
+    "y": 0,
+    "stock": 974779.0,
+    "detritus": 647792.4375,
+    "recovery": 50000,
+    "temperature": 55.49333190917969,
+    "humidity": 35.560001373291016,
+    "temperaturePhase": "Returning",
+    "humidityPhase": "Returning",
+    "temperatureRemainingDays": 37,
+    "humidityRemainingDays": 42,
+    "populations": [
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0",
+        "species": "鸡",
+        "count": 716,
+        "fitT": 55,
+        "fitH": 36,
+        "movement": 20,
+        "size": 9,
+        "fertility": 73,
+        "births": 8,
+        "deaths": 15,
+        "predationDeaths": 0,
+        "body": 193407.640625,
+        "reserve": 0.0
+      }
+    ]
+  },
+  "allBytesIdentical": true,
+  "allActionsAccepted": true
+}

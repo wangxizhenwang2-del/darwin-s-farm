@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-T4-predator",
+  "run": 3,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 20.073,
+  "inputSha256": "63c89840a21f52e732d9e059bf5da6830917096ee23bc1b9374899fd379b9763"
+}

@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-gif-run",
+  "run_dir": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run",
+  "exports": [
+    {
+      "state": "walk",
+      "output": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run\\previews\\walk.gif",
+      "frames": 8,
+      "fps": 8.0,
+      "loop": true,
+      "gif_report": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run\\previews\\walk.gif",
+        "frames": 8,
+        "delay_ticks": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "loop": 0,
+        "transparent": true,
+        "disposal": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      }
+    }
+  ]
+}

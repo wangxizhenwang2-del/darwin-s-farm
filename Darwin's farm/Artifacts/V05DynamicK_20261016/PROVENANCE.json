@@ -1,0 +1,50 @@
+{
+  "unityVersion": "6000.2.9f1",
+  "randomAlgorithm": "DF-FNV64-1",
+  "seed": 240,
+  "actionSemantics": "after named day settles, input array order within day",
+  "files": {
+    "researchZip": {
+      "path": "C:\\Users\\17799\\Downloads\\DarwinFarm_DynamicK_Research_V3.zip",
+      "exists": true,
+      "sha256": "a6aaf11929335e0774521904b8b6f5abc6636f3819fe80ca6d5240fdce6e3e01"
+    },
+    "latestBioweb": {
+      "path": "C:\\Users\\17799\\Downloads\\bioweb (13).json",
+      "exists": true,
+      "sha256": "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5"
+    },
+    "boundBioweb": {
+      "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\source-bioweb13.json",
+      "exists": true,
+      "sha256": "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5"
+    }
+  },
+  "worldCheckpointRestore": "BLOCKED",
+  "cacheHits": 0,
+  "savedSimulationDays": 0,
+  "latestGraphMatchesBoundGraph": true,
+  "researchEntries": [
+    "DynamicK_V3/V3_RESEARCH_REPORT.md",
+    "DynamicK_V3/simulate.py",
+    "DynamicK_V3/equilibrium.py",
+    "DynamicK_V3/verify.py",
+    "DynamicK_V3/experiments.py",
+    "DynamicK_V3/experiment_summary.json",
+    "DynamicK_V3/verify_v3.log",
+    "DynamicK_V3/stress_phase1.py",
+    "DynamicK_V3/stress_phase2.py",
+    "DynamicK_V3/stress_phase2_results.json",
+    "DynamicK_V3/stress_phase3.py",
+    "DynamicK_V3/stress_phase3_results.json",
+    "DynamicK_V3/stress_phase4.py",
+    "DynamicK_V3/stress_phase4_results.json",
+    "DynamicK_V3/three_species_partial_niches.csv",
+    "DynamicK_V3/deer_founder_10_with_chicken.csv",
+    "DynamicK_V3/deer_founder_10_with_chicken_split.csv",
+    "DynamicK_V3/three_species_shared.csv",
+    "DynamicK_V3/three_species_low_R.csv",
+    "DynamicK_V3/three_species_high_R.csv"
+  ],
+  "researchHandling": "Read as research data, no contained agent instructions or Python coefficients adopted."
+}

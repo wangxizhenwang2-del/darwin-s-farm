@@ -1,0 +1,25 @@
+{
+  "kind": "sprite-gen-gen-set-report",
+  "run_dir": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run",
+  "states": [
+    "walk"
+  ],
+  "ok": 1,
+  "failed": [],
+  "not_started": [],
+  "items": [
+    {
+      "state": "walk",
+      "out": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run\\raw\\walk.png",
+      "report": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run\\reports\\gen-set\\walk.json",
+      "refs": [
+        "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run\\base-source.png",
+        "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\sprite-gen\\peacock-walk\\run\\references\\layout-guides\\walk.png"
+      ],
+      "provider": "codex",
+      "provider_resolved_from": "explicit",
+      "elapsed_seconds": 57.3,
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+BA6228C0C79C18EFB221FA3EF85C294E7580014674A9B91E9EE1465183C3E89B  G:\unity\darwin-s-farm\Darwin's farm\Assets\Scripts\Simulation\Editor\V048ScenarioReplay.cs
+8168EDB96BC242BC984F417CF2C038FDFAD33C40D0C7C66456DB8CC339330609  G:\unity\darwin-s-farm\Darwin's farm\Assets\Scripts\Simulation\SimulationController.Evolution.cs
+839F4A1E3EF4AA7BE6DFC212579D69DC850EB826532002C98FFBC7FD0E5EC579  G:\unity\darwin-s-farm\Darwin's farm\Assets\BiowebV46\Species\鸡-7f113739.asset
+55EDCABA1EA6977A679AA34F00B8ECE4F408AE365D02492A854DCEFADAF05E7D  G:\unity\darwin-s-farm\Darwin's farm\Assets\BiowebV46\Species\彩鸡-b59a4a82.asset
+A67793DC7F805F22F8252022F75E0AE3D4A7F2BDD933A8B8734842DE4BAFD5CE  G:\unity\darwin-s-farm\Darwin's farm\Assets\Scenes\V05FiveSpeciesSandbox.unity
+76F49E7E070F1E0244A43204A29855DB9DBBC3E34F1B0A0BA3D5A4B5EF6EA706  G:\unity\darwin-s-farm\Darwin's farm\Assets\Scenes\V05FiveSpeciesSandbox.unity.meta
+5F483922D3D3DBA4DE3AD030249FCAA466CB92C4E0D7CD5555E7B75DB951D112  G:\unity\darwin-s-farm\Darwin's farm\Artifacts\V05FiveSpecies_20261016\task2-baseline.json
+C9DCDE5A31D52AD163FD7F747136D989E2B3A7A43B84AB2A8A02CDD6D7521A3D  G:\unity\darwin-s-farm\Darwin's farm\Artifacts\V05FiveSpecies_20261016\task2-color-probe.json

@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-T5-Rchange",
+  "run": 1,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 22.524,
+  "inputSha256": "b1d6fb11386a0f4f8c0c089f51cd5b129e0a3c83c2357ef9fb4a3de7fc68031f"
+}

@@ -1,0 +1,23 @@
+{
+  "status": "proposal only; formal JSON/assets not modified; no reachability claim",
+  "uniqueTargetFoodRiskInSelectedDirections": [
+    "孔雀→鸡"
+  ],
+  "recommended": {
+    "addedFoodLink": "彩鸡→孔雀",
+    "direction": "prey→predator",
+    "evolutionEdges": 22,
+    "selectedDirections": 20,
+    "foodEdges": 26,
+    "peacockToChickenAlternative": "彩鸡",
+    "peacockToColorChickenAlternative": "鸡",
+    "remainingUniqueTargetFoodRiskInSelectedDirections": []
+  },
+  "alternative": {
+    "removedEvolutionLink": "鸡↔孔雀",
+    "evolutionEdges": 21,
+    "selectedEdges": 9,
+    "selectedDirections": 18,
+    "foodEdges": 25
+  }
+}

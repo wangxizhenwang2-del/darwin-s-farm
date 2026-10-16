@@ -1,0 +1,906 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+// 负责挑目的地并提交迁徙计划；个体的拆分与合并交给 PopulationTransfer。
+public partial class SimulationController
+{
+    private const float TerrainStepProbability = 0.5f;
+
+    [Header("Migration")]
+    [SerializeField] private bool migrationEnabled = true;
+    [Min(1)] [SerializeField] private int migrationInterval = 7;
+    [Min(0.01f)] [SerializeField] private float migrationPopulationScale = 100f;
+    [Range(0f, 0.99f)] [SerializeField] private float overloadThreshold = 0.8f;
+    [Range(0f, 1f)] [SerializeField] private float baseOverloadProbability = 0.5f;
+    [Range(0f, 1f)] [SerializeField] private float overloadMigrationFraction = 0.2f;
+    [Min(0)] [SerializeField] private int migrationCooldownDays = 7;
+
+    private struct MovePlan
+    {
+        public BlockInfo source;
+        public BlockInfo target;
+        public PopulationData population;
+        public int amount;
+    }
+
+    public event System.Action<BlockInfo, BlockInfo, PopulationData, int> OnPopulationMigrated;
+    public event Action<PopulationTransitionResult> OnMigrationResolved;
+
+    public void SetMigrationParameters(bool enabled, int interval, float populationScale,
+        float threshold, float overloadProbability,
+        float overloadFraction, int cooldownDays)
+    {
+        migrationEnabled = enabled;
+        migrationInterval = Mathf.Max(1, interval);
+        migrationPopulationScale = Mathf.Max(0.01f, populationScale);
+        overloadThreshold = Mathf.Clamp(threshold, 0f, 0.99f);
+        baseOverloadProbability = Mathf.Clamp01(overloadProbability);
+        overloadMigrationFraction = Mathf.Clamp01(overloadFraction);
+        migrationCooldownDays = Mathf.Max(0, cooldownDays);
+    }
+
+    public void NotifyEnvironmentChanged()
+    {
+        foreach (BlockInfo site in blockInfos)
+        {
+            if (site == null || site.community == null) continue;
+            foreach (PopulationData population in site.community)
+                if (population != null) population.lastMigrationSource = null;
+        }
+    }
+
+    public void MovePopulation(BlockInfo source, BlockInfo target, PopulationData population,
+        int day)
+    {
+        if (source == null || target == null || source == target || population == null ||
+            source.community == null || !source.community.Contains(population) ||
+            population.speciesAmount <= 0 || day < population.nextMigrationDay) return;
+        // 生态位开启后，旧的陆地迁徙不能把陆生种群塞进河道地块。
+        if (ecologicalNichesEnabled &&
+            (source.waterCoverage != WaterCoverage.Land ||
+             target.waterCoverage != WaterCoverage.Land ||
+             population.ecologicalNiche != EcologicalNiche.Land)) return;
+        int amount = LimitMigrationAmount(population.speciesAmount, 1f);
+        if (amount == 0) return;
+        ApplyMovePlans(new List<MovePlan>
+        {
+            new MovePlan
+            {
+                source = source, target = target, population = population,
+                amount = amount
+            }
+        }, day);
+    }
+
+    public float EstimateTargetCapacity(BlockInfo target, PopulationData migrant)
+    {
+        if (target == null || migrant == null || target.community == null ||
+            migrant.speciesAmount <= 0) return 0f;
+        PopulationData resident = target.community.Find(population =>
+            population != null && population.ecologicalNiche == migrant.ecologicalNiche &&
+            SameSpecies(population, migrant));
+        if (resident != null) return Mathf.Max(0f, resident.carryingCapacity);
+        float fitness = CalculateFitness(target, migrant);
+        return Mathf.Max(0f, migrant.speciesAmount
+            * FoodWeb.FoodPerDemand(target, migrant.trophicLevel, migrant,
+                reproductionScale, levelOnePreyFraction, levelTwoPreyFraction) * fitness);
+    }
+
+    public float TargetCapacityCorrection(BlockInfo target, PopulationData migrant)
+    {
+        float capacity = EstimateTargetCapacity(target, migrant);
+        if (capacity <= 0f) return 0f;
+        int residents = 0;
+        foreach (PopulationData population in target.community)
+            if (population != null && population.ecologicalNiche == migrant.ecologicalNiche &&
+                SameSpecies(population, migrant))
+                residents += Mathf.Max(0, population.speciesAmount);
+        return Mathf.Clamp01(1f - residents / capacity);
+    }
+
+    // Shared by migration planning and mutation attraction. A destination
+    // already holding this species offers no expansion opportunity.
+    private static bool HasSameSpeciesResident(BlockInfo target,
+        PopulationData migrant) =>
+        target != null && target.community != null &&
+        target.community.Exists(resident => resident != null &&
+            resident.ecologicalNiche == migrant.ecologicalNiche &&
+            SameSpecies(resident, migrant));
+
+    private float NeighborAttraction(BlockInfo source, BlockInfo neighbor,
+        PopulationData migrant, int migrants)
+    {
+        float free = NeighborFreeFood(neighbor, migrant);
+        float adultDemand = migrants * LandLifeRules.AdultNeed(migrant.size,
+            migrant.movementAbility, LandRules);
+        float climate = LandLifeRules.Fitness(neighbor,
+            migrant.fitTemperature, migrant.fitHumidity);
+        float continuity = 1f - 0.2f * Mathf.Abs(source.temperature
+            - neighbor.temperature) / 100f - 0.2f * Mathf.Abs(source.humidity
+            - neighbor.humidity) / 100f;
+        return Mathf.Clamp01(free / Mathf.Max(1f, free + adultDemand)
+            * Mathf.Max(0f, continuity) * climate);
+    }
+
+    public float CalculateOverloadPressure(PopulationData population)
+    {
+        if (population == null || population.speciesAmount <= 0) return 0f;
+        if (population.carryingCapacity <= 0f) return 1f;
+        float ratio = population.speciesAmount / population.carryingCapacity;
+        return Mathf.Clamp01((ratio - overloadThreshold) / (1f - overloadThreshold));
+    }
+
+    public static int LimitMigrationAmount(int population, float proportion)
+    {
+        int amount = Mathf.Min(population, Mathf.RoundToInt(population * proportion));
+        return amount < 10 ? 0 : Mathf.Min(amount, 100);
+    }
+
+    // V4.1 natural migration uses a fixed 10% split regardless of why it moved.
+    public static int StandardMigrationAmount(int population) =>
+        population < 10 ? 0 : Mathf.Min(population,
+            Mathf.Clamp(Mathf.RoundToInt(population * 0.1f), 10, 100));
+
+    private struct MoveCandidate
+    {
+        public BlockInfo target;
+        public float chance;
+        public float tieBreaker;
+    }
+
+    private void RunMigration(int day)
+    {
+        List<MovePlan> plans = new List<MovePlan>();
+        foreach (BlockInfo source in blockInfos)
+        {
+            if (source == null || source.community == null || source.Neighbors == null) continue;
+            if (source.waterCoverage != WaterCoverage.Land) continue;
+            foreach (PopulationData population in source.community)
+            {
+                if (population == null || population.speciesAmount <= 0 ||
+                    day < population.nextMigrationDay) continue;
+                if (population.ecologicalNiche != EcologicalNiche.Land) continue;
+                if (TryPlanMove(source, population, plans, day,
+                    out MovePlan plan))
+                    plans.Add(plan);
+            }
+        }
+        ApplyMovePlans(plans, day);
+    }
+
+    private bool TryPlanMove(BlockInfo source, PopulationData population,
+        List<MovePlan> planned, int day, out MovePlan plan)
+    {
+        plan = new MovePlan();
+        int amount = StandardMigrationAmount(population.speciesAmount);
+        if (amount == 0) return false;
+        List<MoveCandidate> candidates = new List<MoveCandidate>();
+
+        foreach (BlockInfo neighbor in source.Neighbors)
+        {
+            if (neighbor == null || neighbor == source ||
+                neighbor == population.lastMigrationSource) continue;
+            if (neighbor.waterCoverage != WaterCoverage.Land ||
+                neighbor.community == null) continue;
+            int heightDifference = Mathf.Abs(neighbor.elevation - source.elevation);
+            if (heightDifference >= 2) continue;
+            if (population.movementAbility <= (heightDifference == 0
+                ? LandRules.flatMigrationThreshold : LandRules.slopeMigrationThreshold))
+                continue;
+
+            bool occupied = HasSameSpeciesResident(neighbor, population) ||
+                planned.Exists(move =>
+                move.target == neighbor &&
+                move.population.ecologicalNiche == population.ecologicalNiche &&
+                SameSpecies(move.population, population));
+            if (occupied) continue;
+            int reserved = 0;
+            foreach (MovePlan move in planned)
+                if (move.target == neighbor &&
+                    !neighbor.community.Exists(existing => existing != null &&
+                        SameSpecies(existing, move.population))) reserved++;
+            if (neighbor.community.Count + reserved >= 5) continue;
+            float attraction = NeighborAttraction(source, neighbor,
+                population, amount);
+            float chance = Mathf.Clamp01(attraction)
+                * population.movementAbility / 100f;
+            if (LivingPopulationCount(neighbor) == 4)
+                chance *= LandRules.fourEntryMigrationFactor;
+            if (chance <= 0f) continue;
+            candidates.Add(new MoveCandidate
+            {
+                target = neighbor, chance = Mathf.Clamp01(chance),
+                tieBreaker = ModelRandom01(day, "migration.tie", source,
+                    population, neighbor)
+            });
+        }
+
+        candidates.Sort((left, right) =>
+        {
+            int byChance = right.chance.CompareTo(left.chance);
+            if (byChance != 0) return byChance;
+            int byDraw = right.tieBreaker.CompareTo(left.tieBreaker);
+            return byDraw != 0 ? byDraw : string.CompareOrdinal(
+                StableTileKey(left.target), StableTileKey(right.target));
+        });
+        foreach (MoveCandidate candidate in candidates)
+        {
+            if (ModelRandom01(day, "migration.accept", source, population,
+                candidate.target) >= candidate.chance) continue;
+            plan = new MovePlan
+            {
+                source = source, target = candidate.target,
+                population = population, amount = amount
+            };
+            return true;
+        }
+        return false;
+    }
+
+    private void ApplyMovePlans(List<MovePlan> plans, int day)
+    {
+        // 先让所有种群离开，再统一落地，新来者就不会在同一天连续迁徙。
+        List<PopulationData> arrivals = new List<PopulationData>(plans.Count);
+        List<int> sourceCountsBefore = new List<int>(plans.Count);
+        foreach (MovePlan plan in plans)
+        {
+            PopulationData origin = plan.population;
+            sourceCountsBefore.Add(origin.speciesAmount);
+            PopulationData arrival = PopulationTransfer.Split(origin, plan.amount,
+                plan.source, day, migrationCooldownDays, true);
+            if (origin.speciesAmount == 0)
+            {
+                plan.source.community.Remove(origin);
+            }
+            arrivals.Add(arrival);
+        }
+
+        for (int i = 0; i < plans.Count; i++)
+        {
+            BlockInfo target = plans[i].target;
+            if (target.community == null) target.community = new List<PopulationData>();
+            PopulationData arrival = arrivals[i];
+            PopulationData resident = target.community.Find(population =>
+                population != null && population.ecologicalNiche == arrival.ecologicalNiche &&
+                SameSpecies(population, arrival));
+            if (resident == null && LivingPopulationCount(target) >= 5)
+            {
+                PopulationData origin = plans[i].population;
+                if (!plans[i].source.community.Contains(origin))
+                    plans[i].source.community.Add(origin);
+                PopulationTransfer.Merge(origin, arrival);
+                LogEcology(day, target, arrival, "migration_blocked",
+                    "capacity=5; individuals returned to source");
+                continue;
+            }
+            int targetCountBefore = resident == null ? 0 : resident.speciesAmount;
+            if (resident == null)
+            {
+                target.community.Add(arrival);
+            }
+            else
+            {
+                InitializeMutationState(resident);
+                PopulationTransfer.Merge(resident, arrival);
+            }
+            // A same-species arrival reunites every local branch of that species.
+            for (int j = target.community.Count - 1; j >= 0; j--)
+            {
+                PopulationData other = target.community[j];
+                if (other == null || other == resident || other == arrival ||
+                    other.ecologicalNiche != arrival.ecologicalNiche ||
+                    !SameSpecies(other, arrival)) continue;
+                PopulationTransfer.Merge(resident ?? arrival, other);
+                target.community.RemoveAt(j);
+            }
+            PopulationData resultPopulation = resident ?? arrival;
+            resultPopulation.localSplitBranch = false;
+            resultPopulation.directedSplitTarget = null;
+            resultPopulation.directedTraitUnlockDay = 0;
+            resultPopulation.sameSpeciesCoexistenceDays = 0;
+            resultPopulation.mutationSelectionProgress = 0f;
+            resultPopulation.mutationSelectionCandidate = -1;
+            LandLifeRules.RefreshEnvironmentMetrics(
+                plans[i].source, LandRules);
+            LandLifeRules.RefreshEnvironmentMetrics(target, LandRules);
+            OnMigrationResolved?.Invoke(new PopulationTransitionResult(
+                PopulationTransitionKind.Migration, day, plans[i].source, target,
+                plans[i].population, resultPopulation, plans[i].amount,
+                sourceCountsBefore[i], targetCountBefore,
+                resident == null ? PopulationArrivalOutcome.Created :
+                    PopulationArrivalOutcome.Merged));
+            OnPopulationMigrated?.Invoke(plans[i].source, target,
+                plans[i].population, plans[i].amount);
+            LogEcology(day, target, resultPopulation, "migration_arrival",
+                "amount=" + plans[i].amount + " resultCount="
+                + resultPopulation.speciesAmount + " merged=" + (resident != null));
+        }
+    }
+
+    public static bool SameSpecies(PopulationData left, PopulationData right) =>
+        PopulationTransfer.IsSameSpecies(left, right);
+
+    // 海陆空生态位与河岸位置。
+    private const float NicheSplitFraction = 0.1f;
+    private const int MinimumNicheSplit = 11;
+
+    [Header("Ecological Niches")]
+    [SerializeField] private bool ecologicalNichesEnabled = false;
+    [Range(0f, 1f)] [SerializeField] private float landToWaterProbability = 0.02f;
+    [Range(0f, 1f)] [SerializeField] private float landToAirProbability = 0.01f;
+    [Range(0f, 1f)] [SerializeField] private float waterDownProbability = 0.05f;
+    [Range(0f, 1f)] [SerializeField] private float waterUpProbability = 0.002f;
+    [Range(0f, 1f)] [SerializeField] private float waterToLandProbability = 0.001f;
+
+    public bool EcologicalNichesEnabled => ecologicalNichesEnabled;
+    public event Action<BlockInfo, BlockInfo, PopulationData, PopulationData, int>
+        OnNicheConverted;
+    public event Action<PopulationTransitionResult> OnNicheConversionResolved;
+    public event Action<PopulationData, BlockInfo, RiverBankSide?> OnLandPositionChanged;
+
+    public void SetEcologicalNichesEnabled(bool enabled) => ecologicalNichesEnabled = enabled;
+
+    public void SetEcologicalNicheProbabilities(float landToWater, float landToAir,
+        float waterDown, float waterUp, float waterToLand)
+    {
+        landToWaterProbability = Mathf.Clamp01(landToWater);
+        landToAirProbability = Mathf.Clamp01(landToAir);
+        waterDownProbability = Mathf.Clamp01(waterDown);
+        waterUpProbability = Mathf.Clamp01(waterUp);
+        waterToLandProbability = Mathf.Clamp01(waterToLand);
+    }
+
+    public WaterRegionMap BuildWaterRegions() => WaterRegionMap.Build(blockInfos);
+
+    // Take a snapshot so a newly split population cannot convert again on
+    // the same day, and adding an air population cannot invalidate enumeration.
+    private void RunNicheConversions(int day)
+    {
+        var candidates = new List<(BlockInfo block, PopulationData population)>();
+        foreach (BlockInfo block in blockInfos)
+            if (block != null && block.community != null)
+                foreach (PopulationData population in block.community)
+                    if (population != null && population.speciesAmount > 0)
+                        candidates.Add((block, population));
+
+        WaterRegionMap regions = BuildWaterRegions();
+        foreach (var candidate in candidates)
+        {
+            BlockInfo source = candidate.block;
+            PopulationData population = candidate.population;
+            if (source.community == null || !source.community.Contains(population) ||
+                population.speciesAmount <= 0) continue;
+            if (population.ecologicalNiche == EcologicalNiche.Land)
+            {
+                TryLandDepartureConversion(source, population, day, out _);
+                continue;
+            }
+            if (population.ecologicalNiche != EcologicalNiche.Water) continue;
+            WaterRegion region = regions.GetRegion(source);
+            if (region == null || WaterFoodPressure(region) < 1f) continue;
+            // One destination and one probability draw per population per day.
+            BlockInfo target = null;
+            foreach (BlockInfo block in blockInfos)
+                if (block != null && block.community != null &&
+                    !WaterRegionMap.IsWater(block) && WaterRegionTouchesLand(region, block))
+                {
+                    target = block;
+                    break;
+                }
+            if (target != null)
+                TryWaterToLandConversion(source, target, population, regions, day, out _);
+        }
+    }
+
+    // 河岸是陆地栖息地的一个位置，不拥有独立种群或食物库存。
+    public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
+        RiverBankSide side, PopulationData population)
+    {
+        if (!ecologicalNichesEnabled || home == null || home.community == null ||
+            population == null || population.speciesAmount <= 0 ||
+            population.ecologicalNiche != EcologicalNiche.Land ||
+            !home.community.Contains(population)) return false;
+        return HabitatTopology.TryGetBankOwner(river, side, out BlockInfo owner) &&
+            owner == home;
+    }
+
+    public bool TryMoveToRiverBank(BlockInfo home, BlockInfo river,
+        RiverBankSide side, PopulationData population)
+    {
+        if (!CanMoveToRiverBank(home, river, side, population)) return false;
+        if (population.landPositionBlock == river &&
+            population.landPositionBank == side) return false;
+        population.landPositionBlock = river;
+        population.landPositionBank = side;
+        OnLandPositionChanged?.Invoke(population, river, side);
+        return true;
+    }
+
+    public bool TryReturnFromRiverBank(BlockInfo home, PopulationData population)
+    {
+        if (!ecologicalNichesEnabled || home == null || home.community == null ||
+            population == null || population.ecologicalNiche != EcologicalNiche.Land ||
+            population.speciesAmount <= 0 ||
+            !home.community.Contains(population) ||
+            population.landPositionBlock == null) return false;
+        population.landPositionBlock = null;
+        population.landPositionBank = default(RiverBankSide);
+        OnLandPositionChanged?.Invoke(population, home, null);
+        return true;
+    }
+
+    public static float CalculateWaterFitness(WaterRegion region, PopulationData population)
+    {
+        if (region == null || population == null) return 0f;
+        // 水生适应度只看水域平均温度；平均湿度可用于展示，不参与适应度。
+        return Mathf.Clamp01(1f - Mathf.Abs(region.AverageTemperature -
+            population.fitTemperature) / FitnessTolerance);
+    }
+
+    public static bool HasAirPopulation(BlockInfo block)
+    {
+        if (block == null || block.community == null) return false;
+        foreach (PopulationData resident in block.community)
+            if (resident != null && resident.speciesAmount > 0 &&
+                resident.ecologicalNiche == EcologicalNiche.Air) return true;
+        return false;
+    }
+
+    public static float WaterFoodPressure(WaterRegion region)
+    {
+        if (region == null) return 0f;
+        float demand = 0f;
+        foreach (BlockInfo block in region.Members)
+        {
+            if (block.community == null) continue;
+            foreach (PopulationData population in block.community)
+            {
+                if (population == null || population.speciesAmount <= 0 ||
+                    (population.ecologicalNiche != EcologicalNiche.Water &&
+                     population.ecologicalNiche != EcologicalNiche.Air)) continue;
+                demand += population.speciesAmount * EnergyNeedForNiche(population);
+            }
+        }
+        if (demand <= 0f) return 0f;
+        return region.AvailableFood <= 0f ? 1f :
+            Mathf.Clamp01(demand / region.AvailableFood);
+    }
+
+    // Called once per eligible land population during the daily niche phase.
+    public bool TryLandDepartureConversion(BlockInfo source, PopulationData population,
+        int day, out PopulationData descendant)
+    {
+        descendant = null;
+        if (!CanDepart(source, population, EcologicalNiche.Land, day) ||
+            WaterRegionMap.IsWater(source) ||
+            NicheSplitAmount(population.speciesAmount) == 0) return false;
+
+        BlockInfo waterTarget = null;
+        foreach (BlockInfo neighbor in blockInfos)
+            if (HabitatTopology.CanLandEnterWater(source, neighbor) &&
+                (population.landPositionBlock == null ||
+                 population.landPositionBlock == neighbor) &&
+                (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
+                waterTarget = neighbor;
+        if (waterTarget != null)
+        {
+            if (ModelRandom01(day, "niche.land-water", source, population,
+                    waterTarget) < landToWaterProbability)
+                return ConvertNiche(source, waterTarget, population, EcologicalNiche.Water,
+                    day, out descendant);
+            return false;
+        }
+
+        if (!HasAirPopulation(source) &&
+            population.speciesAmount >= population.carryingCapacity &&
+            ModelRandom01(day, "niche.land-air", source, population)
+                < landToAirProbability)
+            return ConvertNiche(source, source, population, EcologicalNiche.Air,
+                day, out descendant);
+        return false;
+    }
+
+    // 同一 WaterRegion 内的位置调整是整个种群搬迁，不进行随机迁徙判定。
+    public bool MoveWithinWaterRegion(BlockInfo source, BlockInfo target,
+        PopulationData population, WaterRegionMap regions, int day)
+    {
+        if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
+            source == target || regions == null ||
+            regions.GetRegion(source) == null ||
+            regions.GetRegion(source) != regions.GetRegion(target)) return false;
+        ApplyNicheMigration(source, target, population, population.speciesAmount, day);
+        return true;
+    }
+
+    // 不同水域只允许相邻、海拔差为 1 的迁徙，且只分出一部分，不改变物种。
+    public bool TryWaterMigration(BlockInfo source, BlockInfo target,
+        PopulationData population, WaterRegionMap regions, int day)
+    {
+        if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
+            regions == null) return false;
+        WaterRegion from = regions.GetRegion(source);
+        WaterRegion to = regions.GetRegion(target);
+        if (from == null || to == null || from == to ||
+            !WaterRegionsTouch(from, target) || target == population.lastMigrationSource)
+            return false;
+        int difference = to.Elevation - from.Elevation;
+        if (Mathf.Abs(difference) != 1 || to.AvailableFood <= 0f ||
+            WaterFoodPressure(to) >= 1f) return false;
+        int amount = LimitMigrationAmount(population.speciesAmount,
+            overloadMigrationFraction);
+        float chance = (difference < 0 ? waterDownProbability : waterUpProbability)
+            * WaterFoodPressure(from);
+        if (amount == 0 || ModelRandom01(day, "migration.water", source,
+                population, target) >= chance) return false;
+        ApplyNicheMigration(source, target, population, amount, day);
+        return true;
+    }
+
+    public bool TryWaterToLandConversion(BlockInfo source, BlockInfo target,
+        PopulationData population, WaterRegionMap regions, int day,
+        out PopulationData descendant)
+    {
+        descendant = null;
+        if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
+            regions == null || target == null || WaterRegionMap.IsWater(target) ||
+            NicheSplitAmount(population.speciesAmount) == 0) return false;
+        WaterRegion region = regions.GetRegion(source);
+        if (region == null || !WaterRegionTouchesLand(region, target) ||
+            WaterFoodPressure(region) < 1f ||
+            ModelRandom01(day, "niche.water-land", source, population,
+                target) >= waterToLandProbability) return false;
+        return ConvertNiche(source, target, population, EcologicalNiche.Land,
+            day, out descendant);
+    }
+
+    // 空中使用陆地的适应度、食物空间和部分迁徙规则，但忽略海拔。
+    public bool TryAirMigration(BlockInfo source, BlockInfo target,
+        PopulationData population, int day)
+    {
+        if (!CanDepart(source, population, EcologicalNiche.Air, day) ||
+            !AreNeighbors(source, target) || target == population.lastMigrationSource ||
+            HasAirPopulation(target) ||
+            target.community == null) return false;
+        float capacity = AirTargetCapacityCorrection(target, population);
+        if (capacity <= 0f) return false;
+        float gain = CalculateFitness(target, population) -
+            CalculateFitness(source, population);
+        float baseChance = population.speciesAmount /
+            (population.speciesAmount + migrationPopulationScale);
+        float pressure = CalculateOverloadPressure(population);
+        float chance = gain > 0f ? gain * baseChance * capacity :
+            pressure * baseOverloadProbability * capacity;
+        float fraction = gain > 0f ? gain :
+            pressure * overloadMigrationFraction;
+        int amount = LimitMigrationAmount(population.speciesAmount, fraction);
+        if (amount == 0 || ModelRandom01(day, "migration.air", source,
+                population, target) >= chance) return false;
+        ApplyNicheMigration(source, target, population, amount, day);
+        return true;
+    }
+
+    private bool CanDepart(BlockInfo source, PopulationData population,
+        EcologicalNiche niche, int day) =>
+        ecologicalNichesEnabled && source != null && source.community != null &&
+        source.community.Contains(population) && population != null &&
+        population.speciesAmount > 0 && population.ecologicalNiche == niche &&
+        day >= population.nextMigrationDay;
+
+    private static bool AreNeighbors(BlockInfo left, BlockInfo right)
+    {
+        if (left == null || right == null || left == right ||
+            left.Neighbors == null) return false;
+        foreach (BlockInfo neighbor in left.Neighbors)
+            if (neighbor == right) return true;
+        return false;
+    }
+
+    private static bool WaterRegionsTouch(WaterRegion region, BlockInfo target)
+    {
+        if (region == null || target == null) return false;
+        foreach (BlockInfo block in region.Members)
+            if (HabitatTopology.ChannelsConnect(block, target)) return true;
+        return false;
+    }
+
+    private static bool WaterRegionTouchesLand(WaterRegion region, BlockInfo land)
+    {
+        if (region == null || land == null) return false;
+        foreach (BlockInfo block in region.Members)
+            if (HabitatTopology.CanLandEnterWater(land, block)) return true;
+        return false;
+    }
+
+    private static float EnergyNeedForNiche(PopulationData population) =>
+        CalculateEnergyNeed(population.size, population.movementAbility,
+            population.fertility);
+
+    private float AirTargetCapacityCorrection(BlockInfo target, PopulationData migrant)
+    {
+        if (!WaterRegionMap.IsWater(target) || migrant.trophicLevel != 0)
+            return TargetCapacityCorrection(target, migrant);
+        // 空中种群在水面地块取用该 Block 的藻类，并与当地水生生产者消费者竞争。
+        float food = Mathf.Min(Mathf.Max(0f, target.maxAlgaeBiomass),
+            Mathf.Max(0f, target.algaeBiomass) + Mathf.Max(0, target.algaeRecovery));
+        if (food <= 0f || target.community == null) return 0f;
+        float demand = EnergyNeedForNiche(migrant) * migrant.speciesAmount;
+        foreach (PopulationData competitor in target.community)
+            if (competitor != null && competitor.speciesAmount > 0 &&
+                competitor.trophicLevel == 0)
+                demand += EnergyNeedForNiche(competitor) * competitor.speciesAmount;
+        float capacity = migrant.speciesAmount * food / demand *
+            CalculateFitness(target, migrant);
+        return capacity > 0f ? 1f : 0f; // 空中槽位为空，目标地没有同槽位居民。
+    }
+
+    private static int NicheSplitAmount(int population)
+    {
+        int amount = Mathf.Min(population,
+            Mathf.RoundToInt(population * NicheSplitFraction));
+        return amount >= MinimumNicheSplit ? amount : 0;
+    }
+
+    private bool ConvertNiche(BlockInfo source, BlockInfo target,
+        PopulationData ancestor, EcologicalNiche niche, int day,
+        out PopulationData descendant)
+    {
+        descendant = null;
+        int amount = NicheSplitAmount(ancestor.speciesAmount);
+        if (amount == 0) return false;
+        if (niche == EcologicalNiche.Air && HasAirPopulation(target)) return false;
+        int sourceCountBefore = ancestor.speciesAmount;
+        descendant = PopulationTransfer.Split(ancestor, amount, source, day,
+            migrationCooldownDays);
+        // 派生种使用独立 ID，不复用祖先物种资产；可随后保存成正式 SpeciesData。
+        string id = descendant.PopulationId;
+        descendant.species = null;
+        descendant.speciesId = id;
+        descendant.lineageName = (string.IsNullOrEmpty(ancestor.lineageName)
+            ? "Species" : ancestor.lineageName) + "-" + id.Substring(0, 8);
+        descendant.ecologicalNiche = niche;
+        descendant.habitatNiche = niche == EcologicalNiche.Water ? 0 :
+            niche == EcologicalNiche.Air ? 100 : 50;
+        if (target.community == null) target.community = new List<PopulationData>();
+        target.community.Add(descendant);
+        OnNicheConversionResolved?.Invoke(new PopulationTransitionResult(
+            PopulationTransitionKind.NicheConversion, day, source, target,
+            ancestor, descendant, amount, sourceCountBefore, 0,
+            PopulationArrivalOutcome.Created));
+        OnNicheConverted?.Invoke(source, target, ancestor, descendant, amount);
+        return true;
+    }
+
+    private void ApplyNicheMigration(BlockInfo source, BlockInfo target,
+        PopulationData population, int amount, int day)
+    {
+        ApplyMovePlans(new List<MovePlan>
+        {
+            new MovePlan
+            {
+                source = source, target = target, population = population, amount = amount
+            }
+        }, day);
+    }
+}
+
+// 迁徙与生态位转化共用的种群拆分、复制和合并。
+internal static class PopulationTransfer
+{
+    public static PopulationData CopyForMove(PopulationData source, int amount)
+    {
+        // 不复制河岸位置；迁入者落在新栖息地，留下的个体仍在原河岸。
+        PopulationData copy = new PopulationData
+        {
+            species = source.species,
+            lineageName = source.lineageName,
+            speciesId = source.speciesId,
+            ecologicalNiche = source.ecologicalNiche,
+            speciesAmount = amount,
+            movementAbility = source.movementAbility,
+            habitatNiche = source.habitatNiche,
+            fitTemperature = source.fitTemperature,
+            fitHumidity = source.fitHumidity,
+            size = source.size,
+            fertility = source.fertility,
+            trophicLevel = source.trophicLevel,
+            trophicLevelInitialized = true,
+            bodyBiomass = source.speciesAmount > 0
+                ? source.bodyBiomass * amount / source.speciesAmount : 0f,
+            bodyBiomassInitialized = source.bodyBiomassInitialized,
+            nextSplitSerial = source.nextSplitSerial,
+            temperatureMutationRemainder = source.temperatureMutationRemainder,
+            humidityMutationRemainder = source.humidityMutationRemainder,
+            movementMutationRemainder = source.movementMutationRemainder,
+            sizeMutationRemainder = source.sizeMutationRemainder,
+            fertilityMutationRemainder = source.fertilityMutationRemainder,
+            trophicMutationRemainder = source.trophicMutationRemainder,
+            mutationDaysElapsed = source.mutationDaysElapsed,
+            nextMigrationDay = source.nextMigrationDay,
+            nextEvolutionDay = source.nextEvolutionDay,
+            previousMutationPopulation = amount,
+            mutationPopulationInitialized = true,
+            evolutionCheckReady = source.evolutionCheckReady,
+            predationRemainder = source.predationRemainder,
+            endangeredDays = source.endangeredDays,
+            localSplitBranch = source.localSplitBranch,
+            splitStrategy = source.splitStrategy,
+            directedSplitTarget = source.directedSplitTarget,
+            directedTraitUnlockDay = source.directedTraitUnlockDay,
+            sameSpeciesCoexistenceDays = 0,
+            lastMutationEffect = source.lastMutationEffect,
+            mutationSelectionProgress = source.mutationSelectionProgress,
+            mutationSelectionCandidate = source.mutationSelectionCandidate,
+            foodSatisfactionHistory = new List<float>(source.foodSatisfactionHistory ?? new List<float>()),
+            renewalSatisfactionHistory = new List<float>(source.renewalSatisfactionHistory ?? new List<float>()),
+            preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>()),
+            populationGrowthHistory = new List<float>(source.populationGrowthHistory ?? new List<float>())
+        };
+        if (source.evolutionConversions != null)
+            foreach (EvolutionConversionRecord record in source.evolutionConversions)
+                if (record != null)
+                    copy.evolutionConversions.Add(new EvolutionConversionRecord
+                    {
+                        target = record.target, day = record.day,
+                        effectiveDays = record.effectiveDays,
+                        failedDraws = record.failedDraws
+                    });
+        return copy;
+    }
+
+    // 迁徙和生态位分化都从这里拆分个体，储备与不足一个体的小数也按比例带走。
+    public static PopulationData Split(PopulationData origin, int amount,
+        BlockInfo source, int day, int cooldownDays,
+        bool retainIdOnWholeMove = false)
+    {
+        float share = amount / (float)origin.speciesAmount;
+        PopulationData branch = CopyForMove(origin, amount);
+        if (retainIdOnWholeMove && amount == origin.speciesAmount)
+            branch.RetainPopulationId(origin);
+        else
+            branch.AssignPopulationId(origin.PopulationId + ":" + day + ":" +
+                origin.nextSplitSerial++);
+        branch.nextSplitSerial = 0;
+        branch.lastMigrationSource = source;
+        origin.nextMigrationDay = Mathf.Max(origin.nextMigrationDay,
+            day + cooldownDays + 1);
+        branch.nextMigrationDay = origin.nextMigrationDay;
+        branch.energyReserve = origin.energyReserve * share;
+        branch.bodyBiomass = origin.bodyBiomass * share;
+        branch.birthRemainder = origin.birthRemainder * share;
+        branch.deathRemainder = origin.deathRemainder * share;
+        branch.predationRemainder = origin.predationRemainder * share;
+        origin.energyReserve -= branch.energyReserve;
+        origin.bodyBiomass -= branch.bodyBiomass;
+        origin.birthRemainder -= branch.birthRemainder;
+        origin.deathRemainder -= branch.deathRemainder;
+        origin.predationRemainder -= branch.predationRemainder;
+        origin.speciesAmount -= amount;
+        branch.mutationSelectionProgress = 0f;
+        branch.mutationSelectionCandidate = -1;
+        // 2026-10-09 13:47 +08:00: a newly split migration branch starts with
+        // zero target progress; its inherited evolution cooldown still applies.
+        if (origin.speciesAmount > 0) branch.evolutionConversions.Clear();
+        return branch;
+    }
+
+    public static void Merge(PopulationData resident, PopulationData arrival)
+    {
+        int residentAmount = resident.speciesAmount;
+        int arrivalAmount = arrival.speciesAmount;
+        int total = residentAmount + arrivalAmount;
+        if (total <= 0) return;
+        MergeTrait(ref resident.movementAbility, ref resident.movementMutationRemainder,
+            arrival.movementAbility, arrival.movementMutationRemainder,
+            residentAmount, arrivalAmount, total);
+        resident.habitatNiche = WeightedTrait(resident.habitatNiche, residentAmount,
+            arrival.habitatNiche, arrivalAmount, total);
+        MergeTrait(ref resident.fitTemperature, ref resident.temperatureMutationRemainder,
+            arrival.fitTemperature, arrival.temperatureMutationRemainder,
+            residentAmount, arrivalAmount, total);
+        MergeTrait(ref resident.fitHumidity, ref resident.humidityMutationRemainder,
+            arrival.fitHumidity, arrival.humidityMutationRemainder,
+            residentAmount, arrivalAmount, total);
+        MergeTrait(ref resident.size, ref resident.sizeMutationRemainder,
+            arrival.size, arrival.sizeMutationRemainder,
+            residentAmount, arrivalAmount, total);
+        MergeTrait(ref resident.fertility, ref resident.fertilityMutationRemainder,
+            arrival.fertility, arrival.fertilityMutationRemainder,
+            residentAmount, arrivalAmount, total);
+        MergeTrait(ref resident.trophicLevel, ref resident.trophicMutationRemainder,
+            arrival.trophicLevel, arrival.trophicMutationRemainder,
+            residentAmount, arrivalAmount, total);
+        resident.energyReserve += arrival.energyReserve;
+        resident.bodyBiomass += arrival.bodyBiomass;
+        resident.birthRemainder += arrival.birthRemainder;
+        resident.deathRemainder += arrival.deathRemainder;
+        resident.predationRemainder += arrival.predationRemainder;
+        MergeHistory(resident.foodSatisfactionHistory,
+            arrival.foodSatisfactionHistory, residentAmount, arrivalAmount);
+        MergeHistory(resident.renewalSatisfactionHistory,
+            arrival.renewalSatisfactionHistory, residentAmount, arrivalAmount);
+        MergeHistory(resident.preyNetRenewalHistory,
+            arrival.preyNetRenewalHistory, residentAmount, arrivalAmount);
+        MergeHistory(resident.populationGrowthHistory,
+            arrival.populationGrowthHistory, residentAmount, arrivalAmount);
+        resident.endangeredDays = total < 10
+            ? Mathf.Min(resident.endangeredDays, arrival.endangeredDays) : 0;
+        resident.localSplitBranch = false;
+        resident.directedSplitTarget = null;
+        resident.directedTraitUnlockDay = 0;
+        resident.sameSpeciesCoexistenceDays = 0;
+        resident.splitStrategy = resident.splitStrategy == arrival.splitStrategy
+            ? resident.splitStrategy : 0;
+        resident.mutationSelectionProgress = 0f;
+        resident.mutationSelectionCandidate = -1;
+        resident.nextMigrationDay = Mathf.Max(resident.nextMigrationDay,
+            arrival.nextMigrationDay);
+        resident.nextEvolutionDay = Mathf.Max(resident.nextEvolutionDay,
+            arrival.nextEvolutionDay);
+        resident.lastMigrationSource = arrival.lastMigrationSource;
+        resident.speciesAmount = total;
+        resident.previousMutationPopulation = total;
+        resident.mutationPopulationInitialized = true;
+        resident.trophicLevelInitialized = true;
+        resident.evolutionCheckReady |= arrival.evolutionCheckReady;
+        // V4.3: the resident keeps its target records. Arrival records never add
+        // progress to them; only the longer outstanding cooldown survives.
+    }
+
+    private static int WeightedTrait(int resident, int residentAmount, int arrival,
+        int arrivalAmount, int total)
+    {
+        return Mathf.RoundToInt(WeightedValue(resident, residentAmount,
+            arrival, arrivalAmount, total));
+    }
+
+    private static void MergeHistory(List<float> resident, List<float> arrival,
+        int residentAmount, int arrivalAmount)
+    {
+        if (resident == null || arrival == null || arrival.Count == 0) return;
+        int length = Mathf.Min(10, Mathf.Max(resident.Count, arrival.Count));
+        var merged = new List<float>(length);
+        for (int i = length - 1; i >= 0; i--)
+        {
+            int left = resident.Count - 1 - i;
+            int right = arrival.Count - 1 - i;
+            float a = left >= 0 ? resident[left] : 0f;
+            float b = right >= 0 ? arrival[right] : 0f;
+            int weightA = left >= 0 ? residentAmount : 0;
+            int weightB = right >= 0 ? arrivalAmount : 0;
+            merged.Add((a * weightA + b * weightB)
+                / Mathf.Max(1, weightA + weightB));
+        }
+        resident.Clear();
+        resident.AddRange(merged);
+    }
+
+    private static float WeightedValue(float resident, int residentAmount, float arrival,
+        int arrivalAmount, int total)
+    {
+        return (resident * residentAmount + arrival * arrivalAmount) / total;
+    }
+
+    private static void MergeTrait(ref int resident, ref float remainder,
+        int arrival, float arrivalRemainder, int residentAmount, int arrivalAmount, int total)
+    {
+        float average = WeightedValue(resident + remainder, residentAmount,
+            arrival + arrivalRemainder, arrivalAmount, total);
+        resident = Mathf.RoundToInt(average);
+        remainder = average - resident;
+    }
+
+    public static bool IsSameSpecies(PopulationData left, PopulationData right)
+    {
+        if (left == null || right == null) return false;
+        if (!string.IsNullOrEmpty(left.speciesId) || !string.IsNullOrEmpty(right.speciesId))
+            return !string.IsNullOrEmpty(left.speciesId) &&
+                string.Equals(left.speciesId, right.speciesId,
+                    System.StringComparison.Ordinal);
+        if (left.species != null || right.species != null)
+            return left.species != null && left.species == right.species;
+        return !string.IsNullOrWhiteSpace(left.lineageName) &&
+            string.Equals(left.lineageName, right.lineageName,
+                System.StringComparison.Ordinal);
+    }
+}

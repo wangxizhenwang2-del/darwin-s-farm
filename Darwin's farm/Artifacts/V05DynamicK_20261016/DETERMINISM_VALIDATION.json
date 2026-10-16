@@ -1,0 +1,362 @@
+{
+  "formal-readonly-off": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "9010a78ca356198b4b49b3f5d6d7cc8be5b5e35fc5ab27861747a5efc6c8c1da",
+      "9010a78ca356198b4b49b3f5d6d7cc8be5b5e35fc5ab27861747a5efc6c8c1da",
+      "9010a78ca356198b4b49b3f5d6d7cc8be5b5e35fc5ab27861747a5efc6c8c1da"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-readonly-on": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "93165ecc25ef62c2ddfefe75b8228027680586119a5ab89f12439893f7c5e89c",
+      "93165ecc25ef62c2ddfefe75b8228027680586119a5ab89f12439893f7c5e89c",
+      "93165ecc25ef62c2ddfefe75b8228027680586119a5ab89f12439893f7c5e89c"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-regression-basic120": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "efbac4fe18ae195aad39532bb1b2be5622c2b784615410f8bbb3ca3b11c4a448",
+      "efbac4fe18ae195aad39532bb1b2be5622c2b784615410f8bbb3ca3b11c4a448",
+      "efbac4fe18ae195aad39532bb1b2be5622c2b784615410f8bbb3ca3b11c4a448"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-regression-color500": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "6c560ee56e1fe696f7739cfdc613c02375b9a98cff97450dbfa829ce6442c6b6",
+      "6c560ee56e1fe696f7739cfdc613c02375b9a98cff97450dbfa829ce6442c6b6",
+      "6c560ee56e1fe696f7739cfdc613c02375b9a98cff97450dbfa829ce6442c6b6"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-regression-deer1900": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "00855da667a1b70191499e2f01db60a9f2bfea6174a0f1aab7451e37a127da3f",
+      "00855da667a1b70191499e2f01db60a9f2bfea6174a0f1aab7451e37a127da3f",
+      "00855da667a1b70191499e2f01db60a9f2bfea6174a0f1aab7451e37a127da3f"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-regression-mushroom1000": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "710a09eadd601f93105ff191ff702b1b7e120605fd4cbba432c6331aa5c33b3d",
+      "710a09eadd601f93105ff191ff702b1b7e120605fd4cbba432c6331aa5c33b3d",
+      "710a09eadd601f93105ff191ff702b1b7e120605fd4cbba432c6331aa5c33b3d"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-regression-peacock900": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "d63d50c6972e1b05eeb57c357228dd3bbe372cd800ea4587cd712f3fd3dfaa12",
+      "d63d50c6972e1b05eeb57c357228dd3bbe372cd800ea4587cd712f3fd3dfaa12",
+      "d63d50c6972e1b05eeb57c357228dd3bbe372cd800ea4587cd712f3fd3dfaa12"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-selection-foodK": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "a9cea262d454d66709b4f2f3d46a5973be09197b1ff9e44e319a0fba0add0a20",
+      "a9cea262d454d66709b4f2f3d46a5973be09197b1ff9e44e319a0fba0add0a20",
+      "a9cea262d454d66709b4f2f3d46a5973be09197b1ff9e44e319a0fba0add0a20"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-selection-legacyK": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "82694683ef725b619873beaae405c51a1ed12ca312e0d9127d8abd048162272a",
+      "82694683ef725b619873beaae405c51a1ed12ca312e0d9127d8abd048162272a",
+      "82694683ef725b619873beaae405c51a1ed12ca312e0d9127d8abd048162272a"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T1-chicken50": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "32e19cf15913bea698fa83517a17fa207b23151f88a63e02d5b80fed022ac6dd",
+      "32e19cf15913bea698fa83517a17fa207b23151f88a63e02d5b80fed022ac6dd",
+      "32e19cf15913bea698fa83517a17fa207b23151f88a63e02d5b80fed022ac6dd"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T1-chicken5000": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "7bfb1bd42915187e40f5fb5b589756d8999b04b51d57d844a24f5b7424ea7cb9",
+      "7bfb1bd42915187e40f5fb5b589756d8999b04b51d57d844a24f5b7424ea7cb9",
+      "7bfb1bd42915187e40f5fb5b589756d8999b04b51d57d844a24f5b7424ea7cb9"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T2-chicken-favored": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "7dcbf0a37bf3c040fb052481d22d86001fec197b608225ec1094dbbb4562a833",
+      "7dcbf0a37bf3c040fb052481d22d86001fec197b608225ec1094dbbb4562a833",
+      "7dcbf0a37bf3c040fb052481d22d86001fec197b608225ec1094dbbb4562a833"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T2-counterfactual": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "86f7ddb2474901b0d04a1d8f77ad4451226435889204e7cec1654a32fe78a4d0",
+      "86f7ddb2474901b0d04a1d8f77ad4451226435889204e7cec1654a32fe78a4d0",
+      "86f7ddb2474901b0d04a1d8f77ad4451226435889204e7cec1654a32fe78a4d0"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T2-deer-favored": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "dd401d3e31b5b0aa3ceb13e6d94971c0e51a2665a861485b9f50c0b8e5515ec5",
+      "dd401d3e31b5b0aa3ceb13e6d94971c0e51a2665a861485b9f50c0b8e5515ec5",
+      "dd401d3e31b5b0aa3ceb13e6d94971c0e51a2665a861485b9f50c0b8e5515ec5"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer10-chicken1000": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "cfaf02bafde30cc14341400e40b44918a09260e4115a266e13b7c6cac3009d59",
+      "cfaf02bafde30cc14341400e40b44918a09260e4115a266e13b7c6cac3009d59",
+      "cfaf02bafde30cc14341400e40b44918a09260e4115a266e13b7c6cac3009d59"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer10-poor": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "361d17d1d28491ac7199ca403210b5dbe728f40bd95816cea7963d0d74138659",
+      "361d17d1d28491ac7199ca403210b5dbe728f40bd95816cea7963d0d74138659",
+      "361d17d1d28491ac7199ca403210b5dbe728f40bd95816cea7963d0d74138659"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer10-rich": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "7888441c27e2d6af743eda808340ac273fc3591f28ae856150c1495810017ee2",
+      "7888441c27e2d6af743eda808340ac273fc3591f28ae856150c1495810017ee2",
+      "7888441c27e2d6af743eda808340ac273fc3591f28ae856150c1495810017ee2"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer100-poor": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "a3551504e8fdff82362b90e37ad5207c4fd38d9abbdfff592d5f5486c1be1015",
+      "a3551504e8fdff82362b90e37ad5207c4fd38d9abbdfff592d5f5486c1be1015",
+      "a3551504e8fdff82362b90e37ad5207c4fd38d9abbdfff592d5f5486c1be1015"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer100-rich": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "623c13bf1941b01287ea024e5d4b0d9b368cab4d5c700b08708acabbbd80e38c",
+      "623c13bf1941b01287ea024e5d4b0d9b368cab4d5c700b08708acabbbd80e38c",
+      "623c13bf1941b01287ea024e5d4b0d9b368cab4d5c700b08708acabbbd80e38c"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer20-poor": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "e67ef556785ef3348c642d7b012fa19259dd946ec593313d20a7d07a365cb08a",
+      "e67ef556785ef3348c642d7b012fa19259dd946ec593313d20a7d07a365cb08a",
+      "e67ef556785ef3348c642d7b012fa19259dd946ec593313d20a7d07a365cb08a"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer20-rich": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "96a60dff7da78f47a57962ef7ddf9b692eb658814e863462fd85d677b99dfd05",
+      "96a60dff7da78f47a57962ef7ddf9b692eb658814e863462fd85d677b99dfd05",
+      "96a60dff7da78f47a57962ef7ddf9b692eb658814e863462fd85d677b99dfd05"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer50-poor": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "3ae876bd387032150bb3ade9cbeb2b5c2ceb554a252866ae722c30e75bc95d2a",
+      "3ae876bd387032150bb3ade9cbeb2b5c2ceb554a252866ae722c30e75bc95d2a",
+      "3ae876bd387032150bb3ade9cbeb2b5c2ceb554a252866ae722c30e75bc95d2a"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T3-deer50-rich": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "52d9d86aca1f07a5fed21e04ca0de6541d0a9540a9a3ffd2b357eb891fbc81cd",
+      "52d9d86aca1f07a5fed21e04ca0de6541d0a9540a9a3ffd2b357eb891fbc81cd",
+      "52d9d86aca1f07a5fed21e04ca0de6541d0a9540a9a3ffd2b357eb891fbc81cd"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T4-no-predator": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "aa29ce2befd631ec4fbe3f3ae9bdb8e2431ed19f0513ed3524a6d4c021a37ab9",
+      "aa29ce2befd631ec4fbe3f3ae9bdb8e2431ed19f0513ed3524a6d4c021a37ab9",
+      "aa29ce2befd631ec4fbe3f3ae9bdb8e2431ed19f0513ed3524a6d4c021a37ab9"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T4-predator": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "b735f8e3101af0cfa7c726e9f30c000f845b803109c0dd33a702788808b4326d",
+      "b735f8e3101af0cfa7c726e9f30c000f845b803109c0dd33a702788808b4326d",
+      "b735f8e3101af0cfa7c726e9f30c000f845b803109c0dd33a702788808b4326d"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T5-poor": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "8657c8c4352be40a014c62e6ff90d91d4ed1c8c7fa9a4022e571ef41f3c2ebfb",
+      "8657c8c4352be40a014c62e6ff90d91d4ed1c8c7fa9a4022e571ef41f3c2ebfb",
+      "8657c8c4352be40a014c62e6ff90d91d4ed1c8c7fa9a4022e571ef41f3c2ebfb"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T5-Rchange": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "bf8425de37f6ada6ec74f3feadaaba92e1964205e5b38393c1a5bf4e6b6a6d69",
+      "bf8425de37f6ada6ec74f3feadaaba92e1964205e5b38393c1a5bf4e6b6a6d69",
+      "bf8425de37f6ada6ec74f3feadaaba92e1964205e5b38393c1a5bf4e6b6a6d69"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T5-rich-civet100": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "0b43cc3e05ffba45b0d18cea46090e066d836a9541dc37c76136b1ba2a42ab54",
+      "0b43cc3e05ffba45b0d18cea46090e066d836a9541dc37c76136b1ba2a42ab54",
+      "0b43cc3e05ffba45b0d18cea46090e066d836a9541dc37c76136b1ba2a42ab54"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T5-rich-civet20": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "379d3d42ef789fc90ccf0c1add774272131b1f19fe147be06f12c8da79e747b3",
+      "379d3d42ef789fc90ccf0c1add774272131b1f19fe147be06f12c8da79e747b3",
+      "379d3d42ef789fc90ccf0c1add774272131b1f19fe147be06f12c8da79e747b3"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  },
+  "formal-T5-rich-civet50": {
+    "fullJsonlIdentical": true,
+    "dailyJsonIdentical": true,
+    "sha256": [
+      "f932546387b695eca569e6fe6caf5c887f3dc5d2e3991d343bfe55355b2c18ab",
+      "f932546387b695eca569e6fe6caf5c887f3dc5d2e3991d343bfe55355b2c18ab",
+      "f932546387b695eca569e6fe6caf5c887f3dc5d2e3991d343bfe55355b2c18ab"
+    ],
+    "allUnityReplaysCompleted": true,
+    "runs": 3,
+    "status": "PASS"
+  }
+}

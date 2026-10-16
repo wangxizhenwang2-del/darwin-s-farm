@@ -1,0 +1,54 @@
+{
+  "scenarioId": "V05-T3-mushroom-frailty1-shaped-seed240",
+  "seed": 240,
+  "endDay": 550,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "originInitialStock": 1000000,
+  "originInitialChickenCount": 1000,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 2
+    },
+    {
+      "day": 200,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -1
+    },
+    {
+      "day": 220,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 230,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 240,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 1
+    }
+  ]
+}

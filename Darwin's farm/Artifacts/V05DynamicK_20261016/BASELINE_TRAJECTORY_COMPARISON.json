@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "records": 1937,
+  "everyModelAndEnvironmentHashIdentical": true,
+  "oldSha256": "761102194c36d0f014cb46851888b3f6a83c3037b2e7232b8f95d20ba1318bf4",
+  "observationalDiagnosticSha256": "4d30ebb681a4638e452efbc94d4cce03624e11223bc663b98d5f72ad7390a9a1",
+  "note": "Full files differ by added diagnostic observations; model/environment trajectories are identical."
+}

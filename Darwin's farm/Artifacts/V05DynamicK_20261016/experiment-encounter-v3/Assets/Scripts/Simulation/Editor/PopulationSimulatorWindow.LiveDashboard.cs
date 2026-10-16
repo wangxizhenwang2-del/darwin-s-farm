@@ -1,0 +1,408 @@
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+public partial class PopulationSimulatorWindow
+{
+    private sealed class LiveSeries
+    {
+        public string name;
+        public Color color;
+        public readonly List<float> amounts = new List<float>();
+    }
+
+    private sealed class LiveTileHistory
+    {
+        public readonly List<int> days = new List<int>();
+        public readonly List<float> plants = new List<float>();
+        public readonly Dictionary<PopulationData, LiveSeries> populations =
+            new Dictionary<PopulationData, LiveSeries>();
+        public readonly List<string> output = new List<string>();
+    }
+
+    private static readonly Dictionary<BlockInfo, LiveTileHistory> liveHistory =
+        new Dictionary<BlockInfo, LiveTileHistory>();
+    private const int MaxVisibleLiveOutput = 300;
+    private const int MaxLiveChartDays = 600;
+    private static SimulationController liveRecordingSource;
+    private static MapGridManager liveRecordingGrid;
+    private BlockInfo liveEnvironmentBlock;
+    private SimulationEnvironmentEdit liveEnvironment;
+    private SimulationController liveTuningSource;
+    private SimulationTuning liveTuning;
+    private float liveSecondsPerDay;
+    private bool liveFixedExpanded = true;
+    private Vector2 liveOutputScroll;
+
+    private void EnsureLiveRecording()
+    {
+        if (liveRecordingSource == liveSimulation && liveRecordingGrid == liveGrid) return;
+        StopLiveRecording();
+        liveRecordingSource = liveSimulation;
+        liveRecordingGrid = liveGrid;
+        liveRecordingSource.OnDaySimulated += RecordLiveDay;
+        EditorApplication.playModeStateChanged += OnLiveDashboardPlayModeChanged;
+        RecordLiveDay(liveTime.currentDay);
+    }
+
+    private void StopLiveRecording()
+    {
+        StopLiveRecordingSession();
+        liveTuningSource = null;
+        liveEnvironmentBlock = null;
+    }
+
+    private static void StopLiveRecordingSession()
+    {
+        if (liveRecordingSource != null)
+            liveRecordingSource.OnDaySimulated -= RecordLiveDay;
+        EditorApplication.playModeStateChanged -= OnLiveDashboardPlayModeChanged;
+        liveRecordingSource = null;
+        liveRecordingGrid = null;
+        liveHistory.Clear();
+    }
+
+    private static void OnLiveDashboardPlayModeChanged(PlayModeStateChange state)
+    {
+        if (state == PlayModeStateChange.ExitingPlayMode)
+            StopLiveRecordingSession();
+    }
+
+    private static void RecordLiveDay(int day)
+    {
+        if (liveRecordingGrid == null) return;
+        foreach (MapTileInstance tile in liveRecordingGrid.GetPlacedTiles())
+        {
+            BlockInfo site = tile.Block;
+            if (site == null) continue;
+            if (!liveHistory.TryGetValue(site, out LiveTileHistory history))
+            {
+                history = new LiveTileHistory();
+                liveHistory.Add(site, history);
+            }
+            if (history.days.Count > 0 && history.days[history.days.Count - 1] == day)
+                continue;
+            history.days.Add(day);
+            history.plants.Add(site.plantBiomass);
+            foreach (LiveSeries series in history.populations.Values)
+                series.amounts.Add(0f);
+            if (site.community != null)
+                foreach (PopulationData population in site.community)
+                {
+                    if (population == null) continue;
+                    if (!history.populations.TryGetValue(population, out LiveSeries series))
+                    {
+                        int index = history.populations.Count;
+                        series = new LiveSeries
+                        {
+                            color = Color.HSVToRGB((index * 0.618034f + 0.53f) % 1f,
+                                0.7f, 0.95f)
+                        };
+                        for (int i = 0; i < history.days.Count; i++)
+                            series.amounts.Add(0f);
+                        history.populations.Add(population, series);
+                    }
+                    series.name = population.species != null
+                        ? population.species.SpeciesName : population.lineageName;
+                    series.amounts[series.amounts.Count - 1] = population.speciesAmount;
+                }
+            if (day == 0) continue;
+            history.output.Add("Day " + day + "  植物 " + site.plantBiomass.ToString("F1") +
+                "  生长 " + site.plantGrowthToday.ToString("F1") +
+                "  摄食 " + site.consumedBiomassToday.ToString("F1") +
+                "  温/湿 " + site.temperature + "/" + site.humidity);
+            if (site.community != null)
+                foreach (PopulationData population in site.community)
+                {
+                    if (population == null) continue;
+                    history.output.Add("Day " + day + "  " +
+                        (population.species != null ? population.species.SpeciesName :
+                            population.lineageName) + "  数量 " + population.speciesAmount +
+                        "  出生 " + population.birthsToday +
+                        "  死亡 " + population.deathsToday);
+                }
+            TrimLiveOutput(history);
+            if (history.days.Count > MaxLiveChartDays)
+            {
+                history.days.RemoveAt(0);
+                history.plants.RemoveAt(0);
+                foreach (LiveSeries series in history.populations.Values)
+                    series.amounts.RemoveAt(0);
+            }
+        }
+    }
+
+    private void LogLive(BlockInfo block, string message)
+    {
+        if (block == null || !liveHistory.TryGetValue(block, out LiveTileHistory history))
+            return;
+        history.output.Add("Day " + liveTime.currentDay + "  " + message);
+        TrimLiveOutput(history);
+        if (history.days.Count == 0 ||
+            history.days[history.days.Count - 1] != liveTime.currentDay) return;
+        int last = history.days.Count - 1;
+        history.plants[last] = block.plantBiomass;
+        foreach (LiveSeries series in history.populations.Values)
+            series.amounts[last] = 0f;
+        if (block.community == null) return;
+        foreach (PopulationData population in block.community)
+        {
+            if (population == null) continue;
+            if (!history.populations.TryGetValue(population, out LiveSeries series))
+            {
+                int index = history.populations.Count;
+                series = new LiveSeries
+                {
+                    color = Color.HSVToRGB((index * 0.618034f + 0.53f) % 1f,
+                        0.7f, 0.95f)
+                };
+                for (int i = 0; i < history.days.Count; i++)
+                    series.amounts.Add(0f);
+                history.populations.Add(population, series);
+            }
+            series.name = population.species != null
+                ? population.species.SpeciesName : population.lineageName;
+            series.amounts[last] = population.speciesAmount;
+        }
+    }
+
+    private static void TrimLiveOutput(LiveTileHistory history)
+    {
+        int excess = history.output.Count - MaxVisibleLiveOutput;
+        if (excess > 0) history.output.RemoveRange(0, excess);
+    }
+
+    private void ReadLiveEnvironment(BlockInfo block)
+    {
+        liveEnvironment = new SimulationEnvironmentEdit
+        {
+            temperature = block.temperature,
+            humidity = block.humidity,
+            elevation = block.elevation,
+            habitatRecovery = block.habitatRecovery,
+            maxPlantBiomass = block.maxPlantBiomass,
+            plantBiomass = block.plantBiomass
+        };
+        liveEnvironmentBlock = block;
+    }
+
+    private void DrawLiveEnvironment(BlockInfo block)
+    {
+        if (liveEnvironmentBlock != block) ReadLiveEnvironment(block);
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        liveEnvironmentExpanded = EditorGUILayout.Foldout(liveEnvironmentExpanded,
+            "环境数据 · 单格直接调节", true);
+        if (!liveEnvironmentExpanded) { EditorGUILayout.EndVertical(); return; }
+        liveEnvironment.temperature = EditorGUILayout.IntSlider("温度",
+            liveEnvironment.temperature, 0, 100);
+        liveEnvironment.humidity = EditorGUILayout.IntSlider("湿度",
+            liveEnvironment.humidity, 0, 100);
+        liveEnvironment.elevation = EditorGUILayout.IntSlider("海拔",
+            liveEnvironment.elevation, 0, 2);
+        liveEnvironment.maxPlantBiomass = DarwinFarm.Environment.EnvironmentRules.PlantCapacity;
+        EditorGUILayout.LabelField("植物生物量上限", "1,000,000（固定）");
+        liveEnvironment.plantBiomass = Mathf.Clamp(
+            EditorGUILayout.FloatField("植物生物量", liveEnvironment.plantBiomass),
+            0f, liveEnvironment.maxPlantBiomass);
+        liveEnvironment.habitatRecovery = Mathf.Clamp(
+            EditorGUILayout.IntField("每日恢复量", liveEnvironment.habitatRecovery), 0,
+            DarwinFarm.Environment.EnvironmentRules.MaximumRecovery);
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("应用环境修改"))
+        {
+            bool success = liveInterventions.TryApplyEnvironment(liveCoordinate,
+                liveEnvironment, out string error);
+            liveMessage = success ? "环境修改已应用" : error;
+            if (success)
+            {
+                LogLive(block, "环境数据已修改");
+                ReadLiveEnvironment(block);
+            }
+        }
+        if (GUILayout.Button("读取当前环境")) ReadLiveEnvironment(block);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawLiveTuning()
+    {
+        if (liveTuningSource != liveSimulation)
+        {
+            liveTuning = liveSimulation.ReadTuning();
+            liveSecondsPerDay = liveTime.SecondsPerDay;
+            liveTuningSource = liveSimulation;
+        }
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        liveFixedExpanded = EditorGUILayout.Foldout(liveFixedExpanded,
+            "固定关键变量 · 全局模拟", true);
+        if (liveFixedExpanded)
+        {
+            liveTuning.reproductionScale = Mathf.Max(0f,
+                EditorGUILayout.FloatField("繁殖系数", liveTuning.reproductionScale));
+            liveTuning.overCapacityDeathRate = EditorGUILayout.Slider("超载衰退上限",
+                liveTuning.overCapacityDeathRate, 0f, 1f);
+            liveTuning.starvationDeathRate = EditorGUILayout.Slider("最大饥饿死亡率",
+                liveTuning.starvationDeathRate, 0f, 1f);
+            liveTuning.levelOnePreyFraction = EditorGUILayout.Slider("一级捕食比例 (%)",
+                liveTuning.levelOnePreyFraction * 100f, 0f, 100f) / 100f;
+            liveTuning.levelTwoPreyFraction = EditorGUILayout.Slider("二级捕食比例 (%)",
+                liveTuning.levelTwoPreyFraction * 100f, 0f, 100f) / 100f;
+            liveTuning.mutationEnabled = EditorGUILayout.Toggle("启用变异",
+                liveTuning.mutationEnabled);
+            liveTuning.mutationInterval = Mathf.Max(1,
+                EditorGUILayout.IntField("变异间隔（天）", liveTuning.mutationInterval));
+            liveTuning.mutationStep = Mathf.Max(0f,
+                EditorGUILayout.FloatField("变异步长", liveTuning.mutationStep));
+            liveTuning.selectionStrength = Mathf.Max(0f,
+                EditorGUILayout.FloatField("选择强度", liveTuning.selectionStrength));
+            liveTuning.ecologicalNichesEnabled = EditorGUILayout.Toggle("启用生态位",
+                liveTuning.ecologicalNichesEnabled);
+            liveTuning.migrationEnabled = EditorGUILayout.Toggle("启用迁徙",
+                liveTuning.migrationEnabled);
+            liveTuning.migrationInterval = Mathf.Max(1,
+                EditorGUILayout.IntField("迁徙间隔（天）", liveTuning.migrationInterval));
+            liveTuning.migrationPopulationScale = Mathf.Max(0.01f,
+                EditorGUILayout.FloatField("基础概率规模系数", liveTuning.migrationPopulationScale));
+            liveTuning.overloadThreshold = EditorGUILayout.Slider("超载阈值",
+                liveTuning.overloadThreshold, 0f, 0.99f);
+            liveTuning.baseOverloadProbability = EditorGUILayout.Slider("基础超载概率",
+                liveTuning.baseOverloadProbability, 0f, 1f);
+            liveTuning.overloadMigrationFraction = EditorGUILayout.Slider("超载迁出比例",
+                liveTuning.overloadMigrationFraction, 0f, 1f);
+            liveTuning.migrationCooldownDays = Mathf.Max(0,
+                EditorGUILayout.IntField("迁徙冷却（天）", liveTuning.migrationCooldownDays));
+            liveTuning.sameSpeciesMergeDays = Mathf.Max(1,
+                EditorGUILayout.IntField("同种群自动合并等待（天）",
+                    liveTuning.sameSpeciesMergeDays));
+            liveTuning.postMergeSplitCooldownDays = Mathf.Max(0,
+                EditorGUILayout.IntField("合并后禁止分化（天）",
+                    liveTuning.postMergeSplitCooldownDays));
+            liveTuning.splitMinimumRenewalPressure = EditorGUILayout.Slider(
+                "分化数量 / 环境容纳量", liveTuning.splitMinimumRenewalPressure, 0f, 1f);
+            liveTuning.splitFounderFraction = EditorGUILayout.Slider(
+                "分化创始比例", liveTuning.splitFounderFraction, 0f, 1f);
+            liveTuning.directedSplitTraitFraction = EditorGUILayout.Slider(
+                "分化性状靠拢比例", liveTuning.directedSplitTraitFraction, 0f, 1f);
+            liveTuning.directedSplitTraitLockDays = Mathf.Max(0,
+                EditorGUILayout.IntField("分化三性状锁定（天）",
+                    liveTuning.directedSplitTraitLockDays));
+            liveTuning.resourceTraitGain = Mathf.Max(0f,
+                EditorGUILayout.FloatField("食物性状选择增益",
+                    liveTuning.resourceTraitGain));
+            liveTuning.localMovementGain = Mathf.Max(0f,
+                EditorGUILayout.FloatField("原地运动下降增益",
+                    liveTuning.localMovementGain));
+            liveTuning.lowStockDays = Mathf.Max(0f,
+                EditorGUILayout.FloatField("库存偏少天数", liveTuning.lowStockDays));
+            liveTuning.highStockDays = Mathf.Max(liveTuning.lowStockDays,
+                EditorGUILayout.FloatField("库存偏多天数", liveTuning.highStockDays));
+            liveTuning.lowRenewalCoverage = Mathf.Max(0f,
+                EditorGUILayout.FloatField("持续供给偏少比例",
+                    liveTuning.lowRenewalCoverage));
+            liveTuning.highRenewalCoverage = Mathf.Max(liveTuning.lowRenewalCoverage,
+                EditorGUILayout.FloatField("持续供给偏多比例",
+                    liveTuning.highRenewalCoverage));
+            liveSecondsPerDay = Mathf.Max(0.05f,
+                EditorGUILayout.FloatField("每模拟日秒数", liveSecondsPerDay));
+            EditorGUILayout.LabelField("这些参数作用于整张地图。", EditorStyles.miniLabel);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("应用固定数值"))
+            {
+                liveInterventions.ApplyTuning(liveTuning, liveSecondsPerDay);
+                liveMessage = "全局固定数值已应用";
+                if (liveBridge.TryGetBlock(liveCoordinate, out BlockInfo block))
+                    LogLive(block, "全局固定数值已修改");
+            }
+            if (GUILayout.Button("读取当前参数"))
+            {
+                liveTuning = liveSimulation.ReadTuning();
+                liveSecondsPerDay = liveTime.SecondsPerDay;
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawLiveChart(BlockInfo block)
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.LabelField("种群数量 / 植物库存变化", EditorStyles.boldLabel);
+        if (!liveHistory.TryGetValue(block, out LiveTileHistory history) ||
+            history.days.Count == 0)
+        {
+            EditorGUILayout.LabelField("暂无记录");
+            EditorGUILayout.EndVertical();
+            return;
+        }
+        EditorGUILayout.LabelField("显示最近 600 天；完整历史见导出文件", EditorStyles.miniLabel);
+        Rect area = GUILayoutUtility.GetRect(100f, 245f, GUILayout.ExpandWidth(true));
+        EditorGUI.DrawRect(area, new Color(0.13f, 0.14f, 0.17f));
+        Rect plot = new Rect(area.x + 46f, area.y + 14f,
+            Mathf.Max(10f, area.width - 100f), area.height - 44f);
+        float maxPopulation = 1f, maxPlant = 1f;
+        foreach (LiveSeries series in history.populations.Values)
+            foreach (float amount in series.amounts)
+                maxPopulation = Mathf.Max(maxPopulation, amount);
+        foreach (float amount in history.plants)
+            maxPlant = Mathf.Max(maxPlant, amount);
+        GUIStyle label = new GUIStyle(EditorStyles.miniLabel);
+        label.normal.textColor = Color.white;
+        Handles.BeginGUI();
+        Handles.color = new Color(0.32f, 0.34f, 0.38f);
+        for (int i = 0; i <= 4; i++)
+        {
+            float y = plot.yMax - i * plot.height / 4f;
+            Handles.DrawLine(new Vector3(plot.x, y), new Vector3(plot.xMax, y));
+            GUI.Label(new Rect(area.x + 2f, y - 9f, 42f, 18f),
+                (maxPopulation * i / 4f).ToString("F0"), label);
+            GUI.Label(new Rect(plot.xMax + 3f, y - 9f, 50f, 18f),
+                (maxPlant * i / 4f).ToString("F0"), label);
+        }
+        foreach (LiveSeries series in history.populations.Values)
+            DrawLiveLine(series.amounts, maxPopulation, plot, series.color);
+        DrawLiveLine(history.plants, maxPlant, plot,
+            new Color(0.45f, 0.9f, 0.35f));
+        Handles.EndGUI();
+        GUI.Label(new Rect(plot.x, plot.yMax + 3f, 75f, 18f),
+            "Day " + history.days[0], label);
+        GUI.Label(new Rect(plot.xMax - 75f, plot.yMax + 3f, 75f, 18f),
+            "Day " + history.days[history.days.Count - 1], label);
+        EditorGUILayout.BeginHorizontal();
+        foreach (LiveSeries series in history.populations.Values)
+        {
+            GUIStyle legend = new GUIStyle(EditorStyles.miniLabel);
+            legend.normal.textColor = series.color;
+            GUILayout.Label("● " + series.name, legend);
+        }
+        GUIStyle plantLegend = new GUIStyle(EditorStyles.miniLabel);
+        plantLegend.normal.textColor = new Color(0.45f, 0.9f, 0.35f);
+        GUILayout.Label("● 植物（右轴）", plantLegend);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+    }
+
+    private static void DrawLiveLine(List<float> values, float maximum,
+        Rect plot, Color color)
+    {
+        if (values.Count < 2) return;
+        Vector3[] points = new Vector3[values.Count];
+        for (int i = 0; i < points.Length; i++)
+            points[i] = new Vector3(plot.x + i * plot.width / (points.Length - 1),
+                plot.yMax - plot.height * values[i] / maximum);
+        Handles.color = color;
+        Handles.DrawAAPolyLine(2f, points);
+    }
+
+    private void DrawLiveOutput(BlockInfo block)
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.LabelField("每日输出（最近 300 行；完整历史见导出文件）", EditorStyles.boldLabel);
+        liveOutputScroll = EditorGUILayout.BeginScrollView(liveOutputScroll,
+            GUILayout.Height(220f));
+        if (liveHistory.TryGetValue(block, out LiveTileHistory history))
+            for (int i = history.output.Count - 1; i >= 0; i--)
+                EditorGUILayout.LabelField(history.output[i]);
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndVertical();
+    }
+}

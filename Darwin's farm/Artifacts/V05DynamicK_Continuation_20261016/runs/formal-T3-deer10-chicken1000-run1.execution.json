@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-T3-deer10-chicken1000",
+  "run": 1,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 26.386,
+  "inputSha256": "7a0d8f6f5f372663abea1edc4055dd9fc7b133b4e244e5501c35aa89d3b6a2c7"
+}

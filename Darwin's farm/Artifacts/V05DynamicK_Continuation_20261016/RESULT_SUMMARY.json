@@ -1,0 +1,791 @@
+{
+  "explore-chain-T40-H40-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "4a8614ec3bdc02e5a463b9074f605e793a7a162a7fa5e8d208e7f2373cac9258",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "鸡": 1717
+    },
+    "births": {
+      "灵感菇狸": 3,
+      "鸡": 142472,
+      "鹿": 145
+    },
+    "deaths": {
+      "灵感菇狸": 16,
+      "鸡": 141755,
+      "鹿": 236
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 67,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 1,
+      "灵感菇狸": 4
+    },
+    "firstDisappearance": {
+      "灵感菇狸": 37,
+      "鹿": 230
+    },
+    "maxAbsMaterialResidual": 0.499542236328125,
+    "maxRelativeMaterialResidual": 4.9535948748854646e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=37 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:0 detail=species=灵感菇狸 count=7 days=10",
+      "ecology day=230 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:2 detail=species=鹿 count=9 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H40",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 28.285,
+      "inputSha256": "6b6847f10371db180de2db6a8c67e9ed3c033cd459532a67f9a1482681ed274c"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H50-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "6314a02c9a41912498b4b59a5525c16d0f1ff3b3cd084c1e68e9e8b2a20e9a20",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "灵感菇狸": 27,
+      "鸡": 1714
+    },
+    "births": {
+      "灵感菇狸": 1996,
+      "鸡": 142277,
+      "鹿": 548
+    },
+    "deaths": {
+      "灵感菇狸": 1989,
+      "鸡": 141563,
+      "鹿": 639
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 12016,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 1,
+      "灵感菇狸": 2
+    },
+    "firstDisappearance": {
+      "鹿": 419
+    },
+    "maxAbsMaterialResidual": 1.567108154296875,
+    "maxRelativeMaterialResidual": 5.755332164284059e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=419 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:2 detail=species=鹿 count=9 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H50",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 28.728,
+      "inputSha256": "f5b592df4733c8607cfe380c7d8669b3ba5127d1bb29bd62f48ab8897b6e0c84"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H52-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "d81a4f5205090da28ea5666e95001e8455ea8378de293132e7abf9ca947dcb00",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "灵感菇狸": 27,
+      "鸡": 1720
+    },
+    "births": {
+      "灵感菇狸": 1999,
+      "鸡": 139244,
+      "鹿": 853
+    },
+    "deaths": {
+      "灵感菇狸": 1992,
+      "鸡": 138524,
+      "鹿": 945
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 11925,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 1,
+      "灵感菇狸": 2
+    },
+    "firstDisappearance": {
+      "鹿": 527
+    },
+    "maxAbsMaterialResidual": 2.433807373046875,
+    "maxRelativeMaterialResidual": 7.751336780546808e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=527 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:2 detail=species=鹿 count=9 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H52",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 20.708,
+      "inputSha256": "c25d8394404a4a002bcd2a37864cbd768b681155319189a61ed7197868f5829e"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H54-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "86ad95637cbeffbdd017853db791dac910545534efc88fde1a0ea5373b6a610c",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "灵感菇狸": 26,
+      "鸡": 1727
+    },
+    "births": {
+      "灵感菇狸": 1999,
+      "鸡": 134224,
+      "鹿": 1576
+    },
+    "deaths": {
+      "灵感菇狸": 1993,
+      "鸡": 133497,
+      "鹿": 1667
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 11816,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 1,
+      "灵感菇狸": 2
+    },
+    "firstDisappearance": {
+      "鹿": 706
+    },
+    "maxAbsMaterialResidual": 1.567047119140625,
+    "maxRelativeMaterialResidual": 7.750928383958225e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=706 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:2 detail=species=鹿 count=9 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H54",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 22.698,
+      "inputSha256": "d80bcb2af9d5cebecc46f27f14f42dcfe95b5dcf616aaa28d469fb5d3262a032"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H55-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "9a9dac4e115abad1550f35f0c1f338073410f40e2618d4c47aa5d2e6f2d2a35c",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "灵感菇狸": 27,
+      "鸡": 1731
+    },
+    "births": {
+      "灵感菇狸": 1999,
+      "鸡": 121481,
+      "鹿": 4280
+    },
+    "deaths": {
+      "灵感菇狸": 1992,
+      "鸡": 120750,
+      "鹿": 4371
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 11763,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 1,
+      "灵感菇狸": 2
+    },
+    "firstDisappearance": {
+      "鹿": 1192
+    },
+    "maxAbsMaterialResidual": 1.567169189453125,
+    "maxRelativeMaterialResidual": 5.3719394328625926e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=1192 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:2 detail=species=鹿 count=9 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H55",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 24.82,
+      "inputSha256": "2b044bc5d26ce9ea15e4aa9c732f13ee5be7b190733b37fcd2268d0258aed814"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H56-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "c59edd5d3cc32e9b9483920dbb0886017875eb4db0992739e17b8ca6f49cac2c",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "鹿": 732
+    },
+    "births": {
+      "灵感菇狸": 492,
+      "鸡": 14821,
+      "鹿": 27708
+    },
+    "deaths": {
+      "灵感菇狸": 510,
+      "鸡": 15819,
+      "鹿": 27076
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 2873,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 1,
+      "灵感菇狸": 2
+    },
+    "firstDisappearance": {
+      "鸡": 494,
+      "灵感菇狸": 498
+    },
+    "maxAbsMaterialResidual": 2.0,
+    "maxRelativeMaterialResidual": 5.528786018927462e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=501 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:1 detail=species=鸡 count=0 days=10",
+      "ecology day=505 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:0 detail=species=灵感菇狸 count=0 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H56",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 19.917,
+      "inputSha256": "54bd540998fd742f83c2974aa7cb732ff248f4c888960a2a06b25ef745f0414b"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H58-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "f95e4cd591c405bb9bd602bf038407a72d5fc7f563a09ceffd1f4d604b7e93ef",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "鹿": 730
+    },
+    "births": {
+      "灵感菇狸": 324,
+      "鸡": 8263,
+      "鹿": 28556
+    },
+    "deaths": {
+      "灵感菇狸": 343,
+      "鸡": 9261,
+      "鹿": 27926
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 1872,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 1,
+      "灵感菇狸": 2
+    },
+    "firstDisappearance": {
+      "鸡": 326,
+      "灵感菇狸": 331
+    },
+    "maxAbsMaterialResidual": 0.484375,
+    "maxRelativeMaterialResidual": 4.650448630799124e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=333 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:1 detail=species=鸡 count=0 days=10",
+      "ecology day=337 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:0 detail=species=灵感菇狸 count=0 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H58",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 27.76,
+      "inputSha256": "6523d7f071954ddae4b6dc10ab9ebb5c48c5e716987e75bf8205a0d786cd5b74"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H60-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "3a67e3c705efc96fc1f5372f8bf2425adf519ca59ad72fffcc9cb459d766e961",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "鹿": 726
+    },
+    "births": {
+      "灵感菇狸": 260,
+      "鸡": 5863,
+      "鹿": 29094
+    },
+    "deaths": {
+      "灵感菇狸": 279,
+      "鸡": 6861,
+      "鹿": 28468
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 1488,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "灵感菇狸": 1,
+      "鸡": 1,
+      "鹿": 1
+    },
+    "firstDisappearance": {
+      "鸡": 261,
+      "灵感菇狸": 266
+    },
+    "maxAbsMaterialResidual": 0.204986572265625,
+    "maxRelativeMaterialResidual": 4.116099964274642e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=268 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:1 detail=species=鸡 count=0 days=10",
+      "ecology day=272 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:0 detail=species=灵感菇狸 count=0 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H60",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 28.31,
+      "inputSha256": "4a828f43c8be30f32aab7315fe9b4657f4328355062d154aacae4fdac1956ac3"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "explore-chain-T40-H70-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "5cc93738a5dfa31350219782f39a024cf5870e870998f9cdae09349b2e6da865",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "鹿": 711
+    },
+    "births": {
+      "灵感菇狸": 155,
+      "鸡": 2324,
+      "鹿": 31094
+    },
+    "deaths": {
+      "灵感菇狸": 174,
+      "鸡": 3321,
+      "鹿": 30483
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 854,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "灵感菇狸": 1,
+      "鸡": 1,
+      "鹿": 1
+    },
+    "firstDisappearance": {
+      "鸡": 156,
+      "灵感菇狸": 162
+    },
+    "maxAbsMaterialResidual": 2.0,
+    "maxRelativeMaterialResidual": 5.5371925086431844e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=163 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:1 detail=species=鸡 count=0 days=10",
+      "ecology day=167 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:0 detail=species=灵感菇狸 count=0 days=10"
+    ],
+    "execution": {
+      "scenario": "explore-chain-T40-H70",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 26.925,
+      "inputSha256": "279001188da3640c3e913c50715c2f430e54df20070b9da5fe981de3a5cff376"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "formal-T3-deer10-chicken1000-run1": {
+    "days": 100,
+    "records": 101,
+    "sha256": "f9bb009a3c1b4280704fd63cf4d0b37663b6a764ee516997f1ad73ffba10db40",
+    "bindingSha256": "48add15a77d355b14f52c9551b0792a350b9207c0a38bf1e84489314b3b4c18d",
+    "final": {
+      "鸡": 1645
+    },
+    "births": {
+      "鸡": 8852,
+      "鹿": 18
+    },
+    "deaths": {
+      "鸡": 8207,
+      "鹿": 20
+    },
+    "predationDeaths": {
+      "鸡": 0,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鸡": 1,
+      "鹿": 3
+    },
+    "firstDisappearance": {
+      "鹿": 70
+    },
+    "maxAbsMaterialResidual": 0.037200927734375,
+    "maxRelativeMaterialResidual": 1.9014896837362685e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=70 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:1 detail=species=鹿 count=8 days=10"
+    ],
+    "execution": {
+      "scenario": "formal-T3-deer10-chicken1000",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 26.386,
+      "inputSha256": "7a0d8f6f5f372663abea1edc4055dd9fc7b133b4e244e5501c35aa89d3b6a2c7"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=100 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=100 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "formal-T3-deer10-poor-run1": {
+    "days": 100,
+    "records": 101,
+    "sha256": "3468b1ca70795d1457ed4c91695741e747415344d5d43d5ca9bd60543fe1ecb5",
+    "bindingSha256": "4e8f8687ccc6c290b8de016b4acdc38b0837480ee895a42402481b3aa6d8cbbd",
+    "final": {},
+    "births": {
+      "鹿": 9
+    },
+    "deaths": {
+      "鹿": 11
+    },
+    "predationDeaths": {
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鹿": 3
+    },
+    "firstDisappearance": {
+      "鹿": 46
+    },
+    "maxAbsMaterialResidual": 0.00091552734375,
+    "maxRelativeMaterialResidual": 1.937624007936508e-09,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=46 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:0 detail=species=鹿 count=9 days=10"
+    ],
+    "execution": {
+      "scenario": "formal-T3-deer10-poor",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 27.939,
+      "inputSha256": "307a64033d8dad21c3e07fbe630a0564901ea05a37096feeef2e5e11712d8591"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=100 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=100 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "formal-T3-deer10-rich-run1": {
+    "days": 100,
+    "records": 101,
+    "sha256": "3d8c5bd09feb12c77f0f8e57618a7bf882cc9fb762902f1038653d0f12fbf25a",
+    "bindingSha256": "4e8f8687ccc6c290b8de016b4acdc38b0837480ee895a42402481b3aa6d8cbbd",
+    "final": {
+      "鹿": 27
+    },
+    "births": {
+      "鹿": 59
+    },
+    "deaths": {
+      "鹿": 42
+    },
+    "predationDeaths": {
+      "鹿": 0
+    },
+    "firstBirth": {
+      "鹿": 3
+    },
+    "firstDisappearance": {},
+    "maxAbsMaterialResidual": 0.02880859375,
+    "maxRelativeMaterialResidual": 2.3304332386363638e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [],
+    "execution": {
+      "scenario": "formal-T3-deer10-rich",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 35.017,
+      "inputSha256": "0b870bcdd52e95ae2feb275b5c6c9ca3a85bac033e065a7c5db4320af2ae3218"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=100 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=100 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "formal-T5-rich-civet20-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "ce5c0269bd1422e8613a2c33484a268195c20acb56e86cdbe7aac1719cc80e15",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "灵感菇狸": 21,
+      "鸡": 1616
+    },
+    "births": {
+      "灵感菇狸": 2000,
+      "鸡": 164153,
+      "鹿": 257
+    },
+    "deaths": {
+      "灵感菇狸": 1999,
+      "鸡": 163537,
+      "鹿": 348
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 10609,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "灵感菇狸": 1,
+      "鸡": 1,
+      "鹿": 1
+    },
+    "firstDisappearance": {
+      "鹿": 254
+    },
+    "maxAbsMaterialResidual": 2.434051513671875,
+    "maxRelativeMaterialResidual": 6.905959446871555e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=254 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:2 detail=species=鹿 count=8 days=10"
+    ],
+    "execution": {
+      "scenario": "formal-T5-rich-civet20",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 31.564,
+      "inputSha256": "d757b17660f9a96b29a06c15d6d6783ee759a794369401aa7c914c8570bcbd77"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  },
+  "formal-T5-rich-civet50-run1": {
+    "days": 2000,
+    "records": 2001,
+    "sha256": "f67a17fa7c0103ab14285ff12f177418159718891307dff0989d25ce2e3231f5",
+    "bindingSha256": "fefbc0b20035fffe69498c2fc93d8ce92e3096f69691c0359e0247b705aa22cb",
+    "final": {
+      "鹿": 684
+    },
+    "births": {
+      "灵感菇狸": 657,
+      "鸡": 6436,
+      "鹿": 33131
+    },
+    "deaths": {
+      "灵感菇狸": 706,
+      "鸡": 7407,
+      "鹿": 32547
+    },
+    "predationDeaths": {
+      "灵感菇狸": 0,
+      "鸡": 3077,
+      "鹿": 0
+    },
+    "firstBirth": {
+      "灵感菇狸": 1,
+      "鸡": 1,
+      "鹿": 1
+    },
+    "firstDisappearance": {
+      "鸡": 93,
+      "灵感菇狸": 101
+    },
+    "maxAbsMaterialResidual": 2.0,
+    "maxRelativeMaterialResidual": 5.544359110965508e-08,
+    "unpaidBirthViolations": [],
+    "physicalPlantResourceViolations": [],
+    "events": [
+      "ecology day=102 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:1 detail=species=鸡 count=0 days=10",
+      "ecology day=106 tile=Tile_1_0_森林 kind=local_extinction population=seed:240:Tile_1_0_森林:0 detail=species=灵感菇狸 count=0 days=10"
+    ],
+    "execution": {
+      "scenario": "formal-T5-rich-civet50",
+      "run": 1,
+      "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+      "exitCode": 0,
+      "unityReplayOK": true,
+      "replayCompleted": true,
+      "actionRejections": false,
+      "seconds": 30.698,
+      "inputSha256": "6024846792dd274f9247518cebb6377741c191db7424cd562e773d873da027be"
+    },
+    "counterfactuals": [],
+    "allocationAudits": [
+      "plantAllocationAudit day=0 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=0 tile=1,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=0,0 reverseOrderMaxAbsDifference=0",
+      "plantAllocationAudit day=2000 tile=1,0 reverseOrderMaxAbsDifference=0"
+    ]
+  }
+}

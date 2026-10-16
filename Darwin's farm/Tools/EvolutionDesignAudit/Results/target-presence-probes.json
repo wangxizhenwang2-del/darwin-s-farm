@@ -1,0 +1,50 @@
+[
+  {
+    "kind": "synthetic gate isolation; not a player recipe or reachability result",
+    "from": "孔雀",
+    "to": "鸡",
+    "sourceCount": 160,
+    "sourceTraits": [
+      55,
+      35,
+      10,
+      8,
+      70
+    ],
+    "targetCount": null,
+    "eligible": true,
+    "reason": "all other gates pass; target absent"
+  },
+  {
+    "kind": "synthetic gate isolation; not a player recipe or reachability result",
+    "from": "孔雀",
+    "to": "鸡",
+    "sourceCount": 160,
+    "sourceTraits": [
+      55,
+      35,
+      10,
+      8,
+      70
+    ],
+    "targetCount": 0,
+    "eligible": false,
+    "reason": "HasLivingSpecies blocks any existing target entry"
+  },
+  {
+    "kind": "synthetic gate isolation; not a player recipe or reachability result",
+    "from": "孔雀",
+    "to": "鸡",
+    "sourceCount": 160,
+    "sourceTraits": [
+      55,
+      35,
+      10,
+      8,
+      70
+    ],
+    "targetCount": 1600,
+    "eligible": false,
+    "reason": "HasLivingSpecies blocks any existing target entry"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-T3-deer100-poor",
+  "run": 2,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 16.472,
+  "inputSha256": "8b5aaca5d025f5688534554489a6286426f1a7e82138dd106d3d5415f5c7ea5b"
+}

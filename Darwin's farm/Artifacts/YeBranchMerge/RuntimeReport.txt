@@ -1,0 +1,3 @@
+PASS: Lava changes continuously during native Play Mode
+Native Play Mode seconds: 4.000054
+Errors: 0

@@ -1,0 +1,125 @@
+{
+  "scenarioId": "V05-T3-mushroom-energy40-plant475strong-seed240",
+  "seed": 240,
+  "endDay": 750,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "originInitialStock": 1000000,
+  "originInitialChickenCount": 1000,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 2
+    },
+    {
+      "day": 220,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -2
+    },
+    {
+      "day": 230,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -2
+    },
+    {
+      "day": 250,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 260,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 270,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 280,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 340,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -1
+    },
+    {
+      "day": 350,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -1
+    },
+    {
+      "day": 360,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -1
+    },
+    {
+      "day": 380,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 390,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 400,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 410,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 475,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    }
+  ]
+}
