@@ -430,7 +430,7 @@ Transform:
   m_GameObject: {fileID: 844723967}
   serializedVersion: 2
   m_LocalRotation: {x: 0.26624528, y: -0.2487928, z: 0.071340196, w: 0.9285075}
-  m_LocalPosition: {x: 10.176577, y: 15.601714, z: -17.626348}
+  m_LocalPosition: {x: 9, y: 13.8, z: -17.626348}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -549,19 +549,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.3032726
+      value: 1.3371612
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.4498418
+      value: 0.3796373
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.9541817
+      value: 0.978993
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.32934847
+      value: 0.27794874
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -573,11 +573,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.27235943
+      value: -0.21663341
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.39235944
+      value: -0.3366334
       objectReference: {fileID: 0}
     - target: {fileID: 3718694943631870315, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: dustIntensity
@@ -605,19 +605,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.4480805
+      value: 1.4857347
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.49982423
+      value: 0.4218192
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.0602018
+      value: 1.08777
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.36594275
+      value: 0.3088319
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -633,19 +633,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 2.0273128
+      value: 2.0800285
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.6997539
+      value: 0.5905469
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.4842825
+      value: 1.522878
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.5123198
+      value: 0.43236467
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -657,27 +657,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.27235943
+      value: -0.21663341
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.39235944
+      value: -0.3366334
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 2.1359186
+      value: 2.1914585
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.7372406
+      value: 0.62218326
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.5637976
+      value: 1.6044606
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.5397655
+      value: 0.45552704
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -685,15 +685,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 20.22094
+      value: 20.531605
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.27235943
+      value: -0.21663341
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.39235944
+      value: -0.3366334
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

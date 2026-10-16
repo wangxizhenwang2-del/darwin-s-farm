@@ -239,13 +239,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517740557}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.18175873, y: 0.8125051, z: -0.16510628, w: 0.5287146}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.24675757, y: -0.7831178, z: 0.3608545, w: -0.44229108}
+  m_LocalPosition: {x: -12.47, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 4.365, y: 112.801, z: -28.12}
+  m_LocalEulerAnglesHint: {x: 51.579, y: -235.909, z: 6.215}
 --- !u!1 &1704604334
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,6 +422,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5245874406460607413, guid: c2de8a16c20497448987ae31814dfb68, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.1296
+      objectReference: {fileID: 0}
+    - target: {fileID: 5245874406460607413, guid: c2de8a16c20497448987ae31814dfb68, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8697081355431209792, guid: c2de8a16c20497448987ae31814dfb68, type: 3}
       propertyPath: m_Name
       value: Tundra_Colored
@@ -439,6 +447,98 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1823848844788352472, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0.95362514
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823848844788352472, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0.32674795
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823848844788352472, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 0.69818985
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823848844788352472, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 0.23922619
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823848844788352472, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: NoiseModule.strength.scalar
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130328734073755502, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 1.3350751
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130328734073755502, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0.45744714
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130328734073755502, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 0.97746575
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130328734073755502, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 0.33491665
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130328734073755502, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: NoiseModule.strength.scalar
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130328734073755502, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: InitialModule.startRotationY.scalar
+      value: -0.27010098
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130328734073755502, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: InitialModule.startRotationY.minScalar
+      value: -0.390101
+      objectReference: {fileID: 0}
+    - target: {fileID: 2572875776941082588, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: gustStrength
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2572875776941082588, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: gustFrequency
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2572875776941082588, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: turbulenceStrength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 1.4065971
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0.48195323
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 1.02983
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 0.3528586
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: NoiseModule.strength.scalar
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 0.16815409
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: InitialModule.startRotationY.scalar
+      value: -0.27010098
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261809697936492090, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: InitialModule.startRotationY.minScalar
+      value: -0.390101
+      objectReference: {fileID: 0}
     - target: {fileID: 4681243219497657413, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
       propertyPath: m_Name
       value: TundraVFX
@@ -482,6 +582,34 @@ PrefabInstance:
     - target: {fileID: 6719575255663547979, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322437816831430310, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0.85826266
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322437816831430310, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0.2940732
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322437816831430310, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 0.6283709
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322437816831430310, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 0.21530358
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322437816831430310, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: NoiseModule.strength.scalar
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322437816831430310, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: InitialModule.startRotationY.scalar
+      value: -0.27010098
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322437816831430310, guid: 2981bc3206ec4a9478c3323e53d457e7, type: 3}
+      propertyPath: InitialModule.startRotationY.minScalar
+      value: -0.390101
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
