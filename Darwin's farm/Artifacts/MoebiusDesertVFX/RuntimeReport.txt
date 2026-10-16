@@ -1,0 +1,9 @@
+Actual Play Mode after saved-scene reload
+Native simulation time: 7.500
+Editor/player updates observed: 28291
+SurfaceSand: playing; particles=20; seed=4508
+GustSand: playing; particles=7; seed=4645
+AirborneSand: playing; particles=21; seed=4782
+DesertWindStreaks: playing; particles=1; seed=4919
+Current native wind: (1.38, 0.00, 0.41)
+Errors: 0

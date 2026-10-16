@@ -1,0 +1,14 @@
+Target: Assets/Rendering/Moebius/Samples/Biomes/Scenes/Forest_Moebius.unity; ground tiles: 3
+Ground bounds: Center: (12.53, -3.01, -14.09), Extents: (5.11, 2.55, 19.64)
+Emission layer 0: 1638 patches
+Tree canopy leaf patches: 81
+Emission layer 1: 81 patches
+Emission layer 2: 546 patches
+Unchanged existing scene component snapshots: 1236
+t=3.98 particle counts motes/leaves/wisps/mist=121/8/2
+t=8.98 particle counts motes/leaves/wisps/mist=120/10/2
+t=14.98 particle counts motes/leaves/wisps/mist=117/10/2
+Peak simultaneous particles: 134; cap=200
+Below-ground samples: 0; outside-tile samples: 0; maximum wind change/frame: 0.0005513338
+Layer peak counts: 125/11/3
+Errors: 0

@@ -1,0 +1,9 @@
+Actual Play Mode after saved-scene reload
+Native simulation time: 7.500
+Editor/player updates observed: 27777
+ColdGroundHaze: playing; particles=6; seed=4508
+SnowPatchSpindrift: playing; particles=7; seed=4645
+SnowFlakes: playing; particles=44; seed=4782
+ColdWindStreaks: playing; particles=1; seed=4919
+Current native wind: (1.25, 0.00, 0.38)
+Errors: 0

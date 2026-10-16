@@ -1,0 +1,14 @@
+Target: Grassland_Moebius (corrected target); ground tiles: 1
+Ground bounds: Center: (-0.12, 1.05, 0.24), Extents: (5.76, 1.02, 5.76)
+Emission layer 0: 633 patches
+Tree canopy leaf patches: 12
+Emission layer 1: 12 patches
+Emission layer 2: 211 patches
+Unchanged existing scene component snapshots: 709
+t=3.98 particle counts motes/leaves/wisps=109/13/2
+t=8.98 particle counts motes/leaves/wisps=108/8/1
+t=14.98 particle counts motes/leaves/wisps=107/11/2
+Peak simultaneous particles: 125; cap=194
+Below-ground samples: 0; outside-tile samples: 0; maximum wind change/frame: 0.0009743865
+Layer peak counts: 113/14/2
+Errors: 0
