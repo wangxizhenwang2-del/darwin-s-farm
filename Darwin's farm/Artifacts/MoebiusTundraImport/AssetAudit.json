@@ -1,0 +1,11 @@
+{
+  "existingAssetFilesChecked": 1237,
+  "changedExistingAssets": [],
+  "newFiles": 50,
+  "missingAssetReferences": [],
+  "duplicateNewGuids": [],
+  "resolvedPackageReferences": {
+    "474bcb49853aa07438625e644c072ee6": "Library\\PackageCache\\com.unity.render-pipelines.universal@bc6f352be672\\Runtime\\UniversalAdditionalLightData.cs.meta",
+    "a79441f348de89743a2939f4d699eac1": "Library\\PackageCache\\com.unity.render-pipelines.universal@bc6f352be672\\Runtime\\UniversalAdditionalCameraData.cs.meta"
+  }
+}

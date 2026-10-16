@@ -1,0 +1,10 @@
+PASS: Existing PC URP pipeline is available
+PASS: Saved colored prefab instance reloads
+PASS: Saved scene retains all source renderers
+PASS: Scene uses the reusable colored prefab
+PASS: All saved mesh, material and shader bindings resolve
+PASS: Tile needs no new runtime controllers
+PASS: Existing shader loads: Darwin/Moebius NPR
+PASS: Existing shader loads: Darwin/Moebius Water
+PASS: Existing shader loads: Hidden/Darwin/Moebius Outline
+Errors: 0

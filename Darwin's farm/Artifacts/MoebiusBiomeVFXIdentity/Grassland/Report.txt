@@ -1,0 +1,7 @@
+Grass-clump seed patches: 39
+Grassland: horizontal grass seeds + visible wind sweeps; sparse small pollen.
+Layer names: FloatingMotes / GrassSeeds / GrasslandWindWisps
+Layer peak counts: 4 / 20 / 7
+Peak total: 27; below-ground samples: 0; outside tile samples: 0
+Environment component snapshots unchanged: 709
+Errors: 0

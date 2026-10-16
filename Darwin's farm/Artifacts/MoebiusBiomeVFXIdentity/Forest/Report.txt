@@ -1,0 +1,6 @@
+Forest: broad olive/ochre leaves rotating down from canopies; no wind-line layer.
+Layer names: FloatingMotes / FallingBroadLeaves / ForestWindWisps
+Layer peak counts: 16 / 22 / 0
+Peak total: 35; below-ground samples: 0; outside tile samples: 0
+Environment component snapshots unchanged: 1236
+Errors: 0

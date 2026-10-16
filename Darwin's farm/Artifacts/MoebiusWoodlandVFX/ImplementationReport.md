@@ -1,3 +1,5 @@
+> 2026-10-16：已进一步区分草原、森林和雨林的形状与运动。最新参数与效果见 [辨识度调整报告](<D:/GameAssignment/darwin-s-farm/Darwin's farm/Artifacts/MoebiusBiomeVFXIdentity/ImplementationReport.md>)。
+
 # Forest / Rainforest 环境粒子
 
 已分别接入：

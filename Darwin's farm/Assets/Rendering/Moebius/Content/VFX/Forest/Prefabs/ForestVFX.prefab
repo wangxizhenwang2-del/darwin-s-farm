@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 3236969335568209761}
   - component: {fileID: 6980396172092729028}
   m_Layer: 0
-  m_Name: FallingLeaves
+  m_Name: FallingBroadLeaves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -276,8 +276,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 7
-      minScalar: 4
+      scalar: 8
+      minScalar: 5.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -382,8 +382,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.82, g: 0.9, b: 0.69, a: 1}
-      maxColor: {r: 1, g: 0.94, b: 0.7, a: 1}
+      minColor: {r: 0.65, g: 0.79, b: 0.47, a: 1}
+      maxColor: {r: 1, g: 0.85, b: 0.56, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -447,8 +447,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.34
-      minScalar: 0.19
+      scalar: 0.68
+      minScalar: 0.4
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1030,7 +1030,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2.1
+      scalar: 5.2
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1408,8 +1408,8 @@ ParticleSystem:
     curve:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.1
-      minScalar: -1.1
+      scalar: 1.8
+      minScalar: -1.8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1655,8 +1655,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.414721
-      minScalar: 0.2962293
+      scalar: 0.21363139
+      minScalar: 0.15259385
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1708,8 +1708,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: -0.24
-      minScalar: -0.42
+      scalar: -0.37
+      minScalar: -0.64
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1761,8 +1761,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.13792862
-      minScalar: 0.09852045
+      scalar: 0.06977508
+      minScalar: 0.049839344
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2849,7 +2849,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.099
+      scalar: 0.081
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -5374,8 +5374,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.23
-      minScalar: 0.11
+      scalar: 0.105
+      minScalar: 0.055
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5957,7 +5957,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 14
+      scalar: 1.4
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -6582,8 +6582,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.17864907
-      minScalar: 0.12760648
+      scalar: 0.09202584
+      minScalar: 0.06573274
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -6688,8 +6688,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.05941541
-      minScalar: 0.04243958
+      scalar: 0.030056959
+      minScalar: 0.021469256
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -7776,7 +7776,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.066
+      scalar: 0.054000005
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -10425,8 +10425,8 @@ ParticleSystem:
     startRotationY:
       serializedVersion: 2
       minMaxState: 3
-      scalar: -0.24107392
-      minScalar: -0.40107393
+      scalar: -0.23569132
+      minScalar: -0.39569134
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10796,7 +10796,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.4502441
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -11421,8 +11421,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.5104259
-      minScalar: 0.36458993
+      scalar: 0.26293096
+      minScalar: 0.18780784
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -11527,8 +11527,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.16975832
-      minScalar: 0.12125595
+      scalar: 0.08587702
+      minScalar: 0.06134073
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -12615,7 +12615,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.0154
+      scalar: 0.012600001
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -14814,23 +14814,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Darwin.Rendering.WoodlandWindController
   windDirection: {x: 1, y: 0.3}
-  baseWindSpeed: 0.42
-  gustStrength: 0.6
-  gustFrequency: 0.08
-  turbulenceStrength: 0.22
+  baseWindSpeed: 0.24
+  gustStrength: 0.4
+  gustFrequency: 0.075
+  turbulenceStrength: 0.18
   randomSeed: 9219
   globalVFXIntensity: 1
   motesIntensity: 1
   leavesIntensity: 1
-  windWispsIntensity: 1
-  motesRate: 14
-  leavesRate: 2.1
-  windWispsRate: 0.5
-  motesColor: {r: 0.89, g: 0.9, b: 0.7, a: 1}
-  leavesColor: {r: 0.69, g: 0.71, b: 0.4, a: 1}
+  windWispsIntensity: 0
+  motesRate: 1.4
+  leavesRate: 5.2
+  windWispsRate: 0
+  motesColor: {r: 0.83, g: 0.8, b: 0.61, a: 1}
+  leavesColor: {r: 0.82, g: 0.68, b: 0.35, a: 1}
   windWispsColor: {r: 0.83, g: 0.87, b: 0.74, a: 1}
-  motesSizeRange: {x: 0.11, y: 0.23}
-  leavesSizeRange: {x: 0.19, y: 0.34}
+  motesSizeRange: {x: 0.055, y: 0.105}
+  leavesSizeRange: {x: 0.4, y: 0.68}
   windLengthRange: {x: 1.6, y: 2.8}
   mistIntensity: 1
   mistRate: 0.65

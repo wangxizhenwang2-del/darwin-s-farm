@@ -552,8 +552,8 @@ ParticleSystem:
     startRotationY:
       serializedVersion: 2
       minMaxState: 3
-      scalar: -0.22169368
-      minScalar: -0.38169366
+      scalar: -0.2170407
+      minScalar: -0.37704068
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -923,7 +923,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.17170353
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1548,8 +1548,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.20053233
-      minScalar: 0.14323738
+      scalar: 0.115543365
+      minScalar: 0.082530975
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1654,8 +1654,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.062404245
-      minScalar: 0.044574462
+      scalar: 0.035367444
+      minScalar: 0.02526246
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2742,7 +2742,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.0154
+      scalar: 0.0084
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -5062,8 +5062,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 10
-      minScalar: 7
+      scalar: 12
+      minScalar: 8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5233,8 +5233,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 3.8
-      minScalar: 2.2
+      scalar: 4.8
+      minScalar: 3.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5285,9 +5285,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 1
-      minScalar: 1
+      minMaxState: 3
+      scalar: 1.15
+      minScalar: 0.8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5339,8 +5339,8 @@ ParticleSystem:
     startSizeZ:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.9
-      minScalar: 0.92399997
+      scalar: 2.4
+      minScalar: 1.344
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5445,8 +5445,8 @@ ParticleSystem:
     startRotationY:
       serializedVersion: 2
       minMaxState: 3
-      scalar: -0.22169368
-      minScalar: -0.38169366
+      scalar: -0.2170407
+      minScalar: -0.37704068
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5550,10 +5550,10 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 10
+    maxNumParticles: 16
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 1
-    rotation3D: 1
+    rotation3D: 0
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
@@ -5816,7 +5816,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.65
+      scalar: 1.05
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -6441,8 +6441,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.08271959
-      minScalar: 0.059085418
+      scalar: 0.04766164
+      minScalar: 0.034044027
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -6494,8 +6494,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.045
-      minScalar: -0.015
+      scalar: 0.012
+      minScalar: -0.005
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -6547,8 +6547,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.025741752
-      minScalar: 0.018386966
+      scalar: 0.014589072
+      minScalar: 0.010420766
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -7635,7 +7635,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.0154
+      scalar: 0.0084
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -9753,7 +9753,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_RenderMode: 4
+  m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 1
   m_MinParticleSize: 0
@@ -9764,7 +9764,7 @@ ParticleSystemRenderer:
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_ShadowBias: 0
-  m_RenderAlignment: 1
+  m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
   m_EnableGPUInstancing: 0
@@ -9835,28 +9835,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Darwin.Rendering.WoodlandWindController
   windDirection: {x: 1, y: 0.3}
-  baseWindSpeed: 0.22
-  gustStrength: 0.35
-  gustFrequency: 0.08
-  turbulenceStrength: 0.22
+  baseWindSpeed: 0.13
+  gustStrength: 0.2
+  gustFrequency: 0.055
+  turbulenceStrength: 0.12
   randomSeed: 12311
   globalVFXIntensity: 1
   motesIntensity: 1
   leavesIntensity: 1
-  windWispsIntensity: 1
-  motesRate: 8
-  leavesRate: 0.9
-  windWispsRate: 0.24
-  motesColor: {r: 0.76, g: 0.88, b: 0.77, a: 1}
-  leavesColor: {r: 0.62, g: 0.76, b: 0.43, a: 1}
+  windWispsIntensity: 0
+  motesRate: 0.8
+  leavesRate: 5.5
+  windWispsRate: 0
+  motesColor: {r: 0.67, g: 0.83, b: 0.76, a: 0.8}
+  leavesColor: {r: 0.78, g: 0.94, b: 0.91, a: 1}
   windWispsColor: {r: 0.68, g: 0.83, b: 0.76, a: 1}
-  motesSizeRange: {x: 0.11, y: 0.23}
-  leavesSizeRange: {x: 0.19, y: 0.34}
+  motesSizeRange: {x: 0.055, y: 0.105}
+  leavesSizeRange: {x: 0.2, y: 0.34}
   windLengthRange: {x: 1.6, y: 2.8}
   mistIntensity: 1
-  mistRate: 0.65
-  mistColor: {r: 0.63, g: 0.79, b: 0.71, a: 1}
-  mistSizeRange: {x: 2.2, y: 3.8}
+  mistRate: 1.05
+  mistColor: {r: 0.64, g: 0.81, b: 0.75, a: 1}
+  mistSizeRange: {x: 3.2, y: 4.8}
   floatingMotes: {fileID: 5462035555275741099}
   fallingLeaves: {fileID: 1934668865090480033}
   windWisps: {fileID: 4006146187869857122}
@@ -9931,7 +9931,7 @@ GameObject:
   - component: {fileID: 1934668865090480033}
   - component: {fileID: 4491007050828426526}
   m_Layer: 0
-  m_Name: FallingLeaves
+  m_Name: CanopyDrips
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10035,8 +10035,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 7
-      minScalar: 4
+      scalar: 3.2
+      minScalar: 2.1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10140,9 +10140,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startColor:
       serializedVersion: 2
-      minMaxState: 2
+      minMaxState: 0
       minColor: {r: 0.82, g: 0.9, b: 0.69, a: 1}
-      maxColor: {r: 1, g: 0.94, b: 0.7, a: 1}
+      maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -10207,7 +10207,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 3
       scalar: 0.34
-      minScalar: 0.19
+      minScalar: 0.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10470,8 +10470,8 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotation:
       serializedVersion: 2
-      minMaxState: 3
-      scalar: 3.1415927
+      minMaxState: 0
+      scalar: 0
       minScalar: -3.1415927
       maxCurve:
         serializedVersion: 2
@@ -10789,7 +10789,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.9
+      scalar: 5.5
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -11057,7 +11057,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   RotationModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -11414,8 +11414,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.1629325
-      minScalar: 0.116380356
+      scalar: 0.093878984
+      minScalar: 0.06705642
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -11467,8 +11467,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: -0.24
-      minScalar: -0.42
+      scalar: -1.1
+      minScalar: -1.8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -11520,8 +11520,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.050703447
-      minScalar: 0.036216747
+      scalar: 0.02873605
+      minScalar: 0.02052575
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -12604,11 +12604,11 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
   NoiseModule:
-    enabled: 1
+    enabled: 0
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.099
+      scalar: 0.053999998
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -15133,8 +15133,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.23
-      minScalar: 0.11
+      scalar: 0.105
+      minScalar: 0.055
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -15716,7 +15716,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 8
+      scalar: 0.8
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -16341,8 +16341,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.07018631
-      minScalar: 0.05013308
+      scalar: 0.04044018
+      minScalar: 0.028885841
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -16447,8 +16447,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.021841485
-      minScalar: 0.015601061
+      scalar: 0.012378605
+      minScalar: 0.008841861
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -17535,7 +17535,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.066
+      scalar: 0.036000002
       minScalar: 1
       maxCurve:
         serializedVersion: 2

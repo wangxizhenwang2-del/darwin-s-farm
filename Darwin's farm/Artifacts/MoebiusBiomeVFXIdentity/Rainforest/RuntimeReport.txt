@@ -1,0 +1,9 @@
+Actual Play Mode after saved-scene reload
+Native simulation time: 7.500
+Editor/player updates observed: 18648
+FloatingMotes: playing; particles=6; seed=12312
+CanopyDrips: playing; particles=9; seed=12449
+RainforestWindWisps: playing; particles=0; seed=12586
+LowMist: playing; particles=11; seed=12723
+Current native wind: (0.14, 0.00, 0.04)
+Errors: 0

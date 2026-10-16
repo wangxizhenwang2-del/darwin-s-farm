@@ -1,0 +1,6 @@
+Rainforest: low humid mist + fast thin canopy drips; sparse cool spores, no wind-line layer.
+Layer names: FloatingMotes / CanopyDrips / RainforestWindWisps / LowMist
+Layer peak counts: 9 / 12 / 0 / 12
+Peak total: 30; below-ground samples: 0; outside tile samples: 0
+Environment component snapshots unchanged: 967
+Errors: 0

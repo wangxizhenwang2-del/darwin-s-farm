@@ -41,6 +41,7 @@ namespace Darwin.Rendering
         public Vector2 mistSizeRange = new Vector2(2.2f, 3.8f);
         [Header("Assigned Particle Systems")]
         public ParticleSystem floatingMotes;
+        [Tooltip("Forest: falling leaves. Rainforest: canopy drips. The assigned native system defines the shape and fall motion.")]
         public ParticleSystem fallingLeaves;
         public ParticleSystem windWisps;
         [Tooltip("Optional. Leave empty for dry woodland.")] public ParticleSystem lowMist;

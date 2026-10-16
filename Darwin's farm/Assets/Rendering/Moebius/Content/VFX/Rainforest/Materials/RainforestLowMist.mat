@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 709c6f99f206a7e4ca81b8c87ecc8a50, type: 3}
+        m_Texture: {fileID: 2800000, guid: a560859b2c7bf2f448e8977f8f18b099, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseMap:
@@ -34,15 +34,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AnimationSpeed: 0.07
+    - _AnimationSpeed: 0.045
     - _AtlasColumns: 2
     - _AtlasRows: 2
     - _BoundaryFade: 0.7
     - _DepthFade: 1
     - _Distortion: 0.018
-    - _EdgeSoftness: 0.18
+    - _EdgeSoftness: 0.3
     - _IntersectionDistance: 0.28
-    - _Opacity: 0.13
+    - _Opacity: 0.3
     m_Colors:
     - _BoundsXZ: {r: -10000, g: -10000, b: 10000, a: 10000}
     - _Tint: {r: 0.76, g: 0.75, b: 0.5, a: 1}
