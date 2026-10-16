@@ -1,0 +1,11 @@
+Target: Assets/Rendering/Moebius/Samples/Biomes/Scenes/Desert_Moebius.unity; ground: pPlane1; bounds: Center: (0.00, 0.95, 0.00), Extents: (6.00, 0.60, 6.00)
+Surface emission patches: 1291; upward ground triangles: 578
+Wind emission patches: 464; upward ground triangles: 578
+Unchanged original scene component snapshots: 1005
+t=3.98 particle counts surface sand/gust sand/airborne grains/wind=19/3/25/2
+t=8.98 particle counts surface sand/gust sand/airborne grains/wind=19/4/25/1
+t=14.98 particle counts surface sand/gust sand/airborne grains/wind=22/3/22/1
+Peak simultaneous particles: 57; cap=200
+Below-ground samples: 0; outside-tile samples: 0; maximum wind change/frame: 0.004624671
+Layer peak counts: 26/8/31/3
+Errors: 0

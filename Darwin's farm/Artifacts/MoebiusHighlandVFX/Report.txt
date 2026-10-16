@@ -1,0 +1,11 @@
+Existing billboard animals with valid artwork: 5
+Ground bounds: Center: (0.00, 0.81, 0.00), Extents: (21.02, 2.58, 21.02); existing colliders: 0
+Surface emission patches: 5342; upward ground triangles: 578
+Wind emission patches: 541; upward ground triangles: 578
+Existing scene component snapshots checked: 157
+t=3.98: particles=15/7/6/2; wind=(2.28, 0.00, 0.66)
+t=7.98: particles=16/9/6/2; wind=(2.10, 0.00, 0.61)
+t=11.98: particles=19/2/7/2; wind=(1.43, 0.00, 0.42)
+Maximum simultaneous particles: 38 / configured cap 196
+Dust samples below ground: 0; largest per-frame wind delta: 0.004402034
+Errors: 0
