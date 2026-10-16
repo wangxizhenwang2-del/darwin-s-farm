@@ -222,10 +222,11 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         Clamp(page);
     }
 
-    private static float MinimumZoom(MapPage page)
+    private float MinimumZoom(MapPage page)
     {
         Vector2 imageSize = page.content.rect.size;
-        Vector2 screenSize = page.viewport.rect.size;
+        float scaleFactor = Mathf.Max(.01f, canvas.scaleFactor);
+        Vector2 screenSize = new Vector2(Screen.width / scaleFactor, Screen.height / scaleFactor);
         if (imageSize.x <= 0f || imageSize.y <= 0f || screenSize.x <= 0f || screenSize.y <= 0f)
             return 1f;
         return Mathf.Min(screenSize.x / imageSize.x, screenSize.y / imageSize.y);

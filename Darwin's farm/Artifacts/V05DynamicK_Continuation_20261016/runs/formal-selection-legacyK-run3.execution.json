@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-selection-legacyK",
+  "run": 3,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 17.812,
+  "inputSha256": "92f3ebe5a0492be6831368f6985cc6de16aea920804b075baef18a92c90b29be"
+}
