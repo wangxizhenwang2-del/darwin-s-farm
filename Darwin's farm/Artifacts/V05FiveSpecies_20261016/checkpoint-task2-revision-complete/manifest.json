@@ -1,0 +1,27 @@
+[
+  {
+    "source": "Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs",
+    "backup": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\checkpoint-task2-revision-complete\\V048ScenarioReplay.cs",
+    "sha256": "6162114B2408BACD87E236F419404561424D3319AECFD75F231434AB7099B65F"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000chicken-stability.json",
+    "backup": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\checkpoint-task2-revision-complete\\task2-1000chicken-stability.json",
+    "sha256": "08C4F311DC16369E0EDD4F507342DCFF941600CCDE3D59FEBE5F790F39168FAC"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2.json",
+    "backup": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\checkpoint-task2-revision-complete\\task2-1000-stable-color-cancel110-plant2.json",
+    "sha256": "BFE528D9FA73EC0A2DB41132F34FCDAECB855AA44429FE41425EBD1E6F8336EE"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-revision-validation.json",
+    "backup": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\checkpoint-task2-revision-complete\\task2-revision-validation.json",
+    "sha256": "7EC80DED66D92E5B2361FE0A9541AD371D3F29CDECBC2EF293EDE4130CEA4AF1"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/TASK2_REVISION_1000CHICKENS.md",
+    "backup": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\checkpoint-task2-revision-complete\\TASK2_REVISION_1000CHICKENS.md",
+    "sha256": "8E3BD4EF98A39ED22D2E7E84FFA4FC83B51C255A92A166347C45F61A803B5427"
+  }
+]

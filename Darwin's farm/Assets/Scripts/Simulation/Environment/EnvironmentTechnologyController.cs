@@ -223,6 +223,14 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         }
         if (choice.Kind != EnvironmentTechnologyKind.MonsoonAnchor)
             foreach (Vector2Int member in result.Area) Record(member, choice);
+        SimulationController ecology = GetComponent<SimulationController>();
+        SimulationTime clock = GetComponent<SimulationTime>();
+        if (ecology != null && clock != null)
+            foreach (Vector2Int member in result.Area)
+                if (grid.TryGetTile(member, out MapTileInstance affected))
+                    ecology.RecordPlayerTechnology(affected.Block, choice.Kind,
+                        choice.Tier, clock.currentDay,
+                        choice.TemperatureOffset, choice.HumidityOffset);
         account.ConsumePendingSettlements();
         OperationCommitted?.Invoke(coordinate, "technology_deploy:" + choice.Kind +
             ";tier=" + choice.Tier + ";temperatureOffset=" + choice.TemperatureOffset +

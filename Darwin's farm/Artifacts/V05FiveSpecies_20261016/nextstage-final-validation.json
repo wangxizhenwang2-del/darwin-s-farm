@@ -1,0 +1,82 @@
+{
+  "task4-c1-slope-climate": {
+    "determinism": "PASS",
+    "byteIdentical": true,
+    "dailyModelAndEnvironmentIdentical": true,
+    "allActionsAccepted": true,
+    "completeFromDayZero": true,
+    "lastDay": 950,
+    "bindingSha256": "9b0c34cf646e6a49f6df73dcaf2a6d025f29a09b2ae006ad599ee3495bd6e978",
+    "runSha256": [
+      "ec58aae56c284e60bb225619225e37d405fd998d4fd7bb9413a2181799a72c20",
+      "ec58aae56c284e60bb225619225e37d405fd998d4fd7bb9413a2181799a72c20",
+      "ec58aae56c284e60bb225619225e37d405fd998d4fd7bb9413a2181799a72c20"
+    ],
+    "inputs": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c1-slope-climate.json",
+    "outputs": [
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c1-slope-climate-final-run1.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c1-slope-climate-final-run2.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c1-slope-climate-final-run3.jsonl"
+    ]
+  },
+  "task4-c2-grass": {
+    "determinism": "PASS",
+    "byteIdentical": true,
+    "dailyModelAndEnvironmentIdentical": true,
+    "allActionsAccepted": true,
+    "completeFromDayZero": true,
+    "lastDay": 950,
+    "bindingSha256": "15c5a7702c4c207cc7be8248d312f09db3fc804dda027a503a59b6fb8dd4f108",
+    "runSha256": [
+      "83a1b3b4deb441822cd77e61d95f82d2e1f47de6da4063fa2209ad11ca0d23c5",
+      "83a1b3b4deb441822cd77e61d95f82d2e1f47de6da4063fa2209ad11ca0d23c5",
+      "83a1b3b4deb441822cd77e61d95f82d2e1f47de6da4063fa2209ad11ca0d23c5"
+    ],
+    "inputs": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c2-grass.json",
+    "outputs": [
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c2-grass-final-run1.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c2-grass-final-run2.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task4-c2-grass-final-run3.jsonl"
+    ]
+  },
+  "next-peacock-release-support": {
+    "determinism": "PASS",
+    "byteIdentical": true,
+    "dailyModelAndEnvironmentIdentical": true,
+    "allActionsAccepted": true,
+    "completeFromDayZero": true,
+    "lastDay": 900,
+    "bindingSha256": "f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f",
+    "runSha256": [
+      "7ccf2b785b397fb8795e115001dbdd16fc58cb73d6ea58bec44108468581de5a",
+      "7ccf2b785b397fb8795e115001dbdd16fc58cb73d6ea58bec44108468581de5a",
+      "7ccf2b785b397fb8795e115001dbdd16fc58cb73d6ea58bec44108468581de5a"
+    ],
+    "inputs": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-peacock-release-support.json",
+    "outputs": [
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-peacock-release-support-final-run1.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-peacock-release-support-final-run2.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-peacock-release-support-final-run3.jsonl"
+    ]
+  },
+  "next-deer-early-size-support": {
+    "determinism": "PASS",
+    "byteIdentical": true,
+    "dailyModelAndEnvironmentIdentical": true,
+    "allActionsAccepted": true,
+    "completeFromDayZero": true,
+    "lastDay": 1900,
+    "bindingSha256": "b73a8a183e76674a56ece70f673622dece666c6631915f901f3ec68daef69131",
+    "runSha256": [
+      "761102194c36d0f014cb46851888b3f6a83c3037b2e7232b8f95d20ba1318bf4",
+      "761102194c36d0f014cb46851888b3f6a83c3037b2e7232b8f95d20ba1318bf4",
+      "761102194c36d0f014cb46851888b3f6a83c3037b2e7232b8f95d20ba1318bf4"
+    ],
+    "inputs": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-deer-early-size-support.json",
+    "outputs": [
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-deer-early-size-support-final-run1.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-deer-early-size-support-final-run2.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\next-deer-early-size-support-final-run3.jsonl"
+    ]
+  }
+}

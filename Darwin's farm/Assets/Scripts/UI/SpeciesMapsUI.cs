@@ -22,8 +22,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     [SerializeField] private GameObject overlay;
     [SerializeField] private MapPage[] pages = new MapPage[2];
-    [SerializeField, Range(.35f, 1f)] private float defaultZoom = .85f;
-    [SerializeField] private float minZoom = .5f, maxZoom = 1.6f;
+    [SerializeField, Min(1f)] private float defaultZoomMultiplier = 1f;
+    [SerializeField, Min(1f)] private float maxZoomMultiplier = 2.2f;
     [SerializeField] private float keyboardPanSpeed = 650f;
 
     private readonly Dictionary<SpeciesData, int> indices = new Dictionary<SpeciesData, int>();
@@ -56,6 +56,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         foreach (SpeciesData item in setup.MapSpecies)
             if (item != null) speciesById[item.SpeciesId.Replace("-", "")] = item;
 
+        Canvas.ForceUpdateCanvases();
         for (int map = 0; map < 2; map++)
         {
             MapPage page = pages[map];
@@ -66,7 +67,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
                 enabled = false;
                 return;
             }
-            page.zoom = defaultZoom;
+            page.zoom = MinimumZoom(page) * defaultZoomMultiplier;
             page.content.localScale = Vector3.one * page.zoom;
             foreach (SpeciesMapNodeView node in page.nodes)
                 if (node != null) node.Bind(Hovered);
@@ -133,7 +134,16 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         }
     }
 
-    private void LateUpdate() { if (open) Clamp(pages[activePage]); }
+    private void LateUpdate()
+    {
+        if (!open) return;
+        MapPage page = pages[activePage];
+        float minimum = MinimumZoom(page);
+        if (page.zoom < minimum || page.zoom > minimum * Mathf.Max(1f, maxZoomMultiplier))
+            SetZoom(page, page.zoom);
+        else
+            Clamp(page);
+    }
 
     private void Open()
     {
@@ -206,9 +216,19 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void SetZoom(MapPage page, float value)
     {
-        page.zoom = Mathf.Clamp(value, minZoom, maxZoom);
+        float minimum = MinimumZoom(page);
+        page.zoom = Mathf.Clamp(value, minimum, minimum * Mathf.Max(1f, maxZoomMultiplier));
         page.content.localScale = Vector3.one * page.zoom;
         Clamp(page);
+    }
+
+    private static float MinimumZoom(MapPage page)
+    {
+        Vector2 imageSize = page.content.rect.size;
+        Vector2 screenSize = page.viewport.rect.size;
+        if (imageSize.x <= 0f || imageSize.y <= 0f || screenSize.x <= 0f || screenSize.y <= 0f)
+            return 1f;
+        return Mathf.Min(screenSize.x / imageSize.x, screenSize.y / imageSize.y);
     }
 
     private static void Clamp(MapPage page)

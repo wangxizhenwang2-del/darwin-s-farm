@@ -1,0 +1,9 @@
+{
+  "scenario": "prototype-chain-encounter1000",
+  "run": 1,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "seconds": 20.167,
+  "inputSha256": "258a951376dc3008b0155552c68f5c1f6d35c64d5680632758981eb7a6ea0f70"
+}

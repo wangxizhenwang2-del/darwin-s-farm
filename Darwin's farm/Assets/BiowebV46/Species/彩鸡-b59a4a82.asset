@@ -28,7 +28,7 @@ MonoBehaviour:
   baseHabitatNiche: 50
   baseFitTemperature: 70
   baseFitHumidity: 49
-  baseSize: 15
+  baseSize: 14
   baseFertility: 75
   baseEcologicalNiche: 0
   evolutionGridPos: {x: 1, y: 5}

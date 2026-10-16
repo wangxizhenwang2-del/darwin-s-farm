@@ -1,0 +1,170 @@
+{
+  "scenarioId": "V05-Peacock-shift-pressure-100",
+  "seed": 240,
+  "endDay": 1000,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "originInitialStock": 1000000,
+  "originInitialChickenCount": 1000,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 1
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange"
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 550,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 575,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 590,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 591,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 605,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 606,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 620,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 621,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 635,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 636,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 650,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 651,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 652,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": -1
+    },
+    {
+      "day": 653,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 653,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange"
+    },
+    {
+      "day": 659,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": -1
+    },
+    {
+      "day": 660,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange"
+    },
+    {
+      "day": 665,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 665,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    }
+  ]
+}

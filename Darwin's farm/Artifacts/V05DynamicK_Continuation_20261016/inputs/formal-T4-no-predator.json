@@ -1,0 +1,41 @@
+{
+  "scenarioId": "formal-T4-no-predator",
+  "seed": 240,
+  "endDay": 1000,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "mechanismFixture": true,
+  "fixtureFreezeTraits": true,
+  "fixtureDisableMigration": true,
+  "fixtureFixedEnvironment": true,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [
+    {
+      "x": 1,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/森林.asset",
+      "initialStock": 900000,
+      "overrideEnvironment": true,
+      "temperature": 30,
+      "humidity": 70,
+      "recovery": 80000,
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/鸡-7f113739.asset",
+          "count": 1000,
+          "overrideTraits": true,
+          "fitT": 30,
+          "fitH": 70,
+          "movement": 10,
+          "size": 8,
+          "fertility": 71
+        },
+        {
+          "species": "Assets/BiowebV46/Species/鹿-fd1c574b.asset",
+          "count": 100
+        }
+      ]
+    }
+  ],
+  "actions": []
+}

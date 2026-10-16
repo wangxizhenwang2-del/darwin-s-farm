@@ -1,0 +1,141 @@
+[System.Serializable]
+public class EvolutionConversionRecord
+{
+    public SpeciesData target;
+    // 2026-10-09 13:46 +08:00: V4.3 keeps independent, frozen progress per target.
+    public int effectiveDays;
+    public int failedDraws;
+    // Kept for migration of existing serialized whitebox data; no longer gates evolution.
+    public int day;
+}
+
+[System.Serializable]
+public class DirectedInfluence
+{
+    // 2 movement, 3 size, 4 fertility; sign is direction.
+    public int trait;
+    public float weight;
+    public int firstDay, lastDay, residualLastDay;
+    public float potential;
+}
+
+[System.Serializable]
+public class PopulationData
+{
+    // Identifies this population instance, not its species or visual object.
+    // Serialized so an existing resident keeps its identity across model saves.
+    [UnityEngine.SerializeField] private string populationId;
+    public PopulationData() => RegeneratePopulationId();
+    public string PopulationId
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(populationId))
+                populationId = System.Guid.NewGuid().ToString("N");
+            return populationId;
+        }
+    }
+
+    // A full relocation replaces the source record with its arrival record.
+    internal void RetainPopulationId(PopulationData source) => populationId = source.PopulationId;
+    internal void RegeneratePopulationId() => populationId = System.Guid.NewGuid().ToString("N");
+    internal void AssignPopulationId(string value) => populationId = value;
+    public int nextSplitSerial;
+
+    public int speciesAmount; //种群数量保持整数
+    public SpeciesData species;
+    public string lineageName; // 未指定物种资产时，以同名识别跨地块的同一种群
+    public string speciesId; // 生态位分化产生的独立物种标识；普通迁徙保持不变
+    public EcologicalNiche ecologicalNiche = EcologicalNiche.Land;
+    // null 表示在所属陆地地块；到河岸时只更新位置，种群仍留在所属地块。
+    public BlockInfo landPositionBlock;
+    public RiverBankSide landPositionBank;
+
+    //进化趋势
+    public int movementAbility;   //0~100 影响物种的移动距离、能量消耗
+    public int habitatNiche;  //0~100 50代表陆地生存，越靠近0越适应海洋，越靠近100越适应天空
+    public int fitTemperature; //0~100 适宜温度
+    public int fitHumidity;  //0~100 适宜湿度
+    public int size;   //1~100 体型，与代谢能力共同决定进食周期、运动速度
+    public int fertility;  //0~100 个体繁殖能力系数
+
+    // 食性从物种资产继承一次，此后由各自种群独立演化。
+    public int trophicLevel;
+    public bool trophicLevelInitialized;
+
+    // 已保留但不足一个整数单位的变异，避免小倍率性状永远无法变化。
+    public float temperatureMutationRemainder;
+    public float humidityMutationRemainder;
+    public float movementMutationRemainder;
+    public float sizeMutationRemainder;
+    public float fertilityMutationRemainder;
+    public float trophicMutationRemainder;
+
+    public int mutationDaysElapsed;
+    public int previousMutationPopulation;
+    public bool mutationPopulationInitialized;
+    // V4.3: each directly connected target has its own effective-day/draw record.
+    public System.Collections.Generic.List<EvolutionConversionRecord> evolutionConversions =
+        new System.Collections.Generic.List<EvolutionConversionRecord>();
+    // Successful split on day D freezes progress on D..D+49; D+50 is eligible.
+    public int nextEvolutionDay;
+    [System.NonSerialized] public bool evolutionCheckReady;
+
+    //因变量
+    public int environmentalFitness;    //0~100，越强越利于繁殖
+    public float energyNeed;
+    public float allocatedBiomass;
+    public float carryingCapacity; //当日实际食物份额 / 单只成年耗食；保留旧导出 k 的口径
+    // Renewable food available to this population after other consumers,
+    // expressed as a count of its current individuals rather than plant mass.
+    public float environmentalCarryingCapacity;
+    public float energySatisfactionToday; //资源分配后、数量变化前的能量满足率
+    public float actualEnergySatisfactionToday; //当日实际摄食率，用于运动选择
+    public int populationBeforePredation; //捕食前数量，避免捕食后分母缩小造成虚假盈余
+    public float energyReserve; //捕食者吃下整只猎物后未用完的能量
+    // Living material owned by this population. Initialized from the starting
+    // population once, then transferred with births, deaths and splits.
+    public float bodyBiomass;
+    public bool bodyBiomassInitialized;
+    [System.NonSerialized] public float reserveAtDayStart; //测试诊断：当日捕食前储备
+    [System.NonSerialized] public float huntingEnergyToday; //测试诊断：当日从猎物获得的能量
+    [System.NonSerialized] public int predationDeathsToday; //测试诊断：当日被捕食数量
+    [System.NonSerialized] public float adultDemandToday, adultPaidToday;
+    [System.NonSerialized] public float birthOpportunityToday, birthBudgetToday;
+    [System.NonSerialized] public float newbornCostToday, unusedBirthFoodToday;
+    public int nextMigrationDay; //迁徙冷却结束后可再次参与检查的日期
+    public BlockInfo lastMigrationSource; // 环境未改变时，禁止自动迁回上次迁出的地块
+    public float birthRemainder; //累计不足一个体的繁殖量
+    public float deathRemainder; //累计不足一个体的死亡量
+    public int birthsToday; //当天出生数量
+    public int deathsToday; //当天死亡数量
+    // New land rules: bounded ten-day observations survive model serialization.
+    public System.Collections.Generic.List<float> foodSatisfactionHistory = new System.Collections.Generic.List<float>();
+    public System.Collections.Generic.List<float> renewalSatisfactionHistory = new System.Collections.Generic.List<float>();
+    public System.Collections.Generic.List<float> preyNetRenewalHistory = new System.Collections.Generic.List<float>();
+    // Daily relative count change, including predation, for mutation selection.
+    public System.Collections.Generic.List<float> populationGrowthHistory = new System.Collections.Generic.List<float>();
+    public float predationRemainder;
+    public int endangeredDays;
+    public bool localSplitBranch;
+    // -1: small/high-fertility branch; +1: large/low-fertility branch.
+    public int splitStrategy;
+    // The directed branch keeps its inherited movement, size and fertility
+    // stable until this simulation day; climate traits remain mutable.
+    public SpeciesData directedSplitTarget;
+    public int directedTraitUnlockDay;
+    // Synchronized across same-species residents on one tile. It resets when
+    // only one population remains or after they are merged.
+    public int sameSpeciesCoexistenceDays;
+    public string lastMutationEffect;
+    public float mutationSelectionProgress;
+    public int mutationSelectionCandidate = -1;
+    public System.Collections.Generic.List<DirectedInfluence> directedInfluences =
+        new System.Collections.Generic.List<DirectedInfluence>();
+    public SpeciesData trackedEvolutionTarget;
+    public SpeciesData manualEvolutionTarget;
+    // Movement, size, fertility target protection. A released protection
+    // cannot reappear until the trait leaves its target interval.
+    public int[] targetProtectionSince = { -1, -1, -1 };
+    public bool[] targetProtectionReleased = new bool[3];
+}

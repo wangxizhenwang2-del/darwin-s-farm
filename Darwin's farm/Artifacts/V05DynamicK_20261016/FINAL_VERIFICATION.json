@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "formalCases": 30,
+  "independentUnityProcesses": 90,
+  "formalSimulatedDays": 70563,
+  "unityProcessSeconds": 1804.819,
+  "wholeJsonlAndDailyLogsIdenticalWithinEachInput": true,
+  "readonlyOnOffDailyJsonModelAndEnvironmentIdentical": true,
+  "readonlyComparisonDays": 101,
+  "selectionABFirstPopulationOrTraitDifferenceDay": null,
+  "selectionABSamePopulationAndTraitTrajectory": true,
+  "expectedActionRejectionProcesses": [
+    [
+      "formal-regression-mushroom1000",
+      1
+    ],
+    [
+      "formal-regression-mushroom1000",
+      2
+    ],
+    [
+      "formal-regression-mushroom1000",
+      3
+    ],
+    [
+      "formal-regression-deer1900",
+      1
+    ],
+    [
+      "formal-regression-deer1900",
+      2
+    ],
+    [
+      "formal-regression-deer1900",
+      3
+    ]
+  ],
+  "modelResourceManifestMatchesCurrentProject": true,
+  "frozen40_20AndFormalTolerance5CheckedAcrossAllRuns": true,
+  "worldCheckpointRestore": "BLOCKED",
+  "cacheHits": 0,
+  "savedSimulationDays": 0,
+  "overallEcologicalTask": "BLOCKED",
+  "note": "Deterministic failures are not ecological passes; payment prototype not merged."
+}

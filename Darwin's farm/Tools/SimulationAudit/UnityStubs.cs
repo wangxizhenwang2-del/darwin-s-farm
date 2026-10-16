@@ -5,9 +5,13 @@ namespace JetBrains.Annotations { }
 
 namespace UnityEngine
 {
-    public class MonoBehaviour { }
+    public class MonoBehaviour { public string name; }
     public class ScriptableObject { public string name; }
     public class Sprite { }
+    public struct Vector2Int
+    {
+        public int x, y;
+    }
     [AttributeUsage(AttributeTargets.Field)] public class SerializeField : Attribute { }
     [AttributeUsage(AttributeTargets.Field)] public class MinAttribute : Attribute { public MinAttribute(float value) { } }
     [AttributeUsage(AttributeTargets.Field)] public class RangeAttribute : Attribute { public RangeAttribute(float min, float max) { } }

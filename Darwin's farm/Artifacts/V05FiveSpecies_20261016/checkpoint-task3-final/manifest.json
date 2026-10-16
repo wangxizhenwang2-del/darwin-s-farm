@@ -1,0 +1,167 @@
+[
+  {
+    "source": "Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs",
+    "sha256": "6162114b2408bacd87e236f419404561424d3319aecfd75f231434ab7099b65f"
+  },
+  {
+    "source": "Assets/Scripts/Simulation/SimulationController.Evolution.cs",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/Scripts/Simulation/SimulationController.Evolution.cs",
+    "sha256": "8168edb96bc242bc984f417cf2c038fdfad33c40d0c7c66456db8cc339330609"
+  },
+  {
+    "source": "Assets/Scripts/Simulation/SimulationController.Influence.cs",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/Scripts/Simulation/SimulationController.Influence.cs",
+    "sha256": "583a9cee8c34f6a260c0f66dd85f1c8a5a5c51850994e07f6939f7a31441d8ec"
+  },
+  {
+    "source": "Assets/Scripts/Simulation/LandRuleTuning.cs",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/Scripts/Simulation/LandRuleTuning.cs",
+    "sha256": "40939af5fa769cc81818a34b172c81b26fae3259d0f4ba01f1b3df83933bfac3"
+  },
+  {
+    "source": "Assets/Scripts/Simulation/LandLifeRules.cs",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/Scripts/Simulation/LandLifeRules.cs",
+    "sha256": "cd87be1d45674956f664e79c803f70f10aa9ea006c15fa44755474838f71ccc0"
+  },
+  {
+    "source": "Assets/Scenes/V05FiveSpeciesSandbox.unity",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/Scenes/V05FiveSpeciesSandbox.unity",
+    "sha256": "a67793dc7f805f22f8252022f75e0ae3d4a7f2bdd933a8b8734842de4bafd5ce"
+  },
+  {
+    "source": "Assets/BiowebV46/Species/鸡-7f113739.asset",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/BiowebV46/Species/鸡-7f113739.asset",
+    "sha256": "839f4a1e3ef4aa7be6dfc212579d69dc850eb826532002c98ffbc7fd0e5ec579"
+  },
+  {
+    "source": "Assets/BiowebV46/Species/彩鸡-b59a4a82.asset",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Assets/BiowebV46/Species/彩鸡-b59a4a82.asset",
+    "sha256": "55edcaba1ea6977a679aa34f00b8ece4f408ae365d02492a854dcefadaf05e7d"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task1-normal-actions.json",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Artifacts/V05FiveSpecies_20261016/task1-normal-actions.json",
+    "sha256": "3fc43ca8c6545c84a568b1609c2ee9dd5eff501c6a5d536ded22648a9e3257b0"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2.json",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2.json",
+    "sha256": "bfe528d9fa73ec0a2db41132f34fcdaecb855aa44429fe41425ebd1e6f8336ee"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d.json",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d.json",
+    "sha256": "75c18ce42d9317ec6c76f0de9001ab4f2369d36843d83f5fe5d94333b64e0782"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-deer-cool-after-mushroom.json",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Artifacts/V05FiveSpecies_20261016/task3-deer-cool-after-mushroom.json",
+    "sha256": "a3e1a63b1859747a50bf878eb755e3239669b7c93ad661793c54d075a42a64c1"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-color-cool450-cancel465-4plant.json",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Artifacts/V05FiveSpecies_20261016/task3-color-cool450-cancel465-4plant.json",
+    "sha256": "ca01f6dc92e1e66262a2ce120e603a79da4159639e73a70fc5a1a662e5dc00e9"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/final-validation.json",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Artifacts/V05FiveSpecies_20261016/final-validation.json",
+    "sha256": "12ed696ee2ead6e2cf1025b304c46be6f295185816866ba6923418118fdb5ead"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/V05_TASK1_3_HANDOFF.md",
+    "backup": "Artifacts/V05FiveSpecies_20261016/checkpoint-task3-final/Artifacts/V05FiveSpecies_20261016/V05_TASK1_3_HANDOFF.md",
+    "sha256": "738db9dbbb5b08693feae533ca32428eb424741cc981fad1945dcf908789160a"
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task1-normal-actions-final-run1.jsonl",
+    "sha256": "711def674c487e423eba5d6d619d3dbaa997cae982a66a104c611450a5872732",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task1-normal-actions-final-run1.log",
+    "sha256": "69f88e05be62ab1fb46d3ce9ebf2e0c76ba0df2ab4de143b5a976ad3b5d1c40e",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task1-normal-actions-final-run2.jsonl",
+    "sha256": "711def674c487e423eba5d6d619d3dbaa997cae982a66a104c611450a5872732",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task1-normal-actions-final-run2.log",
+    "sha256": "348c09549ae362e3d0f8e9ec86ca41785f3e5396ad4e7103d00d17d84b4a25b1",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task1-normal-actions-final-run3.jsonl",
+    "sha256": "711def674c487e423eba5d6d619d3dbaa997cae982a66a104c611450a5872732",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task1-normal-actions-final-run3.log",
+    "sha256": "6240ffd2486b709f87d33fc7a5393348c545b821bacdee55d3554e170c886f85",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2-final-run1.jsonl",
+    "sha256": "eea024eee1bba0ec381e2df9e71c2b4a0bab5892f835c3bfb8a8c9e338093753",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2-final-run1.log",
+    "sha256": "92d169f2f8f546c9cbbe8463493fa8e882d46966abbe7207d7aca7eaadbdbcd0",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2-final-run2.jsonl",
+    "sha256": "eea024eee1bba0ec381e2df9e71c2b4a0bab5892f835c3bfb8a8c9e338093753",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2-final-run2.log",
+    "sha256": "8bd3c5c01e6e7c073182c17145e56f82432eb73079f7dbe7bd943202d98b34cd",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2-final-run3.jsonl",
+    "sha256": "eea024eee1bba0ec381e2df9e71c2b4a0bab5892f835c3bfb8a8c9e338093753",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task2-1000-stable-color-cancel110-plant2-final-run3.log",
+    "sha256": "3cf80bc03d92c474b3cd444f9a077567d34b02f50ac32948b7037fc335b118c2",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d-final-run1.jsonl",
+    "sha256": "ca6d53d2c507f41c3300a2e101e5e321fabb941af43c84b6e7e1e835ba462b93",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d-final-run1.log",
+    "sha256": "02414972899a1efd2cc5e1991884a63b08e0965098706e6b4745fa884e47f929",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d-final-run2.jsonl",
+    "sha256": "ca6d53d2c507f41c3300a2e101e5e321fabb941af43c84b6e7e1e835ba462b93",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d-final-run2.log",
+    "sha256": "116e75ed8539642f8f475202264ae0c1f09bebbfde3cef9548234b14771597ce",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d-final-run3.jsonl",
+    "sha256": "ca6d53d2c507f41c3300a2e101e5e321fabb941af43c84b6e7e1e835ba462b93",
+    "outputOnly": true
+  },
+  {
+    "source": "Artifacts/V05FiveSpecies_20261016/task3-mushroom-stable-1000d-final-run3.log",
+    "sha256": "485a8809f71ec9bd3e33a60ee0404169400b072b0eed04b26fbbe57574f4a6e3",
+    "outputOnly": true
+  }
+]

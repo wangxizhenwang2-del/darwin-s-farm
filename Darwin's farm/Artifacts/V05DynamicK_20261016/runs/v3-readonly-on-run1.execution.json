@@ -1,0 +1,9 @@
+{
+  "scenario": "v3-readonly-on",
+  "run": 1,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "seconds": 16.918,
+  "inputSha256": "d1c7d0b06519c111cda273c90a602c05cee27b7022a1b461fcc0bb446b8c80d5"
+}

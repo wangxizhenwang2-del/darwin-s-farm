@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dba79df3cdc97a43a021e65f117e9a0, type: 3}
+  m_Name: "\u867e\u5154"
+  m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
+  speciesName: "\u867e\u5154"
+  sprite: {fileID: 21300000, guid: 63440057d22f5434bc2b0212cd38f946, type: 3}
+  speciesId: c60ed314ab7c42a499e2258264e9b8ee
+  portrait: {fileID: 21300000, guid: 63440057d22f5434bc2b0212cd38f946, type: 3}
+  description: ""
+  evolutionTargets:
+  - {fileID: 11400000, guid: ae62c1ccc7cb5cda83283e79e8dafe17, type: 2}
+  preySpecies: []
+  trophicLevel: 0
+  bioenergyValue: 1
+  economyId: c60ed314ab7c42a499e2258264e9b8ee
+  baseMovementAbility: 5
+  baseHabitatNiche: 0
+  baseFitTemperature: 50
+  baseFitHumidity: 50
+  baseSize: 5
+  baseFertility: 80
+  baseEcologicalNiche: 1
+  evolutionGridPos: {x: 1, y: 2}
+  foodGridPos: {x: 1, y: 2}

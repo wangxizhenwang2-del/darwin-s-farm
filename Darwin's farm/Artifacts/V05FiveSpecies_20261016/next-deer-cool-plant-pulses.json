@@ -1,0 +1,293 @@
+{
+  "scenarioId": "V05-Deer-cool-plant-pulses",
+  "seed": 240,
+  "endDay": 1500,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "originInitialStock": 1000000,
+  "originInitialChickenCount": 1000,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 2
+    },
+    {
+      "day": 220,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -2
+    },
+    {
+      "day": 230,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -2
+    },
+    {
+      "day": 250,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 260,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 270,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 280,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 340,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -1
+    },
+    {
+      "day": 350,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -1
+    },
+    {
+      "day": 360,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": -1
+    },
+    {
+      "day": 380,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 390,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 400,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 410,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 475,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 1
+    },
+    {
+      "day": 800,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -2
+    },
+    {
+      "day": 830,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 840,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 850,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 860,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 870,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 880,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 890,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 900,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 910,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 920,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 930,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 940,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 950,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 960,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 970,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 980,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 990,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 1000,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 1010,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 1020,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 1030,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 1040,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 1050,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "scenarioId": "R002-mechanics-costs-disabled-seed240",
+  "seed": 240,
+  "endDay": 600,
+  "disableCosts": true,
+  "tiles": [
+    {
+      "x": 1,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/荒漠.asset",
+      "populations": [
+        { "species": "Assets/BiowebV46/Species/鸡-7f113739.asset", "count": 160 }
+      ]
+    }
+  ],
+  "actions": [
+    { "day": 0, "sequence": 0, "x": 1, "y": 0, "kind": "TemperatureChange", "tier": 1 },
+    { "day": 0, "sequence": 1, "x": 1, "y": 0, "kind": "HumidityChange", "tier": 1 },
+    { "day": 0, "sequence": 2, "x": 1, "y": 0, "kind": "PlantChange", "tier": 2 },
+    { "day": 48, "sequence": 0, "x": 1, "y": 0, "kind": "PlantChange", "tier": 2 },
+    { "day": 72, "sequence": 0, "x": 1, "y": 0, "kind": "PlantChange", "tier": 2 },
+    { "day": 80, "sequence": 0, "x": 1, "y": 0, "kind": "PlantChange", "tier": -1 },
+    { "day": 88, "sequence": 0, "x": 1, "y": 0, "kind": "PlantChange", "tier": -1 },
+    { "day": 96, "sequence": 0, "x": 1, "y": 0, "kind": "PlantChange", "tier": -1 },
+    { "day": 104, "sequence": 0, "x": 1, "y": 0, "kind": "PlantChange", "tier": -1 }
+  ]
+}

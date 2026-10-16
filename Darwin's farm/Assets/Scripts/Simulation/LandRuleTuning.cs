@@ -7,6 +7,7 @@ using UnityEngine;
 public sealed class LandRuleTuning
 {
     [SerializeField] private int ruleVersion = 5;
+    public bool useFoodCapacityForSelection;
     [Min(0f)] public float birthRate = 0.1f;
     [Range(0f, 1f)] public float starvationDeathRate = 0.6f;
     [Min(0f)] public float coldDeathRate = 0.005f;
@@ -34,7 +35,7 @@ public sealed class LandRuleTuning
     [Range(0f, 1f)] public float densityBirthDampingStart = 0.85f;
     [Min(0f)] public float baseCaptureChance = 0.5f;
     [Min(0f)] public float chaseScale = 40f;
-    [Min(0f)] public float preyEnergyPerSize = 30f;
+    [Min(0f)] public float preyEnergyPerSize = 40f;
     [Range(0f, 1f)] public float reserveHuntFraction = 0.1f;
     [Min(0f)] public float reserveDays = 10f;
     [Range(0f, 1f)] public float splitMinimumFoodSatisfaction = 0.95f;
@@ -152,7 +153,7 @@ public sealed class LandRuleTuning
         densityBirthDampingStart = Unit(densityBirthDampingStart, 0.85f);
         baseCaptureChance = NonNegative(baseCaptureChance, 0.5f);
         chaseScale = NonNegative(chaseScale, 40f);
-        preyEnergyPerSize = NonNegative(preyEnergyPerSize, 30f);
+        preyEnergyPerSize = NonNegative(preyEnergyPerSize, 40f);
         reserveHuntFraction = Unit(reserveHuntFraction, 0.1f);
         reserveDays = NonNegative(reserveDays, 10f);
         splitMinimumFoodSatisfaction = Unit(splitMinimumFoodSatisfaction, 0.95f);

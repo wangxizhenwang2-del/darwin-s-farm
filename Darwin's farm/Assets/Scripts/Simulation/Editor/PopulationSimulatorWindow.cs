@@ -84,22 +84,15 @@ public partial class PopulationSimulatorWindow : EditorWindow
         lastUpdate = EditorApplication.timeSinceStartup;
         EditorApplication.update -= UpdateSimulation;
         EditorApplication.update += UpdateSimulation;
-        EditorApplication.playModeStateChanged -= OnLiveExportPlayModeChanged;
-        EditorApplication.playModeStateChanged += OnLiveExportPlayModeChanged;
     }
 
     private void OnDisable()
     {
         EditorApplication.update -= UpdateSimulation;
-        // Maximizing Game View temporarily disables this EditorWindow. Keep
-        // the export subscriptions and the Play-mode exit hook alive so the
-        // test continues recording while the window is hidden.
-        if (liveExportWriter == null || !EditorApplication.isPlaying)
-        {
-            EditorApplication.playModeStateChanged -= OnLiveExportPlayModeChanged;
-            StopLiveExport("window_disabled");
-        }
-        StopLiveRecording();
+        // JSONL recording is owned by static editor callbacks. Maximizing or
+        // closing this window must not interrupt Play-mode logs or charts.
+        liveTuningSource = null;
+        liveEnvironmentBlock = null;
         if (liveInterventions != null) liveInterventions.ClearPreview();
         DestroyRuntime();
     }

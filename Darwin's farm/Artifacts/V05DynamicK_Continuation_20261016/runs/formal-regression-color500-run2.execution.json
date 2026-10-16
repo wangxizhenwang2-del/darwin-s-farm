@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-regression-color500",
+  "run": 2,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 19.739,
+  "inputSha256": "bfe528d9fa73ec0a2db41132f34fcdaecb855aa44429fe41425ebd1e6f8336ee"
+}

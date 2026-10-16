@@ -10,6 +10,16 @@ public class EvolutionConversionRecord
 }
 
 [System.Serializable]
+public class DirectedInfluence
+{
+    // 2 movement, 3 size, 4 fertility; sign is direction.
+    public int trait;
+    public float weight;
+    public int firstDay, lastDay, residualLastDay;
+    public float potential;
+}
+
+[System.Serializable]
 public class PopulationData
 {
     // Identifies this population instance, not its species or visual object.
@@ -29,6 +39,8 @@ public class PopulationData
     // A full relocation replaces the source record with its arrival record.
     internal void RetainPopulationId(PopulationData source) => populationId = source.PopulationId;
     internal void RegeneratePopulationId() => populationId = System.Guid.NewGuid().ToString("N");
+    internal void AssignPopulationId(string value) => populationId = value;
+    public int nextSplitSerial;
 
     public int speciesAmount; //种群数量保持整数
     public SpeciesData species;
@@ -81,9 +93,16 @@ public class PopulationData
     public float actualEnergySatisfactionToday; //当日实际摄食率，用于运动选择
     public int populationBeforePredation; //捕食前数量，避免捕食后分母缩小造成虚假盈余
     public float energyReserve; //捕食者吃下整只猎物后未用完的能量
+    // Living material owned by this population. Initialized from the starting
+    // population once, then transferred with births, deaths and splits.
+    public float bodyBiomass;
+    public bool bodyBiomassInitialized;
     [System.NonSerialized] public float reserveAtDayStart; //测试诊断：当日捕食前储备
     [System.NonSerialized] public float huntingEnergyToday; //测试诊断：当日从猎物获得的能量
     [System.NonSerialized] public int predationDeathsToday; //测试诊断：当日被捕食数量
+    [System.NonSerialized] public float adultDemandToday, adultPaidToday;
+    [System.NonSerialized] public float birthOpportunityToday, birthBudgetToday;
+    [System.NonSerialized] public float newbornCostToday, unusedBirthFoodToday;
     public int nextMigrationDay; //迁徙冷却结束后可再次参与检查的日期
     public BlockInfo lastMigrationSource; // 环境未改变时，禁止自动迁回上次迁出的地块
     public float birthRemainder; //累计不足一个体的繁殖量
@@ -94,6 +113,8 @@ public class PopulationData
     public System.Collections.Generic.List<float> foodSatisfactionHistory = new System.Collections.Generic.List<float>();
     public System.Collections.Generic.List<float> renewalSatisfactionHistory = new System.Collections.Generic.List<float>();
     public System.Collections.Generic.List<float> preyNetRenewalHistory = new System.Collections.Generic.List<float>();
+    // Daily relative count change, including predation, for mutation selection.
+    public System.Collections.Generic.List<float> populationGrowthHistory = new System.Collections.Generic.List<float>();
     public float predationRemainder;
     public int endangeredDays;
     public bool localSplitBranch;
@@ -109,4 +130,12 @@ public class PopulationData
     public string lastMutationEffect;
     public float mutationSelectionProgress;
     public int mutationSelectionCandidate = -1;
+    public System.Collections.Generic.List<DirectedInfluence> directedInfluences =
+        new System.Collections.Generic.List<DirectedInfluence>();
+    public SpeciesData trackedEvolutionTarget;
+    public SpeciesData manualEvolutionTarget;
+    // Movement, size, fertility target protection. A released protection
+    // cannot reappear until the trait leaves its target interval.
+    public int[] targetProtectionSince = { -1, -1, -1 };
+    public bool[] targetProtectionReleased = new bool[3];
 }

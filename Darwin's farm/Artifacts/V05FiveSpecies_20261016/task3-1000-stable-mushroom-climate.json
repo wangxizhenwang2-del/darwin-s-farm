@@ -1,0 +1,27 @@
+{
+  "scenarioId": "V05-T3-1000-stable-mushroom-climate-seed240",
+  "seed": 240,
+  "endDay": 700,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "originInitialStock": 1000000,
+  "originInitialChickenCount": 1000,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 2
+    }
+  ]
+}

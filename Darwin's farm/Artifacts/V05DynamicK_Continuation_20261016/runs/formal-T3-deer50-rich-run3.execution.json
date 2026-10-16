@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-T3-deer50-rich",
+  "run": 3,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 25.537,
+  "inputSha256": "26661fd194372263b0e3137681de8f76f2fb701652c1ef065d274dad34e4e3eb"
+}

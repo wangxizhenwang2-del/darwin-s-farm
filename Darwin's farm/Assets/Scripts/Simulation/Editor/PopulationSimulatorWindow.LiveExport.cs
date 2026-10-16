@@ -106,23 +106,30 @@ public partial class PopulationSimulatorWindow
         public List<ExportTile> tiles = new List<ExportTile>();
     }
 
-    private StreamWriter liveExportWriter;
-    [SerializeField] private string liveExportPath;
-    [SerializeField] private string liveExportStatus = "尚未开始记录";
+    // The export session belongs to the editor, not to the visible window.
+    // Maximizing Game View can disable or recreate PopulationSimulatorWindow.
+    private static StreamWriter liveExportWriter;
+    private static string liveExportPath;
+    private static string liveExportStatus = "尚未开始记录";
     [SerializeField] private string liveExportCase = "Whitebox";
     [SerializeField] private string liveExportTester = "";
     [SerializeField] private string liveExportNote = "";
-    [SerializeField] private int liveExportDays, liveExportActions, liveExportTransitions;
-    private bool liveMapRefreshQueued;
-    private readonly Dictionary<Vector2Int, string> liveExportMap =
+    private static int liveExportDays, liveExportActions, liveExportTransitions;
+    private static bool liveMapRefreshQueued;
+    private static readonly Dictionary<Vector2Int, string> liveExportMap =
         new Dictionary<Vector2Int, string>();
-    private EnvironmentTechnologyController liveExportTechnology;
+    private static MapGridManager exportGrid;
+    private static MapSimulationBridge exportBridge;
+    private static SimulationInterventionController exportInterventions;
+    private static SimulationController exportSimulation;
+    private static SimulationTime exportTime;
+    private static EnvironmentTechnologyController liveExportTechnology;
 
     private void DrawLiveExport()
     {
         EditorGUILayout.LabelField("导出测试数据", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox(
-            "开始测试后记录全地图每日状态、成功操作、地图变化、迁徙/分化/进化和错误。退出 Play 模式前会自动写入最终快照并关闭 JSONL 文件。",
+            "开始测试后记录全地图每日状态、成功操作、地图变化、迁徙/分化/进化和错误。放大 Game View 或关闭模拟器窗口期间仍会记录；退出 Play 模式前会自动写入最终快照并关闭 JSONL 文件。",
             MessageType.Info);
         liveExportCase = EditorGUILayout.TextField("测试编号", liveExportCase);
         liveExportTester = EditorGUILayout.TextField("测试者", liveExportTester);
@@ -163,6 +170,7 @@ public partial class PopulationSimulatorWindow
     private void StartLiveExport()
     {
         ResolveLiveGame();
+        if (liveExportWriter != null) return;
         if (!EditorApplication.isPlaying || liveGrid == null || liveSimulation == null ||
             liveTime == null || liveInterventions == null)
         { liveExportStatus = "请先进入有地图与模拟器的 Play 模式"; return; }
@@ -172,6 +180,11 @@ public partial class PopulationSimulatorWindow
         if (string.IsNullOrEmpty(path)) return;
         try
         {
+            exportGrid = liveGrid;
+            exportBridge = liveBridge;
+            exportInterventions = liveInterventions;
+            exportSimulation = liveSimulation;
+            exportTime = liveTime;
             liveExportWriter = new StreamWriter(path, false, new UTF8Encoding(false));
             liveExportPath = path;
             liveExportDays = liveExportActions = liveExportTransitions = 0;
@@ -182,22 +195,23 @@ public partial class PopulationSimulatorWindow
                 scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
                 unity = Application.unityVersion,
                 caseId = liveExportCase, tester = liveExportTester,
-                landRules = liveSimulation.ReadLandRules()
+                landRules = exportSimulation.ReadLandRules()
             });
-            liveGrid.TilesChanged += OnExportTilesChanged;
-            liveSimulation.OnDaySimulated += OnExportDay;
-            liveSimulation.OnMigrationResolved += OnExportTransition;
-            liveSimulation.OnNicheConversionResolved += OnExportTransition;
-            liveSimulation.OnPresetEvolutionResolved += OnExportTransition;
-            liveSimulation.OnLocalSplitResolved += OnExportTransition;
-            liveSimulation.OnEcologyEvent += OnExportEcology;
-            liveInterventions.OperationCommitted += OnExportIntervention;
-            liveTime.OnSpeedChanged += OnExportSpeedChanged;
-            liveExportTechnology = liveBridge.GetComponent<EnvironmentTechnologyController>();
+            exportGrid.TilesChanged += OnExportTilesChanged;
+            exportSimulation.OnDaySimulated += OnExportDay;
+            exportSimulation.OnMigrationResolved += OnExportTransition;
+            exportSimulation.OnNicheConversionResolved += OnExportTransition;
+            exportSimulation.OnPresetEvolutionResolved += OnExportTransition;
+            exportSimulation.OnLocalSplitResolved += OnExportTransition;
+            exportSimulation.OnEcologyEvent += OnExportEcology;
+            exportInterventions.OperationCommitted += OnExportIntervention;
+            exportTime.OnSpeedChanged += OnExportSpeedChanged;
+            liveExportTechnology = exportBridge.GetComponent<EnvironmentTechnologyController>();
             if (liveExportTechnology != null)
                 liveExportTechnology.OperationCommitted += OnExportTechnology;
             Application.logMessageReceived += OnExportUnityLog;
             AssemblyReloadEvents.beforeAssemblyReload += OnExportBeforeReload;
+            EditorApplication.playModeStateChanged += OnLiveExportPlayModeChanged;
             CaptureExportMap();
             WriteExportSnapshot("initial");
             liveExportWriter.Flush();
@@ -210,27 +224,34 @@ public partial class PopulationSimulatorWindow
         }
     }
 
-    private void StopLiveExport(string reason = "manual_finish")
+    private static void StopLiveExport(string reason = "manual_finish")
     {
+        EditorApplication.playModeStateChanged -= OnLiveExportPlayModeChanged;
         AssemblyReloadEvents.beforeAssemblyReload -= OnExportBeforeReload;
-        if (liveGrid != null) liveGrid.TilesChanged -= OnExportTilesChanged;
-        if (liveSimulation != null)
+        EditorApplication.delayCall -= FinishExportMapChange;
+        liveMapRefreshQueued = false;
+        if (exportGrid != null) exportGrid.TilesChanged -= OnExportTilesChanged;
+        if (exportSimulation != null)
         {
-            liveSimulation.OnDaySimulated -= OnExportDay;
-            liveSimulation.OnMigrationResolved -= OnExportTransition;
-            liveSimulation.OnNicheConversionResolved -= OnExportTransition;
-            liveSimulation.OnPresetEvolutionResolved -= OnExportTransition;
-            liveSimulation.OnLocalSplitResolved -= OnExportTransition;
-            liveSimulation.OnEcologyEvent -= OnExportEcology;
+            exportSimulation.OnDaySimulated -= OnExportDay;
+            exportSimulation.OnMigrationResolved -= OnExportTransition;
+            exportSimulation.OnNicheConversionResolved -= OnExportTransition;
+            exportSimulation.OnPresetEvolutionResolved -= OnExportTransition;
+            exportSimulation.OnLocalSplitResolved -= OnExportTransition;
+            exportSimulation.OnEcologyEvent -= OnExportEcology;
         }
-        if (liveInterventions != null)
-            liveInterventions.OperationCommitted -= OnExportIntervention;
-        if (liveTime != null) liveTime.OnSpeedChanged -= OnExportSpeedChanged;
+        if (exportInterventions != null)
+            exportInterventions.OperationCommitted -= OnExportIntervention;
+        if (exportTime != null) exportTime.OnSpeedChanged -= OnExportSpeedChanged;
         if (liveExportTechnology != null)
             liveExportTechnology.OperationCommitted -= OnExportTechnology;
         liveExportTechnology = null;
         Application.logMessageReceived -= OnExportUnityLog;
-        if (liveExportWriter == null) return;
+        if (liveExportWriter == null)
+        {
+            ClearExportSources();
+            return;
+        }
         StreamWriter writer = liveExportWriter;
         liveExportWriter = null;
         try
@@ -238,7 +259,7 @@ public partial class PopulationSimulatorWindow
             writer.WriteLine(JsonUtility.ToJson(new ExportEnd
             {
                 reason = reason,
-                day = liveTime != null ? liveTime.currentDay : -1,
+                day = exportTime != null ? exportTime.currentDay : -1,
                 time = DateTime.Now.ToString("O"),
                 recordedDays = liveExportDays
             }));
@@ -251,9 +272,20 @@ public partial class PopulationSimulatorWindow
             catch (Exception exception) { liveExportStatus = "关闭文件失败：" + exception.Message; }
         }
         if (!liveExportStatus.StartsWith("关闭文件失败")) liveExportStatus = "已导出";
+        ClearExportSources();
     }
 
-    private void OnLiveExportPlayModeChanged(PlayModeStateChange state)
+    private static void ClearExportSources()
+    {
+        exportGrid = null;
+        exportBridge = null;
+        exportInterventions = null;
+        exportSimulation = null;
+        exportTime = null;
+        liveExportMap.Clear();
+    }
+
+    private static void OnLiveExportPlayModeChanged(PlayModeStateChange state)
     {
         if (state != PlayModeStateChange.ExitingPlayMode || liveExportWriter == null) return;
 
@@ -271,17 +303,16 @@ public partial class PopulationSimulatorWindow
         if (!liveExportStatus.StartsWith("关闭文件失败") &&
             !liveExportStatus.StartsWith("写入中断"))
             liveExportStatus = "已在游戏结束前自动导出";
-        Repaint();
     }
 
-    private void OnExportBeforeReload()
+    private static void OnExportBeforeReload()
     {
         if (liveExportWriter == null) return;
         WriteExportSnapshot("before_assembly_reload");
         StopLiveExport("assembly_reload");
     }
 
-    private void WriteExport(object record)
+    private static void WriteExport(object record)
     {
         if (liveExportWriter == null) return;
         try { liveExportWriter.WriteLine(JsonUtility.ToJson(record)); }
@@ -292,26 +323,26 @@ public partial class PopulationSimulatorWindow
         }
     }
 
-    private void OnExportDay(int day)
+    private static void OnExportDay(int day)
     {
         WriteExportSnapshot("day_end");
         liveExportWriter?.Flush(); // One buffered write per day, no per-frame I/O.
         liveExportDays++;
     }
 
-    private void WriteExportSnapshot(string reason)
+    private static void WriteExportSnapshot(string reason)
     {
-        if (liveExportWriter == null || liveGrid == null || liveTime == null) return;
+        if (liveExportWriter == null || exportGrid == null || exportTime == null) return;
         var snapshot = new ExportSnapshot
         {
-            reason = reason, day = liveTime.currentDay,
-            tuning = liveSimulation != null ? liveSimulation.ReadTuning() : default,
-            secondsPerDay = liveTime.SecondsPerDay,
-            speed = liveTime.Speed, paused = liveTime.IsPaused
+            reason = reason, day = exportTime.currentDay,
+            tuning = exportSimulation != null ? exportSimulation.ReadTuning() : default,
+            secondsPerDay = exportTime.SecondsPerDay,
+            speed = exportTime.Speed, paused = exportTime.IsPaused
         };
         SimulationEnvironmentController environment =
-            liveBridge != null ? liveBridge.GetComponent<SimulationEnvironmentController>() : null;
-        foreach (MapTileInstance tile in liveGrid.GetPlacedTiles())
+            exportBridge != null ? exportBridge.GetComponent<SimulationEnvironmentController>() : null;
+        foreach (MapTileInstance tile in exportGrid.GetPlacedTiles())
         {
             if (tile == null || tile.Block == null) continue;
             BlockInfo block = tile.Block;
@@ -346,10 +377,10 @@ public partial class PopulationSimulatorWindow
                 foreach (PopulationData population in block.community)
                 {
                     if (population == null || population.speciesAmount <= 0) continue;
-                    SimulationController.SplitGateInfo split = liveSimulation.ReadSplitGate(
+                    SimulationController.SplitGateInfo split = exportSimulation.ReadSplitGate(
                         block, population, snapshot.day);
                     SimulationController.LandSelectionSignals signals =
-                        liveSimulation.ReadLandSelectionSignals(block, population);
+                        exportSimulation.ReadLandSelectionSignals(block, population);
                     row.populations.Add(new ExportPopulation
                     {
                         id = population.PopulationId,
@@ -393,13 +424,13 @@ public partial class PopulationSimulatorWindow
         WriteExport(snapshot);
     }
 
-    private void WriteExportAction(string source, string operation,
+    private static void WriteExportAction(string source, string operation,
         Vector2Int coordinate, string detail, bool snapshot = true)
     {
         if (liveExportWriter == null) return;
         WriteExport(new ExportAction
         {
-            day = liveTime != null ? liveTime.currentDay : -1,
+            day = exportTime != null ? exportTime.currentDay : -1,
             time = DateTime.Now.ToString("O"), source = source,
             operation = operation, x = coordinate.x, y = coordinate.y,
             detail = detail
@@ -408,24 +439,24 @@ public partial class PopulationSimulatorWindow
         if (snapshot) WriteExportSnapshot("after_action");
     }
 
-    private void OnExportIntervention(Vector2Int coordinate, string detail) =>
+    private static void OnExportIntervention(Vector2Int coordinate, string detail) =>
         WriteExportAction("intervention_controller",
             detail.StartsWith("rejected:") ? "rejected" : "commit", coordinate,
             detail, !detail.StartsWith("rejected:"));
-    private void OnExportTechnology(Vector2Int coordinate, string detail) =>
+    private static void OnExportTechnology(Vector2Int coordinate, string detail) =>
         WriteExportAction("technology_controller",
             detail.StartsWith("rejected:") ? "rejected" : "commit", coordinate,
             detail, !detail.StartsWith("rejected:"));
-    private void OnExportSpeedChanged(float speed) =>
+    private static void OnExportSpeedChanged(float speed) =>
         WriteExportAction("simulation_time", "speed", Vector2Int.zero, speed.ToString("F2"));
-    private void OnExportUnityLog(string message, string stackTrace, LogType type)
+    private static void OnExportUnityLog(string message, string stackTrace, LogType type)
     {
         if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
             WriteExportAction("unity", type.ToString(), Vector2Int.zero,
                 message + (type == LogType.Exception ? " | " + stackTrace : ""));
     }
 
-    private void OnExportTransition(PopulationTransitionResult result)
+    private static void OnExportTransition(PopulationTransitionResult result)
     {
         if (liveExportWriter == null) return;
         Vector2Int from = ExportCoordinate(result.SourceBlock);
@@ -447,7 +478,7 @@ public partial class PopulationSimulatorWindow
         liveExportTransitions++;
     }
 
-    private void OnExportEcology(int day, BlockInfo block,
+    private static void OnExportEcology(int day, BlockInfo block,
         PopulationData population, string kind, string detail)
     {
         if (liveExportWriter == null) return;
@@ -463,27 +494,27 @@ public partial class PopulationSimulatorWindow
         liveExportTransitions++;
     }
 
-    private Vector2Int ExportCoordinate(BlockInfo block)
+    private static Vector2Int ExportCoordinate(BlockInfo block)
     {
-        if (liveGrid != null)
-            foreach (MapTileInstance tile in liveGrid.GetPlacedTiles())
+        if (exportGrid != null)
+            foreach (MapTileInstance tile in exportGrid.GetPlacedTiles())
                 if (tile != null && tile.Block == block) return tile.Coordinate;
         return new Vector2Int(int.MinValue, int.MinValue);
     }
 
-    private void OnExportTilesChanged()
+    private static void OnExportTilesChanged()
     {
         if (liveMapRefreshQueued) return;
         liveMapRefreshQueued = true;
         EditorApplication.delayCall += FinishExportMapChange;
     }
 
-    private void FinishExportMapChange()
+    private static void FinishExportMapChange()
     {
         liveMapRefreshQueued = false;
-        if (liveExportWriter == null || liveGrid == null) return;
+        if (liveExportWriter == null || exportGrid == null) return;
         var next = new Dictionary<Vector2Int, string>();
-        foreach (MapTileInstance tile in liveGrid.GetPlacedTiles())
+        foreach (MapTileInstance tile in exportGrid.GetPlacedTiles())
         {
             if (tile == null) continue;
             string state = (tile.Definition != null ? tile.Definition.name : "") +
@@ -502,11 +533,11 @@ public partial class PopulationSimulatorWindow
         foreach (var current in next) liveExportMap.Add(current.Key, current.Value);
     }
 
-    private void CaptureExportMap()
+    private static void CaptureExportMap()
     {
         liveExportMap.Clear();
-        if (liveGrid == null) return;
-        foreach (MapTileInstance tile in liveGrid.GetPlacedTiles())
+        if (exportGrid == null) return;
+        foreach (MapTileInstance tile in exportGrid.GetPlacedTiles())
             if (tile != null)
                 liveExportMap[tile.Coordinate] =
                     (tile.Definition != null ? tile.Definition.name : "") +

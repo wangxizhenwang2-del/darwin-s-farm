@@ -1,0 +1,11 @@
+{
+  "scenario": "explore-chain-T40-H54",
+  "run": 1,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 22.698,
+  "inputSha256": "d80bcb2af9d5cebecc46f27f14f42dcfe95b5dcf616aaa28d469fb5d3262a032"
+}

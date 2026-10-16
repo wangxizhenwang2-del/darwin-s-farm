@@ -45,8 +45,8 @@ public sealed class SpeciesMapGraphGraphic : MaskableGraphic
             bool active = food && (hovered == edge.fromIndex || hovered == edge.toIndex);
             Color tint = active ? Hot : Quiet;
             // Keep both the shaft and the tip outside the circular portraits.
-            Vector2 start = food ? edge.from + direction * 65f : edge.from;
-            Vector2 end = food ? edge.to - direction * 65f : edge.to;
+            Vector2 start = food ? edge.from + direction * 60f : edge.from;
+            Vector2 end = food ? edge.to - direction * 60f : edge.to;
             if ((end - start).sqrMagnitude < 100f) continue;
             Stroke(mesh, start, end, active ? 3.8f : 2.2f, tint);
             if (food)

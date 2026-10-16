@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-T2-chicken-favored",
+  "run": 2,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 19.365,
+  "inputSha256": "935f9ab5c8ee5c33e38fa0f4b6d98282e1dadc522fcbca923f4d1ebdfd91e1c9"
+}

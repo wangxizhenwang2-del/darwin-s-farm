@@ -1,0 +1,11 @@
+{
+  "scenario": "formal-regression-mushroom1000",
+  "run": 1,
+  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
+  "exitCode": 0,
+  "unityReplayOK": true,
+  "replayCompleted": true,
+  "actionRejections": false,
+  "seconds": 23.023,
+  "inputSha256": "75c18ce42d9317ec6c76f0de9001ab4f2369d36843d83f5fe5d94333b64e0782"
+}

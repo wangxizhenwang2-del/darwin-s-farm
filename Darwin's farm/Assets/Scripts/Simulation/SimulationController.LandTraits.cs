@@ -24,6 +24,7 @@ public partial class SimulationController
     {
         public float stockDays, renewalCoverage, neighborAttraction;
         public float sizePressure, fertilityPressure, movementPressure;
+        public float populationGrowth;
         public int movementCeiling;
     }
 
@@ -49,7 +50,8 @@ public partial class SimulationController
                 LandRules.lowStockDays, LandRules.highStockDays),
             fertilityPressure = ResourcePressure(renewalCoverage,
                 LandRules.lowRenewalCoverage, LandRules.highRenewalCoverage),
-            movementPressure = neighborOpportunity ? attraction : -1f
+            movementPressure = neighborOpportunity ? attraction : -1f,
+            populationGrowth = LandLifeRules.Average(p.populationGrowthHistory)
         };
     }
 
@@ -62,9 +64,7 @@ public partial class SimulationController
         return 0f;
     }
 
-    public static bool IsDirectedTraitLocked(PopulationData p, int day) =>
-        p != null && p.directedSplitTarget != null &&
-        day < p.directedTraitUnlockDay;
+    public static bool IsDirectedTraitLocked(PopulationData p, int day) => false;
 
     private float ForecastLandGrowth(BlockInfo block, PopulationData p, LandTraits v)
     {
@@ -90,9 +90,8 @@ public partial class SimulationController
         float births = p.speciesAmount * LandRules.birthRate
             * v.f / 100f * fitness * ratio * birthFactor;
         float deaths = p.speciesAmount * LandRules.starvationDeathRate
-            * (1f - ratio) + LandRules.coldDeathRate * p.speciesAmount
-                * Mathf.Max(0f, (50f - block.temperature) / 50f)
-                * (1f - v.s / 100f)
+            * (1f - ratio) + LandLifeRules.ColdDeaths(p.speciesAmount,
+                block.temperature, LandRules)
             + LandRules.climateMismatchDeathRate * p.speciesAmount
                 * (1f - fitness)
             + LandLifeRules.NaturalAdultDeaths(p.speciesAmount, v.s,
@@ -179,132 +178,182 @@ public partial class SimulationController
         return Mathf.Max(0f, food);
     }
 
+    private struct MutationCandidate
+    {
+        public int trait, direction;
+        public float weight;
+        public string sources;
+    }
+
+    private static int TraitValue(PopulationData population, int trait)
+    {
+        switch (trait)
+        {
+            case 0: return population.fitTemperature;
+            case 1: return population.fitHumidity;
+            case 2: return population.movementAbility;
+            case 3: return population.size;
+            default: return population.fertility;
+        }
+    }
+
+    private static int TraitLimit(int trait, int value) =>
+        Mathf.Clamp(value, trait == 3 ? 1 : trait == 4 ? 10 : 0,
+            trait == 4 ? 90 : 100);
+
+    private static LandTraits ChangedTrait(LandTraits value, int trait, int next)
+    {
+        if (trait == 0) value.t = next;
+        else if (trait == 1) value.h = next;
+        else if (trait == 2) value.m = next;
+        else if (trait == 3) value.s = next;
+        else value.f = next;
+        return value;
+    }
+
+    private static void AddMutationCandidate(List<MutationCandidate> choices,
+        int trait, int direction, float weight, string source)
+    {
+        if (weight <= 0f) return;
+        for (int i = 0; i < choices.Count; i++)
+            if (choices[i].trait == trait &&
+                choices[i].direction == direction)
+            {
+                MutationCandidate existing = choices[i];
+                existing.weight += weight;
+                existing.sources += "+" + source;
+                choices[i] = existing;
+                return;
+            }
+        choices.Add(new MutationCandidate
+        {
+            trait = trait, direction = direction,
+            weight = weight, sources = source
+        });
+    }
+
     private void EvolveCommunityNewRules(BlockInfo block)
     {
-        if (!mutationEnabled || mutationStep <= 0f || selectionStrength <= 0f) return;
-        var decisions = new List<LandTraits>(block.community.Count);
-        var subjects = new List<PopulationData>(block.community.Count);
-        var effects = new List<string>(block.community.Count);
-        var gains = new List<float>(block.community.Count);
-        var signalHistory = new List<LandSelectionSignals>(block.community.Count);
-        foreach (PopulationData p in block.community)
+        if (!mutationEnabled || mutationStep <= 0f) return;
+        foreach (PopulationData population in block.community)
         {
-            if (p == null || p.speciesAmount <= 0) continue;
-            p.mutationDaysElapsed++;
-            if (p.mutationDaysElapsed < Mathf.Max(1, mutationInterval)) continue;
-            p.mutationDaysElapsed = 0;
-            LandTraits current = ReadLandTraits(p);
-            LandTraits next = current;
-            float baseline = ForecastLandGrowth(block, p, current);
-            float bestGain = LandRules.mutationGainThreshold;
-            string effect = null;
-            int selectedCandidate = -1;
-            LandSelectionSignals signals = ReadLandSelectionSignals(block, p);
-            // Only the directed branch keeps these traits fixed, and only until
-            // the configured day. Its climate traits adapt throughout.
-            int mutableTraitCount = IsDirectedTraitLocked(p,
-                currentSimulationDay) ? 2 : 5;
-            for (int trait = 0; trait < mutableTraitCount; trait++)
+            if (population == null || population.speciesAmount <= 0) continue;
+            population.mutationDaysElapsed++;
+            if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval))
+                continue;
+            population.mutationDaysElapsed = 0;
+            UpdateInfluences(population, currentSimulationDay);
+            RefreshTrackedTarget(block, population, currentSimulationDay);
+            ReleaseTargetProtectionFIFO(block, population);
+
+            LandTraits original = ReadLandTraits(population);
+            float baseline = ForecastLandGrowth(block, population, original);
+            var choices = new List<MutationCandidate>(10);
+            for (int trait = 0; trait < 2; trait++)
             {
-                for (int d = -1; d <= 1; d += 2)
-                {
-                    LandTraits candidate = current;
-                    if (trait == 0) candidate.t = Mathf.Clamp(candidate.t + d * mutationStep, 0f, 100f);
-                    if (trait == 1) candidate.h = Mathf.Clamp(candidate.h + d * mutationStep, 0f, 100f);
-                    if (trait == 2) candidate.m = Mathf.Clamp(candidate.m + d * mutationStep, 0f, 100f);
-                    if (trait == 3) candidate.s = Mathf.Clamp(candidate.s + d * mutationStep, 1f, 100f);
-                    if (trait == 4) candidate.f = Mathf.Clamp(candidate.f + d * mutationStep, 10f, 90f);
-                    float previous = trait == 0 ? current.t : trait == 1 ? current.h :
-                        trait == 2 ? current.m : trait == 3 ? current.s : current.f;
-                    float proposed = trait == 0 ? candidate.t : trait == 1 ? candidate.h :
-                        trait == 2 ? candidate.m : trait == 3 ? candidate.s : candidate.f;
-                    if (Mathf.Abs(proposed - previous) < 0.0001f) continue;
-                    float score = ForecastLandGrowth(block, p, candidate);
-                    if (p.trophicLevel > 0 && trait >= 2)
-                        score += p.speciesAmount * 0.01f *
-                            (PredatorPotential(block, p, candidate)
-                            - PredatorPotential(block, p, current));
-                    if (trait == 2)
-                        score += p.speciesAmount * d * 0.001f *
-                            (signals.movementPressure > 0f
-                                ? LandRules.attractionMovementGain
-                                    * signals.movementPressure
-                                : LandRules.localMovementGain
-                                    * signals.movementPressure);
-                    if (trait == 3)
-                        score += p.speciesAmount * d *
-                            LandRules.resourceTraitGain * signals.sizePressure;
-                    if (trait == 4)
-                        score += p.speciesAmount * d *
-                            LandRules.resourceTraitGain * signals.fertilityPressure;
-                    float gain = (score - baseline) * selectionStrength
-                        / Mathf.Max(1, p.speciesAmount);
-                    if (gain > bestGain)
+                int current = TraitValue(population, trait);
+                int climate = trait == 0 ? block.temperature : block.humidity;
+                if (current == climate) continue;
+                int direction = climate > current ? 1 : -1;
+                AddMutationCandidate(choices, trait, direction,
+                    1f + Mathf.Abs(climate - current) / 20f, "climate");
+            }
+
+            float capacity = LandLifeRules.EnvironmentalCarryingCapacity(
+                block, population, LandRules);
+            float ratio = capacity > 0f
+                ? population.speciesAmount / capacity : 1f;
+            float naturalChance = 0.5f - 0.495f *
+                Mathf.Clamp01(ratio / 0.95f);
+            if (selectionStrength > 0f)
+                for (int trait = 2; trait < 5; trait++)
+                    for (int direction = -1; direction <= 1; direction += 2)
                     {
-                        bestGain = gain;
-                        next = candidate;
-                        selectedCandidate = trait * 2 + (d > 0 ? 1 : 0);
-                        string name = trait == 0 ? "适温" : trait == 1 ? "适湿" :
-                            trait == 2 ? "运动" : trait == 3 ? "体型" : "繁殖";
-                        effect = name + (d > 0 ? "↑ " : "↓ ") +
-                            Mathf.RoundToInt(previous) + "→" + Mathf.RoundToInt(proposed);
+                        int next = TraitLimit(trait,
+                            TraitValue(population, trait) + direction);
+                        if (next == TraitValue(population, trait) ||
+                            LeavesProtectedTarget(population, trait, next) ||
+                            InfluenceNet(population, trait,
+                                currentSimulationDay, true) * direction < 0f)
+                            continue;
+                        LandTraits changed = ChangedTrait(original, trait, next);
+                        float perHeadGain = (ForecastLandGrowth(block,
+                            population, changed) - baseline) /
+                            Mathf.Max(1, population.speciesAmount);
+                        if (perHeadGain <= LandRules.mutationGainThreshold ||
+                            ModelRandom01(currentSimulationDay,
+                                "mutation.natural", block, population,
+                                null, trait * 2 + (direction > 0 ? 1 : 0))
+                                >= naturalChance) continue;
+                        AddMutationCandidate(choices, trait, direction,
+                            Mathf.Clamp(perHeadGain * selectionStrength * 100f,
+                                0.05f, 5f), "sustainable");
                     }
-                }
-            }
-            if (selectedCandidate < 0)
+
+            for (int trait = 2; trait < 5; trait++)
             {
-                p.mutationSelectionProgress = 0f;
-                p.mutationSelectionCandidate = -1;
+                float net = InfluenceNet(population, trait,
+                    currentSimulationDay, false);
+                if (net == 0f) continue;
+                int direction = net > 0f ? 1 : -1;
+                int next = TraitLimit(trait,
+                    TraitValue(population, trait) + direction);
+                if (next != TraitValue(population, trait) &&
+                    !LeavesProtectedTarget(population, trait, next))
+                    AddMutationCandidate(choices, trait, direction,
+                        Mathf.Abs(net), "player");
             }
-            else
+
+            float totalWeight = 0f;
+            var details = new System.Text.StringBuilder();
+            foreach (MutationCandidate candidate in choices)
             {
-                if (p.mutationSelectionCandidate != selectedCandidate)
-                    p.mutationSelectionProgress = 0f;
-                p.mutationSelectionCandidate = selectedCandidate;
-                p.mutationSelectionProgress += Mathf.Clamp01(
-                    (bestGain - LandRules.mutationGainThreshold) /
-                    LandRules.mutationGainDailyScale);
-                if (p.mutationSelectionProgress < 1f)
-                {
-                    next = current;
-                    effect = null;
-                }
-                else
-                {
-                    p.mutationSelectionProgress -= 1f;
-                    p.mutationSelectionCandidate = -1;
-                }
+                totalWeight += candidate.weight;
+                if (details.Length > 0) details.Append(',');
+                details.Append(candidate.trait).Append(':')
+                    .Append(candidate.direction > 0 ? '+' : '-')
+                    .Append(':').Append(candidate.sources)
+                    .Append(':').Append(candidate.weight.ToString("F3"));
             }
-            decisions.Add(next);
-            subjects.Add(p);
-            effects.Add(effect);
-            gains.Add(bestGain);
-            signalHistory.Add(signals);
-        }
-        for (int i = 0; i < subjects.Count; i++)
-        {
-            PopulationData p = subjects[i];
-            LandTraits next = decisions[i];
-            p.fitTemperature = Mathf.RoundToInt(next.t);
-            p.fitHumidity = Mathf.RoundToInt(next.h);
-            p.movementAbility = Mathf.RoundToInt(next.m);
-            p.size = Mathf.RoundToInt(next.s);
-            p.fertility = Mathf.RoundToInt(next.f);
-            if (effects[i] != null)
+            float draw = ModelRandom01(currentSimulationDay,
+                "mutation.choose", block, population) * totalWeight;
+            int selected = -1;
+            for (int i = 0; i < choices.Count; i++)
             {
-                p.lastMutationEffect = effects[i];
-                LogEcology(currentSimulationDay, block, p, "trait_mutation",
-                    effects[i] + " perCapitaGain=" + gains[i].ToString("F7") +
-                    " threshold=" + LandRules.mutationGainThreshold.ToString("F7") +
-                    " stock=" + block.plantBiomass.ToString("F0") +
-                    " count=" + p.speciesAmount +
-                    " stockDays=" + signalHistory[i].stockDays.ToString("F2") +
-                    " renewalCoverage=" + signalHistory[i].renewalCoverage.ToString("F2") +
-                    " neighborAttraction=" + signalHistory[i].neighborAttraction.ToString("F2") +
-                    " sizePressure=" + signalHistory[i].sizePressure.ToString("F2") +
-                    " fertilityPressure=" + signalHistory[i].fertilityPressure.ToString("F2") +
-                    " movementPressure=" + signalHistory[i].movementPressure.ToString("F2"));
+                draw -= choices[i].weight;
+                if (draw < 0f) { selected = i; break; }
             }
+            if (selected < 0 && choices.Count > 0) selected = choices.Count - 1;
+            population.mutationSelectionProgress = 0f;
+            population.mutationSelectionCandidate = -1;
+            if (selected >= 0)
+            {
+                MutationCandidate winner = choices[selected];
+                int previous = TraitValue(population, winner.trait);
+                int next = previous + winner.direction;
+                if (winner.trait == 0) population.fitTemperature = next;
+                else if (winner.trait == 1) population.fitHumidity = next;
+                else if (winner.trait == 2) population.movementAbility = next;
+                else if (winner.trait == 3) population.size = next;
+                else population.fertility = next;
+                population.lastMutationEffect = winner.trait +
+                    (winner.direction > 0 ? "↑" : "↓") +
+                    " " + previous + "→" + next;
+                if (winner.sources.Contains("player") &&
+                    population.directedInfluences != null)
+                    foreach (DirectedInfluence influence in
+                        population.directedInfluences)
+                        if (influence != null &&
+                            influence.trait == winner.trait &&
+                            influence.weight * winner.direction > 0f)
+                            influence.potential *= 0.5f;
+            }
+            LogEcology(currentSimulationDay, block, population,
+                "mutation_choice", "candidates=[" + details +
+                "] draw=" + ModelRandom01(currentSimulationDay,
+                    "mutation.choose", block, population).ToString("F6") +
+                " selected=" + (selected >= 0
+                    ? population.lastMutationEffect : "none"));
         }
     }
 }

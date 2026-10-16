@@ -29,7 +29,7 @@ MonoBehaviour:
   baseFitTemperature: 55
   baseFitHumidity: 35
   baseSize: 8
-  baseFertility: 70
+  baseFertility: 71
   baseEcologicalNiche: 0
   evolutionGridPos: {x: 1, y: 4}
   foodGridPos: {x: 4, y: 3}

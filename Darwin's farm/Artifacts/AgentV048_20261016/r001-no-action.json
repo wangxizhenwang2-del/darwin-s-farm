@@ -1,0 +1,17 @@
+{
+  "scenarioId": "R001-no-action-160-chicken-seed240",
+  "seed": 240,
+  "endDay": 360,
+  "disableCosts": false,
+  "tiles": [
+    {
+      "x": 1,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/荒漠.asset",
+      "populations": [
+        { "species": "Assets/BiowebV46/Species/鸡-7f113739.asset", "count": 160 }
+      ]
+    }
+  ],
+  "actions": []
+}

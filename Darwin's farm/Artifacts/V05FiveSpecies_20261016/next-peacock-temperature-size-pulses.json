@@ -1,0 +1,254 @@
+{
+  "scenarioId": "V05-Peacock-temperature-size-pulses",
+  "seed": 240,
+  "endDay": 900,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "originInitialStock": 1000000,
+  "originInitialChickenCount": 1000,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 1
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange"
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantChange",
+      "tier": 2
+    },
+    {
+      "day": 450,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 475,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 490,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 491,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 505,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 506,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 520,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 521,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 535,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 536,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 550,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 551,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 565,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 566,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 580,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 581,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 595,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 596,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 610,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 611,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 625,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 626,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 640,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 641,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 655,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 656,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 670,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 671,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 685,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 686,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    },
+    {
+      "day": 700,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1
+    },
+    {
+      "day": 701,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange"
+    }
+  ]
+}

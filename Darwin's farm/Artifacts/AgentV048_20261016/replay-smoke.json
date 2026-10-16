@@ -1,0 +1,19 @@
+{
+  "scenarioId": "v048-live-smoke-240",
+  "seed": 240,
+  "endDay": 30,
+  "disableCosts": false,
+  "tiles": [
+    {
+      "x": 1,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/草原.asset",
+      "populations": [
+        { "species": "Assets/TestBioweb/Species/鸡.asset", "count": 200 }
+      ]
+    }
+  ],
+  "actions": [
+    { "day": 5, "sequence": 0, "x": 1, "y": 0, "kind": "PlantChange", "tier": -1 }
+  ]
+}

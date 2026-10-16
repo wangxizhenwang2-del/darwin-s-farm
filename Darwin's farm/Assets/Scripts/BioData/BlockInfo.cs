@@ -45,6 +45,8 @@ public class BlockInfo : MonoBehaviour
     [SerializeField] public int algaeRecovery;
     public float plantGrowthToday; //当天实际生长的植物量
     public float consumedBiomassToday; //当天被种群吃掉的植物量
+    [System.NonSerialized] public float accountedBiomassSinkToday;
+    public float detritusBiomass; //死亡和转化产生、尚未重新进入植物库存的物质
     [SerializeField]public List<PopulationData> community;    //群落，存储了当前地块的种群
     public int nextLocalSplitDay;
     [SerializeField] public WaterCoverage waterCoverage;

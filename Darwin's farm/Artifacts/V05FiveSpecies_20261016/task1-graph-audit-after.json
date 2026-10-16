@@ -1,0 +1,139 @@
+{
+  "kind": "static_source_audit_not_unity_simulation",
+  "source": "C:\\Users\\17799\\Downloads\\bioweb (13).json",
+  "sourceSha256": "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5",
+  "speciesCount": 15,
+  "jsonEvolutionCount": 20,
+  "unityEvolutionCount": 40,
+  "jsonEvolutionBidirectionalCount": 40,
+  "jsonFoodCount": 25,
+  "unityFoodCount": 25,
+  "evolutionOnlyInJson": [],
+  "evolutionOnlyInUnity": [
+    [
+      "孔雀",
+      "彩鸡"
+    ],
+    [
+      "孔雀",
+      "雀狮"
+    ],
+    [
+      "孔雀",
+      "飞狸"
+    ],
+    [
+      "彩鸡",
+      "鸡"
+    ],
+    [
+      "虾兔",
+      "鹿游"
+    ],
+    [
+      "雪狼",
+      "雀狮"
+    ],
+    [
+      "雪狼",
+      "鹿驯"
+    ],
+    [
+      "飞狸",
+      "灵感菇狸"
+    ],
+    [
+      "鲨母",
+      "大鲨母"
+    ],
+    [
+      "鲨母",
+      "鹿游"
+    ],
+    [
+      "鲨鹿",
+      "大鲨母"
+    ],
+    [
+      "鸡",
+      "灵感菇狸"
+    ],
+    [
+      "鹿",
+      "灵感菇狸"
+    ],
+    [
+      "鹿",
+      "鹿游"
+    ],
+    [
+      "鹿",
+      "鹿飞"
+    ],
+    [
+      "鹿",
+      "鹿驯"
+    ],
+    [
+      "鹿游",
+      "鲨鹿"
+    ],
+    [
+      "鹿驯",
+      "雀狮"
+    ],
+    [
+      "鹿驯",
+      "鲨鹿"
+    ],
+    [
+      "鹿驯",
+      "鹿飞"
+    ]
+  ],
+  "evolutionOnlyInBidirectionalJson": [],
+  "evolutionOnlyInUnityAfterBidirectionalExpansion": [],
+  "foodOnlyInJson": [],
+  "foodOnlyInUnity": [],
+  "unresolvedEvolutionGuids": [],
+  "unresolvedFoodGuids": [],
+  "templateDifferences": [],
+  "routes": [
+    {
+      "from": "鸡",
+      "to": "灵感菇狸",
+      "jsonStoredForward": false,
+      "jsonStoredReverse": true,
+      "unityStoredForward": true,
+      "unityStoredReverse": true,
+      "runtimeBidirectionalEligible": true
+    },
+    {
+      "from": "灵感菇狸",
+      "to": "鹿",
+      "jsonStoredForward": true,
+      "jsonStoredReverse": false,
+      "unityStoredForward": true,
+      "unityStoredReverse": true,
+      "runtimeBidirectionalEligible": true
+    },
+    {
+      "from": "鸡",
+      "to": "彩鸡",
+      "jsonStoredForward": true,
+      "jsonStoredReverse": false,
+      "unityStoredForward": true,
+      "unityStoredReverse": true,
+      "runtimeBidirectionalEligible": true
+    },
+    {
+      "from": "彩鸡",
+      "to": "孔雀",
+      "jsonStoredForward": true,
+      "jsonStoredReverse": false,
+      "unityStoredForward": true,
+      "unityStoredReverse": true,
+      "runtimeBidirectionalEligible": true
+    }
+  ]
+}

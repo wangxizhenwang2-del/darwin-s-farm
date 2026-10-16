@@ -20,11 +20,12 @@ public partial class PopulationSimulatorWindow
         public readonly List<string> output = new List<string>();
     }
 
-    private readonly Dictionary<BlockInfo, LiveTileHistory> liveHistory =
+    private static readonly Dictionary<BlockInfo, LiveTileHistory> liveHistory =
         new Dictionary<BlockInfo, LiveTileHistory>();
     private const int MaxVisibleLiveOutput = 300;
     private const int MaxLiveChartDays = 600;
-    private SimulationController liveRecordingSource;
+    private static SimulationController liveRecordingSource;
+    private static MapGridManager liveRecordingGrid;
     private BlockInfo liveEnvironmentBlock;
     private SimulationEnvironmentEdit liveEnvironment;
     private SimulationController liveTuningSource;
@@ -35,27 +36,42 @@ public partial class PopulationSimulatorWindow
 
     private void EnsureLiveRecording()
     {
-        if (liveRecordingSource == liveSimulation) return;
+        if (liveRecordingSource == liveSimulation && liveRecordingGrid == liveGrid) return;
         StopLiveRecording();
         liveRecordingSource = liveSimulation;
+        liveRecordingGrid = liveGrid;
         liveRecordingSource.OnDaySimulated += RecordLiveDay;
+        EditorApplication.playModeStateChanged += OnLiveDashboardPlayModeChanged;
         RecordLiveDay(liveTime.currentDay);
     }
 
     private void StopLiveRecording()
     {
-        if (liveRecordingSource != null)
-            liveRecordingSource.OnDaySimulated -= RecordLiveDay;
-        liveRecordingSource = null;
+        StopLiveRecordingSession();
         liveTuningSource = null;
         liveEnvironmentBlock = null;
+    }
+
+    private static void StopLiveRecordingSession()
+    {
+        if (liveRecordingSource != null)
+            liveRecordingSource.OnDaySimulated -= RecordLiveDay;
+        EditorApplication.playModeStateChanged -= OnLiveDashboardPlayModeChanged;
+        liveRecordingSource = null;
+        liveRecordingGrid = null;
         liveHistory.Clear();
     }
 
-    private void RecordLiveDay(int day)
+    private static void OnLiveDashboardPlayModeChanged(PlayModeStateChange state)
     {
-        if (liveGrid == null) return;
-        foreach (MapTileInstance tile in liveGrid.GetPlacedTiles())
+        if (state == PlayModeStateChange.ExitingPlayMode)
+            StopLiveRecordingSession();
+    }
+
+    private static void RecordLiveDay(int day)
+    {
+        if (liveRecordingGrid == null) return;
+        foreach (MapTileInstance tile in liveRecordingGrid.GetPlacedTiles())
         {
             BlockInfo site = tile.Block;
             if (site == null) continue;
@@ -114,7 +130,6 @@ public partial class PopulationSimulatorWindow
                     series.amounts.RemoveAt(0);
             }
         }
-        Repaint();
     }
 
     private void LogLive(BlockInfo block, string message)

@@ -115,8 +115,26 @@ internal static class Program
             $"traits={fixedTraits[0]}|{fixedTraits[1]}");
     }
 
-    private static void Main()
+    private static void Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "--decline-probe")
+        {
+            var chicken = Population(Species("鸡", 55, 35, 10, 8, 70), 160);
+            var rainforest = Block(75, 75, 130000, 130000f, chicken);
+            var simulation = Controller(rainforest);
+            for (int day = 1; day <= 100 && rainforest.community.Count > 0; day++)
+            {
+                simulation.SimulateDay(day);
+                if (day % 10 == 0)
+                    Console.WriteLine($"rainforest day={day} count={chicken.speciesAmount} traits={Traits(chicken)} trend={LandLifeRules.Average(chicken.populationGrowthHistory):F4} births={chicken.birthsToday} deaths={chicken.deathsToday} food={chicken.energySatisfactionToday:F3} fitness={chicken.environmentalFitness} K={chicken.environmentalCarryingCapacity:F0} plants={rainforest.plantBiomass:F0}");
+                if (day == 30)
+                    Check(chicken.fitTemperature > 55 && chicken.movementAbility >= 10 &&
+                        chicken.size < 20, "declining chicken ignored growth-first selection");
+            }
+            Check(chicken.speciesAmount >= 100,
+                "rainforest chicken collapsed despite growth-first selection");
+            return;
+        }
         var defaults = new SimulationController();
         var tuning = defaults.ReadTuning();
         var land = defaults.ReadLandRules();

@@ -300,10 +300,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
             return false;
         harvested = preview.Harvested;
         earned = preview.Earned;
-        population.speciesAmount -= harvested;
-        if (population.speciesAmount == 0) source.community.Remove(population);
-        simulation.RefreshSpeciesStatuses();
-        simulation.NotifyPlayerCommunityChanged(source);
+        if (!simulation.HarvestPopulation(source, population, harvested))
+        { harvested = 0; earned = 0; error = "收割时来源种群已变化"; return false; }
         account.Grant(earned, "种群收割:" + BioenergyAccount.SpeciesKey(population));
         return true;
     }
@@ -365,26 +363,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         DirectedTrait first, int firstDelta, DirectedTrait second, int secondDelta,
         out string error)
     {
-        error = null;
-        if (!IsResident(source, population) || first == second ||
-            !ValidDelta(firstDelta) || !ValidDelta(secondDelta) ||
-            (population.ecologicalNiche == EcologicalNiche.Water &&
-                (first == DirectedTrait.Temperature || first == DirectedTrait.Humidity ||
-                 second == DirectedTrait.Temperature || second == DirectedTrait.Humidity)))
-        { error = "定向进化的目标或两项性状无效"; return false; }
-        int nextFirst = NextTrait(population, first, firstDelta);
-        int nextSecond = NextTrait(population, second, secondDelta);
-        if (nextFirst == ReadTrait(population, first) &&
-            nextSecond == ReadTrait(population, second))
-        { error = "性状已到边界，操作不会产生变化"; return false; }
-        return account.TryExecute(BioenergySettings.Current.directedEvolutionCost, "定向进化", (_, __) =>
-        {
-            if (!IsResident(source, population)) return false;
-            SetTrait(population, first, nextFirst);
-            SetTrait(population, second, nextSecond);
-            simulation.NotifyPlayerCommunityChanged(source);
-            return true;
-        }, out error);
+        error = "新规则通过环境科技引导性状，每个种群每天最多变化一项、幅度为 1";
+        return false;
     }
 
     public bool TryStore(BlockInfo source, PopulationData population,
@@ -487,35 +467,4 @@ public sealed class PlayerEconomyController : MonoBehaviour
         survivor.mutationSelectionCandidate = -1;
     }
 
-    private static bool ValidDelta(int delta) =>
-        delta == -50 || delta == -25 || delta == 25 || delta == 50;
-    private static int ReadTrait(PopulationData population, DirectedTrait trait)
-    {
-        switch (trait)
-        {
-            case DirectedTrait.Temperature: return population.fitTemperature;
-            case DirectedTrait.Humidity: return population.fitHumidity;
-            case DirectedTrait.Movement: return population.movementAbility;
-            case DirectedTrait.Fertility: return population.fertility;
-            default: return population.size;
-        }
-    }
-    private static int NextTrait(PopulationData population, DirectedTrait trait, int delta) =>
-        Mathf.Clamp(ReadTrait(population, trait) + delta, trait == DirectedTrait.Size ? 1 : 0, 100);
-    private static void SetTrait(PopulationData population, DirectedTrait trait, int value)
-    {
-        switch (trait)
-        {
-            case DirectedTrait.Temperature:
-                population.fitTemperature = value; population.temperatureMutationRemainder = 0; break;
-            case DirectedTrait.Humidity:
-                population.fitHumidity = value; population.humidityMutationRemainder = 0; break;
-            case DirectedTrait.Movement:
-                population.movementAbility = value; population.movementMutationRemainder = 0; break;
-            case DirectedTrait.Fertility:
-                population.fertility = value; population.fertilityMutationRemainder = 0; break;
-            case DirectedTrait.Size:
-                population.size = value; population.sizeMutationRemainder = 0; break;
-        }
-    }
 }

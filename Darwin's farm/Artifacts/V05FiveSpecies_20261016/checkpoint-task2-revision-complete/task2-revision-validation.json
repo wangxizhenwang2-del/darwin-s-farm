@@ -1,0 +1,207 @@
+{
+  "input": "task2-1000-stable-color-cancel110-plant2.json",
+  "unity": "6000.2.9f1",
+  "runs": [
+    "task2-1000-stable-color-cancel110-plant2-run1.jsonl",
+    "task2-1000-stable-color-cancel110-plant2-run2.jsonl",
+    "task2-1000-stable-color-cancel110-plant2-run3.jsonl"
+  ],
+  "runSha256": [
+    "1fe9996629b3b4cf97fc0f8488db4e0204e9be583ca2458eb830c41ed3b53db1",
+    "1fe9996629b3b4cf97fc0f8488db4e0204e9be583ca2458eb830c41ed3b53db1",
+    "1fe9996629b3b4cf97fc0f8488db4e0204e9be583ca2458eb830c41ed3b53db1"
+  ],
+  "fullTraceIdentical": true,
+  "dailyModelAndEnvironmentHashesIdentical": true,
+  "dailyHashDays": 501,
+  "actions": [
+    "action day=100 inputIndex=0 sequence=0 tile=0,0 kind=TemperatureChange tier=1 cost=0 accepted=True",
+    "action day=100 inputIndex=1 sequence=0 tile=0,0 kind=HumidityChange tier=1 cost=0 accepted=True",
+    "action day=110 inputIndex=2 sequence=0 tile=0,0 kind=CancelTemperatureChange tier=0 cost=0 accepted=True",
+    "action day=110 inputIndex=3 sequence=0 tile=0,0 kind=CancelHumidityChange tier=0 cost=0 accepted=True",
+    "action day=110 inputIndex=4 sequence=0 tile=0,0 kind=PlantChange tier=2 cost=0 accepted=True"
+  ],
+  "events": [
+    "[Ecology] day=136 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:136:0 target=彩鸡 amount=95 plantPayment=11699.46 excessBody=0.00 count=95"
+  ],
+  "day0": {
+    "x": 0,
+    "y": 0,
+    "stock": 798400.0,
+    "detritus": 0.0,
+    "recovery": 50000,
+    "temperature": 55.0,
+    "humidity": 35.0,
+    "temperaturePhase": "None",
+    "humidityPhase": "None",
+    "temperatureRemainingDays": 0,
+    "humidityRemainingDays": 0,
+    "populations": [
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0",
+        "species": "鸡",
+        "count": 1000,
+        "fitT": 55,
+        "fitH": 35,
+        "movement": 10,
+        "size": 8,
+        "fertility": 71,
+        "births": 0,
+        "deaths": 0,
+        "predationDeaths": 0,
+        "body": 240000.0,
+        "reserve": 0.0
+      }
+    ]
+  },
+  "day100": {
+    "x": 0,
+    "y": 0,
+    "stock": 971071.75,
+    "detritus": 623882.9375,
+    "recovery": 50000,
+    "temperature": 55.0,
+    "humidity": 35.0,
+    "temperaturePhase": "Entering",
+    "humidityPhase": "Entering",
+    "temperatureRemainingDays": 25,
+    "humidityRemainingDays": 25,
+    "populations": [
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0",
+        "species": "鸡",
+        "count": 705,
+        "fitT": 55,
+        "fitH": 35,
+        "movement": 13,
+        "size": 10,
+        "fertility": 72,
+        "births": 24,
+        "deaths": 24,
+        "predationDeaths": 0,
+        "body": 206097.109375,
+        "reserve": 0.0
+      }
+    ]
+  },
+  "day135": {
+    "x": 0,
+    "y": 0,
+    "stock": 951231.1875,
+    "detritus": 1022419.6875,
+    "recovery": 103200,
+    "temperature": 66.66666412353516,
+    "humidity": 46.66666793823242,
+    "temperaturePhase": "Returning",
+    "humidityPhase": "Returning",
+    "temperatureRemainingDays": 125,
+    "humidityRemainingDays": 125,
+    "populations": [
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0",
+        "species": "鸡",
+        "count": 931,
+        "fitT": 67,
+        "fitH": 47,
+        "movement": 12,
+        "size": 10,
+        "fertility": 78,
+        "births": 68,
+        "deaths": 54,
+        "predationDeaths": 0,
+        "body": 276130.46875,
+        "reserve": 0.0
+      }
+    ]
+  },
+  "day136": {
+    "x": 0,
+    "y": 0,
+    "stock": 938543.0,
+    "detritus": 1039029.0625,
+    "recovery": 103200,
+    "temperature": 66.73332977294922,
+    "humidity": 46.733333587646484,
+    "temperaturePhase": "Returning",
+    "humidityPhase": "Returning",
+    "temperatureRemainingDays": 124,
+    "humidityRemainingDays": 124,
+    "populations": [
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0",
+        "species": "鸡",
+        "count": 850,
+        "fitT": 67,
+        "fitH": 47,
+        "movement": 12,
+        "size": 10,
+        "fertility": 78,
+        "births": 70,
+        "deaths": 56,
+        "predationDeaths": 0,
+        "body": 252320.59375,
+        "reserve": 0.0
+      },
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0:136:0",
+        "species": "彩鸡",
+        "count": 95,
+        "fitT": 70,
+        "fitH": 49,
+        "movement": 15,
+        "size": 14,
+        "fertility": 75,
+        "births": 0,
+        "deaths": 0,
+        "predationDeaths": 0,
+        "body": 39900.0,
+        "reserve": 0.0
+      }
+    ]
+  },
+  "day500": {
+    "x": 0,
+    "y": 0,
+    "stock": 949633.125,
+    "detritus": 5383163.5,
+    "recovery": 90000,
+    "temperature": 75.0,
+    "humidity": 55.0,
+    "temperaturePhase": "None",
+    "humidityPhase": "None",
+    "temperatureRemainingDays": 0,
+    "humidityRemainingDays": 0,
+    "populations": [
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0",
+        "species": "鸡",
+        "count": 880,
+        "fitT": 75,
+        "fitH": 55,
+        "movement": 19,
+        "size": 10,
+        "fertility": 73,
+        "births": 24,
+        "deaths": 25,
+        "predationDeaths": 0,
+        "body": 263993.75,
+        "reserve": 0.0
+      },
+      {
+        "id": "seed:240:Tile_0_0_荒漠:0:136:0",
+        "species": "彩鸡",
+        "count": 381,
+        "fitT": 75,
+        "fitH": 55,
+        "movement": 28,
+        "size": 9,
+        "fertility": 72,
+        "births": 13,
+        "deaths": 13,
+        "predationDeaths": 0,
+        "body": 102641.7734375,
+        "reserve": 0.0
+      }
+    ]
+  }
+}

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 // 负责挑目的地并提交迁徙计划；个体的拆分与合并交给 PopulationTransfer。
 public partial class SimulationController
@@ -162,7 +161,8 @@ public partial class SimulationController
                 if (population == null || population.speciesAmount <= 0 ||
                     day < population.nextMigrationDay) continue;
                 if (population.ecologicalNiche != EcologicalNiche.Land) continue;
-                if (TryPlanMove(source, population, plans, out MovePlan plan))
+                if (TryPlanMove(source, population, plans, day,
+                    out MovePlan plan))
                     plans.Add(plan);
             }
         }
@@ -170,7 +170,7 @@ public partial class SimulationController
     }
 
     private bool TryPlanMove(BlockInfo source, PopulationData population,
-        List<MovePlan> planned, out MovePlan plan)
+        List<MovePlan> planned, int day, out MovePlan plan)
     {
         plan = new MovePlan();
         int amount = StandardMigrationAmount(population.speciesAmount);
@@ -189,8 +189,7 @@ public partial class SimulationController
                 ? LandRules.flatMigrationThreshold : LandRules.slopeMigrationThreshold))
                 continue;
 
-            bool occupied = HasSameSpeciesResident(neighbor, population) ||
-                planned.Exists(move =>
+            bool occupied = planned.Exists(move =>
                 move.target == neighbor &&
                 move.population.ecologicalNiche == population.ecologicalNiche &&
                 SameSpecies(move.population, population));
@@ -203,26 +202,33 @@ public partial class SimulationController
             if (neighbor.community.Count + reserved >= 5) continue;
             float attraction = NeighborAttraction(source, neighbor,
                 population, amount);
+            float capacityCorrection = TargetCapacityCorrection(neighbor,
+                population);
             float chance = Mathf.Clamp01(attraction)
-                * population.movementAbility / 100f;
+                * population.movementAbility / 100f * capacityCorrection;
             if (LivingPopulationCount(neighbor) == 4)
                 chance *= LandRules.fourEntryMigrationFactor;
             if (chance <= 0f) continue;
             candidates.Add(new MoveCandidate
             {
                 target = neighbor, chance = Mathf.Clamp01(chance),
-                tieBreaker = Random.value
+                tieBreaker = ModelRandom01(day, "migration.tie", source,
+                    population, neighbor)
             });
         }
 
         candidates.Sort((left, right) =>
         {
             int byChance = right.chance.CompareTo(left.chance);
-            return byChance != 0 ? byChance : right.tieBreaker.CompareTo(left.tieBreaker);
+            if (byChance != 0) return byChance;
+            int byDraw = right.tieBreaker.CompareTo(left.tieBreaker);
+            return byDraw != 0 ? byDraw : string.CompareOrdinal(
+                StableTileKey(left.target), StableTileKey(right.target));
         });
         foreach (MoveCandidate candidate in candidates)
         {
-            if (Random.value >= candidate.chance) continue;
+            if (ModelRandom01(day, "migration.accept", source, population,
+                candidate.target) >= candidate.chance) continue;
             plan = new MovePlan
             {
                 source = source, target = candidate.target,
@@ -480,7 +486,8 @@ public partial class SimulationController
                 waterTarget = neighbor;
         if (waterTarget != null)
         {
-            if (UnityEngine.Random.value < landToWaterProbability)
+            if (ModelRandom01(day, "niche.land-water", source, population,
+                    waterTarget) < landToWaterProbability)
                 return ConvertNiche(source, waterTarget, population, EcologicalNiche.Water,
                     day, out descendant);
             return false;
@@ -488,7 +495,8 @@ public partial class SimulationController
 
         if (!HasAirPopulation(source) &&
             population.speciesAmount >= population.carryingCapacity &&
-            UnityEngine.Random.value < landToAirProbability)
+            ModelRandom01(day, "niche.land-air", source, population)
+                < landToAirProbability)
             return ConvertNiche(source, source, population, EcologicalNiche.Air,
                 day, out descendant);
         return false;
@@ -524,7 +532,8 @@ public partial class SimulationController
             overloadMigrationFraction);
         float chance = (difference < 0 ? waterDownProbability : waterUpProbability)
             * WaterFoodPressure(from);
-        if (amount == 0 || UnityEngine.Random.value >= chance) return false;
+        if (amount == 0 || ModelRandom01(day, "migration.water", source,
+                population, target) >= chance) return false;
         ApplyNicheMigration(source, target, population, amount, day);
         return true;
     }
@@ -540,7 +549,8 @@ public partial class SimulationController
         WaterRegion region = regions.GetRegion(source);
         if (region == null || !WaterRegionTouchesLand(region, target) ||
             WaterFoodPressure(region) < 1f ||
-            UnityEngine.Random.value >= waterToLandProbability) return false;
+            ModelRandom01(day, "niche.water-land", source, population,
+                target) >= waterToLandProbability) return false;
         return ConvertNiche(source, target, population, EcologicalNiche.Land,
             day, out descendant);
     }
@@ -565,7 +575,8 @@ public partial class SimulationController
         float fraction = gain > 0f ? gain :
             pressure * overloadMigrationFraction;
         int amount = LimitMigrationAmount(population.speciesAmount, fraction);
-        if (amount == 0 || UnityEngine.Random.value >= chance) return false;
+        if (amount == 0 || ModelRandom01(day, "migration.air", source,
+                population, target) >= chance) return false;
         ApplyNicheMigration(source, target, population, amount, day);
         return true;
     }
@@ -643,7 +654,7 @@ public partial class SimulationController
         descendant = PopulationTransfer.Split(ancestor, amount, source, day,
             migrationCooldownDays);
         // 派生种使用独立 ID，不复用祖先物种资产；可随后保存成正式 SpeciesData。
-        string id = Guid.NewGuid().ToString("N");
+        string id = descendant.PopulationId;
         descendant.species = null;
         descendant.speciesId = id;
         descendant.lineageName = (string.IsNullOrEmpty(ancestor.lineageName)
@@ -695,6 +706,10 @@ internal static class PopulationTransfer
             fertility = source.fertility,
             trophicLevel = source.trophicLevel,
             trophicLevelInitialized = true,
+            bodyBiomass = source.speciesAmount > 0
+                ? source.bodyBiomass * amount / source.speciesAmount : 0f,
+            bodyBiomassInitialized = source.bodyBiomassInitialized,
+            nextSplitSerial = source.nextSplitSerial,
             temperatureMutationRemainder = source.temperatureMutationRemainder,
             humidityMutationRemainder = source.humidityMutationRemainder,
             movementMutationRemainder = source.movementMutationRemainder,
@@ -717,9 +732,17 @@ internal static class PopulationTransfer
             lastMutationEffect = source.lastMutationEffect,
             mutationSelectionProgress = source.mutationSelectionProgress,
             mutationSelectionCandidate = source.mutationSelectionCandidate,
+            trackedEvolutionTarget = source.trackedEvolutionTarget,
+            manualEvolutionTarget = source.manualEvolutionTarget,
+            targetProtectionSince = source.targetProtectionSince == null
+                ? new[] { -1, -1, -1 }
+                : (int[])source.targetProtectionSince.Clone(),
+            targetProtectionReleased = source.targetProtectionReleased == null
+                ? new bool[3] : (bool[])source.targetProtectionReleased.Clone(),
             foodSatisfactionHistory = new List<float>(source.foodSatisfactionHistory ?? new List<float>()),
             renewalSatisfactionHistory = new List<float>(source.renewalSatisfactionHistory ?? new List<float>()),
-            preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>())
+            preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>()),
+            populationGrowthHistory = new List<float>(source.populationGrowthHistory ?? new List<float>())
         };
         if (source.evolutionConversions != null)
             foreach (EvolutionConversionRecord record in source.evolutionConversions)
@@ -729,6 +752,16 @@ internal static class PopulationTransfer
                         target = record.target, day = record.day,
                         effectiveDays = record.effectiveDays,
                         failedDraws = record.failedDraws
+                    });
+        if (source.directedInfluences != null)
+            foreach (DirectedInfluence influence in source.directedInfluences)
+                if (influence != null)
+                    copy.directedInfluences.Add(new DirectedInfluence
+                    {
+                        trait = influence.trait, weight = influence.weight,
+                        firstDay = influence.firstDay, lastDay = influence.lastDay,
+                        residualLastDay = influence.residualLastDay,
+                        potential = influence.potential
                     });
         return copy;
     }
@@ -742,15 +775,21 @@ internal static class PopulationTransfer
         PopulationData branch = CopyForMove(origin, amount);
         if (retainIdOnWholeMove && amount == origin.speciesAmount)
             branch.RetainPopulationId(origin);
+        else
+            branch.AssignPopulationId(origin.PopulationId + ":" + day + ":" +
+                origin.nextSplitSerial++);
+        branch.nextSplitSerial = 0;
         branch.lastMigrationSource = source;
         origin.nextMigrationDay = Mathf.Max(origin.nextMigrationDay,
             day + cooldownDays + 1);
         branch.nextMigrationDay = origin.nextMigrationDay;
         branch.energyReserve = origin.energyReserve * share;
+        branch.bodyBiomass = origin.bodyBiomass * share;
         branch.birthRemainder = origin.birthRemainder * share;
         branch.deathRemainder = origin.deathRemainder * share;
         branch.predationRemainder = origin.predationRemainder * share;
         origin.energyReserve -= branch.energyReserve;
+        origin.bodyBiomass -= branch.bodyBiomass;
         origin.birthRemainder -= branch.birthRemainder;
         origin.deathRemainder -= branch.deathRemainder;
         origin.predationRemainder -= branch.predationRemainder;
@@ -790,6 +829,7 @@ internal static class PopulationTransfer
             arrival.trophicLevel, arrival.trophicMutationRemainder,
             residentAmount, arrivalAmount, total);
         resident.energyReserve += arrival.energyReserve;
+        resident.bodyBiomass += arrival.bodyBiomass;
         resident.birthRemainder += arrival.birthRemainder;
         resident.deathRemainder += arrival.deathRemainder;
         resident.predationRemainder += arrival.predationRemainder;
@@ -799,6 +839,8 @@ internal static class PopulationTransfer
             arrival.renewalSatisfactionHistory, residentAmount, arrivalAmount);
         MergeHistory(resident.preyNetRenewalHistory,
             arrival.preyNetRenewalHistory, residentAmount, arrivalAmount);
+        MergeHistory(resident.populationGrowthHistory,
+            arrival.populationGrowthHistory, residentAmount, arrivalAmount);
         resident.endangeredDays = total < 10
             ? Mathf.Min(resident.endangeredDays, arrival.endangeredDays) : 0;
         resident.localSplitBranch = false;

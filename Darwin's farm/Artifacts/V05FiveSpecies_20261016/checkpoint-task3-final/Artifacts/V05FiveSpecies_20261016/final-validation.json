@@ -1,0 +1,63 @@
+{
+  "task1-normal-actions": {
+    "input": "task1-normal-actions.json",
+    "runFiles": [
+      "task1-normal-actions-final-run1.jsonl",
+      "task1-normal-actions-final-run2.jsonl",
+      "task1-normal-actions-final-run3.jsonl"
+    ],
+    "sha256": [
+      "711def674c487e423eba5d6d619d3dbaa997cae982a66a104c611450a5872732",
+      "711def674c487e423eba5d6d619d3dbaa997cae982a66a104c611450a5872732",
+      "711def674c487e423eba5d6d619d3dbaa997cae982a66a104c611450a5872732"
+    ],
+    "fullFileIdentical": true,
+    "dailyModelAndEnvironmentHashesIdentical": true,
+    "dayCount": 121,
+    "eventLogsIdentical": true,
+    "events": [],
+    "allActionsAccepted": true
+  },
+  "task2-1000-stable-color-cancel110-plant2": {
+    "input": "task2-1000-stable-color-cancel110-plant2.json",
+    "runFiles": [
+      "task2-1000-stable-color-cancel110-plant2-final-run1.jsonl",
+      "task2-1000-stable-color-cancel110-plant2-final-run2.jsonl",
+      "task2-1000-stable-color-cancel110-plant2-final-run3.jsonl"
+    ],
+    "sha256": [
+      "eea024eee1bba0ec381e2df9e71c2b4a0bab5892f835c3bfb8a8c9e338093753",
+      "eea024eee1bba0ec381e2df9e71c2b4a0bab5892f835c3bfb8a8c9e338093753",
+      "eea024eee1bba0ec381e2df9e71c2b4a0bab5892f835c3bfb8a8c9e338093753"
+    ],
+    "fullFileIdentical": true,
+    "dailyModelAndEnvironmentHashesIdentical": true,
+    "dayCount": 501,
+    "eventLogsIdentical": true,
+    "events": [
+      "[Ecology] day=136 kind=preset_evolution population=seed:240:Tile_0_0_鑽掓紶:0:136:0 target=褰╅浮 amount=93 plantPayment=15632.35 excessBody=0.00 count=93"
+    ],
+    "allActionsAccepted": true
+  },
+  "task3-mushroom-stable-1000d": {
+    "input": "task3-mushroom-stable-1000d.json",
+    "runFiles": [
+      "task3-mushroom-stable-1000d-final-run1.jsonl",
+      "task3-mushroom-stable-1000d-final-run2.jsonl",
+      "task3-mushroom-stable-1000d-final-run3.jsonl"
+    ],
+    "sha256": [
+      "ca6d53d2c507f41c3300a2e101e5e321fabb941af43c84b6e7e1e835ba462b93",
+      "ca6d53d2c507f41c3300a2e101e5e321fabb941af43c84b6e7e1e835ba462b93",
+      "ca6d53d2c507f41c3300a2e101e5e321fabb941af43c84b6e7e1e835ba462b93"
+    ],
+    "fullFileIdentical": true,
+    "dailyModelAndEnvironmentHashesIdentical": true,
+    "dayCount": 1001,
+    "eventLogsIdentical": true,
+    "events": [
+      "[Ecology] day=473 kind=preset_evolution population=seed:240:Tile_0_0_鑽掓紶:0:473:0 target=鐏垫劅鑿囩嫺 amount=38 plantPayment=7479.05 excessBody=0.00 count=38"
+    ],
+    "allActionsAccepted": true
+  }
+}

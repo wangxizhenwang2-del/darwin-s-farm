@@ -13,6 +13,8 @@ public partial class SimulationController
         new List<SpeciesData>();
 
     private readonly HashSet<SpeciesData> knownSpecies = new HashSet<SpeciesData>();
+    // Optional run boundary for focused ecology scenarios. Ordinary games leave it null.
+    private HashSet<SpeciesData> allowedEvolutionSpecies;
     private readonly HashSet<SpeciesData> livingSpecies = new HashSet<SpeciesData>();
     public IReadOnlyCollection<SpeciesData> LivingSpecies => livingSpecies;
     public bool IsSpeciesLiving(SpeciesData species) =>
@@ -48,6 +50,12 @@ public partial class SimulationController
             new List<SpeciesData>(species);
         if (evolutionNetworkSpecies != null)
             foreach (SpeciesData entry in evolutionNetworkSpecies) RegisterSpecies(entry);
+    }
+
+    public void SetAllowedEvolutionSpecies(IEnumerable<SpeciesData> species)
+    {
+        allowedEvolutionSpecies = species == null ? null :
+            new HashSet<SpeciesData>(species);
     }
 
     // 供玩家手动增删种群后同步解锁/灭绝状态。
@@ -112,14 +120,10 @@ public partial class SimulationController
                 {
                     EvolutionConversionRecord record = GetEvolutionRecord(ancestor,
                         target, true);
-                    if (ancestor.directedSplitTarget != null &&
-                        target != ancestor.directedSplitTarget)
-                    { record.effectiveDays = 0; continue; }
                     if (!IsEligibleEvolutionTarget(block, ancestor, target, day))
                     { record.effectiveDays = 0; continue; }
                     if (record.effectiveDays < int.MaxValue) record.effectiveDays++;
-                    bool wholeBranch = IsLocalSplitPair(block, ancestor);
-                    int required = LivingPopulationCount(block) == 4 && !wholeBranch
+                    int required = LivingPopulationCount(block) == 4
                         ? LandRules.evolutionRequiredDaysAtFour
                         : LandRules.evolutionRequiredDays;
                     if (record.effectiveDays >= required &&
@@ -136,14 +140,14 @@ public partial class SimulationController
         {
             if (resolved[i]) continue;
             EvolutionPlan winner = plans[i];
-            int contenders = 0;
             for (int j = i; j < plans.Count; j++)
             {
                 EvolutionPlan contender = plans[j];
                 if (contender.block != plans[i].block ||
                     contender.target != plans[i].target) continue;
                 resolved[j] = true;
-                if (UnityEngine.Random.Range(0, ++contenders) == 0) winner = contender;
+                if (string.CompareOrdinal(contender.ancestor.PopulationId,
+                    winner.ancestor.PopulationId) < 0) winner = contender;
             }
             if (IsEligibleEvolutionTarget(winner.block, winner.ancestor,
                     winner.target, day))
@@ -164,7 +168,7 @@ public partial class SimulationController
             block.waterCoverage != WaterCoverage.Land ||
             source.ecologicalNiche != EcologicalNiche.Land ||
             source.species == null || source.species.baseEcologicalNiche != EcologicalNiche.Land ||
-            source.speciesAmount < 10 || day < source.nextEvolutionDay) return null;
+            source.speciesAmount < 2 || day < source.nextEvolutionDay) return null;
 
         SpeciesData best = null;
         float bestGrowth = float.NegativeInfinity;
@@ -191,19 +195,24 @@ public partial class SimulationController
         var result = new HashSet<SpeciesData>();
         if (source.evolutionTargets != null)
             foreach (SpeciesData target in source.evolutionTargets)
-                if (target != null && target != source) result.Add(target);
+                if (target != null && target != source &&
+                    (allowedEvolutionSpecies == null ||
+                     allowedEvolutionSpecies.Contains(target))) result.Add(target);
         // Imported assets encode some intended edges in reverse direction.
         // A connection is valid in either direction; template and food gates
         // still decide whether a conversion can occur.
         foreach (SpeciesData candidate in knownSpecies)
             if (candidate != null && candidate != source &&
+                (allowedEvolutionSpecies == null ||
+                 allowedEvolutionSpecies.Contains(candidate)) &&
                 candidate.evolutionTargets != null &&
                 candidate.evolutionTargets.Contains(source)) result.Add(candidate);
         return new List<SpeciesData>(result);
     }
 
     private static string StableSpeciesKey(SpeciesData species) =>
-        string.IsNullOrEmpty(species.SpeciesName) ? species.name : species.SpeciesName;
+        !string.IsNullOrEmpty(species.SpeciesId) ? species.SpeciesId :
+        !string.IsNullOrEmpty(species.SpeciesName) ? species.SpeciesName : species.name;
 
     private int CompareSpeciesOrder(SpeciesData left, SpeciesData right)
     {
@@ -243,17 +252,40 @@ public partial class SimulationController
             day < source.nextEvolutionDay ||
             !EachTraitWithinTolerance(source, target) ||
             HasLivingSpecies(block, target)) return false;
-        bool wholeBranch = IsLocalSplitPair(block, source);
-        if (!wholeBranch && (LivingPopulationCount(block) >= 5 ||
-            source.speciesAmount <= 10)) return false;
-        int amount = wholeBranch ? source.speciesAmount :
-            Mathf.Clamp(Mathf.RoundToInt(source.speciesAmount * 0.1f), 10, 100);
-        if (!wholeBranch && amount >= source.speciesAmount) return false;
-        return HasEvolutionFoodSupport(block, source, target, amount, wholeBranch);
+        if (LivingPopulationCount(block) >= 5 ||
+            !TryPlanFormalEvolution(block, source, target,
+                out int amount, out _, out _)) return false;
+        return HasEvolutionFoodSupport(block, source, target, amount);
+    }
+
+    // Planning is read-only. The actual split is committed only after every
+    // population, food and material constraint has passed.
+    private bool TryPlanFormalEvolution(BlockInfo block, PopulationData source,
+        SpeciesData target, out int amount, out float plantPayment,
+        out float excessBody)
+    {
+        amount = 0; plantPayment = excessBody = 0f;
+        if (source.speciesAmount < 2 || target == null) return false;
+        int requested = Mathf.Min(source.speciesAmount - 1,
+            Mathf.FloorToInt(source.speciesAmount * 0.1f + 0.5f));
+        if (requested < 1) return false;
+        float sourceBody = source.bodyBiomassInitialized ? source.bodyBiomass :
+            source.speciesAmount * LandLifeRules.BodyMass(source.size, LandRules);
+        float sourcePerHead = sourceBody / source.speciesAmount;
+        float targetPerHead = LandLifeRules.BodyMass(target.baseSize, LandRules);
+        float extraPerHead = Mathf.Max(0f, targetPerHead - sourcePerHead);
+        int affordable = extraPerHead > 0f
+            ? Mathf.FloorToInt(Mathf.Max(0f, block.plantBiomass) / extraPerHead)
+            : requested;
+        amount = Mathf.Min(requested, affordable);
+        if (amount < 1) return false;
+        plantPayment = amount * extraPerHead;
+        excessBody = amount * Mathf.Max(0f, sourcePerHead - targetPerHead);
+        return true;
     }
 
     private bool HasEvolutionFoodSupport(BlockInfo block, PopulationData source,
-        SpeciesData target, int amount, bool wholeBranch)
+        SpeciesData target, int amount)
     {
         PopulationData candidate = TargetPopulation(target, amount);
         float fitness = LandLifeRules.Fitness(block,
@@ -279,8 +311,7 @@ public partial class SimulationController
             if (prey == null || prey.speciesAmount <= 0 ||
                 !FoodWeb.CanEat(candidate, prey)) continue;
             int available = prey.speciesAmount;
-            if (prey == source) available = wholeBranch ? 0 :
-                Mathf.Max(0, available - amount);
+            if (prey == source) available = Mathf.Max(0, available - amount);
             if (available <= 0) continue;
             totalPreference += LandLifeRules.HuntPreference(candidate,
                 prey, LandRules);
@@ -291,7 +322,7 @@ public partial class SimulationController
             if (prey == null || prey.speciesAmount <= 0 ||
                 !FoodWeb.CanEat(candidate, prey)) continue;
             int available = prey == source
-                ? (wholeBranch ? 0 : Mathf.Max(0, prey.speciesAmount - amount))
+                ? Mathf.Max(0, prey.speciesAmount - amount)
                 : prey.speciesAmount;
             if (available <= 0) continue;
             float energy = LandLifeRules.PreyEnergy(candidate, prey,
@@ -312,7 +343,7 @@ public partial class SimulationController
         }
         float sustainableEnergy = LandLifeRules.AvailableSustainablePreyFood(
             block, candidate, LandRules, replaced: source,
-            replacedCount: wholeBranch ? 0 : source.speciesAmount - amount);
+            replacedCount: source.speciesAmount - amount);
         return Mathf.Min(predatorDemand, expectedEnergy) / predatorDemand
                 >= LandRules.evolutionTodaySatisfaction
             && Mathf.Min(predatorDemand, sustainableEnergy) / predatorDemand
@@ -369,14 +400,18 @@ public partial class SimulationController
     private void ConvertToPresetSpecies(BlockInfo block, PopulationData ancestor,
         SpeciesData target, int day)
     {
-        bool wholeBranch = IsLocalSplitPair(block, ancestor);
-        int amount = wholeBranch ? ancestor.speciesAmount :
-            Mathf.Clamp(Mathf.RoundToInt(ancestor.speciesAmount * 0.1f), 10, 100);
-        if (!wholeBranch && ancestor.speciesAmount - amount < 1) return;
+        if (!TryPlanFormalEvolution(block, ancestor, target,
+            out int amount, out float plantPayment, out float excessBody) ||
+            !HasEvolutionFoodSupport(block, ancestor, target, amount)) return;
         int sourceCountBefore = ancestor.speciesAmount;
-        PopulationData descendant = wholeBranch ? ancestor :
-            PopulationTransfer.Split(ancestor, amount, block,
-                day, migrationCooldownDays);
+        LandLifeRules.EnsureBodyMass(ancestor, LandRules);
+        PopulationData descendant = PopulationTransfer.Split(ancestor, amount,
+            block, day, migrationCooldownDays);
+        block.plantBiomass -= plantPayment;
+        block.detritusBiomass += excessBody;
+        descendant.bodyBiomass = amount * LandLifeRules.BodyMass(
+            target.baseSize, LandRules);
+        descendant.bodyBiomassInitialized = true;
         descendant.species = target;
         descendant.speciesId = string.Empty;
         descendant.lineageName = target.SpeciesName;
@@ -391,9 +426,11 @@ public partial class SimulationController
         descendant.size = Mathf.Clamp(target.baseSize, 1, 100);
         descendant.fertility = target.baseFertility;
         ClearMutationRemainders(descendant);
+        float reserveBeforeCap = descendant.energyReserve;
         descendant.energyReserve = Mathf.Min(descendant.energyReserve,
             amount * LandLifeRules.AdultNeed(descendant.size,
                 descendant.movementAbility, LandRules) * LandRules.reserveDays);
+        block.accountedBiomassSinkToday += reserveBeforeCap - descendant.energyReserve;
         descendant.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
 
         descendant.localSplitBranch = false;
@@ -404,34 +441,43 @@ public partial class SimulationController
             target.baseSize >= 25 ? 1 : 0;
         descendant.mutationSelectionProgress = 0f;
         descendant.mutationSelectionCandidate = -1;
+        descendant.birthRemainder = 0f;
+        descendant.deathRemainder = 0f;
+        descendant.predationRemainder = 0f;
+        descendant.foodSatisfactionHistory.Clear();
+        descendant.renewalSatisfactionHistory.Clear();
+        descendant.preyNetRenewalHistory.Clear();
+        descendant.populationGrowthHistory.Clear();
+        descendant.directedInfluences.Clear();
+        descendant.trackedEvolutionTarget = null;
+        descendant.manualEvolutionTarget = null;
+        ResetTargetProtection(descendant);
         descendant.lastMutationEffect = "转化为" + target.SpeciesName;
-        if (!wholeBranch)
-        {
-            ancestor.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
-            EvolutionConversionRecord record = GetEvolutionRecord(ancestor, target, true);
-            record.effectiveDays = 0;
-            record.failedDraws = 0;
-            record.day = day;
-        }
-
-        PopulationData resident = block.community.Find(population =>
-            population != null && population != ancestor &&
-            population.ecologicalNiche == descendant.ecologicalNiche &&
-            PopulationTransfer.IsSameSpecies(population, descendant));
-        int targetCountBefore = resident == null ? 0 : resident.speciesAmount;
-        if (resident == null && !wholeBranch) block.community.Add(descendant);
-        else if (resident != null) PopulationTransfer.Merge(resident, descendant);
+        ancestor.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
+        ancestor.localSplitBranch = false;
+        ancestor.directedSplitTarget = null;
+        ancestor.directedTraitUnlockDay = 0;
+        ancestor.sameSpeciesCoexistenceDays = 0;
+        ancestor.mutationSelectionProgress = 0f;
+        ancestor.mutationSelectionCandidate = -1;
+        ancestor.evolutionConversions.Clear();
+        ancestor.directedInfluences.Clear();
+        ancestor.trackedEvolutionTarget = null;
+        ancestor.manualEvolutionTarget = null;
+        ResetTargetProtection(ancestor);
+        block.community.Add(descendant);
         LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         RegisterSpecies(target);
         OnPresetEvolutionResolved?.Invoke(new PopulationTransitionResult(
             PopulationTransitionKind.PresetEvolution, day, block, block,
-            ancestor, resident ?? descendant, amount, sourceCountBefore,
-            targetCountBefore, resident == null ? PopulationArrivalOutcome.Created :
-                PopulationArrivalOutcome.Merged, target));
-        OnSpeciesEvolved?.Invoke(block, ancestor, resident ?? descendant, target, amount);
+            ancestor, descendant, amount, sourceCountBefore,
+            0, PopulationArrivalOutcome.Created, target));
+        OnSpeciesEvolved?.Invoke(block, ancestor, descendant, target, amount);
         LogEcology(day, block, descendant, "preset_evolution",
             "target=" + target.SpeciesName + " amount=" + amount
-            + " wholeBranch=" + wholeBranch + " count=" + descendant.speciesAmount);
+            + " plantPayment=" + plantPayment.ToString("F2")
+            + " excessBody=" + excessBody.ToString("F2")
+            + " count=" + descendant.speciesAmount);
     }
 
     private static int AverageTrait(int current, int baseline, int minimum, int maximum) =>
@@ -478,6 +524,8 @@ public partial class SimulationController
     private static void InitializeMutationState(PopulationData population)
     {
         population.size = Mathf.Clamp(population.size, 1, 100);
+        if (population.populationGrowthHistory == null)
+            population.populationGrowthHistory = new List<float>();
         if (!population.trophicLevelInitialized)
         {
             population.trophicLevel = population.species == null ? 0 :

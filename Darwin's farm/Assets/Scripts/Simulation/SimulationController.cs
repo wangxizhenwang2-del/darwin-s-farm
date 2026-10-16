@@ -65,6 +65,27 @@ public partial class SimulationController : MonoBehaviour
         if (block != null) OnBlockCommunityChanged?.Invoke(block);
     }
 
+    // Harvest transfers animals and their material out of the ecological
+    // world together. The economy adapter handles the external proceeds.
+    public bool HarvestPopulation(BlockInfo block, PopulationData population,
+        int amount)
+    {
+        if (block == null || population == null || block.community == null ||
+            !block.community.Contains(population) || amount <= 0 ||
+            amount > population.speciesAmount) return false;
+        LandLifeRules.EnsureBodyMass(population, LandRules);
+        float share = amount / (float)population.speciesAmount;
+        population.bodyBiomass = Mathf.Max(0f,
+            population.bodyBiomass * (1f - share));
+        population.energyReserve = Mathf.Max(0f,
+            population.energyReserve * (1f - share));
+        population.speciesAmount -= amount;
+        if (population.speciesAmount == 0) block.community.Remove(population);
+        RefreshSpeciesStatuses();
+        NotifyPlayerCommunityChanged(block);
+        return true;
+    }
+
     [SerializeField] private SimulationTime simulationTime;
     [SerializeField] private List<BlockInfo> blockInfos = new List<BlockInfo>();
     private bool activeForTime;
@@ -300,6 +321,35 @@ public partial class SimulationController : MonoBehaviour
         return Mathf.Min(maximum - stock, Mathf.Max(0, recovery));
     }
 
+    // Read-only diagnostic. It does not advance the day or touch random state.
+    public float ReadFoodCarryingCapacity(BlockInfo block, PopulationData population)
+        => LandLifeRules.FoodCarryingCapacity(block, population, LandRules);
+
+    public float ReadCounterfactualPlantIntake(BlockInfo block,
+        PopulationData target, PopulationData changedCount, int proposedCount)
+    {
+        string before = CanonicalModelHash();
+        float result = LandLifeRules.CounterfactualPlantIntake(block, target,
+            changedCount, proposedCount, LandRules);
+        if (CanonicalModelHash() != before)
+            throw new System.InvalidOperationException("Resource counterfactual changed live state.");
+        return result;
+    }
+
+    public float ReadPlantAllocationOrderDifference(BlockInfo block)
+        => LandLifeRules.PlantAllocationOrderDifference(block, LandRules);
+
+    public LandEquilibriumEstimate ReadLocalEquilibriumEstimate(
+        BlockInfo block, PopulationData population)
+    {
+        string before = CanonicalModelHash();
+        LandEquilibriumEstimate result =
+            LandEcologyDiagnostics.Estimate(block, population, LandRules);
+        if (CanonicalModelHash() != before)
+            throw new System.InvalidOperationException("Counterfactual changed live state.");
+        return result;
+    }
+
     public static bool SetTrophicLevel(PopulationData population, int level)
     {
         if (population == null) return false;
@@ -355,16 +405,14 @@ public partial class SimulationController : MonoBehaviour
     public void SimulateDay(int day)
     {
         currentSimulationDay = day;
+        SortModelState();
         OnBeforeDaySimulated?.Invoke(day);
-        LogDirectedTraitUnlocks(day);
         foreach (BlockInfo block in blockInfos)
         {
             SimulateBlock(block);
         }
         RemoveEndangered(day);
-        RunLocalSplits(day);
         RunPresetEvolution(day);
-        RunSameSpeciesMerges(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);

@@ -1,0 +1,68 @@
+{
+  "task1-normal-actions": {
+    "status": "PASS",
+    "sameModelAndEnvironmentAndActionsAndEvents": true,
+    "noRejectedActions": true,
+    "complete": true,
+    "endDay": 120,
+    "runSha256": [
+      "eff60122b99bf88d1b1cabf97e2fc4f680597ad8e5613b8b4386d24131c297b2",
+      "eff60122b99bf88d1b1cabf97e2fc4f680597ad8e5613b8b4386d24131c297b2",
+      "eff60122b99bf88d1b1cabf97e2fc4f680597ad8e5613b8b4386d24131c297b2"
+    ],
+    "bindingHeaders": [
+      "scenario=V05-T1-desert-cancel-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=50000 originInitialChickenCount=160 phase=after-day-step scenarioSha256=6f6504825e19a62504aed9e32834985732c56ae14e9bf3551f3889dc98a1b88e bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f",
+      "scenario=V05-T1-desert-cancel-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=50000 originInitialChickenCount=160 phase=after-day-step scenarioSha256=6f6504825e19a62504aed9e32834985732c56ae14e9bf3551f3889dc98a1b88e bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f",
+      "scenario=V05-T1-desert-cancel-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=50000 originInitialChickenCount=160 phase=after-day-step scenarioSha256=6f6504825e19a62504aed9e32834985732c56ae14e9bf3551f3889dc98a1b88e bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f"
+    ],
+    "files": [
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task1-normal-actions-nextstage-run1.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task1-normal-actions-nextstage-run2.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task1-normal-actions-nextstage-run3.jsonl"
+    ]
+  },
+  "task2-1000-stable-color-cancel110-plant2": {
+    "status": "PASS",
+    "sameModelAndEnvironmentAndActionsAndEvents": true,
+    "noRejectedActions": true,
+    "complete": true,
+    "endDay": 500,
+    "runSha256": [
+      "0a00074e320003a84a3c70b7852a67a0d41d16603af30a7ba76e69a1162a7a95",
+      "0a00074e320003a84a3c70b7852a67a0d41d16603af30a7ba76e69a1162a7a95",
+      "0a00074e320003a84a3c70b7852a67a0d41d16603af30a7ba76e69a1162a7a95"
+    ],
+    "bindingHeaders": [
+      "scenario=V05-T2-task2-1000-stable-color-cancel110-plant2-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=1000000 originInitialChickenCount=1000 phase=after-day-step scenarioSha256=585aa9d516d2c3d6674faef18102f342549fb3e73aa7df6282ff358de331845d bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f",
+      "scenario=V05-T2-task2-1000-stable-color-cancel110-plant2-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=1000000 originInitialChickenCount=1000 phase=after-day-step scenarioSha256=585aa9d516d2c3d6674faef18102f342549fb3e73aa7df6282ff358de331845d bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f",
+      "scenario=V05-T2-task2-1000-stable-color-cancel110-plant2-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=1000000 originInitialChickenCount=1000 phase=after-day-step scenarioSha256=585aa9d516d2c3d6674faef18102f342549fb3e73aa7df6282ff358de331845d bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f"
+    ],
+    "files": [
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task2-1000-stable-color-cancel110-plant2-nextstage-run1.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task2-1000-stable-color-cancel110-plant2-nextstage-run2.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task2-1000-stable-color-cancel110-plant2-nextstage-run3.jsonl"
+    ]
+  },
+  "task3-mushroom-stable-1000d": {
+    "status": "PASS",
+    "sameModelAndEnvironmentAndActionsAndEvents": true,
+    "noRejectedActions": true,
+    "complete": true,
+    "endDay": 1000,
+    "runSha256": [
+      "9ee37ca1fbd75159fc5a7bced93c39f475d9bf6b02584857a01adfc7276fa3f5",
+      "9ee37ca1fbd75159fc5a7bced93c39f475d9bf6b02584857a01adfc7276fa3f5",
+      "9ee37ca1fbd75159fc5a7bced93c39f475d9bf6b02584857a01adfc7276fa3f5"
+    ],
+    "bindingHeaders": [
+      "scenario=V05-T3-mushroom-stable-1000d-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=1000000 originInitialChickenCount=1000 phase=after-day-step scenarioSha256=2a6edc0d7c499539e975f899a9d9eeec93c72676b3a5d79d507dcdf162982b2e bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f",
+      "scenario=V05-T3-mushroom-stable-1000d-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=1000000 originInitialChickenCount=1000 phase=after-day-step scenarioSha256=2a6edc0d7c499539e975f899a9d9eeec93c72676b3a5d79d507dcdf162982b2e bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f",
+      "scenario=V05-T3-mushroom-stable-1000d-seed240 seed=240 random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=1000000 originInitialChickenCount=1000 phase=after-day-step scenarioSha256=2a6edc0d7c499539e975f899a9d9eeec93c72676b3a5d79d507dcdf162982b2e bindingSha256=f2cab3f653f6c11f01b2929b0618b008c3eb7e1772a4308c7a05cdef9fc4473f"
+    ],
+    "files": [
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task3-mushroom-stable-1000d-nextstage-run1.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task3-mushroom-stable-1000d-nextstage-run2.jsonl",
+      "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\V05FiveSpecies_20261016\\task3-mushroom-stable-1000d-nextstage-run3.jsonl"
+    ]
+  }
+}
