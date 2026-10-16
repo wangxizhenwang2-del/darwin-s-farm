@@ -55,14 +55,28 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private PopulationMotion motion;
     private bool terrainRecoveryPending;
     private float terrainRecoveryAt;
+    private PopulationAnimationDriver animationDriver;
+    private Sprite boundSprite;
+    private Color boundTint;
+    private PopulationAnimationSet boundAnimation;
 
-    public void BindEcologicalPopulation(PopulationData data, Sprite sprite, Color tint)
+    public bool HasAppearance(Sprite sprite, Color tint, PopulationAnimationSet animations) =>
+        boundSprite == (sprite != null ? sprite : controller.FallbackSprite) &&
+        boundTint == tint && boundAnimation == animations;
+
+    public void BindEcologicalPopulation(PopulationData data, Sprite sprite, Color tint,
+        PopulationAnimationSet animations = null)
     {
         EcologicalPopulation = data;
         if (data == null || leader == null) return;
         Sprite selected = sprite != null ? sprite : controller.FallbackSprite;
-        PopulationSpriteDisplay.Configure(leader.sprite, selected, tint);
-        leader.visual.GetComponent<MeshRenderer>().enabled = selected == null;
+        boundSprite = selected;
+        boundTint = tint;
+        boundAnimation = animations;
+        if (animationDriver == null)
+            animationDriver = leader.sprite.gameObject.AddComponent<PopulationAnimationDriver>();
+        animationDriver.Bind(leader.sprite, animations, selected, tint, leader.groundPosition);
+        leader.visual.GetComponent<MeshRenderer>().enabled = leader.sprite.sprite == null;
     }
 
     internal void Initialize(PopulationMovementController owner, MapTileInstance ownedTile,
@@ -124,6 +138,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         label.transform.position = Leader.position + Vector3.up *
             (leader.size * 0.5f + controller.Settings.labelHeight);
         Camera camera = controller.ViewCamera != null ? controller.ViewCamera : Camera.main;
+        animationDriver?.SampleMotion(leader.groundPosition, camera, Mathf.Min(Time.deltaTime, 0.2f));
         if (camera == null) return;
         label.transform.rotation = camera.transform.rotation;
         PopulationSpriteDisplay.FaceCamera(leader.sprite, camera);
@@ -142,6 +157,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             }
             motion.ResetNavigation();
             terrainRecoveryPending = false;
+            animationDriver?.ResetMotion(leader.groundPosition);
             chooseAt = Time.time;
         }
         bool placed = Place(leader.groundPosition, leader.heading);

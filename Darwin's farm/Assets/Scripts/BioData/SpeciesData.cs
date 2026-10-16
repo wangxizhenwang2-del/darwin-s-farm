@@ -12,9 +12,11 @@ public class SpeciesData: ScriptableObject
     [Header("Species presentation (shared by all populations)")]
     [SerializeField] private string speciesId;
     [SerializeField] private Sprite portrait;
+    [SerializeField] private PopulationAnimationSet populationAnimation;
     [SerializeField, TextArea(4, 12)] private string description;
     public string SpeciesId => speciesId;
     public Sprite Portrait => portrait != null ? portrait : sprite;
+    public PopulationAnimationSet PopulationAnimation => populationAnimation;
     public string Description => string.IsNullOrWhiteSpace(description) ? "暂无物种介绍" : description;
 
 #if UNITY_EDITOR

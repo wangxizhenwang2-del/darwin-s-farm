@@ -91,10 +91,10 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                 {
                     // A whole-branch evolution changes species on the same
                     // PopulationData instance and keeps the population ID.
-                    // Refresh the illustration even when the binding is unchanged.
+                    // Compare the bound appearance, never the currently animated frame.
                     if (visual.EcologicalPopulation != data ||
-                        visual.DisplaySprite != SpriteFor(data))
-                        visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data));
+                        !visual.HasAppearance(SpriteFor(data), TintFor(data), AnimationFor(data)))
+                        visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data), AnimationFor(data));
                     if (transitionHolds.TryGetValue(id, out TransitionHold hold) &&
                         hold.CountBefore == 0) continue;
                     int count = hold == null ? data.speciesAmount : hold.CountBefore;
@@ -119,7 +119,7 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                     continue;
                 }
 
-                visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data));
+                visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data), AnimationFor(data));
                 if (held && pending.CountBefore == 0)
                 {
                     visual.PauseWandering(true);
@@ -170,8 +170,17 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
 
     private Sprite SpriteFor(PopulationData data)
     {
+        SpeciesData species = PresentationSpeciesFor(data);
+        return species != null ? species.Sprite : movement != null ? movement.FallbackSprite : null;
+    }
+
+    private PopulationAnimationSet AnimationFor(PopulationData data) =>
+        PresentationSpeciesFor(data)?.PopulationAnimation;
+
+    private SpeciesData PresentationSpeciesFor(PopulationData data)
+    {
         if (data.species != null && data.species.Sprite != null)
-            return data.species.Sprite;
+            return data.species;
         // Niche descendants have no SpeciesData asset. Their lineage starts
         // with the ancestor's name, so they keep its illustration.
         string lineage = data.lineageName;
@@ -180,8 +189,8 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                 if (species != null && species.Sprite != null &&
                     (lineage == species.SpeciesName ||
                      lineage.StartsWith(species.SpeciesName + "-", StringComparison.Ordinal)))
-                    return species.Sprite;
-        return movement != null ? movement.FallbackSprite : null;
+                    return species;
+        return null;
     }
 
     private Color TintFor(PopulationData data) =>
