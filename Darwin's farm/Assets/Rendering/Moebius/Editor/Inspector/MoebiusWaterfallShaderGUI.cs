@@ -15,7 +15,8 @@ namespace Darwin.Rendering.Editor
                 Group(editor,properties,"Flow","_FlowSpeed","_FlowScale","_DistortionStrength","_DistortionScale","_BandStrength");
                 Group(editor,properties,"Lines","_VerticalLineDensity","_VerticalLineWidth","_FlowLineStrength","_InkLineStrength");
                 Group(editor,properties,"Sheet Shape","_SheetSize","_EdgeBreakupStrength","_EdgeBreakupScale","_SheetWobbleStrength","_SheetWobbleSpeed");
-                EditorGUILayout.HelpBox("Use a subdivided local XY sheet with UV V increasing upwards. Sheet Size describes its local width and height. Positive flow speed moves marks downwards. Preserve generous mesh bounds for vertex motion.",MessageType.Info);
+                Group(editor,properties,"Curved Lip Coordination","_SurfaceLength","_LipStartV","_UpstreamColor");
+                EditorGUILayout.HelpBox("The sample lip is a curved mesh. UV V follows surface distance from bottom to upstream. Surface Length and Curved Lip Start V describe that mesh; they do not bend geometry. Match Upstream Water Color to the upper water material. Flat sheets use Surface Length 0 and Lip Start V 1. Positive flow speed moves marks downstream. Preserve generous bounds for vertex motion.",MessageType.Info);
             }
             else if(splash)
             {
@@ -36,7 +37,6 @@ namespace Darwin.Rendering.Editor
             EditorGUILayout.Space();
             bool preview=EditorGUILayout.Toggle("Animate Edit Mode Preview",MoebiusWaterPreview.Enabled);
             if(preview!=MoebiusWaterPreview.Enabled)MoebiusWaterPreview.Enabled=preview;
-            if(GUILayout.Button("Create Waterfall in Scene"))MoebiusWaterfallSetup.CreateInScene();
         }
         public static void DrawImpact(MaterialEditor editor,MaterialProperty[] properties)
         {

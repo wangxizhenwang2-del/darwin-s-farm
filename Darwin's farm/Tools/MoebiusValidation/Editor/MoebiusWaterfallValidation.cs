@@ -25,6 +25,7 @@ namespace Darwin.Rendering.Editor
                 var pipeline=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/PC_RPAsset.asset");
                 GraphicsSettings.defaultRenderPipeline=pipeline;QualitySettings.renderPipeline=pipeline;
                 MoebiusWaterfallSetup.RebuildSampleSplash();
+                MoebiusWaterfallSetup.RebuildSampleLip();
                 // Keep legacy overlays inactive; update existing cloud assets without replacing the sheet.
                 var contents=PrefabUtility.LoadPrefabContents(MoebiusWaterfallSetup.PrefabPath);
                 contents.transform.Find("Impact Foam").gameObject.SetActive(false);
@@ -35,6 +36,7 @@ namespace Darwin.Rendering.Editor
                 Check(root.GetComponentsInChildren<MeshRenderer>().Length==5,"Sheet and four clouds retained; both legacy overlay renderers are inactive (two fewer draw calls)");
                 Check(root.GetComponentsInChildren<MonoBehaviour>().Length==0,"Sheet and splash animation remains GPU-only; only the receiving water tracks impact placement");
                 var camera=Camera.main;
+                TestCurvedLip(root,camera);
                 Capture(camera,"Overview",1500,1000);
                 camera.transform.position=new Vector3(7.5f,4.8f,-9);camera.transform.LookAt(new Vector3(0,1.5f,1.5f));camera.orthographicSize=5;
                 Capture(camera,"Closeup",1500,1000);
@@ -326,6 +328,37 @@ namespace Darwin.Rendering.Editor
                 for(int i=0;i<materials.Length;i++){EditorUtility.CopySerialized(saved[i],materials[i]);UnityEngine.Object.DestroyImmediate(saved[i]);}
                 camera.GetUniversalAdditionalCameraData().SetRenderer(1);
             }
+        }
+        static void TestCurvedLip(GameObject root,Camera camera)
+        {
+            var sheet=root.transform.Find("Waterfall Sheet").GetComponent<MeshRenderer>();
+            var mesh=sheet.GetComponent<MeshFilter>().sharedMesh;var p=mesh.vertices;var uv=mesh.uv;var normals=mesh.normals;
+            var indices=Enumerable.Range(0,p.Length).Where(i=>Mathf.Abs(uv[i].x-.5f)<.00001f).OrderBy(i=>uv[i].y).ToArray();
+            var bottom=p[indices.First()];var top=p[indices.Last()];
+            Check(Mathf.Abs(bottom.y+3)<.00001f&&Mathf.Abs(bottom.z)<.00001f,"Curved lip retains the exact original bottom impact line");
+            Check(Vector3.Dot(normals[indices.First()],Vector3.back)>.9999f&&Vector3.Dot(normals[indices.Last()],Vector3.up)>.9999f,"Lip normals turn continuously from vertical sheet to horizontal inlet");
+            float maxAngle=0,length=0;
+            for(int j=1;j<indices.Length;j++)
+            {
+                maxAngle=Mathf.Max(maxAngle,Vector3.Angle(normals[indices[j-1]],normals[indices[j]]));
+                length+=Vector3.Distance(p[indices[j-1]],p[indices[j]]);
+            }
+            Check(maxAngle<6,"Adjacent lip rows have smooth normals (largest turn "+maxAngle.ToString("F2")+" degrees)");
+            Check(Mathf.Abs(length-sheet.sharedMaterial.GetFloat("_SurfaceLength"))<.005f,"Flow UV length matches the actual curved path to within 5 mm (mesh="+length+", material="+sheet.sharedMaterial.GetFloat("_SurfaceLength")+")");
+            var upper=GameObject.Find("Upper Moebius Water").GetComponent<MeshRenderer>();
+            Check(TimedDraw(upper,2,"WaterForward","UpperWater_Start").Count(c=>c.a>0)>1000,"Upper water renders from above with correct front-face winding");
+            var inlet=sheet.transform.TransformPoint(top);
+            float gap=upper.GetComponent<MeshFilter>().sharedMesh.vertices.Min(v=>Vector3.Distance(upper.transform.TransformPoint(v),inlet));
+            Check(gap<.00001f,"Upper water opening meets the lip with no positional seam ("+gap.ToString("F6")+" m)");
+            Check(upper.sharedMaterial.GetFloat("_WaveHeight")==0,"Inlet stays joined during animation; upper water flow and ripples remain enabled");
+            var cliff=GameObject.Find("Cliff Platform").GetComponent<Renderer>().bounds;
+            Check(indices.Select(i=>sheet.transform.TransformPoint(p[i])).All(v=>v.y>=cliff.max.y-.0001f||v.z<cliff.min.z),"Curved lip stays outside the cliff solid");
+            var position=camera.transform.position;var rotation=camera.transform.rotation;float zoom=camera.orthographicSize;
+            camera.transform.position=new Vector3(5.8f,8.2f,-3.8f);camera.transform.LookAt(new Vector3(0,5.5f,2.1f));camera.orthographicSize=3.4f;
+            Capture(camera,"CurvedLipCloseup",1500,1000);
+            camera.transform.position=new Vector3(8,6.6f,-.5f);camera.transform.LookAt(new Vector3(0,5.8f,2.1f));camera.orthographicSize=2.5f;
+            Capture(camera,"CurvedLipSide",1500,1000);
+            camera.transform.SetPositionAndRotation(position,rotation);camera.orthographicSize=zoom;
         }
         static void TestDownwardFlow(MeshRenderer renderer)
         {

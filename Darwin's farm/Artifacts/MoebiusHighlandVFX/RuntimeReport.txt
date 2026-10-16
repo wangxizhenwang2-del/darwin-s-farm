@@ -1,0 +1,9 @@
+Actual Play Mode after saved-scene reload
+Native simulation time: 7.500
+Editor/player updates observed: 25504
+AmbientDust: playing; particles=17; seed=2719
+GustDust: playing; particles=10; seed=2856
+FloatingDebris: playing; particles=7; seed=2993
+WindStreaks: playing; particles=2; seed=3130
+Current native wind: (2.16, 0.00, 0.63)
+Errors: 0

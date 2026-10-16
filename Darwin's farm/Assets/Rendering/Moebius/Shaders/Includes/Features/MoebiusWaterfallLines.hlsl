@@ -32,7 +32,16 @@ half3 WaterfallColor(float2 uv)
     color=lerp(color,_InkLineColor.rgb,masks.x*_InkLineStrength);
     float lip=smoothstep(0.93,0.99,uv.y);
     float impact=1-smoothstep(0.02,0.16,uv.y);
-    color=lerp(color,_HighlightColor.rgb,max(lip*0.7,impact*0.3));
+    float highlight=lip*0.7;
+    float curve=0;
+    if(_LipStartV<0.999)
+    {
+        // A narrow pale crest lies on the bend, rather than a bright seam at the flat join.
+        curve=saturate((uv.y-_LipStartV)/max(1-_LipStartV,0.001));
+        highlight=pow(saturate(sin(curve*PI)),3)*0.55;
+    }
+    color=lerp(color,_HighlightColor.rgb,max(highlight,impact*0.3));
+    if(_LipStartV<0.999)color=lerp(color,_UpstreamColor.rgb,smoothstep(0.65,1,curve));
     if(_DebugView==1)color=half3(frac(WaterfallFlowCoordinates(uv)),0);
     if(_DebugView==2)color=masks.xxx;
     if(_DebugView==3)color=saturate(WaterfallEdgeDistance(uv)*10).xxx;

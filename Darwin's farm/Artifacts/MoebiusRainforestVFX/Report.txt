@@ -1,0 +1,15 @@
+Target: Assets/Rendering/Moebius/Samples/Biomes/Scenes/RainForest.unity; ground tiles: 3
+Ground bounds: Center: (-4.53, -3.39, -14.02), Extents: (5.22, 2.17, 19.57)
+Emission layer 0: 1638 patches
+Tree canopy leaf patches: 44
+Emission layer 1: 44 patches
+Emission layer 2: 546 patches
+Emission layer 3: 546 patches
+Unchanged existing scene component snapshots: 967
+t=3.98 particle counts motes/leaves/wisps/mist=63/2/1/6
+t=8.98 particle counts motes/leaves/wisps/mist=68/4/1/5
+t=14.98 particle counts motes/leaves/wisps/mist=65/5/1/6
+Peak simultaneous particles: 85; cap=210
+Below-ground samples: 0; outside-tile samples: 0; maximum wind change/frame: 0.0002338404
+Layer peak counts: 73/5/2/7
+Errors: 0

@@ -51,7 +51,7 @@ namespace Darwin.Rendering.Editor.Paint
         public static void EnsureDefaultTexture()
         {
             var shader=Shader.Find("Darwin/Moebius NPR");if(!shader || shader.FindPropertyIndex("_PaintColorMap")<0)return;
-            const string path="Assets/Rendering/Moebius/Defaults/Textures/TransparentPaint.png";
+            const string path="Assets/Rendering/Moebius/Content/Defaults/Textures/TransparentPaint.png";
             if(!File.Exists(path))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));var texture=new Texture2D(1,1,TextureFormat.RGBA32,false);

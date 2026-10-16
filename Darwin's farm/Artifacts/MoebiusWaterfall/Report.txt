@@ -1,5 +1,13 @@
 PASS: Sheet and four clouds retained; both legacy overlay renderers are inactive (two fewer draw calls)
 PASS: Sheet and splash animation remains GPU-only; only the receiving water tracks impact placement
+PASS: Curved lip retains the exact original bottom impact line
+PASS: Lip normals turn continuously from vertical sheet to horizontal inlet
+PASS: Adjacent lip rows have smooth normals (largest turn 5.12 degrees)
+PASS: Flow UV length matches the actual curved path to within 5 mm (mesh=6.427706, material=6.428097)
+PASS: Upper water renders from above with correct front-face winding
+PASS: Upper water opening meets the lip with no positional seam (0.000000 m)
+PASS: Inlet stays joined during animation; upper water flow and ripples remain enabled
+PASS: Curved lip stays outside the cliff solid
 Camera images captured: overview, closeup, opposite side, low angle and perspective; visual review required
 PASS: Sample saves an automatic impact binding to the correct sheet
 PASS: Impact automatically follows parent translation, rotation and nonuniform scale before camera rendering
@@ -28,7 +36,7 @@ PASS: Old wave fades to zero before new wave is born
 PASS: Waterfall Sheet renders visible opaque geometry
 PASS: Waterfall Sheet repeated time produces identical pixels (no random flicker)
 PASS: Waterfall Sheet animates at every sampled 1/60 second interval
-Waterfall Sheet changed pixels/frame: min=41099 mean=41320.0 max=41751
+Waterfall Sheet changed pixels/frame: min=41013 mean=41243.8 max=41543
 PASS: Waterfall Sheet forward/depth/raw-normal/oct-normal silhouettes agree (0 mismatches)
 PASS: Waterfall Sheet uses opaque/cutout depth ordering
 PASS: Splash Cloud Layer 1 renders visible opaque geometry
@@ -59,7 +67,7 @@ PASS: Splash Cloud Layer 4 forward/depth/raw-normal/oct-normal silhouettes agree
 PASS: Splash Cloud Layer 4 uses opaque/cutout depth ordering
 PASS: Positive sheet flow follows a feature towards lower local Y
 PASS: Waterfall Sheet shadow strength zero matches disabled pixels
-PASS: Waterfall Sheet receives real main-light cast shadows (26058 pixels)
+PASS: Waterfall Sheet receives real main-light cast shadows (26186 pixels)
 PASS: Waterfall Sheet shadow follows moving caster
 PASS: Splash Cloud Layer 4 shadow strength zero matches disabled pixels
 PASS: Splash Cloud Layer 4 receives real main-light cast shadows (6068 pixels)
