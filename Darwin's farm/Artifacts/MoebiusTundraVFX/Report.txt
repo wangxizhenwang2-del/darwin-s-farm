@@ -1,0 +1,15 @@
+Target: Assets/Rendering/Moebius/Samples/Biomes/Scenes/Tundra_Colored.unity; ground: Ground_Surface; bounds: Center: (0.00, 0.36, 0.00), Extents: (8.50, 0.06, 8.50)
+Emission layer 0: 1454 triangles
+Spindrift emitters: 15 actual snow patches/caps
+Emission layer 1: 460 triangles
+Emission layer 2: 2048 triangles
+Emission layer 3: 1454 triangles
+Unchanged original scene component snapshots: 324
+t=3.98 particle counts cold haze/snow spindrift/snowflakes/wind=4/2/42/1
+t=8.98 particle counts cold haze/snow spindrift/snowflakes/wind=5/6/34/2
+t=14.98 particle counts cold haze/snow spindrift/snowflakes/wind=4/0/39/2
+Peak simultaneous particles: 59; cap=120
+Below-ground samples: 0; outside-tile samples: 0; maximum wind change/frame: 0.003059668
+Layer peak counts: 8/7/45/3
+Zero intensity exactly matches disabled particle renderers (pond animation frozen only during this comparison)
+Errors: 0

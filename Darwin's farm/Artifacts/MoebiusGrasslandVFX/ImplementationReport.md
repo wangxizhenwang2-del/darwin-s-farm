@@ -1,3 +1,5 @@
+> 2026-10-16：已进一步区分草原、森林和雨林的形状与运动。最新参数与效果见 [辨识度调整报告](<D:/GameAssignment/darwin-s-farm/Darwin's farm/Artifacts/MoebiusBiomeVFXIdentity/ImplementationReport.md>)。
+
 # Grassland VFX：目标场景纠正
 
 本套效果现在属于 `Assets/Rendering/Moebius/Samples/Biomes/Scenes/Grassland_Moebius.unity`，场景对象为 **GrasslandVFX**。已移除 Forest 场景中的误放实例；只移除该实例及其根引用，保留其他场景数据。

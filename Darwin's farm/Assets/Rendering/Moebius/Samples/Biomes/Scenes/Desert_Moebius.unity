@@ -319,7 +319,6 @@ GameObject:
   - component: {fileID: 844723971}
   - component: {fileID: 844723970}
   - component: {fileID: 844723969}
-  - component: {fileID: 844723968}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -327,22 +326,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &844723968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844723967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd5f59f2fbc840d1b910d6aece934125, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Darwin.Rendering.MoebiusBiomeOrbit
-  target: {fileID: 1851635425}
-  yaw: -30
-  pitch: 32
-  distance: 24
 --- !u!114 &844723969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -566,19 +549,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.3495232
+      value: 1.3032726
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.43165076
+      value: 0.4498418
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.9880437
+      value: 0.9541817
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.31603003
+      value: 0.32934847
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -590,11 +573,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.24957076
+      value: -0.27235943
       objectReference: {fileID: 0}
     - target: {fileID: 1130165192184823254, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.36957076
+      value: -0.39235944
       objectReference: {fileID: 0}
     - target: {fileID: 3718694943631870315, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: dustIntensity
@@ -622,19 +605,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.4994702
+      value: 1.4480805
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.47961193
+      value: 0.49982423
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.0978264
+      value: 1.0602018
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.35114446
+      value: 0.36594275
       objectReference: {fileID: 0}
     - target: {fileID: 4409561310505501618, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -650,19 +633,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 2.0992582
+      value: 2.0273128
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.6714567
+      value: 0.6997539
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.5369569
+      value: 1.4842825
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.4916022
+      value: 0.5123198
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -674,27 +657,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.24957076
+      value: -0.27235943
       objectReference: {fileID: 0}
     - target: {fileID: 8152110651181774285, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.36957076
+      value: -0.39235944
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 2.2117186
+      value: 2.1359186
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.7074276
+      value: 0.7372406
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.6192938
+      value: 1.5637976
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.5179381
+      value: 0.5397655
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -702,15 +685,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 21.19515
+      value: 20.22094
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.24957076
+      value: -0.27235943
       objectReference: {fileID: 0}
     - target: {fileID: 8871073998804689140, guid: 74210d50d9e36484f8135bda1904f75b, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.36957076
+      value: -0.39235944
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

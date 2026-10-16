@@ -1,0 +1,459 @@
+PASS: Existing PC URP pipeline is available
+PASS: Exported Maya FBX is recognized by Unity
+PASS: Source FBX imports
+PASS: All 100 source mesh renderers are preserved
+PASS: Existing Moebius NPR material template is available
+PASS: SedgeTuft_01: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_01: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_02: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_02: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_03: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_03: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_04: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_04: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_05: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_05: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_06: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_06: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_07: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_07: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_08: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_08: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_09: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_09: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_10: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_10: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_11: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_11: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_12: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_12: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_13: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_13: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_14: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_14: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_15: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_15: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_16: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_16: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_17: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_17: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_18: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_18: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: SedgeTuft_19: source material slot 0 exists
+PASS: Recognized original material: Grass_Ochre
+PASS: SedgeTuft_19: source material slot 1 exists
+PASS: Recognized original material: Grass_Straw
+PASS: Ground_SlabSides: source material slot 0 exists
+PASS: Recognized original material: Slab_Edge
+PASS: Ground_Surface: source material slot 0 exists
+PASS: Recognized original material: Ground_Frost
+PASS: Ground_Surface: source material slot 1 exists
+PASS: Recognized original material: Ground_Sage
+PASS: Ground_Surface: source material slot 2 exists
+PASS: Recognized original material: Ground_Lichen
+PASS: Ground_Surface: source material slot 3 exists
+PASS: Recognized original material: Ground_Moss
+PASS: Ground_Surface: source material slot 4 exists
+PASS: Recognized original material: Ground_Soil
+PASS: Ink_GroundAndShrubs: source material slot 0 exists
+PASS: Recognized original material: Ink_Charcoal
+PASS: Ink_RockEdgesAndFractures: source material slot 0 exists
+PASS: Recognized original material: Ink_Charcoal
+PASS: PondPebble_01: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: PondPebble_01: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: PondPebble_01: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: PondPebble_01: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: PondPebble_02: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: PondPebble_02: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: PondPebble_02: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: PondPebble_02: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: PondPebble_03: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: PondPebble_03: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: PondPebble_03: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: PondPebble_03: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: PondPebble_04: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: PondPebble_04: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: PondPebble_04: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: PondPebble_04: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: PondPebble_05: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: PondPebble_05: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: PondPebble_05: source material slot 2 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_01: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_01: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_01: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_01: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_01_Talus_1: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_01_Talus_1: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_01_Talus_1: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_01_Talus_1: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_01_Talus_2: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_01_Talus_2: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_01_Talus_2: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_01_Talus_2: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_02: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_02: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_02: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_02: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_02_Talus_1: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_02_Talus_1: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_02_Talus_1: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_02_Talus_1: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_02_Talus_2: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_02_Talus_2: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_02_Talus_2: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_02_Talus_2: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_03: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_03: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_03: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_03: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_03_Talus_1: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_03_Talus_1: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_03_Talus_1: source material slot 2 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_03_Talus_2: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_03_Talus_2: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_03_Talus_2: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_03_Talus_2: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_04: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_04: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_04: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_04: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_05: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_05: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_05: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_05: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_05_Talus_1: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_05_Talus_1: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_05_Talus_1: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_05_Talus_1: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_05_Talus_2: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_05_Talus_2: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_05_Talus_2: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_05_Talus_2: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_06: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_06: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_06: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_06: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_06_Talus_1: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_06_Talus_1: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_06_Talus_1: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_06_Talus_1: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_06_Talus_2: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_06_Talus_2: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_06_Talus_2: source material slot 2 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_07: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_07: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_07: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_07: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_08: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_08: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_08: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_08: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_08_Talus_1: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_08_Talus_1: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_08_Talus_1: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_08_Talus_1: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_08_Talus_2: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_08_Talus_2: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_08_Talus_2: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_08_Talus_2: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_09: source material slot 0 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_09: source material slot 1 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_09: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_09: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: Rock_10: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: Rock_10: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: Rock_10: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: Rock_10: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: RockChip_01: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: RockChip_01: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: RockChip_01: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: RockChip_01: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: RockChip_02: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: RockChip_02: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: RockChip_02: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: RockChip_02: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: RockChip_03: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: RockChip_03: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: RockChip_03: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: RockChip_03: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: RockChip_04: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: RockChip_04: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: RockChip_04: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: RockChip_04: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: RockChip_05: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: RockChip_05: source material slot 1 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: RockChip_05: source material slot 2 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: RockChip_05: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: RockChip_06: source material slot 0 exists
+PASS: Recognized original material: Rock_Slate
+PASS: RockChip_06: source material slot 1 exists
+PASS: Recognized original material: Rock_Lavender
+PASS: RockChip_06: source material slot 2 exists
+PASS: Recognized original material: Rock_Weathered
+PASS: RockChip_06: source material slot 3 exists
+PASS: Recognized original material: Rock_Light
+PASS: DwarfShrub_01_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_01_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_01_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_02_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_02_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_02_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_03_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_03_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_03_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_04_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_04_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_04_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_05_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_05_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_05_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_06_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_06_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_06_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_07_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_07_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_07_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_08_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_08_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_08_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: DwarfShrub_09_Lobe1: source material slot 0 exists
+PASS: Recognized original material: Shrub_Sage
+PASS: DwarfShrub_09_Lobe2: source material slot 0 exists
+PASS: Recognized original material: Shrub_Olive
+PASS: DwarfShrub_09_Lobe3: source material slot 0 exists
+PASS: Recognized original material: Shrub_Frost
+PASS: Rock_02_SnowCap: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: Rock_03_SnowCap: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: Rock_05_SnowCap: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: Rock_08_SnowCap: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_01: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_02: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_03: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_04: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_05: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_06: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_07: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_08: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_09: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_10: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: SnowPatch_11: source material slot 0 exists
+PASS: Recognized original material: Snow_Ivory
+PASS: Pond_ShallowWater: source material slot 0 exists
+PASS: Recognized original material: Water_Mist
+PASS: Pond_Shore: source material slot 0 exists
+PASS: Recognized original material: Shore_Mud
+PASS: Original ground UV0 is usable for the existing paint system
+PASS: Fine moss/lichen albedo is saved as an editable paint texture on original ground UV0
+PASS: Original 17 x 17 metre scale is preserved: Center: (0.00, 1.60, 0.00), Extents: (8.50, 1.60, 8.50)
+PASS: All 10,626 original triangles are preserved, including snow and fracture geometry
+PASS: 19 original material regions mapped to independent Moebius materials
+PASS: Every submesh has its corresponding material
+PASS: Saved colored prefab instance reloads
+PASS: Saved scene retains all source renderers
+PASS: Scene uses the reusable colored prefab
+PASS: All saved mesh, material and shader bindings resolve
+PASS: Tile needs no new runtime controllers
+PASS: Existing shader loads: Darwin/Moebius NPR
+PASS: Existing shader loads: Darwin/Moebius Water
+PASS: Existing shader loads: Hidden/Darwin/Moebius Outline
+Material palette: Grass_Ochre, Grass_Straw, Ground_Frost, Ground_Lichen, Ground_Moss, Ground_Sage, Ground_Soil, Ink_Charcoal, Rock_Lavender, Rock_Light, Rock_Slate, Rock_Weathered, Shore_Mud, Shrub_Frost, Shrub_Olive, Shrub_Sage, Slab_Edge, Snow_Ivory, Water_Mist
+Errors: 0

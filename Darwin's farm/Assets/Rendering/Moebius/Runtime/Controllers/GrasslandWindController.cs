@@ -20,22 +20,27 @@ namespace Darwin.Rendering
         [Tooltip("Multiplies all emission rates. Below 1 also fades opacity; 0 hides existing particles.")]
         [Range(0, 3)] public float globalVFXIntensity = 1;
         [Range(0, 3)] public float motesIntensity = 1;
+        [InspectorName("Grass Seeds Intensity")]
         [Range(0, 3)] public float leavesIntensity = 1;
         [Range(0, 3)] public float windWispsIntensity = 1;
         [Min(0)] public float motesRate = 1.7f;
+        [InspectorName("Grass Seeds Rate")]
         [Min(0)] public float leavesRate = .28f;
         [Min(0)] public float windWispsRate = .06f;
 
         [Header("Palette And Size (Metres)")]
         public Color motesColor = new Color(.87f, .89f, .66f, 1);
+        [InspectorName("Grass Seed Color")]
         public Color leavesColor = new Color(.61f, .68f, .32f, 1);
         public Color windWispsColor = new Color(.78f, .86f, .72f, 1);
         public Vector2 motesSizeRange = new Vector2(.11f, .23f);
+        [InspectorName("Grass Seed Size Range")]
         public Vector2 leavesSizeRange = new Vector2(.19f, .34f);
         public Vector2 windLengthRange = new Vector2(1.6f, 2.8f);
 
         [Header("Assigned Particle Systems")]
         public ParticleSystem floatingMotes;
+        [InspectorName("Grass Seeds")]
         public ParticleSystem fallingLeaves;
         public ParticleSystem windWisps;
         [Header("Diorama Bounds")]

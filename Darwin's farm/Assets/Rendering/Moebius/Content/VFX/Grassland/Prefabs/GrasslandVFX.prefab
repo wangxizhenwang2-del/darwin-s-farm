@@ -116,8 +116,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 6
-      minScalar: 4
+      scalar: 4.2
+      minScalar: 2.8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -287,8 +287,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2.8
-      minScalar: 1.6
+      scalar: 4.8
+      minScalar: 3.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -393,8 +393,8 @@ ParticleSystem:
     startSizeZ:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.15
-      minScalar: 0.65
+      scalar: 1.6
+      minScalar: 1.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -499,8 +499,8 @@ ParticleSystem:
     startRotationY:
       serializedVersion: 2
       minMaxState: 3
-      scalar: -0.16880016
-      minScalar: -0.32880014
+      scalar: -0.17267393
+      minScalar: -0.3326739
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -604,7 +604,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 6
+    maxNumParticles: 8
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 1
     rotation3D: 1
@@ -870,7 +870,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.30519548
+      scalar: 1.0786675
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1495,8 +1495,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.3527821
-      minScalar: 0.25198722
+      scalar: 0.96124625
+      minScalar: 0.68660444
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1601,8 +1601,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.089629315
-      minScalar: 0.06402094
+      scalar: 0.24818622
+      minScalar: 0.17727588
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2689,7 +2689,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.0154
+      scalar: 0.014
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -3619,7 +3619,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
     type: 1
     collisionMode: 0
@@ -3789,7 +3789,7 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 100
-    radiusScale: 0.12
+    radiusScale: 0.025
     collidesWith:
       serializedVersion: 2
       m_Bits: 4
@@ -5124,8 +5124,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.23
-      minScalar: 0.11
+      scalar: 0.1
+      minScalar: 0.055
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5707,7 +5707,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 12.826501
+      scalar: 0.35
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -6332,8 +6332,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.12347374
-      minScalar: 0.088195525
+      scalar: 0.33643618
+      minScalar: 0.24031155
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -6438,8 +6438,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.03137026
-      minScalar: 0.022407329
+      scalar: 0.08686517
+      minScalar: 0.062046554
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -7526,7 +7526,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.066
+      scalar: 0.060000002
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -9740,7 +9740,7 @@ GameObject:
   - component: {fileID: 5008947102922010715}
   - component: {fileID: 592194475357974126}
   m_Layer: 0
-  m_Name: FallingLeaves
+  m_Name: GrassSeeds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9844,8 +9844,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 7
-      minScalar: 4
+      scalar: 5.6
+      minScalar: 3.8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -9950,8 +9950,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.82, g: 0.9, b: 0.69, a: 1}
-      maxColor: {r: 1, g: 0.94, b: 0.7, a: 1}
+      minColor: {r: 0.87, g: 0.85, b: 0.66, a: 1}
+      maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -10015,8 +10015,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.34
-      minScalar: 0.19
+      scalar: 0.4
+      minScalar: 0.22
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10460,7 +10460,7 @@ ParticleSystem:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-    m_Mesh: {fileID: 4300000, guid: 1002d4b524b7ac648b921ac52b6c7e38, type: 2}
+    m_Mesh: {fileID: 4300000, guid: e736d8883b1923744a3c4ded090f4b31, type: 2}
     m_MeshRenderer: {fileID: 0}
     m_SkinnedMeshRenderer: {fileID: 0}
     m_Sprite: {fileID: 0}
@@ -10598,7 +10598,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2.1126
+      scalar: 4.1
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -10976,8 +10976,8 @@ ParticleSystem:
     curve:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.1
-      minScalar: -1.1
+      scalar: 0.65
+      minScalar: -0.65
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -11223,8 +11223,8 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.28663543
-      minScalar: 0.2047396
+      scalar: 0.78101254
+      minScalar: 0.5578661
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -11276,8 +11276,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: -0.24
-      minScalar: -0.42
+      scalar: 0.055
+      minScalar: -0.015
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -11329,8 +11329,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.072823815
-      minScalar: 0.05201701
+      scalar: 0.20165129
+      minScalar: 0.14403664
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -12417,7 +12417,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.099
+      scalar: 0.089999996
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -14667,24 +14667,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Darwin.Rendering.GrasslandWindController
   windDirection: {x: 1, y: 0.3}
-  baseWindSpeed: 0.38
-  gustStrength: 1
-  gustFrequency: 0.08
-  turbulenceStrength: 0.22
+  baseWindSpeed: 1.05
+  gustStrength: 0.8
+  gustFrequency: 0.13
+  turbulenceStrength: 0.2
   randomSeed: 7319
-  globalVFXIntensity: 2.515
-  motesIntensity: 3
-  leavesIntensity: 3
-  windWispsIntensity: 3
-  motesRate: 1.7
-  leavesRate: 0.28
-  windWispsRate: 0.06
-  motesColor: {r: 0.87, g: 0.89, b: 0.66, a: 1}
-  leavesColor: {r: 0.61, g: 0.68, b: 0.32, a: 1}
-  windWispsColor: {r: 0.78, g: 0.86, b: 0.72, a: 1}
-  motesSizeRange: {x: 0.11, y: 0.23}
-  leavesSizeRange: {x: 0.19, y: 0.34}
-  windLengthRange: {x: 1.6, y: 2.8}
+  globalVFXIntensity: 1
+  motesIntensity: 1
+  leavesIntensity: 1
+  windWispsIntensity: 1
+  motesRate: 0.35
+  leavesRate: 4.1
+  windWispsRate: 1.6
+  motesColor: {r: 0.85, g: 0.86, b: 0.64, a: 1}
+  leavesColor: {r: 0.92, g: 0.8, b: 0.47, a: 1}
+  windWispsColor: {r: 0.97, g: 0.98, b: 0.85, a: 1}
+  motesSizeRange: {x: 0.055, y: 0.1}
+  leavesSizeRange: {x: 0.22, y: 0.4}
+  windLengthRange: {x: 3.2, y: 4.8}
   floatingMotes: {fileID: 2301588923693094604}
   fallingLeaves: {fileID: 5008947102922010715}
   windWisps: {fileID: 2833023920729516971}

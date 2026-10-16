@@ -37,8 +37,8 @@ Material:
     - _DepthFade: 1
     - _Distortion: 0.008
     - _IntersectionDistance: 0.12
-    - _Opacity: 0.46
-    - _Thickness: 1
+    - _Opacity: 0.92
+    - _Thickness: 1.25
     m_Colors:
     - _BoundsXZ: {r: -10000, g: -10000, b: 10000, a: 10000}
     - _Tint: {r: 0.78, g: 0.86, b: 0.72, a: 1}
