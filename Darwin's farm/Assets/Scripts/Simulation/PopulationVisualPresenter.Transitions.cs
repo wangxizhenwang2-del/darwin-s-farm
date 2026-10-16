@@ -197,7 +197,7 @@ public sealed partial class PopulationVisualPresenter
             };
             activeTransitions.Add(running);
             transition.Begin(path, !hasRoute ? fallbackArcHeight : 0f, duration,
-                WhiteboxPopulation.VisibleMemberCount(result.Amount), movement.Settings,
+                movement.Settings,
                 pending.Material, pending.SourceSprite, targetSprite,
                 pending.SourceColor, targetColor, movement.ViewCamera,
                 () => FinishTransition(running));

@@ -56,8 +56,9 @@ public static class MobileUIInstaller
         CopyArt(information.transform.Find("InformationHUD/TimeHUD"), day);
         Layout(day, 140f, false);
         Set(saved, "dayLabel", Label("Value", day, "Day 0", 22, Vector2.zero, new Vector2(140, 68), false, true));
-        var speed = Button("Speed", hud, "倍速 1X/2X", new Vector2(145, 68));
+        var speed = Button("Speed", hud, "倍速 1X", new Vector2(145, 68));
         CopyArt(information.transform.Find("InformationHUD/SpeedHUD"), (RectTransform)speed.transform);
+        ConfigureSpeedLabel(speed.GetComponentInChildren<TextMeshProUGUI>());
         BindButton(saved, "speedButton", "speedLabel", speed, 145f, false);
         BindButton(saved, "pauseButton", "pauseLabel", Button("Pause", hud, "暂停模拟", new Vector2(120, 68)), 120f, false);
         BindButton(saved, "locateButton", null, Button("LocatePlayer", hud, "定位玩家", new Vector2(120, 68)), 120f, false);
@@ -84,14 +85,14 @@ public static class MobileUIInstaller
         var close = Button("CloseCurrent", tabs, "X 关闭", new Vector2(78, 50));
         Layout((RectTransform)close.transform, 78, false); Set(saved, "closeButton", close);
         var title = Label("TitleDragArea", drawerRect, "环境信息 · 拖动此标题可移动", 20,
-            new Vector2(12, -62), new Vector2(480, 32), true);
+            new Vector2(12, -62), new Vector2(480, 44), true);
         var titleHandle = title.gameObject.AddComponent<InformationTextDragHandle>(); titleHandle.Initialize(drawer);
         var titleSettings = new SerializedObject(titleHandle);
         titleSettings.FindProperty("titleHandle").boolValue = true; titleSettings.ApplyModifiedPropertiesWithoutUndo();
         Set(saved, "titleLabel", title);
 
         RectTransform scrollRoot = Rect("InformationScroll", drawerRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-        Stretch(scrollRoot, new Vector2(12, 12), new Vector2(-12, -132));
+        Stretch(scrollRoot, new Vector2(12, 12), new Vector2(-12, -116));
         var scroll = scrollRoot.gameObject.AddComponent<UnityEngine.UI.ScrollRect>();
         scroll.horizontal = false; scroll.vertical = true;
         scroll.movementType = UnityEngine.UI.ScrollRect.MovementType.Clamped;
@@ -108,7 +109,7 @@ public static class MobileUIInstaller
         Set(saved, "trendPanel", trend); Set(saved, "tileContent", tile);
         var detailRect = Rect("TileDetails", tile, Vector2.up, Vector2.up, new Vector2(476, 220), new Vector2(12, -356));
         var details = detailRect.gameObject.AddComponent<UnityEngine.UI.Text>();
-        details.font = GameUITheme.Font; details.fontSize = 23; details.lineSpacing = 1.2f;
+        details.font = GameUITheme.Font; details.fontSize = GameUITheme.ReadableFontSize(23); details.lineSpacing = 1.12f;
         details.color = new Color(.11f, .16f, .17f); details.raycastTarget = true;
         details.text = "地块信息（运行时绑定）\n地形 / 海拔\n温度 / 湿度\n植物库存 / 每日恢复\n种群数量 / 水域类型";
         details.gameObject.AddComponent<InformationTextDragHandle>().Initialize(drawer); Set(saved, "tileDetails", details);
@@ -257,6 +258,18 @@ public static class MobileUIInstaller
         ((RectTransform)root.Find("Status")).sizeDelta = new Vector2(326, 64);
         tile.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 690);
     }
+    // Center the visible glyphs instead of the font's ascender/descender line box.
+    public static void ConfigureSpeedLabel(TextMeshProUGUI label)
+    {
+        // Image.preserveAspect uses the parent pivot to position its drawing rectangle.
+        ((RectTransform)label.transform.parent).pivot = new Vector2(.5f, .5f);
+        label.alignment = TextAlignmentOptions.Midline;
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        label.margin = Vector4.zero;
+        label.rectTransform.pivot = new Vector2(.5f, .5f);
+        Stretch(label.rectTransform, new Vector2(4f, 0f), new Vector2(-4f, 0f));
+    }
+
     private static void Set(SerializedObject settings, string name, Object value) => settings.FindProperty(name).objectReferenceValue = value;
     private static void Array(SerializedObject settings, string name, Object[] values)
     { var array = settings.FindProperty(name); array.arraySize = values.Length; for (int i = 0; i < values.Length; i++) array.GetArrayElementAtIndex(i).objectReferenceValue = values[i]; }
@@ -271,7 +284,7 @@ public static class MobileUIInstaller
     private static UnityEngine.UI.Button Button(string name, RectTransform parent, string caption, Vector2 size)
     { var rect = Panel(name, parent, size); var button = rect.gameObject.AddComponent<UnityEngine.UI.Button>(); button.targetGraphic = rect.GetComponent<UnityEngine.UI.Image>(); var label = Label("FunctionLabel", rect, caption, 20, Vector2.zero, size, false, true); label.rectTransform.offsetMin = new Vector2(4, 0); label.rectTransform.offsetMax = new Vector2(-4, 0); return button; }
     private static TextMeshProUGUI Label(string name, RectTransform parent, string text, float size, Vector2 position, Vector2 dimensions, bool raycast, bool centered = false)
-    { var rect = Rect(name, parent, Vector2.up, Vector2.up, dimensions, position); var label = rect.gameObject.AddComponent<TextMeshProUGUI>(); label.font = GameUITheme.TMPFont; label.fontSize = size; label.text = text; label.color = new Color(.11f, .16f, .17f); label.raycastTarget = raycast; label.textWrappingMode = TextWrappingModes.Normal; if (centered) { label.alignment = TextAlignmentOptions.Center; Stretch(rect, Vector2.zero, Vector2.zero); } return label; }
+    { var rect = Rect(name, parent, Vector2.up, Vector2.up, dimensions, position); var label = rect.gameObject.AddComponent<TextMeshProUGUI>(); label.font = GameUITheme.TMPFont; label.fontSize = GameUITheme.ReadableFontSize(size); label.text = text; label.color = new Color(.11f, .16f, .17f); label.raycastTarget = raycast; label.textWrappingMode = TextWrappingModes.Normal; if (centered) { label.alignment = TextAlignmentOptions.Center; Stretch(rect, Vector2.zero, Vector2.zero); } return label; }
     private static RectTransform Rect(string name, RectTransform parent, Vector2 anchor, Vector2 pivot, Vector2 size, Vector2 position)
     { var go = new GameObject(name, typeof(RectTransform)); go.layer = LayerMask.NameToLayer("UI"); var rect = (RectTransform)go.transform; rect.SetParent(parent, false); rect.anchorMin = rect.anchorMax = anchor; rect.pivot = pivot; rect.sizeDelta = size; rect.anchoredPosition = position; return rect; }
     private static void Stretch(RectTransform rect, Vector2 minimum, Vector2 maximum)

@@ -63,6 +63,7 @@ public sealed class GameInformationUI : MonoBehaviour
     public void SetMobilePresentation(bool mobile)
     {
         mobilePresentation = mobile;
+        if (!mobile && ToolModeActive && tileWindow != null) tileWindow.Close();
         if (tileWindow != null) tileWindow.SetPresentationVisible(!mobile);
         if (populationWindow != null) populationWindow.SetPresentationVisible(!mobile);
     }
@@ -102,6 +103,7 @@ public sealed class GameInformationUI : MonoBehaviour
         canvasRect = (RectTransform)transform;
         font = GameUITheme.Font;
         if (dayText == null && speedText == null) BuildHud();
+        BindSpeedControl();
         if (tileWindow == null && populationWindow == null) BuildWindows();
         if (tileHistory == null)
         {
@@ -119,6 +121,27 @@ public sealed class GameInformationUI : MonoBehaviour
             tileText.rectTransform.anchoredPosition = position;
             tileText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 236f);
         }
+    }
+
+    private void BindSpeedControl()
+    {
+        if (speedText == null) return;
+        var panel = speedText.transform.parent;
+        var image = panel.GetComponent<UnityEngine.UI.Image>();
+        if (image == null) return;
+        image.raycastTarget = true;
+        var button = panel.GetComponent<UnityEngine.UI.Button>();
+        if (button == null) button = panel.gameObject.AddComponent<UnityEngine.UI.Button>();
+        button.targetGraphic = image;
+        button.onClick.RemoveListener(CycleSimulationSpeed);
+        button.onClick.AddListener(CycleSimulationSpeed);
+    }
+
+    private void CycleSimulationSpeed()
+    {
+        if (clock == null) return;
+        clock.CycleSpeed();
+        RefreshVisible();
     }
 
     private void BindWindows()
@@ -452,7 +475,7 @@ public sealed class GameInformationUI : MonoBehaviour
             new Vector2(0f, 1f), dimensions, position);
         Text label = rect.gameObject.AddComponent<Text>();
         label.font = font;
-        label.fontSize = size;
+        label.fontSize = GameUITheme.ReadableFontSize(size);
         label.color = color;
         label.alignment = TextAnchor.UpperLeft;
         label.horizontalOverflow = HorizontalWrapMode.Wrap;

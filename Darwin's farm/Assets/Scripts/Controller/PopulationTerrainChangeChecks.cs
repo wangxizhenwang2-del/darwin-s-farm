@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
 
 // Runs the captured height-change failure against the real terrain, navigation,
@@ -14,7 +13,6 @@ public sealed class PopulationTerrainChangeChecks : MonoBehaviour
     private SimulationEnvironmentController environment;
     private WhiteboxPopulation population;
     private string identity;
-    private const BindingFlags Fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
     public static void Run()
     {
         if (!Application.isPlaying) throw new InvalidOperationException("Run in Play mode.");
@@ -46,35 +44,30 @@ public sealed class PopulationTerrainChangeChecks : MonoBehaviour
         Require(environment.TryApply(Vector2Int.zero, SimulationInterventionKind.Elevation, 1, out string error), error);
         yield return Ready();
         // Exact coordinates captured from the user's stuck chicken on raised (0,0).
-        SetPositions(new[] { new Vector3(4.368772f, 1.0443033f, -2.79704237f),
-            new Vector3(6.136988f, 1.01957214f, -3.64068651f) });
+        SetPosition(new Vector3(4.368772f, 1.0443033f, -2.79704237f));
         population.PauseWandering(false);
-        yield return Observe("captured two-member trap", 10f);
+        yield return Observe("captured raised-terrain position", 10f);
         foreach (int delta in new[] { 1, -1, -1 })
         {
             Require(environment.TryApply(Vector2Int.zero, SimulationInterventionKind.Elevation, delta, out error), error);
             yield return Ready();
             yield return Observe("height " + population.tile.HeightLevel, 6f);
         }
-        // New terrain can also introduce an obstacle exactly under an old member.
+        // New terrain can introduce an obstacle under the representative.
         Require(environment.TryApply(Vector2Int.zero, SimulationInterventionKind.Elevation, 1, out error), error);
         yield return Ready();
         foreach (int count in new[] { 80, 600, 1200 })
         {
             SetCount(count);
-            int expected = WhiteboxPopulation.VisibleMemberCount(count);
-            // Force each display size through the terrain-repair path, without
-            // deleting/recreating the population or changing its ecological ID.
+            // Changing the count must retain one representative and its identity.
             var obstacle = Array.Find(population.tile.GetComponentsInChildren<Collider>(), c => c.name.StartsWith("BiomeObstacle_"));
             Require(obstacle != null, "Missing highland obstacle fixture.");
-            var positions = new Vector3[expected];
-            for (int i = 0; i < expected; i++) positions[i] = obstacle.bounds.center;
-            SetPositions(positions);
+            SetPosition(obstacle.bounds.center);
             yield return Ready();
-            yield return Observe("new obstacle / " + expected + " members", 7f);
+            yield return Observe("new obstacle / count " + count, 7f);
         }
         Require(population.UniqueId == identity, "Terrain recovery replaced the population identity.");
-        Result = "PASS: captured height-change trap, 0/1/2 elevation round trip, new terrain obstacle recovery for 1/3/4 members, valid ground poses, collision separation and sustained movement.";
+        Result = "PASS: captured height-change trap, 0/1/2 elevation round trip, new terrain obstacle recovery at counts 80/600/1200 with one representative, valid ground poses, collision separation and sustained movement.";
         Debug.Log(Result); Destroy(gameObject);
     }
     private void SetCount(int count)
@@ -82,15 +75,10 @@ public sealed class PopulationTerrainChangeChecks : MonoBehaviour
         if (population.EcologicalPopulation != null) population.EcologicalPopulation.speciesAmount = count;
         population.Count = count;
     }
-    private void SetPositions(Vector3[] positions)
+    private void SetPosition(Vector3 position)
     {
-        // Count growth may initially lack space. These are deliberately invalid
-        // terrain-change inputs; recovery must pack the full desired formation.
-        typeof(WhiteboxPopulation).GetField("activeMemberCount", Fields).SetValue(population, positions.Length);
-        for (int i = 0; i < positions.Length; i++)
-        { population.members[i].groundPosition = positions[i]; population.members[i].visual.gameObject.SetActive(true); }
-        var motion = (PopulationFormationMotion)typeof(WhiteboxPopulation).GetField("motion", Fields).GetValue(population);
-        motion.SetActiveCount(positions.Length);
+        population.leader.groundPosition = position;
+        population.leader.visual.gameObject.SetActive(true);
         population.NavigationChanged();
     }
     private IEnumerator Ready()
@@ -115,13 +103,11 @@ public sealed class PopulationTerrainChangeChecks : MonoBehaviour
             float moved = Vector2.Distance(PopulationCollisionMath.Flat(previous), PopulationCollisionMath.Flat(current));
             travelled += moved; stall = moved < .003f ? stall + .1f : 0f;
             longestStall = Mathf.Max(longestStall, stall); previous = current;
-            Require(population.ValidateFormation(out string problem), stage + ": " + problem);
-            foreach (var member in population.members)
-            {
-                if (!member.visual.gameObject.activeInHierarchy) continue;
-                Require(population.space.TryGround(member.groundPosition, out var hit) &&
-                    Mathf.Abs(hit.point.y - member.groundPosition.y) < .03f, stage + ": stale ground height");
-            }
+            Require(population.ValidateMovement(out string problem), stage + ": " + problem);
+            Require(population.transform.childCount == 2 && population.Leader.name == "Leader",
+                stage + ": population no longer has exactly one representative and one count label");
+            Require(population.space.TryGround(population.leader.groundPosition, out var hit) &&
+                Mathf.Abs(hit.point.y - population.leader.groundPosition.y) < .03f, stage + ": stale ground height");
         }
         Require(travelled > 1f && longestStall < 5f,
             stage + ": stalled, travel=" + travelled.ToString("F2") + " longest stop=" + longestStall.ToString("F2"));

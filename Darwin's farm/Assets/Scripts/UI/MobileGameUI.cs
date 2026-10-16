@@ -123,8 +123,8 @@ public sealed class MobileGameUI : MonoBehaviour
         toolSession = information.GetComponent<EnvironmentToolSession>();
         if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
-        pauseButton.onClick.AddListener(() => { if (clock != null) clock.TogglePause(); });
-        speedButton.onClick.AddListener(() => { if (clock != null) { if (clock.Speed == 2f) clock.Play(); else clock.DoubleSpeed(); } });
+        pauseButton.onClick.AddListener(() => { if (clock != null) clock.TogglePause(); RefreshRuntime(); });
+        speedButton.onClick.AddListener(() => { if (clock != null) clock.CycleSpeed(); RefreshRuntime(); });
         locateButton.onClick.AddListener(() => { if (mapCamera != null) mapCamera.ReturnToPlayer(); });
         environmentTabButton.onClick.AddListener(() => SelectTab(InformationTab.Environment));
         populationTabButton.onClick.AddListener(() => SelectTab(InformationTab.Population));
@@ -145,7 +145,7 @@ public sealed class MobileGameUI : MonoBehaviour
         if (screen != lastScreen || ReadSafeArea() != lastSafeArea)
         { lastScreen = screen; lastSafeArea = ReadSafeArea(); RefreshLayout(); }
         if (!Application.isPlaying)
-        { if (lastTab != informationTab) ShowTab(); return; }
+        { if (mobile && lastTab != informationTab) ShowTab(); return; }
         if (!bound || !mobile) return;
         bool toolMode = toolSession != null && toolSession.Active;
         if (toolMode != previousToolMode)
@@ -178,7 +178,7 @@ public sealed class MobileGameUI : MonoBehaviour
             if (desktopCanvas != null) desktopCanvas.enabled = !mobile;
             drawer.gameObject.SetActive(true);
             buildPalette.SetActive(true); placementControls.SetActive(true);
-            ShowTab();
+            if (mobile) ShowTab();
             return;
         }
         if (!mobile) drawer.HideImmediately();
@@ -195,7 +195,10 @@ public sealed class MobileGameUI : MonoBehaviour
     [ContextMenu("Refresh mobile layout preview")]
     public void RefreshLayout()
     {
-        if (safeArea == null || Screen.width <= 0 || Screen.height <= 0) return;
+        // Disabled canvases report zero-sized layout bounds in the Editor.
+        // Keep their authored sizes until this presentation is enabled again.
+        if (safeArea == null || Screen.width <= 0 || Screen.height <= 0 ||
+            (mobileCanvas != null && !mobileCanvas.enabled)) return;
         Rect safe = ReadSafeArea();
         safeArea.anchorMin = new Vector2(safe.xMin / Screen.width, safe.yMin / Screen.height);
         safeArea.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
@@ -283,7 +286,7 @@ public sealed class MobileGameUI : MonoBehaviour
         if (any && !drawer.IsOpen) { ShowTab(); drawer.Open(); }
         else if (!any && drawer.IsOpen) drawer.Close();
         bool tile = informationTab == InformationTab.Environment;
-        titleLabel.text = tile ? "环境信息 · 拖标题移动，滑正文查看更多" : "生物信息 · 拖标题移动，滑正文查看更多";
+        titleLabel.text = tile ? "环境信息 · 拖动标题移动" : "生物信息 · 拖动标题移动";
         closeButton.interactable = (toolSession != null && toolSession.Active) || (tile ? information.TileIsOpen : information.PopulationIsOpen);
         if (tile)
         {

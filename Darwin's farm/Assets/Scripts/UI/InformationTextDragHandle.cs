@@ -1,15 +1,17 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-// Attach only to plain text. Buttons and future charts keep their own gestures.
+// Routes text gestures to a window or its nearest scrollable content.
 public sealed class InformationTextDragHandle : MonoBehaviour,
-    IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IScrollHandler
+    IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler,
+    IPointerDownHandler, IPointerUpHandler, IScrollHandler
 {
     [SerializeField] private InformationWindow window;
     [SerializeField] private bool titleHandle;
     private Vector2 offset;
     private int activePointer = int.MinValue;
     private UnityEngine.UI.ScrollRect scroll;
+    private PointerEventData dragEvent;
 
     public void Initialize(InformationWindow owner) => window = owner;
 
@@ -18,22 +20,32 @@ public sealed class InformationTextDragHandle : MonoBehaviour,
         if (window != null) window.OnPointerDown(eventData);
     }
 
+    public void OnInitializePotentialDrag(PointerEventData eventData)
+    {
+        // Forward the initialization that this handler intercepts from ScrollRect.
+        FindScroll(0f)?.OnInitializePotentialDrag(eventData);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (window == null || activePointer != int.MinValue) return;
-        if (window.TitleOnlyDragging && !titleHandle)
+        if (window == null || activePointer != int.MinValue ||
+            eventData.button != PointerEventData.InputButton.Left) return;
+        scroll = titleHandle ? null : FindScroll(eventData.delta.y);
+        if (scroll != null && scroll.isActiveAndEnabled)
         {
-            scroll = FindScroll(eventData.delta.y);
-            if (scroll == null || !scroll.isActiveAndEnabled) return;
             activePointer = eventData.pointerId;
+            scroll.OnInitializePotentialDrag(eventData);
             scroll.OnBeginDrag(eventData);
         }
-        else if (window.BeginTextDrag(eventData, out offset)) activePointer = eventData.pointerId;
+        else if ((!window.TitleOnlyDragging || titleHandle) && window.BeginTextDrag(eventData, out offset))
+            activePointer = eventData.pointerId;
+        if (activePointer != int.MinValue) dragEvent = eventData;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (eventData.pointerId != activePointer) return;
+        dragEvent = eventData;
         if (scroll != null) scroll.OnDrag(eventData);
         else if (window != null) window.DragText(eventData, offset);
     }
@@ -42,8 +54,11 @@ public sealed class InformationTextDragHandle : MonoBehaviour,
     {
         if (eventData.pointerId != activePointer) return;
         if (scroll != null) scroll.OnEndDrag(eventData);
-        scroll = null; activePointer = int.MinValue;
+        else if (window != null) window.EndTextDrag(eventData);
+        scroll = null; dragEvent = null; activePointer = int.MinValue;
     }
+
+    public void OnPointerUp(PointerEventData eventData) => OnEndDrag(eventData);
 
     public void OnScroll(PointerEventData eventData) => FindScroll(-eventData.scrollDelta.y)?.OnScroll(eventData);
 
@@ -67,5 +82,8 @@ public sealed class InformationTextDragHandle : MonoBehaviour,
         }
         return outer;
     }
-    private void OnDisable() { scroll = null; activePointer = int.MinValue; }
+    private void CancelDrag() { if (dragEvent != null) OnEndDrag(dragEvent); }
+    private void OnDisable() => CancelDrag();
+    private void OnApplicationFocus(bool focused) { if (!focused) CancelDrag(); }
+    private void OnApplicationPause(bool paused) { if (paused) CancelDrag(); }
 }

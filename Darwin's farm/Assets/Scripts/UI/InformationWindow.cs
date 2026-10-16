@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 // Owns only window positioning and presentation; simulation data stays elsewhere.
-public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
+public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
+    IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     [SerializeField, Min(0.05f)] private float animationSeconds = 0.35f;
     [SerializeField] private bool titleOnlyDragging;
@@ -14,6 +15,8 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
     private Coroutine windowAnimation;
     private bool open;
     private bool presentationVisible = true;
+    private int dragPointer = int.MinValue;
+    private Vector2 dragOffset;
 
     public bool IsOpen => open;
     public bool TitleOnlyDragging => titleOnlyDragging;
@@ -21,6 +24,7 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
     { canvasRect = bounds; home = defaultPosition; if (open) ClampToBounds(); }
     public void HideImmediately()
     {
+        ResetDrag();
         if (windowAnimation != null) StopCoroutine(windowAnimation);
         windowAnimation = null; open = false;
         if (group != null) { group.alpha = 0f; group.interactable = group.blocksRaycasts = false; }
@@ -33,6 +37,7 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
     {
         if (presentationVisible == visible) return;
         presentationVisible = visible;
+        ResetDrag();
         if (windowAnimation != null) StopCoroutine(windowAnimation);
         windowAnimation = null;
         if (group == null) return;
@@ -75,6 +80,7 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
     {
         if (!open) return;
         open = false;
+        ResetDrag();
         if (!presentationVisible) return;
         group.interactable = false;
         group.blocksRaycasts = false;
@@ -84,29 +90,64 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData) => transform.SetAsLastSibling();
 
+    // The panel background also receives drags; child controls retain their gestures.
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (!titleOnlyDragging && dragPointer == int.MinValue &&
+            (eventData.pointerPressRaycast.gameObject == null ||
+             eventData.pointerPressRaycast.gameObject.GetComponentInParent<UnityEngine.UI.Selectable>() == null))
+            BeginTextDrag(eventData, out dragOffset);
+    }
+    public void OnDrag(PointerEventData eventData) => DragText(eventData, dragOffset);
+    public void OnEndDrag(PointerEventData eventData) => EndTextDrag(eventData);
+    public void OnPointerUp(PointerEventData eventData) => EndTextDrag(eventData);
+
     public bool BeginTextDrag(PointerEventData eventData, out Vector2 offset)
     {
         offset = Vector2.zero;
-        if (!open || windowAnimation != null || canvasRect == null) return false;
+        if (!open || !presentationVisible || canvasRect == null ||
+            eventData.button != PointerEventData.InputButton.Left || dragPointer != int.MinValue) return false;
         transform.SetAsLastSibling();
+        // A fast gesture may begin before the opening animation has finished.
+        // Finish opening at the home position before capturing the grab offset.
+        if (windowAnimation != null)
+        {
+            StopCoroutine(windowAnimation);
+            windowAnimation = null;
+            rect.anchoredPosition = home;
+        }
+        group.alpha = 1f;
+        group.interactable = group.blocksRaycasts = true;
+        ClampToBounds();
+        RectTransform parent = (RectTransform)rect.parent;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect, eventData.position, eventData.pressEventCamera, out Vector2 local))
-        { offset = (Vector2)rect.localPosition - local; return true; }
+            parent, eventData.pressPosition, eventData.pressEventCamera, out Vector2 local))
+        { offset = (Vector2)rect.localPosition - local; dragPointer = eventData.pointerId; return true; }
         return false;
     }
 
     public void DragText(PointerEventData eventData, Vector2 offset)
     {
-        if (!open || windowAnimation != null || canvasRect == null) return;
+        if (!open || !presentationVisible || canvasRect == null || eventData.pointerId != dragPointer) return;
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect, eventData.position, eventData.pressEventCamera, out Vector2 local)) return;
+            (RectTransform)rect.parent, eventData.position, eventData.pressEventCamera, out Vector2 local)) return;
         Vector2 wanted = local + offset;
         SetClampedPosition(wanted);
     }
+    public void EndTextDrag(PointerEventData eventData)
+    { if (eventData.pointerId == dragPointer) ResetDrag(); }
+    private void ResetDrag() { dragPointer = int.MinValue; dragOffset = Vector2.zero; }
+    private void OnDisable() => ResetDrag();
+    private void OnApplicationFocus(bool focused) { if (!focused) ResetDrag(); }
+    private void OnApplicationPause(bool paused) { if (paused) ResetDrag(); }
     private void ClampToBounds() => SetClampedPosition(rect.localPosition);
     private void SetClampedPosition(Vector2 wanted)
     {
-        Rect bounds = canvasRect.rect;
+        // Bounds can be a safe-area child with a different pivot from the parent.
+        RectTransform parent = (RectTransform)rect.parent;
+        Vector3 lower = parent.InverseTransformPoint(canvasRect.TransformPoint(canvasRect.rect.min));
+        Vector3 upper = parent.InverseTransformPoint(canvasRect.TransformPoint(canvasRect.rect.max));
+        Rect bounds = Rect.MinMaxRect(lower.x, lower.y, upper.x, upper.y);
         Rect window = rect.rect;
         float xMin = bounds.xMin - window.xMin + 8f;
         float xMax = bounds.xMax - window.xMax - 8f;

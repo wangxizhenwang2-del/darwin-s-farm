@@ -129,7 +129,7 @@ public sealed class PopulationInfoPanel : MonoBehaviour
     {
         RectTransform rect = Rect(name, parent, position, dimensions);
         var label = rect.gameObject.AddComponent<TextMeshProUGUI>();
-        label.font = GameUITheme.TMPFont; label.fontSize = size; label.color = new Color(.11f, .16f, .17f);
+        label.font = GameUITheme.TMPFont; label.fontSize = GameUITheme.ReadableFontSize(size); label.color = new Color(.11f, .16f, .17f);
         label.textWrappingMode = TextWrappingModes.Normal; label.overflowMode = TextOverflowModes.Truncate;
         label.richText = false; label.text = value; label.raycastTarget = true;
         rect.gameObject.AddComponent<InformationTextDragHandle>().Initialize(window);

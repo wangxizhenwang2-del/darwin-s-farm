@@ -90,8 +90,8 @@ public static class EnvironmentToolsInstaller
     private static TextMeshProUGUI Label(string name,RectTransform parent,string text,float size,Vector2 position,Vector2 dimensions)
     {
         var rect=Rect(name,parent,dimensions,position); var label=rect.gameObject.AddComponent<TextMeshProUGUI>();
-        label.font=GameUITheme.TMPFont; label.fontSize=size; label.text=text; label.color=new Color(.1f,.16f,.15f); label.raycastTarget=false;
-        label.enableAutoSizing=true; label.fontSizeMin=16; label.fontSizeMax=size;
+        label.font=GameUITheme.TMPFont; label.fontSize=GameUITheme.ReadableFontSize(size); label.text=text; label.color=new Color(.1f,.16f,.15f); label.raycastTarget=false;
+        label.enableAutoSizing=true; label.fontSizeMin=20; label.fontSizeMax=GameUITheme.ReadableFontSize(size);
         return label;
     }
     private static UnityEngine.UI.Button Button(string name,RectTransform parent,string caption,Vector2 size,Vector2 position)

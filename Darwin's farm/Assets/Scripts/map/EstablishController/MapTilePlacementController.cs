@@ -47,8 +47,8 @@ public class MapTilePlacementController : MonoBehaviour
 
     public bool IsDragging => draggingDefinition != null;
     public bool IsTouchPlacement => IsDragging && touchPlacement;
-    public bool CanConfirmTouchPlacement => IsTouchPlacement && touchPositionSet && canPlace &&
-        gridManager.CanPlaceAt(currentCoordinate);
+    public bool CanConfirmTouchPlacement => IsTouchPlacement && touchPositionSet &&
+        CanBuildAt(currentCoordinate);
     public string TouchPreviewStatus => draggingDefinition == null ? "" :
         draggingDefinition.displayName + " / " + (rotationSteps * 90) + "\u5EA6 / " +
         (!touchPositionSet ? "\u70B9\u51FB\u5730\u56FE\u5B9A\u4F4D\u9884\u89C8" : canPlace ? "\u4F4D\u7F6E\u53EF\u653E\u7F6E" : "\u4F4D\u7F6E\u5DF2\u5360\u7528");
@@ -78,7 +78,10 @@ public class MapTilePlacementController : MonoBehaviour
     public bool ConfirmTouchPlacement()
     {
         if (!CanConfirmTouchPlacement || !buildMode.IsBuildMode) return false;
-        if (!gridManager.TryPlaceTile(currentCoordinate, draggingDefinition, rotationSteps)) return false;
+        if (economy == null && gridManager != null)
+            economy = gridManager.GetComponent<PlayerEconomyController>();
+        if (economy == null ||
+            !economy.TryExpand(currentCoordinate, draggingDefinition, rotationSteps, out _)) return false;
         CancelDrag();
         return true;
     }
@@ -144,7 +147,15 @@ public class MapTilePlacementController : MonoBehaviour
         }
 
         // Touch placement is persistent and is confirmed by the saved mobile UI.
-        if (touchPlacement) return;
+        if (touchPlacement)
+        {
+            if (touchPositionSet)
+            {
+                bool allowed = CanBuildAt(currentCoordinate);
+                if (allowed != canPlace) { canPlace = allowed; RefreshPreviewColor(); }
+            }
+            return;
+        }
 
         Vector2 mousePosition;
         bool released;
@@ -238,9 +249,7 @@ public class MapTilePlacementController : MonoBehaviour
         currentCoordinate = gridManager.WorldToGrid(worldPosition);
         if (economy == null && gridManager != null)
             economy = gridManager.GetComponent<PlayerEconomyController>();
-        BioenergyAccount wallet = gridManager.GetComponent<BioenergyAccount>();
-        canPlace = gridManager.CanPlaceAt(currentCoordinate) &&
-            wallet != null && (!wallet.CostsEnabled || wallet.Balance >= BioenergySettings.Current.expandTileCost);
+        canPlace = CanBuildAt(currentCoordinate);
 
         previewObject.transform.position =
     gridManager.GridToWorld(currentCoordinate) +
@@ -253,6 +262,19 @@ public class MapTilePlacementController : MonoBehaviour
 
         previewObject.SetActive(true);
 
+        RefreshPreviewColor();
+    }
+
+    private bool CanBuildAt(Vector2Int coordinate)
+    {
+        if (gridManager == null || !gridManager.CanPlaceAt(coordinate)) return false;
+        BioenergyAccount wallet = gridManager.GetComponent<BioenergyAccount>();
+        return wallet != null && (!wallet.CostsEnabled ||
+            wallet.Balance >= BioenergySettings.Current.expandTileCost);
+    }
+
+    private void RefreshPreviewColor()
+    {
         Color color = canPlace ? validColor : invalidColor;
 
         properties.Clear();

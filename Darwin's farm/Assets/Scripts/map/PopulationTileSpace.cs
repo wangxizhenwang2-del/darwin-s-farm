@@ -205,6 +205,33 @@ public sealed class PopulationTileSpace
         return true;
     }
 
+    // A billboard stands vertically above its route position. Offsetting it along
+    // a triangle's normal makes it jump sideways whenever that normal changes.
+    public bool TryRepresentativePose(Vector3 position, Vector3 heading, float size,
+        out Vector3 groundPosition, out Vector3 center, out Quaternion rotation)
+    {
+        groundPosition = center = position;
+        rotation = Quaternion.identity;
+        if (!TryPose(position, size, out _, out _) || !TryGround(position, out RaycastHit groundHit))
+            return false;
+        groundPosition = groundHit.point;
+        heading.y = 0f;
+        rotation = Quaternion.LookRotation(heading.sqrMagnitude > 0.001f ? heading : Vector3.forward, Vector3.up);
+        center = groundPosition + Vector3.up * (size * 0.5f);
+        // Keep the upright proxy's entire footprint above the relief. Height
+        // follows the continuous ground surface rather than its per-face normal.
+        float support = 0f;
+        for (int x = -1; x <= 1; x++)
+            for (int z = -1; z <= 1; z++)
+            {
+                Vector3 bottom = center + rotation * new Vector3(x, -1f, z) * (size * 0.5f);
+                if (!TryGround(bottom, out RaycastHit contact)) return false;
+                support = Mathf.Max(support, contact.point.y - bottom.y);
+            }
+        center.y += support;
+        return true;
+    }
+
     private bool IsObstacle(Collider collider)
     {
         if (collider == null || !collider.enabled || collider.isTrigger) return false;
