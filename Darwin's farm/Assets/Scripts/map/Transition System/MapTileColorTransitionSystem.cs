@@ -81,6 +81,7 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
 
     private void OnDisable()
     {
+        FinishBiomeFeedback();
         if (gridManager != null)
             gridManager.TilesChanged -= RefreshAll;
         if (environment != null) environment.Changed -= HandleEnvironmentChanged;
@@ -94,7 +95,12 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
         if (CacheTerrain(snapshots))
         {
             // Terrain kind can now change both color and ground relief.
-            RefreshAll();
+            animateSurfaceRefresh = false;
+            foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
+                if (biomeVisuals.TryGetValue(tile, out BiomeVisualData current) && current.biome != VisibleBiome(tile))
+                { animateSurfaceRefresh = true; break; }
+            try { RefreshAll(); }
+            finally { animateSurfaceRefresh = false; }
             if (gridManager.Navigation != null)
                 gridManager.Navigation.RequestUpdate();
         }
@@ -376,6 +382,8 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
         MapTileInstance tile,
         SurfaceData surface)
     {
+        Color[] previousColors = surface.mesh.colors;
+        Vector3[] previousVertices = previousColors.Length > 0 ? surface.mesh.vertices : null;
         int rowSize = Segments + 1;
 
         List<Vector3> vertices = new List<Vector3>();
@@ -449,6 +457,7 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
         surface.mesh.SetTriangles(triangles, 0);
         surface.mesh.RecalculateNormals();
         surface.mesh.RecalculateBounds();
+        BeginSurfaceFeedback(surface, previousVertices, previousColors, vertices, colors);
     }
 
     private void BuildEdge(
@@ -695,6 +704,7 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
 
     private void OnDestroy()
     {
+        FinishBiomeFeedback();
         foreach (SurfaceData surface in surfaces.Values)
         {
             if (surface.mesh != null)

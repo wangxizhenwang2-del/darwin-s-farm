@@ -16,6 +16,10 @@ public partial class MapTileColorTransitionSystem
     {
         public BiomeType biome;
         public GameObject root;
+        public MapTileInstance tile;
+        public readonly List<DecorationPose> decorations = new List<DecorationPose>();
+        public float age;
+        public bool retiring;
     }
 
     private readonly Dictionary<MapTileInstance, BiomeVisualData> biomeVisuals =
@@ -55,14 +59,23 @@ public partial class MapTileColorTransitionSystem
             BiomeType biome = VisibleBiome(tile);
             GameObject prefab = BiomePrefab(biome);
             biomeVisuals.TryGetValue(tile, out BiomeVisualData current);
-            if (current != null && current.biome == biome && current.root != null &&
-                !surfaceRebuilt) continue;
+            if (current != null && current.biome == biome && (current.root != null || prefab == null))
+            {
+                if (surfaceRebuilt && current.root != null) ReprojectDecorations(current, surface.collider);
+                continue;
+            }
+            bool animate = current != null && current.biome != biome && CanAnimateBiomeChanges;
             if (current != null)
             {
-                RemoveBiomeVisual(current);
+                if (animate) RetireDecorations(current);
+                else RemoveBiomeVisual(current);
                 biomeVisuals.Remove(tile);
                 changed = true;
             }
+            // Remember terrains without a prefab so their next conversion is
+            // distinct from first-time tile placement.
+            var next = new BiomeVisualData { biome = biome, tile = tile };
+            biomeVisuals.Add(tile, next);
             if (prefab == null) continue;
 
             GameObject root = Instantiate(prefab, tile.transform);
@@ -74,7 +87,9 @@ public partial class MapTileColorTransitionSystem
             // The calibrated prefab owns its own per-model scale, origin and orientation.
             SetVisualLayer(root.transform);
             ProjectDecorations(root, surface.collider, biome);
-            biomeVisuals.Add(tile, new BiomeVisualData { biome = biome, root = root });
+            next.root = root;
+            CacheDecorationPoses(next, surface.collider);
+            if (animate) GrowDecorations(next);
             changed = true;
         }
         foreach (MapTileInstance tile in new List<MapTileInstance>(biomeVisuals.Keys))
