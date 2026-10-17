@@ -104,6 +104,72 @@ public partial class SimulationController
     }
 
     // Consecutive qualified days replace the old probabilistic draw.
+    private readonly Dictionary<PopulationData, Dictionary<SpeciesData, int>>
+        evolutionTraitRangeStates =
+            new Dictionary<PopulationData, Dictionary<SpeciesData, int>>();
+
+    private static readonly string[] EvolutionTraitNames =
+        { "适温", "适湿", "运动", "体型", "繁殖" };
+
+    // Observe the same five inclusive intervals used by formal evolution.
+    // This trace changes neither eligibility nor the model's random stream.
+    private void ReportEvolutionTraitRange(BlockInfo block,
+        PopulationData source, SpeciesData target, int day)
+    {
+        int tolerance = LandRules.evolutionTraitTolerance;
+        int[] values = { source.fitTemperature, source.fitHumidity,
+            source.movementAbility, source.size, source.fertility };
+        int[] centers = { target.baseFitTemperature, target.baseFitHumidity,
+            target.baseMovementAbility, target.baseSize, target.baseFertility };
+        int mask = 0;
+        var remaining = new List<string>(5);
+        var protectedTraits = new List<string>(3);
+        for (int i = 0; i < values.Length; i++)
+        {
+            int distance = Mathf.Abs(values[i] - centers[i]);
+            int gap = Mathf.Max(0, distance - tolerance);
+            if (gap == 0) mask |= 1 << i;
+            else remaining.Add(EvolutionTraitNames[i] + "差" + gap);
+            int protectionIndex = i - 2;
+            if (gap == 0 && protectionIndex >= 0 &&
+                source.trackedEvolutionTarget == target &&
+                source.targetProtectionSince != null &&
+                source.targetProtectionSince.Length > protectionIndex &&
+                source.targetProtectionReleased != null &&
+                source.targetProtectionReleased.Length > protectionIndex &&
+                !source.targetProtectionReleased[protectionIndex] &&
+                source.targetProtectionSince[protectionIndex] >= 0)
+                protectedTraits.Add(EvolutionTraitNames[i] + "持续" +
+                    (day - source.targetProtectionSince[protectionIndex] + 1) + "天");
+        }
+        if (!evolutionTraitRangeStates.TryGetValue(source,
+            out Dictionary<SpeciesData, int> states))
+        {
+            states = new Dictionary<SpeciesData, int>();
+            evolutionTraitRangeStates.Add(source, states);
+        }
+        int oldMask = states.TryGetValue(target, out int previous) ? previous : 0;
+        states[target] = mask;
+        if (mask == oldMask) return;
+        var changes = new List<string>(5);
+        for (int i = 0; i < values.Length; i++)
+        {
+            int bit = 1 << i;
+            if ((mask & bit) == (oldMask & bit)) continue;
+            changes.Add(EvolutionTraitNames[i] + "=" + values[i] +
+                ((mask & bit) != 0 ? "进入" : "退出") + "目标区间[" +
+                (centers[i] - tolerance) + "," +
+                (centers[i] + tolerance) + "]");
+        }
+        LogEcology(day, block, source, "evolution_trait_range",
+            "目标=" + target.SpeciesName + " 变化=" +
+            string.Join("、", changes.ToArray()) + " 保护中=" +
+            (protectedTraits.Count > 0 ? string.Join("、", protectedTraits.ToArray()) : "无") +
+            " 其余性状=" +
+            (remaining.Count > 0 ? string.Join("、", remaining.ToArray()) : "全部已在范围内") +
+            " 容差=±" + tolerance);
+    }
+
     private void RunPresetEvolution(int day)
     {
         if (!presetEvolutionEnabled || day <= 0) return;
@@ -116,8 +182,11 @@ public partial class SimulationController
             {
                 if (ancestor == null || ancestor.species == null) continue;
                 SpeciesData selected = null;
-                foreach (SpeciesData target in ConnectedTargets(ancestor.species))
+                List<SpeciesData> targets = ConnectedTargets(ancestor.species);
+                targets.Sort(CompareSpeciesOrder);
+                foreach (SpeciesData target in targets)
                 {
+                    ReportEvolutionTraitRange(block, ancestor, target, day);
                     EvolutionConversionRecord record = GetEvolutionRecord(ancestor,
                         target, true);
                     if (!IsEligibleEvolutionTarget(block, ancestor, target, day))

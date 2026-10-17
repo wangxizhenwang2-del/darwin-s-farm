@@ -41,6 +41,7 @@ public partial class PopulationSimulatorWindow
         liveRecordingSource = liveSimulation;
         liveRecordingGrid = liveGrid;
         liveRecordingSource.OnDaySimulated += RecordLiveDay;
+        liveRecordingSource.OnEcologyEvent += RecordLiveEcology;
         EditorApplication.playModeStateChanged += OnLiveDashboardPlayModeChanged;
         RecordLiveDay(liveTime.currentDay);
     }
@@ -55,7 +56,10 @@ public partial class PopulationSimulatorWindow
     private static void StopLiveRecordingSession()
     {
         if (liveRecordingSource != null)
+        {
             liveRecordingSource.OnDaySimulated -= RecordLiveDay;
+            liveRecordingSource.OnEcologyEvent -= RecordLiveEcology;
+        }
         EditorApplication.playModeStateChanged -= OnLiveDashboardPlayModeChanged;
         liveRecordingSource = null;
         liveRecordingGrid = null;
@@ -130,6 +134,21 @@ public partial class PopulationSimulatorWindow
                     series.amounts.RemoveAt(0);
             }
         }
+    }
+
+    private static void RecordLiveEcology(int day, BlockInfo block,
+        PopulationData population, string kind, string detail)
+    {
+        if (kind != "evolution_trait_range" || block == null) return;
+        if (!liveHistory.TryGetValue(block, out LiveTileHistory history))
+        {
+            history = new LiveTileHistory();
+            liveHistory.Add(block, history);
+        }
+        string species = population != null && population.species != null
+            ? population.species.SpeciesName : "种群";
+        history.output.Add("Day " + day + "  " + species + "  " + detail);
+        TrimLiveOutput(history);
     }
 
     private void LogLive(BlockInfo block, string message)
