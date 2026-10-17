@@ -139,6 +139,7 @@ public sealed class BioenergyAccount : MonoBehaviour
 
     private void AfterDay(int day)
     {
+        if (!costsEnabled) return;
         if (day <= lastSettledDay) return;
         if (!initialSpeciesCaptured) BeforeDay(day);
         long daily = 0;
@@ -193,6 +194,7 @@ public sealed class BioenergyAccount : MonoBehaviour
 
     public int PreviewDailyIncome()
     {
+        if (!costsEnabled) return 0;
         long total = 0;
         foreach (SpeciesCount count in CountWildSpecies().Values)
             if (count.count > 1) total += (long)Math.Floor(

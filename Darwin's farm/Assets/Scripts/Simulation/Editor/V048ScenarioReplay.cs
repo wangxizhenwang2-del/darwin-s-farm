@@ -22,6 +22,7 @@ public static class V048ScenarioReplay
         public int seed;
         public int endDay;
         public bool disableCosts;
+        public bool coreV61;
         public bool restrictedV05;
         public bool useV05Sandbox;
         public bool recordPredatorFoodK;
@@ -232,6 +233,26 @@ public static class V048ScenarioReplay
             string.IsNullOrEmpty(output))
             throw new InvalidOperationException("Set DF_V048_SCENARIO and DF_V048_OUTPUT.");
         Scenario selected = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
+        if (selected != null && selected.coreV61)
+        {
+            if (selected.restrictedV05 || selected.useV05Sandbox ||
+                selected.mechanismFixture || selected.t95eSingleOriginFixture ||
+                selected.originInitialStock > 0f ||
+                selected.originInitialChickenCount > 0 ||
+                selected.tiles == null || selected.tiles.Length != 0 ||
+                selected.sourceGraph != "Assets/Resources/V61Bioweb13.json" ||
+                !File.Exists(selected.sourceGraph))
+                throw new InvalidOperationException(
+                    "V6.1 core replay requires the unmodified WhiteBox origin and original graph.");
+            using (SHA256 hash = SHA256.Create())
+            {
+                string actual = BitConverter.ToString(hash.ComputeHash(
+                    File.ReadAllBytes(selected.sourceGraph))).Replace("-", "")
+                    .ToLowerInvariant();
+                if (actual != SimulationController.V61SourceGraphHash)
+                    throw new InvalidOperationException("V6.1 source graph hash differs.");
+            }
+        }
         EditorSceneManager.OpenScene(selected != null &&
             (selected.restrictedV05 || selected.useV05Sandbox)
             ? "Assets/Scenes/V05FiveSpeciesSandbox.unity" :
@@ -269,7 +290,8 @@ public static class V048ScenarioReplay
         {
             Scenario pending = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
             if (pending != null &&
-                (pending.restrictedV05 || pending.useV05Sandbox))
+                (pending.restrictedV05 || pending.useV05Sandbox ||
+                    pending.coreV61))
             {
                 var grid = environment.GetComponent<MapGridManager>();
                 if (grid == null || !grid.TryGetTile(Vector2Int.zero,
@@ -277,7 +299,9 @@ public static class V048ScenarioReplay
                     initial.Block.community == null ||
                     initial.Block.community.Count != 1 ||
                     initial.Block.community[0] == null ||
-                    initial.Block.community[0].speciesAmount != 160) return;
+                    initial.Block.community[0].speciesAmount != 160 ||
+                    initial.Block.community[0].species == null ||
+                    initial.Block.community[0].species.SpeciesName != "鸡") return;
             }
         }
         try { Execute(clock, environment); Finish(null); }
@@ -304,6 +328,15 @@ public static class V048ScenarioReplay
         if (grid == null || bridge == null || simulation == null ||
             player == null || economy == null || account == null)
             throw new InvalidOperationException("Live gameplay components are missing.");
+        if (scenario.coreV61 &&
+            (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance seeded) ||
+             seeded.Block == null || seeded.Block.community == null ||
+             seeded.Block.community.Count != 1 ||
+             seeded.Block.community[0].species == null ||
+             seeded.Block.community[0].species.SpeciesName != "鸡" ||
+             seeded.Block.community[0].speciesAmount != 160))
+            throw new InvalidOperationException(
+                "V6.1 core replay did not start from the real seeded chicken.");
         if (scenario.restrictedV05)
         {
             ValidateRestrictedV05(scenario, grid, simulation);
@@ -430,6 +463,7 @@ public static class V048ScenarioReplay
             throw new InvalidOperationException(
                 "Encounter experiments require the archived experiment-encounter-v3 code.");
         simulation.ApplyLandRules(selectedRules);
+        if (scenario.coreV61) simulation.ApplyCoreEvolutionTestProfile();
         t10QuotaByPopulation.Clear();
         Type landRulesType = typeof(SimulationController).Assembly.GetType(
             "LandLifeRules", true);
@@ -490,6 +524,12 @@ public static class V048ScenarioReplay
             if (action.kind == "PlantChange")
                 throw new InvalidOperationException(
                     "Combined PlantChange was removed; use separate PlantStockChange and PlantRecoveryChange actions.");
+            if (scenario.coreV61 && !(action.kind == "PlaceTile" ||
+                action.kind == "CancelTemperatureChange" ||
+                action.kind == "CancelHumidityChange" ||
+                Enum.TryParse(action.kind, out EnvironmentTechnologyKind coreKind) &&
+                Enum.IsDefined(typeof(EnvironmentTechnologyKind), coreKind)))
+                throw new InvalidOperationException("V6.1 core replay forbids fixture actions.");
             if (scenario.restrictedV05 &&
                 (action.x < -1 || action.x > 1 || action.y < -1 || action.y > 1 ||
                  !(action.kind == "PlaceTile" ||
@@ -570,9 +610,11 @@ public static class V048ScenarioReplay
         foreach (string file in Directory.GetFiles("Assets/BiowebV46/Species",
             "*.asset", SearchOption.TopDirectoryOnly))
             bindingFiles.Add(file.Replace('\\', '/'));
-        if (scenario.restrictedV05) bindingFiles.Add(scenario.sourceGraph);
+        if (scenario.restrictedV05 || scenario.coreV61)
+            bindingFiles.Add(scenario.sourceGraph);
         trace.AppendLine("scenario=" + scenario.scenarioId + " seed=" + scenario.seed +
             " mechanismFixture=" + scenario.mechanismFixture +
+            " coreV61=" + scenario.coreV61 +
             " random=" + SimulationController.ModelRandomVersion +
             " unity=" + Application.unityVersion +
             " costs=" + account.CostsEnabled +
@@ -758,6 +800,28 @@ public static class V048ScenarioReplay
             clock.NextDay();
             if (clock.currentDay != day + 1)
                 throw new InvalidOperationException("Clock skipped a day.");
+            if (scenario.coreV61)
+            {
+                DailyEcologyLedger ledger = simulation.LastEcologyLedger;
+                if (ledger == null || ledger.day != clock.currentDay ||
+                    ledger.sourceGraphHash != SimulationController.V61SourceGraphHash ||
+                    ledger.enableAirEcology || ledger.enableWaterEcology ||
+                    ledger.enableEconomy || ledger.enableRandomEvents ||
+                    !ledger.enableNeighborMovementFormula)
+                    throw new InvalidOperationException(
+                        "V6.1 core ledger or independent switches are not connected on Day " +
+                        clock.currentDay);
+                int speciesResidual = 0;
+                foreach (EcologySpeciesDailyAccount species in ledger.species)
+                    speciesResidual += Math.Abs(species.Residual);
+                trace.AppendLine("ledger day=" + ledger.day +
+                    " start=" + ledger.worldMassStart.ToString("R", CultureInfo.InvariantCulture) +
+                    " growth=" + ledger.actualPlantGrowth.ToString("R", CultureInfo.InvariantCulture) +
+                    " sink=" + ledger.namedDissipation.ToString("R", CultureInfo.InvariantCulture) +
+                    " end=" + ledger.worldMassEnd.ToString("R", CultureInfo.InvariantCulture) +
+                    " residual=" + ledger.massResidual.ToString("R", CultureInfo.InvariantCulture) +
+                    " speciesResidual=" + speciesResidual);
+            }
             if (scenario.restrictedV05)
                 ValidateRestrictedV05World(grid);
             double afterMaterial = TotalMaterial(grid);

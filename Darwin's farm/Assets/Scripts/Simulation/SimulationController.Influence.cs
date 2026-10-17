@@ -25,20 +25,27 @@ public partial class SimulationController
             switch (kind)
             {
                 case EnvironmentTechnologyKind.PlantStockChange:
-                case EnvironmentTechnologyKind.PlantRecoveryChange:
                     if (tier > 0)
                     {
                         AddInfluence(population, 3, PrimaryInfluence, day);
-                        AddInfluence(population, 4,
-                            PrimaryInfluence + SecondaryInfluence, day);
+                        AddInfluence(population, 4, SecondaryInfluence, day);
+                    }
+                    else if (tier < 0)
+                    {
+                        AddInfluence(population, 3, -PrimaryInfluence, day);
+                        AddInfluence(population, 2, SecondaryInfluence, day);
+                    }
+                    break;
+                case EnvironmentTechnologyKind.PlantRecoveryChange:
+                    if (tier > 0)
+                    {
+                        AddInfluence(population, 4, PrimaryInfluence, day);
                         AddInfluence(population, 2, -SecondaryInfluence, day);
                     }
                     else if (tier < 0)
                     {
-                        AddInfluence(population, 3,
-                            -PrimaryInfluence - SecondaryInfluence, day);
                         AddInfluence(population, 4, -PrimaryInfluence, day);
-                        AddInfluence(population, 2, SecondaryInfluence, day);
+                        AddInfluence(population, 3, -SecondaryInfluence, day);
                     }
                     break;
                 case EnvironmentTechnologyKind.TemperatureChange:
@@ -47,9 +54,10 @@ public partial class SimulationController
                             -Math.Sign(tier) * SecondaryInfluence, day);
                     break;
                 case EnvironmentTechnologyKind.HumidityChange:
-                    if (tier != 0)
-                        AddInfluence(population, 4,
-                            Math.Sign(tier) * SecondaryInfluence, day);
+                    if (tier > 0)
+                        AddInfluence(population, 4, SecondaryInfluence, day);
+                    else if (tier < 0)
+                        AddInfluence(population, 3, SecondaryInfluence, day);
                     break;
             }
         }

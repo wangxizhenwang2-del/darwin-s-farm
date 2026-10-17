@@ -1,0 +1,10 @@
+{
+  "scenarioId": "v61-core-smoke-seed240",
+  "seed": 240,
+  "endDay": 50,
+  "coreV61": true,
+  "disableCosts": true,
+  "sourceGraph": "Assets/Resources/V61Bioweb13.json",
+  "tiles": [],
+  "actions": []
+}

@@ -50,12 +50,20 @@ public sealed class EnvironmentToolsInputChecks : MonoBehaviour
         var env=FindFirstObjectByType<SimulationEnvironmentController>();
         env.TryRead(tile.Coordinate,out var before);
         var account=FindFirstObjectByType<BioenergyAccount>(); long money=account.Balance;
-        session.SelectKind(2); session.SelectOption(1); session.Refresh();
+        session.SelectKind(2);
+        Require(session.Choice.Kind == DarwinFarm.Environment.EnvironmentTechnologyKind.PlantStockChange,
+            "Plant stock button maps to the wrong tool");
+        session.SelectKind(3); session.SelectOption(1); session.Refresh();
+        Require(session.Choice.Kind == DarwinFarm.Environment.EnvironmentTechnologyKind.PlantRecoveryChange,
+            "Plant recovery button maps to the wrong tool");
         env.TryRead(tile.Coordinate,out var previewed);
         Require(before.PlantStock==previewed.PlantStock && account.Balance==money,"Preview changed ecology or balance");
         int cost=session.Preview.Cost; session.Deploy();
         env.TryRead(tile.Coordinate,out var after);
-        Require(after.Environment.Recovery.Value==System.Math.Min(150000,before.Environment.Recovery.Value+25000),"Plant tool did not change recovery");
+        Require(after.Environment.Recovery.Phase==DarwinFarm.Environment.EffectPhase.Entering &&
+            after.Environment.Recovery.Value==before.Environment.Recovery.Value &&
+            after.Environment.Recovery.Target==System.Math.Min(150000,before.Environment.Recovery.Value+25000),
+            "Plant recovery did not begin its 25-day transition");
         Require(account.Balance==money-cost,"Wrong payment or duplicate touch commit");
         session.CancelEffect(); Require(session.Notice=="已撤销效果","Effect cancellation failed");
         information.CloseTile();

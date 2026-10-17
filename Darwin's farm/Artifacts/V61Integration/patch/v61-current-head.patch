@@ -1,0 +1,1830 @@
+diff --git a/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusNPR.shader b/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusNPR.shader
+index f1cffb74..f7fc7ea0 100644
+--- a/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusNPR.shader	
++++ b/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusNPR.shader	
+@@ -15,7 +15,7 @@ Shader "Darwin/Moebius NPR"
+         _LightingRamp("Lighting Ramp (clamp)", 2D) = "white" {}
+         _ControlMap("Control: R Hatch G Detail B Highlight A Shadow", 2D) = "white" {}
+         [Toggle] _UseVertexColor("Vertex: R Hatch G Highlight B Shadow", Float) = 0
+-        [Enum(Composite,0,BaseColor,1,WorldNormal,2,NdotL,3,Shadow,4,DeepShadow,5,HatchR,6,HatchG,7,HatchB,8,CombinedHatch,9,Stipple,10,Highlight,11,CastShadow,12)] _DebugMode("Surface Debug", Float) = 0
++        [Enum(Darwin.Rendering.Editor.MoebiusSurfaceDebugView)] _DebugMode("Surface Debug", Float) = 0
+         _InkColor("Hatch Ink", Color) = (0.12,0.10,0.09,1)
+         [Toggle(_USE_HATCHING)] _UseHatching("Hatching", Float) = 0
+         [Toggle(_USE_TRIPLANAR)] _UseTriplanar("World Triplanar (otherwise screen)", Float) = 0
+diff --git a/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusSnowMountain.shader b/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusSnowMountain.shader
+index c1b0be46..3240b21a 100644
+--- a/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusSnowMountain.shader	
++++ b/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusSnowMountain.shader	
+@@ -25,7 +25,7 @@ Shader "Darwin/Moebius Snow Mountain"
+         _LightingRamp("Lighting Ramp (clamp)", 2D) = "white" {}
+         _ControlMap("Control: R Hatch G Detail B Highlight A Shadow", 2D) = "white" {}
+         [Toggle] _UseVertexColor("Vertex: R Hatch G Highlight B Shadow", Float) = 0
+-        [Enum(Composite,0,BaseColor,1,WorldNormal,2,NdotL,3,Shadow,4,DeepShadow,5,HatchR,6,HatchG,7,HatchB,8,CombinedHatch,9,Stipple,10,Highlight,11,CastShadow,12)] _DebugMode("Surface Debug", Float) = 0
++        [Enum(Darwin.Rendering.Editor.MoebiusSurfaceDebugView)] _DebugMode("Surface Debug", Float) = 0
+         _InkColor("Hatch Ink", Color) = (0.12,0.10,0.09,1)
+         [Toggle(_USE_HATCHING)] _UseHatching("Hatching", Float) = 0
+         [Toggle(_USE_TRIPLANAR)] _UseTriplanar("World Triplanar (otherwise screen)", Float) = 0
+diff --git a/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusVolcanoRockBaked.shader b/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusVolcanoRockBaked.shader
+index 3fe64684..04a5d089 100644
+--- a/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusVolcanoRockBaked.shader	
++++ b/Darwin's farm/Assets/Rendering/Moebius/Shaders/Materials/MoebiusVolcanoRockBaked.shader	
+@@ -24,7 +24,7 @@ Shader "Darwin/Moebius Volcano Rock Baked"
+         _LightingRamp("Lighting Ramp (clamp)", 2D) = "white" {}
+         _ControlMap("Control: R Hatch G Detail B Highlight A Shadow", 2D) = "white" {}
+         [Toggle] _UseVertexColor("Vertex: R Hatch G Highlight B Shadow", Float) = 0
+-        [Enum(Composite,0,BaseColor,1,WorldNormal,2,NdotL,3,Shadow,4,DeepShadow,5,HatchR,6,HatchG,7,HatchB,8,CombinedHatch,9,Stipple,10,Highlight,11,CastShadow,12)] _DebugMode("Surface Debug", Float) = 0
++        [Enum(Darwin.Rendering.Editor.MoebiusSurfaceDebugView)] _DebugMode("Surface Debug", Float) = 0
+         _InkColor("Hatch Ink", Color) = (0.12,0.10,0.09,1)
+         [Toggle(_USE_HATCHING)] _UseHatching("Hatching", Float) = 0
+         [Toggle(_USE_TRIPLANAR)] _UseTriplanar("World Triplanar (otherwise screen)", Float) = 0
+diff --git a/Darwin's farm/Assets/Rendering/WhiteBoxCalibratedBiomes/Resources/Shaders/WhiteBoxMoebiusRim.shader b/Darwin's farm/Assets/Rendering/WhiteBoxCalibratedBiomes/Resources/Shaders/WhiteBoxMoebiusRim.shader
+index d828e767..12169ec6 100644
+--- a/Darwin's farm/Assets/Rendering/WhiteBoxCalibratedBiomes/Resources/Shaders/WhiteBoxMoebiusRim.shader	
++++ b/Darwin's farm/Assets/Rendering/WhiteBoxCalibratedBiomes/Resources/Shaders/WhiteBoxMoebiusRim.shader	
+@@ -15,7 +15,7 @@ Shader "Darwin/WhiteBox Moebius Rim"
+         _LightingRamp("Lighting Ramp (clamp)", 2D) = "white" {}
+         _ControlMap("Control: R Hatch G Detail B Highlight A Shadow", 2D) = "white" {}
+         [Toggle] _UseVertexColor("Vertex: R Hatch G Highlight B Shadow", Float) = 0
+-        [Enum(Composite,0,BaseColor,1,WorldNormal,2,NdotL,3,Shadow,4,DeepShadow,5,HatchR,6,HatchG,7,HatchB,8,CombinedHatch,9,Stipple,10,Highlight,11,CastShadow,12)] _DebugMode("Surface Debug", Float) = 0
++        [Enum(Darwin.Rendering.Editor.MoebiusSurfaceDebugView)] _DebugMode("Surface Debug", Float) = 0
+         _InkColor("Hatch Ink", Color) = (0.12,0.10,0.09,1)
+         [Toggle(_USE_HATCHING)] _UseHatching("Hatching", Float) = 0
+         [Toggle(_USE_TRIPLANAR)] _UseTriplanar("World Triplanar (otherwise screen)", Float) = 0
+diff --git a/Darwin's farm/Assets/Scripts/Controller/PopulationMovementController.cs b/Darwin's farm/Assets/Scripts/Controller/PopulationMovementController.cs
+index 10a64a0b..1a4e5b4e 100644
+--- a/Darwin's farm/Assets/Scripts/Controller/PopulationMovementController.cs	
++++ b/Darwin's farm/Assets/Scripts/Controller/PopulationMovementController.cs	
+@@ -79,7 +79,10 @@ public sealed class PopulationMovementController : MonoBehaviour
+     }
+     internal bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
+ 
+-    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount, bool airborne = false)
++    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount) =>
++        CreatePopulation(tileId, initialCount, false);
++
++    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount, bool airborne)
+     {
+         if (airborne)
+         {
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs b/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs
+index 0ecadecb..e7e417b4 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs	
+@@ -139,6 +139,7 @@ public sealed class BioenergyAccount : MonoBehaviour
+ 
+     private void AfterDay(int day)
+     {
++        if (!costsEnabled) return;
+         if (day <= lastSettledDay) return;
+         if (!initialSpeciesCaptured) BeforeDay(day);
+         long daily = 0;
+@@ -193,6 +194,7 @@ public sealed class BioenergyAccount : MonoBehaviour
+ 
+     public int PreviewDailyIncome()
+     {
++        if (!costsEnabled) return 0;
+         long total = 0;
+         foreach (SpeciesCount count in CountWildSpecies().Values)
+             if (count.count > 1) total += (long)Math.Floor(
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentFiveToolsAudit.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentFiveToolsAudit.cs
+index 6960c1de..8c7ad9b8 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentFiveToolsAudit.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentFiveToolsAudit.cs	
+@@ -58,6 +58,18 @@ public static class EnvironmentFiveToolsAudit
+         Check(player != null && account != null && !before.Environment.IsWater,
+             "Land player controller and account must be ready.");
+         Check(EnvironmentTechnologyCatalog.All.Length == 5, "Exactly five tools.");
++        var session = UnityEngine.Object.FindFirstObjectByType<EnvironmentToolSession>();
++        Check(session != null, "The shared desktop/mobile tool session must exist.");
++        for (int i = 0; i < EnvironmentTechnologyCatalog.All.Length; i++)
++        {
++            session.SelectKind(i);
++            Check(session.Choice.Kind == EnvironmentTechnologyCatalog.All[i],
++                "Tool button " + i + " must select the matching model operation.");
++        }
++        Check(!session.OptionEnabled(0) && session.OptionEnabled(1) &&
++            session.OptionEnabled(2) && !session.OptionEnabled(3),
++            "Elevation options must allow only one-level changes.");
++        session.End();
+         account.CostsEnabled = true;
+         long balance = account.Balance;
+         var simulation = environment.GetComponent<SimulationController>();
+@@ -89,10 +101,13 @@ public static class EnvironmentFiveToolsAudit
+         Check(environment.TryRead(Vector2Int.zero, out var afterRecovery) &&
+             Math.Abs(afterRecovery.PlantStock - afterStock.PlantStock) < .1f &&
+             Math.Abs(afterRecovery.Environment.Recovery.Value -
++                afterStock.Environment.Recovery.Value) < .1f &&
++            afterRecovery.Environment.Recovery.Phase == EffectPhase.Entering &&
++            Math.Abs(afterRecovery.Environment.Recovery.Target -
+                 EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+                     afterStock.Environment.Recovery.Value + 25000)) < .1f &&
+             account.Balance == balance - 520,
+-            "Recovery changes R only and pays separately.");
++            "Recovery begins a 25-day R transition and pays separately without changing S.");
+         Check(!player.CanCancel(Vector2Int.zero, EnvironmentTechnologyKind.PlantStockChange) &&
+             player.CanCancel(Vector2Int.zero, EnvironmentTechnologyKind.PlantRecoveryChange),
+             "Instant stock has no cancellation timeline; recovery does.");
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs
+index 6e1c673f..0419019a 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs	
+@@ -58,10 +58,17 @@ public static class EnvironmentIntegrationAudit
+               SimulationTime.StandardLoopDays * SimulationTime.DefaultSecondsPerDay /
+               SimulationTime.StandardLoopSpeed == 900f,
+             "The standard loop must cover 1800 days in 15 minutes at 2x.");
+-        Check(Read(c, 0).Environment.Terrain == TerrainKind.Desert, "Initial terrain must be desert.");
+-        Check(Read(c, 0).Environment.Habitat == HabitatState.Z0MiddleDry,
+-            "Initial desert must use its V4.6 placement habitat.");
+-        Check(Read(c, 0).PlantStock == 50000, "Initial stock must equal default increment.");
++        Check(grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) &&
++            initialTile.Definition != null, "Initial scene tile must have a preset.");
++        TerrainKind initialTerrain = SimulationEnvironmentController.TerrainFromPreset(
++            initialTile.Definition.biome);
++        Check(Read(c, 0).Environment.Terrain == initialTerrain,
++            "Initial terrain must match the scene preset.");
++        Check(Read(c, 0).Environment.Habitat ==
++            EnvironmentRules.PlacementHabitat(initialTerrain),
++            "Initial habitat must match the scene preset.");
++        Check(Read(c, 0).PlantStock == initialTile.Definition.initialPlantBiomass,
++            "Initial stock must match the scene preset.");
+         string[] assets = { "森林", "雨林", "草原", "荒漠", "苔原", "高山", "雪山", "火山" };
+         for (int i = 0; i < assets.Length; i++)
+         {
+@@ -86,18 +93,27 @@ public static class EnvironmentIntegrationAudit
+             grid.TryGetTile(new Vector2Int(3, 0), out MapTileInstance desertTile) &&
+             desertTile.Biome == BiomeType.Desert,
+             "Runtime tile terrain must follow environment reclassification.");
++        double temperatureBeforeDay = Read(c, 6).Environment.Temperature.Value;
+         Apply(c, 6, SimulationInterventionKind.Temperature, 50);
+         clock.NextDay();
+-        Check(bridge.TryGetBlock(new Vector2Int(6, 0), out var highland) && highland.temperature == 52,
++        Check(bridge.TryGetBlock(new Vector2Int(6, 0), out var highland) &&
++            Read(c, 6).Environment.Temperature.Value > temperatureBeforeDay &&
++            highland.temperature == EnvironmentRules.Round(
++                Read(c, 6).Environment.Temperature.Value),
+             "Environment must publish before the ecological day.");
+         Check(highland.plantGrowthToday > 0, "Ecology must still grow plants.");
+         string error;
+         Apply(c, 0, SimulationInterventionKind.Temperature, 25);
+         for (int day = 0; day < 25; day++) clock.NextDay();
+-        Check(Read(c, 0).Environment.Temperature.Value == 100, "Runtime 25day climate entry.");
++        double enteredTemperature = Math.Min(100,
++            initialTile.Definition.initialTemperature + 25);
++        Check(Read(c, 0).Environment.Temperature.Value == enteredTemperature,
++            "Runtime 25day climate entry.");
+         int oldDay = clock.currentDay;
+         clock.ResetDay(); clock.NextDay();
+-        Check(clock.currentDay == 1 && oldDay > 1 && Read(c, 0).Environment.Temperature.Value == 100, "Clock reset preserves effects.");
++        Check(clock.currentDay == 1 && oldDay > 1 &&
++            Read(c, 0).Environment.Temperature.Value == enteredTemperature,
++            "Clock reset preserves effects.");
+         Check(c.TryCancel(Vector2Int.zero, EnvironmentAttribute.Temperature, out error), error);
+         for (int day = 0; day < 150; day++) clock.NextDay();
+         Check(!Read(c, 0).Environment.HasLocalTemperature,
+@@ -107,8 +123,9 @@ public static class EnvironmentIntegrationAudit
+         Check(Math.Abs(Read(c, 0).PlantStock - stock * .75f) < .1f, "Runtime percentage stock basis.");
+         stock = Read(c, 0).PlantStock;
+         Apply(c, 0, SimulationInterventionKind.PlantRecovery, 25000);
+-        Check(Read(c, 0).Environment.Recovery.Value >= 25000 && Read(c, 0).PlantStock == stock,
+-            "Plant recovery changes without replacing stock.");
++        Check(Read(c, 0).Environment.Recovery.Phase == EffectPhase.Entering &&
++            Read(c, 0).PlantStock == stock,
++            "Plant recovery enters its timeline without replacing stock.");
+         var grass = AssetDatabase.LoadAssetAtPath<MapTileDefinition>("Assets/Scripts/map/data/草原.asset");
+         Check(grid.TryPlaceTile(new Vector2Int(9, 0), grass) && grid.TryPlaceTile(new Vector2Int(10, 0), grass), "Extend real map.");
+         stock = Read(c, 9).PlantStock;
+@@ -214,8 +231,11 @@ public static class EnvironmentIntegrationAudit
+                     before.Environment.Recovery.Value + Math.Sign(choice.Tier) *
+                     EnvironmentTechnologyCatalog.GrowthAmount(choice));
+                 Check(Math.Abs(after.PlantStock - before.PlantStock) < .1f &&
+-                      Math.Abs(after.Environment.Recovery.Value - expectedRecovery) < .1f,
+-                    "Recovery tier changes only daily recovery");
++                      Math.Abs(after.Environment.Recovery.Value -
++                          before.Environment.Recovery.Value) < .1f &&
++                      after.Environment.Recovery.Phase == EffectPhase.Entering &&
++                      Math.Abs(after.Environment.Recovery.Target - expectedRecovery) < .1f,
++                    "Recovery tier changes its timeline target without changing stock");
+             }
+         }
+         var lake = ScriptableObject.CreateInstance<MapTileDefinition>();
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationIdentityRegressionChecks.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationIdentityRegressionChecks.cs
+index a72709c0..76b89477 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationIdentityRegressionChecks.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationIdentityRegressionChecks.cs	
+@@ -11,6 +11,21 @@ public static class PopulationIdentityRegressionChecks
+     [MenuItem("Tools/Population/Run identity regression checks")]
+     private static void RunFromMenu() => Debug.Log(RunChecks());
+ 
++    public static void RunBatch()
++    {
++        try
++        {
++            Debug.Log(RunChecks());
++            if (Application.isBatchMode) EditorApplication.Exit(0);
++        }
++        catch (Exception error)
++        {
++            Debug.LogException(error);
++            if (Application.isBatchMode) EditorApplication.Exit(1);
++            else throw;
++        }
++    }
++
+     public static string RunChecks()
+     {
+         int passed = 0;
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationTransitionRegressionChecks.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationTransitionRegressionChecks.cs
+index 40e96fe4..b2b17491 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationTransitionRegressionChecks.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationTransitionRegressionChecks.cs	
+@@ -127,12 +127,19 @@ public static class PopulationTransitionRegressionChecks
+ 
+             ancestorSpecies = Species("Ancestor");
+             evolvedSpecies = Species("Evolved");
++            ancestorSpecies.trophicLevel = 0;
++            evolvedSpecies.trophicLevel = 0;
++            source.temperature = 50;
++            source.humidity = 50;
++            source.plantBiomass = source.maxPlantBiomass = 1000000f;
++            source.habitatRecovery = 150000;
+             MethodInfo evolve = typeof(SimulationController).GetMethod("ConvertToPresetSpecies",
+                 BindingFlags.Instance | BindingFlags.NonPublic);
+             Require(evolve != null, "Preset evolution entry was not found.");
+             source.community.Clear();
+             PopulationData ancestor = Draft("Ancestor", 200);
+             ancestor.species = ancestorSpecies;
++            ancestor.trophicLevel = 0;
+             source.community.Add(ancestor);
+             evolve.Invoke(simulation, new object[] { source, ancestor, evolvedSpecies, 9 });
+             Require(evolution.HasValue && evolution.Value.Kind == PopulationTransitionKind.PresetEvolution &&
+@@ -149,18 +156,18 @@ public static class PopulationTransitionRegressionChecks
+             source.community.Clear();
+             ancestor = Draft("Ancestor", 200);
+             ancestor.species = ancestorSpecies;
++            ancestor.trophicLevel = 0;
+             resident = Draft("Evolved", 30);
+             resident.species = evolvedSpecies;
++            resident.trophicLevel = 0;
+             residentId = resident.PopulationId;
+             source.community.Add(ancestor);
+             source.community.Add(resident);
+             evolve.Invoke(simulation, new object[] { source, ancestor, evolvedSpecies, 10 });
+-            Require(evolution.HasValue && evolution.Value.Outcome == PopulationArrivalOutcome.Merged &&
+-                evolution.Value.ResultPopulationId == residentId &&
+-                evolution.Value.TargetCountBefore == 30 && evolution.Value.TargetCountAfter == 50 &&
+-                source.community.Count == 2 && resident.speciesAmount == 50 &&
+-                legacyEvolution == 2,
+-                "Preset evolution did not report merging into its existing target species.");
++            Require(!evolution.HasValue && source.community.Count == 2 &&
++                ancestor.speciesAmount == 200 && resident.speciesAmount == 30 &&
++                legacyEvolution == 1,
++                "Preset evolution must not duplicate an existing local target species.");
+ 
+             MethodInfo hasLivingSpecies = typeof(SimulationController).GetMethod(
+                 "HasLivingSpecies", BindingFlags.Static | BindingFlags.NonPublic);
+@@ -194,7 +201,7 @@ public static class PopulationTransitionRegressionChecks
+                     new object[] { eligibleAncestor, evolvedSpecies }),
+                 "The extinct-target fixture did not start with five matching traits.");
+             Require((bool)evolutionFood.Invoke(simulation,
+-                    new object[] { source, eligibleAncestor, evolvedSpecies, 20, false }),
++                    new object[] { source, eligibleAncestor, evolvedSpecies, 20 }),
+                 "The extinct-target fixture did not provide enough renewable plant food.");
+             Require((bool)eligibleEvolution.Invoke(simulation,
+                     new object[] { source, eligibleAncestor, evolvedSpecies, 20 }),
+@@ -207,49 +214,7 @@ public static class PopulationTransitionRegressionChecks
+             Require((int)livingPopulationCount.Invoke(null, new object[] { source }) == 1,
+                 "Extinct population records still occupied a live community slot.");
+ 
+-            MethodInfo selectSplitTarget = typeof(SimulationController).GetMethod(
+-                "SelectLocalSplitTarget", BindingFlags.Instance | BindingFlags.NonPublic);
+-            Require(selectSplitTarget != null,
+-                "Directed local split target selection was not found.");
+-            ancestorSpecies.trophicLevel = 0;
+-            ancestorSpecies.evolutionTargets.Add(evolvedSpecies);
+-            source.community = new List<PopulationData> { eligibleAncestor };
+-            object[] targetArguments = { source, eligibleAncestor, 10, 0f, 0f };
+-            Require((SpeciesData)selectSplitTarget.Invoke(simulation,
+-                    targetArguments) == evolvedSpecies,
+-                "A sustainable adjacent land species was not selected for directed splitting.");
+-
+-            MethodInfo runMerges = typeof(SimulationController).GetMethod(
+-                "RunSameSpeciesMerges", BindingFlags.Instance | BindingFlags.NonPublic);
+-            Require(runMerges != null, "Same-species merge entry point was not found.");
+-            LandRuleTuning mergeRules = simulation.ReadLandRules();
+-            Require(Mathf.Approximately(mergeRules.splitMinimumRenewalPressure, 0.9f) &&
+-                    mergeRules.sameSpeciesMergeDays == 100 &&
+-                    mergeRules.postMergeSplitCooldownDays == 200,
+-                "Directed-split or same-species merge defaults did not match the design.");
+-            mergeRules.sameSpeciesMergeDays = 2;
+-            mergeRules.postMergeSplitCooldownDays = 7;
+-            simulation.ApplyLandRules(mergeRules);
+-            PopulationData majority = Draft("Merge timer", 80);
+-            majority.species = ancestorSpecies;
+-            majority.fitTemperature = 20;
+-            PopulationData minority = Draft("Merge timer", 20);
+-            minority.species = ancestorSpecies;
+-            minority.fitTemperature = 80;
+-            source.community = new List<PopulationData> { majority, minority };
+-            runMerges.Invoke(simulation, new object[] { 30 });
+-            Require(source.community.Count == 2 &&
+-                    majority.sameSpeciesCoexistenceDays == 1 &&
+-                    minority.sameSpeciesCoexistenceDays == 1,
+-                "Same-species populations did not wait for the configured duration.");
+-            runMerges.Invoke(simulation, new object[] { 31 });
+-            Require(source.community.Count == 1 &&
+-                    source.community[0].speciesAmount == 100 &&
+-                    source.community[0].fitTemperature == 32 &&
+-                    source.nextLocalSplitDay == 38,
+-                "Timed merge did not weight traits or apply the configured split cooldown.");
+-
+-            return "Ecological event regression checks: 15/15 passed.";
++            return "Ecological event regression checks: V6.1 formal evolution and legacy event compatibility passed.";
+         }
+         finally
+         {
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs
+index 72e9a448..af6d0e38 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs	
+@@ -22,6 +22,7 @@ public static class V048ScenarioReplay
+         public int seed;
+         public int endDay;
+         public bool disableCosts;
++        public bool coreV61;
+         public bool restrictedV05;
+         public bool useV05Sandbox;
+         public bool recordPredatorFoodK;
+@@ -232,6 +233,26 @@ public static class V048ScenarioReplay
+             string.IsNullOrEmpty(output))
+             throw new InvalidOperationException("Set DF_V048_SCENARIO and DF_V048_OUTPUT.");
+         Scenario selected = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
++        if (selected != null && selected.coreV61)
++        {
++            if (selected.restrictedV05 || selected.useV05Sandbox ||
++                selected.mechanismFixture || selected.t95eSingleOriginFixture ||
++                selected.originInitialStock > 0f ||
++                selected.originInitialChickenCount > 0 ||
++                selected.tiles == null || selected.tiles.Length != 0 ||
++                selected.sourceGraph != "Assets/Resources/V61Bioweb13.json" ||
++                !File.Exists(selected.sourceGraph))
++                throw new InvalidOperationException(
++                    "V6.1 core replay requires the unmodified WhiteBox origin and original graph.");
++            using (SHA256 hash = SHA256.Create())
++            {
++                string actual = BitConverter.ToString(hash.ComputeHash(
++                    File.ReadAllBytes(selected.sourceGraph))).Replace("-", "")
++                    .ToLowerInvariant();
++                if (actual != SimulationController.V61SourceGraphHash)
++                    throw new InvalidOperationException("V6.1 source graph hash differs.");
++            }
++        }
+         EditorSceneManager.OpenScene(selected != null &&
+             (selected.restrictedV05 || selected.useV05Sandbox)
+             ? "Assets/Scenes/V05FiveSpeciesSandbox.unity" :
+@@ -269,7 +290,8 @@ public static class V048ScenarioReplay
+         {
+             Scenario pending = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
+             if (pending != null &&
+-                (pending.restrictedV05 || pending.useV05Sandbox))
++                (pending.restrictedV05 || pending.useV05Sandbox ||
++                    pending.coreV61))
+             {
+                 var grid = environment.GetComponent<MapGridManager>();
+                 if (grid == null || !grid.TryGetTile(Vector2Int.zero,
+@@ -277,7 +299,9 @@ public static class V048ScenarioReplay
+                     initial.Block.community == null ||
+                     initial.Block.community.Count != 1 ||
+                     initial.Block.community[0] == null ||
+-                    initial.Block.community[0].speciesAmount != 160) return;
++                    initial.Block.community[0].speciesAmount != 160 ||
++                    initial.Block.community[0].species == null ||
++                    initial.Block.community[0].species.SpeciesName != "鸡") return;
+             }
+         }
+         try { Execute(clock, environment); Finish(null); }
+@@ -304,6 +328,15 @@ public static class V048ScenarioReplay
+         if (grid == null || bridge == null || simulation == null ||
+             player == null || economy == null || account == null)
+             throw new InvalidOperationException("Live gameplay components are missing.");
++        if (scenario.coreV61 &&
++            (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance seeded) ||
++             seeded.Block == null || seeded.Block.community == null ||
++             seeded.Block.community.Count != 1 ||
++             seeded.Block.community[0].species == null ||
++             seeded.Block.community[0].species.SpeciesName != "鸡" ||
++             seeded.Block.community[0].speciesAmount != 160))
++            throw new InvalidOperationException(
++                "V6.1 core replay did not start from the real seeded chicken.");
+         if (scenario.restrictedV05)
+         {
+             ValidateRestrictedV05(scenario, grid, simulation);
+@@ -430,6 +463,7 @@ public static class V048ScenarioReplay
+             throw new InvalidOperationException(
+                 "Encounter experiments require the archived experiment-encounter-v3 code.");
+         simulation.ApplyLandRules(selectedRules);
++        if (scenario.coreV61) simulation.ApplyCoreEvolutionTestProfile();
+         t10QuotaByPopulation.Clear();
+         Type landRulesType = typeof(SimulationController).Assembly.GetType(
+             "LandLifeRules", true);
+@@ -490,6 +524,12 @@ public static class V048ScenarioReplay
+             if (action.kind == "PlantChange")
+                 throw new InvalidOperationException(
+                     "Combined PlantChange was removed; use separate PlantStockChange and PlantRecoveryChange actions.");
++            if (scenario.coreV61 && !(action.kind == "PlaceTile" ||
++                action.kind == "CancelTemperatureChange" ||
++                action.kind == "CancelHumidityChange" ||
++                Enum.TryParse(action.kind, out EnvironmentTechnologyKind coreKind) &&
++                Enum.IsDefined(typeof(EnvironmentTechnologyKind), coreKind)))
++                throw new InvalidOperationException("V6.1 core replay forbids fixture actions.");
+             if (scenario.restrictedV05 &&
+                 (action.x < -1 || action.x > 1 || action.y < -1 || action.y > 1 ||
+                  !(action.kind == "PlaceTile" ||
+@@ -570,9 +610,11 @@ public static class V048ScenarioReplay
+         foreach (string file in Directory.GetFiles("Assets/BiowebV46/Species",
+             "*.asset", SearchOption.TopDirectoryOnly))
+             bindingFiles.Add(file.Replace('\\', '/'));
+-        if (scenario.restrictedV05) bindingFiles.Add(scenario.sourceGraph);
++        if (scenario.restrictedV05 || scenario.coreV61)
++            bindingFiles.Add(scenario.sourceGraph);
+         trace.AppendLine("scenario=" + scenario.scenarioId + " seed=" + scenario.seed +
+             " mechanismFixture=" + scenario.mechanismFixture +
++            " coreV61=" + scenario.coreV61 +
+             " random=" + SimulationController.ModelRandomVersion +
+             " unity=" + Application.unityVersion +
+             " costs=" + account.CostsEnabled +
+@@ -758,6 +800,28 @@ public static class V048ScenarioReplay
+             clock.NextDay();
+             if (clock.currentDay != day + 1)
+                 throw new InvalidOperationException("Clock skipped a day.");
++            if (scenario.coreV61)
++            {
++                DailyEcologyLedger ledger = simulation.LastEcologyLedger;
++                if (ledger == null || ledger.day != clock.currentDay ||
++                    ledger.sourceGraphHash != SimulationController.V61SourceGraphHash ||
++                    ledger.enableAirEcology || ledger.enableWaterEcology ||
++                    ledger.enableEconomy || ledger.enableRandomEvents ||
++                    !ledger.enableNeighborMovementFormula)
++                    throw new InvalidOperationException(
++                        "V6.1 core ledger or independent switches are not connected on Day " +
++                        clock.currentDay);
++                int speciesResidual = 0;
++                foreach (EcologySpeciesDailyAccount species in ledger.species)
++                    speciesResidual += Math.Abs(species.Residual);
++                trace.AppendLine("ledger day=" + ledger.day +
++                    " start=" + ledger.worldMassStart.ToString("R", CultureInfo.InvariantCulture) +
++                    " growth=" + ledger.actualPlantGrowth.ToString("R", CultureInfo.InvariantCulture) +
++                    " sink=" + ledger.namedDissipation.ToString("R", CultureInfo.InvariantCulture) +
++                    " end=" + ledger.worldMassEnd.ToString("R", CultureInfo.InvariantCulture) +
++                    " residual=" + ledger.massResidual.ToString("R", CultureInfo.InvariantCulture) +
++                    " speciesResidual=" + speciesResidual);
++            }
+             if (scenario.restrictedV05)
+                 ValidateRestrictedV05World(grid);
+             double afterMaterial = TotalMaterial(grid);
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs
+index 1c1494ad..321fa340 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs	
+@@ -49,8 +49,11 @@ namespace DarwinFarm.Environment
+     {
+         public const int PlantCapacity = 1000000, WaterPlantCapacity = 1500000;
+         public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
+-        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 150;
++        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 100;
+         public const int RecoveryHoldDays = 50, RecoveryReturnDays = 50;
++        public const int LandRecoveryTransitionDays = 25;
++        public const int LandRecoveryHoldDays = 150;
++        public const int LandRecoveryReturnDays = 100;
+         public readonly struct HabitatProfile
+         {
+             public readonly string Title;
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs
+index 252f7bf5..20039808 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs	
+@@ -62,7 +62,7 @@ namespace DarwinFarm.Environment
+             HasLocalHumidity = tile.Locals[1] != null;
+             HasRecoveryCommand = tile.RecoveryReturning;
+             CanCancelRecovery = tile.RecoveryReturning &&
+-                tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
++                tile.RecoveryAge < tile.RecoveryHoldThreshold &&
+                 !tile.RecoveryCancelIssued;
+         }
+     }
+@@ -85,6 +85,8 @@ namespace DarwinFarm.Environment
+     {
+         internal int Age;
+         internal long Sequence;
++        internal double Baseline;
++        internal HabitatState HabitatAtSubmit;
+         internal bool Active => Age < EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
+         internal EffectPhase Phase => Age < EnvironmentRules.TransitionDays ? EffectPhase.Entering :
+             Active ? EffectPhase.Holding : EffectPhase.Returning;
+@@ -105,6 +107,15 @@ namespace DarwinFarm.Environment
+         internal bool RecoveryReturning;
+         internal bool RecoveryCancelIssued;
+         internal bool RecoveryDetached;
++        internal double RecoveryBaseline;
++        internal HabitatState RecoveryHabitatAtSubmit;
++        internal int RecoveryHoldThreshold => IsWater ?
++            EnvironmentRules.RecoveryHoldDays :
++            EnvironmentRules.LandRecoveryTransitionDays +
++                EnvironmentRules.LandRecoveryHoldDays;
++        internal int RecoveryReturnDuration => IsWater ?
++            EnvironmentRules.RecoveryReturnDays :
++            EnvironmentRules.LandRecoveryReturnDays;
+         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
+         internal EnvironmentTile(TopologyNode node)
+         {
+@@ -121,14 +132,21 @@ namespace DarwinFarm.Environment
+         {
+             var track = Tracks[index]; var local = index < 2 ? Locals[index] : null;
+             var phase = local != null ? local.Phase :
+-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays
++                index == 2 && RecoveryReturning && !IsWater &&
++                    RecoveryAge < EnvironmentRules.LandRecoveryTransitionDays
++                    ? EffectPhase.Entering :
++                index == 2 && RecoveryReturning && RecoveryAge < RecoveryHoldThreshold
+                     ? EffectPhase.Holding : track.Active ? track.Phase : EffectPhase.None;
+             int remaining = local != null && local.Phase == EffectPhase.Holding ?
+                 EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays - local.Age :
+-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays ?
+-                    EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
++                index == 2 && RecoveryReturning && !IsWater &&
++                    RecoveryAge < EnvironmentRules.LandRecoveryTransitionDays ?
++                    EnvironmentRules.LandRecoveryTransitionDays - RecoveryAge :
++                index == 2 && RecoveryReturning && RecoveryAge < RecoveryHoldThreshold ?
++                    RecoveryHoldThreshold - RecoveryAge : Math.Max(0, track.Duration - track.Age);
+             double target = index == 2 && RecoveryReturning &&
+-                RecoveryAge < EnvironmentRules.RecoveryHoldDays ? Values[2] : track.Target;
++                RecoveryAge >= EnvironmentRules.LandRecoveryTransitionDays &&
++                RecoveryAge < RecoveryHoldThreshold ? Values[2] : track.Target;
+             return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index]),
+                 EnvironmentRules.Clamp((EnvironmentAttribute)index, target),
+                 phase, remaining, track.Progress);
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs
+index f5f88722..375fb373 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs	
+@@ -79,7 +79,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
+                     climate.Target.ToString("F0") + "；预计生境 " +
+                     EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
+-                result.Timing = "25天进入 · 150天维持 · 150天恢复";
++                result.Timing = "25天进入 · 150天维持 · 100天恢复";
+                 break;
+             case EnvironmentTechnologyKind.PlantStockChange:
+                 double capacity = (water ? EnvironmentRules.WaterPlantCapacity :
+@@ -106,7 +106,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                     result.After = "日增量 " + increased.Target.ToString("F0") +
+                         "；库存不即时改变";
+                 }
+-                result.Timing = "日增量立即变化 · 维持50天 · 恢复50天";
++                result.Timing = water ? "水域：立即变化 · 维持50天 · 恢复50天" :
++                    "25天进入 · 150天维持 · 100天恢复";
+                 break;
+             case EnvironmentTechnologyKind.ElevationChange:
+                 int shift = choice.Tier;
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs
+index adfcaae7..e4b48e64 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs	
+@@ -64,8 +64,12 @@ namespace DarwinFarm.Environment
+             if (!tiles.TryGetValue(position, out EnvironmentTile tile) || tile.IsWater)
+             { error = "温湿度科技只适用于陆格"; return false; }
+             int index = (int)attribute;
+-            tile.Locals[index] = new LocalClimateEffect { Sequence = nextCommandSequence++ };
+             double target = EnvironmentRules.Clamp(attribute, EnvironmentRules.Defaults(tile.Habitat).Get(attribute) + amount);
++            if (Math.Abs(target - tile.Values[index]) < .000001)
++            { error = "环境数值未发生有效变化"; return false; }
++            tile.Locals[index] = new LocalClimateEffect {
++                Sequence = nextCommandSequence++, Baseline = tile.Values[index],
++                HabitatAtSubmit = tile.Habitat };
+             tile.Tracks[index].Begin(tile.Values[index], target, 25, EffectPhase.Entering);
+             EnforceSlots(tile);
+             return true;
+@@ -79,7 +83,7 @@ namespace DarwinFarm.Environment
+             { error = "该地块没有对应单格操作"; return false; }
+             int index = (int)attribute;
+             if (!tile.Locals[index].Active)
+-            { error = "该单格操作已经在退出"; return false; }
++                return true; // A repeated cancellation must not restart return.
+             tile.Locals[index].Age = EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
+             StartLocalReturn(tile, index);
+             return true;
+@@ -108,8 +112,25 @@ namespace DarwinFarm.Environment
+             foreach (EnvironmentTile tile in members)
+             {
+                 double next = tile.Values[2] + (suppress ? -amount * 100000 : amount);
+-                tile.Values[2] = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
+-                tile.Tracks[2].Stop(tile.Values[2]);
++                next = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
++                if (Math.Abs(next - tile.Values[2]) < .000001)
++                { error = "环境数值未发生有效变化"; return false; }
++            }
++            foreach (EnvironmentTile tile in members)
++            {
++                double next = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
++                    tile.Values[2] + (suppress ? -amount * 100000 : amount));
++                tile.RecoveryBaseline = tile.Values[2];
++                tile.RecoveryHabitatAtSubmit = tile.Habitat;
++                if (tile.IsWater)
++                {
++                    tile.Values[2] = next;
++                    tile.Tracks[2].Stop(next);
++                }
++                else
++                    tile.Tracks[2].Begin(tile.Values[2], next,
++                        EnvironmentRules.LandRecoveryTransitionDays,
++                        EffectPhase.Entering);
+                 tile.RecoveryReturning = true;
+                 tile.RecoveryAge = 0;
+                 tile.RecoverySequence = nextCommandSequence++;
+@@ -134,19 +155,22 @@ namespace DarwinFarm.Environment
+             foreach (GridPosition position in positions)
+             {
+                 if (!unique.Add(position) || !tiles.TryGetValue(position, out EnvironmentTile tile) ||
+-                    !tile.RecoveryReturning || tile.RecoveryCancelIssued)
++                    !tile.RecoveryReturning)
+                 { error = "目标地块没有可统一撤销的植被增量操作"; return false; }
+                 members.Add(tile);
+             }
++            bool allReturning = true;
+             foreach (EnvironmentTile tile in members)
+-            {
+-                if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
+-                { error = "植物操作已经在恢复"; return false; }
+-            }
++                if (tile.RecoveryAge < tile.RecoveryHoldThreshold)
++                    allReturning = false;
++            if (allReturning) return true;
++            foreach (EnvironmentTile tile in members)
++                if (tile.RecoveryAge >= tile.RecoveryHoldThreshold)
++                { error = "水域操作阶段不一致"; return false; }
+             foreach (EnvironmentTile tile in members)
+             {
+                 tile.RecoveryCancelIssued = true;
+-                tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
++                tile.RecoveryAge = tile.RecoveryHoldThreshold;
+                 StartRecoveryReturn(tile);
+             }
+             return true;
+@@ -224,16 +248,25 @@ namespace DarwinFarm.Environment
+                     { tile.Locals[i] = null; localEnded = true; }
+                 }
+                 if (localEnded) RefreshClimateTargets(tile);
+-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays)
++                if (tile.RecoveryReturning && tile.RecoveryAge < tile.RecoveryHoldThreshold)
+                 {
+                     tile.RecoveryAge++;
+-                    if (tile.RecoveryAge == EnvironmentRules.RecoveryHoldDays)
++                    if (tile.RecoveryAge == tile.RecoveryHoldThreshold)
+                         StartRecoveryReturn(tile);
+                 }
++                if (tile.RecoveryReturning && !tile.IsWater &&
++                    tile.RecoveryAge == EnvironmentRules.LandRecoveryTransitionDays &&
++                    !tile.Tracks[2].Active)
++                    tile.Tracks[2].Stop(tile.Values[2]);
+                 if (tile.RecoveryReturning && !tile.Tracks[2].Active)
+                 {
+-                    if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
+-                    { tile.RecoveryReturning = false; RefreshRecoveryTarget(tile); }
++                    if (tile.RecoveryAge >= tile.RecoveryHoldThreshold)
++                    {
++                        tile.RecoveryReturning = false;
++                        tile.RecoveryDetached = !tile.IsWater &&
++                            tile.RecoveryHabitatAtSubmit == tile.Habitat;
++                        RefreshRecoveryTarget(tile);
++                    }
+                 }
+                 if (!tile.RecoveryReturning && !tile.RecoveryDetached && !tile.IsWater)
+                     RefreshRecoveryTarget(tile);
+@@ -243,13 +276,19 @@ namespace DarwinFarm.Environment
+ 
+         private void StartLocalReturn(EnvironmentTile tile, int index)
+         {
+-            tile.Tracks[index].Begin(tile.Values[index], ClimateDestination(tile, index),
++            LocalClimateEffect effect = tile.Locals[index];
++            double destination = effect != null && effect.HabitatAtSubmit == tile.Habitat
++                ? effect.Baseline : ClimateDestination(tile, index);
++            tile.Tracks[index].Begin(tile.Values[index], destination,
+                 EnvironmentRules.ClimateReturnDays, EffectPhase.Returning);
+         }
+         private void StartRecoveryReturn(EnvironmentTile tile)
+         {
+-            tile.Tracks[2].Begin(tile.Values[2], RecoveryDefault(tile),
+-                EnvironmentRules.RecoveryReturnDays, EffectPhase.Returning);
++            double destination = tile.IsWater ? RecoveryDefault(tile) :
++                tile.RecoveryHabitatAtSubmit == tile.Habitat
++                    ? tile.RecoveryBaseline : RecoveryDefault(tile);
++            tile.Tracks[2].Begin(tile.Values[2], destination,
++                tile.RecoveryReturnDuration, EffectPhase.Returning);
+         }
+         private static double ClimateDestination(EnvironmentTile tile, int index)
+         {
+@@ -286,7 +325,7 @@ namespace DarwinFarm.Environment
+             while (true)
+             {
+                 int count = tile.RecoveryReturning &&
+-                    tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays ? 1 : 0;
++                    tile.RecoveryAge < tile.RecoveryHoldThreshold ? 1 : 0;
+                 for (int i = 0; i < 2; i++)
+                     if (tile.Locals[i] != null && tile.Locals[i].Active) count++;
+                 if (count <= allowed) return;
+@@ -296,11 +335,11 @@ namespace DarwinFarm.Environment
+                     if (tile.Locals[i] != null && tile.Locals[i].Active &&
+                         tile.Locals[i].Sequence < oldest)
+                     { oldest = tile.Locals[i].Sequence; owner = i; }
+-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
++                if (tile.RecoveryReturning && tile.RecoveryAge < tile.RecoveryHoldThreshold &&
+                     tile.RecoverySequence < oldest) owner = 2;
+                 if (owner == 2)
+                 {
+-                    tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
++                    tile.RecoveryAge = tile.RecoveryHoldThreshold;
+                     tile.RecoveryCancelIssued = true;
+                     StartRecoveryReturn(tile);
+                 }
+@@ -320,6 +359,10 @@ namespace DarwinFarm.Environment
+             if (habitat == tile.Habitat) return;
+             tile.Habitat = habitat;
+             tile.Terrain = EnvironmentRules.VisualTerrain(habitat);
++            // A completed land recovery command preserves its captured baseline
++            // only in the habitat where it was submitted.
++            if (tile.RecoveryDetached && !tile.RecoveryReturning)
++                tile.RecoveryDetached = false;
+             for (int i = 0; i < 2; i++)
+             {
+                 if (tile.Locals[i] != null && !tile.Locals[i].Active)
+@@ -330,7 +373,7 @@ namespace DarwinFarm.Environment
+                 else if (tile.Locals[i] == null && tile.Tracks[i].Phase == EffectPhase.Automatic)
+                     tile.Tracks[i].Stop(tile.Values[i]);
+             }
+-            if (tile.RecoveryReturning && tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
++            if (tile.RecoveryReturning && tile.RecoveryAge >= tile.RecoveryHoldThreshold)
+                 StartRecoveryReturn(tile);
+             else RefreshRecoveryTarget(tile);
+         }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs
+index b6cef96c..68528734 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs	
+@@ -258,8 +258,9 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
+                 if (!EnvironmentRules.IsRecoveryStrength(amount)) { error = "增量强度必须为 ±25000 或 ±50000"; return false; }
+                 target = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, state.Recovery.Value + amount);
+-                hold = EnvironmentRules.RecoveryHoldDays;
+-                returning = EnvironmentRules.RecoveryReturnDays; break;
++                enter = EnvironmentRules.LandRecoveryTransitionDays;
++                hold = EnvironmentRules.LandRecoveryHoldDays;
++                returning = EnvironmentRules.LandRecoveryReturnDays; break;
+             case SimulationInterventionKind.PlantBiomass:
+                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
+                 if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f) { error = "库存操作使用 ±0.25 或 ±0.5（25%／50%）"; return false; }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs b/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs
+index b54b1b90..935da7ad 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs	
+@@ -208,7 +208,8 @@ internal static class LandLifeRules
+     {
+         var groups = new List<PopulationData>();
+         foreach (PopulationData p in block.community)
+-            if (p != null && p.trophicLevel == 0 && p.speciesAmount > 0)
++            if (p != null && p.ecologicalNiche == EcologicalNiche.Land &&
++                p.trophicLevel == 0 && p.speciesAmount > 0)
+                 groups.Add(p);
+         float supply = SustainablePlantSupply(block, rules);
+         float[] forward = AllocatePlants(groups, supply, block, rules: rules);
+@@ -488,6 +489,26 @@ internal static class LandLifeRules
+         return demand > 0f ? Mathf.Clamp01(food / demand) : 1f;
+     }
+ 
++    // Read-only sustainable allocation for a prospective arrival. The same
++    // allocator sees all residents and one candidate; no live stock is spent.
++    internal static float ForecastSustainablePlantIntake(BlockInfo block,
++        PopulationData candidate, float temperature, float humidity,
++        float movement, float size, float fertility, LandRuleTuning rules)
++    {
++        if (block == null || block.community == null || candidate == null)
++            return 0f;
++        var groups = new List<PopulationData>(block.community.Count + 1);
++        foreach (PopulationData resident in block.community)
++            if (resident != null && resident.ecologicalNiche == EcologicalNiche.Land &&
++                resident.trophicLevel == 0 && resident.speciesAmount > 0)
++                groups.Add(resident);
++        if (!groups.Contains(candidate)) groups.Add(candidate);
++        int index = groups.IndexOf(candidate);
++        return AllocatePlants(groups, SustainablePlantSupply(block, rules),
++            block, candidate, temperature, humidity, movement, size,
++            fertility, rules)[index];
++    }
++
+     internal static void ForecastEvolutionPlantSupport(BlockInfo block,
+         PopulationData source, PopulationData candidate, int remainingSource,
+         LandRuleTuning rules, out float demand, out float today,
+@@ -863,6 +884,7 @@ internal static class LandLifeRules
+         var prey = new List<PopulationData>(5);
+         foreach (PopulationData p in block.community)
+         {
++            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+             if (p.speciesAmount <= 0) continue;
+             if (p.trophicLevel == level) hunters.Add(p);
+             if (p.trophicLevel < level) prey.Add(p);
+@@ -980,6 +1002,7 @@ internal static class LandLifeRules
+         var herbivores = new List<PopulationData>(5);
+         foreach (PopulationData p in block.community)
+         {
++            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+             EnsureBodyMass(p, rules);
+             p.populationBeforePredation = p.speciesAmount;
+             p.predationDeathsToday = p.birthsToday = p.deathsToday = 0;
+@@ -999,13 +1022,15 @@ internal static class LandLifeRules
+         {
+             bool hasHunter = false;
+             foreach (PopulationData p in block.community)
+-                if (p != null && p.speciesAmount > 0 &&
++                if (p != null && p.ecologicalNiche == EcologicalNiche.Land &&
++                    p.speciesAmount > 0 &&
+                     p.trophicLevel > 0) { hasHunter = true; break; }
+             if (hasHunter)
+             {
+                 renewableQuotas = new Dictionary<PopulationData, int>();
+                 foreach (PopulationData prey in block.community)
+-                    if (prey != null && prey.trophicLevel == 0 &&
++                    if (prey != null && prey.ecologicalNiche == EcologicalNiche.Land &&
++                        prey.trophicLevel == 0 &&
+                         prey.speciesAmount > 0)
+                         renewableQuotas[prey] = RenewablePreyHarvestQuota(
+                             block, prey, rules);
+@@ -1014,7 +1039,8 @@ internal static class LandLifeRules
+         HuntLevel(block, 2, rules, renewableQuotas);
+         HuntLevel(block, 1, rules, renewableQuotas);
+         foreach (PopulationData p in block.community)
+-            if (p.trophicLevel == 0 && p.speciesAmount > 0) herbivores.Add(p);
++            if (p != null && p.ecologicalNiche == EcologicalNiche.Land &&
++                p.trophicLevel == 0 && p.speciesAmount > 0) herbivores.Add(p);
+         float[] allocation = AllocatePlants(herbivores,
+             PlantFoodBudget(block, block.plantBiomass, rules),
+             block, rules: rules);
+@@ -1035,6 +1061,7 @@ internal static class LandLifeRules
+         FoodWeb.SpendPlants(block, eaten);
+         foreach (PopulationData p in block.community)
+         {
++            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+             int count = p.speciesAmount; // after predation, before births
+             if (p.trophicLevel > 0)
+             {
+@@ -1128,6 +1155,7 @@ internal static class LandLifeRules
+         // community list order must not shift the hunter's history by a day.
+         foreach (PopulationData p in block.community)
+         {
++            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+             if (p.trophicLevel <= 0) continue;
+             int settledCount = Mathf.Max(0, p.populationBeforePredation
+                 - p.predationDeathsToday);
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/PopulationTransitionVisual.cs b/Darwin's farm/Assets/Scripts/Simulation/PopulationTransitionVisual.cs
+index 525d8622..a2ace28e 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/PopulationTransitionVisual.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/PopulationTransitionVisual.cs	
+@@ -20,10 +20,16 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
+     private MaterialPropertyBlock properties;
+     private Action completed;
+ 
++    public void Begin(Vector3[] waypoints, float arc, float seconds,
++        PopulationMovementSettings settings, Material material, Sprite fromSprite,
++        Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted) =>
++        Begin(waypoints, arc, seconds, settings, material, fromSprite,
++            toSprite, from, to, camera, onCompleted, false);
++
+     public void Begin(Vector3[] waypoints, float arc, float seconds,
+         PopulationMovementSettings settings, Material material, Sprite fromSprite,
+         Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted,
+-        bool airborne = false)
++        bool airborne)
+     {
+         path = waypoints;
+         arcHeight = Mathf.Max(0f, arc);
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Determinism.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Determinism.cs
+index d086db43..6eda58e4 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Determinism.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Determinism.cs	
+@@ -18,6 +18,14 @@ public partial class SimulationController
+     {
+         var data = new StringBuilder(4096);
+         Add(data, ModelRandomVersion);
++        Add(data, "V6.1");
++        Add(data, V61SourceGraphHash);
++        Add(data, EnableAirEcology ? "air:1" : "air:0");
++        Add(data, EnableWaterEcology ? "water:1" : "water:0");
++        Add(data, EnableEconomy ? "economy:1" : "economy:0");
++        Add(data, EnableRandomEvents ? "random:1" : "random:0");
++        Add(data, EnableNeighborMovementFormula ? "movement-b:1" :
++            "movement-b:0");
+         Add(data, simulationSeed.ToString(CultureInfo.InvariantCulture));
+         Add(data, currentSimulationDay.ToString(CultureInfo.InvariantCulture));
+         AddFields(data, ReadTuning());
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs
+index 7c646601..4568a1f1 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs	
+@@ -681,7 +681,8 @@ public partial class SimulationController
+     private void ConvertToPresetSpecies(BlockInfo block, PopulationData ancestor,
+         SpeciesData target, int day)
+     {
+-        if (!TryPlanFormalEvolution(block, ancestor, target,
++        if (HasLivingSpecies(block, target) ||
++            !TryPlanFormalEvolution(block, ancestor, target,
+             out int amount, out float plantPayment, out float excessBody) ||
+             !HasEvolutionFoodSupport(block, ancestor, target, amount)) return;
+         int sourceCountBefore = ancestor.speciesAmount;
+@@ -734,6 +735,7 @@ public partial class SimulationController
+         descendant.manualEvolutionTarget = null;
+         ResetTargetProtection(descendant);
+         descendant.lastMutationEffect = "转化为" + target.SpeciesName;
++        RecordFormalTransfer(ancestor, target, amount);
+         ancestor.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
+         ancestor.localSplitBranch = false;
+         ancestor.directedSplitTarget = null;
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.FoodWeb.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.FoodWeb.cs
+index 4c5b87da..68a2a77d 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.FoodWeb.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.FoodWeb.cs	
+@@ -11,19 +11,18 @@ internal static class FoodWeb
+     private const float SharedPlantFraction = 0.1f;
+     internal const int LargeHerbivoreTrackSize = 30;
+ 
+-    // 2026-10-09 13:49 +08:00: explicit species links take priority; the
+-    // V4.3 level fallback allows L2 to hunt either lower level.
++    // The imported graph is the sole authority for preset-species prey.
+     internal static bool CanEat(PopulationData predator, PopulationData prey)
+     {
+-        if (predator == null || prey == null || predator == prey) return false;
++        if (predator == null || prey == null || predator == prey ||
++            predator.ecologicalNiche != prey.ecologicalNiche) return false;
+         bool allowedLevels = predator.trophicLevel == 1 && prey.trophicLevel == 0 ||
+             predator.trophicLevel == 2 &&
+             (prey.trophicLevel == 0 || prey.trophicLevel == 1);
+         if (!allowedLevels) return false;
+         List<SpeciesData> links = predator.species != null ? predator.species.preySpecies : null;
+-        return links != null && links.Count > 0
+-            ? prey.species != null && links.Contains(prey.species)
+-            : true;
++        return links != null && prey.species != null &&
++            links.Contains(prey.species);
+     }
+ 
+     public static void GrowPlants(BlockInfo block)
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs
+index 28a73697..d97d8011 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs	
+@@ -25,20 +25,27 @@ public partial class SimulationController
+             switch (kind)
+             {
+                 case EnvironmentTechnologyKind.PlantStockChange:
+-                case EnvironmentTechnologyKind.PlantRecoveryChange:
+                     if (tier > 0)
+                     {
+                         AddInfluence(population, 3, PrimaryInfluence, day);
+-                        AddInfluence(population, 4,
+-                            PrimaryInfluence + SecondaryInfluence, day);
++                        AddInfluence(population, 4, SecondaryInfluence, day);
++                    }
++                    else if (tier < 0)
++                    {
++                        AddInfluence(population, 3, -PrimaryInfluence, day);
++                        AddInfluence(population, 2, SecondaryInfluence, day);
++                    }
++                    break;
++                case EnvironmentTechnologyKind.PlantRecoveryChange:
++                    if (tier > 0)
++                    {
++                        AddInfluence(population, 4, PrimaryInfluence, day);
+                         AddInfluence(population, 2, -SecondaryInfluence, day);
+                     }
+                     else if (tier < 0)
+                     {
+-                        AddInfluence(population, 3,
+-                            -PrimaryInfluence - SecondaryInfluence, day);
+                         AddInfluence(population, 4, -PrimaryInfluence, day);
+-                        AddInfluence(population, 2, SecondaryInfluence, day);
++                        AddInfluence(population, 3, -SecondaryInfluence, day);
+                     }
+                     break;
+                 case EnvironmentTechnologyKind.TemperatureChange:
+@@ -47,9 +54,10 @@ public partial class SimulationController
+                             -Math.Sign(tier) * SecondaryInfluence, day);
+                     break;
+                 case EnvironmentTechnologyKind.HumidityChange:
+-                    if (tier != 0)
+-                        AddInfluence(population, 4,
+-                            Math.Sign(tier) * SecondaryInfluence, day);
++                    if (tier > 0)
++                        AddInfluence(population, 4, SecondaryInfluence, day);
++                    else if (tier < 0)
++                        AddInfluence(population, 3, SecondaryInfluence, day);
+                     break;
+             }
+         }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandEvents.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandEvents.cs
+index cf748d17..951cc40a 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandEvents.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandEvents.cs	
+@@ -7,12 +7,18 @@ public partial class SimulationController
+     // OnPresetEvolutionResolved. No local same-species split is produced.
+     public event Action<PopulationTransitionResult> OnLocalSplitResolved;
+     public event Action<int, BlockInfo, PopulationData, string, string> OnEcologyEvent;
++    [SerializeField] private bool enableEcologyConsoleLogs = false;
++    public bool EnableEcologyConsoleLogs
++    {
++        get => enableEcologyConsoleLogs;
++        set => enableEcologyConsoleLogs = value;
++    }
+ 
+     private void LogEcology(int day, BlockInfo block, PopulationData population,
+         string kind, string detail)
+     {
+ #if UNITY_5_3_OR_NEWER
+-        if (kind != "trait_mutation" && kind != "mutation_choice")
++        if (enableEcologyConsoleLogs)
+             Debug.Log("[Ecology] day=" + day + " kind=" + kind + " population="
+                 + (population != null ? population.PopulationId : "") + " " + detail);
+ #endif
+@@ -23,16 +29,20 @@ public partial class SimulationController
+     {
+         foreach (BlockInfo block in blockInfos)
+         {
+-            if (block == null || block.community == null) continue;
++            if (block == null || block.community == null ||
++                block.waterCoverage != WaterCoverage.Land) continue;
+             for (int i = block.community.Count - 1; i >= 0; i--)
+             {
+                 PopulationData population = block.community[i];
+-                if (population == null || population.endangeredDays < 10) continue;
++                if (population == null ||
++                    population.ecologicalNiche != EcologicalNiche.Land ||
++                    population.endangeredDays < 10) continue;
+                 LogEcology(day, block, population, "local_extinction",
+                     "species=" + (population.species != null
+                         ? population.species.SpeciesName : population.lineageName)
+                     + " count=" + population.speciesAmount
+                     + " days=" + population.endangeredDays);
++                RecordEndangeredRemoval(population);
+                 block.detritusBiomass += Mathf.Max(0f, population.bodyBiomass)
+                     + Mathf.Max(0f, population.energyReserve);
+                 block.community.RemoveAt(i);
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs
+index 1f83ac1f..899a3903 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs	
+@@ -3,6 +3,12 @@ using UnityEngine;
+ 
+ public partial class SimulationController
+ {
++    [SerializeField] private bool enableNeighborMovementFormula = false;
++    public bool EnableNeighborMovementFormula
++    {
++        get => enableNeighborMovementFormula;
++        set => enableNeighborMovementFormula = value;
++    }
+     private string GetLandTraitDirection(BlockInfo block, PopulationData p)
+     {
+         if (p == null) return "当前变异：无种群";
+@@ -37,9 +43,19 @@ public partial class SimulationController
+         float capacity = LandLifeRules.EnvironmentalCarryingCapacity(
+             block, p, LandRules);
+         float renewalCoverage = capacity / Mathf.Max(1, p.speciesAmount);
+-        float attraction = BestNeighborAttraction(block, p, out int ceiling);
+-        bool neighborOpportunity = attraction >= LandRules.neighborAttractionThreshold
+-            && p.movementAbility < ceiling;
++        int ceiling;
++        float attraction;
++        if (enableNeighborMovementFormula)
++        {
++            attraction = BestSustainableNeighborOpportunity(block, p,
++                ReadLandTraits(p), out _, out _, out _);
++            ceiling = attraction > 0f ? 100 : p.movementAbility;
++        }
++        else attraction = BestNeighborAttraction(block, p, out ceiling);
++        bool neighborOpportunity = enableNeighborMovementFormula
++            ? attraction > 0f && p.movementAbility < 100
++            : attraction >= LandRules.neighborAttractionThreshold &&
++                p.movementAbility < ceiling;
+         return new LandSelectionSignals
+         {
+             stockDays = stockDays,
+@@ -138,6 +154,92 @@ public partial class SimulationController
+         return scoreSum > 0f ? weighted / scoreSum : 0f;
+     }
+ 
++    // V is a bounded daily net survival rate. One population per day of net
++    // growth spans the full [0,1] scale around neutral 0.5. Both locations
++    // use sustainable production and the same resident-competition forecast.
++    private float SustainableSurvivalValue(BlockInfo block, PopulationData p,
++        LandTraits traits)
++    {
++        if (block == null || block.community == null || p == null ||
++            p.speciesAmount <= 0) return 0f;
++        int count = p.speciesAmount;
++        float fitness = LandLifeRules.Fitness(block, traits.t, traits.h);
++        float adult = count * LandLifeRules.AdultNeed(traits.s, traits.m,
++            LandRules);
++        float food = p.trophicLevel == 0
++            ? LandLifeRules.ForecastSustainablePlantIntake(block, p,
++                traits.t, traits.h, traits.m, traits.s, traits.f, LandRules)
++            : LandLifeRules.AvailableSustainablePreyFood(block, p, LandRules);
++        float sat = adult > 0f ? Mathf.Clamp01(food / adult) : 1f;
++        float opportunity = count * LandRules.birthRate * traits.f / 100f
++            * fitness * sat;
++        float newbornCost = LandLifeRules.YoungNeed(traits.s, LandRules) +
++            LandLifeRules.BodyMass(traits.s, LandRules);
++        float paidBirths = Mathf.Min(opportunity, Mathf.Max(0f, food - adult) /
++            Mathf.Max(0.0001f, newbornCost));
++        float deaths = LandRules.starvationDeathRate * count * (1f - sat)
++            + LandLifeRules.ColdDeaths(count, block.temperature, LandRules)
++            + LandRules.climateMismatchDeathRate * count * (1f - fitness)
++            + LandLifeRules.NaturalAdultDeaths(count, traits.s, LandRules)
++            + LandLifeRules.PaidBirthStressDeaths(Mathf.FloorToInt(paidBirths),
++                traits.s, traits.f, LandRules);
++        foreach (PopulationData hunter in block.community)
++            if (hunter != null && hunter.speciesAmount > 0 &&
++                FoodWeb.CanEat(hunter, p))
++            {
++                float chase = Mathf.Clamp(1f +
++                    (hunter.movementAbility - traits.m) /
++                    Mathf.Max(1f, LandRules.chaseScale), 0.1f, 1.5f);
++                float sizeRatio = (hunter.size + 10f) / (traits.s + 10f);
++                deaths += hunter.speciesAmount *
++                    Mathf.Min(1f, 10f / Mathf.Max(1f, traits.s)) *
++                    Mathf.Clamp01(LandRules.baseCaptureChance * chase *
++                        Mathf.Clamp(sizeRatio * sizeRatio, 0.1f, 1.5f));
++            }
++        return Mathf.Clamp01(0.5f + (paidBirths - deaths) / count);
++    }
++
++    private float BestSustainableNeighborOpportunity(BlockInfo source,
++        PopulationData p, LandTraits traits, out BlockInfo bestNeighbor,
++        out float sourceValue, out float neighborValue)
++    {
++        bestNeighbor = null;
++        neighborValue = 0f;
++        sourceValue = SustainableSurvivalValue(source, p, traits);
++        if (source == null || source.Neighbors == null ||
++            p.ecologicalNiche != EcologicalNiche.Land) return 0f;
++        float best = 0f;
++        foreach (BlockInfo neighbor in source.Neighbors)
++        {
++            if (neighbor == null || neighbor == source ||
++                neighbor.waterCoverage != WaterCoverage.Land ||
++                neighbor.community == null || neighbor.Neighbors == null ||
++                !blockInfos.Contains(neighbor)) continue;
++            bool reciprocal = false;
++            foreach (BlockInfo back in neighbor.Neighbors)
++                if (back == source) { reciprocal = true; break; }
++            if (!reciprocal) continue;
++            int step = Mathf.Abs(neighbor.elevation - source.elevation);
++            if (step > 1) continue;
++            if (!LandMovementOpportunity.CanOfferNeighborSlot(
++                LivingPopulationCount(neighbor), HasSameSpeciesResident(neighbor, p)))
++                continue;
++            float value = SustainableSurvivalValue(neighbor, p, traits);
++            float opportunity = (step == 0 ? 1f : 0.5f) *
++                Mathf.Max(0f, value - sourceValue);
++            if (opportunity > best || opportunity == best &&
++                opportunity > 0f && bestNeighbor != null &&
++                string.CompareOrdinal(StableTileKey(neighbor),
++                    StableTileKey(bestNeighbor)) < 0)
++            {
++                best = opportunity;
++                bestNeighbor = neighbor;
++                neighborValue = value;
++            }
++        }
++        return best;
++    }
++
+     private float BestNeighborAttraction(BlockInfo source, PopulationData p,
+         out int ceiling)
+     {
+@@ -237,7 +339,8 @@ public partial class SimulationController
+         if (!mutationEnabled || mutationStep <= 0f) return;
+         foreach (PopulationData population in block.community)
+         {
+-            if (population == null || population.speciesAmount <= 0) continue;
++            if (population == null || population.speciesAmount <= 0 ||
++                population.ecologicalNiche != EcologicalNiche.Land) continue;
+             population.mutationDaysElapsed++;
+             if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval))
+                 continue;
+@@ -269,6 +372,8 @@ public partial class SimulationController
+                 for (int trait = 2; trait < 5; trait++)
+                     for (int direction = -1; direction <= 1; direction += 2)
+                     {
++                        if (enableNeighborMovementFormula && trait == 2)
++                            continue;
+                         int next = TraitLimit(trait,
+                             TraitValue(population, trait) + direction);
+                         if (next == TraitValue(population, trait) ||
+@@ -290,6 +395,67 @@ public partial class SimulationController
+                                 0.05f, 5f), "sustainable");
+                     }
+ 
++            if (enableNeighborMovementFormula && selectionStrength > 0f)
++            {
++                float opportunity = BestSustainableNeighborOpportunity(
++                    block, population, original, out BlockInfo bestNeighbor,
++                    out float valueHere, out float valueThere);
++                LandTraits plusTraits = ChangedTrait(original, 2,
++                    Mathf.Min(100, population.movementAbility + 1));
++                LandTraits minusTraits = ChangedTrait(original, 2,
++                    Mathf.Max(0, population.movementAbility - 1));
++                float deltaPlus = population.movementAbility < 100
++                    ? SustainableSurvivalValue(block, population, plusTraits) -
++                        valueHere + LandMovementOpportunity.BonusPlus(
++                            population.movementAbility, opportunity) : 0f;
++                float deltaMinus = population.movementAbility > 0
++                    ? SustainableSurvivalValue(block, population, minusTraits) -
++                        valueHere + LandMovementOpportunity.BonusMinus(
++                            population.movementAbility, opportunity) : 0f;
++                for (int direction = -1; direction <= 1; direction += 2)
++                {
++                    int next = TraitLimit(2, population.movementAbility + direction);
++                    if (next == population.movementAbility ||
++                        LeavesProtectedTarget(population, 2, next) ||
++                        InfluenceNet(population, 2, currentSimulationDay, true)
++                            * direction < 0f) continue;
++                    // V already includes the adult movement cost. Adding the
++                    // analytic cost term again would charge it twice.
++                    float deltaUtility = direction > 0 ? deltaPlus : deltaMinus;
++                    if (deltaUtility <= LandRules.mutationGainThreshold)
++                        continue;
++                    if (!LandMovementOpportunity.AcceptNaturalOpportunity(
++                        naturalChance, ModelRandom01(currentSimulationDay,
++                            "mutation.neighbor", block, population, null,
++                            direction > 0 ? 1 : 0))) continue;
++                    AddMutationCandidate(choices, 2, direction,
++                        Mathf.Clamp(deltaUtility * selectionStrength * 100f,
++                            0.0001f, 5f),
++                        opportunity > 0f ? "neighbor_opportunity" :
++                            "sustainable");
++                }
++                if (OnEcologyEvent != null || EnableEcologyConsoleLogs)
++                    LogEcology(currentSimulationDay, block, population,
++                        "movement_opportunity", "best=" +
++                        (bestNeighbor != null ? StableTileKey(bestNeighbor) : "") +
++                        " zDelta=" + (bestNeighbor != null ?
++                            Mathf.Abs(bestNeighbor.elevation - block.elevation) : 0) +
++                        " c=" + (bestNeighbor == null ? 0f :
++                            bestNeighbor.elevation == block.elevation ? 1f : 0.5f) +
++                        " lambda=" + LandMovementOpportunity.Lambda +
++                        " Vhere=" + valueHere.ToString("R",
++                            System.Globalization.CultureInfo.InvariantCulture) +
++                        " Vneighbor=" + valueThere.ToString("R",
++                            System.Globalization.CultureInfo.InvariantCulture) +
++                        " A=" + opportunity.ToString("R",
++                            System.Globalization.CultureInfo.InvariantCulture) +
++                        " m=" + original.m +
++                        " deltaPlus=" + deltaPlus.ToString("R",
++                            System.Globalization.CultureInfo.InvariantCulture) +
++                        " deltaMinus=" + deltaMinus.ToString("R",
++                            System.Globalization.CultureInfo.InvariantCulture));
++            }
++
+             for (int trait = 2; trait < 5; trait++)
+             {
+                 float net = InfluenceNet(population, trait,
+@@ -305,15 +471,21 @@ public partial class SimulationController
+             }
+ 
+             float totalWeight = 0f;
+-            var details = new System.Text.StringBuilder();
++            bool emitMutationTrace = OnEcologyEvent != null ||
++                EnableEcologyConsoleLogs;
++            var details = emitMutationTrace ?
++                new System.Text.StringBuilder() : null;
+             foreach (MutationCandidate candidate in choices)
+             {
+                 totalWeight += candidate.weight;
+-                if (details.Length > 0) details.Append(',');
+-                details.Append(candidate.trait).Append(':')
+-                    .Append(candidate.direction > 0 ? '+' : '-')
+-                    .Append(':').Append(candidate.sources)
+-                    .Append(':').Append(candidate.weight.ToString("F3"));
++                if (emitMutationTrace)
++                {
++                    if (details.Length > 0) details.Append(',');
++                    details.Append(candidate.trait).Append(':')
++                        .Append(candidate.direction > 0 ? '+' : '-')
++                        .Append(':').Append(candidate.sources)
++                        .Append(':').Append(candidate.weight.ToString("F3"));
++                }
+             }
+             float draw = ModelRandom01(currentSimulationDay,
+                 "mutation.choose", block, population) * totalWeight;
+@@ -348,12 +520,13 @@ public partial class SimulationController
+                             influence.weight * winner.direction > 0f)
+                             influence.potential *= 0.5f;
+             }
+-            LogEcology(currentSimulationDay, block, population,
+-                "mutation_choice", "candidates=[" + details +
+-                "] draw=" + ModelRandom01(currentSimulationDay,
+-                    "mutation.choose", block, population).ToString("F6") +
+-                " selected=" + (selected >= 0
+-                    ? population.lastMutationEffect : "none"));
++            if (emitMutationTrace)
++                LogEcology(currentSimulationDay, block, population,
++                    "mutation_choice", "candidates=[" + details +
++                    "] draw=" + ModelRandom01(currentSimulationDay,
++                        "mutation.choose", block, population).ToString("F6") +
++                    " selected=" + (selected >= 0
++                        ? population.lastMutationEffect : "none"));
+         }
+     }
+ }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs
+index 118237a6..0c5ef652 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs	
+@@ -79,7 +79,7 @@ public partial class SimulationController
+             source.community == null || !source.community.Contains(population) ||
+             population.speciesAmount <= 0 || day < population.nextMigrationDay) return;
+         // 生态位开启后，旧的陆地迁徙不能把陆生种群塞进河道地块。
+-        if (ecologicalNichesEnabled &&
++        if ((EnableAirEcology || EnableWaterEcology) &&
+             (source.waterCoverage != WaterCoverage.Land ||
+              target.waterCoverage != WaterCoverage.Land ||
+              population.ecologicalNiche != EcologicalNiche.Land)) return;
+@@ -159,14 +159,14 @@ public partial class SimulationController
+         return amount < 10 ? 0 : Mathf.Min(amount, 100);
+     }
+ 
+-    // V4.1 natural migration uses a fixed 10% split regardless of why it moved.
+-    public static int StandardMigrationAmount(int population) =>
+-        population < 10 ? 0 : Mathf.Min(population,
+-            Mathf.Clamp(Mathf.RoundToInt(population * 0.1f), 10, 100));
++    // A planned move below ten animals is cancelled, never raised to ten.
++    public static int StandardMigrationAmount(int population)
++        => LandMovementOpportunity.StandardMigrationAmount(population);
+ 
+     private struct MoveCandidate
+     {
+         public BlockInfo target;
++        public int amount;
+         public float chance;
+         public float tieBreaker;
+     }
+@@ -181,14 +181,19 @@ public partial class SimulationController
+             {
+                 if (population == null || population.speciesAmount <= 0 ||
+                     day < population.nextMigrationDay) continue;
+-                if (population.ecologicalNiche == EcologicalNiche.Air && ecologicalNichesEnabled)
++                if (population.ecologicalNiche == EcologicalNiche.Air && EnableAirEcology)
+                 {
+                     var destinations = new List<BlockInfo>(source.Neighbors);
+-                    for (int i = destinations.Count - 1; i > 0; i--)
++                    destinations.Sort((left, right) =>
+                     {
+-                        int other = Random.Range(0, i + 1);
+-                        BlockInfo swap = destinations[i]; destinations[i] = destinations[other]; destinations[other] = swap;
+-                    }
++                        float leftDraw = ModelRandom01(day, "migration.air.destination",
++                            source, population, left);
++                        float rightDraw = ModelRandom01(day, "migration.air.destination",
++                            source, population, right);
++                        int order = leftDraw.CompareTo(rightDraw);
++                        return order != 0 ? order : string.CompareOrdinal(
++                            StableTileKey(left), StableTileKey(right));
++                    });
+                     foreach (BlockInfo destination in destinations)
+                     {
+                         if (plans.Exists(move => move.target == destination &&
+@@ -240,7 +245,9 @@ public partial class SimulationController
+                 if (move.target == neighbor &&
+                     !neighbor.community.Exists(existing => existing != null &&
+                         SameSpecies(existing, move.population))) reserved++;
+-            if (neighbor.community.Count + reserved >= 5) continue;
++            if (!LandMovementOpportunity.CanOfferNeighborSlot(
++                LivingPopulationCount(neighbor) + reserved,
++                HasSameSpeciesResident(neighbor, population))) continue;
+             float attraction = NeighborAttraction(source, neighbor,
+                 population, amount);
+             float capacityCorrection = TargetCapacityCorrection(neighbor,
+@@ -253,6 +260,7 @@ public partial class SimulationController
+             candidates.Add(new MoveCandidate
+             {
+                 target = neighbor, chance = Mathf.Clamp01(chance),
++                amount = amount,
+                 tieBreaker = ModelRandom01(day, "migration.tie", source,
+                     population, neighbor)
+             });
+@@ -273,7 +281,7 @@ public partial class SimulationController
+             plan = new MovePlan
+             {
+                 source = source, target = candidate.target,
+-                population = population, amount = amount
++                population = population, amount = candidate.amount
+             };
+             return true;
+         }
+@@ -370,19 +378,41 @@ public partial class SimulationController
+ 
+     [Header("Ecological Niches")]
+     [SerializeField] private bool ecologicalNichesEnabled = false;
++    [SerializeField] private bool enableAirEcology = false;
++    [SerializeField] private bool enableWaterEcology = false;
++    // Existing scenes serialize the retired combined value as true. The new
++    // independent flags intentionally default off until explicitly enabled.
++    public bool EnableAirEcology => enableAirEcology;
++    public bool EnableWaterEcology => enableWaterEcology;
++    public void SetAirEcologyEnabled(bool enabled)
++    {
++        enableAirEcology = enabled;
++        ecologicalNichesEnabled = enableAirEcology || enableWaterEcology;
++    }
++    public void SetWaterEcologyEnabled(bool enabled)
++    {
++        enableWaterEcology = enabled;
++        ecologicalNichesEnabled = enableAirEcology || enableWaterEcology;
++    }
+     [Range(0f, 1f)] [SerializeField] private float landToWaterProbability = 0.02f;
+     [Range(0f, 1f)] [SerializeField] private float landToAirProbability = 0.01f;
+     [Range(0f, 1f)] [SerializeField] private float waterDownProbability = 0.05f;
+     [Range(0f, 1f)] [SerializeField] private float waterUpProbability = 0.002f;
+     [Range(0f, 1f)] [SerializeField] private float waterToLandProbability = 0.001f;
+ 
+-    public bool EcologicalNichesEnabled => ecologicalNichesEnabled;
++    public bool EcologicalNichesEnabled => EnableAirEcology || EnableWaterEcology;
+     public event Action<BlockInfo, BlockInfo, PopulationData, PopulationData, int>
+         OnNicheConverted;
+     public event Action<PopulationTransitionResult> OnNicheConversionResolved;
+     public event Action<PopulationData, BlockInfo, RiverBankSide?> OnLandPositionChanged;
+ 
+-    public void SetEcologicalNichesEnabled(bool enabled) => ecologicalNichesEnabled = enabled;
++    // Preserve the existing combined API for scene and editor integrations.
++    public void SetEcologicalNichesEnabled(bool enabled)
++    {
++        ecologicalNichesEnabled = enabled;
++        enableAirEcology = enabled;
++        enableWaterEcology = enabled;
++    }
+ 
+     public void SetEcologicalNicheProbabilities(float landToWater, float landToAir,
+         float waterDown, float waterUp, float waterToLand)
+@@ -440,7 +470,7 @@ public partial class SimulationController
+     public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
+         RiverBankSide side, PopulationData population)
+     {
+-        if (!ecologicalNichesEnabled || home == null || home.community == null ||
++        if (!EnableWaterEcology || home == null || home.community == null ||
+             population == null || population.speciesAmount <= 0 ||
+             population.ecologicalNiche != EcologicalNiche.Land ||
+             !home.community.Contains(population)) return false;
+@@ -462,7 +492,7 @@ public partial class SimulationController
+ 
+     public bool TryReturnFromRiverBank(BlockInfo home, PopulationData population)
+     {
+-        if (!ecologicalNichesEnabled || home == null || home.community == null ||
++        if (!EnableWaterEcology || home == null || home.community == null ||
+             population == null || population.ecologicalNiche != EcologicalNiche.Land ||
+             population.speciesAmount <= 0 ||
+             !home.community.Contains(population) ||
+@@ -526,7 +556,7 @@ public partial class SimulationController
+                  population.landPositionBlock == neighbor) &&
+                 (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
+                 waterTarget = neighbor;
+-        if (waterTarget != null)
++        if (EnableWaterEcology && waterTarget != null)
+         {
+             if (ModelRandom01(day, "niche.land-water", source, population,
+                     waterTarget) < landToWaterProbability)
+@@ -535,7 +565,7 @@ public partial class SimulationController
+             return false;
+         }
+ 
+-        if (!HasAirPopulation(source) &&
++        if (EnableAirEcology && !HasAirPopulation(source) &&
+             population.speciesAmount >= population.carryingCapacity &&
+             ModelRandom01(day, "niche.land-air", source, population)
+                 < landToAirProbability)
+@@ -635,7 +665,10 @@ public partial class SimulationController
+ 
+     private bool CanDepart(BlockInfo source, PopulationData population,
+         EcologicalNiche niche, int day) =>
+-        ecologicalNichesEnabled && source != null && source.community != null &&
++        (niche == EcologicalNiche.Air ? EnableAirEcology :
++            niche == EcologicalNiche.Water ? EnableWaterEcology :
++            EnableAirEcology || EnableWaterEcology) &&
++        source != null && source.community != null &&
+         source.community.Contains(population) && population != null &&
+         population.speciesAmount > 0 && population.ecologicalNiche == niche &&
+         day >= population.nextMigrationDay;
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs
+index 5e68d701..c413d4ed 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs	
+@@ -28,6 +28,44 @@ public struct SimulationTuning
+ // 只安排每天的执行顺序；具体规则放在相应脚本里。
+ public partial class SimulationController : MonoBehaviour
+ {
++    public const string V61SourceGraphHash =
++        "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5";
++    // V6.1 core-run switches. Economy reuses the existing account switch;
++    // there is no random-event producer in the current project.
++    [SerializeField] private bool enableRandomEvents = false;
++    public bool EnableRandomEvents
++    {
++        get => enableRandomEvents;
++        set => enableRandomEvents = value;
++    }
++    public bool EnableEconomy
++    {
++        get
++        {
++#if UNITY_5_3_OR_NEWER
++            BioenergyAccount account = GetComponent<BioenergyAccount>();
++            return account != null && account.CostsEnabled;
++#else
++            return false;
++#endif
++        }
++    }
++    public void SetEconomyEnabled(bool enabled)
++    {
++#if UNITY_5_3_OR_NEWER
++        BioenergyAccount account = GetComponent<BioenergyAccount>();
++        if (account != null) account.CostsEnabled = enabled;
++#endif
++    }
++    public void ApplyCoreEvolutionTestProfile()
++    {
++        SetEcologicalNichesEnabled(false);
++        SetEconomyEnabled(false);
++        enableRandomEvents = false;
++        EnableNeighborMovementFormula = true;
++        EnableEcologyLedgerDiagnostics = true;
++        EnableEcologyConsoleLogs = false;
++    }
+     [SerializeField] private LandRuleTuning landRules = new LandRuleTuning();
+     private bool landRulesValidated;
+     public LandRuleTuning ReadLandRules() => LandRules.Copy();
+@@ -184,7 +222,7 @@ public partial class SimulationController : MonoBehaviour
+         highStockDays = LandRules.highStockDays,
+         lowRenewalCoverage = LandRules.lowRenewalCoverage,
+         highRenewalCoverage = LandRules.highRenewalCoverage,
+-        ecologicalNichesEnabled = ecologicalNichesEnabled
++        ecologicalNichesEnabled = EnableAirEcology || EnableWaterEcology
+     };
+ 
+     public void ApplyTuning(SimulationTuning tuning)
+@@ -199,7 +237,10 @@ public partial class SimulationController : MonoBehaviour
+             tuning.migrationPopulationScale, tuning.overloadThreshold,
+             tuning.baseOverloadProbability, tuning.overloadMigrationFraction,
+             tuning.migrationCooldownDays);
+-        SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
++        // A legacy combined tuning round-trip must preserve an independently
++        // enabled air-only or water-only configuration.
++        if (tuning.ecologicalNichesEnabled != EcologicalNichesEnabled)
++            SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
+         LandRuleTuning nextLandRules = LandRules.Copy();
+         nextLandRules.sameSpeciesMergeDays = tuning.sameSpeciesMergeDays;
+         nextLandRules.postMergeSplitCooldownDays = tuning.postMergeSplitCooldownDays;
+@@ -428,10 +469,12 @@ public partial class SimulationController : MonoBehaviour
+         currentSimulationDay = day;
+         SortModelState();
+         OnBeforeDaySimulated?.Invoke(day);
++        BeginEcologyLedger();
+         foreach (BlockInfo block in blockInfos)
+         {
+             SimulateBlock(block);
+         }
++        CaptureLifeFlows();
+         RemoveEndangered(day);
+         RunPresetEvolution(day);
+         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
+@@ -441,6 +484,7 @@ public partial class SimulationController : MonoBehaviour
+         UpdateSpeciesStatuses();
+         foreach (BlockInfo block in blockInfos)
+             LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
++        FinishEcologyLedger(day);
+         OnDaySimulated?.Invoke(day);
+     }
+ 
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/WhiteboxBiowebTestSetup.cs b/Darwin's farm/Assets/Scripts/Simulation/WhiteboxBiowebTestSetup.cs
+index 0bff632e..e0a6a4dc 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/WhiteboxBiowebTestSetup.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/WhiteboxBiowebTestSetup.cs	
+@@ -41,6 +41,13 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
+                 yield break;
+             }
+ 
++        if (!V61BiowebValidator.TryValidate(species, out string graphError))
++        {
++            Debug.LogError(graphError, this);
++            enabled = false;
++            yield break;
++        }
++
+         simulation.SetEvolutionNetworkSpecies(species);
+         if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) ||
+             initialTile.Block == null)
+diff --git a/Darwin's farm/Assets/Scripts/UI/DesktopEnvironmentTools.cs b/Darwin's farm/Assets/Scripts/UI/DesktopEnvironmentTools.cs
+index b0a5bee5..a571e596 100644
+--- a/Darwin's farm/Assets/Scripts/UI/DesktopEnvironmentTools.cs	
++++ b/Darwin's farm/Assets/Scripts/UI/DesktopEnvironmentTools.cs	
+@@ -3,6 +3,7 @@ using UnityEngine;
+ 
+ public sealed class DesktopEnvironmentTools : MonoBehaviour
+ {
++    private static readonly string[] kindLabels = { "温度", "湿度", "存量", "增量", "海拔" };
+     [SerializeField] private EnvironmentToolSession session;
+     [SerializeField] private MobileGameUI mobile;
+     [SerializeField] private GameObject toolbar, body;
+@@ -12,7 +13,12 @@ public sealed class DesktopEnvironmentTools : MonoBehaviour
+     private void Start()
+     {
+         for (int i = 0; i < kinds.Length; i++)
+-        { int index = i; kinds[i].onClick.AddListener(() => session.SelectKind(index)); }
++        {
++            int index = i;
++            kinds[i].onClick.AddListener(() => session.SelectKind(index));
++            if (i < kindLabels.Length)
++                kinds[i].GetComponentInChildren<TextMeshProUGUI>(true).text = kindLabels[i];
++        }
+         for (int i = 0; i < options.Length; i++)
+         { int index = i; options[i].onClick.AddListener(() => session.SelectOption(index)); }
+         apply.onClick.AddListener(session.Deploy);
+@@ -26,7 +32,10 @@ public sealed class DesktopEnvironmentTools : MonoBehaviour
+         body.SetActive(visible && session.Active);
+         if (!visible) return;
+         for (int i = 0; i < kinds.Length; i++)
+-            kinds[i].targetGraphic.color = session.Active && i == (int)session.Choice.Kind ? new Color(.58f,.83f,.64f) : Color.white;
++            kinds[i].targetGraphic.color = session.Active &&
++                i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&
++                DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind ?
++                new Color(.58f,.83f,.64f) : Color.white;
+         if (!session.Active) return;
+         transform.SetAsLastSibling();
+         for (int i = 0; i < options.Length; i++)
+diff --git a/Darwin's farm/Assets/Scripts/UI/Editor/EnvironmentToolsInstaller.cs b/Darwin's farm/Assets/Scripts/UI/Editor/EnvironmentToolsInstaller.cs
+index 8cb08c2f..98eaed7d 100644
+--- a/Darwin's farm/Assets/Scripts/UI/Editor/EnvironmentToolsInstaller.cs	
++++ b/Darwin's farm/Assets/Scripts/UI/Editor/EnvironmentToolsInstaller.cs	
+@@ -27,7 +27,7 @@ public static class EnvironmentToolsInstaller
+             var panel=root.gameObject.AddComponent<DesktopEnvironmentTools>(); var saved=new SerializedObject(panel);
+             Set(saved,"session",session); Set(saved,"mobile",mobile);
+             var toolbar=Rect("Toolbar",root,new Vector2(94,320),Vector2.zero); Set(saved,"toolbar",toolbar.gameObject);
+-            var kinds=new UnityEngine.UI.Button[5]; string[] captions={"温度","湿度","植物","海拔","季风"};
++            var kinds=new UnityEngine.UI.Button[5]; string[] captions={"温度","湿度","植物库存","日增量","海拔"};
+             for(int i=0;i<5;i++) kinds[i]=Button(captions[i],toolbar,captions[i],new Vector2(94,56),new Vector2(0,-i*64));
+             Array(saved,"kinds",kinds);
+             var body=Rect("OperationPreview",root,new Vector2(510,480),new Vector2(104,0));
+diff --git a/Darwin's farm/Assets/Scripts/UI/Editor/MobileUIInstaller.cs b/Darwin's farm/Assets/Scripts/UI/Editor/MobileUIInstaller.cs
+index 386be59b..49e0f1fc 100644
+--- a/Darwin's farm/Assets/Scripts/UI/Editor/MobileUIInstaller.cs	
++++ b/Darwin's farm/Assets/Scripts/UI/Editor/MobileUIInstaller.cs	
+@@ -186,7 +186,7 @@ public static class MobileUIInstaller
+         var body = Rect("TechnologyBody", root, Vector2.up, Vector2.up, new Vector2(476, 394), new Vector2(0, -56));
+         Set(saved, "body", body.gameObject);
+         var kindRow = Rect("TechnologyKinds", body, Vector2.up, Vector2.up, new Vector2(476, 48), Vector2.zero);
+-        Row(kindRow, 5); string[] kinds = { "温度", "湿度", "植物", "海拔", "季风" };
++        Row(kindRow, 5); string[] kinds = { "温度", "湿度", "存量", "增量", "海拔" };
+         var kindButtons = new UnityEngine.UI.Button[kinds.Length];
+         for (int i = 0; i < kinds.Length; i++) { kindButtons[i] = Button("Kind" + i, kindRow, kinds[i], new Vector2(88, 48)); Layout((RectTransform)kindButtons[i].transform, 88); }
+         Array(saved, "kindButtons", kindButtons);
+diff --git a/Darwin's farm/Assets/Scripts/UI/EnvironmentToolSession.cs b/Darwin's farm/Assets/Scripts/UI/EnvironmentToolSession.cs
+index ab3f3e9f..315802a2 100644
+--- a/Darwin's farm/Assets/Scripts/UI/EnvironmentToolSession.cs	
++++ b/Darwin's farm/Assets/Scripts/UI/EnvironmentToolSession.cs	
+@@ -54,26 +54,22 @@ public sealed class EnvironmentToolSession : MonoBehaviour
+     {
+         if (index < 0 || index >= EnvironmentTechnologyCatalog.All.Length) return;
+         var kind = EnvironmentTechnologyCatalog.All[index];
+-        int tier = kind == EnvironmentTechnologyKind.MonsoonAnchor ? 1 :
+-            kind == EnvironmentTechnologyKind.ElevationChange ? (Choice.Tier > 0 ? 1 : -1) : Choice.Tier;
+-        Choice = new EnvironmentTechnologyChoice(kind, tier, Choice.TemperatureOffset, Choice.HumidityOffset);
++        int tier = kind == EnvironmentTechnologyKind.ElevationChange ?
++            (Choice.Tier > 0 ? 1 : -1) : Choice.Tier;
++        Choice = new EnvironmentTechnologyChoice(kind, tier);
+         Notice = ""; Begin();
+     }
+     public void SelectOption(int index)
+     {
+         if (index < 0 || index > 3 || !OptionEnabled(index)) return;
+-        Choice = Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
+-            new EnvironmentTechnologyChoice(Choice.Kind, 1, index == 0 || index == 3 ? -20 : 20, index < 2 ? 20 : -20) :
+-            new EnvironmentTechnologyChoice(Choice.Kind, Tier(index));
++        Choice = new EnvironmentTechnologyChoice(Choice.Kind, Tier(index));
+         Notice = ""; Begin();
+     }
+     private static int Tier(int index) => index == 0 ? 2 : index == 1 ? 1 : index == 2 ? -1 : -2;
+     public bool OptionEnabled(int index) => Choice.Kind != EnvironmentTechnologyKind.ElevationChange || index == 1 || index == 2;
+-    public string OptionLabel(int index) => Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
+-        new[] { "冷湿", "暖湿", "干热", "干冷" }[index] : Choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
++    public string OptionLabel(int index) => Choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
+         (Tier(index) > 0 ? "升一级" : "降一级") : (Tier(index) > 0 ? "提高" : "降低") + (Mathf.Abs(Tier(index)) == 1 ? "小档" : "大档");
+-    public bool OptionSelected(int index) => Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
+-        Choice.TemperatureOffset == (index == 0 || index == 3 ? -20 : 20) && Choice.HumidityOffset == (index < 2 ? 20 : -20) : Choice.Tier == Tier(index);
++    public bool OptionSelected(int index) => Choice.Tier == Tier(index);
+     public void Refresh()
+     {
+         nextRefresh = Time.unscaledTime + .2f;
+@@ -89,14 +85,16 @@ public sealed class EnvironmentToolSession : MonoBehaviour
+             var state = read.Environment;
+             bool temperature = state.HasLocalTemperature && state.Temperature.Phase != EffectPhase.Returning;
+             bool humidity = state.HasLocalHumidity && state.Humidity.Phase != EffectPhase.Returning;
+-            bool plants = state.CanCancelRecovery;
++            bool plants = state.HasRecoveryCommand && state.Recovery.Phase != EffectPhase.Returning;
+             int locals = (temperature ? 1 : 0) + (humidity ? 1 : 0) + (plants ? 1 : 0);
+-            SlotNotice = "生效名额 " + (locals + (state.HasMonsoon ? 1 : 0)) + "/2";
++            SlotNotice = "生效名额 " + locals + "/2";
+             bool same = Choice.Kind == EnvironmentTechnologyKind.TemperatureChange ? temperature :
+                 Choice.Kind == EnvironmentTechnologyKind.HumidityChange ? humidity :
+-                Choice.Kind == EnvironmentTechnologyKind.PlantChange && plants;
+-            if (Choice.Kind != EnvironmentTechnologyKind.ElevationChange &&
+-                (Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ? locals > 1 : !same && locals >= (state.HasMonsoon ? 1 : 2)))
++                Choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange && plants;
++            if ((Choice.Kind == EnvironmentTechnologyKind.TemperatureChange ||
++                Choice.Kind == EnvironmentTechnologyKind.HumidityChange ||
++                Choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange) &&
++                !same && locals >= 2)
+                 SlotNotice += " · 较早的单格工具将进入恢复";
+         }
+         Changed?.Invoke();
+diff --git a/Darwin's farm/Assets/Scripts/UI/EnvironmentToolsInputChecks.cs b/Darwin's farm/Assets/Scripts/UI/EnvironmentToolsInputChecks.cs
+index e13b9ffd..01828659 100644
+--- a/Darwin's farm/Assets/Scripts/UI/EnvironmentToolsInputChecks.cs	
++++ b/Darwin's farm/Assets/Scripts/UI/EnvironmentToolsInputChecks.cs	
+@@ -50,12 +50,20 @@ public sealed class EnvironmentToolsInputChecks : MonoBehaviour
+         var env=FindFirstObjectByType<SimulationEnvironmentController>();
+         env.TryRead(tile.Coordinate,out var before);
+         var account=FindFirstObjectByType<BioenergyAccount>(); long money=account.Balance;
+-        session.SelectKind(2); session.SelectOption(1); session.Refresh();
++        session.SelectKind(2);
++        Require(session.Choice.Kind == DarwinFarm.Environment.EnvironmentTechnologyKind.PlantStockChange,
++            "Plant stock button maps to the wrong tool");
++        session.SelectKind(3); session.SelectOption(1); session.Refresh();
++        Require(session.Choice.Kind == DarwinFarm.Environment.EnvironmentTechnologyKind.PlantRecoveryChange,
++            "Plant recovery button maps to the wrong tool");
+         env.TryRead(tile.Coordinate,out var previewed);
+         Require(before.PlantStock==previewed.PlantStock && account.Balance==money,"Preview changed ecology or balance");
+         int cost=session.Preview.Cost; session.Deploy();
+         env.TryRead(tile.Coordinate,out var after);
+-        Require(after.Environment.Recovery.Value==System.Math.Min(150000,before.Environment.Recovery.Value+25000),"Plant tool did not change recovery");
++        Require(after.Environment.Recovery.Phase==DarwinFarm.Environment.EffectPhase.Entering &&
++            after.Environment.Recovery.Value==before.Environment.Recovery.Value &&
++            after.Environment.Recovery.Target==System.Math.Min(150000,before.Environment.Recovery.Value+25000),
++            "Plant recovery did not begin its 25-day transition");
+         Require(account.Balance==money-cost,"Wrong payment or duplicate touch commit");
+         session.CancelEffect(); Require(session.Notice=="已撤销效果","Effect cancellation failed");
+         information.CloseTile();
+diff --git a/Darwin's farm/Assets/Scripts/UI/MobileTechnologyPanel.cs b/Darwin's farm/Assets/Scripts/UI/MobileTechnologyPanel.cs
+index d768f293..712813c5 100644
+--- a/Darwin's farm/Assets/Scripts/UI/MobileTechnologyPanel.cs	
++++ b/Darwin's farm/Assets/Scripts/UI/MobileTechnologyPanel.cs	
+@@ -4,6 +4,7 @@ using UnityEngine;
+ // Saved mobile view of the shared desktop/touch tool session.
+ public sealed class MobileTechnologyPanel : MonoBehaviour
+ {
++    private static readonly string[] kindLabels = { "温度", "湿度", "存量", "增量", "海拔" };
+     [SerializeField] private EnvironmentTechnologyController controller;
+     [SerializeField] private RectTransform tileContent;
+     [SerializeField] private GameObject body;
+@@ -27,7 +28,12 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
+         deployButton.onClick.AddListener(session.Deploy);
+         cancelButton.onClick.AddListener(session.CancelEffect);
+         for (int i = 0; i < kindButtons.Length; i++)
+-        { int index = i; kindButtons[i].onClick.AddListener(() => SelectKind(index)); }
++        {
++            int index = i;
++            kindButtons[i].onClick.AddListener(() => SelectKind(index));
++            if (i < kindLabels.Length)
++                kindButtons[i].GetComponentInChildren<TextMeshProUGUI>(true).text = kindLabels[i];
++        }
+         for (int i = 0; i < optionButtons.Length; i++)
+         { int index = i; optionButtons[i].onClick.AddListener(() => SelectOption(index)); }
+         Refresh();
+@@ -50,7 +56,10 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
+         if (session == null) return;
+         expanded = session.Active; ApplyFold();
+         for (int i = 0; i < kindButtons.Length; i++)
+-            kindButtons[i].targetGraphic.color = i == (int)session.Choice.Kind ? selectedColor : normalColor;
++            kindButtons[i].targetGraphic.color =
++                i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&
++                DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind ?
++                selectedColor : normalColor;
+         for (int i = 0; i < optionButtons.Length; i++)
+         {
+             optionButtons[i].GetComponentInChildren<TextMeshProUGUI>(true).text = session.OptionLabel(i);
+diff --git a/Darwin's farm/Assets/Scripts/map/Transition System/MapTileColorTransitionSystem.Feedback.cs b/Darwin's farm/Assets/Scripts/map/Transition System/MapTileColorTransitionSystem.Feedback.cs
+index 5c18b804..1b3252a0 100644
+--- a/Darwin's farm/Assets/Scripts/map/Transition System/MapTileColorTransitionSystem.Feedback.cs	
++++ b/Darwin's farm/Assets/Scripts/map/Transition System/MapTileColorTransitionSystem.Feedback.cs	
+@@ -243,7 +243,7 @@ public partial class MapTileColorTransitionSystem
+     private void FinishBiomeFeedback()
+     {
+         foreach (SurfaceFeedback blend in surfaceFeedback)
+-            if (blend.surface.mesh != null)
++            if (blend.surface.mesh != null && blend.surface.renderer != null)
+             {
+                 blend.surface.mesh.SetColors(blend.to);
+                 ApplyGroundArtworkTransition(blend, 1f);

@@ -1,0 +1,5 @@
+Assets/Resources/V61Bioweb13.json -text
+Artifacts/V61Integration/Source/bioweb13.json -text
+Artifacts/V61Integration/patch/v61-current-head.patch -text whitespace=-trailing-space
+Artifacts/V61Integration/Source/*.md whitespace=-trailing-space
+Artifacts/V61Integration/Validation/*.log whitespace=-trailing-space

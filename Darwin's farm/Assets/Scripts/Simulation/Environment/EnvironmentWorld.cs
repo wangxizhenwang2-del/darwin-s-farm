@@ -64,8 +64,12 @@ namespace DarwinFarm.Environment
             if (!tiles.TryGetValue(position, out EnvironmentTile tile) || tile.IsWater)
             { error = "温湿度科技只适用于陆格"; return false; }
             int index = (int)attribute;
-            tile.Locals[index] = new LocalClimateEffect { Sequence = nextCommandSequence++ };
             double target = EnvironmentRules.Clamp(attribute, EnvironmentRules.Defaults(tile.Habitat).Get(attribute) + amount);
+            if (Math.Abs(target - tile.Values[index]) < .000001)
+            { error = "环境数值未发生有效变化"; return false; }
+            tile.Locals[index] = new LocalClimateEffect {
+                Sequence = nextCommandSequence++, Baseline = tile.Values[index],
+                HabitatAtSubmit = tile.Habitat };
             tile.Tracks[index].Begin(tile.Values[index], target, 25, EffectPhase.Entering);
             EnforceSlots(tile);
             return true;
@@ -79,7 +83,7 @@ namespace DarwinFarm.Environment
             { error = "该地块没有对应单格操作"; return false; }
             int index = (int)attribute;
             if (!tile.Locals[index].Active)
-            { error = "该单格操作已经在退出"; return false; }
+                return true; // A repeated cancellation must not restart return.
             tile.Locals[index].Age = EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
             StartLocalReturn(tile, index);
             return true;
@@ -108,8 +112,25 @@ namespace DarwinFarm.Environment
             foreach (EnvironmentTile tile in members)
             {
                 double next = tile.Values[2] + (suppress ? -amount * 100000 : amount);
-                tile.Values[2] = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
-                tile.Tracks[2].Stop(tile.Values[2]);
+                next = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
+                if (Math.Abs(next - tile.Values[2]) < .000001)
+                { error = "环境数值未发生有效变化"; return false; }
+            }
+            foreach (EnvironmentTile tile in members)
+            {
+                double next = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+                    tile.Values[2] + (suppress ? -amount * 100000 : amount));
+                tile.RecoveryBaseline = tile.Values[2];
+                tile.RecoveryHabitatAtSubmit = tile.Habitat;
+                if (tile.IsWater)
+                {
+                    tile.Values[2] = next;
+                    tile.Tracks[2].Stop(next);
+                }
+                else
+                    tile.Tracks[2].Begin(tile.Values[2], next,
+                        EnvironmentRules.LandRecoveryTransitionDays,
+                        EffectPhase.Entering);
                 tile.RecoveryReturning = true;
                 tile.RecoveryAge = 0;
                 tile.RecoverySequence = nextCommandSequence++;
@@ -134,19 +155,22 @@ namespace DarwinFarm.Environment
             foreach (GridPosition position in positions)
             {
                 if (!unique.Add(position) || !tiles.TryGetValue(position, out EnvironmentTile tile) ||
-                    !tile.RecoveryReturning || tile.RecoveryCancelIssued)
+                    !tile.RecoveryReturning)
                 { error = "目标地块没有可统一撤销的植被增量操作"; return false; }
                 members.Add(tile);
             }
+            bool allReturning = true;
             foreach (EnvironmentTile tile in members)
-            {
-                if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
-                { error = "植物操作已经在恢复"; return false; }
-            }
+                if (tile.RecoveryAge < tile.RecoveryHoldThreshold)
+                    allReturning = false;
+            if (allReturning) return true;
+            foreach (EnvironmentTile tile in members)
+                if (tile.RecoveryAge >= tile.RecoveryHoldThreshold)
+                { error = "水域操作阶段不一致"; return false; }
             foreach (EnvironmentTile tile in members)
             {
                 tile.RecoveryCancelIssued = true;
-                tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
+                tile.RecoveryAge = tile.RecoveryHoldThreshold;
                 StartRecoveryReturn(tile);
             }
             return true;
@@ -224,16 +248,25 @@ namespace DarwinFarm.Environment
                     { tile.Locals[i] = null; localEnded = true; }
                 }
                 if (localEnded) RefreshClimateTargets(tile);
-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays)
+                if (tile.RecoveryReturning && tile.RecoveryAge < tile.RecoveryHoldThreshold)
                 {
                     tile.RecoveryAge++;
-                    if (tile.RecoveryAge == EnvironmentRules.RecoveryHoldDays)
+                    if (tile.RecoveryAge == tile.RecoveryHoldThreshold)
                         StartRecoveryReturn(tile);
                 }
+                if (tile.RecoveryReturning && !tile.IsWater &&
+                    tile.RecoveryAge == EnvironmentRules.LandRecoveryTransitionDays &&
+                    !tile.Tracks[2].Active)
+                    tile.Tracks[2].Stop(tile.Values[2]);
                 if (tile.RecoveryReturning && !tile.Tracks[2].Active)
                 {
-                    if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
-                    { tile.RecoveryReturning = false; RefreshRecoveryTarget(tile); }
+                    if (tile.RecoveryAge >= tile.RecoveryHoldThreshold)
+                    {
+                        tile.RecoveryReturning = false;
+                        tile.RecoveryDetached = !tile.IsWater &&
+                            tile.RecoveryHabitatAtSubmit == tile.Habitat;
+                        RefreshRecoveryTarget(tile);
+                    }
                 }
                 if (!tile.RecoveryReturning && !tile.RecoveryDetached && !tile.IsWater)
                     RefreshRecoveryTarget(tile);
@@ -243,13 +276,19 @@ namespace DarwinFarm.Environment
 
         private void StartLocalReturn(EnvironmentTile tile, int index)
         {
-            tile.Tracks[index].Begin(tile.Values[index], ClimateDestination(tile, index),
+            LocalClimateEffect effect = tile.Locals[index];
+            double destination = effect != null && effect.HabitatAtSubmit == tile.Habitat
+                ? effect.Baseline : ClimateDestination(tile, index);
+            tile.Tracks[index].Begin(tile.Values[index], destination,
                 EnvironmentRules.ClimateReturnDays, EffectPhase.Returning);
         }
         private void StartRecoveryReturn(EnvironmentTile tile)
         {
-            tile.Tracks[2].Begin(tile.Values[2], RecoveryDefault(tile),
-                EnvironmentRules.RecoveryReturnDays, EffectPhase.Returning);
+            double destination = tile.IsWater ? RecoveryDefault(tile) :
+                tile.RecoveryHabitatAtSubmit == tile.Habitat
+                    ? tile.RecoveryBaseline : RecoveryDefault(tile);
+            tile.Tracks[2].Begin(tile.Values[2], destination,
+                tile.RecoveryReturnDuration, EffectPhase.Returning);
         }
         private static double ClimateDestination(EnvironmentTile tile, int index)
         {
@@ -286,7 +325,7 @@ namespace DarwinFarm.Environment
             while (true)
             {
                 int count = tile.RecoveryReturning &&
-                    tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays ? 1 : 0;
+                    tile.RecoveryAge < tile.RecoveryHoldThreshold ? 1 : 0;
                 for (int i = 0; i < 2; i++)
                     if (tile.Locals[i] != null && tile.Locals[i].Active) count++;
                 if (count <= allowed) return;
@@ -296,11 +335,11 @@ namespace DarwinFarm.Environment
                     if (tile.Locals[i] != null && tile.Locals[i].Active &&
                         tile.Locals[i].Sequence < oldest)
                     { oldest = tile.Locals[i].Sequence; owner = i; }
-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
+                if (tile.RecoveryReturning && tile.RecoveryAge < tile.RecoveryHoldThreshold &&
                     tile.RecoverySequence < oldest) owner = 2;
                 if (owner == 2)
                 {
-                    tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
+                    tile.RecoveryAge = tile.RecoveryHoldThreshold;
                     tile.RecoveryCancelIssued = true;
                     StartRecoveryReturn(tile);
                 }
@@ -320,6 +359,10 @@ namespace DarwinFarm.Environment
             if (habitat == tile.Habitat) return;
             tile.Habitat = habitat;
             tile.Terrain = EnvironmentRules.VisualTerrain(habitat);
+            // A completed land recovery command preserves its captured baseline
+            // only in the habitat where it was submitted.
+            if (tile.RecoveryDetached && !tile.RecoveryReturning)
+                tile.RecoveryDetached = false;
             for (int i = 0; i < 2; i++)
             {
                 if (tile.Locals[i] != null && !tile.Locals[i].Active)
@@ -330,7 +373,7 @@ namespace DarwinFarm.Environment
                 else if (tile.Locals[i] == null && tile.Tracks[i].Phase == EffectPhase.Automatic)
                     tile.Tracks[i].Stop(tile.Values[i]);
             }
-            if (tile.RecoveryReturning && tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
+            if (tile.RecoveryReturning && tile.RecoveryAge >= tile.RecoveryHoldThreshold)
                 StartRecoveryReturn(tile);
             else RefreshRecoveryTarget(tile);
         }

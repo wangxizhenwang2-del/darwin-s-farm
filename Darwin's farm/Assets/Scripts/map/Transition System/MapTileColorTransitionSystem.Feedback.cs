@@ -243,7 +243,7 @@ public partial class MapTileColorTransitionSystem
     private void FinishBiomeFeedback()
     {
         foreach (SurfaceFeedback blend in surfaceFeedback)
-            if (blend.surface.mesh != null)
+            if (blend.surface.mesh != null && blend.surface.renderer != null)
             {
                 blend.surface.mesh.SetColors(blend.to);
                 ApplyGroundArtworkTransition(blend, 1f);

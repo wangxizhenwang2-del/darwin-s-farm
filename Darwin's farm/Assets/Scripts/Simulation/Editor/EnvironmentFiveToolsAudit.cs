@@ -58,6 +58,18 @@ public static class EnvironmentFiveToolsAudit
         Check(player != null && account != null && !before.Environment.IsWater,
             "Land player controller and account must be ready.");
         Check(EnvironmentTechnologyCatalog.All.Length == 5, "Exactly five tools.");
+        var session = UnityEngine.Object.FindFirstObjectByType<EnvironmentToolSession>();
+        Check(session != null, "The shared desktop/mobile tool session must exist.");
+        for (int i = 0; i < EnvironmentTechnologyCatalog.All.Length; i++)
+        {
+            session.SelectKind(i);
+            Check(session.Choice.Kind == EnvironmentTechnologyCatalog.All[i],
+                "Tool button " + i + " must select the matching model operation.");
+        }
+        Check(!session.OptionEnabled(0) && session.OptionEnabled(1) &&
+            session.OptionEnabled(2) && !session.OptionEnabled(3),
+            "Elevation options must allow only one-level changes.");
+        session.End();
         account.CostsEnabled = true;
         long balance = account.Balance;
         var simulation = environment.GetComponent<SimulationController>();
@@ -89,10 +101,13 @@ public static class EnvironmentFiveToolsAudit
         Check(environment.TryRead(Vector2Int.zero, out var afterRecovery) &&
             Math.Abs(afterRecovery.PlantStock - afterStock.PlantStock) < .1f &&
             Math.Abs(afterRecovery.Environment.Recovery.Value -
+                afterStock.Environment.Recovery.Value) < .1f &&
+            afterRecovery.Environment.Recovery.Phase == EffectPhase.Entering &&
+            Math.Abs(afterRecovery.Environment.Recovery.Target -
                 EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
                     afterStock.Environment.Recovery.Value + 25000)) < .1f &&
             account.Balance == balance - 520,
-            "Recovery changes R only and pays separately.");
+            "Recovery begins a 25-day R transition and pays separately without changing S.");
         Check(!player.CanCancel(Vector2Int.zero, EnvironmentTechnologyKind.PlantStockChange) &&
             player.CanCancel(Vector2Int.zero, EnvironmentTechnologyKind.PlantRecoveryChange),
             "Instant stock has no cancellation timeline; recovery does.");

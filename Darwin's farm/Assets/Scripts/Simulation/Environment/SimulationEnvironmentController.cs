@@ -258,8 +258,9 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (!EnvironmentRules.IsRecoveryStrength(amount)) { error = "增量强度必须为 ±25000 或 ±50000"; return false; }
                 target = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, state.Recovery.Value + amount);
-                hold = EnvironmentRules.RecoveryHoldDays;
-                returning = EnvironmentRules.RecoveryReturnDays; break;
+                enter = EnvironmentRules.LandRecoveryTransitionDays;
+                hold = EnvironmentRules.LandRecoveryHoldDays;
+                returning = EnvironmentRules.LandRecoveryReturnDays; break;
             case SimulationInterventionKind.PlantBiomass:
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f) { error = "库存操作使用 ±0.25 或 ±0.5（25%／50%）"; return false; }

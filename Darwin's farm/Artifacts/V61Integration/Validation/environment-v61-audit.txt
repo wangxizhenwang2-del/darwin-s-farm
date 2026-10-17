@@ -1,0 +1,12 @@
+PASS climate accepted
+PASS recovery accepted
+PASS both land tools enter without instant recovery jump
+PASS 25-day entry and shared 150-day hold
+PASS return starts on day 175
+PASS 100-day return restores captured baselines
+PASS negative recovery accepted
+PASS repeated cancel is idempotent
+PASS cancel from current actual returns to baseline in 100 days
+PASS stock plus 50 percent multiplies current stock
+PASS stock minus 25 percent multiplies current stock
+PASS diagonal contact rejected

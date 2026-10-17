@@ -3,6 +3,12 @@ using UnityEngine;
 
 public partial class SimulationController
 {
+    [SerializeField] private bool enableNeighborMovementFormula = false;
+    public bool EnableNeighborMovementFormula
+    {
+        get => enableNeighborMovementFormula;
+        set => enableNeighborMovementFormula = value;
+    }
     private string GetLandTraitDirection(BlockInfo block, PopulationData p)
     {
         if (p == null) return "当前变异：无种群";
@@ -37,9 +43,19 @@ public partial class SimulationController
         float capacity = LandLifeRules.EnvironmentalCarryingCapacity(
             block, p, LandRules);
         float renewalCoverage = capacity / Mathf.Max(1, p.speciesAmount);
-        float attraction = BestNeighborAttraction(block, p, out int ceiling);
-        bool neighborOpportunity = attraction >= LandRules.neighborAttractionThreshold
-            && p.movementAbility < ceiling;
+        int ceiling;
+        float attraction;
+        if (enableNeighborMovementFormula)
+        {
+            attraction = BestSustainableNeighborOpportunity(block, p,
+                ReadLandTraits(p), out _, out _, out _);
+            ceiling = attraction > 0f ? 100 : p.movementAbility;
+        }
+        else attraction = BestNeighborAttraction(block, p, out ceiling);
+        bool neighborOpportunity = enableNeighborMovementFormula
+            ? attraction > 0f && p.movementAbility < 100
+            : attraction >= LandRules.neighborAttractionThreshold &&
+                p.movementAbility < ceiling;
         return new LandSelectionSignals
         {
             stockDays = stockDays,
@@ -136,6 +152,92 @@ public partial class SimulationController
             scoreSum += score;
         }
         return scoreSum > 0f ? weighted / scoreSum : 0f;
+    }
+
+    // V is a bounded daily net survival rate. One population per day of net
+    // growth spans the full [0,1] scale around neutral 0.5. Both locations
+    // use sustainable production and the same resident-competition forecast.
+    private float SustainableSurvivalValue(BlockInfo block, PopulationData p,
+        LandTraits traits)
+    {
+        if (block == null || block.community == null || p == null ||
+            p.speciesAmount <= 0) return 0f;
+        int count = p.speciesAmount;
+        float fitness = LandLifeRules.Fitness(block, traits.t, traits.h);
+        float adult = count * LandLifeRules.AdultNeed(traits.s, traits.m,
+            LandRules);
+        float food = p.trophicLevel == 0
+            ? LandLifeRules.ForecastSustainablePlantIntake(block, p,
+                traits.t, traits.h, traits.m, traits.s, traits.f, LandRules)
+            : LandLifeRules.AvailableSustainablePreyFood(block, p, LandRules);
+        float sat = adult > 0f ? Mathf.Clamp01(food / adult) : 1f;
+        float opportunity = count * LandRules.birthRate * traits.f / 100f
+            * fitness * sat;
+        float newbornCost = LandLifeRules.YoungNeed(traits.s, LandRules) +
+            LandLifeRules.BodyMass(traits.s, LandRules);
+        float paidBirths = Mathf.Min(opportunity, Mathf.Max(0f, food - adult) /
+            Mathf.Max(0.0001f, newbornCost));
+        float deaths = LandRules.starvationDeathRate * count * (1f - sat)
+            + LandLifeRules.ColdDeaths(count, block.temperature, LandRules)
+            + LandRules.climateMismatchDeathRate * count * (1f - fitness)
+            + LandLifeRules.NaturalAdultDeaths(count, traits.s, LandRules)
+            + LandLifeRules.PaidBirthStressDeaths(Mathf.FloorToInt(paidBirths),
+                traits.s, traits.f, LandRules);
+        foreach (PopulationData hunter in block.community)
+            if (hunter != null && hunter.speciesAmount > 0 &&
+                FoodWeb.CanEat(hunter, p))
+            {
+                float chase = Mathf.Clamp(1f +
+                    (hunter.movementAbility - traits.m) /
+                    Mathf.Max(1f, LandRules.chaseScale), 0.1f, 1.5f);
+                float sizeRatio = (hunter.size + 10f) / (traits.s + 10f);
+                deaths += hunter.speciesAmount *
+                    Mathf.Min(1f, 10f / Mathf.Max(1f, traits.s)) *
+                    Mathf.Clamp01(LandRules.baseCaptureChance * chase *
+                        Mathf.Clamp(sizeRatio * sizeRatio, 0.1f, 1.5f));
+            }
+        return Mathf.Clamp01(0.5f + (paidBirths - deaths) / count);
+    }
+
+    private float BestSustainableNeighborOpportunity(BlockInfo source,
+        PopulationData p, LandTraits traits, out BlockInfo bestNeighbor,
+        out float sourceValue, out float neighborValue)
+    {
+        bestNeighbor = null;
+        neighborValue = 0f;
+        sourceValue = SustainableSurvivalValue(source, p, traits);
+        if (source == null || source.Neighbors == null ||
+            p.ecologicalNiche != EcologicalNiche.Land) return 0f;
+        float best = 0f;
+        foreach (BlockInfo neighbor in source.Neighbors)
+        {
+            if (neighbor == null || neighbor == source ||
+                neighbor.waterCoverage != WaterCoverage.Land ||
+                neighbor.community == null || neighbor.Neighbors == null ||
+                !blockInfos.Contains(neighbor)) continue;
+            bool reciprocal = false;
+            foreach (BlockInfo back in neighbor.Neighbors)
+                if (back == source) { reciprocal = true; break; }
+            if (!reciprocal) continue;
+            int step = Mathf.Abs(neighbor.elevation - source.elevation);
+            if (step > 1) continue;
+            if (!LandMovementOpportunity.CanOfferNeighborSlot(
+                LivingPopulationCount(neighbor), HasSameSpeciesResident(neighbor, p)))
+                continue;
+            float value = SustainableSurvivalValue(neighbor, p, traits);
+            float opportunity = (step == 0 ? 1f : 0.5f) *
+                Mathf.Max(0f, value - sourceValue);
+            if (opportunity > best || opportunity == best &&
+                opportunity > 0f && bestNeighbor != null &&
+                string.CompareOrdinal(StableTileKey(neighbor),
+                    StableTileKey(bestNeighbor)) < 0)
+            {
+                best = opportunity;
+                bestNeighbor = neighbor;
+                neighborValue = value;
+            }
+        }
+        return best;
     }
 
     private float BestNeighborAttraction(BlockInfo source, PopulationData p,
@@ -237,7 +339,8 @@ public partial class SimulationController
         if (!mutationEnabled || mutationStep <= 0f) return;
         foreach (PopulationData population in block.community)
         {
-            if (population == null || population.speciesAmount <= 0) continue;
+            if (population == null || population.speciesAmount <= 0 ||
+                population.ecologicalNiche != EcologicalNiche.Land) continue;
             population.mutationDaysElapsed++;
             if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval))
                 continue;
@@ -269,6 +372,8 @@ public partial class SimulationController
                 for (int trait = 2; trait < 5; trait++)
                     for (int direction = -1; direction <= 1; direction += 2)
                     {
+                        if (enableNeighborMovementFormula && trait == 2)
+                            continue;
                         int next = TraitLimit(trait,
                             TraitValue(population, trait) + direction);
                         if (next == TraitValue(population, trait) ||
@@ -290,6 +395,67 @@ public partial class SimulationController
                                 0.05f, 5f), "sustainable");
                     }
 
+            if (enableNeighborMovementFormula && selectionStrength > 0f)
+            {
+                float opportunity = BestSustainableNeighborOpportunity(
+                    block, population, original, out BlockInfo bestNeighbor,
+                    out float valueHere, out float valueThere);
+                LandTraits plusTraits = ChangedTrait(original, 2,
+                    Mathf.Min(100, population.movementAbility + 1));
+                LandTraits minusTraits = ChangedTrait(original, 2,
+                    Mathf.Max(0, population.movementAbility - 1));
+                float deltaPlus = population.movementAbility < 100
+                    ? SustainableSurvivalValue(block, population, plusTraits) -
+                        valueHere + LandMovementOpportunity.BonusPlus(
+                            population.movementAbility, opportunity) : 0f;
+                float deltaMinus = population.movementAbility > 0
+                    ? SustainableSurvivalValue(block, population, minusTraits) -
+                        valueHere + LandMovementOpportunity.BonusMinus(
+                            population.movementAbility, opportunity) : 0f;
+                for (int direction = -1; direction <= 1; direction += 2)
+                {
+                    int next = TraitLimit(2, population.movementAbility + direction);
+                    if (next == population.movementAbility ||
+                        LeavesProtectedTarget(population, 2, next) ||
+                        InfluenceNet(population, 2, currentSimulationDay, true)
+                            * direction < 0f) continue;
+                    // V already includes the adult movement cost. Adding the
+                    // analytic cost term again would charge it twice.
+                    float deltaUtility = direction > 0 ? deltaPlus : deltaMinus;
+                    if (deltaUtility <= LandRules.mutationGainThreshold)
+                        continue;
+                    if (!LandMovementOpportunity.AcceptNaturalOpportunity(
+                        naturalChance, ModelRandom01(currentSimulationDay,
+                            "mutation.neighbor", block, population, null,
+                            direction > 0 ? 1 : 0))) continue;
+                    AddMutationCandidate(choices, 2, direction,
+                        Mathf.Clamp(deltaUtility * selectionStrength * 100f,
+                            0.0001f, 5f),
+                        opportunity > 0f ? "neighbor_opportunity" :
+                            "sustainable");
+                }
+                if (OnEcologyEvent != null || EnableEcologyConsoleLogs)
+                    LogEcology(currentSimulationDay, block, population,
+                        "movement_opportunity", "best=" +
+                        (bestNeighbor != null ? StableTileKey(bestNeighbor) : "") +
+                        " zDelta=" + (bestNeighbor != null ?
+                            Mathf.Abs(bestNeighbor.elevation - block.elevation) : 0) +
+                        " c=" + (bestNeighbor == null ? 0f :
+                            bestNeighbor.elevation == block.elevation ? 1f : 0.5f) +
+                        " lambda=" + LandMovementOpportunity.Lambda +
+                        " Vhere=" + valueHere.ToString("R",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        " Vneighbor=" + valueThere.ToString("R",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        " A=" + opportunity.ToString("R",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        " m=" + original.m +
+                        " deltaPlus=" + deltaPlus.ToString("R",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        " deltaMinus=" + deltaMinus.ToString("R",
+                            System.Globalization.CultureInfo.InvariantCulture));
+            }
+
             for (int trait = 2; trait < 5; trait++)
             {
                 float net = InfluenceNet(population, trait,
@@ -305,15 +471,21 @@ public partial class SimulationController
             }
 
             float totalWeight = 0f;
-            var details = new System.Text.StringBuilder();
+            bool emitMutationTrace = OnEcologyEvent != null ||
+                EnableEcologyConsoleLogs;
+            var details = emitMutationTrace ?
+                new System.Text.StringBuilder() : null;
             foreach (MutationCandidate candidate in choices)
             {
                 totalWeight += candidate.weight;
-                if (details.Length > 0) details.Append(',');
-                details.Append(candidate.trait).Append(':')
-                    .Append(candidate.direction > 0 ? '+' : '-')
-                    .Append(':').Append(candidate.sources)
-                    .Append(':').Append(candidate.weight.ToString("F3"));
+                if (emitMutationTrace)
+                {
+                    if (details.Length > 0) details.Append(',');
+                    details.Append(candidate.trait).Append(':')
+                        .Append(candidate.direction > 0 ? '+' : '-')
+                        .Append(':').Append(candidate.sources)
+                        .Append(':').Append(candidate.weight.ToString("F3"));
+                }
             }
             float draw = ModelRandom01(currentSimulationDay,
                 "mutation.choose", block, population) * totalWeight;
@@ -348,12 +520,13 @@ public partial class SimulationController
                             influence.weight * winner.direction > 0f)
                             influence.potential *= 0.5f;
             }
-            LogEcology(currentSimulationDay, block, population,
-                "mutation_choice", "candidates=[" + details +
-                "] draw=" + ModelRandom01(currentSimulationDay,
-                    "mutation.choose", block, population).ToString("F6") +
-                " selected=" + (selected >= 0
-                    ? population.lastMutationEffect : "none"));
+            if (emitMutationTrace)
+                LogEcology(currentSimulationDay, block, population,
+                    "mutation_choice", "candidates=[" + details +
+                    "] draw=" + ModelRandom01(currentSimulationDay,
+                        "mutation.choose", block, population).ToString("F6") +
+                    " selected=" + (selected >= 0
+                        ? population.lastMutationEffect : "none"));
         }
     }
 }

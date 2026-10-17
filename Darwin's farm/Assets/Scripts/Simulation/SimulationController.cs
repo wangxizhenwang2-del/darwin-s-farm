@@ -28,6 +28,44 @@ public struct SimulationTuning
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
+    public const string V61SourceGraphHash =
+        "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5";
+    // V6.1 core-run switches. Economy reuses the existing account switch;
+    // there is no random-event producer in the current project.
+    [SerializeField] private bool enableRandomEvents = false;
+    public bool EnableRandomEvents
+    {
+        get => enableRandomEvents;
+        set => enableRandomEvents = value;
+    }
+    public bool EnableEconomy
+    {
+        get
+        {
+#if UNITY_5_3_OR_NEWER
+            BioenergyAccount account = GetComponent<BioenergyAccount>();
+            return account != null && account.CostsEnabled;
+#else
+            return false;
+#endif
+        }
+    }
+    public void SetEconomyEnabled(bool enabled)
+    {
+#if UNITY_5_3_OR_NEWER
+        BioenergyAccount account = GetComponent<BioenergyAccount>();
+        if (account != null) account.CostsEnabled = enabled;
+#endif
+    }
+    public void ApplyCoreEvolutionTestProfile()
+    {
+        SetEcologicalNichesEnabled(false);
+        SetEconomyEnabled(false);
+        enableRandomEvents = false;
+        EnableNeighborMovementFormula = true;
+        EnableEcologyLedgerDiagnostics = true;
+        EnableEcologyConsoleLogs = false;
+    }
     [SerializeField] private LandRuleTuning landRules = new LandRuleTuning();
     private bool landRulesValidated;
     public LandRuleTuning ReadLandRules() => LandRules.Copy();
@@ -184,7 +222,7 @@ public partial class SimulationController : MonoBehaviour
         highStockDays = LandRules.highStockDays,
         lowRenewalCoverage = LandRules.lowRenewalCoverage,
         highRenewalCoverage = LandRules.highRenewalCoverage,
-        ecologicalNichesEnabled = ecologicalNichesEnabled
+        ecologicalNichesEnabled = EnableAirEcology || EnableWaterEcology
     };
 
     public void ApplyTuning(SimulationTuning tuning)
@@ -199,7 +237,10 @@ public partial class SimulationController : MonoBehaviour
             tuning.migrationPopulationScale, tuning.overloadThreshold,
             tuning.baseOverloadProbability, tuning.overloadMigrationFraction,
             tuning.migrationCooldownDays);
-        SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
+        // A legacy combined tuning round-trip must preserve an independently
+        // enabled air-only or water-only configuration.
+        if (tuning.ecologicalNichesEnabled != EcologicalNichesEnabled)
+            SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
         LandRuleTuning nextLandRules = LandRules.Copy();
         nextLandRules.sameSpeciesMergeDays = tuning.sameSpeciesMergeDays;
         nextLandRules.postMergeSplitCooldownDays = tuning.postMergeSplitCooldownDays;
@@ -428,10 +469,12 @@ public partial class SimulationController : MonoBehaviour
         currentSimulationDay = day;
         SortModelState();
         OnBeforeDaySimulated?.Invoke(day);
+        BeginEcologyLedger();
         foreach (BlockInfo block in blockInfos)
         {
             SimulateBlock(block);
         }
+        CaptureLifeFlows();
         RemoveEndangered(day);
         RunPresetEvolution(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
@@ -441,6 +484,7 @@ public partial class SimulationController : MonoBehaviour
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
             LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+        FinishEcologyLedger(day);
         OnDaySimulated?.Invoke(day);
     }
 

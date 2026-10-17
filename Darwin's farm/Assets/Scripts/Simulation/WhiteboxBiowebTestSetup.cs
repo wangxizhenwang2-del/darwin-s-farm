@@ -41,6 +41,13 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
                 yield break;
             }
 
+        if (!V61BiowebValidator.TryValidate(species, out string graphError))
+        {
+            Debug.LogError(graphError, this);
+            enabled = false;
+            yield break;
+        }
+
         simulation.SetEvolutionNetworkSpecies(species);
         if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) ||
             initialTile.Block == null)

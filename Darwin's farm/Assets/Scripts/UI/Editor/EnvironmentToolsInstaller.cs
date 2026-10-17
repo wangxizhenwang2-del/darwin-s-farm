@@ -27,7 +27,7 @@ public static class EnvironmentToolsInstaller
             var panel=root.gameObject.AddComponent<DesktopEnvironmentTools>(); var saved=new SerializedObject(panel);
             Set(saved,"session",session); Set(saved,"mobile",mobile);
             var toolbar=Rect("Toolbar",root,new Vector2(94,320),Vector2.zero); Set(saved,"toolbar",toolbar.gameObject);
-            var kinds=new UnityEngine.UI.Button[5]; string[] captions={"温度","湿度","植物","海拔","季风"};
+            var kinds=new UnityEngine.UI.Button[5]; string[] captions={"温度","湿度","植物库存","日增量","海拔"};
             for(int i=0;i<5;i++) kinds[i]=Button(captions[i],toolbar,captions[i],new Vector2(94,56),new Vector2(0,-i*64));
             Array(saved,"kinds",kinds);
             var body=Rect("OperationPreview",root,new Vector2(510,480),new Vector2(104,0));

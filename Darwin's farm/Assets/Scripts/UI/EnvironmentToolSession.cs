@@ -54,26 +54,22 @@ public sealed class EnvironmentToolSession : MonoBehaviour
     {
         if (index < 0 || index >= EnvironmentTechnologyCatalog.All.Length) return;
         var kind = EnvironmentTechnologyCatalog.All[index];
-        int tier = kind == EnvironmentTechnologyKind.MonsoonAnchor ? 1 :
-            kind == EnvironmentTechnologyKind.ElevationChange ? (Choice.Tier > 0 ? 1 : -1) : Choice.Tier;
-        Choice = new EnvironmentTechnologyChoice(kind, tier, Choice.TemperatureOffset, Choice.HumidityOffset);
+        int tier = kind == EnvironmentTechnologyKind.ElevationChange ?
+            (Choice.Tier > 0 ? 1 : -1) : Choice.Tier;
+        Choice = new EnvironmentTechnologyChoice(kind, tier);
         Notice = ""; Begin();
     }
     public void SelectOption(int index)
     {
         if (index < 0 || index > 3 || !OptionEnabled(index)) return;
-        Choice = Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
-            new EnvironmentTechnologyChoice(Choice.Kind, 1, index == 0 || index == 3 ? -20 : 20, index < 2 ? 20 : -20) :
-            new EnvironmentTechnologyChoice(Choice.Kind, Tier(index));
+        Choice = new EnvironmentTechnologyChoice(Choice.Kind, Tier(index));
         Notice = ""; Begin();
     }
     private static int Tier(int index) => index == 0 ? 2 : index == 1 ? 1 : index == 2 ? -1 : -2;
     public bool OptionEnabled(int index) => Choice.Kind != EnvironmentTechnologyKind.ElevationChange || index == 1 || index == 2;
-    public string OptionLabel(int index) => Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
-        new[] { "冷湿", "暖湿", "干热", "干冷" }[index] : Choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
+    public string OptionLabel(int index) => Choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
         (Tier(index) > 0 ? "升一级" : "降一级") : (Tier(index) > 0 ? "提高" : "降低") + (Mathf.Abs(Tier(index)) == 1 ? "小档" : "大档");
-    public bool OptionSelected(int index) => Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
-        Choice.TemperatureOffset == (index == 0 || index == 3 ? -20 : 20) && Choice.HumidityOffset == (index < 2 ? 20 : -20) : Choice.Tier == Tier(index);
+    public bool OptionSelected(int index) => Choice.Tier == Tier(index);
     public void Refresh()
     {
         nextRefresh = Time.unscaledTime + .2f;
@@ -89,14 +85,16 @@ public sealed class EnvironmentToolSession : MonoBehaviour
             var state = read.Environment;
             bool temperature = state.HasLocalTemperature && state.Temperature.Phase != EffectPhase.Returning;
             bool humidity = state.HasLocalHumidity && state.Humidity.Phase != EffectPhase.Returning;
-            bool plants = state.CanCancelRecovery;
+            bool plants = state.HasRecoveryCommand && state.Recovery.Phase != EffectPhase.Returning;
             int locals = (temperature ? 1 : 0) + (humidity ? 1 : 0) + (plants ? 1 : 0);
-            SlotNotice = "生效名额 " + (locals + (state.HasMonsoon ? 1 : 0)) + "/2";
+            SlotNotice = "生效名额 " + locals + "/2";
             bool same = Choice.Kind == EnvironmentTechnologyKind.TemperatureChange ? temperature :
                 Choice.Kind == EnvironmentTechnologyKind.HumidityChange ? humidity :
-                Choice.Kind == EnvironmentTechnologyKind.PlantChange && plants;
-            if (Choice.Kind != EnvironmentTechnologyKind.ElevationChange &&
-                (Choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ? locals > 1 : !same && locals >= (state.HasMonsoon ? 1 : 2)))
+                Choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange && plants;
+            if ((Choice.Kind == EnvironmentTechnologyKind.TemperatureChange ||
+                Choice.Kind == EnvironmentTechnologyKind.HumidityChange ||
+                Choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange) &&
+                !same && locals >= 2)
                 SlotNotice += " · 较早的单格工具将进入恢复";
         }
         Changed?.Invoke();

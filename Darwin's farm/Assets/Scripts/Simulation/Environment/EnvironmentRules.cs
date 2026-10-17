@@ -49,8 +49,11 @@ namespace DarwinFarm.Environment
     {
         public const int PlantCapacity = 1000000, WaterPlantCapacity = 1500000;
         public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
-        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 150;
+        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 100;
         public const int RecoveryHoldDays = 50, RecoveryReturnDays = 50;
+        public const int LandRecoveryTransitionDays = 25;
+        public const int LandRecoveryHoldDays = 150;
+        public const int LandRecoveryReturnDays = 100;
         public readonly struct HabitatProfile
         {
             public readonly string Title;

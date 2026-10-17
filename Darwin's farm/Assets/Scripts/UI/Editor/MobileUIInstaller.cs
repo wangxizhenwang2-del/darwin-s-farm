@@ -186,7 +186,7 @@ public static class MobileUIInstaller
         var body = Rect("TechnologyBody", root, Vector2.up, Vector2.up, new Vector2(476, 394), new Vector2(0, -56));
         Set(saved, "body", body.gameObject);
         var kindRow = Rect("TechnologyKinds", body, Vector2.up, Vector2.up, new Vector2(476, 48), Vector2.zero);
-        Row(kindRow, 5); string[] kinds = { "温度", "湿度", "植物", "海拔", "季风" };
+        Row(kindRow, 5); string[] kinds = { "温度", "湿度", "存量", "增量", "海拔" };
         var kindButtons = new UnityEngine.UI.Button[kinds.Length];
         for (int i = 0; i < kinds.Length; i++) { kindButtons[i] = Button("Kind" + i, kindRow, kinds[i], new Vector2(88, 48)); Layout((RectTransform)kindButtons[i].transform, 88); }
         Array(saved, "kindButtons", kindButtons);

@@ -79,7 +79,7 @@ public partial class SimulationController
             source.community == null || !source.community.Contains(population) ||
             population.speciesAmount <= 0 || day < population.nextMigrationDay) return;
         // 生态位开启后，旧的陆地迁徙不能把陆生种群塞进河道地块。
-        if (ecologicalNichesEnabled &&
+        if ((EnableAirEcology || EnableWaterEcology) &&
             (source.waterCoverage != WaterCoverage.Land ||
              target.waterCoverage != WaterCoverage.Land ||
              population.ecologicalNiche != EcologicalNiche.Land)) return;
@@ -159,14 +159,14 @@ public partial class SimulationController
         return amount < 10 ? 0 : Mathf.Min(amount, 100);
     }
 
-    // V4.1 natural migration uses a fixed 10% split regardless of why it moved.
-    public static int StandardMigrationAmount(int population) =>
-        population < 10 ? 0 : Mathf.Min(population,
-            Mathf.Clamp(Mathf.RoundToInt(population * 0.1f), 10, 100));
+    // A planned move below ten animals is cancelled, never raised to ten.
+    public static int StandardMigrationAmount(int population)
+        => LandMovementOpportunity.StandardMigrationAmount(population);
 
     private struct MoveCandidate
     {
         public BlockInfo target;
+        public int amount;
         public float chance;
         public float tieBreaker;
     }
@@ -181,14 +181,19 @@ public partial class SimulationController
             {
                 if (population == null || population.speciesAmount <= 0 ||
                     day < population.nextMigrationDay) continue;
-                if (population.ecologicalNiche == EcologicalNiche.Air && ecologicalNichesEnabled)
+                if (population.ecologicalNiche == EcologicalNiche.Air && EnableAirEcology)
                 {
                     var destinations = new List<BlockInfo>(source.Neighbors);
-                    for (int i = destinations.Count - 1; i > 0; i--)
+                    destinations.Sort((left, right) =>
                     {
-                        int other = Random.Range(0, i + 1);
-                        BlockInfo swap = destinations[i]; destinations[i] = destinations[other]; destinations[other] = swap;
-                    }
+                        float leftDraw = ModelRandom01(day, "migration.air.destination",
+                            source, population, left);
+                        float rightDraw = ModelRandom01(day, "migration.air.destination",
+                            source, population, right);
+                        int order = leftDraw.CompareTo(rightDraw);
+                        return order != 0 ? order : string.CompareOrdinal(
+                            StableTileKey(left), StableTileKey(right));
+                    });
                     foreach (BlockInfo destination in destinations)
                     {
                         if (plans.Exists(move => move.target == destination &&
@@ -240,7 +245,9 @@ public partial class SimulationController
                 if (move.target == neighbor &&
                     !neighbor.community.Exists(existing => existing != null &&
                         SameSpecies(existing, move.population))) reserved++;
-            if (neighbor.community.Count + reserved >= 5) continue;
+            if (!LandMovementOpportunity.CanOfferNeighborSlot(
+                LivingPopulationCount(neighbor) + reserved,
+                HasSameSpeciesResident(neighbor, population))) continue;
             float attraction = NeighborAttraction(source, neighbor,
                 population, amount);
             float capacityCorrection = TargetCapacityCorrection(neighbor,
@@ -253,6 +260,7 @@ public partial class SimulationController
             candidates.Add(new MoveCandidate
             {
                 target = neighbor, chance = Mathf.Clamp01(chance),
+                amount = amount,
                 tieBreaker = ModelRandom01(day, "migration.tie", source,
                     population, neighbor)
             });
@@ -273,7 +281,7 @@ public partial class SimulationController
             plan = new MovePlan
             {
                 source = source, target = candidate.target,
-                population = population, amount = amount
+                population = population, amount = candidate.amount
             };
             return true;
         }
@@ -370,19 +378,41 @@ public partial class SimulationController
 
     [Header("Ecological Niches")]
     [SerializeField] private bool ecologicalNichesEnabled = false;
+    [SerializeField] private bool enableAirEcology = false;
+    [SerializeField] private bool enableWaterEcology = false;
+    // Existing scenes serialize the retired combined value as true. The new
+    // independent flags intentionally default off until explicitly enabled.
+    public bool EnableAirEcology => enableAirEcology;
+    public bool EnableWaterEcology => enableWaterEcology;
+    public void SetAirEcologyEnabled(bool enabled)
+    {
+        enableAirEcology = enabled;
+        ecologicalNichesEnabled = enableAirEcology || enableWaterEcology;
+    }
+    public void SetWaterEcologyEnabled(bool enabled)
+    {
+        enableWaterEcology = enabled;
+        ecologicalNichesEnabled = enableAirEcology || enableWaterEcology;
+    }
     [Range(0f, 1f)] [SerializeField] private float landToWaterProbability = 0.02f;
     [Range(0f, 1f)] [SerializeField] private float landToAirProbability = 0.01f;
     [Range(0f, 1f)] [SerializeField] private float waterDownProbability = 0.05f;
     [Range(0f, 1f)] [SerializeField] private float waterUpProbability = 0.002f;
     [Range(0f, 1f)] [SerializeField] private float waterToLandProbability = 0.001f;
 
-    public bool EcologicalNichesEnabled => ecologicalNichesEnabled;
+    public bool EcologicalNichesEnabled => EnableAirEcology || EnableWaterEcology;
     public event Action<BlockInfo, BlockInfo, PopulationData, PopulationData, int>
         OnNicheConverted;
     public event Action<PopulationTransitionResult> OnNicheConversionResolved;
     public event Action<PopulationData, BlockInfo, RiverBankSide?> OnLandPositionChanged;
 
-    public void SetEcologicalNichesEnabled(bool enabled) => ecologicalNichesEnabled = enabled;
+    // Preserve the existing combined API for scene and editor integrations.
+    public void SetEcologicalNichesEnabled(bool enabled)
+    {
+        ecologicalNichesEnabled = enabled;
+        enableAirEcology = enabled;
+        enableWaterEcology = enabled;
+    }
 
     public void SetEcologicalNicheProbabilities(float landToWater, float landToAir,
         float waterDown, float waterUp, float waterToLand)
@@ -440,7 +470,7 @@ public partial class SimulationController
     public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
         RiverBankSide side, PopulationData population)
     {
-        if (!ecologicalNichesEnabled || home == null || home.community == null ||
+        if (!EnableWaterEcology || home == null || home.community == null ||
             population == null || population.speciesAmount <= 0 ||
             population.ecologicalNiche != EcologicalNiche.Land ||
             !home.community.Contains(population)) return false;
@@ -462,7 +492,7 @@ public partial class SimulationController
 
     public bool TryReturnFromRiverBank(BlockInfo home, PopulationData population)
     {
-        if (!ecologicalNichesEnabled || home == null || home.community == null ||
+        if (!EnableWaterEcology || home == null || home.community == null ||
             population == null || population.ecologicalNiche != EcologicalNiche.Land ||
             population.speciesAmount <= 0 ||
             !home.community.Contains(population) ||
@@ -526,7 +556,7 @@ public partial class SimulationController
                  population.landPositionBlock == neighbor) &&
                 (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
                 waterTarget = neighbor;
-        if (waterTarget != null)
+        if (EnableWaterEcology && waterTarget != null)
         {
             if (ModelRandom01(day, "niche.land-water", source, population,
                     waterTarget) < landToWaterProbability)
@@ -535,7 +565,7 @@ public partial class SimulationController
             return false;
         }
 
-        if (!HasAirPopulation(source) &&
+        if (EnableAirEcology && !HasAirPopulation(source) &&
             population.speciesAmount >= population.carryingCapacity &&
             ModelRandom01(day, "niche.land-air", source, population)
                 < landToAirProbability)
@@ -635,7 +665,10 @@ public partial class SimulationController
 
     private bool CanDepart(BlockInfo source, PopulationData population,
         EcologicalNiche niche, int day) =>
-        ecologicalNichesEnabled && source != null && source.community != null &&
+        (niche == EcologicalNiche.Air ? EnableAirEcology :
+            niche == EcologicalNiche.Water ? EnableWaterEcology :
+            EnableAirEcology || EnableWaterEcology) &&
+        source != null && source.community != null &&
         source.community.Contains(population) && population != null &&
         population.speciesAmount > 0 && population.ecologicalNiche == niche &&
         day >= population.nextMigrationDay;

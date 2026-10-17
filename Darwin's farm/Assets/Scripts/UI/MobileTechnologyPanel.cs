@@ -4,6 +4,7 @@ using UnityEngine;
 // Saved mobile view of the shared desktop/touch tool session.
 public sealed class MobileTechnologyPanel : MonoBehaviour
 {
+    private static readonly string[] kindLabels = { "温度", "湿度", "存量", "增量", "海拔" };
     [SerializeField] private EnvironmentTechnologyController controller;
     [SerializeField] private RectTransform tileContent;
     [SerializeField] private GameObject body;
@@ -27,7 +28,12 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         deployButton.onClick.AddListener(session.Deploy);
         cancelButton.onClick.AddListener(session.CancelEffect);
         for (int i = 0; i < kindButtons.Length; i++)
-        { int index = i; kindButtons[i].onClick.AddListener(() => SelectKind(index)); }
+        {
+            int index = i;
+            kindButtons[i].onClick.AddListener(() => SelectKind(index));
+            if (i < kindLabels.Length)
+                kindButtons[i].GetComponentInChildren<TextMeshProUGUI>(true).text = kindLabels[i];
+        }
         for (int i = 0; i < optionButtons.Length; i++)
         { int index = i; optionButtons[i].onClick.AddListener(() => SelectOption(index)); }
         Refresh();
@@ -50,7 +56,10 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         if (session == null) return;
         expanded = session.Active; ApplyFold();
         for (int i = 0; i < kindButtons.Length; i++)
-            kindButtons[i].targetGraphic.color = i == (int)session.Choice.Kind ? selectedColor : normalColor;
+            kindButtons[i].targetGraphic.color =
+                i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&
+                DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind ?
+                selectedColor : normalColor;
         for (int i = 0; i < optionButtons.Length; i++)
         {
             optionButtons[i].GetComponentInChildren<TextMeshProUGUI>(true).text = session.OptionLabel(i);

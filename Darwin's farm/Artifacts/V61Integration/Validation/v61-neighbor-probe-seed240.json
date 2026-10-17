@@ -1,0 +1,15 @@
+{
+  "scenarioId": "v61-neighbor-probe-seed240",
+  "seed": 240,
+  "endDay": 300,
+  "coreV61": true,
+  "disableCosts": true,
+  "sourceGraph": "Assets/Resources/V61Bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {"day": 0, "sequence": 0, "x": 1, "y": 0,
+     "kind": "PlaceTile", "preset": "Assets/Scripts/map/data/雨林.asset"},
+    {"day": 0, "sequence": 1, "x": 0, "y": 0,
+     "kind": "HumidityChange", "tier": -1}
+  ]
+}
