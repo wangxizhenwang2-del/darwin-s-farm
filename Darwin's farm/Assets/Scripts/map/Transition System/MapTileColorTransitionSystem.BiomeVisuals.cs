@@ -11,6 +11,10 @@ public partial class MapTileColorTransitionSystem
     [SerializeField] private GameObject forestBiomeVisual;
     [SerializeField] private GameObject grasslandBiomeVisual;
     [SerializeField] private GameObject highlandBiomeVisual;
+    [SerializeField] private GameObject rainforestBiomeVisual;
+    [SerializeField] private GameObject tundraBiomeVisual;
+    [SerializeField] private GameObject snowMountainBiomeVisual;
+    [SerializeField] private GameObject volcanoBiomeVisual;
 
     private sealed class BiomeVisualData
     {
@@ -43,6 +47,10 @@ public partial class MapTileColorTransitionSystem
             case BiomeType.Forest: return forestBiomeVisual;
             case BiomeType.Grassland: return grasslandBiomeVisual;
             case BiomeType.Highland: return highlandBiomeVisual;
+            case BiomeType.Rainforest: return rainforestBiomeVisual;
+            case BiomeType.Tundra: return tundraBiomeVisual;
+            case BiomeType.SnowMountain: return snowMountainBiomeVisual;
+            case BiomeType.Volcano: return volcanoBiomeVisual;
             default: return null;
         }
     }
@@ -62,6 +70,7 @@ public partial class MapTileColorTransitionSystem
             if (current != null && current.biome == biome && (current.root != null || prefab == null))
             {
                 if (surfaceRebuilt && current.root != null) ReprojectDecorations(current, surface.collider);
+                if (current.root != null) SetNativeGroundVisible(current, !decorationFeedback.Contains(current));
                 continue;
             }
             bool animate = current != null && current.biome != biome && CanAnimateBiomeChanges;
@@ -89,6 +98,10 @@ public partial class MapTileColorTransitionSystem
             ProjectDecorations(root, surface.collider, biome);
             next.root = root;
             CacheDecorationPoses(next, surface.collider);
+            ProjectNativeGround(next);
+            SetNativeGroundVisible(next, !animate);
+            foreach (BiomeTileVfx vfx in root.GetComponentsInChildren<BiomeTileVfx>(true))
+                vfx.Initialize(surface.collider);
             if (animate) GrowDecorations(next);
             changed = true;
         }
@@ -122,9 +135,13 @@ public partial class MapTileColorTransitionSystem
         switch (biome)
         {
             case BiomeType.Desert: return name.StartsWith("pPlane");
-            case BiomeType.Forest: return name == "Fprest_Block";
+            case BiomeType.Forest: return name.StartsWith("Fprest_Block");
             case BiomeType.Grassland: return name == "Land1" || name.StartsWith("pPlane");
             case BiomeType.Highland: return name == "Ground - Paint Here";
+            case BiomeType.Rainforest: return name.StartsWith("Fprest_Block") || name == "pCube1";
+            case BiomeType.Tundra: return name == "Ground_Surface";
+            case BiomeType.SnowMountain:
+            case BiomeType.Volcano: return name == "BiomeGround";
             default: return false;
         }
     }
@@ -138,6 +155,13 @@ public partial class MapTileColorTransitionSystem
             case BiomeType.Forest:
                 return name.StartsWith("Tree") ||
                        (name.StartsWith("Stone") && b.size.x > 0.8f);
+            case BiomeType.Rainforest:
+                return name.IndexOf("tree", System.StringComparison.OrdinalIgnoreCase) >= 0 && b.size.y > 1.8f ||
+                    name.StartsWith("Coral") && b.size.x > 1.2f;
+            case BiomeType.Tundra:
+                return name.StartsWith("Rock_") && !name.Contains("SnowCap") || name == "Pond_ShallowWater";
+            case BiomeType.SnowMountain: return name.StartsWith("Mountain_Snow");
+            case BiomeType.Volcano: return name == "Rock";
             case BiomeType.Grassland:
                 return name.StartsWith("Trunk") || name.StartsWith("pCube") ||
                        name.StartsWith("pasted__tree");
@@ -152,7 +176,7 @@ public partial class MapTileColorTransitionSystem
         }
     }
 
-    private static void ProjectDecorations(GameObject root, MeshCollider surface, BiomeType biome,
+    private void ProjectDecorations(GameObject root, MeshCollider surface, BiomeType biome,
         bool createObstacles = true)
     {
         Transform oldObstacles = root.transform.Find("BiomeObstacles");
@@ -163,7 +187,7 @@ public partial class MapTileColorTransitionSystem
             else DestroyImmediate(oldObstacles.gameObject);
         }
         Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-        if (biome == BiomeType.Forest) ThinForestTrees(root, renderers);
+        if (biome == BiomeType.Forest && !preserveForestArtwork) ThinForestTrees(root, renderers);
         var grounds = new List<MeshCollider>();
         foreach (Renderer renderer in renderers)
         {
@@ -187,7 +211,11 @@ public partial class MapTileColorTransitionSystem
         int obstacleCount = 0;
         foreach (Renderer renderer in renderers)
         {
-            if (IsGroundMesh(biome, renderer.name))
+            // Native particles are projected by BiomeTileVfx from their emission
+            // mesh. Their transient renderer bounds are not decoration anchors.
+            if (renderer is ParticleSystemRenderer) continue;
+            if (IsGroundMesh(biome, renderer.name) ||
+                biome == BiomeType.Tundra && renderer.name == "Ground_SlabSides")
             {
                 renderer.enabled = false;
                 continue;
@@ -216,6 +244,10 @@ public partial class MapTileColorTransitionSystem
 
             if (!createObstacles || !IsMajorObstacle(biome, renderer) ||
                 !surface.Raycast(ray, out target, 160f)) continue;
+            // Small saplings remain ground cover in the art pilot. Mature tree
+            // trunks and large stones still block both navigation and movement.
+            if (preserveForestArtwork && biome == BiomeType.Forest &&
+                renderer.name.StartsWith("Tree") && renderer.bounds.size.y < 1.8f) continue;
             Vector2 flat = new Vector2(local.x, local.z);
             bool duplicate = false;
             foreach (Vector2 point in used)
@@ -225,12 +257,15 @@ public partial class MapTileColorTransitionSystem
 
             float width = renderer.bounds.size.x;
             float depth = renderer.bounds.size.z;
-            bool mountain = biome == BiomeType.Highland && renderer.name.StartsWith("Mountain");
-            float diameter = mountain ? Mathf.Clamp(Mathf.Min(width, depth) * 0.55f, 1.2f, 3f) :
+            bool mountain = biome == BiomeType.Highland && renderer.name.StartsWith("Mountain") ||
+                biome == BiomeType.SnowMountain || biome == BiomeType.Volcano;
+            bool largeMountain = biome == BiomeType.SnowMountain || biome == BiomeType.Volcano;
+            float diameter = largeMountain ? Mathf.Clamp(Mathf.Min(width, depth) * .82f, 1.2f, 5.5f) :
+                mountain ? Mathf.Clamp(Mathf.Min(width, depth) * 0.55f, 1.2f, 3f) :
                 renderer.name.StartsWith("Trunk") ? 0.55f :
                 renderer.name.StartsWith("Tree") || renderer.name.StartsWith("pasted__tree") ? 0.7f :
                 Mathf.Clamp(Mathf.Min(width, depth) * 0.42f, 0.55f, 1.3f);
-            float height = mountain ? 3f : 2.2f;
+            float height = largeMountain ? Mathf.Max(3f, renderer.bounds.size.y + .5f) : mountain ? 3f : 2.2f;
             GameObject blocker = new GameObject("BiomeObstacle_" + obstacleCount++);
             blocker.layer = LayerMask.NameToLayer("Obstacle");
             blocker.transform.SetParent(obstacleRoot.transform, false);
@@ -238,9 +273,11 @@ public partial class MapTileColorTransitionSystem
                 obstacleRoot.transform.InverseTransformPoint(target.point) + Vector3.up * (height * 0.5f);
             BoxCollider box = blocker.AddComponent<BoxCollider>();
             box.size = new Vector3(diameter, height, diameter);
+            if (biome == BiomeType.Tundra && renderer.name == "Pond_ShallowWater")
+                box.size = new Vector3(width * .9f, height, depth * .9f);
             var volume = blocker.AddComponent<NavMeshModifierVolume>();
             volume.area = NavMesh.GetAreaFromName("Not Walkable");
-            volume.size = new Vector3(diameter + 0.15f, height + 0.3f, diameter + 0.15f);
+            volume.size = box.size + new Vector3(.15f, .3f, .15f);
         }
         foreach (MeshCollider probe in grounds)
         {

@@ -9,8 +9,8 @@ namespace Darwin.Rendering.Editor
 {
     public static class MoebiusSnowMountainSceneApply
     {
-        const string MaterialPath = "Assets/Rendering/Moebius/Content/SnowMountain/SnowMountain.mat";
-        const string OutlinePath = "Assets/Rendering/Moebius/Content/SnowMountain/SnowMountainOutline.mat";
+        const string MaterialPath = "Assets/Rendering/Moebius/Samples/Biomes/Materials/SnowMountain/SnowMountain.mat";
+        const string OutlinePath = "Assets/Rendering/Moebius/Samples/Biomes/Materials/SnowMountain/SnowMountainOutline.mat";
 
         [MenuItem("Tools/Moebius/Snow Mountain/Apply to Selected Scene Object")]
         public static void ApplyToSelection()

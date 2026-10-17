@@ -7,11 +7,11 @@ namespace Darwin.Rendering.Editor
 {
     public static class MoebiusSnowMountainSetup
     {
-        const string ModelPath = "Assets/Building/SnowMountain.fbx";
-        const string Folder = "Assets/Rendering/Moebius/Content/SnowMountain";
+        const string ModelPath = "Assets/Rendering/Moebius/Samples/Biomes/Meshes/SnowMountain.fbx";
+        const string Folder = "Assets/Rendering/Moebius/Samples/Biomes/Materials/SnowMountain";
         const string MaterialPath = Folder + "/SnowMountain.mat";
         const string OutlinePath = Folder + "/SnowMountainOutline.mat";
-        const string PrefabPath = Folder + "/SnowMountain.prefab";
+        const string PrefabPath = "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/SnowMountain_Template.prefab";
 
         [MenuItem("Tools/Moebius/Snow Mountain/Build Material and Prefab")]
         public static void Build()

@@ -13,14 +13,21 @@ namespace Darwin.Rendering.Editor
     public static class MoebiusVolcanoLavaBake
     {
         const string ScenePath = "Assets/Scenes/New Scene.unity";
-        const string Folder = "Assets/Rendering/Moebius/Content/Volcano";
-        const string InkPath = Folder + "/Volcano1_LavaFlowInk.png";
-        const string LakeFieldPath = Folder + "/Volcano1_LavaLakeDualInletField.png";
-        const string SourcePath = Folder + "/Volcano1_LavaSource.asset";
+        const string Folder = "Assets/Rendering/Moebius/Samples/Biomes";
+        const string InkPath = Folder + "/Textures/Volcano/Volcano1_LavaFlowInk.png";
+        const string LakeFieldPath = Folder + "/Textures/Volcano/Volcano1_LavaLakeDualInletField.png";
+        const string SourcePath = Folder + "/Meshes/Volcano/Volcano1_LavaSource.asset";
+
+        static void EnsureOutputDirectories()
+        {
+            foreach (var category in new[] { "Materials", "Meshes", "Textures" })
+                Directory.CreateDirectory(Folder + "/" + category + "/Volcano");
+        }
 
         [MenuItem("Tools/Moebius/Volcano/Bake Lava Flow UVs")]
         public static void Bake()
         {
+            EnsureOutputDirectories();
             var scene = SceneManager.GetSceneByPath(ScenePath);
             bool opened = !scene.isLoaded;
             if (opened) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
@@ -31,7 +38,7 @@ namespace Darwin.Rendering.Editor
                 var flow = volcano.transform.Find("Lava")?.GetComponent<MeshFilter>();
                 var lake = volcano.transform.Find("LavaLake")?.GetComponent<MeshFilter>();
                 if (!flow || !lake) throw new InvalidOperationException("Lava or LavaLake is missing.");
-                var importer = AssetImporter.GetAtPath("Assets/Building/Volcano.fbx") as ModelImporter;
+                var importer = AssetImporter.GetAtPath("Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano.fbx") as ModelImporter;
                 bool oldReadable = importer && importer.isReadable;
                 if (importer && !oldReadable) { importer.isReadable = true; importer.SaveAndReimport(); }
                 try
@@ -65,6 +72,7 @@ namespace Darwin.Rendering.Editor
         [MenuItem("Tools/Moebius/Volcano/Bake Lake Dual Inlets")]
         public static void BakeLakeOnly()
         {
+            EnsureOutputDirectories();
             var scene = SceneManager.GetSceneByPath(ScenePath);
             bool opened = !scene.isLoaded;
             if (opened) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
@@ -201,7 +209,7 @@ namespace Darwin.Rendering.Editor
             copy.triangles = exposed.ToArray();
             SplitFlowUVSeams(copy);
             copy.RecalculateBounds();
-            string path = Folder + "/Volcano1_LavaExposedUV.asset";
+            string path = Folder + "/Meshes/Volcano/Volcano1_LavaExposedUV.asset";
             var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing)
             {
@@ -438,7 +446,7 @@ namespace Darwin.Rendering.Editor
 
         static void SaveMesh(MeshFilter filter, Vector2[] uv, string name)
         {
-            string path = Folder + "/" + name + ".asset";
+            string path = Folder + "/Meshes/Volcano/" + name + ".asset";
             var copy = UnityEngine.Object.Instantiate(filter.sharedMesh);
             copy.name = name;
             copy.uv = uv;
@@ -507,7 +515,7 @@ namespace Darwin.Rendering.Editor
 
         static void AssignMaterial(MeshFilter filter, Shader shader, Texture2D ink, string name, bool lake)
         {
-            string path = Folder + "/" + name + ".mat";
+            string path = Folder + "/Materials/Volcano/" + name + ".mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (!material) { material = new Material(shader) { name = name }; AssetDatabase.CreateAsset(material, path); }
             material.shader = shader;

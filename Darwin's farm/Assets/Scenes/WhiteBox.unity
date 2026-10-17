@@ -22190,6 +22190,10 @@ MonoBehaviour:
   forestBiomeVisual: {fileID: 6963755734654402548, guid: e760630ddd31c274c9666e92768a4aa0, type: 3}
   grasslandBiomeVisual: {fileID: 5986367128113321659, guid: 1ec593402cb8dac4592abbff72c49cd2, type: 3}
   highlandBiomeVisual: {fileID: 8022671481964017136, guid: 23e7fcff76c78c040beb5a2330f69945, type: 3}
+  rainforestBiomeVisual: {fileID: 8699336918290549633, guid: 8864b1ccf1ca1f547a9069de9411339d, type: 3}
+  tundraBiomeVisual: {fileID: 5372210458538096314, guid: 5477a58baf4afc042a01c1f230981ed7, type: 3}
+  snowMountainBiomeVisual: {fileID: 2941861118827522412, guid: 3ffe3f59b088e304c9e13583646e5fe6, type: 3}
+  volcanoBiomeVisual: {fileID: 4485047517073707656, guid: 1adfdc37aab720b499ddb940084753c6, type: 3}
   gridManager: {fileID: 1541449667}
   vertexColorMaterial: {fileID: 2100000, guid: 17b69ac77d450ec4da4450e033d8b3e9, type: 2}
   biomeColorOverrides:
@@ -22215,6 +22219,28 @@ MonoBehaviour:
     color: {r: 0.96, g: 0.918, b: 0.867, a: 1}
   - biome: 10
     color: {r: 0.45, g: 0.44, b: 0.47, a: 1}
+  animateBiomeChanges: 1
+  biomeTransitionSeconds: 1.1
+  preserveForestArtwork: 1
+  forestGroundBlendColor: {r: 0.356, g: 0.43, b: 0.284, a: 1}
+  preserveOtherBiomeArtwork: 1
+  otherBiomeGroundColors:
+  - biome: 3
+    color: {r: 0.34964275, g: 0.4320158, b: 0.28295174, a: 1}
+  - biome: 6
+    color: {r: 0.8706859, g: 0.7566804, b: 0.39179447, a: 1}
+  - biome: 5
+    color: {r: 0.6226339, g: 0.81098413, b: 0.49448603, a: 1}
+  - biome: 8
+    color: {r: 0.788925, g: 0.7598988, b: 0.60433316, a: 1}
+  - biome: 4
+    color: {r: 0.3172029, g: 0.3818657, b: 0.28773358, a: 1}
+  - biome: 7
+    color: {r: 0.7740881, g: 0.7845564, b: 0.6295875, a: 1}
+  - biome: 9
+    color: {r: 0.95181066, g: 0.9610688, b: 0.92071074, a: 1}
+  - biome: 10
+    color: {r: 0.7531664, g: 0.6725989, b: 0.5634417, a: 1}
 --- !u!114 &1541449671
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,0 +1,1 @@
+PASS: 243 observed frames; gradual colors, staggered growth, fixed obstacle sizes, stable population XZ, initial/unchanged tiles, ordinary updates, interruptions, missing prefabs, disable cleanup and no per-frame NavMesh rebuild. Preview: D:\文档\GitHub\darwin-s-farm\Darwin's farm\.utmp\biome-feedback

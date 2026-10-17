@@ -1,0 +1,1 @@
+PASS: live Walk showed all 8 sprites across 1885 moving frames and 16.11m; repeated presenter sync, Idle/start/stop, stable anchors/ground XZ, inherited animation, static fallback, facing, vertical-only movement and teleport reset.

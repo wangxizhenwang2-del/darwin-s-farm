@@ -1,0 +1,2 @@
+PASS: after all 56 pairs and 16 interruptions, each live system owns exactly one projected mesh; no leaked emission meshes. Retiring forest stops emission and wind controllers in the same frame.
+PASS: exiting Play releases all projected emission meshes.

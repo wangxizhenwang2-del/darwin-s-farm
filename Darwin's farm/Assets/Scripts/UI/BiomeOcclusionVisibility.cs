@@ -117,7 +117,9 @@ public sealed class BiomeOcclusionVisibility : MonoBehaviour
             {
                 if (!child.name.StartsWith("BiomeVisual_")) continue;
                 foreach (Renderer renderer in child.GetComponentsInChildren<Renderer>(true))
-                    if (renderer != null && renderer.enabled && renderer.gameObject.activeInHierarchy)
+                    if (renderer != null && !(renderer is ParticleSystemRenderer) && renderer.enabled &&
+                        renderer.gameObject.activeInHierarchy &&
+                        !(renderer.GetComponentInParent<BiomeNativeGround>()?.Owns(renderer) ?? false))
                         found.Add(renderer);
             }
         }

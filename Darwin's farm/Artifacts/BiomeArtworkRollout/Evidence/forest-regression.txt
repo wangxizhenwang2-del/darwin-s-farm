@@ -1,0 +1,1 @@
+PASS: source paint, original tree XZ layout, collision-identical fallback, shared material isolation, rim/wall coverage, collision-free build preview, all four rotations, neighboring terrain and height seams.

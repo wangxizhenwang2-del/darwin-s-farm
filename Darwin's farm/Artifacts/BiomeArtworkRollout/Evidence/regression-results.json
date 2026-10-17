@@ -1,0 +1,7 @@
+{
+  "movement": "Population movement regression checks: 10/10 passed (including player detours and 32 changing-obstacle routes).",
+  "motionAndPlayer": "Representative regression passed: 6000 simultaneous ticks, 164/166 completed routes, two moving representatives, pause/reset, dynamic obstacle replanning and 100 player crossing attempts.",
+  "identity": "Population identity regression checks: 10/10 passed.",
+  "ecologicalEvents": "Ecological event regression checks: 15/15 passed.",
+  "touch": "Touch gesture checks passed: tap-on-release, one-shot hold, sticky drag, no threshold jump, UI ownership, pinch scale, finger order, pinch release, mixed UI fingers, canceled touches, focus/pause recovery, third finger and finger replacement."
+}

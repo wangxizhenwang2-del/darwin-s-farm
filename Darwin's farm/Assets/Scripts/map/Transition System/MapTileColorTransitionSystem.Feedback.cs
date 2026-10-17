@@ -17,6 +17,10 @@ public partial class MapTileColorTransitionSystem
         public Color[] to;
         public Color[] current;
         public float age;
+        public float fromArtStrength;
+        public float toArtStrength;
+        public BiomeGroundData fromArtwork;
+        public BiomeGroundData toArtwork;
     }
 
     private sealed class DecorationPose
@@ -46,13 +50,16 @@ public partial class MapTileColorTransitionSystem
     private void BeginSurfaceFeedback(SurfaceData surface, Vector3[] previousVertices,
         Color[] previousColors, List<Vector3> vertices, List<Color> colors)
     {
-        if (!CanAnimateBiomeChanges || previousColors.Length == 0) return;
+        if (!CanAnimateBiomeChanges || previousColors.Length == 0)
+        { CommitGroundArtwork(surface); return; }
         for (int i = 0; i < surfaceFeedback.Count; i++)
         {
             SurfaceFeedback active = surfaceFeedback[i];
             if (active.surface != surface) continue;
             // An unrelated map rebuild must not restart an ongoing color blend.
-            if (SameColors(active.to, colors))
+            if (SameColors(active.to, colors) &&
+                Mathf.Approximately(active.toArtStrength, surface.targetArtStrength) &&
+                active.toArtwork == surface.targetArtwork)
             {
                 surface.mesh.SetColors(active.current);
                 return;
@@ -61,7 +68,8 @@ public partial class MapTileColorTransitionSystem
             break;
         }
 
-        if (!animateSurfaceRefresh) return;
+        if (!animateSurfaceRefresh)
+        { CommitGroundArtwork(surface); return; }
         Color[] from = previousColors;
         if (from.Length != colors.Count)
         {
@@ -74,13 +82,18 @@ public partial class MapTileColorTransitionSystem
             for (int i = 0; i < from.Length; i++)
                 from[i] = palette.TryGetValue(ColorKey(vertices[i]), out Color old) ? old : colors[i];
         }
-        if (SameColors(from, colors)) return;
+        if (SameColors(from, colors) && Mathf.Approximately(surface.artStrength, surface.targetArtStrength) &&
+            surface.groundArtwork == surface.targetArtwork)
+        { CommitGroundArtwork(surface); return; }
         var blend = new SurfaceFeedback
         {
-            surface = surface, from = from, to = colors.ToArray(), current = (Color[])from.Clone()
+            surface = surface, from = from, to = colors.ToArray(), current = (Color[])from.Clone(),
+            fromArtStrength = surface.artStrength, toArtStrength = surface.targetArtStrength,
+            fromArtwork = surface.groundArtwork, toArtwork = surface.targetArtwork
         };
         surfaceFeedback.Add(blend);
         surface.mesh.SetColors(blend.current);
+        SetGroundArtStrength(surface, surface.artStrength);
     }
 
     private static Vector2Int ColorKey(Vector3 point) =>
@@ -103,6 +116,7 @@ public partial class MapTileColorTransitionSystem
         foreach (Renderer renderer in data.root.GetComponentsInChildren<Renderer>(true))
         {
             if (!renderer.enabled || !renderer.gameObject.activeInHierarchy ||
+                IsGroundMesh(data.biome, renderer.name) ||
                 !(renderer is MeshRenderer || renderer is SkinnedMeshRenderer)) continue;
             included.Add(renderer.transform);
         }
@@ -127,8 +141,11 @@ public partial class MapTileColorTransitionSystem
         }
     }
 
-    private static void ReprojectDecorations(BiomeVisualData data, MeshCollider ground)
+    private void ReprojectDecorations(BiomeVisualData data, MeshCollider ground)
     {
+        ProjectNativeGround(data);
+        foreach (BiomeTileVfx vfx in data.root.GetComponentsInChildren<BiomeTileVfx>(true))
+            vfx.Initialize(ground);
         foreach (DecorationPose pose in data.decorations)
         {
             if (pose.target == null) continue;
@@ -163,8 +180,10 @@ public partial class MapTileColorTransitionSystem
         data.retiring = true;
         data.age = 0f;
         data.root.name = "RetiringBiomeVisual_" + data.biome;
+        SetNativeGroundVisible(data, false);
         Transform obstacles = data.root.transform.Find("BiomeObstacles");
         if (obstacles != null) obstacles.gameObject.SetActive(false);
+        foreach (BiomeTileVfx vfx in data.root.GetComponentsInChildren<BiomeTileVfx>(true)) vfx.Retire();
         foreach (ParticleSystem particles in data.root.GetComponentsInChildren<ParticleSystem>())
             particles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         foreach (DecorationPose pose in data.decorations) pose.exitFrom = pose.amount;
@@ -174,7 +193,9 @@ public partial class MapTileColorTransitionSystem
     private void Update()
     {
         float duration = Mathf.Max(0.1f, biomeTransitionSeconds);
-        float step = Time.unscaledDeltaTime;
+        // A terrain bake or asset load can consume most of a frame. Preserve
+        // the visible fade/growth phases instead of skipping them after a hitch.
+        float step = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
         for (int i = surfaceFeedback.Count - 1; i >= 0; i--)
         {
             SurfaceFeedback blend = surfaceFeedback[i];
@@ -186,6 +207,7 @@ public partial class MapTileColorTransitionSystem
             for (int vertex = 0; vertex < blend.current.Length; vertex++)
                 blend.current[vertex] = Color.LerpUnclamped(blend.from[vertex], blend.to[vertex], eased);
             blend.surface.mesh.SetColors(blend.current);
+            ApplyGroundArtworkTransition(blend, eased);
             if (t >= 1f) surfaceFeedback.RemoveAt(i);
         }
         for (int i = decorationFeedback.Count - 1; i >= 0; i--)
@@ -209,7 +231,11 @@ public partial class MapTileColorTransitionSystem
             }
             if (age < (data.retiring ? 0.42f : 1f)) continue;
             if (data.retiring) RemoveBiomeVisual(data);
-            else foreach (DecorationPose pose in data.decorations) pose.Apply(1f);
+            else
+            {
+                foreach (DecorationPose pose in data.decorations) pose.Apply(1f);
+                SetNativeGroundVisible(data, true);
+            }
             decorationFeedback.RemoveAt(i);
         }
     }
@@ -217,11 +243,19 @@ public partial class MapTileColorTransitionSystem
     private void FinishBiomeFeedback()
     {
         foreach (SurfaceFeedback blend in surfaceFeedback)
-            if (blend.surface.mesh != null) blend.surface.mesh.SetColors(blend.to);
+            if (blend.surface.mesh != null)
+            {
+                blend.surface.mesh.SetColors(blend.to);
+                ApplyGroundArtworkTransition(blend, 1f);
+            }
         surfaceFeedback.Clear();
         foreach (BiomeVisualData data in decorationFeedback)
             if (data.retiring) RemoveBiomeVisual(data);
-            else foreach (DecorationPose pose in data.decorations) pose.Apply(1f);
+            else
+            {
+                foreach (DecorationPose pose in data.decorations) pose.Apply(1f);
+                SetNativeGroundVisible(data, true);
+            }
         decorationFeedback.Clear();
     }
 }

@@ -22,6 +22,8 @@ public partial class MapTileColorTransitionSystem
 
     private float SampleBiomeRelief(BiomeType biome, float localX, float localZ)
     {
+        BiomeGroundData artwork = GroundArtwork(biome);
+        if (artwork != null) return SampleAuthoredHeight(artwork, localX, localZ);
         GameObject prefab = BiomePrefab(biome);
         if (prefab == null || biomeReliefStrength <= 0f || biomeReliefLimit <= 0f)
             return 0f;
