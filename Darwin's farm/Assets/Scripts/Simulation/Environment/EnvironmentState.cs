@@ -62,7 +62,7 @@ namespace DarwinFarm.Environment
             HasLocalHumidity = tile.Locals[1] != null;
             HasRecoveryCommand = tile.RecoveryReturning;
             CanCancelRecovery = tile.RecoveryReturning &&
-                tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
+                tile.RecoveryAge < tile.RecoveryHoldThreshold &&
                 !tile.RecoveryCancelIssued;
         }
     }
@@ -85,6 +85,8 @@ namespace DarwinFarm.Environment
     {
         internal int Age;
         internal long Sequence;
+        internal double Baseline;
+        internal HabitatState HabitatAtSubmit;
         internal bool Active => Age < EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
         internal EffectPhase Phase => Age < EnvironmentRules.TransitionDays ? EffectPhase.Entering :
             Active ? EffectPhase.Holding : EffectPhase.Returning;
@@ -105,6 +107,15 @@ namespace DarwinFarm.Environment
         internal bool RecoveryReturning;
         internal bool RecoveryCancelIssued;
         internal bool RecoveryDetached;
+        internal double RecoveryBaseline;
+        internal HabitatState RecoveryHabitatAtSubmit;
+        internal int RecoveryHoldThreshold => IsWater ?
+            EnvironmentRules.RecoveryHoldDays :
+            EnvironmentRules.LandRecoveryTransitionDays +
+                EnvironmentRules.LandRecoveryHoldDays;
+        internal int RecoveryReturnDuration => IsWater ?
+            EnvironmentRules.RecoveryReturnDays :
+            EnvironmentRules.LandRecoveryReturnDays;
         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
         internal EnvironmentTile(TopologyNode node)
         {
@@ -121,14 +132,21 @@ namespace DarwinFarm.Environment
         {
             var track = Tracks[index]; var local = index < 2 ? Locals[index] : null;
             var phase = local != null ? local.Phase :
-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays
+                index == 2 && RecoveryReturning && !IsWater &&
+                    RecoveryAge < EnvironmentRules.LandRecoveryTransitionDays
+                    ? EffectPhase.Entering :
+                index == 2 && RecoveryReturning && RecoveryAge < RecoveryHoldThreshold
                     ? EffectPhase.Holding : track.Active ? track.Phase : EffectPhase.None;
             int remaining = local != null && local.Phase == EffectPhase.Holding ?
                 EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays - local.Age :
-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays ?
-                    EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
+                index == 2 && RecoveryReturning && !IsWater &&
+                    RecoveryAge < EnvironmentRules.LandRecoveryTransitionDays ?
+                    EnvironmentRules.LandRecoveryTransitionDays - RecoveryAge :
+                index == 2 && RecoveryReturning && RecoveryAge < RecoveryHoldThreshold ?
+                    RecoveryHoldThreshold - RecoveryAge : Math.Max(0, track.Duration - track.Age);
             double target = index == 2 && RecoveryReturning &&
-                RecoveryAge < EnvironmentRules.RecoveryHoldDays ? Values[2] : track.Target;
+                RecoveryAge >= EnvironmentRules.LandRecoveryTransitionDays &&
+                RecoveryAge < RecoveryHoldThreshold ? Values[2] : track.Target;
             return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index]),
                 EnvironmentRules.Clamp((EnvironmentAttribute)index, target),
                 phase, remaining, track.Progress);

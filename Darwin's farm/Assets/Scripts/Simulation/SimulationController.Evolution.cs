@@ -734,6 +734,7 @@ public partial class SimulationController
         descendant.manualEvolutionTarget = null;
         ResetTargetProtection(descendant);
         descendant.lastMutationEffect = "转化为" + target.SpeciesName;
+        RecordFormalTransfer(ancestor, target, amount);
         ancestor.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
         ancestor.localSplitBranch = false;
         ancestor.directedSplitTarget = null;

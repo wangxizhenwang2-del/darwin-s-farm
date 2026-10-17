@@ -7,12 +7,18 @@ public partial class SimulationController
     // OnPresetEvolutionResolved. No local same-species split is produced.
     public event Action<PopulationTransitionResult> OnLocalSplitResolved;
     public event Action<int, BlockInfo, PopulationData, string, string> OnEcologyEvent;
+    [SerializeField] private bool enableEcologyConsoleLogs = false;
+    public bool EnableEcologyConsoleLogs
+    {
+        get => enableEcologyConsoleLogs;
+        set => enableEcologyConsoleLogs = value;
+    }
 
     private void LogEcology(int day, BlockInfo block, PopulationData population,
         string kind, string detail)
     {
 #if UNITY_5_3_OR_NEWER
-        if (kind != "trait_mutation" && kind != "mutation_choice")
+        if (enableEcologyConsoleLogs)
             Debug.Log("[Ecology] day=" + day + " kind=" + kind + " population="
                 + (population != null ? population.PopulationId : "") + " " + detail);
 #endif
@@ -23,16 +29,20 @@ public partial class SimulationController
     {
         foreach (BlockInfo block in blockInfos)
         {
-            if (block == null || block.community == null) continue;
+            if (block == null || block.community == null ||
+                block.waterCoverage != WaterCoverage.Land) continue;
             for (int i = block.community.Count - 1; i >= 0; i--)
             {
                 PopulationData population = block.community[i];
-                if (population == null || population.endangeredDays < 10) continue;
+                if (population == null ||
+                    population.ecologicalNiche != EcologicalNiche.Land ||
+                    population.endangeredDays < 10) continue;
                 LogEcology(day, block, population, "local_extinction",
                     "species=" + (population.species != null
                         ? population.species.SpeciesName : population.lineageName)
                     + " count=" + population.speciesAmount
                     + " days=" + population.endangeredDays);
+                RecordEndangeredRemoval(population);
                 block.detritusBiomass += Mathf.Max(0f, population.bodyBiomass)
                     + Mathf.Max(0f, population.energyReserve);
                 block.community.RemoveAt(i);

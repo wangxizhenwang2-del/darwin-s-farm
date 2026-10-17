@@ -79,7 +79,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
                     climate.Target.ToString("F0") + "；预计生境 " +
                     EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
-                result.Timing = "25天进入 · 150天维持 · 150天恢复";
+                result.Timing = "25天进入 · 150天维持 · 100天恢复";
                 break;
             case EnvironmentTechnologyKind.PlantStockChange:
                 double capacity = (water ? EnvironmentRules.WaterPlantCapacity :
@@ -106,7 +106,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                     result.After = "日增量 " + increased.Target.ToString("F0") +
                         "；库存不即时改变";
                 }
-                result.Timing = "日增量立即变化 · 维持50天 · 恢复50天";
+                result.Timing = water ? "水域：立即变化 · 维持50天 · 恢复50天" :
+                    "25天进入 · 150天维持 · 100天恢复";
                 break;
             case EnvironmentTechnologyKind.ElevationChange:
                 int shift = choice.Tier;

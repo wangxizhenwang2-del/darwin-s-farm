@@ -79,7 +79,10 @@ public sealed class PopulationMovementController : MonoBehaviour
     }
     internal bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
 
-    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount, bool airborne = false)
+    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount) =>
+        CreatePopulation(tileId, initialCount, false);
+
+    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount, bool airborne)
     {
         if (airborne)
         {

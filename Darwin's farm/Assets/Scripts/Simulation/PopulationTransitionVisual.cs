@@ -22,8 +22,14 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
 
     public void Begin(Vector3[] waypoints, float arc, float seconds,
         PopulationMovementSettings settings, Material material, Sprite fromSprite,
+        Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted) =>
+        Begin(waypoints, arc, seconds, settings, material, fromSprite,
+            toSprite, from, to, camera, onCompleted, false);
+
+    public void Begin(Vector3[] waypoints, float arc, float seconds,
+        PopulationMovementSettings settings, Material material, Sprite fromSprite,
         Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted,
-        bool airborne = false)
+        bool airborne)
     {
         path = waypoints;
         arcHeight = Mathf.Max(0f, arc);

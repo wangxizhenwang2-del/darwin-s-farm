@@ -1,0 +1,6 @@
+HEAD: e96471169e1fd5bd4447b0b6b6a2382d932da5d3
+Tracked integration files changed: 16
+Removed public/protected declaration headers: 0
+Scene/Prefab/UI changes by this integration: 0
+Removed serialized-field declaration lines: 0
+UI references already unmatched in HEAD model: MonsoonAnchor, PlantChange, HasMonsoon, TemperatureOffset, HumidityOffset

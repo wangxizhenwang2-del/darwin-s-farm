@@ -18,6 +18,14 @@ public partial class SimulationController
     {
         var data = new StringBuilder(4096);
         Add(data, ModelRandomVersion);
+        Add(data, "V6.1");
+        Add(data, V61SourceGraphHash);
+        Add(data, EnableAirEcology ? "air:1" : "air:0");
+        Add(data, EnableWaterEcology ? "water:1" : "water:0");
+        Add(data, EnableEconomy ? "economy:1" : "economy:0");
+        Add(data, EnableRandomEvents ? "random:1" : "random:0");
+        Add(data, EnableNeighborMovementFormula ? "movement-b:1" :
+            "movement-b:0");
         Add(data, simulationSeed.ToString(CultureInfo.InvariantCulture));
         Add(data, currentSimulationDay.ToString(CultureInfo.InvariantCulture));
         AddFields(data, ReadTuning());
