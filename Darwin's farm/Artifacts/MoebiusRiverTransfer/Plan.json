@@ -1,0 +1,151 @@
+{
+  "sourceCommit": "a356e164aca1400a3d82f5f5f0fb7ee7606b25f2",
+  "targetCommit": "18b3b64f6052b3a57ce06ec5b7a480c91108415b",
+  "dependencies": [
+    {
+      "path": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/River.prefab",
+      "sourceBlob": "114926f3608a94b6f82cedcfd7e32cebf7ddb951",
+      "targetSamePath": false,
+      "identicalAtSamePath": false,
+      "guid": "9cc53af3e76391b499a2050a7f3e3b7d",
+      "targetPaths": [],
+      "identicalByGuid": false
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Samples/Biomes/Materials/Forest_Forest_Maya_Lambert18.mat",
+      "sourceBlob": "550253799888b8d56853e452dd161eaf7c0b36b7",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "07ebaaa806cad484984531b968972d5b",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Samples/Biomes/Materials/Forest_Forest_Maya_Lambert18.mat"
+      ],
+      "identicalByGuid": true
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/River.fbx",
+      "sourceBlob": "e611395cdaaaf52604a7c94ab6d7f39ea82d2804",
+      "targetSamePath": false,
+      "identicalAtSamePath": false,
+      "guid": "c4583c1711ff37f428cad57ab6de0722",
+      "targetPaths": [],
+      "identicalByGuid": false
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Materials/Bush10_Forest_Forest_openPBR_shader1_Paint.mat",
+      "sourceBlob": "b0911581bb836508d50b8d2e67b4dd7ac3053c08",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "9467183ed5522f84aa8e8a1ef3c38fca",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Content/Paint/Materials/Bush10_Forest_Forest_openPBR_shader1_Paint.mat"
+      ],
+      "identicalByGuid": true
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Materials/T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint.mat",
+      "sourceBlob": "f714d1c08a29269eff7da64d783a8f63c94d4a9b",
+      "targetSamePath": false,
+      "identicalAtSamePath": false,
+      "guid": "2dcb126846967b54aa3604a7bff92e63",
+      "targetPaths": [],
+      "identicalByGuid": false
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Materials/Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1.mat",
+      "sourceBlob": "22b68bdde8dd6ec7bf62299274baa5ab86de91eb",
+      "targetSamePath": true,
+      "identicalAtSamePath": false,
+      "guid": "0f2b42ea5833a3347b9f502037667631",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Content/Paint/Materials/Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1.mat"
+      ],
+      "identicalByGuid": false
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Samples/Biomes/Materials/Forest_Forest_Maya_Lambert17.mat",
+      "sourceBlob": "57546861963b4d9f1b13ca04ef7b597c6c647041",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "3090f2816547ec14c83f6aae8ec93eb0",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Samples/Biomes/Materials/Forest_Forest_Maya_Lambert17.mat"
+      ],
+      "identicalByGuid": true
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Materials/Stone17_Forest_Forest_openPBR_shader1_Paint.mat",
+      "sourceBlob": "748e291897a972c8881f1c766dda71973626a8be",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "8829a9f01718e0541877ce6634508749",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Content/Paint/Materials/Stone17_Forest_Forest_openPBR_shader1_Paint.mat"
+      ],
+      "identicalByGuid": true
+    },
+    {
+      "path": "Assets/Art/ImportedBiomes/Models/Forest.fbx",
+      "sourceBlob": "ac56e92792a01d123ef13f217fa4ca86e4127c8a",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "3b6739d970904841bbac8c9affbaecca",
+      "targetPaths": [
+        "Assets/Art/ImportedBiomes/Models/Forest.fbx"
+      ],
+      "identicalByGuid": true
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Shaders/Materials/MoebiusNPR.shader",
+      "sourceBlob": "f1cffb74762c90cea6bf9a96ab96da049f468814",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "ff9803eb4ad50444bb14eaa671550c58",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Shaders/Materials/MoebiusNPR.shader"
+      ],
+      "identicalByGuid": true
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Textures/Bush10__Bush10_Forest_Forest_openPBR_shader1_Paint_Color 1.png",
+      "sourceBlob": "0d7744217fd7e0b2551295a51281a3598d8d6b00",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "2ad88c02cce03c2459c6f662a204f098",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Content/Paint/Textures/Bush10__Bush10_Forest_Forest_openPBR_shader1_Paint_Color 1.png"
+      ],
+      "identicalByGuid": true
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Textures/T_T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint_Color 7.png",
+      "sourceBlob": "85006ae7d8c06085bf13eb78bf5aa77d63793223",
+      "targetSamePath": false,
+      "identicalAtSamePath": false,
+      "guid": "79325a4a19419a94ebe89c14a9b06e42",
+      "targetPaths": [],
+      "identicalByGuid": false
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Textures/I_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Color.png",
+      "sourceBlob": "632e4cb8b55593d3199c53ca36883120bfecacdd",
+      "targetSamePath": false,
+      "identicalAtSamePath": false,
+      "guid": "3f22173051bcd4b4793187b1dfecfb3d",
+      "targetPaths": [],
+      "identicalByGuid": false
+    },
+    {
+      "path": "Assets/Rendering/Moebius/Content/Paint/Textures/Stone17_Stone17_Forest_Forest_openPBR_shader1_Paint_Color 3.png",
+      "sourceBlob": "447fc5da3eb693a6d171fc8f02af6398206abd01",
+      "targetSamePath": true,
+      "identicalAtSamePath": true,
+      "guid": "fac5bc368ac549046a324bf85fb33b7f",
+      "targetPaths": [
+        "Assets/Rendering/Moebius/Content/Paint/Textures/Stone17_Stone17_Forest_Forest_openPBR_shader1_Paint_Color 3.png"
+      ],
+      "identicalByGuid": true
+    }
+  ],
+  "missing": []
+}

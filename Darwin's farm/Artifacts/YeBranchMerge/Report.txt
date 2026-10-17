@@ -1,0 +1,434 @@
+PASS: Isolated full-project merge fixture
+PASS: Main URP pipeline loads
+PASS: SnowMountain: main biome prefab loads
+PASS: SnowMountain: script references on SnowMountain_Moebius
+PASS: SnowMountain: script references on InkOutline
+PASS: SnowMountain: mesh on SnowMountain_Moebius
+PASS: SnowMountain: materials/shaders on SnowMountain_Moebius
+PASS: SnowMountain: mesh on InkOutline
+PASS: SnowMountain: materials/shaders on InkOutline
+PASS: SnowMountain: visible renderers exist
+SnowMountain original bounds: Center: (1793.28, 2.87, -178.91), Extents: (4.43, 2.87, 4.44)
+PASS: Volcano: main biome prefab loads
+PASS: Volcano: script references on Volcano_Moebius
+PASS: Volcano: script references on Lava
+PASS: Volcano: script references on LavaLake
+PASS: Volcano: script references on Rock
+PASS: Volcano: script references on RockOutline
+PASS: Volcano: mesh on Lava
+PASS: Volcano: materials/shaders on Lava
+PASS: Volcano: flowing ink texture
+PASS: Volcano: mesh on LavaLake
+PASS: Volcano: materials/shaders on LavaLake
+PASS: Volcano: flowing ink texture
+PASS: Volcano: lava lake flow field
+PASS: Volcano: mesh on Rock
+PASS: Volcano: materials/shaders on Rock
+PASS: Volcano: rock contact mask
+PASS: Volcano: mesh on RockOutline
+PASS: Volcano: materials/shaders on RockOutline
+PASS: Volcano: visible renderers exist
+Volcano original bounds: Center: (1805.45, 3.00, -179.35), Extents: (7.35, 3.17, 7.58)
+PASS: SnowMountain setup template remains available
+PASS: Previous River transfer is preserved
+PASS: River: script references on River
+PASS: River: script references on I
+PASS: River: script references on group22 (4)
+PASS: River: script references on group22
+PASS: River: script references on group22 (4)
+PASS: River: script references on group22 (1)
+PASS: River: script references on group22 (5)
+PASS: River: script references on group22 (2)
+PASS: River: script references on group22 (6)
+PASS: River: script references on group22 (3)
+PASS: River: script references on group22 (7)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Bush10* (23)
+PASS: River: script references on Bush10* (31)
+PASS: River: script references on Bush10* (40)
+PASS: River: script references on Bush10* (24)
+PASS: River: script references on Bush10* (32)
+PASS: River: script references on Bush10* (39)
+PASS: River: script references on Bush10* (25)
+PASS: River: script references on Bush10* (33)
+PASS: River: script references on Bush10* (26)
+PASS: River: script references on Bush10* (34)
+PASS: River: script references on Bush10* (27)
+PASS: River: script references on Bush10* (35)
+PASS: River: script references on Bush10* (41)
+PASS: River: script references on Bush10* (28)
+PASS: River: script references on Bush10* (36)
+PASS: River: script references on Bush10* (29)
+PASS: River: script references on Bush10* (37)
+PASS: River: script references on Bush10* (30)
+PASS: River: script references on Bush10* (38)
+PASS: River: script references on Stone17* (17)
+PASS: River: script references on Stone17* (25)
+PASS: River: script references on Stone17* (18)
+PASS: River: script references on Stone17* (26)
+PASS: River: script references on Stone17* (19)
+PASS: River: script references on Stone17* (27)
+PASS: River: script references on Stone17* (20)
+PASS: River: script references on Stone17* (28)
+PASS: River: script references on Stone17* (21)
+PASS: River: script references on Stone17* (29)
+PASS: River: script references on Stone17* (33)
+PASS: River: script references on Stone17* (34)
+PASS: River: script references on Stone17* (22)
+PASS: River: script references on Stone17* (30)
+PASS: River: script references on Stone17* (23)
+PASS: River: script references on Stone17* (31)
+PASS: River: script references on Stone17* (24)
+PASS: River: script references on Stone17* (32)
+PASS: River: script references on T
+PASS: River: script references on group22 (4)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on group22 (5)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on group22 (8)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on group22 (9)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on group22 (10)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on group22 (6)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on group22 (7)
+PASS: River: script references on Cylinder002 3
+PASS: River: script references on Hedra001 3
+PASS: River: script references on Bush10* (11)
+PASS: River: script references on Bush10* (17)
+PASS: River: script references on Bush10* (21)
+PASS: River: script references on Bush10* (22)
+PASS: River: script references on Bush10* (19)
+PASS: River: script references on Bush10* (9)
+PASS: River: script references on Bush10* (12)
+PASS: River: script references on Bush10* (14)
+PASS: River: script references on Bush10* (10)
+PASS: River: script references on Bush10* (13)
+PASS: River: script references on Bush10* (18)
+PASS: River: script references on Bush10* (20)
+PASS: River: script references on Stone17* (5)
+PASS: River: script references on Stone17* (7)
+PASS: River: script references on Stone17* (9)
+PASS: River: script references on Stone17* (11)
+PASS: River: script references on Stone17* (13)
+PASS: River: script references on Stone17* (15)
+PASS: River: script references on Stone17* (16)
+PASS: River: script references on Stone17* (6)
+PASS: River: script references on Stone17* (8)
+PASS: River: script references on Stone17* (10)
+PASS: River: script references on Stone17* (12)
+PASS: River: script references on Stone17* (14)
+PASS: River: script references on Bush10* (15)
+PASS: River: script references on Bush10* (16)
+PASS: River: mesh on I
+PASS: River: materials/shaders on I
+PASS: River: paint texture River_Ground_YL
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Bush10* (23)
+PASS: River: materials/shaders on Bush10* (23)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (31)
+PASS: River: materials/shaders on Bush10* (31)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (40)
+PASS: River: materials/shaders on Bush10* (40)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (24)
+PASS: River: materials/shaders on Bush10* (24)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (32)
+PASS: River: materials/shaders on Bush10* (32)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (39)
+PASS: River: materials/shaders on Bush10* (39)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (25)
+PASS: River: materials/shaders on Bush10* (25)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (33)
+PASS: River: materials/shaders on Bush10* (33)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (26)
+PASS: River: materials/shaders on Bush10* (26)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (34)
+PASS: River: materials/shaders on Bush10* (34)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (27)
+PASS: River: materials/shaders on Bush10* (27)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (35)
+PASS: River: materials/shaders on Bush10* (35)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (41)
+PASS: River: materials/shaders on Bush10* (41)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (28)
+PASS: River: materials/shaders on Bush10* (28)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (36)
+PASS: River: materials/shaders on Bush10* (36)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (29)
+PASS: River: materials/shaders on Bush10* (29)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (37)
+PASS: River: materials/shaders on Bush10* (37)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (30)
+PASS: River: materials/shaders on Bush10* (30)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (38)
+PASS: River: materials/shaders on Bush10* (38)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (17)
+PASS: River: materials/shaders on Stone17* (17)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (25)
+PASS: River: materials/shaders on Stone17* (25)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (18)
+PASS: River: materials/shaders on Stone17* (18)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (26)
+PASS: River: materials/shaders on Stone17* (26)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (19)
+PASS: River: materials/shaders on Stone17* (19)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (27)
+PASS: River: materials/shaders on Stone17* (27)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (20)
+PASS: River: materials/shaders on Stone17* (20)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (28)
+PASS: River: materials/shaders on Stone17* (28)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (21)
+PASS: River: materials/shaders on Stone17* (21)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (29)
+PASS: River: materials/shaders on Stone17* (29)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (33)
+PASS: River: materials/shaders on Stone17* (33)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (34)
+PASS: River: materials/shaders on Stone17* (34)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (22)
+PASS: River: materials/shaders on Stone17* (22)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (30)
+PASS: River: materials/shaders on Stone17* (30)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (23)
+PASS: River: materials/shaders on Stone17* (23)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (31)
+PASS: River: materials/shaders on Stone17* (31)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (24)
+PASS: River: materials/shaders on Stone17* (24)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (32)
+PASS: River: materials/shaders on Stone17* (32)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on T
+PASS: River: materials/shaders on T
+PASS: River: paint texture T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Cylinder002 3
+PASS: River: materials/shaders on Cylinder002 3
+PASS: River: mesh on Hedra001 3
+PASS: River: materials/shaders on Hedra001 3
+PASS: River: mesh on Bush10* (11)
+PASS: River: materials/shaders on Bush10* (11)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (17)
+PASS: River: materials/shaders on Bush10* (17)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (21)
+PASS: River: materials/shaders on Bush10* (21)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (22)
+PASS: River: materials/shaders on Bush10* (22)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (19)
+PASS: River: materials/shaders on Bush10* (19)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (9)
+PASS: River: materials/shaders on Bush10* (9)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (12)
+PASS: River: materials/shaders on Bush10* (12)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (14)
+PASS: River: materials/shaders on Bush10* (14)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (10)
+PASS: River: materials/shaders on Bush10* (10)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (13)
+PASS: River: materials/shaders on Bush10* (13)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (18)
+PASS: River: materials/shaders on Bush10* (18)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (20)
+PASS: River: materials/shaders on Bush10* (20)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (5)
+PASS: River: materials/shaders on Stone17* (5)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (7)
+PASS: River: materials/shaders on Stone17* (7)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (9)
+PASS: River: materials/shaders on Stone17* (9)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (11)
+PASS: River: materials/shaders on Stone17* (11)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (13)
+PASS: River: materials/shaders on Stone17* (13)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (15)
+PASS: River: materials/shaders on Stone17* (15)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (16)
+PASS: River: materials/shaders on Stone17* (16)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (6)
+PASS: River: materials/shaders on Stone17* (6)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (8)
+PASS: River: materials/shaders on Stone17* (8)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (10)
+PASS: River: materials/shaders on Stone17* (10)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (12)
+PASS: River: materials/shaders on Stone17* (12)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Stone17* (14)
+PASS: River: materials/shaders on Stone17* (14)
+PASS: River: paint texture Stone17_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (15)
+PASS: River: materials/shaders on Bush10* (15)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: River: mesh on Bush10* (16)
+PASS: River: materials/shaders on Bush10* (16)
+PASS: River: paint texture Bush10_Forest_Forest_openPBR_shader1_Paint
+PASS: Assets/Scenes/New Scene.unity: no missing scripts under Main Camera
+PASS: Assets/Scenes/New Scene.unity: no missing scripts under Directional Light
+PASS: Assets/Scenes/New Scene.unity: no missing scripts under Volcano (1)
+PASS: Assets/Scenes/New Scene.unity: no missing scripts under SnowMountain
+PASS: Assets/Scenes/New Scene.unity: mesh resolves on Lava
+PASS: Assets/Scenes/New Scene.unity: mesh resolves on LavaLake
+PASS: Assets/Scenes/New Scene.unity: mesh resolves on Rock
+PASS: Assets/Scenes/New Scene.unity: mesh resolves on RockOutline
+PASS: Assets/Scenes/New Scene.unity: mesh resolves on SnowMountain
+PASS: Assets/Scenes/New Scene.unity: mesh resolves on InkOutline
+Loaded game scene: Assets/Scenes/New Scene.unity
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under Main Camera
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under Directional Light
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under Player
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under CameraPoint
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under MapSystem
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under PlacementPreview
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under MapGeometry
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under MapGeometry/PlacedTiles
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under MapGeometry/Transitions
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under BuildPreviewRoot
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under Canvas
+PASS: Assets/Scenes/WhiteBox.unity: no missing scripts under EventSystem
+PASS: Assets/Scenes/WhiteBox.unity: mesh resolves on Player
+PASS: Assets/Scenes/WhiteBox.unity: mesh resolves on Cube
+PASS: Assets/Scenes/WhiteBox.unity: mesh resolves on Ground
+Loaded game scene: Assets/Scenes/WhiteBox.unity
+Errors: 0

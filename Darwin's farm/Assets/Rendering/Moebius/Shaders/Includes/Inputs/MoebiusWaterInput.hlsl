@@ -15,7 +15,7 @@ float _RippleWobbleStrength, _RippleWobbleSpeed;
 float _EnableFoam, _FoamWidth, _FoamIntensity, _FoamSpeed, _FoamNoiseScale;
 float _FoamIrregularity, _EnableFoamInk, _FoamInkStrength, _FoamInkWidth;
 float _EnableFoamPatches, _FoamPatchStrength, _EnableShoreMotion, _ShoreMotionStrength;
-float _EnableShoreMask, _ShoreDistanceRange, _ShoreWaveFade;
+float _EnableShoreMask, _ShoreDistanceRange, _ShoreWaveFade, _ShoreObjectSpace;
 float _ReceiveWaterShadows, _WaterShadowStrength, _WaterShadowDensity;
 float _DebugView, _AnimationPhase;
 #include "Assets/Rendering/Moebius/Shaders/Includes/Inputs/MoebiusWaterfallImpactParameters.hlsl"
@@ -27,6 +27,9 @@ float2 WaterDirection(float2 direction)
 float WaterTime() { return _Time.y + _AnimationPhase; }
 float2 ShoreUV(float2 positionXZ)
 {
+    // Optional prefab-local bake. Water remains horizontal, as required by the baker.
+    if (_ShoreObjectSpace > 0.5)
+        positionXZ = TransformWorldToObject(float3(positionXZ.x,GetObjectToWorldMatrix()._m13,positionXZ.y)).xz;
     return (positionXZ-_ShoreWorldRect.xy)/max(_ShoreWorldRect.zw,0.001);
 }
 float3 WaterShoreData(float2 positionXZ)
@@ -37,7 +40,16 @@ float3 WaterShoreData(float2 positionXZ)
     // Outside the baked rectangle is open water, never a repeated shoreline.
     if (any(uv<0) || any(uv>1)) return openWater;
     float3 packed = SAMPLE_TEXTURE2D_LOD(_ShorelineMask,sampler_ShorelineMask,uv,0).rgb;
-    return float3(packed.r*max(_ShoreDistanceRange,0.01),packed.gb*2-1);
+    float distance = packed.r*max(_ShoreDistanceRange,0.01);
+    float2 gradient = packed.gb*2-1;
+    if (_ShoreObjectSpace > 0.5)
+    {
+        // Uniform scaling and yaw rotation of a horizontal water prefab are supported.
+        float3 axis = TransformObjectToWorldDir(float3(1,0,0),false);
+        distance *= length(axis);
+        gradient = TransformObjectToWorldDir(float3(gradient.x,0,gradient.y),false).xz/max(length(axis),0.0001);
+    }
+    return float3(distance,gradient);
 }
 float WaterShoreDistance(float2 positionXZ) { return WaterShoreData(positionXZ).x; }
 #endif

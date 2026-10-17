@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 // Deterministic settlement and event checks; fixtures live in a preview scene.
 public static class PopulationTransitionRegressionChecks
 {
-    [MenuItem("Tools/Population/Run ecological event regression checks")]
+    [MenuItem("Tools/Darwin Farm/Validation/Population/Run Ecological Event Checks", false, 524)]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
     public static void RunBatch()

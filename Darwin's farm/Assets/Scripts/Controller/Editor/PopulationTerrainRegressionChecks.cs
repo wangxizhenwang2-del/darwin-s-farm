@@ -10,7 +10,7 @@ using Unity.AI.Navigation;
 public static class PopulationTerrainRegressionChecks
 {
     public static string LastResult { get; private set; }
-    [MenuItem("Tools/Population/Check current terrain movement (Play Mode)")]
+    [MenuItem("Tools/Darwin Farm/Validation/Population/Check Terrain Movement (Play Mode)", false, 522)]
     public static void BeginChecks()
     {
         LastResult = "Running";

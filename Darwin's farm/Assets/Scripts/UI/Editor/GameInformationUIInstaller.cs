@@ -9,7 +9,7 @@ public static class GameInformationUIInstaller
 {
     private const string AssetFolder = "Assets/Resources/GameUI/Editable";
 
-    [MenuItem("Tools/Darwin's Farm/UI/Install editable information UI")]
+    [MenuItem("Tools/Darwin Farm/UI/Install Editable Information UI", false, 300)]
     public static void Install()
     {
         if (EditorApplication.isPlaying)

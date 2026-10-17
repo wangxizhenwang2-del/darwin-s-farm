@@ -1,0 +1,28 @@
+{
+  "base": "18b3b64f6052b3a57ce06ec5b7a480c91108415b",
+  "vincent": "18b3b64f6052b3a57ce06ec5b7a480c91108415b",
+  "ye": "e58cc14898cef2da680bbe892e9b17d082e70401",
+  "overlap": [],
+  "untrackedBackup": {
+    "Darwin's farm/Artifacts/MoebiusRiverTransfer/AssetAudit.json": "ba7c47060b37298b76c518c57e98ff49d94b87af",
+    "Darwin's farm/Artifacts/MoebiusRiverTransfer/ImplementationReport.md": "39718eae7a7985d2a43c81b6226877f2eddb88cc",
+    "Darwin's farm/Artifacts/MoebiusRiverTransfer/OtherSide.png": "1fa9390de838a2bd96a481f52432dc3e9d6c4b40",
+    "Darwin's farm/Artifacts/MoebiusRiverTransfer/Overview.png": "1fdad6d6f45247dd8f285c80997989da37875ce6",
+    "Darwin's farm/Artifacts/MoebiusRiverTransfer/Plan.json": "eacffbf7ae348e7ebe8f20a08465ccb3a895f6c8",
+    "Darwin's farm/Artifacts/MoebiusRiverTransfer/Report.txt": "52863aa9886bc1f79daae4b2ca586239e72dcdf1",
+    "Darwin's farm/Artifacts/MoebiusRiverTransfer/TransferManifest.json": "b102c67ad09c19d7ad8b2248cd19ff4f0ba61fa7",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Materials/River_Ground_YL.mat": "49231679ad60bc9586f48b8c1601e733de3bb805",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Materials/River_Ground_YL.mat.meta": "45700a2259c1c6057608a723a015905c023f87ee",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Materials/T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint.mat": "f714d1c08a29269eff7da64d783a8f63c94d4a9b",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Materials/T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint.mat.meta": "449a206760cc416c2922e957ed3505dc0c41ce80",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Textures/I_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Color.png": "632e4cb8b55593d3199c53ca36883120bfecacdd",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Textures/I_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Color.png.meta": "f010fbb0542527d92a22af77c7c9bf1e612084c3",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Textures/T_T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint_Color 7.png": "85006ae7d8c06085bf13eb78bf5aa77d63793223",
+    "Darwin's farm/Assets/Rendering/Moebius/Content/Paint/Textures/T_T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint_Color 7.png.meta": "222534f817576f7386e1fa0776ab9e89daa17816",
+    "Darwin's farm/Assets/Rendering/Moebius/Samples/Biomes/Meshes/River.fbx": "e611395cdaaaf52604a7c94ab6d7f39ea82d2804",
+    "Darwin's farm/Assets/Rendering/Moebius/Samples/Biomes/Meshes/River.fbx.meta": "dfd280771f6b7ade9f982a45d7b2bacbcc573563",
+    "Darwin's farm/Assets/Rendering/Moebius/Samples/Biomes/Prefabs/River.prefab": "1fe02f8800763fe20046428baf00e1604333a3ed",
+    "Darwin's farm/Assets/Rendering/Moebius/Samples/Biomes/Prefabs/River.prefab.meta": "284c8283a1357c7e5d58c343eb23a6345a5ca7cc",
+    "Darwin's farm/Tools/MoebiusValidation/Editor/MoebiusRiverTransferValidation.cs": "90522af0137d6949d722fde1eea666f1d254db16"
+  }
+}

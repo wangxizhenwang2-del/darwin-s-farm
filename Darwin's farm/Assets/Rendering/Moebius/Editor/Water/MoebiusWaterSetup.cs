@@ -164,6 +164,7 @@ namespace Darwin.Rendering.Editor
             material.SetVector("_ShoreWorldRect", new Vector4(bounds.min.x, bounds.min.z, bounds.size.x, bounds.size.z));
             material.SetFloat("_ShoreDistanceRange", range);
             material.SetFloat("_EnableShoreMask", 1);
+            material.SetFloat("_ShoreObjectSpace", 0);
             EditorUtility.SetDirty(material);
         }
 

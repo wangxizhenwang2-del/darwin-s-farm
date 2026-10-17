@@ -14,7 +14,7 @@ public static class V43LandRulesAudit
         .GetMethod("RunPresetEvolution", BindingFlags.Instance | BindingFlags.NonPublic);
     private static Scene auditScene;
 
-    [MenuItem("Darwin's Farm/Run V4.3 Land Rules Audit")]
+    [MenuItem("Tools/Darwin Farm/Validation/Land Rules/Run V4.3 Audit", false, 500)]
     public static void Run()
     {
         UnityEngine.Random.State priorRandomState = UnityEngine.Random.state;

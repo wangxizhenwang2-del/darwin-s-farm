@@ -1,0 +1,132 @@
+[
+  {
+    "from": "Assets/Building/SnowMountain.fbx",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/SnowMountain.fbx",
+    "sha256": "f92e7d5c0e89bb350dbdfbfeb55df1283a5538dfbbff25fbb0b92150362512ea"
+  },
+  {
+    "from": "Assets/Building/Volcano.fbx",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano.fbx",
+    "sha256": "252f78909afb004719f835aa086de9a1aa0020e2a7bd0884b1ccfd5b2d58282c"
+  },
+  {
+    "from": "Assets/Building/SnowMountain.prefab",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/SnowMountain_Moebius.prefab",
+    "sha256": "b0d562a4033a6d380af6024bc1fc4bb69283fe0a05c077e04580c2adbbbf6900"
+  },
+  {
+    "from": "Assets/Building/Volcano (1).prefab",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/Volcano_Moebius.prefab",
+    "sha256": "3e0ac91231867e4286489622bf6904bff268afdfae3dfd025cbb71ff90b7c027"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/SnowMountain/SnowMountain.prefab",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/SnowMountain_Template.prefab",
+    "sha256": "36624d635478e8ac6529ede00ace42bfbd0a43cbf87f83120d1a80e7bdf43d5d"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/SnowMountain/SnowMountain.mat",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/SnowMountain/SnowMountain.mat",
+    "sha256": "62f570186317612b87086aca4e59650d26b06fe96dbec6001303f6a186ff1f24"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/SnowMountain/SnowMountainOutline.mat",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/SnowMountain/SnowMountainOutline.mat",
+    "sha256": "8b58d817e61fdad16c2adc15535fade731bdf7ba84ebfac34353a93ae804a882"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/SnowMountain.meta",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/SnowMountain.meta",
+    "sha256": "30f4e386e7a72f85d87b2c82ee2cc63a7f1febb30932ddc50304d7ce9710ece2"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_LavaExposedUV.asset",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano/Volcano1_LavaExposedUV.asset",
+    "sha256": "666d38f14e787dca7e781b437ddd63476ea2961809dcf6aa714ed40e95f0c8b3"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_LavaFlow.mat",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/Volcano/Volcano1_LavaFlow.mat",
+    "sha256": "d84c574d7547f1fcc1569756061fde841f7e74a9e3771d7609bdfe5f94fd72d1"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_LavaFlowInk.png",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Textures/Volcano/Volcano1_LavaFlowInk.png",
+    "sha256": "1ef75bdc7405caa16262fe5fd4ac7c576ac17a12601a22aba62916f80e6200a6"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_LavaLake.mat",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/Volcano/Volcano1_LavaLake.mat",
+    "sha256": "cf7755ccabc6f7e828d8ee05e1b57447ca48cbb98acad2ecf072165dc7a340bb"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_LavaLakeDualInletField.png",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Textures/Volcano/Volcano1_LavaLakeDualInletField.png",
+    "sha256": "fbb25c79d2d645b4a1256ac791f7cfeb2a0820364510cb1009b61bd0e923a809"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_LavaLakeUV.asset",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano/Volcano1_LavaLakeUV.asset",
+    "sha256": "295121c3a1036ec821599f94a80fb3f1cfccf30408ee268a46a7fb795be7d1e1"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_LavaSource.asset",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano/Volcano1_LavaSource.asset",
+    "sha256": "e25df8ccc9421c32b5333eea11ff14137f679749e18ecc642ddd617054c5308f"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_Rock.mat",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/Volcano/Volcano1_Rock.mat",
+    "sha256": "e6746aaccb525a2cbb9d9327acc2d85c044714f1b86f13a3a8fdfb98a5e5f25f"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_RockBakedMask.png",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Textures/Volcano/Volcano1_RockBakedMask.png",
+    "sha256": "b75aa08ace4ba4c0c62b9741798ab44ac1c15e6f99fc75f0af03be3c5e6c3eb6"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_RockOutline.mat",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/Volcano/Volcano1_RockOutline.mat",
+    "sha256": "7d1331ca6fbf341d6b16159f9151985b64bf324fef20b84b6f0184ae83e2b723"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_RockOutlineMesh.asset",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano/Volcano1_RockOutlineMesh.asset",
+    "sha256": "fec2e6c99ab062e98e165fb0652828c339edf8968fd00749d16a1dd360f267f7"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano/Volcano1_RockUniqueUV.asset",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano/Volcano1_RockUniqueUV.asset",
+    "sha256": "374a4286dc401b017383a36f5aaf30567dc224dde17e15214062f608e74a91cc"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Content/Volcano.meta",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Materials/Volcano.meta",
+    "sha256": "565272f29407f11b6e5abfe2b3210aa5e30644d2dbeb9a3b6cb58d5d0c0950f7"
+  },
+  {
+    "from": "Assets/Building/UV/灰度低多边形碎石裂纹纹理.png",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Textures/Volcano/Source/灰度低多边形碎石裂纹纹理.png",
+    "sha256": "2f778e9d346f080f5e3f59fce4b825f8995b66755f75ca4b5f643bcf21271c82"
+  },
+  {
+    "from": "Assets/Building/UV/透明背景的灰度裂岩纹理.png",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Textures/Volcano/Source/透明背景的灰度裂岩纹理.png",
+    "sha256": "f0b43ff251308221fdc8bbd4d0a7e34b7d815a17454e9875a6cb7f2db464c032"
+  },
+  {
+    "from": "Assets/Building/UV.meta",
+    "to": "Assets/Rendering/Moebius/Samples/Biomes/Textures/Volcano/Source.meta",
+    "sha256": "dba7cc32bf522f7faac98b49897eaf9320d7537062cd9c6f318726ff72e923c3"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Editor/MoebiusSnowMountainSetup.cs",
+    "to": "Assets/Rendering/Moebius/Editor/SnowMountain/MoebiusSnowMountainSetup.cs",
+    "sha256": "73d6198e86b91db5589cec0a41be86d288859feceebfd6abef5d80dc7fd190aa"
+  },
+  {
+    "from": "Assets/Rendering/Moebius/Editor/MoebiusSnowMountainSceneApply.cs",
+    "to": "Assets/Rendering/Moebius/Editor/SnowMountain/MoebiusSnowMountainSceneApply.cs",
+    "sha256": "2664f744578329240d36c21d92e19207029e06638eeff8a938513f0edde7e7c9"
+  }
+]

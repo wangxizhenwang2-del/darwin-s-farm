@@ -1,0 +1,4 @@
+PASS: 85 selected asset files installed.
+PASS: only SnowMountain_Moebius.prefab and Volcano_Moebius.prefab changed among existing assets.
+PASS: all original assets remain; original scenes, materials, shaders, VFX and other biomes retained.
+PASS: all new GUIDs unique; serialized asset references resolve.

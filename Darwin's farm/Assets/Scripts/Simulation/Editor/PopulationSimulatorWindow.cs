@@ -59,7 +59,7 @@ public partial class PopulationSimulatorWindow : EditorWindow
     private int speedIndex;
     private bool running;
 
-    [MenuItem("Darwin's Farm/种群模拟器")]
+    [MenuItem("Tools/Darwin Farm/Simulation/Population Simulator", false, 100)]
     public static void Open()
     {
         PopulationSimulatorWindow window = GetWindow<PopulationSimulatorWindow>("种群数值模拟器");

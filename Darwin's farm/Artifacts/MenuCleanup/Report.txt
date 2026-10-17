@@ -1,0 +1,28 @@
+Tools/Darwin Farm/Economy/Economy Settings => BioenergySettingsWindow.Open
+Tools/Darwin Farm/Map/Calibrate WhiteBox Biome Visuals => WhiteBoxBiomeVisualCalibrator.CalibrateAll
+Tools/Darwin Farm/Simulation/Population Simulator => PopulationSimulatorWindow.Open
+Tools/Darwin Farm/UI/Install Editable Information UI => GameInformationUIInstaller.Install
+Tools/Darwin Farm/Validation/Input/Check Touch Gesture Rules => MapTouchGestureChecks.RunFromMenu
+Tools/Darwin Farm/Validation/Land Rules/Run V4.3 Audit => V43LandRulesAudit.Run
+Tools/Darwin Farm/Validation/Population/Check Terrain Movement (Play Mode) => PopulationTerrainRegressionChecks.BeginChecks
+Tools/Darwin Farm/Validation/Population/Run Ecological Event Checks => PopulationTransitionRegressionChecks.RunFromMenu
+Tools/Darwin Farm/Validation/Population/Run Formation and Player Checks => PopulationFormationRegressionChecks.RunFromMenu
+Tools/Darwin Farm/Validation/Population/Run Identity Checks => PopulationIdentityRegressionChecks.RunFromMenu
+Tools/Darwin Farm/Validation/Population/Run Movement Checks => PopulationMovementRegressionChecks.RunFromMenu
+PASS: all 11 original commands retained under Tools/Darwin Farm; no standalone Darwin root or duplicate command path.
+PASS: existing Moebius commands retained: 8
+Native menu API: UnityEditor.ScriptingMenuItem[] GetMenuItems(System.String, Boolean, Boolean)
+Native menu API: UnityEditor.ScriptingMenuItem[] GetMenuItems_Injected(UnityEngine.Bindings.ManagedSpanWrapper ByRef, Boolean, Boolean)
+Native project menu entries: 11
+Native m_Path: Tools/Darwin Farm/Simulation/Population Simulator
+Native m_Path: Tools/Darwin Farm/Economy/Economy Settings
+Native m_Path: Tools/Darwin Farm/Map/Calibrate WhiteBox Biome Visuals
+Native m_Path: Tools/Darwin Farm/UI/Install Editable Information UI
+Native m_Path: Tools/Darwin Farm/Validation/Land Rules/Run V4.3 Audit
+Native m_Path: Tools/Darwin Farm/Validation/Input/Check Touch Gesture Rules
+Native m_Path: Tools/Darwin Farm/Validation/Population/Run Movement Checks
+Native m_Path: Tools/Darwin Farm/Validation/Population/Run Formation and Player Checks
+Native m_Path: Tools/Darwin Farm/Validation/Population/Check Terrain Movement (Play Mode)
+Native m_Path: Tools/Darwin Farm/Validation/Population/Run Identity Checks
+Native m_Path: Tools/Darwin Farm/Validation/Population/Run Ecological Event Checks
+Errors: 0

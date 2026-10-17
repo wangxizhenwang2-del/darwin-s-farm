@@ -1,0 +1,271 @@
+PASS: Isolated fixture guard
+PASS: Existing URP pipeline loads
+PASS: Transferred River prefab loads
+PASS: No missing scripts
+PASS: Mesh renderers exist: 97
+PASS: I: mesh reference resolves
+PASS: I: material and shader references resolve
+PASS: River_Ground_YL: original painted color texture resolves
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Bush10* (23): mesh reference resolves
+PASS: Bush10* (23): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (31): mesh reference resolves
+PASS: Bush10* (31): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (40): mesh reference resolves
+PASS: Bush10* (40): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (24): mesh reference resolves
+PASS: Bush10* (24): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (32): mesh reference resolves
+PASS: Bush10* (32): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (39): mesh reference resolves
+PASS: Bush10* (39): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (25): mesh reference resolves
+PASS: Bush10* (25): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (33): mesh reference resolves
+PASS: Bush10* (33): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (26): mesh reference resolves
+PASS: Bush10* (26): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (34): mesh reference resolves
+PASS: Bush10* (34): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (27): mesh reference resolves
+PASS: Bush10* (27): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (35): mesh reference resolves
+PASS: Bush10* (35): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (41): mesh reference resolves
+PASS: Bush10* (41): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (28): mesh reference resolves
+PASS: Bush10* (28): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (36): mesh reference resolves
+PASS: Bush10* (36): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (29): mesh reference resolves
+PASS: Bush10* (29): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (37): mesh reference resolves
+PASS: Bush10* (37): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (30): mesh reference resolves
+PASS: Bush10* (30): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (38): mesh reference resolves
+PASS: Bush10* (38): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (17): mesh reference resolves
+PASS: Stone17* (17): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (25): mesh reference resolves
+PASS: Stone17* (25): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (18): mesh reference resolves
+PASS: Stone17* (18): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (26): mesh reference resolves
+PASS: Stone17* (26): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (19): mesh reference resolves
+PASS: Stone17* (19): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (27): mesh reference resolves
+PASS: Stone17* (27): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (20): mesh reference resolves
+PASS: Stone17* (20): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (28): mesh reference resolves
+PASS: Stone17* (28): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (21): mesh reference resolves
+PASS: Stone17* (21): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (29): mesh reference resolves
+PASS: Stone17* (29): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (33): mesh reference resolves
+PASS: Stone17* (33): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (34): mesh reference resolves
+PASS: Stone17* (34): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (22): mesh reference resolves
+PASS: Stone17* (22): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (30): mesh reference resolves
+PASS: Stone17* (30): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (23): mesh reference resolves
+PASS: Stone17* (23): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (31): mesh reference resolves
+PASS: Stone17* (31): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (24): mesh reference resolves
+PASS: Stone17* (24): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (32): mesh reference resolves
+PASS: Stone17* (32): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: T: mesh reference resolves
+PASS: T: material and shader references resolve
+PASS: T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint: original painted color texture resolves
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Cylinder002 3: mesh reference resolves
+PASS: Cylinder002 3: material and shader references resolve
+PASS: Hedra001 3: mesh reference resolves
+PASS: Hedra001 3: material and shader references resolve
+PASS: Bush10* (11): mesh reference resolves
+PASS: Bush10* (11): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (17): mesh reference resolves
+PASS: Bush10* (17): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (21): mesh reference resolves
+PASS: Bush10* (21): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (22): mesh reference resolves
+PASS: Bush10* (22): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (19): mesh reference resolves
+PASS: Bush10* (19): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (9): mesh reference resolves
+PASS: Bush10* (9): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (12): mesh reference resolves
+PASS: Bush10* (12): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (14): mesh reference resolves
+PASS: Bush10* (14): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (10): mesh reference resolves
+PASS: Bush10* (10): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (13): mesh reference resolves
+PASS: Bush10* (13): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (18): mesh reference resolves
+PASS: Bush10* (18): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (20): mesh reference resolves
+PASS: Bush10* (20): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (5): mesh reference resolves
+PASS: Stone17* (5): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (7): mesh reference resolves
+PASS: Stone17* (7): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (9): mesh reference resolves
+PASS: Stone17* (9): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (11): mesh reference resolves
+PASS: Stone17* (11): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (13): mesh reference resolves
+PASS: Stone17* (13): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (15): mesh reference resolves
+PASS: Stone17* (15): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (16): mesh reference resolves
+PASS: Stone17* (16): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (6): mesh reference resolves
+PASS: Stone17* (6): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (8): mesh reference resolves
+PASS: Stone17* (8): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (10): mesh reference resolves
+PASS: Stone17* (10): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (12): mesh reference resolves
+PASS: Stone17* (12): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Stone17* (14): mesh reference resolves
+PASS: Stone17* (14): material and shader references resolve
+PASS: Stone17_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (15): mesh reference resolves
+PASS: Bush10* (15): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: Bush10* (16): mesh reference resolves
+PASS: Bush10* (16): material and shader references resolve
+PASS: Bush10_Forest_Forest_openPBR_shader1_Paint: original painted color texture resolves
+PASS: River uses its isolated YL ground material
+PASS: Vincent's existing forest material is retained separately
+PASS: Valid bounds: Center: (0.13, 0.03, -2.45), Extents: (0.20, 0.03, 0.09)
+Unique materials: 6
+Triangle count: 678116
+No source assets or game scenes were saved by this validation.
+Errors: 0

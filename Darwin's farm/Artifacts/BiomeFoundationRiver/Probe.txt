@@ -1,0 +1,18 @@
+Tundra_Colored root=(0.00, 0.00, 0.00) scale=(1.00, 1.00, 1.00)
+  Ground_SlabSides bounds=Center: (0.00, 0.15, 0.00), Extents: (8.50, 0.15, 8.50) scale=(1.00, 1.00, 1.00) materials=Tundra_Slab_Edge
+  Ground_Surface bounds=Center: (0.00, 0.36, 0.00), Extents: (8.50, 0.06, 8.50) scale=(1.00, 1.00, 1.00) materials=Tundra_Ground_Frost,Tundra_Ground_Sage,Tundra_Ground_Lichen,Tundra_Ground_Moss,Tundra_Ground_Soil
+Grassland_Moebius root=(0.00, 0.00, 0.00) scale=(1.00, 1.00, 1.00)
+  Land1 bounds=Center: (-0.12, 1.05, 0.24), Extents: (5.76, 1.02, 5.76) scale=(0.68, 0.68, 0.68) materials=Land1_Grassland_Grassland_lambert2_Paint
+SnowMountain_Moebius root=(1793.28, 0.00, -178.90) scale=(911.78, 911.78, 911.78)
+  SnowMountain_Moebius bounds=Center: (1793.28, 2.87, -178.91), Extents: (4.43, 2.87, 4.44) scale=(911.78, 911.78, 911.78) materials=SnowMountain
+  InkOutline bounds=Center: (1793.28, 2.87, -178.91), Extents: (4.43, 2.87, 4.44) scale=(911.78, 911.78, 911.78) materials=SnowMountainOutline
+Volcano_Moebius root=(1805.46, 0.00, -178.42) scale=(52.46, 52.46, 52.46)
+  Lava bounds=Center: (1803.71, 2.74, -177.44), Extents: (2.73, 2.91, 3.18) scale=(52.46, 52.46, 52.46) materials=Volcano1_LavaFlow
+  LavaLake bounds=Center: (1801.29, 0.00, -175.29), Extents: (1.97, 0.00, 2.29) scale=(35.47, 52.46, 52.46) materials=Volcano1_LavaLake
+  Rock bounds=Center: (1805.45, 3.07, -179.35), Extents: (7.35, 3.10, 7.58) scale=(1128.99, 1128.99, 1128.99) materials=Volcano1_Rock
+  RockOutline bounds=Center: (1805.45, 3.07, -179.35), Extents: (7.35, 3.10, 7.58) scale=(1128.99, 1128.99, 1128.99) materials=Volcano1_RockOutline
+River root=(0.25, 0.00, -2.46) scale=(1.00, 1.00, 1.00)
+  I bounds=Center: (0.02, 0.01, -2.45), Extents: (0.09, 0.01, 0.09) scale=(1.00, 1.00, 1.00) materials=River_Ground_YL
+  vertex levels=0.0010556:396,0.0110556:264,0.0114094:108,0.0210556:212
+  T bounds=Center: (0.25, 0.01, -2.45), Extents: (0.09, 0.01, 0.09) scale=(1.00, 1.00, 1.00) materials=T_Fprest_Block_Forest_Forest_openPBR_shader1_Paint 1_Paint
+  vertex levels=0.0010737:396,0.0109691:144,0.0110737:264,0.0210737:176

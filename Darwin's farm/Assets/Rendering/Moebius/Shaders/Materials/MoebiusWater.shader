@@ -43,6 +43,7 @@ Shader "Darwin/Moebius Water"
         [Toggle] _EnableShoreMotion("Enable Shore Advance and Retreat", Float) = 1
         _ShoreMotionStrength("Shore Motion Strength", Range(0,0.5)) = 0.13
         [Toggle] _EnableShoreMask("Use Baked Shoreline", Float) = 0
+        [Toggle] _ShoreObjectSpace("Shore Bounds In Object Space (Flat Prefabs)", Float) = 0
         [NoScaleOffset] _ShorelineMask("Shore Distance (R), Gradient (GB)", 2D) = "white" {}
         _ShoreWorldRect("Shore Bounds (Min XZ / Size XZ)", Vector) = (-8,-8,16,16)
         _ShoreDistanceRange("Baked Distance Range (Metres)", Float) = 4

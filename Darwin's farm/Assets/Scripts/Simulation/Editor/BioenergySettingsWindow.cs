@@ -47,7 +47,7 @@ public sealed class BioenergySettingsWindow : EditorWindow
     private BioenergySettings settings;
     private Vector2 scroll;
 
-    [MenuItem("Darwin's Farm/经济系统数值")]
+    [MenuItem("Tools/Darwin Farm/Economy/Economy Settings", false, 110)]
     private static void Open() => GetWindow<BioenergySettingsWindow>("经济系统数值");
 
     private void OnEnable()

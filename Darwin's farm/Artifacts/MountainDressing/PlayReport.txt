@@ -1,0 +1,5 @@
+PASS: Native Play Mode eruption starts automatically
+PASS: Native eruption settles between cycles
+PASS: Native eruption repeats next cycle
+PASS: Native Play Mode snowfall runs automatically
+Errors: 0

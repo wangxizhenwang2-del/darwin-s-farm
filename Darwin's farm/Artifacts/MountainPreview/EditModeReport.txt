@@ -1,0 +1,13 @@
+PASS: Actual Edit Mode, without Play or particle selection
+PASS: Volcano: automatic editor callback advances simulation
+PASS: Volcano: visible particles without selection
+PASS: Volcano: preview advances continuously
+PASS: Volcano: simulation leaves scene clean
+PASS: Volcano: preview toggle pauses simulation
+PASS: Actual Edit Mode, without Play or particle selection
+PASS: SnowMountain: automatic editor callback advances simulation
+PASS: SnowMountain: visible particles without selection
+PASS: SnowMountain: preview advances continuously
+PASS: SnowMountain: simulation leaves scene clean
+PASS: SnowMountain: preview toggle pauses simulation
+Errors: 0

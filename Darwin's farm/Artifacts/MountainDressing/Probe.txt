@@ -1,0 +1,24 @@
+Volcano camera (-21.89, 21.95, 21.39) target direction (0.61, -0.52, -0.60) size=11.56
+Biome Foundation (1) Center: (0.00, -0.69, 0.00), Extents: (9.12, 0.04, 9.05) material=Tundra_Grass_Ochre,Tundra_Grass_Ochre
+LavaLake Center: (-4.18, 0.33, 4.06), Extents: (1.98, 0.00, 2.29) material=Volcano1_LavaLake
+Lava Center: (-1.75, 3.08, 1.90), Extents: (2.75, 2.91, 3.18) material=Volcano1_LavaFlow
+Biome Foundation Center: (0.00, -0.16, 0.00), Extents: (8.56, 0.48, 8.50) material=MoebiusLava,Tundra_Grass_Ochre
+RockOutline Center: (0.00, 3.40, 0.00), Extents: (7.40, 3.10, 7.58) material=Volcano1_RockOutline
+Rock Center: (0.00, 3.40, 0.00), Extents: (7.40, 3.10, 7.58) material=Volcano1_Rock
+SnowMountain camera (18.70, 23.42, -23.80) target direction (-0.51, -0.56, 0.65) size=11.56
+SnowMountain_Moebius Center: (0.00, 3.17, 0.00), Extents: (4.43, 2.87, 4.44) material=SnowMountain
+Biome Foundation Center: (0.00, 0.15, 0.00), Extents: (8.50, 0.15, 8.50) material=SnowMountain_Foundation_Top,SnowMountain_Foundation_Edge
+InkOutline Center: (0.00, 3.17, 0.00), Extents: (4.43, 2.87, 4.44) material=SnowMountainOutline
+Tundra source Rock_01 Rock_01
+Tundra source Rock_01_Talus_1 Rock_01_Talus_1
+Tundra source Rock_01_Talus_2 Rock_01_Talus_2
+Tundra source Rock_02 Rock_02
+Tundra source Rock_02_Talus_1 Rock_02_Talus_1
+Tundra source Rock_02_Talus_2 Rock_02_Talus_2
+Tundra source Rock_03 Rock_03
+Tundra source Rock_03_Talus_1 Rock_03_Talus_1
+Tundra source Rock_03_Talus_2 Rock_03_Talus_2
+Tundra source Rock_04 Rock_04
+Tundra source Rock_05 Rock_05
+Tundra source Rock_05_Talus_1 Rock_05_Talus_1
+Errors: 0
