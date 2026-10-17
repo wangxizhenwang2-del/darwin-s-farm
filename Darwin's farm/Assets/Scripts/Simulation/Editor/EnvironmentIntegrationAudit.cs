@@ -58,10 +58,17 @@ public static class EnvironmentIntegrationAudit
               SimulationTime.StandardLoopDays * SimulationTime.DefaultSecondsPerDay /
               SimulationTime.StandardLoopSpeed == 900f,
             "The standard loop must cover 1800 days in 15 minutes at 2x.");
-        Check(Read(c, 0).Environment.Terrain == TerrainKind.Desert, "Initial terrain must be desert.");
-        Check(Read(c, 0).Environment.Habitat == HabitatState.Z0MiddleDry,
-            "Initial desert must use its V4.6 placement habitat.");
-        Check(Read(c, 0).PlantStock == 50000, "Initial stock must equal default increment.");
+        Check(grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) &&
+            initialTile.Definition != null, "Initial scene tile must have a preset.");
+        TerrainKind initialTerrain = SimulationEnvironmentController.TerrainFromPreset(
+            initialTile.Definition.biome);
+        Check(Read(c, 0).Environment.Terrain == initialTerrain,
+            "Initial terrain must match the scene preset.");
+        Check(Read(c, 0).Environment.Habitat ==
+            EnvironmentRules.PlacementHabitat(initialTerrain),
+            "Initial habitat must match the scene preset.");
+        Check(Read(c, 0).PlantStock == initialTile.Definition.initialPlantBiomass,
+            "Initial stock must match the scene preset.");
         string[] assets = { "森林", "雨林", "草原", "荒漠", "苔原", "高山", "雪山", "火山" };
         for (int i = 0; i < assets.Length; i++)
         {
@@ -86,18 +93,27 @@ public static class EnvironmentIntegrationAudit
             grid.TryGetTile(new Vector2Int(3, 0), out MapTileInstance desertTile) &&
             desertTile.Biome == BiomeType.Desert,
             "Runtime tile terrain must follow environment reclassification.");
+        double temperatureBeforeDay = Read(c, 6).Environment.Temperature.Value;
         Apply(c, 6, SimulationInterventionKind.Temperature, 50);
         clock.NextDay();
-        Check(bridge.TryGetBlock(new Vector2Int(6, 0), out var highland) && highland.temperature == 52,
+        Check(bridge.TryGetBlock(new Vector2Int(6, 0), out var highland) &&
+            Read(c, 6).Environment.Temperature.Value > temperatureBeforeDay &&
+            highland.temperature == EnvironmentRules.Round(
+                Read(c, 6).Environment.Temperature.Value),
             "Environment must publish before the ecological day.");
         Check(highland.plantGrowthToday > 0, "Ecology must still grow plants.");
         string error;
         Apply(c, 0, SimulationInterventionKind.Temperature, 25);
         for (int day = 0; day < 25; day++) clock.NextDay();
-        Check(Read(c, 0).Environment.Temperature.Value == 100, "Runtime 25day climate entry.");
+        double enteredTemperature = Math.Min(100,
+            initialTile.Definition.initialTemperature + 25);
+        Check(Read(c, 0).Environment.Temperature.Value == enteredTemperature,
+            "Runtime 25day climate entry.");
         int oldDay = clock.currentDay;
         clock.ResetDay(); clock.NextDay();
-        Check(clock.currentDay == 1 && oldDay > 1 && Read(c, 0).Environment.Temperature.Value == 100, "Clock reset preserves effects.");
+        Check(clock.currentDay == 1 && oldDay > 1 &&
+            Read(c, 0).Environment.Temperature.Value == enteredTemperature,
+            "Clock reset preserves effects.");
         Check(c.TryCancel(Vector2Int.zero, EnvironmentAttribute.Temperature, out error), error);
         for (int day = 0; day < 150; day++) clock.NextDay();
         Check(!Read(c, 0).Environment.HasLocalTemperature,
@@ -107,8 +123,9 @@ public static class EnvironmentIntegrationAudit
         Check(Math.Abs(Read(c, 0).PlantStock - stock * .75f) < .1f, "Runtime percentage stock basis.");
         stock = Read(c, 0).PlantStock;
         Apply(c, 0, SimulationInterventionKind.PlantRecovery, 25000);
-        Check(Read(c, 0).Environment.Recovery.Value >= 25000 && Read(c, 0).PlantStock == stock,
-            "Plant recovery changes without replacing stock.");
+        Check(Read(c, 0).Environment.Recovery.Phase == EffectPhase.Entering &&
+            Read(c, 0).PlantStock == stock,
+            "Plant recovery enters its timeline without replacing stock.");
         var grass = AssetDatabase.LoadAssetAtPath<MapTileDefinition>("Assets/Scripts/map/data/草原.asset");
         Check(grid.TryPlaceTile(new Vector2Int(9, 0), grass) && grid.TryPlaceTile(new Vector2Int(10, 0), grass), "Extend real map.");
         stock = Read(c, 9).PlantStock;
@@ -214,8 +231,11 @@ public static class EnvironmentIntegrationAudit
                     before.Environment.Recovery.Value + Math.Sign(choice.Tier) *
                     EnvironmentTechnologyCatalog.GrowthAmount(choice));
                 Check(Math.Abs(after.PlantStock - before.PlantStock) < .1f &&
-                      Math.Abs(after.Environment.Recovery.Value - expectedRecovery) < .1f,
-                    "Recovery tier changes only daily recovery");
+                      Math.Abs(after.Environment.Recovery.Value -
+                          before.Environment.Recovery.Value) < .1f &&
+                      after.Environment.Recovery.Phase == EffectPhase.Entering &&
+                      Math.Abs(after.Environment.Recovery.Target - expectedRecovery) < .1f,
+                    "Recovery tier changes its timeline target without changing stock");
             }
         }
         var lake = ScriptableObject.CreateInstance<MapTileDefinition>();

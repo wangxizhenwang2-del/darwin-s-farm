@@ -1,0 +1,190 @@
+{
+  "input": "Artifacts\\V61Integration\\Validation\\v61-core-color-route-seed240.jsonl",
+  "lastDay": 1800,
+  "days": {
+    "0": {
+      "species": {
+        "鸡": 160
+      },
+      "modelHash": "fcd4e331ab89038f30c5d5b1f34d62bc1abeeada994edb9645953878f434ea3d",
+      "totalMaterial": 168400.0,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 160,
+          "bars": [
+            55,
+            35,
+            10,
+            8,
+            71
+          ]
+        }
+      ]
+    },
+    "100": {
+      "species": {
+        "鸡": 745
+      },
+      "modelHash": "cac2f4ca9a9b1365ef76f31a8d9852c01dc4454e3a869830a92b71c8889fcae4",
+      "totalMaterial": 1489234.4825134277,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 745,
+          "bars": [
+            75,
+            75,
+            10,
+            9,
+            72
+          ]
+        }
+      ]
+    },
+    "110": {
+      "species": {
+        "鸡": 913
+      },
+      "modelHash": "e1ef3ec7abe1ab9f11960a679bf20806c38a503951aae7cdccc03f88e2707f2a",
+      "totalMaterial": 1674871.981414795,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 913,
+          "bars": [
+            78,
+            78,
+            10,
+            9,
+            76
+          ]
+        }
+      ]
+    },
+    "150": {
+      "species": {
+        "鸡": 2249
+      },
+      "modelHash": "189f4085d1773113f3379ef73002f1461c1dd265062ba00072c596d5d1a185b2",
+      "totalMaterial": 2871739.6282348633,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 2249,
+          "bars": [
+            81,
+            81,
+            10,
+            9,
+            76
+          ]
+        }
+      ]
+    },
+    "300": {
+      "species": {
+        "鸡": 3286
+      },
+      "modelHash": "f0536645f0879d1e380a390a8f101dbeef75d9865dd49fec8491754d978fdb35",
+      "totalMaterial": 9225921.074493408,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 3286,
+          "bars": [
+            75,
+            75,
+            10,
+            9,
+            75
+          ]
+        }
+      ]
+    },
+    "500": {
+      "species": {
+        "鸡": 2888
+      },
+      "modelHash": "a1f3d950911d3355d2d10b7dd278bf6bef2ac06b3725ce60d1d9375e9fcc93a2",
+      "totalMaterial": 17108955.46826172,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 2888,
+          "bars": [
+            75,
+            75,
+            10,
+            9,
+            75
+          ]
+        }
+      ]
+    },
+    "1000": {
+      "species": {
+        "鸡": 2925
+      },
+      "modelHash": "84144f6a2a39e7d0f397c730892fd064f7a47ccacfc7d7e921a6272750ae2949",
+      "totalMaterial": 36215915.65420532,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 2925,
+          "bars": [
+            75,
+            75,
+            10,
+            9,
+            73
+          ]
+        }
+      ]
+    },
+    "1500": {
+      "species": {
+        "鸡": 2921
+      },
+      "modelHash": "7175b5fac271e50c5b312d4c1e1774481537eaa4fc64e8765e21b3e1d29011fa",
+      "totalMaterial": 55002816.95889282,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 2921,
+          "bars": [
+            75,
+            75,
+            12,
+            9,
+            73
+          ]
+        }
+      ]
+    },
+    "1800": {
+      "species": {
+        "鸡": 2919
+      },
+      "modelHash": "09400bcda545414314b3f16f23c30a7c0bc476147a8d74c8f48145b94f9eacb5",
+      "totalMaterial": 66259305.66201782,
+      "traits": [
+        {
+          "species": "鸡",
+          "count": 2919,
+          "bars": [
+            75,
+            75,
+            13,
+            9,
+            73
+          ]
+        }
+      ]
+    }
+  },
+  "events": {},
+  "firstAppearance": {
+    "鸡": 0
+  }
+}

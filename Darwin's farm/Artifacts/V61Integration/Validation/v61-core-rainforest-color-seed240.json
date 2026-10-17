@@ -1,0 +1,13 @@
+{
+  "scenarioId": "v61-core-rainforest-color-seed240",
+  "seed": 240,
+  "endDay": 1800,
+  "coreV61": true,
+  "disableCosts": true,
+  "sourceGraph": "Assets/Resources/V61Bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {"day": 0, "sequence": 0, "x": 0, "y": 0,
+     "kind": "HumidityChange", "tier": -1}
+  ]
+}

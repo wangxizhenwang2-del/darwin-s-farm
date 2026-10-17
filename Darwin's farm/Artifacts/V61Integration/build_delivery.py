@@ -10,6 +10,11 @@ WORK = Path(__file__).resolve().parent
 BASE = "3286061c50661bbc796ce3c57009c662be6dc600"
 TRACKED = [
     "Assets/Scripts/Simulation/Economy/BioenergyAccount.cs",
+    "Assets/Scripts/Simulation/Editor/EnvironmentFiveToolsAudit.cs",
+    "Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs",
+    "Assets/Scripts/Simulation/Editor/PopulationIdentityRegressionChecks.cs",
+    "Assets/Scripts/Simulation/Editor/PopulationTransitionRegressionChecks.cs",
+    "Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs",
     "Assets/Scripts/Simulation/Environment/EnvironmentRules.cs",
     "Assets/Scripts/Simulation/Environment/EnvironmentState.cs",
     "Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs",
@@ -27,6 +32,13 @@ TRACKED = [
     "Assets/Scripts/Simulation/SimulationController.Migration.cs",
     "Assets/Scripts/Simulation/SimulationController.cs",
     "Assets/Scripts/Simulation/WhiteboxBiowebTestSetup.cs",
+    "Assets/Scripts/UI/DesktopEnvironmentTools.cs",
+    "Assets/Scripts/UI/Editor/EnvironmentToolsInstaller.cs",
+    "Assets/Scripts/UI/Editor/MobileUIInstaller.cs",
+    "Assets/Scripts/UI/EnvironmentToolSession.cs",
+    "Assets/Scripts/UI/EnvironmentToolsInputChecks.cs",
+    "Assets/Scripts/UI/MobileTechnologyPanel.cs",
+    "Assets/Scripts/map/Transition System/MapTileColorTransitionSystem.Feedback.cs",
 ]
 NEW = [
     ".gitattributes",

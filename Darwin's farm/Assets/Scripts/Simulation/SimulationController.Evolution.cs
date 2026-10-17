@@ -681,7 +681,8 @@ public partial class SimulationController
     private void ConvertToPresetSpecies(BlockInfo block, PopulationData ancestor,
         SpeciesData target, int day)
     {
-        if (!TryPlanFormalEvolution(block, ancestor, target,
+        if (HasLivingSpecies(block, target) ||
+            !TryPlanFormalEvolution(block, ancestor, target,
             out int amount, out float plantPayment, out float excessBody) ||
             !HasEvolutionFoodSupport(block, ancestor, target, amount)) return;
         int sourceCountBefore = ancestor.speciesAmount;
