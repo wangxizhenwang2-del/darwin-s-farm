@@ -19,13 +19,21 @@ Shader "Hidden/Darwin/Moebius Paint Brush"
             Varyings output;
             // Match the editor's border-tolerant picking UVs without modifying the mesh asset.
             float2 paintUV=saturate(input.uv);
-            output.position=float4(paintUV*2-1,0,1);
+            output.position=float4(
+                paintUV*2-1,
+                0,
+                1);
             #if UNITY_UV_STARTS_AT_TOP
             output.position.y=-output.position.y;
             #endif
             // Explicit matrices keep the UV bake independent from Scene GUI/Handles drawing state.
-            output.uv=paintUV;output.world=mul(_PaintObjectToWorld,input.vertex).xyz;
-            output.normal=normalize(mul((float3x3)transpose(_PaintWorldToObject),input.normal));return output;
+            output.uv=paintUV;
+            output.world=mul(
+                _PaintObjectToWorld,
+                input.vertex
+                ).xyz;
+            output.normal=normalize(mul((float3x3)transpose(_PaintWorldToObject),input.normal));
+            return output;
         }
         float4 ApplyValue(float4 old,float weight)
         {

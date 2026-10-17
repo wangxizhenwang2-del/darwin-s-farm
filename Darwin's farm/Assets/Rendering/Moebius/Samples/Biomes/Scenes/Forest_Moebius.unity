@@ -537,19 +537,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.09042171
+      value: 0.10159116
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.022624688
+      value: 0.02494024
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.06458693
+      value: 0.072565116
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.016160492
+      value: 0.017814456
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -596,6 +596,30 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2640937814696007024, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: motesColor.b
+      value: 0.28242543
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640937814696007024, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: motesColor.g
+      value: 0.8553459
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640937814696007024, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: motesColor.r
+      value: 0.800962
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640937814696007024, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: leavesColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640937814696007024, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: leavesColor.g
+      value: 0.64779866
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640937814696007024, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: leavesColor.r
+      value: 0.18631765
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640937814696007024, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: motesIntensity
       value: 2
       objectReference: {fileID: 0}
@@ -609,19 +633,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.20990753
+      value: 0.23583661
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.052521598
+      value: 0.057896983
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.14993395
+      value: 0.16845472
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.037515428
+      value: 0.041354988
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -629,27 +653,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.25834775
+      value: 0.29026046
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.06464197
+      value: 0.07125783
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.1845341
+      value: 0.2073289
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.046172835
+      value: 0.05089845
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.16517915
+      value: -0.1607353
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.32517916
+      value: -0.32073528
       objectReference: {fileID: 0}
     - target: {fileID: 9090321274784119070, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: m_Name
