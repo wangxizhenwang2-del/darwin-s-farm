@@ -304,6 +304,7 @@ public partial class SimulationController : MonoBehaviour
             }
         }
 
+        AssignCommunityEditIds(block, edits);
         List<PopulationData> next = new List<PopulationData>(edits.Count);
         foreach (SimulationPopulationEdit edit in edits)
         {

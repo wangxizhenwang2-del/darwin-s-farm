@@ -11,6 +11,8 @@ public partial class SimulationController
     public const string ModelRandomVersion = "DF-FNV64-1";
     [SerializeField] private int simulationSeed = 1;
     public int SimulationSeed => simulationSeed;
+    public bool IsDeterministicRunConfigured { get; private set; }
+    private int communityEditSerial;
 
     // A complete ecology fingerprint for same-build replay comparisons.
     // Environment effect tracks are versioned separately by the action runner.
@@ -159,6 +161,7 @@ public partial class SimulationController
         if (currentSimulationDay > 0)
             throw new InvalidOperationException("Seed must be set before Day 1.");
         simulationSeed = seed;
+        communityEditSerial = 0;
         var seenTiles = new HashSet<string>(StringComparer.Ordinal);
         foreach (BlockInfo block in blockInfos)
         {
@@ -193,6 +196,19 @@ public partial class SimulationController
                 if (population != null)
                     LandLifeRules.EnsureBodyMass(population, LandRules);
         }
+        IsDeterministicRunConfigured = true;
+    }
+
+    private void AssignCommunityEditIds(BlockInfo block,
+        IReadOnlyList<SimulationPopulationEdit> edits)
+    {
+        if (!IsDeterministicRunConfigured) return;
+        int serial = ++communityEditSerial;
+        for (int i = 0; i < edits.Count; i++)
+            if (edits[i].Resident == null && edits[i].Draft.speciesAmount > 0)
+                edits[i].Draft.AssignPopulationId("seed:" + simulationSeed + ":" +
+                    StableTileKey(block) + ":edit:" + currentSimulationDay + ":" +
+                    serial + ":" + i);
     }
 
     private static string StableTileKey(BlockInfo block) =>

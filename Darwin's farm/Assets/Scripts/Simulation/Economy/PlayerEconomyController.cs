@@ -57,8 +57,10 @@ public sealed class PlayerEconomyController : MonoBehaviour
     private SimulationTime clock;
     private BioenergyAccount account;
     private bool hasSeenWildPopulation;
+    private int nextStorageSerial;
     public IReadOnlyList<StoredPopulation> Storage => storage.AsReadOnly();
     public event Action GameLost;
+    public event Action<Vector2Int, string> OperationCommitted;
     public bool IsGameLost { get; private set; }
 
     public string CaptureStorageState()
@@ -146,8 +148,11 @@ public sealed class PlayerEconomyController : MonoBehaviour
         error = null;
         if (account == null || grid == null || definition == null || !grid.CanPlaceAt(coordinate))
         { error = "目标地块不可建造"; return false; }
-        return account.TryExecute(BioenergySettings.Current.expandTileCost, "地块扩张", (_, __) =>
-            grid.TryPlaceTile(coordinate, definition, rotation), out error);
+        bool placed = account.TryExecute(BioenergySettings.Current.expandTileCost,
+            "地块扩张", (_, __) => grid.TryPlaceTile(coordinate, definition, rotation), out error);
+        if (placed) OperationCommitted?.Invoke(coordinate,
+            "expand;preset=" + definition.name + ";rotation=" + rotation);
+        return placed;
     }
 
     public bool CanDemolish(Vector2Int coordinate, out string error)
@@ -188,8 +193,11 @@ public sealed class PlayerEconomyController : MonoBehaviour
     public bool TryDemolish(Vector2Int coordinate, out string error)
     {
         if (!CanDemolish(coordinate, out error)) return false;
-        return account.TryExecute(BioenergySettings.Current.demolishTileCost, "拆除地块", (_, __) =>
-            CanDemolish(coordinate, out _) && grid.TryRemoveTile(coordinate), out error);
+        bool removed = account.TryExecute(BioenergySettings.Current.demolishTileCost,
+            "拆除地块", (_, __) => CanDemolish(coordinate, out _) &&
+            grid.TryRemoveTile(coordinate), out error);
+        if (removed) OperationCommitted?.Invoke(coordinate, "demolish");
+        return removed;
     }
 
     public bool TryPreviewWaterShape(Vector2Int coordinate, MapTileDefinition shape,
@@ -225,8 +233,11 @@ public sealed class PlayerEconomyController : MonoBehaviour
         int rotation, out string error)
     {
         if (!TryPreviewWaterShape(coordinate, shape, rotation, out _, out error)) return false;
-        return account.TryExecute(BioenergySettings.Current.reshapeWaterCost, "水道改造", (_, __) =>
-            grid.TryChangeWaterShape(coordinate, shape, rotation), out error);
+        bool changed = account.TryExecute(BioenergySettings.Current.reshapeWaterCost,
+            "水道改造", (_, __) => grid.TryChangeWaterShape(coordinate, shape, rotation), out error);
+        if (changed) OperationCommitted?.Invoke(coordinate,
+            "reshape_water;preset=" + shape.name + ";rotation=" + rotation);
+        return changed;
     }
 
     private int PredictWaterAreaSize(Vector2Int source, MapTileDefinition shape, int rotation)
@@ -303,6 +314,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         if (!simulation.HarvestPopulation(source, population, harvested))
         { harvested = 0; earned = 0; error = "收割时来源种群已变化"; return false; }
         account.Grant(earned, "种群收割:" + BioenergyAccount.SpeciesKey(population));
+        OperationCommitted?.Invoke(CoordinateOf(source),
+            "harvest;population=" + population.PopulationId);
         return true;
     }
 
@@ -335,7 +348,7 @@ public sealed class PlayerEconomyController : MonoBehaviour
         if (!IsResident(source, population) ||
             !CanPlacePopulation(target, population, source, out error))
         { if (error == null) error = "来源种群不存在"; return false; }
-        return account.TryExecute(BioenergySettings.Current.migrateCost, "手动迁移", (_, __) =>
+        bool migrated = account.TryExecute(BioenergySettings.Current.migrateCost, "手动迁移", (_, __) =>
         {
             if (!IsResident(source, population) ||
                 !CanPlacePopulation(target, population, source, out _)) return false;
@@ -371,6 +384,10 @@ public sealed class PlayerEconomyController : MonoBehaviour
             simulation.NotifyPlayerCommunityChanged(target);
             return true;
         }, out error);
+        if (migrated) OperationCommitted?.Invoke(CoordinateOf(source),
+            "migrate;population=" + population.PopulationId +
+            ";target=" + CoordinateOf(target));
+        return migrated;
     }
 
     public bool TryDirectedEvolution(BlockInfo source, PopulationData population,
@@ -386,16 +403,26 @@ public sealed class PlayerEconomyController : MonoBehaviour
     {
         storageId = null; error = null;
         if (!IsResident(source, population)) { error = "复制来源种群不存在"; return false; }
-        string id = Guid.NewGuid().ToString("N");
+        string id = simulation.IsDeterministicRunConfigured
+            ? "storage:" + simulation.SimulationSeed + ":" + nextStorageSerial
+            : Guid.NewGuid().ToString("N");
         bool success = account.TryExecute(BioenergySettings.Current.storageCost, "生态仓建造及复制", (_, __) =>
         {
             if (!IsResident(source, population)) return false;
             PopulationData copy = PopulationTransfer.CopyForMove(population, 50);
+            if (simulation.IsDeterministicRunConfigured)
+                copy.AssignPopulationId("storage-pop:" + id);
             copy.evolutionConversions.Clear();
             storage.Add(new StoredPopulation { id = id, copy = copy });
             return true;
         }, out error);
-        if (success) storageId = id;
+        if (success)
+        {
+            storageId = id;
+            nextStorageSerial++;
+            OperationCommitted?.Invoke(CoordinateOf(source),
+                "store;population=" + population.PopulationId + ";storage=" + id);
+        }
         return success;
     }
 
@@ -406,12 +433,24 @@ public sealed class PlayerEconomyController : MonoBehaviour
         if (backup == null || !CanPlacePopulation(target, backup.copy, null, out error))
         { if (error == null) error = "生态仓备份不存在"; return false; }
         PopulationData arrival = PopulationTransfer.CopyForMove(backup.copy, 50);
+        if (simulation.IsDeterministicRunConfigured)
+            arrival.AssignPopulationId("release-pop:" + storageId);
         arrival.evolutionConversions.Clear();
         AddOrMerge(target, arrival);
         storage.Remove(backup);
         simulation.RefreshSpeciesStatuses();
         simulation.NotifyPlayerCommunityChanged(target);
+        OperationCommitted?.Invoke(CoordinateOf(target),
+            "release;storage=" + storageId);
         return true;
+    }
+
+    private Vector2Int CoordinateOf(BlockInfo block)
+    {
+        if (grid != null)
+            foreach (MapTileInstance tile in grid.GetPlacedTiles())
+                if (tile != null && tile.Block == block) return tile.Coordinate;
+        return new Vector2Int(int.MinValue, int.MinValue);
     }
 
     public void RestartGame()
