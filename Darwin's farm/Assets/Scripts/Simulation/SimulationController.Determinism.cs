@@ -26,6 +26,11 @@ public partial class SimulationController
         Add(data, EnableRandomEvents ? "random:1" : "random:0");
         Add(data, EnableNeighborMovementFormula ? "movement-b:1" :
             "movement-b:0");
+        if (enableV62Mobility)
+        {
+            Add(data, "movement-v62:1");
+            AddFields(data, v62Mobility);
+        }
         Add(data, simulationSeed.ToString(CultureInfo.InvariantCulture));
         Add(data, currentSimulationDay.ToString(CultureInfo.InvariantCulture));
         AddFields(data, ReadTuning());

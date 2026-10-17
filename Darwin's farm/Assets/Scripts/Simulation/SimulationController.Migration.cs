@@ -248,19 +248,37 @@ public partial class SimulationController
             if (!LandMovementOpportunity.CanOfferNeighborSlot(
                 LivingPopulationCount(neighbor) + reserved,
                 HasSameSpeciesResident(neighbor, population))) continue;
-            float attraction = NeighborAttraction(source, neighbor,
-                population, amount);
-            float capacityCorrection = TargetCapacityCorrection(neighbor,
-                population);
-            float chance = Mathf.Clamp01(attraction)
-                * population.movementAbility / 100f * capacityCorrection;
+            float chance;
+            int plannedAmount = amount;
+            if (enableV62Mobility)
+            {
+                V62NeighborForecast forecast = ForecastV62Neighbor(source,
+                    neighbor, population, ReadLandTraits(population), amount,
+                    V62ReservedFood(neighbor, population, planned));
+                if (!forecast.Valid) continue;
+                plannedAmount = forecast.amount;
+                chance = forecast.foodAttraction *
+                    population.movementAbility / 100f *
+                    forecast.capacityCorrection *
+                    (heightDifference == 0 ? 1f : TerrainStepProbability) *
+                    forecast.normalizedGain;
+            }
+            else
+            {
+                float attraction = NeighborAttraction(source, neighbor,
+                    population, amount);
+                float capacityCorrection = TargetCapacityCorrection(neighbor,
+                    population);
+                chance = Mathf.Clamp01(attraction) *
+                    population.movementAbility / 100f * capacityCorrection;
+            }
             if (LivingPopulationCount(neighbor) == 4)
                 chance *= LandRules.fourEntryMigrationFactor;
             if (chance <= 0f) continue;
             candidates.Add(new MoveCandidate
             {
                 target = neighbor, chance = Mathf.Clamp01(chance),
-                amount = amount,
+                amount = plannedAmount,
                 tieBreaker = ModelRandom01(day, "migration.tie", source,
                     population, neighbor)
             });

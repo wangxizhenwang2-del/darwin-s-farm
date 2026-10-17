@@ -23,6 +23,7 @@ public static class V048ScenarioReplay
         public int endDay;
         public bool disableCosts;
         public bool coreV61;
+        public bool v62Mobility;
         public bool restrictedV05;
         public bool useV05Sandbox;
         public bool recordPredatorFoodK;
@@ -464,6 +465,16 @@ public static class V048ScenarioReplay
                 "Encounter experiments require the archived experiment-encounter-v3 code.");
         simulation.ApplyLandRules(selectedRules);
         if (scenario.coreV61) simulation.ApplyCoreEvolutionTestProfile();
+        if (scenario.v62Mobility)
+        {
+            Type parameters = typeof(SimulationController).Assembly.GetType(
+                "V62MobilityParameters", true);
+            object candidate = parameters.GetProperty("Candidate",
+                BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+            typeof(SimulationController).GetMethod("ConfigureV62Mobility",
+                BindingFlags.Instance | BindingFlags.NonPublic).Invoke(simulation,
+                    new[] { (object)true, candidate });
+        }
         t10QuotaByPopulation.Clear();
         Type landRulesType = typeof(SimulationController).Assembly.GetType(
             "LandLifeRules", true);
@@ -551,6 +562,13 @@ public static class V048ScenarioReplay
         var trace = new StringBuilder();
         void RecordTransition(PopulationTransitionResult result)
         {
+            if (scenario.v62Mobility && result.Kind == PopulationTransitionKind.Migration &&
+                (result.Amount < 10 || result.Amount > 100 ||
+                 result.SourceCountBefore + result.TargetCountBefore !=
+                 result.SourceCountAfter + result.TargetCountAfter))
+                throw new InvalidOperationException(
+                    "V6.2 migration amount or population conservation failed on Day " +
+                    result.Day);
             trace.AppendLine("event day=" + result.Day + " kind=" + result.Kind +
                 " source=" + result.SourceBlock.name +
                 " target=" + result.TargetBlock.name +

@@ -45,14 +45,21 @@ public partial class SimulationController
         float renewalCoverage = capacity / Mathf.Max(1, p.speciesAmount);
         int ceiling;
         float attraction;
-        if (enableNeighborMovementFormula)
+        if (enableV62Mobility)
+        {
+            V62NeighborForecast best = BestV62Neighbor(block, p,
+                ReadLandTraits(p));
+            attraction = best.Valid ? best.normalizedGain : 0f;
+            ceiling = best.Valid ? 100 : p.movementAbility;
+        }
+        else if (enableNeighborMovementFormula)
         {
             attraction = BestSustainableNeighborOpportunity(block, p,
                 ReadLandTraits(p), out _, out _, out _);
             ceiling = attraction > 0f ? 100 : p.movementAbility;
         }
         else attraction = BestNeighborAttraction(block, p, out ceiling);
-        bool neighborOpportunity = enableNeighborMovementFormula
+        bool neighborOpportunity = enableV62Mobility || enableNeighborMovementFormula
             ? attraction > 0f && p.movementAbility < 100
             : attraction >= LandRules.neighborAttractionThreshold &&
                 p.movementAbility < ceiling;
@@ -158,7 +165,7 @@ public partial class SimulationController
     // growth spans the full [0,1] scale around neutral 0.5. Both locations
     // use sustainable production and the same resident-competition forecast.
     private float SustainableSurvivalValue(BlockInfo block, PopulationData p,
-        LandTraits traits)
+        LandTraits traits, float reservedFood = 0f)
     {
         if (block == null || block.community == null || p == null ||
             p.speciesAmount <= 0) return 0f;
@@ -170,6 +177,7 @@ public partial class SimulationController
             ? LandLifeRules.ForecastSustainablePlantIntake(block, p,
                 traits.t, traits.h, traits.m, traits.s, traits.f, LandRules)
             : LandLifeRules.AvailableSustainablePreyFood(block, p, LandRules);
+        food = Mathf.Max(0f, food - reservedFood);
         float sat = adult > 0f ? Mathf.Clamp01(food / adult) : 1f;
         float opportunity = count * LandRules.birthRate * traits.f / 100f
             * fitness * sat;
@@ -351,6 +359,9 @@ public partial class SimulationController
 
             LandTraits original = ReadLandTraits(population);
             float baseline = ForecastLandGrowth(block, population, original);
+            V62NeighborForecast v62Best = enableV62Mobility &&
+                selectionStrength > 0f ? BestV62Neighbor(block, population,
+                    original) : default;
             var choices = new List<MutationCandidate>(10);
             for (int trait = 0; trait < 2; trait++)
             {
@@ -372,7 +383,8 @@ public partial class SimulationController
                 for (int trait = 2; trait < 5; trait++)
                     for (int direction = -1; direction <= 1; direction += 2)
                     {
-                        if (enableNeighborMovementFormula && trait == 2)
+                        if ((enableNeighborMovementFormula || v62Best.Valid) &&
+                            trait == 2)
                             continue;
                         int next = TraitLimit(trait,
                             TraitValue(population, trait) + direction);
@@ -395,7 +407,11 @@ public partial class SimulationController
                                 0.05f, 5f), "sustainable");
                     }
 
-            if (enableNeighborMovementFormula && selectionStrength > 0f)
+            if (v62Best.Valid)
+                AddV62MovementCandidates(choices, block, population,
+                    original, v62Best);
+            else if (!enableV62Mobility && enableNeighborMovementFormula &&
+                selectionStrength > 0f)
             {
                 float opportunity = BestSustainableNeighborOpportunity(
                     block, population, original, out BlockInfo bestNeighbor,
