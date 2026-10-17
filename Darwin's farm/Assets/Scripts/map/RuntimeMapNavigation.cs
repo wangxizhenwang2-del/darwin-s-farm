@@ -12,6 +12,7 @@ public class RuntimeMapNavigation : MonoBehaviour
 
     // 点击移动脚本用它判断当前能否接受新的指令。
     public bool IsUpdating => updating;
+    public int Revision { get; private set; }
 
     private void Awake()
     {
@@ -77,6 +78,7 @@ public class RuntimeMapNavigation : MonoBehaviour
         }
         finally
         {
+            Revision++;
             updating = false;
         }
     }

@@ -1,0 +1,1 @@
+PASS: captured height-change trap, 0/1/2 elevation round trip, new terrain obstacle recovery at counts 80/600/1200 with one representative, valid ground poses, collision separation and sustained movement.

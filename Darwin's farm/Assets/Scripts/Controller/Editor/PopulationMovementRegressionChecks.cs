@@ -13,15 +13,6 @@ public static class PopulationMovementRegressionChecks
     public static string RunChecks()
     {
         int passed = 0;
-        Require(WhiteboxPopulation.VisibleMemberCount(0) == 1 &&
-            WhiteboxPopulation.VisibleMemberCount(100) == 1 &&
-            WhiteboxPopulation.VisibleMemberCount(101) == 2 &&
-            WhiteboxPopulation.VisibleMemberCount(500) == 2 &&
-            WhiteboxPopulation.VisibleMemberCount(501) == 3 &&
-            WhiteboxPopulation.VisibleMemberCount(1000) == 3 &&
-            WhiteboxPopulation.VisibleMemberCount(1001) == 4,
-            "Population display count thresholds changed unexpectedly.");
-        passed++;
         Vector3 heading = Vector3.forward;
         float previousYaw = 0f;
         for (int i = 0; i < 100; i++)
@@ -47,17 +38,17 @@ public static class PopulationMovementRegressionChecks
 
         Region tile = Square(10f, PopulationTileSpace.Clearance(0.8f));
         var grid = new PopulationLocalNavigation(new Bounds(Vector3.zero, V(20, 20)), 0.4f, tile.Move);
-        var followers = new List<Vector3> { V(0, -2), V(0, -4), V(0, -6) };
-        Func<Vector3, Vector3, bool> bodies = (a, b) => BodiesMove(a, b, followers, 1.87f);
+        var populations = new List<Vector3> { V(0, -2), V(0, -4), V(0, -6) };
+        Func<Vector3, Vector3, bool> bodies = (a, b) => BodiesMove(a, b, populations, 1.87f);
         Require(!bodies(V(0, 0), V(0, -8)), "Reverse fixture did not block the old direct path.");
         Require(grid.TryPath(V(0, 0), V(0, -8), bodies, out Vector3[] reversePath),
-            "No complete reverse route around three followers.");
+            "No complete reverse route around three populations.");
         CheckPath(reversePath, tile.Move, bodies);
         FollowPath(reversePath, tile.Move, bodies);
         passed++;
 
-        // Re-use the static cache after the dynamic formation has moved.
-        followers.Clear(); followers.Add(V(3, -4));
+        // Re-use the static cache after the moving populations has moved.
+        populations.Clear(); populations.Add(V(3, -4));
         Require(grid.TryPath(V(0, 0), V(0, -8), bodies, out Vector3[] movedPath), "Dynamic cache retained an old blockage.");
         CheckPath(movedPath, tile.Move, bodies);
         Require(movedPath.Length == 2, "Clear reverse route retained obsolete sidesteps.");
@@ -83,14 +74,14 @@ public static class PopulationMovementRegressionChecks
         var blockers = new List<Vector3> { V(6, 3.8f), V(3.8f, 6) };
         Func<Vector3, Vector3, bool> cornerBodies = (a, b) => BodiesMove(a, b, blockers, 1.87f);
         Require(!cornerGrid.TryPath(V(6, 6), V(0, 0), cornerBodies, out _),
-            "Corner trap was crossed instead of waiting for a yield.");
+            "Corner trap was crossed instead of waiting for the obstacle to move.");
         passed++;
         Require(PopulationCollisionMath.AllowsMove(F(blockers[0]), F(V(4.5f, 2.3f)), F(V(6, 6)), 1.87f) &&
             PopulationCollisionMath.AllowsMove(F(blockers[1]), F(V(2.3f, 4.5f)), F(V(6, 6)), 1.87f),
-            "Yield positions crossed the stationary leader.");
+            "Yield positions crossed the stationary population.");
         blockers[0] = V(4.5f, 2.3f); blockers[1] = V(2.3f, 4.5f);
         Require(cornerGrid.TryPath(V(6, 6), V(0, 0), cornerBodies, out Vector3[] escape),
-            "Corner failed to recover after followers yielded.");
+            "Corner failed to recover after the blocking populations moved.");
         CheckPath(escape, corner.Move, cornerBodies); FollowPath(escape, corner.Move, cornerBodies);
         passed++;
 
@@ -114,7 +105,7 @@ public static class PopulationMovementRegressionChecks
             CheckPath(route, corner.Move, cornerBodies); FollowPath(route, corner.Move, cornerBodies);
         }
         passed++;
-        return $"Population movement regression checks: {passed}/11 passed (including display thresholds and 32 changing-obstacle routes).";
+        return $"Population movement regression checks: {passed}/10 passed (including player detours and 32 changing-obstacle routes).";
     }
 
     private static Vector3 V(float x, float z) => new Vector3(x, 0f, z);
@@ -137,7 +128,7 @@ public static class PopulationMovementRegressionChecks
         Require(path != null && path.Length >= 2, "Empty route.");
         for (int i = 1; i < path.Length; i++)
             Require(terrain(path[i - 1], path[i]) && bodies(path[i - 1], path[i]),
-                "Route crossed a boundary or member.");
+                "Route crossed a boundary or population.");
     }
 
     private static void FollowPath(Vector3[] path, Func<Vector3, Vector3, bool> terrain,

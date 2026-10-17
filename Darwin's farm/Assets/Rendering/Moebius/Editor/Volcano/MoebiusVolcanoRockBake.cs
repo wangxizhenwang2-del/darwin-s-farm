@@ -16,13 +16,19 @@ namespace Darwin.Rendering.Editor
     public static class MoebiusVolcanoRockBake
     {
         const string ScenePath = "Assets/Scenes/New Scene.unity";
-        const string Folder = "Assets/Rendering/Moebius/Content/Volcano";
-        const string MaskPath = Folder + "/Volcano1_RockBakedMask.png";
-        const string MaterialPath = Folder + "/Volcano1_Rock.mat";
-        const string MeshPath = Folder + "/Volcano1_RockUniqueUV.asset";
-        const string OutlineMeshPath = Folder + "/Volcano1_RockOutlineMesh.asset";
-        const string OutlineMaterialPath = Folder + "/Volcano1_RockOutline.mat";
+        const string Folder = "Assets/Rendering/Moebius/Samples/Biomes";
+        const string MaskPath = Folder + "/Textures/Volcano/Volcano1_RockBakedMask.png";
+        const string MaterialPath = Folder + "/Materials/Volcano/Volcano1_Rock.mat";
+        const string MeshPath = Folder + "/Meshes/Volcano/Volcano1_RockUniqueUV.asset";
+        const string OutlineMeshPath = Folder + "/Meshes/Volcano/Volcano1_RockOutlineMesh.asset";
+        const string OutlineMaterialPath = Folder + "/Materials/Volcano/Volcano1_RockOutline.mat";
         const int Size = 1024;
+
+        static void EnsureOutputDirectories()
+        {
+            foreach (var category in new[] { "Materials", "Meshes", "Textures" })
+                Directory.CreateDirectory(Folder + "/" + category + "/Volcano");
+        }
 
         [MenuItem("Tools/Moebius/Volcano/Bake Rock from Lava Contact")]
         public static void Bake()
@@ -44,7 +50,7 @@ namespace Darwin.Rendering.Editor
                     throw new InvalidOperationException("Volcano (1) must contain Rock and Lava MeshFilters.");
 
                 // Importer read/write is enabled only for the editor bake, then restored.
-                var importer = AssetImporter.GetAtPath("Assets/Building/Volcano.fbx") as ModelImporter;
+                var importer = AssetImporter.GetAtPath("Assets/Rendering/Moebius/Samples/Biomes/Meshes/Volcano.fbx") as ModelImporter;
                 bool wasReadable = importer && importer.isReadable;
                 if (importer && !wasReadable)
                 {
@@ -53,7 +59,7 @@ namespace Darwin.Rendering.Editor
                 }
                 try
                 {
-                    Directory.CreateDirectory(Folder);
+                    EnsureOutputDirectories();
                     AssetDatabase.Refresh();
                     var copy = UnityEngine.Object.Instantiate(rock.sharedMesh);
                     copy.name = "Volcano1_RockUniqueUV";
@@ -210,7 +216,7 @@ namespace Darwin.Rendering.Editor
                     covered = nextCovered;
                 }
 
-                Directory.CreateDirectory(Folder);
+                EnsureOutputDirectories();
                 var texture = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
                 texture.SetPixels(pixels);
                 texture.Apply();

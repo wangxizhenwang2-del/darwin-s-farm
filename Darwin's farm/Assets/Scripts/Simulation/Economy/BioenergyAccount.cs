@@ -27,7 +27,8 @@ public sealed class BioenergyAccount : MonoBehaviour
         public List<Receipt> receipts = new List<Receipt>();
     }
 
-    [SerializeField] private bool costsEnabled = true;
+    // Testing default: legal operations are free; enable costs for economy testing.
+    [SerializeField] private bool costsEnabled = false;
     [SerializeField] private long balance;
     private int lastSettledDay;
     private bool initialSpeciesCaptured;

@@ -1,0 +1,9 @@
+Forest: PASS original shader, 727 vertices, 1 submeshes, original normals/UV/tangents/vertex masks/material slots.
+Desert: PASS original shader, 512 vertices, 1 submeshes, original normals/UV/tangents/vertex masks/material slots.
+Grassland: PASS original shader, 757 vertices, 1 submeshes, original normals/UV/tangents/vertex masks/material slots.
+Highland: PASS original shader, 512 vertices, 1 submeshes, original normals/UV/tangents/vertex masks/material slots.
+Rainforest: PASS original shader, 727 vertices, 1 submeshes, original normals/UV/tangents/vertex masks/material slots.
+Tundra: PASS original shader, 831 vertices, 5 submeshes, original normals/UV/tangents/vertex masks/material slots.
+SnowMountain: PASS original shader, 24 vertices, 1 submeshes, original normals/UV/tangents/vertex masks/material slots.
+Volcano: PASS original shader, 24 vertices, 1 submeshes, original normals/UV/tangents/vertex masks/material slots.
+PASS 8 native grounds; 12 original material slots; 200 visible-ground/collision samples.

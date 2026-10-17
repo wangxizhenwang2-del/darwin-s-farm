@@ -1,5 +1,7 @@
 # 生物与环境 UI 的 MVC 接入 Handout
 
+> 2026-10-15 更新：本文保留早期接入方案作历史参考。旧黑色调试浮窗及其专用显示控制器现已删除；当前查看信息使用 `GameInformationUI`，环境操作使用 `EnvironmentToolSession`、`DesktopEnvironmentTools` 和 `MobileTechnologyPanel`。下文涉及旧测试标签、测试 View 和挂载状态的描述不再适用于当前版本。
+
 适用范围：当前 `WhiteBox.unity` 与 V4.3 运行时代码。供把地块、种群测试文字替换成正式 UI 的开发者使用。核查日期：2026-10-10。本文按代码与 Scene 配置编写，未进行 Unity Play Mode 视觉验收。
 
 ## 1. 当前已有的 UI

@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "mayaReopen": {
+    "meshes": 87,
+    "triangles": 7483,
+    "bounds": [
+      -8.5,
+      0.0,
+      -8.5,
+      8.5,
+      3.1961288452148438,
+      8.5
+    ],
+    "units": "m"
+  },
+  "fbxReimport": {
+    "meshes": 87,
+    "triangles": 7483,
+    "bounds": [
+      -8.5,
+      0.0,
+      -8.5,
+      8.5,
+      3.1961288452148438,
+      8.5
+    ],
+    "units": "m"
+  }
+}

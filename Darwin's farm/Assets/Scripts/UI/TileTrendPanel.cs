@@ -41,7 +41,7 @@ public sealed class TileTrendPanel : MonoBehaviour
     {
         var rect = Rect(name, parent, position, dimensions);
         var text = rect.gameObject.AddComponent<TextMeshProUGUI>();
-        text.font = GameUITheme.TMPFont; text.fontSize = size; text.text = value;
+        text.font = GameUITheme.TMPFont; text.fontSize = GameUITheme.ReadableFontSize(size); text.text = value;
         text.color = new Color(.11f, .16f, .17f); text.richText = false;
         text.textWrappingMode = TextWrappingModes.Normal; text.overflowMode = TextOverflowModes.Truncate;
         text.raycastTarget = true;

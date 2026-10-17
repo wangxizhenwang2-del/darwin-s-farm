@@ -1,23 +1,31 @@
 ﻿# WhiteBox biome visual calibration
 
-Target: 15 × 15 visual interior within the 17 × 17 tile. Bounds use enabled renderers. The lowest visible point is aligned to local Y=0. These wrappers are visual assets only; terrain collision and navigation remain in ColorSurface.
+Target: 15 × 15 ground footprint inside a 17 × 17 WhiteBox tile. Calibration uses the selected ground mesh's heading and centre. Foliage bounds and neighbouring demonstration tiles do not affect scale or origin. Terrain collision and navigation remain in ColorSurface.
 
-| Source | Original bounds X×Z | Original bottom Y | Scale factor | Calibrated bottom Y | Ground mesh top Y after scaling | Wrapper |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Desert_Moebius | 12 × 12 | 0 | 1.25 | 0 | 1.941 | Desert_WhiteBoxVisual.prefab |
-| Forest_Moebius | 10.666 × 12 | 0 | 1.25 | 0 | 2.611 | Forest_WhiteBoxVisual.prefab |
-| Grassland_Moebius | 11.518 × 12 | 0.031 | 1.25 | 0 | 2.541 | Grassland_WhiteBoxVisual.prefab |
-| Highland_Colored | 17 × 17 | 0 | 0.882 | 0 | 1.842 | Highland_WhiteBoxVisual.prefab |
+| Biome | Source | Ground samples | Native particle systems |
+| --- | --- | ---: | ---: |
+| Forest | Forest_Moebius.unity / Forest_no_edge | 841 | 3 |
+| Desert | Desert_Moebius.unity | 841 | 4 |
+| Grassland | Grassland_Moebius.unity / Land1 | 841 | 3 |
+| Highland | Highland_Colored.unity | 841 | 4 |
+| Rainforest | RainForest.unity / Rain_Forest_no_edge | 841 | 4 |
+| Tundra | Tundra_Colored.unity | 841 | 4 |
 
-The WhiteBox scene binds these four wrappers to `MapTileColorTransitionSystem`.
-At runtime the wrapper follows the tile root's 90-degree rotation. The source
-ground mesh is sampled on a 0.5 m grid, smoothed, scaled to 55% with a 0.65 m
-height cap, and faded to zero over the inner 2 m of the model edge. Its renderer
-is hidden; `ColorSurface` uses that sampled relief as its only walkable ground.
-Each retained decoration is projected onto the resulting surface. Decorations
-outside the central tile are hidden. Forest
+Forest and rainforest use a single authored tile. Other demonstration geometry is disabled in the adapters. All 22 native particle systems retain their authored materials and controllers; emission meshes are cropped into tile coordinates and projected onto ColorSurface at runtime. Preview/probe instances leave the rigs inactive.
+
+Regenerate with `Tools/Darwin's Farm/Set up biome artwork`. Palette samples are written to `.utmp/biome-rollout/calibration.md`. See [BiomeArtwork.md](BiomeArtwork.md) for current integration and validation details.
+
+The WhiteBox scene binds all eight biome wrappers to `MapTileColorTransitionSystem`.
+At runtime the wrapper follows the tile root's 90-degree rotation. The authored
+ground mesh renders directly with Vincent's original shader and every material
+slot. Split normals, UVs, tangents and vertex masks remain unchanged; the full
+interior relief is preserved. A readable copy of Highland's painted mesh is
+baked in the adapter folder because its original asset is not CPU-readable.
+`ColorSurface` combines the exact authored collision shape with a one-metre
+joining rim. The rim reuses Moebius shading, without a PBR replacement.
+Each retained decoration is projected onto the resulting surface. Forest
 trees and large stones, grassland trunks and large props, desert large props,
 and highland mountains use separate simplified obstacle boxes and NavMesh
 `Not Walkable` volumes. The visual meshes have no active collision and are on
 Ignore Raycast; `ColorSurface` remains the only terrain ground collider. The
-strength, cap and edge blend are adjustable on the transition component.
+legacy relief strength/cap controls apply only when authored artwork is disabled.

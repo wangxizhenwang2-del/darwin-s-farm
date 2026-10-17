@@ -43,9 +43,34 @@ public sealed class GameInformationUI : MonoBehaviour
     private float nextRefresh;
     private BiomeOcclusionVisibility biomeVisibility;
     private MapTouchInput touchInput;
+    private EnvironmentToolSession tools;
+    private bool mobilePresentation;
+    public bool ToolModeActive => tools != null && tools.Active;
+    public WhiteboxPopulation SelectedPopulation
+    {
+        get
+        {
+            if (!PopulationIsOpen || selectedVisual == null || !selectedVisual.gameObject.activeInHierarchy) return null;
+            var data = selectedVisual.EcologicalPopulation;
+            return (data != null ? data.PopulationId : selectedVisual.UniqueId) == selectedPopulationId &&
+                (data == null || data.speciesAmount > 0) ? selectedVisual : null;
+        }
+    }
+    public MapTileInstance SelectedTile => selectedTile;
+    public bool TileIsOpen => tileWindow != null && tileWindow.IsOpen;
+    public bool PopulationIsOpen => populationWindow != null && populationWindow.IsOpen;
+    public event System.Action<bool> SelectionChanged;
+    public void SetMobilePresentation(bool mobile)
+    {
+        mobilePresentation = mobile;
+        if (!mobile && ToolModeActive && tileWindow != null) tileWindow.Close();
+        if (tileWindow != null) tileWindow.SetPresentationVisible(!mobile);
+        if (populationWindow != null) populationWindow.SetPresentationVisible(!mobile);
+    }
 
     private void Awake()
     {
+        tools = GetComponent<EnvironmentToolSession>();
         canvasRect = (RectTransform)transform;
         if (viewCamera == null) viewCamera = Camera.main;
         if (viewCamera != null) touchInput = viewCamera.GetComponent<MapTouchInput>();
@@ -78,6 +103,7 @@ public sealed class GameInformationUI : MonoBehaviour
         canvasRect = (RectTransform)transform;
         font = GameUITheme.Font;
         if (dayText == null && speedText == null) BuildHud();
+        BindSpeedControl();
         if (tileWindow == null && populationWindow == null) BuildWindows();
         if (tileHistory == null)
         {
@@ -97,6 +123,27 @@ public sealed class GameInformationUI : MonoBehaviour
         }
     }
 
+    private void BindSpeedControl()
+    {
+        if (speedText == null) return;
+        var panel = speedText.transform.parent;
+        var image = panel.GetComponent<UnityEngine.UI.Image>();
+        if (image == null) return;
+        image.raycastTarget = true;
+        var button = panel.GetComponent<UnityEngine.UI.Button>();
+        if (button == null) button = panel.gameObject.AddComponent<UnityEngine.UI.Button>();
+        button.targetGraphic = image;
+        button.onClick.RemoveListener(CycleSimulationSpeed);
+        button.onClick.AddListener(CycleSimulationSpeed);
+    }
+
+    private void CycleSimulationSpeed()
+    {
+        if (clock == null) return;
+        clock.CycleSpeed();
+        RefreshVisible();
+    }
+
     private void BindWindows()
     {
         tileWindow.Initialize(canvasRect, ((RectTransform)tileWindow.transform).anchoredPosition);
@@ -109,10 +156,11 @@ public sealed class GameInformationUI : MonoBehaviour
         populationCloseButton.onClick.AddListener(ClosePopulation);
     }
 
-    private void CloseTile() { tileWindow.Close(); selectedTile = null; }
-    private void ClosePopulation()
+    public void CloseTile() { tileWindow.Close(); selectedTile = null; SelectionChanged?.Invoke(false); }
+    public void ClosePopulation()
     {
         populationWindow.Close(); selectedVisual = null; selectedPopulationId = null;
+        SelectionChanged?.Invoke(true);
     }
 
     private void OnEnable()
@@ -160,11 +208,11 @@ public sealed class GameInformationUI : MonoBehaviour
         {
             pressPosition = mouse.position.ReadValue();
             dragged = false;
-            awaitingRelease = alt && (buildMode == null || !buildMode.IsBuildMode) &&
+            awaitingRelease = (alt || ToolModeActive) && (buildMode == null || !buildMode.IsBuildMode) &&
                 viewCamera.pixelRect.Contains(pressPosition) && !PointerOverUi(pressPosition);
         }
         if (!awaitingRelease) return;
-        if (!alt) { awaitingRelease = false; return; }
+        if (!alt && !ToolModeActive) { awaitingRelease = false; return; }
         Vector2 position = mouse.position.ReadValue();
         if ((position - pressPosition).sqrMagnitude > clickDistancePixels * clickDistancePixels)
             dragged = true;
@@ -175,7 +223,7 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private bool PointerOverUi(Vector2 position)
     {
-        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(position)) return true;
+        if (EconomyOperationsView.IsPointerOverUi(position)) return true;
         if (EventSystem.current == null) return false;
         var pointer = new PointerEventData(EventSystem.current) { position = position };
         uiHits.Clear();
@@ -189,6 +237,7 @@ public sealed class GameInformationUI : MonoBehaviour
 
     public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f)
     {
+        if (ToolModeActive) return TrySelectTileAt(position);
         if (TrySelectPopulationAt(position, populationPaddingPixels)) return true;
         return TrySelectTileAt(position);
     }
@@ -198,8 +247,7 @@ public sealed class GameInformationUI : MonoBehaviour
         (buildMode == null || !buildMode.IsBuildMode) && viewCamera.pixelRect.Contains(position) &&
         !PointerOverUi(position);
 
-    // A hit consumes the tap even when that window is occupied. It must not
-    // fall through into a player move or replace the previously selected target.
+    // Selection replaces the corresponding window's target on both platforms.
     public bool TrySelectPopulationAt(Vector2 position, float paddingPixels = 0f)
     {
         if (!CanSelectAt(position)) return false;
@@ -207,12 +255,12 @@ public sealed class GameInformationUI : MonoBehaviour
         // visible sprite rectangles before querying the terrain colliders below.
         WhiteboxPopulation visual = PickPopulation(position, Mathf.Max(0f, paddingPixels));
         if (visual == null) return false;
-        if (populationWindow.IsOpen) return true;
         selectedVisual = visual;
         selectedPopulationId = visual.EcologicalPopulation != null
             ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
         RefreshPopulation();
         populationWindow.Open();
+        SelectionChanged?.Invoke(true);
         return true;
     }
 
@@ -233,10 +281,13 @@ public sealed class GameInformationUI : MonoBehaviour
             nearest = groundHits[i].distance;
         }
         if (tile == null) return false;
-        if (tileWindow.IsOpen) return true;
         selectedTile = tile;
         RefreshTile();
-        tileWindow.Open();
+        // Desktop tool targeting needs a selected tile, not an information window.
+        // Mobile keeps its logical window open to drive the existing drawer.
+        if (ToolModeActive && !mobilePresentation) tileWindow.Close();
+        else tileWindow.Open();
+        SelectionChanged?.Invoke(false);
         return true;
     }
 
@@ -424,7 +475,7 @@ public sealed class GameInformationUI : MonoBehaviour
             new Vector2(0f, 1f), dimensions, position);
         Text label = rect.gameObject.AddComponent<Text>();
         label.font = font;
-        label.fontSize = size;
+        label.fontSize = GameUITheme.ReadableFontSize(size);
         label.color = color;
         label.alignment = TextAnchor.UpperLeft;
         label.horizontalOverflow = HorizontalWrapMode.Wrap;
@@ -469,13 +520,14 @@ public sealed class GameInformationUI : MonoBehaviour
     {
         if (tileText == null) return;
         if (tileTrendPanel != null) tileTrendPanel.Show(selectedTile, tileHistory);
-        if (selectedTile == null)
-        {
-            tileText.text = "该地块已不在场景中";
-            return;
-        }
+        tileText.text = ReadTileDetails();
+    }
+
+    public string ReadTileDetails()
+    {
+        if (selectedTile == null) return "该地块已不在场景中";
         BlockInfo block = selectedTile.Block;
-        if (block == null) { tileText.text = "地块数据暂不可用"; return; }
+        if (block == null) return "地块数据暂不可用";
         string terrain = selectedTile.Biome.ToString();
         string elevation = block.elevation.ToString();
         string temperature = block.temperature.ToString();
@@ -497,7 +549,7 @@ public sealed class GameInformationUI : MonoBehaviour
         if (block.community != null)
             foreach (PopulationData item in block.community)
                 if (item != null && item.speciesAmount > 0) groups++;
-        tileText.text = $"地块信息  ({selectedTile.Coordinate.x}, {selectedTile.Coordinate.y})\n" +
+        return $"地块信息  ({selectedTile.Coordinate.x}, {selectedTile.Coordinate.y})\n" +
             $"地形：{terrain}    海拔：{elevation}\n" +
             $"温度：{temperature}    湿度：{humidity}\n" +
             $"植物库存：{plants} / {capacity}\n" +
@@ -505,15 +557,16 @@ public sealed class GameInformationUI : MonoBehaviour
             $"水域类型：{block.waterCoverage}";
     }
 
-    private void RefreshPopulation()
+    private void RefreshPopulation() => RefreshPopulationView(populationPanel);
+    public void RefreshPopulationView(PopulationInfoPanel view)
     {
-        if (populationPanel == null) return;
-        if (selectedVisual == null) { populationPanel.ShowUnavailable("该种群已不在场景中"); return; }
+        if (view == null) return;
+        if (selectedVisual == null) { view.ShowUnavailable("该种群已不在场景中"); return; }
         PopulationData data = selectedVisual.EcologicalPopulation;
         string id = data != null ? data.PopulationId : selectedVisual.UniqueId;
-        if (id != selectedPopulationId) { populationPanel.ShowUnavailable("该种群已迁出或消失"); return; }
+        if (id != selectedPopulationId) { view.ShowUnavailable("该种群已迁出或消失"); return; }
         BlockInfo block = null;
         if (grid != null && grid.TryGetTile(selectedVisual.TileId, out MapTileInstance tile)) block = tile.Block;
-        populationPanel.Refresh(selectedVisual, data, block);
+        view.Refresh(selectedVisual, data, block);
     }
 }

@@ -1,0 +1,8 @@
+Forest: 1 rig, 3 native systems, 22 live particles.
+Desert: 1 rig, 4 native systems, 56 live particles.
+Grassland: 1 rig, 3 native systems, 16 live particles.
+Highland: 1 rig, 4 native systems, 24 live particles.
+Rainforest: 1 rig, 4 native systems, 30 live particles.
+Tundra: 1 rig, 4 native systems, 51 live particles.
+SnowMountain: 0 rig, 0 native systems, 0 live particles.
+Volcano: 0 rig, 0 native systems, 0 live particles.

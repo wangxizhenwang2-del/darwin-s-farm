@@ -1,0 +1,1 @@
+PASS: original vertices, split normals, tangents, colours, triangles and all eight UV channels match; adapter is CPU-readable; Vincent original remains unchanged.

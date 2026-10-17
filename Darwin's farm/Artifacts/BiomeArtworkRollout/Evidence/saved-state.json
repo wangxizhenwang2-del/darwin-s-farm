@@ -1,0 +1,43 @@
+{
+  "sceneSaved": true,
+  "scene": "Assets/Scenes/WhiteBox.unity",
+  "isDirty": false,
+  "playing": false,
+  "references": [
+    {
+      "field": "desertBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/Desert_WhiteBoxVisual.prefab"
+    },
+    {
+      "field": "forestBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/Forest_WhiteBoxVisual.prefab"
+    },
+    {
+      "field": "grasslandBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/Grassland_WhiteBoxVisual.prefab"
+    },
+    {
+      "field": "highlandBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/Highland_WhiteBoxVisual.prefab"
+    },
+    {
+      "field": "rainforestBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/Rainforest_WhiteBoxVisual.prefab"
+    },
+    {
+      "field": "tundraBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/Tundra_WhiteBoxVisual.prefab"
+    },
+    {
+      "field": "snowMountainBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/SnowMountain_WhiteBoxVisual.prefab"
+    },
+    {
+      "field": "volcanoBiomeVisual",
+      "path": "Assets/Rendering/WhiteBoxCalibratedBiomes/Volcano_WhiteBoxVisual.prefab"
+    }
+  ],
+  "shaderErrors": [],
+  "shaderCount": 6,
+  "unityVersion": "6000.2.9f1"
+}

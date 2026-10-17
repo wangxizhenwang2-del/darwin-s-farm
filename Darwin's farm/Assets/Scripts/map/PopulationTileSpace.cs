@@ -17,6 +17,7 @@ public sealed class PopulationTileSpace
     private readonly MapTileInstance tile;
     private readonly NavMeshQueryFilter filter;
     private readonly Dictionary<float, PopulationLocalNavigation> routes = new Dictionary<float, PopulationLocalNavigation>();
+    private readonly Dictionary<float, PopulationLocalNavigation> fineRoutes = new Dictionary<float, PopulationLocalNavigation>();
     private struct NavigationTriangle
     {
         public Vector3 a, b, c;
@@ -38,6 +39,7 @@ public sealed class PopulationTileSpace
         ground.Clear();
         boundary.Clear();
         routes.Clear();
+        fineRoutes.Clear();
         navigationCells.Clear();
         if (tile == null) return;
         var edges = new Dictionary<(Vector2Int, Vector2Int), Edge>();
@@ -203,6 +205,33 @@ public sealed class PopulationTileSpace
         return true;
     }
 
+    // A billboard stands vertically above its route position. Offsetting it along
+    // a triangle's normal makes it jump sideways whenever that normal changes.
+    public bool TryRepresentativePose(Vector3 position, Vector3 heading, float size,
+        out Vector3 groundPosition, out Vector3 center, out Quaternion rotation)
+    {
+        groundPosition = center = position;
+        rotation = Quaternion.identity;
+        if (!TryPose(position, size, out _, out _) || !TryGround(position, out RaycastHit groundHit))
+            return false;
+        groundPosition = groundHit.point;
+        heading.y = 0f;
+        rotation = Quaternion.LookRotation(heading.sqrMagnitude > 0.001f ? heading : Vector3.forward, Vector3.up);
+        center = groundPosition + Vector3.up * (size * 0.5f);
+        // Keep the upright proxy's entire footprint above the relief. Height
+        // follows the continuous ground surface rather than its per-face normal.
+        float support = 0f;
+        for (int x = -1; x <= 1; x++)
+            for (int z = -1; z <= 1; z++)
+            {
+                Vector3 bottom = center + rotation * new Vector3(x, -1f, z) * (size * 0.5f);
+                if (!TryGround(bottom, out RaycastHit contact)) return false;
+                support = Mathf.Max(support, contact.point.y - bottom.y);
+            }
+        center.y += support;
+        return true;
+    }
+
     private bool IsObstacle(Collider collider)
     {
         if (collider == null || !collider.enabled || collider.isTrigger) return false;
@@ -293,7 +322,7 @@ public sealed class PopulationTileSpace
         return new Vector3(inward.x, 0f, inward.y).normalized;
     }
 
-    public void InvalidateRoutes() => routes.Clear();
+    public void InvalidateRoutes() { routes.Clear(); fineRoutes.Clear(); }
 
     public bool TryPath(Vector3 from, Vector3 target, float size, out Vector3[] corners,
         System.Func<Vector3, Vector3, bool> bodyMove = null)
@@ -305,7 +334,17 @@ public sealed class PopulationTileSpace
             navigation = new PopulationLocalNavigation(Bounds, 0.65f, (a, b) => CanTraverse(a, b, size));
             routes.Add(size, navigation);
         }
-        if (!navigation.TryPath(from, end.point, bodyMove, out corners)) return false;
+        if (!navigation.TryPath(from, end.point, bodyMove, out corners))
+        {
+            // A valid body can stand between the coarse samples after a biome
+            // changes around it. Retry a denser grid with identical safety checks.
+            if (!fineRoutes.TryGetValue(size, out navigation))
+            {
+                navigation = new PopulationLocalNavigation(Bounds, 0.325f, (a, b) => CanTraverse(a, b, size));
+                fineRoutes.Add(size, navigation);
+            }
+            if (!navigation.TryPath(from, end.point, bodyMove, out corners)) return false;
+        }
         // Sampling does not supply height: every returned waypoint uses this tile.
         for (int i = 0; i < corners.Length; i++)
         {

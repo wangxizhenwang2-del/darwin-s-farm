@@ -20,6 +20,7 @@ public sealed class PopulationMovementController : MonoBehaviour
     private readonly List<WhiteboxPopulation> populations = new List<WhiteboxPopulation>();
     private readonly List<WhiteboxPopulation> debugPopulations = new List<WhiteboxPopulation>();
     private bool navigationWasUpdating;
+    private int navigationRevision = -1;
     public PopulationMovementSettings Settings => settings;
     public Camera ViewCamera => viewCamera;
     public Sprite FallbackSprite => fallbackSprite;
@@ -54,7 +55,7 @@ public sealed class PopulationMovementController : MonoBehaviour
             foreach (PopulationMovementController controller in controllers)
                 if (controller != null)
                     foreach (WhiteboxPopulation population in controller.populations)
-                        if (population != null && population.gameObject.activeInHierarchy && population.members != null) return true;
+                        if (population != null && population.gameObject.activeInHierarchy && population.leader != null) return true;
             return false;
         }
     }
@@ -66,20 +67,17 @@ public sealed class PopulationMovementController : MonoBehaviour
             if (controller == null) continue;
             foreach (WhiteboxPopulation population in controller.populations)
             {
-                if (population == null || population.members == null) continue;
-                foreach (WhiteboxPopulation.Member member in population.members)
-                {
-                    if (!member.visual.gameObject.activeInHierarchy) continue;
-                    float required = radius + PopulationTileSpace.Clearance(member.size) +
-                        Mathf.Max(0f, controller.settings.playerGap);
-                    if (!PopulationCollisionMath.AllowsMove(PopulationCollisionMath.Flat(from),
-                        PopulationCollisionMath.Flat(to), PopulationCollisionMath.Flat(member.groundPosition), required)) return false;
-                }
+                if (population == null || population.leader == null) continue;
+                var leader = population.leader;
+                if (!leader.visual.gameObject.activeInHierarchy) continue;
+                float required = radius + PopulationTileSpace.Clearance(leader.size) + Mathf.Max(0f, controller.settings.playerGap);
+                if (!PopulationCollisionMath.AllowsMove(PopulationCollisionMath.Flat(from), PopulationCollisionMath.Flat(to),
+                    PopulationCollisionMath.Flat(leader.groundPosition), required)) return false;
             }
         }
         return true;
     }
-    private bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
+    internal bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
 
     public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount)
     {
@@ -89,95 +87,99 @@ public sealed class PopulationMovementController : MonoBehaviour
         Physics.SyncTransforms();
         var filter = new NavMeshQueryFilter { agentTypeID = surface.agentTypeID, areaMask = walkableAreaMask };
         var space = new PopulationTileSpace(tile, filter);
-        if (!space.IsReady || settings.leaderSize <= 0f || settings.followerSize <= 0f) return null;
-        int visibleCount = WhiteboxPopulation.VisibleMemberCount(initialCount);
-        // Bounded packing: no partial entities and no unchecked fallback positions.
+        if (!space.IsReady || settings.leaderSize <= 0f) return null;
         for (int attempt = 0; attempt < 64; attempt++)
         {
             Bounds bounds = space.Bounds;
             Vector3 leader = new Vector3(Random.Range(bounds.min.x, bounds.max.x), bounds.max.y,
                 Random.Range(bounds.min.z, bounds.max.z));
-            if (!space.CanTraverse(leader, leader, settings.leaderSize) || !SpawnSeparated(leader, settings.leaderSize)) continue;
-            var positions = new Vector3[4];
-            for (int i = 0; i < positions.Length; i++) positions[i] = leader;
-            bool packed = false;
-            float startingYaw = Random.Range(0f, Mathf.PI * 2f);
-            for (int direction = 0; direction < 16; direction++)
-            {
-                float yaw = startingYaw + direction * Mathf.PI * 0.125f;
-                Vector3 backward = new Vector3(Mathf.Sin(yaw), 0f, Mathf.Cos(yaw));
-                float distance = 0f;
-                bool fits = true;
-                for (int member = 1; member < visibleCount; member++)
-                {
-                    float predecessorSize = member == 1 ? settings.leaderSize : settings.followerSize;
-                    distance += Mathf.Max(settings.spacing, PopulationTileSpace.Clearance(settings.followerSize) +
-                        PopulationTileSpace.Clearance(predecessorSize) + Mathf.Max(0f, settings.memberGap) + 0.08f);
-                    Vector3 candidate = leader + backward * distance;
-                    if (!space.CanTraverse(candidate, candidate, settings.followerSize) ||
-                        !SpawnSeparated(candidate, settings.followerSize) ||
-                        !space.CanTraverse(positions[member - 1], candidate, settings.followerSize))
-                    { fits = false; break; }
-                    positions[member] = candidate;
-                }
-                if (fits) { packed = true; break; }
-            }
-            if (!packed) continue;
+            if (!space.CanTraverse(leader, leader, settings.leaderSize) ||
+                !SpawnSeparated(leader, settings.leaderSize)) continue;
             GameObject root = new GameObject("Population"); root.transform.SetParent(transform, true);
             WhiteboxPopulation population = root.AddComponent<WhiteboxPopulation>();
             Color color = Color.HSVToRGB(Mathf.Repeat(populations.Count * 0.381966f + 0.05f, 1f), 0.7f, 1f);
-            population.Initialize(this, tile, space, initialCount, positions, color);
+            population.Initialize(this, tile, space, initialCount, leader, color);
             populations.Add(population);
             PopulationPlayerBarrier.ActivateAll();
             return population;
         }
-        Debug.LogWarning($"No safe space for {visibleCount} population members on tile {tileId}; creation skipped.", this);
+        Debug.LogWarning($"No safe space for a population representative on tile {tileId}; creation skipped.", this);
         return null;
     }
 
     private static float HorizontalDistance(Vector3 a, Vector3 b)
     { a.y = 0f; b.y = 0f; return Vector3.Distance(a, b); }
-    private bool SpawnSeparated(Vector3 point, float size)
+    private bool SpawnSeparated(Vector3 point, float size, WhiteboxPopulation ignore = null)
     {
         foreach (PopulationPlayerBarrier player in PopulationPlayerBarrier.Players)
             if (player != null && player.isActiveAndEnabled &&
                 HorizontalDistance(point, player.transform.position) <
                 PopulationTileSpace.Clearance(size) + player.Radius + Mathf.Max(0f, settings.playerGap)) return false;
         foreach (WhiteboxPopulation population in populations)
-            if (population != null && population.members != null)
-                foreach (WhiteboxPopulation.Member member in population.members)
-                    if (member.visual.gameObject.activeInHierarchy && HorizontalDistance(point, member.groundPosition) <
-                        PopulationTileSpace.Clearance(size) + PopulationTileSpace.Clearance(member.size) +
-                        Mathf.Max(0f, settings.populationGap)) return false;
+        {
+            if (population == null || population == ignore || population.leader == null) continue;
+            var leader = population.leader;
+            if (leader.visual.gameObject.activeInHierarchy && HorizontalDistance(point, leader.groundPosition) <
+                PopulationTileSpace.Clearance(size) + PopulationTileSpace.Clearance(leader.size) +
+                Mathf.Max(0f, settings.populationGap)) return false;
+        }
         return true;
     }
 
-    internal bool HasSeparation(WhiteboxPopulation owner, WhiteboxPopulation.Member moving, Vector3 target)
-        => HasSeparation(owner, moving, moving.groundPosition, target);
-
-    internal bool HasSeparation(WhiteboxPopulation owner, WhiteboxPopulation.Member moving, Vector3 start, Vector3 target)
+    // Only terrain changes may relocate the representative to a safe pose on its
+    // own tile. Its ecological identity and count remain intact.
+    internal bool TryRecoverPosition(WhiteboxPopulation owner, out Vector3 position)
     {
+        position = default;
+        if (owner == null || owner.leader == null || !owner.space.IsReady) return false;
+        var space = owner.space;
+        Vector3 hint = owner.leader.groundPosition;
+        var candidates = new List<Vector3> { hint };
+        Bounds bounds = space.Bounds;
+        for (float z = bounds.min.z + 1f; z < bounds.max.z; z += 1.25f)
+            for (float x = bounds.min.x + 1f; x < bounds.max.x; x += 1.25f)
+                candidates.Add(new Vector3(x, bounds.max.y, z));
+        candidates.Sort((a, b) => HorizontalDistance(a, hint).CompareTo(HorizontalDistance(b, hint)));
+        foreach (Vector3 candidate in candidates)
+        {
+            if (!space.CanTraverse(candidate, candidate, owner.leader.size) ||
+                !SpawnSeparated(candidate, owner.leader.size, owner)) continue;
+            // Reject isolated legal poses with no room to start wandering.
+            for (int direction = 0; direction < 8; direction++)
+            {
+                float yaw = direction * Mathf.PI * .25f;
+                Vector3 target = candidate + new Vector3(Mathf.Sin(yaw), 0f, Mathf.Cos(yaw)) * 2f;
+                if (!space.TryPath(candidate, target, owner.leader.size, out _,
+                    (a, b) => HasSeparation(owner, a, b))) continue;
+                position = candidate;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    internal bool HasSeparation(WhiteboxPopulation owner, Vector3 target) =>
+        HasSeparation(owner, owner.leader.groundPosition, target);
+
+    internal bool HasSeparation(WhiteboxPopulation owner, Vector3 start, Vector3 target)
+    {
+        float clearance = PopulationTileSpace.Clearance(owner.leader.size);
+        Vector2 from = PopulationCollisionMath.Flat(start), to = PopulationCollisionMath.Flat(target);
         foreach (WhiteboxPopulation population in populations)
         {
-            if (population == null || population.members == null) continue;
-            foreach (WhiteboxPopulation.Member member in population.members)
-            {
-                if (member == moving || !member.visual.gameObject.activeInHierarchy) continue;
-                float required = PopulationTileSpace.Clearance(moving.size) +
-                    PopulationTileSpace.Clearance(member.size) + Mathf.Max(0f,
-                        population == owner ? settings.memberGap : settings.populationGap);
-                Vector2 from = new Vector2(start.x, start.z);
-                Vector2 to = new Vector2(target.x, target.z);
-                Vector2 other = new Vector2(member.groundPosition.x, member.groundPosition.z);
-                if (!PopulationCollisionMath.AllowsMove(from, to, other, required)) return false;
-            }
+            if (population == null || population == owner || population.leader == null) continue;
+            var other = population.leader;
+            if (!other.visual.gameObject.activeInHierarchy) continue;
+            float required = clearance + PopulationTileSpace.Clearance(other.size) + Mathf.Max(0f, settings.populationGap);
+            if (!PopulationCollisionMath.AllowsMove(from, to, PopulationCollisionMath.Flat(other.groundPosition), required))
+                return false;
         }
         foreach (PopulationPlayerBarrier player in PopulationPlayerBarrier.Players)
         {
             if (player == null || !player.isActiveAndEnabled) continue;
-            float required = PopulationTileSpace.Clearance(moving.size) + player.Radius + Mathf.Max(0f, settings.playerGap);
-            if (!PopulationCollisionMath.AllowsMove(PopulationCollisionMath.Flat(start),
-                PopulationCollisionMath.Flat(target), PopulationCollisionMath.Flat(player.transform.position), required)) return false;
+            float required = clearance + player.Radius + Mathf.Max(0f, settings.playerGap);
+            if (!PopulationCollisionMath.AllowsMove(from, to, PopulationCollisionMath.Flat(player.transform.position), required))
+                return false;
         }
         return true;
     }
@@ -185,7 +187,13 @@ public sealed class PopulationMovementController : MonoBehaviour
     private void Update()
     {
         if (!NavigationReady) { navigationWasUpdating = true; return; }
-        if (navigationWasUpdating) { OnTilesChanged(); navigationWasUpdating = false; }
+        if (navigationWasUpdating || navigationRevision != gridManager.Navigation.Revision)
+        {
+            foreach (WhiteboxPopulation population in populations)
+                if (population != null) population.NavigationChanged();
+            navigationRevision = gridManager.Navigation.Revision;
+            navigationWasUpdating = false;
+        }
         for (int i = populations.Count - 1; i >= 0; i--)
         {
             WhiteboxPopulation population = populations[i];
@@ -202,8 +210,9 @@ public sealed class PopulationMovementController : MonoBehaviour
     }
     private void OnTilesChanged()
     {
-        foreach (WhiteboxPopulation population in populations)
-            if (population != null) population.NavigationChanged();
+        // TilesChanged precedes the bake. Rebuild local caches only after the
+        // completed navigation revision, never against the previous mesh.
+        navigationWasUpdating = true;
     }
     public void DestroyPopulation(WhiteboxPopulation population)
     {
@@ -249,7 +258,7 @@ public sealed class PopulationMovementController : MonoBehaviour
         if (!debugPopulations[0].RequestReverse())
             Debug.LogWarning("No terrain-valid reverse target here; retry away from the tile boundary.", this);
     }
-    [ContextMenu("Population Debug/Pause wandering and regroup (Play Mode)")]
+    [ContextMenu("Population Debug/Pause wandering (Play Mode)")]
     private void PauseDebugWandering()
     {
         if (!Application.isPlaying) return;
@@ -263,18 +272,18 @@ public sealed class PopulationMovementController : MonoBehaviour
         foreach (WhiteboxPopulation population in debugPopulations)
             if (population != null) population.PauseWandering(false);
     }
-    [ContextMenu("Population Debug/Validate live formation (Play Mode)")]
-    private void ValidateDebugFormation()
+    [ContextMenu("Population Debug/Validate live movement (Play Mode)")]
+    private void ValidateDebugMovement()
     {
         if (!Application.isPlaying || !NavigationReady) return;
         int valid = 0;
         foreach (WhiteboxPopulation population in debugPopulations)
         {
             if (population == null) continue;
-            if (population.ValidateFormation(out string problem)) valid++;
+            if (population.ValidateMovement(out string problem)) valid++;
             else Debug.LogError($"{population.name}: {problem}", population);
         }
-        Debug.Log($"Live formation: {valid}/{debugPopulations.Count} populations passed.", this);
+        Debug.Log($"Live movement: {valid}/{debugPopulations.Count} populations passed.", this);
     }
     [ContextMenu("Population Debug/Clear debug populations (Play Mode)")]
     private void ClearDebugPopulations()
