@@ -6,7 +6,7 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public static class MapTouchGestureChecks
 {
-    [MenuItem("Tools/Darwin's Farm/Input/Check touch gesture rules")]
+    [MenuItem("Tools/Darwin Farm/Validation/Input/Check Touch Gesture Rules", false, 510)]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
     public static string RunChecks()

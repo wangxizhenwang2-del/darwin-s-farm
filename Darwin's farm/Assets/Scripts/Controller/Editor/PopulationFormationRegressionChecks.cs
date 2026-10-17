@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class PopulationFormationRegressionChecks
 {
-    [MenuItem("Tools/Population/Run formation and player regression checks")]
+    [MenuItem("Tools/Darwin Farm/Validation/Population/Run Formation and Player Checks", false, 521)]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
     public static string RunChecks()

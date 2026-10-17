@@ -1,0 +1,3 @@
+PASS: installed 34 files; only two mountain prefabs and two River water materials changed among existing assets.
+PASS: original scenes, source models, shared materials/textures and shaders preserved.
+PASS: new GUIDs unique; all asset and package GUID references resolve.

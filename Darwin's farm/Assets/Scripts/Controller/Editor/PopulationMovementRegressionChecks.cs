@@ -7,7 +7,7 @@ using UnityEngine;
 // Reproducible algorithm checks: no scene objects, assets or configuration writes.
 public static class PopulationMovementRegressionChecks
 {
-    [MenuItem("Tools/Population/Run movement regression checks")]
+    [MenuItem("Tools/Darwin Farm/Validation/Population/Run Movement Checks", false, 520)]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
     public static string RunChecks()

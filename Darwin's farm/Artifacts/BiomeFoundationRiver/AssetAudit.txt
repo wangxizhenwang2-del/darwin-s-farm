@@ -1,0 +1,2 @@
+PASS: all original assets remain; only 9 expected existing files changed.
+PASS: new GUIDs are unique; serialized references resolve in Assets or Unity packages.

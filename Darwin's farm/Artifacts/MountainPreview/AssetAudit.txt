@@ -1,0 +1,3 @@
+PASS: installed only 11 intended VFX resource updates; existing GUIDs preserved and new references resolve.
+PASS: unrelated scenes, water materials, original models and shaders were not written.
+Preserved concurrent source edits: ['Assets/Rendering/Moebius/Samples/Billboard/Animals/README.md', 'Assets/Rendering/Moebius/Samples/Billboard/Animals/README.md.meta', 'Assets/Rendering/Moebius/Samples/Biomes/Prefabs/Volcano_Moebius.prefab']

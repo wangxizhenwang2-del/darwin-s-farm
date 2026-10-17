@@ -330,7 +330,7 @@ Transform:
   m_GameObject: {fileID: 316126035}
   serializedVersion: 2
   m_LocalRotation: {x: 0.21898577, y: -0.22386149, z: 0.051695526, w: 0.9482926}
-  m_LocalPosition: {x: 28.3, y: 29, z: -40.2}
+  m_LocalPosition: {x: 14.3, y: 16.6, z: -15.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -930,13 +930,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1877815617}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.56328654, y: -0.29868707, z: 0.6875437, w: -0.34753135}
+  m_LocalRotation: {x: -0.637289, y: 0.5933299, z: -0.41437575, w: -0.26479277}
   m_LocalPosition: {x: 0, y: 10.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 53.345, y: -1151.747, z: -526.3}
+  m_LocalEulerAnglesHint: {x: 56.019, y: -1282.505, z: -466.174}
 --- !u!114 &1877815620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1540,19 +1540,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.8594116
+      value: 1.6921179
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.51246685
+      value: 0.29755014
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.361355
+      value: 1.238872
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.37519893
+      value: 0.21784921
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -1560,11 +1560,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 0.194542
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.2089304
+      value: -0.114065245
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startSizeY.minMaxState
@@ -1572,7 +1572,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.3289304
+      value: -0.23406525
       objectReference: {fileID: 0}
     - target: {fileID: 155591579742651779, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.minMaxState
@@ -1608,19 +1608,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1218426827007313266, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.2606182
+      value: 1.1471987
       objectReference: {fileID: 0}
     - target: {fileID: 1218426827007313266, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.34743515
+      value: 0.2017289
       objectReference: {fileID: 0}
     - target: {fileID: 1218426827007313266, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.9229526
+      value: 0.83991325
       objectReference: {fileID: 0}
     - target: {fileID: 1218426827007313266, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.25437218
+      value: 0.14769436
       objectReference: {fileID: 0}
     - target: {fileID: 1218426827007313266, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -1692,19 +1692,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.7648654
+      value: 1.606078
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.48640925
+      value: 0.28242046
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 1.2921336
+      value: 1.1758785
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.35612103
+      value: 0.20677212
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -1716,7 +1716,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.2089304
+      value: -0.114065245
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startSizeY.minMaxState
@@ -1724,7 +1724,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.3289304
+      value: -0.23406525
       objectReference: {fileID: 0}
     - target: {fileID: 7016313747206463393, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.minMaxState
@@ -1732,19 +1732,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.1345564
+      value: 1.0324788
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.31269166
+      value: 0.18155603
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.83065736
+      value: 0.75592196
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.22893497
+      value: 0.13292494
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -1756,7 +1756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.2089304
+      value: -0.114065245
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startSizeY.minMaxState
@@ -1764,7 +1764,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.3289304
+      value: -0.23406525
       objectReference: {fileID: 0}
     - target: {fileID: 8413260761052084057, guid: 6e900cb3b8f44a545a7e95fdc69719c6, type: 3}
       propertyPath: InitialModule.startRotationY.minMaxState

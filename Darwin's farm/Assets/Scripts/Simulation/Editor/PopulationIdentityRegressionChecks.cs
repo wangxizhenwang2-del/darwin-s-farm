@@ -8,7 +8,7 @@ using UnityEngine;
 // Scene-independent checks for model identity across editing and transfer.
 public static class PopulationIdentityRegressionChecks
 {
-    [MenuItem("Tools/Population/Run identity regression checks")]
+    [MenuItem("Tools/Darwin Farm/Validation/Population/Run Identity Checks", false, 523)]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
     public static string RunChecks()

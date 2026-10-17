@@ -1,0 +1,229 @@
+PASS: SnowMountain: 17 metre foundation, 0.3 metre slab
+PASS: Volcano: 17 metre foundation, 0.3 metre slab
+PASS: I: separate bottom, ledge, riverbed and upper-bank levels
+PASS: I: real riverbed triangles found
+PASS: I: water extends to open tile connectors
+I: 9600 water triangles; level 1.135384; shore baked from actual banks only
+PASS: T: separate bottom, ledge, riverbed and upper-bank levels
+PASS: T: real riverbed triangles found
+PASS: T: water extends to open tile connectors
+T: 12864 water triangles; level 1.091348; shore baked from actual banks only
+PASS: SnowMountain: mesh resolves on SnowMountain_Moebius
+PASS: SnowMountain: material supported on SnowMountain_Moebius
+PASS: SnowMountain: mesh resolves on InkOutline
+PASS: SnowMountain: material supported on InkOutline
+PASS: SnowMountain: mesh resolves on Biome Foundation
+PASS: SnowMountain: material supported on Biome Foundation
+PASS: SnowMountain: material supported on Biome Foundation
+PASS: Volcano: mesh resolves on Lava
+PASS: Volcano: material supported on Lava
+PASS: Volcano: mesh resolves on LavaLake
+PASS: Volcano: material supported on LavaLake
+PASS: Volcano: mesh resolves on Rock
+PASS: Volcano: material supported on Rock
+PASS: Volcano: mesh resolves on RockOutline
+PASS: Volcano: material supported on RockOutline
+PASS: Volcano: mesh resolves on Biome Foundation
+PASS: Volcano: material supported on Biome Foundation
+PASS: Volcano: material supported on Biome Foundation
+PASS: River: mesh resolves on I
+PASS: River: material supported on I
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Bush10* (23)
+PASS: River: material supported on Bush10* (23)
+PASS: River: mesh resolves on Bush10* (31)
+PASS: River: material supported on Bush10* (31)
+PASS: River: mesh resolves on Bush10* (40)
+PASS: River: material supported on Bush10* (40)
+PASS: River: mesh resolves on Bush10* (24)
+PASS: River: material supported on Bush10* (24)
+PASS: River: mesh resolves on Bush10* (32)
+PASS: River: material supported on Bush10* (32)
+PASS: River: mesh resolves on Bush10* (39)
+PASS: River: material supported on Bush10* (39)
+PASS: River: mesh resolves on Bush10* (25)
+PASS: River: material supported on Bush10* (25)
+PASS: River: mesh resolves on Bush10* (33)
+PASS: River: material supported on Bush10* (33)
+PASS: River: mesh resolves on Bush10* (26)
+PASS: River: material supported on Bush10* (26)
+PASS: River: mesh resolves on Bush10* (34)
+PASS: River: material supported on Bush10* (34)
+PASS: River: mesh resolves on Bush10* (27)
+PASS: River: material supported on Bush10* (27)
+PASS: River: mesh resolves on Bush10* (35)
+PASS: River: material supported on Bush10* (35)
+PASS: River: mesh resolves on Bush10* (41)
+PASS: River: material supported on Bush10* (41)
+PASS: River: mesh resolves on Bush10* (28)
+PASS: River: material supported on Bush10* (28)
+PASS: River: mesh resolves on Bush10* (36)
+PASS: River: material supported on Bush10* (36)
+PASS: River: mesh resolves on Bush10* (29)
+PASS: River: material supported on Bush10* (29)
+PASS: River: mesh resolves on Bush10* (37)
+PASS: River: material supported on Bush10* (37)
+PASS: River: mesh resolves on Bush10* (30)
+PASS: River: material supported on Bush10* (30)
+PASS: River: mesh resolves on Bush10* (38)
+PASS: River: material supported on Bush10* (38)
+PASS: River: mesh resolves on Stone17* (17)
+PASS: River: material supported on Stone17* (17)
+PASS: River: mesh resolves on Stone17* (25)
+PASS: River: material supported on Stone17* (25)
+PASS: River: mesh resolves on Stone17* (18)
+PASS: River: material supported on Stone17* (18)
+PASS: River: mesh resolves on Stone17* (26)
+PASS: River: material supported on Stone17* (26)
+PASS: River: mesh resolves on Stone17* (19)
+PASS: River: material supported on Stone17* (19)
+PASS: River: mesh resolves on Stone17* (27)
+PASS: River: material supported on Stone17* (27)
+PASS: River: mesh resolves on Stone17* (20)
+PASS: River: material supported on Stone17* (20)
+PASS: River: mesh resolves on Stone17* (28)
+PASS: River: material supported on Stone17* (28)
+PASS: River: mesh resolves on Stone17* (21)
+PASS: River: material supported on Stone17* (21)
+PASS: River: mesh resolves on Stone17* (29)
+PASS: River: material supported on Stone17* (29)
+PASS: River: mesh resolves on Stone17* (33)
+PASS: River: material supported on Stone17* (33)
+PASS: River: mesh resolves on Stone17* (34)
+PASS: River: material supported on Stone17* (34)
+PASS: River: mesh resolves on Stone17* (22)
+PASS: River: material supported on Stone17* (22)
+PASS: River: mesh resolves on Stone17* (30)
+PASS: River: material supported on Stone17* (30)
+PASS: River: mesh resolves on Stone17* (23)
+PASS: River: material supported on Stone17* (23)
+PASS: River: mesh resolves on Stone17* (31)
+PASS: River: material supported on Stone17* (31)
+PASS: River: mesh resolves on Stone17* (24)
+PASS: River: material supported on Stone17* (24)
+PASS: River: mesh resolves on Stone17* (32)
+PASS: River: material supported on Stone17* (32)
+PASS: River: mesh resolves on Flowing Water
+PASS: River: material supported on Flowing Water
+PASS: River: mesh resolves on T
+PASS: River: material supported on T
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Cylinder002 3
+PASS: River: material supported on Cylinder002 3
+PASS: River: mesh resolves on Hedra001 3
+PASS: River: material supported on Hedra001 3
+PASS: River: mesh resolves on Bush10* (11)
+PASS: River: material supported on Bush10* (11)
+PASS: River: mesh resolves on Bush10* (17)
+PASS: River: material supported on Bush10* (17)
+PASS: River: mesh resolves on Bush10* (21)
+PASS: River: material supported on Bush10* (21)
+PASS: River: mesh resolves on Bush10* (22)
+PASS: River: material supported on Bush10* (22)
+PASS: River: mesh resolves on Bush10* (19)
+PASS: River: material supported on Bush10* (19)
+PASS: River: mesh resolves on Bush10* (9)
+PASS: River: material supported on Bush10* (9)
+PASS: River: mesh resolves on Bush10* (12)
+PASS: River: material supported on Bush10* (12)
+PASS: River: mesh resolves on Bush10* (14)
+PASS: River: material supported on Bush10* (14)
+PASS: River: mesh resolves on Bush10* (10)
+PASS: River: material supported on Bush10* (10)
+PASS: River: mesh resolves on Bush10* (13)
+PASS: River: material supported on Bush10* (13)
+PASS: River: mesh resolves on Bush10* (18)
+PASS: River: material supported on Bush10* (18)
+PASS: River: mesh resolves on Bush10* (20)
+PASS: River: material supported on Bush10* (20)
+PASS: River: mesh resolves on Stone17* (5)
+PASS: River: material supported on Stone17* (5)
+PASS: River: mesh resolves on Stone17* (7)
+PASS: River: material supported on Stone17* (7)
+PASS: River: mesh resolves on Stone17* (9)
+PASS: River: material supported on Stone17* (9)
+PASS: River: mesh resolves on Stone17* (11)
+PASS: River: material supported on Stone17* (11)
+PASS: River: mesh resolves on Stone17* (13)
+PASS: River: material supported on Stone17* (13)
+PASS: River: mesh resolves on Stone17* (15)
+PASS: River: material supported on Stone17* (15)
+PASS: River: mesh resolves on Stone17* (16)
+PASS: River: material supported on Stone17* (16)
+PASS: River: mesh resolves on Stone17* (6)
+PASS: River: material supported on Stone17* (6)
+PASS: River: mesh resolves on Stone17* (8)
+PASS: River: material supported on Stone17* (8)
+PASS: River: mesh resolves on Stone17* (10)
+PASS: River: material supported on Stone17* (10)
+PASS: River: mesh resolves on Stone17* (12)
+PASS: River: material supported on Stone17* (12)
+PASS: River: mesh resolves on Stone17* (14)
+PASS: River: material supported on Stone17* (14)
+PASS: River: mesh resolves on Bush10* (15)
+PASS: River: material supported on Bush10* (15)
+PASS: River: mesh resolves on Bush10* (16)
+PASS: River: material supported on Bush10* (16)
+PASS: River: mesh resolves on Flowing Water
+PASS: River: material supported on Flowing Water
+Shoreline transform comparison mean RGB error: 4.45632798573975E-09
+PASS: Shoreline remains attached after translation and 90 degree yaw (rendered GPU comparison)
+Errors: 0

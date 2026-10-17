@@ -1,0 +1,8 @@
+PASS: Native Play Mode river animates with GPU time
+PASS: Two channel meshes, no per-frame time controller or extra render feature
+PASS: Shore mask retained on T
+PASS: River shoreline follows prefab transforms
+PASS: Shore mask retained on I
+PASS: River shoreline follows prefab transforms
+Play Mode seconds: 3.000018
+Errors: 0

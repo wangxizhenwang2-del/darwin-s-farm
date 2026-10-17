@@ -1,0 +1,44 @@
+PASS: Hierarchy: mirrored source / upward filter / duplicate source removal
+PASS: Hierarchy: metre height offset / coordinate transform
+PASS: Hierarchy: metre height offset / coordinate transform
+PASS: Hierarchy: metre height offset / coordinate transform
+PASS: Hierarchy: metre height offset / coordinate transform
+PASS: Hierarchy: shape binding without changing scaling mode
+PASS: Hierarchy: native particles spawned
+PASS: Hierarchy: actual native particle positions match world-space source, worst height error 7.152557E-07
+PASS: Local: mirrored source / upward filter / duplicate source removal
+PASS: Local: metre height offset / coordinate transform
+PASS: Local: metre height offset / coordinate transform
+PASS: Local: metre height offset / coordinate transform
+PASS: Local: metre height offset / coordinate transform
+PASS: Local: shape binding without changing scaling mode
+PASS: Local: native particles spawned
+PASS: Local: actual native particle positions match world-space source, worst height error 1.192093E-06
+PASS: Shape: mirrored source / upward filter / duplicate source removal
+PASS: Shape: metre height offset / coordinate transform
+PASS: Shape: metre height offset / coordinate transform
+PASS: Shape: metre height offset / coordinate transform
+PASS: Shape: metre height offset / coordinate transform
+PASS: Shape: shape binding without changing scaling mode
+PASS: Shape: native particles spawned
+PASS: Shape: actual native particle positions match world-space source, worst height error 7.152557E-07
+PASS: Collision retains all source triangles and ignores emission offset / slope
+PASS: Native collider raycast matches transformed / mirrored ground
+PASS: Collision binding preserves layer and non-convex settings
+PASS: Updating asset preserves GUID and existing references
+PASS: Existing mesh geometry supports Undo
+PASS: Particle binding supports Undo
+PASS: Collider binding supports Undo
+PASS: Copy model into isolated test folder
+PASS: Found a real imported mesh with Read/Write disabled (test copy if needed)
+PASS: Imported unreadable mesh baked without modifying importer
+PASS: Meshes above 65,535 vertices use 32-bit indices
+PASS: Zero-scale target is rejected
+PASS: Imported source model overwrite is rejected
+PASS: Target assignments mark scene dirty
+PASS: Existing Grassland VFX prefab instance records both mesh overrides
+PASS: Save isolated test scene
+PASS: Prefab mesh bindings survive scene save / reload
+PASS: One grouped Moebius menu entry
+PASS: Editor window opens from the registered menu
+Errors: 0

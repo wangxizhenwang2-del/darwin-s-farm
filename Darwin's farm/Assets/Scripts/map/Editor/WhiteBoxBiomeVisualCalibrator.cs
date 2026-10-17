@@ -32,7 +32,7 @@ public static class WhiteBoxBiomeVisualCalibrator
         new Entry("Highland_Colored", "Highland_WhiteBoxVisual", "Ground - Paint Here")
     };
 
-    [MenuItem("Tools/Darwin's Farm/Calibrate WhiteBox Biome Visuals")]
+    [MenuItem("Tools/Darwin Farm/Map/Calibrate WhiteBox Biome Visuals", false, 200)]
     public static string CalibrateAll()
     {
         if (!AssetDatabase.IsValidFolder(OutputFolder))

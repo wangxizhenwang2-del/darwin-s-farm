@@ -1,0 +1,176 @@
+PASS: I: existing baked shoreline retained
+PASS: T: existing baked shoreline retained
+PASS: Eruption emitter fitted to the highest molten crater, not the prefab pivot
+Crater local position: (0.10, 5.73, -0.56)
+Volcano: 12-second native loops; bursts at 1.0–1.85s; no per-frame C# updates.
+Snow Mountain: two continuous snowfall layers, 49 particles/sec total; 576 particle cap; actual terrain collision and tile bounds.
+PASS: Volcano: no missing scripts on Volcano_Moebius
+PASS: Volcano: no missing scripts on Lava
+PASS: Volcano: no missing scripts on LavaLake
+PASS: Volcano: no missing scripts on Rock
+PASS: Volcano: no missing scripts on RockOutline
+PASS: Volcano: no missing scripts on Biome Foundation
+PASS: Volcano: no missing scripts on Volcano VFX
+PASS: Volcano: no missing scripts on Particle Collision (Ignore Raycast)
+PASS: Volcano: no missing scripts on Foundation Collision
+PASS: Volcano: no missing scripts on Lava Bombs (12s Cycle)
+PASS: Volcano: no missing scripts on Ash Plume (12s Cycle)
+PASS: Volcano: no missing scripts on Rising Embers (12s Cycle)
+PASS: Volcano: no missing scripts on Biome Foundation (1)
+PASS: Volcano: no missing scripts on Directional Light
+PASS: Volcano: no missing scripts on Main Camera
+PASS: Volcano: expected native particle layer count
+PASS: Volcano: particle scale is metres despite imported prefab scaling
+PASS: Volcano: supported particle material VolcanicEmbers
+PASS: Volcano: particle scale is metres despite imported prefab scaling
+PASS: Volcano: supported particle material IllustratedAsh
+PASS: Volcano: particle scale is metres despite imported prefab scaling
+PASS: Volcano: supported particle material MoltenBombs
+Volcano t=0.5 particles=0
+PASS: Volcano cycle at 0.5s matches quiet/eruption phase
+Volcano t=2.2 particles=151
+PASS: Volcano cycle at 2.2s matches quiet/eruption phase
+Volcano t=4.5 particles=18
+PASS: Volcano cycle at 4.5s matches quiet/eruption phase
+Volcano t=9.5 particles=0
+PASS: Volcano cycle at 9.5s matches quiet/eruption phase
+Volcano t=14.2 particles=133
+PASS: Volcano cycle at 14.2s matches quiet/eruption phase
+PASS: SnowMountain: no missing scripts on SnowMountain_Moebius
+PASS: SnowMountain: no missing scripts on InkOutline
+PASS: SnowMountain: no missing scripts on Biome Foundation
+PASS: SnowMountain: no missing scripts on Snow Mountain VFX
+PASS: SnowMountain: no missing scripts on Particle Collision (Ignore Raycast)
+PASS: SnowMountain: no missing scripts on Foundation Collision
+PASS: SnowMountain: no missing scripts on Snowfall Boundary (Ignore Raycast)
+PASS: SnowMountain: no missing scripts on Fine Snowfall
+PASS: SnowMountain: no missing scripts on Larger Drawn Snowflakes
+PASS: SnowMountain: no missing scripts on Directional Light
+PASS: SnowMountain: no missing scripts on Main Camera
+PASS: SnowMountain: expected native particle layer count
+PASS: SnowMountain: particle scale is metres despite imported prefab scaling
+PASS: SnowMountain: supported particle material FineSnowfall
+PASS: SnowMountain: particle scale is metres despite imported prefab scaling
+PASS: SnowMountain: supported particle material LargerDrawnSnowflakes
+PASS: Both snow layers emit and remain visible
+Snow at 7s: Fine Snowfall=317/Larger Drawn Snowflakes=61
+PASS: Snow does not fall beneath the foundation
+PASS: River: no missing scripts on River
+PASS: River: no missing scripts on I
+PASS: River: no missing scripts on group22 (4)
+PASS: River: no missing scripts on group22
+PASS: River: no missing scripts on group22 (4)
+PASS: River: no missing scripts on group22 (1)
+PASS: River: no missing scripts on group22 (5)
+PASS: River: no missing scripts on group22 (2)
+PASS: River: no missing scripts on group22 (6)
+PASS: River: no missing scripts on group22 (3)
+PASS: River: no missing scripts on group22 (7)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Bush10* (23)
+PASS: River: no missing scripts on Bush10* (31)
+PASS: River: no missing scripts on Bush10* (40)
+PASS: River: no missing scripts on Bush10* (24)
+PASS: River: no missing scripts on Bush10* (32)
+PASS: River: no missing scripts on Bush10* (39)
+PASS: River: no missing scripts on Bush10* (25)
+PASS: River: no missing scripts on Bush10* (33)
+PASS: River: no missing scripts on Bush10* (26)
+PASS: River: no missing scripts on Bush10* (34)
+PASS: River: no missing scripts on Bush10* (27)
+PASS: River: no missing scripts on Bush10* (35)
+PASS: River: no missing scripts on Bush10* (41)
+PASS: River: no missing scripts on Bush10* (28)
+PASS: River: no missing scripts on Bush10* (36)
+PASS: River: no missing scripts on Bush10* (29)
+PASS: River: no missing scripts on Bush10* (37)
+PASS: River: no missing scripts on Bush10* (30)
+PASS: River: no missing scripts on Bush10* (38)
+PASS: River: no missing scripts on Stone17* (17)
+PASS: River: no missing scripts on Stone17* (25)
+PASS: River: no missing scripts on Stone17* (18)
+PASS: River: no missing scripts on Stone17* (26)
+PASS: River: no missing scripts on Stone17* (19)
+PASS: River: no missing scripts on Stone17* (27)
+PASS: River: no missing scripts on Stone17* (20)
+PASS: River: no missing scripts on Stone17* (28)
+PASS: River: no missing scripts on Stone17* (21)
+PASS: River: no missing scripts on Stone17* (29)
+PASS: River: no missing scripts on Stone17* (33)
+PASS: River: no missing scripts on Stone17* (34)
+PASS: River: no missing scripts on Stone17* (22)
+PASS: River: no missing scripts on Stone17* (30)
+PASS: River: no missing scripts on Stone17* (23)
+PASS: River: no missing scripts on Stone17* (31)
+PASS: River: no missing scripts on Stone17* (24)
+PASS: River: no missing scripts on Stone17* (32)
+PASS: River: no missing scripts on Flowing Water
+PASS: River: no missing scripts on T
+PASS: River: no missing scripts on group22 (4)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on group22 (5)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on group22 (8)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on group22 (9)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on group22 (10)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on group22 (6)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on group22 (7)
+PASS: River: no missing scripts on Cylinder002 3
+PASS: River: no missing scripts on Hedra001 3
+PASS: River: no missing scripts on Bush10* (11)
+PASS: River: no missing scripts on Bush10* (17)
+PASS: River: no missing scripts on Bush10* (21)
+PASS: River: no missing scripts on Bush10* (22)
+PASS: River: no missing scripts on Bush10* (19)
+PASS: River: no missing scripts on Bush10* (9)
+PASS: River: no missing scripts on Bush10* (12)
+PASS: River: no missing scripts on Bush10* (14)
+PASS: River: no missing scripts on Bush10* (10)
+PASS: River: no missing scripts on Bush10* (13)
+PASS: River: no missing scripts on Bush10* (18)
+PASS: River: no missing scripts on Bush10* (20)
+PASS: River: no missing scripts on Stone17* (5)
+PASS: River: no missing scripts on Stone17* (7)
+PASS: River: no missing scripts on Stone17* (9)
+PASS: River: no missing scripts on Stone17* (11)
+PASS: River: no missing scripts on Stone17* (13)
+PASS: River: no missing scripts on Stone17* (15)
+PASS: River: no missing scripts on Stone17* (16)
+PASS: River: no missing scripts on Stone17* (6)
+PASS: River: no missing scripts on Stone17* (8)
+PASS: River: no missing scripts on Stone17* (10)
+PASS: River: no missing scripts on Stone17* (12)
+PASS: River: no missing scripts on Stone17* (14)
+PASS: River: no missing scripts on Bush10* (15)
+PASS: River: no missing scripts on Bush10* (16)
+PASS: River: no missing scripts on Flowing Water
+PASS: River: no missing scripts on Directional Light
+PASS: River: no missing scripts on Main Camera
+Errors: 0

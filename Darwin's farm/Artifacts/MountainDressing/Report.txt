@@ -1,0 +1,8 @@
+Reused Tundra Rock_01 silhouette: 78 triangles
+Reused Tundra Rock_02 silhouette: 74 triangles
+Reused Tundra Rock_03 silhouette: 74 triangles
+SnowMountain: added 31 prop instances; original 3 renderers preserved.
+Volcano: added 26 prop instances; original 5 renderers preserved.
+SnowMountain: added static triangle count=2633; native particle count=378; scene not saved/overwritten.
+Volcano: added static triangle count=2004; native particle count=106; scene not saved/overwritten.
+Errors: 0
