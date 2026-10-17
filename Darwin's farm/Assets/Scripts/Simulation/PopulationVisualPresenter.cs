@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Read-only view of the living land populations in placed tiles.
+// Read-only view of living land and air populations in placed tiles.
 // Ecology owns PopulationData; this component owns only WhiteboxPopulation objects.
 [DisallowMultipleComponent]
 public sealed partial class PopulationVisualPresenter : MonoBehaviour
@@ -82,12 +82,14 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
             foreach (PopulationData data in tile.Block.community)
             {
                 if (data == null || data.speciesAmount <= 0 ||
-                    data.ecologicalNiche != EcologicalNiche.Land) continue;
+                    (data.ecologicalNiche != EcologicalNiche.Land &&
+                     data.ecologicalNiche != EcologicalNiche.Air)) continue;
                 string id = data.PopulationId;
                 if (!living.Add(id)) continue;
 
                 if (visuals.TryGetValue(id, out WhiteboxPopulation visual) && visual != null &&
-                    visual.TileId == tile.Coordinate)
+                    visual.TileId == tile.Coordinate &&
+                    visual.IsAir == (data.ecologicalNiche == EcologicalNiche.Air))
                 {
                     // A whole-branch evolution changes species on the same
                     // PopulationData instance and keeps the population ID.
@@ -112,7 +114,8 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                 bool held = transitionHolds.TryGetValue(id, out TransitionHold pending);
                 int initialCount = held && pending.CountBefore > 0 ?
                     pending.CountBefore : data.speciesAmount;
-                visual = movement.CreatePopulation(tile.Coordinate, initialCount);
+                visual = movement.CreatePopulation(tile.Coordinate, initialCount,
+                    data.ecologicalNiche == EcologicalNiche.Air);
                 if (visual == null)
                 {
                     retryAt[id] = Time.unscaledTime + Mathf.Max(0.1f, failedCreationRetry);

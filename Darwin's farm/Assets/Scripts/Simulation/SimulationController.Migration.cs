@@ -27,6 +27,28 @@ public partial class SimulationController
     public event System.Action<BlockInfo, BlockInfo, PopulationData, int> OnPopulationMigrated;
     public event Action<PopulationTransitionResult> OnMigrationResolved;
 
+    // Shared by natural migration, player relocation and storage placement.
+    // Matching arrivals may merge; a different living air species owns the slot.
+    public static bool CanAcceptAirSpecies(BlockInfo target, PopulationData arrival)
+    {
+        if (target == null || arrival == null || target.community == null) return false;
+        foreach (PopulationData resident in target.community)
+            if (resident != null && resident.speciesAmount > 0 &&
+                resident.ecologicalNiche == EcologicalNiche.Air &&
+                !PopulationTransfer.IsSameSpecies(resident, arrival)) return false;
+        return true;
+    }
+
+    internal void NotifyPlayerAirMigration(BlockInfo source, BlockInfo target,
+        PopulationData origin, PopulationData arrival, int amount, int targetCountBefore)
+    {
+        OnMigrationResolved?.Invoke(new PopulationTransitionResult(
+            PopulationTransitionKind.Migration, GetComponent<SimulationTime>()?.currentDay ?? 0, source, target,
+            origin, arrival, amount, amount, targetCountBefore,
+            targetCountBefore > 0 ? PopulationArrivalOutcome.Merged : PopulationArrivalOutcome.Created));
+        OnPopulationMigrated?.Invoke(source, target, origin, amount);
+    }
+
     public void SetMigrationParameters(bool enabled, int interval, float populationScale,
         float threshold, float overloadProbability,
         float overloadFraction, int cooldownDays)
@@ -155,11 +177,30 @@ public partial class SimulationController
         foreach (BlockInfo source in blockInfos)
         {
             if (source == null || source.community == null || source.Neighbors == null) continue;
-            if (source.waterCoverage != WaterCoverage.Land) continue;
             foreach (PopulationData population in source.community)
             {
                 if (population == null || population.speciesAmount <= 0 ||
                     day < population.nextMigrationDay) continue;
+                if (population.ecologicalNiche == EcologicalNiche.Air && ecologicalNichesEnabled)
+                {
+                    var destinations = new List<BlockInfo>(source.Neighbors);
+                    for (int i = destinations.Count - 1; i > 0; i--)
+                    {
+                        int other = Random.Range(0, i + 1);
+                        BlockInfo swap = destinations[i]; destinations[i] = destinations[other]; destinations[other] = swap;
+                    }
+                    foreach (BlockInfo destination in destinations)
+                    {
+                        if (plans.Exists(move => move.target == destination &&
+                            move.population.ecologicalNiche == EcologicalNiche.Air &&
+                            !SameSpecies(move.population, population))) continue;
+                        if (!TryPlanAirMove(source, destination, population, day, out MovePlan airPlan)) continue;
+                        plans.Add(airPlan);
+                        break;
+                    }
+                    continue;
+                }
+                if (source.waterCoverage != WaterCoverage.Land) continue;
                 if (population.ecologicalNiche != EcologicalNiche.Land) continue;
                 if (TryPlanMove(source, population, plans, day,
                     out MovePlan plan))
@@ -265,14 +306,15 @@ public partial class SimulationController
             PopulationData resident = target.community.Find(population =>
                 population != null && population.ecologicalNiche == arrival.ecologicalNiche &&
                 SameSpecies(population, arrival));
-            if (resident == null && LivingPopulationCount(target) >= 5)
+            if ((arrival.ecologicalNiche == EcologicalNiche.Air && !CanAcceptAirSpecies(target, arrival)) ||
+                (resident == null && LivingPopulationCount(target) >= 5))
             {
                 PopulationData origin = plans[i].population;
                 if (!plans[i].source.community.Contains(origin))
                     plans[i].source.community.Add(origin);
                 PopulationTransfer.Merge(origin, arrival);
                 LogEcology(day, target, arrival, "migration_blocked",
-                    "capacity=5; individuals returned to source");
+                    "destination unavailable; individuals returned to source");
                 continue;
             }
             int targetCountBefore = resident == null ? 0 : resident.speciesAmount;
@@ -559,10 +601,20 @@ public partial class SimulationController
     public bool TryAirMigration(BlockInfo source, BlockInfo target,
         PopulationData population, int day)
     {
+        if (!TryPlanAirMove(source, target, population, day, out MovePlan plan)) return false;
+        ApplyMovePlans(new List<MovePlan> { plan }, day);
+        return true;
+    }
+
+    private bool TryPlanAirMove(BlockInfo source, BlockInfo target,
+        PopulationData population, int day, out MovePlan plan)
+    {
+        plan = default;
         if (!CanDepart(source, population, EcologicalNiche.Air, day) ||
             !AreNeighbors(source, target) || target == population.lastMigrationSource ||
-            HasAirPopulation(target) ||
+            !CanAcceptAirSpecies(target, population) ||
             target.community == null) return false;
+        if (LivingPopulationCount(target) >= 5 && !HasSameSpeciesResident(target, population)) return false;
         float capacity = AirTargetCapacityCorrection(target, population);
         if (capacity <= 0f) return false;
         float gain = CalculateFitness(target, population) -
@@ -577,7 +629,7 @@ public partial class SimulationController
         int amount = LimitMigrationAmount(population.speciesAmount, fraction);
         if (amount == 0 || ModelRandom01(day, "migration.air", source,
                 population, target) >= chance) return false;
-        ApplyNicheMigration(source, target, population, amount, day);
+        plan = new MovePlan { source = source, target = target, population = population, amount = amount };
         return true;
     }
 

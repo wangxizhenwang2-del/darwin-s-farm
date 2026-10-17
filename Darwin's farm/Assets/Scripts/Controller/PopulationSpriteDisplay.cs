@@ -32,4 +32,11 @@ public static class PopulationSpriteDisplay
         if (renderer != null && camera != null)
             renderer.transform.rotation = camera.transform.rotation;
     }
+
+    public static void ConfigureAir(SpriteRenderer renderer)
+    {
+        if (renderer == null) return;
+        Material material = Resources.Load<Material>("Population/AirPopulationSprite");
+        if (material != null) renderer.sharedMaterial = material;
+    }
 }

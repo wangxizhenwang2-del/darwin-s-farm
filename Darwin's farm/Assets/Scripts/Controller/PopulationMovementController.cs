@@ -55,7 +55,7 @@ public sealed class PopulationMovementController : MonoBehaviour
             foreach (PopulationMovementController controller in controllers)
                 if (controller != null)
                     foreach (WhiteboxPopulation population in controller.populations)
-                        if (population != null && population.gameObject.activeInHierarchy && population.leader != null) return true;
+                        if (population != null && !population.IsAir && population.gameObject.activeInHierarchy && population.leader != null) return true;
             return false;
         }
     }
@@ -67,7 +67,7 @@ public sealed class PopulationMovementController : MonoBehaviour
             if (controller == null) continue;
             foreach (WhiteboxPopulation population in controller.populations)
             {
-                if (population == null || population.leader == null) continue;
+                if (population == null || population.IsAir || population.leader == null) continue;
                 var leader = population.leader;
                 if (!leader.visual.gameObject.activeInHierarchy) continue;
                 float required = radius + PopulationTileSpace.Clearance(leader.size) + Mathf.Max(0f, controller.settings.playerGap);
@@ -79,8 +79,21 @@ public sealed class PopulationMovementController : MonoBehaviour
     }
     internal bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
 
-    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount)
+    public WhiteboxPopulation CreatePopulation(Vector2Int tileId, int initialCount, bool airborne = false)
     {
+        if (airborne)
+        {
+            if (!Application.isPlaying || gridManager == null ||
+                !gridManager.TryGetTile(tileId, out MapTileInstance airTile)) return null;
+            foreach (WhiteboxPopulation existing in populations)
+                if (existing != null && existing.IsAir && existing.TileId == tileId) return null;
+            GameObject airRoot = new GameObject("AirPopulation");
+            airRoot.transform.SetParent(transform, false);
+            WhiteboxPopulation air = airRoot.AddComponent<WhiteboxPopulation>();
+            air.Initialize(this, airTile, null, initialCount, Vector3.zero, Color.white, true);
+            populations.Add(air);
+            return air;
+        }
         if (!Application.isPlaying || !NavigationReady || !gridManager.TryGetTile(tileId, out MapTileInstance tile)) return null;
         NavMeshSurface surface = gridManager.Navigation.GetComponent<NavMeshSurface>();
         if (surface == null || surface.navMeshData == null) return null;
@@ -117,7 +130,7 @@ public sealed class PopulationMovementController : MonoBehaviour
                 PopulationTileSpace.Clearance(size) + player.Radius + Mathf.Max(0f, settings.playerGap)) return false;
         foreach (WhiteboxPopulation population in populations)
         {
-            if (population == null || population == ignore || population.leader == null) continue;
+            if (population == null || population.IsAir || population == ignore || population.leader == null) continue;
             var leader = population.leader;
             if (leader.visual.gameObject.activeInHierarchy && HorizontalDistance(point, leader.groundPosition) <
                 PopulationTileSpace.Clearance(size) + PopulationTileSpace.Clearance(leader.size) +
@@ -163,11 +176,12 @@ public sealed class PopulationMovementController : MonoBehaviour
 
     internal bool HasSeparation(WhiteboxPopulation owner, Vector3 start, Vector3 target)
     {
+        if (owner.IsAir) return true;
         float clearance = PopulationTileSpace.Clearance(owner.leader.size);
         Vector2 from = PopulationCollisionMath.Flat(start), to = PopulationCollisionMath.Flat(target);
         foreach (WhiteboxPopulation population in populations)
         {
-            if (population == null || population == owner || population.leader == null) continue;
+            if (population == null || population.IsAir || population == owner || population.leader == null) continue;
             var other = population.leader;
             if (!other.visual.gameObject.activeInHierarchy) continue;
             float required = clearance + PopulationTileSpace.Clearance(other.size) + Mathf.Max(0f, settings.populationGap);
@@ -186,8 +200,9 @@ public sealed class PopulationMovementController : MonoBehaviour
 
     private void Update()
     {
-        if (!NavigationReady) { navigationWasUpdating = true; return; }
-        if (navigationWasUpdating || navigationRevision != gridManager.Navigation.Revision)
+        bool navigationReady = NavigationReady;
+        if (!navigationReady) navigationWasUpdating = true;
+        if (navigationReady && (navigationWasUpdating || navigationRevision != gridManager.Navigation.Revision))
         {
             foreach (WhiteboxPopulation population in populations)
                 if (population != null) population.NavigationChanged();
@@ -200,6 +215,7 @@ public sealed class PopulationMovementController : MonoBehaviour
             if (population == null) { populations.RemoveAt(i); continue; }
             if (!gridManager.TryGetTile(population.TileId, out MapTileInstance tile) || tile != population.tile)
             { DestroyPopulation(population); continue; }
+            if (!population.gameObject.activeInHierarchy || (!population.IsAir && !navigationReady)) continue;
             float remaining = Mathf.Min(Time.deltaTime, 0.2f);
             while (remaining > 0f)
             {

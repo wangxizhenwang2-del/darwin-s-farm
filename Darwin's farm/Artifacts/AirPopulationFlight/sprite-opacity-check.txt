@@ -1,0 +1,5 @@
+PASS: actual 鹿飞 sprite rendered through URP over red/blue backgrounds and a depth edge.
+Body interior samples=5441; opaque material max channel difference=0/255; mean=0.0000/255.
+Default transparent material comparison: samples=5441; max=59/255; mean=0.7960/255.
+Background depth edge on/off: opaque max=0/255, mean=0.0000; default transparent max=229/255, mean=1.5111.
+Alpha-cutout forward, depth and depth-normal passes present; shader compile errors=0.

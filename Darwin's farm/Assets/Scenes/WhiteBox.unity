@@ -22416,6 +22416,11 @@ MonoBehaviour:
     replanSeconds: 0.5
     blockedRetargetSeconds: 1.5
     targetAttempts: 24
+    flightSpeed: 3
+    flightHeight: 1.7
+    flightBob: 0.12
+    flightEdgeMargin: 0.8
+    flightPatrolRadius: 4.5
   debugTile: {x: 0, y: 0}
   firstDebugCount: 37
   secondDebugCount: 123

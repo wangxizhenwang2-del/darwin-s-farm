@@ -18,6 +18,12 @@ public sealed class PopulationMovementSettings
     [Min(0.1f)] public float replanSeconds = 0.5f;
     [Min(0.2f)] public float blockedRetargetSeconds = 1.5f;
     [Range(1, 64)] public int targetAttempts = 24;
+    [Header("Air populations")]
+    [Min(0.1f)] public float flightSpeed = 3f;
+    [Min(0.75f)] public float flightHeight = 1.7f;
+    [Min(0f)] public float flightBob = 0.12f;
+    [Min(0.2f)] public float flightEdgeMargin = 0.8f;
+    [Min(0.5f)] public float flightPatrolRadius = 4.5f;
 }
 
 // A single visible animal represents the entire population. Movement never
@@ -44,6 +50,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     public Transform Leader => leader?.visual;
     public Sprite DisplaySprite => leader?.sprite != null ? leader.sprite.sprite : null;
     public PopulationData EcologicalPopulation { get; private set; }
+    public bool IsAir => flight != null;
 
     internal Representative leader;
     internal PopulationTileSpace space;
@@ -59,6 +66,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private Sprite boundSprite;
     private Color boundTint;
     private PopulationAnimationSet boundAnimation;
+    private PopulationFlight flight;
 
     public bool HasAppearance(Sprite sprite, Color tint, PopulationAnimationSet animations) =>
         boundSprite == (sprite != null ? sprite : controller.FallbackSprite) &&
@@ -70,21 +78,29 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         EcologicalPopulation = data;
         if (data == null || leader == null) return;
         Sprite selected = sprite != null ? sprite : controller.FallbackSprite;
+        flight?.SetSprite(selected);
         boundSprite = selected;
         boundTint = tint;
         boundAnimation = animations;
         if (animationDriver == null)
             animationDriver = leader.sprite.gameObject.AddComponent<PopulationAnimationDriver>();
-        animationDriver.Bind(leader.sprite, animations, selected, tint, leader.groundPosition);
+        animationDriver.Bind(leader.sprite, IsAir ? null : animations, selected, tint, leader.groundPosition);
+        if (IsAir) PopulationSpriteDisplay.ConfigureAir(leader.sprite);
         leader.visual.GetComponent<MeshRenderer>().enabled = leader.sprite.sprite == null;
     }
 
     internal void Initialize(PopulationMovementController owner, MapTileInstance ownedTile,
-        PopulationTileSpace ownedSpace, int count, Vector3 position, Color color)
+        PopulationTileSpace ownedSpace, int count, Vector3 position, Color color,
+        bool airborne = false)
     {
         controller = owner; tile = ownedTile; space = ownedSpace;
         uniqueId = Guid.NewGuid().ToString("N"); tileId = tile.Coordinate;
         populationCount = Mathf.Max(0, count);
+        if (airborne)
+        {
+            flight = new PopulationFlight(tile, controller.Settings);
+            position = flight.Position;
+        }
         name = $"Population_{tileId.x}_{tileId.y}_{uniqueId.Substring(0, 8)}";
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.name = "Leader";
@@ -116,7 +132,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         label.fontSize = 64; label.characterSize = 0.075f; label.color = Color.white;
         targetPosition = position; movementState = PopulationMovementState.Waiting;
         chooseAt = Time.time + UnityEngine.Random.Range(0f, Mathf.Max(0.1f, controller.Settings.pauseSeconds));
-        motion = new PopulationMotion(leader, controller.Settings,
+        if (!IsAir) motion = new PopulationMotion(leader, controller.Settings,
             (from, to) => space.CanTraverse(from, to, leader.size) && controller.HasSeparation(this, from, to),
             PlanRoute, Place);
         RefreshLabel();
@@ -146,6 +162,16 @@ public sealed class WhiteboxPopulation : MonoBehaviour
 
     internal void Tick(float deltaTime)
     {
+        if (IsAir)
+        {
+            if (leader == null || tile == null) return;
+            Vector3 before = leader.groundPosition;
+            flight.Tick(deltaTime, wanderingPaused);
+            Place(flight.Position, flight.Position - before);
+            targetPosition = flight.Position;
+            movementState = wanderingPaused ? PopulationMovementState.Waiting : PopulationMovementState.Moving;
+            return;
+        }
         if (leader == null || tile == null || motion == null) return;
         if (terrainRecoveryPending)
         {
@@ -212,6 +238,14 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     internal bool ValidateMovement(out string problem)
     {
         problem = null;
+        if (IsAir)
+        {
+            if (leader == null || !flight.Contains(Leader.position))
+            { problem = "Flying representative left its own tile airspace."; return false; }
+            if (label == null || label.text != Count.ToString())
+            { problem = "Air count label is out of sync."; return false; }
+            return true;
+        }
         if (leader == null || motion == null)
         { problem = "Missing runtime representative; recreate the debug populations after recompilation."; return false; }
         if (label == null || !label.gameObject.activeInHierarchy || label.text != Count.ToString())
@@ -244,6 +278,13 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private bool Place(Vector3 position, Vector3 heading)
     {
         Vector3 nextHeading = PopulationCollisionMath.SmoothHeading(leader.heading, heading, 1f);
+        if (IsAir)
+        {
+            leader.groundPosition = position;
+            if (heading.sqrMagnitude > 0.00001f) leader.heading = nextHeading;
+            leader.visual.SetPositionAndRotation(position, Quaternion.LookRotation(leader.heading, Vector3.up));
+            return true;
+        }
         if (!space.TryRepresentativePose(position, nextHeading, leader.size,
             out Vector3 ground, out Vector3 center, out Quaternion rotation)) return false;
         leader.groundPosition = ground; leader.heading = nextHeading;
@@ -253,6 +294,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
 
     internal void NavigationChanged()
     {
+        if (IsAir) { flight.RefreshCeiling(); return; }
         if (space == null || motion == null) return;
         space.Rebuild();
         terrainRecoveryPending = true;

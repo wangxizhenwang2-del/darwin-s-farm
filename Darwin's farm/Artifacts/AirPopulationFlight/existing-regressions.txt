@@ -1,0 +1,3 @@
+Ecological event regression checks: 15/15 passed.
+Population movement regression checks: 10/10 passed (including player detours and 32 changing-obstacle routes).
+Representative regression passed: 6000 simultaneous ticks, 164/166 completed routes, two moving representatives, pause/reset, dynamic obstacle replanning and 100 player crossing attempts.
