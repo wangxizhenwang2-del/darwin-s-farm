@@ -39,6 +39,10 @@ TRACKED = [
     "Assets/Scripts/UI/EnvironmentToolsInputChecks.cs",
     "Assets/Scripts/UI/MobileTechnologyPanel.cs",
     "Assets/Scripts/map/Transition System/MapTileColorTransitionSystem.Feedback.cs",
+    "Assets/Rendering/WhiteBoxCalibratedBiomes/Resources/Shaders/WhiteBoxMoebiusRim.shader",
+    "Assets/Rendering/Moebius/Shaders/Materials/MoebiusNPR.shader",
+    "Assets/Rendering/Moebius/Shaders/Materials/MoebiusSnowMountain.shader",
+    "Assets/Rendering/Moebius/Shaders/Materials/MoebiusVolcanoRockBaked.shader",
 ]
 NEW = [
     ".gitattributes",
@@ -50,6 +54,8 @@ NEW = [
     "Assets/Scripts/Simulation/SimulationController.EcologyLedger.cs.meta",
     "Assets/Scripts/Simulation/V61BiowebValidator.cs",
     "Assets/Scripts/Simulation/V61BiowebValidator.cs.meta",
+    "Assets/Rendering/Moebius/Editor/Inspector/MoebiusSurfaceDebugView.cs",
+    "Assets/Rendering/Moebius/Editor/Inspector/MoebiusSurfaceDebugView.cs.meta",
 ]
 
 patch = subprocess.run(
