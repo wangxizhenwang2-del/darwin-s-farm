@@ -3,7 +3,10 @@ using UnityEngine;
 
 public partial class SimulationController
 {
-    [SerializeField] private bool enableNeighborMovementFormula = false;
+    // Neighbor opportunity must participate in actual movement selection in
+    // normal play, not only in the core test profile. Otherwise an attractive
+    // empty tile is displayed while movement has no way to evolve toward it.
+    [SerializeField] private bool enableNeighborMovementFormula = true;
     public bool EnableNeighborMovementFormula
     {
         get => enableNeighborMovementFormula;

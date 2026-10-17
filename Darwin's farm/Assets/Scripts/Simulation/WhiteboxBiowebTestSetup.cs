@@ -50,6 +50,7 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
         }
 
         simulation.SetEvolutionNetworkSpecies(species);
+        simulation.EnableNeighborMovementFormula = true;
         if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) ||
             initialTile.Block == null)
         {
