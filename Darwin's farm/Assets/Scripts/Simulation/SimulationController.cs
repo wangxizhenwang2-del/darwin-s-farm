@@ -216,6 +216,7 @@ public partial class SimulationController : MonoBehaviour
         if (block == null || !blockInfos.Contains(block) || edits == null ||
             block.community == null) return false;
         HashSet<PopulationData> seen = new HashSet<PopulationData>();
+        PopulationData airSpecies = null;
         foreach (SimulationPopulationEdit edit in edits)
         {
             if (edit == null || edit.Draft == null ||
@@ -228,10 +229,17 @@ public partial class SimulationController : MonoBehaviour
                 edit.Draft.trophicLevel < 0 ||
                 edit.Draft.trophicLevel > MaxTrophicLevel ||
                 (edit.Resident == null && edit.Draft.speciesAmount > 0 &&
+                 edit.Draft.ecologicalNiche != EcologicalNiche.Air &&
                  HabitatTopology.IsWater(block)) ||
                 (edit.Resident != null &&
                  (!block.community.Contains(edit.Resident) || !seen.Add(edit.Resident))))
                 return false;
+            if (edit.Draft.speciesAmount > 0 && edit.Draft.ecologicalNiche == EcologicalNiche.Air)
+            {
+                if (airSpecies != null && !PopulationTransfer.IsSameSpecies(airSpecies, edit.Draft))
+                    return false;
+                airSpecies = edit.Draft;
+            }
         }
 
         List<PopulationData> next = new List<PopulationData>(edits.Count);
@@ -263,7 +271,7 @@ public partial class SimulationController : MonoBehaviour
             SetTrophicLevel(resident, draft.trophicLevel);
             next.Add(resident);
         }
-        // A land tile has one local population per species. New drafts from
+        // Land and air use one local population per species. New drafts from
         // the editor/test entry may match a resident; use migration's same
         // weighted transfer rule to keep one population record.
         List<PopulationData> merged = new List<PopulationData>(next.Count);
@@ -271,12 +279,13 @@ public partial class SimulationController : MonoBehaviour
         {
             PopulationData match = null;
             if (population != null && population.speciesAmount > 0 &&
-                population.ecologicalNiche == EcologicalNiche.Land &&
+                (population.ecologicalNiche == EcologicalNiche.Land ||
+                 population.ecologicalNiche == EcologicalNiche.Air) &&
                 population.landPositionBlock == null)
             {
                 match = merged.Find(resident => resident != null &&
                     resident.speciesAmount > 0 &&
-                    resident.ecologicalNiche == EcologicalNiche.Land &&
+                    resident.ecologicalNiche == population.ecologicalNiche &&
                     resident.landPositionBlock == null &&
                     PopulationTransfer.IsSameSpecies(resident, population));
             }

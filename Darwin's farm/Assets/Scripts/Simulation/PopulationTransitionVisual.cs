@@ -22,7 +22,8 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
 
     public void Begin(Vector3[] waypoints, float arc, float seconds,
         PopulationMovementSettings settings, Material material, Sprite fromSprite,
-        Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted)
+        Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted,
+        bool airborne = false)
     {
         path = waypoints;
         arcHeight = Mathf.Max(0f, arc);
@@ -58,6 +59,11 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
         if (toSprite != null && toSprite != fromSprite)
             targetImage = PopulationSpriteDisplay.Create(cube.transform,
                 toSprite, new Color(to.r, to.g, to.b, 0f), 2);
+        if (airborne)
+        {
+            PopulationSpriteDisplay.ConfigureAir(sourceImage);
+            PopulationSpriteDisplay.ConfigureAir(targetImage);
+        }
         Camera activeCamera = viewCamera != null ? viewCamera : Camera.main;
         PopulationSpriteDisplay.FaceCamera(sourceImage, activeCamera);
         PopulationSpriteDisplay.FaceCamera(targetImage, activeCamera);

@@ -1,0 +1,4 @@
+Normal camera unchanged=True
+Flight height=1.7; bob=0.12; radius=4.5
+Body tint alpha=1; shader=Darwin/Population Air Sprite; queue=2450
+Patrol and label visibility passed 12000 normal-camera samples.

@@ -36,6 +36,7 @@ public sealed partial class PopulationVisualPresenter
         public Sprite SourceSprite;
         public Material Material;
         public bool Held;
+        public bool Flying;
     }
 
     private readonly Dictionary<string, TransitionHold> transitionHolds =
@@ -80,6 +81,9 @@ public sealed partial class PopulationVisualPresenter
             sourceView.Leader.position : TileAnchor(sourceTile);
         PopulationData sourceData = sourceView != null ? sourceView.EcologicalPopulation :
             FindPopulation(result.SourceBlock, result.SourcePopulationId);
+        if (sourceView == null && (sourceData != null && sourceData.ecologicalNiche == EcologicalNiche.Air ||
+            result.ResultNiche == EcologicalNiche.Air && result.Kind == PopulationTransitionKind.Migration))
+            start.y = PopulationFlight.CruiseHeight(sourceTile, movement.Settings);
         Color targetColor = TintFor(targetData);
         Color sourceColor = sourceData != null ? TintFor(sourceData) : targetColor;
         Sprite sourceSprite = sourceView != null ? sourceView.DisplaySprite :
@@ -96,7 +100,9 @@ public sealed partial class PopulationVisualPresenter
             Start = start,
             SourceColor = sourceColor,
             SourceSprite = sourceSprite,
-            Material = material
+            Material = material,
+            Flying = result.ResultNiche == EcologicalNiche.Air ||
+                (sourceData != null && sourceData.ecologicalNiche == EcologicalNiche.Air)
         });
     }
 
@@ -111,7 +117,8 @@ public sealed partial class PopulationVisualPresenter
                     pending.Result.ResultPopulationId) == null) continue;
             PopulationData targetData = FindPopulation(pending.Result.TargetBlock,
                 pending.Result.ResultPopulationId);
-            if (targetData.ecologicalNiche == EcologicalNiche.Land)
+            if (targetData.ecologicalNiche == EcologicalNiche.Land ||
+                targetData.ecologicalNiche == EcologicalNiche.Air)
             {
                 if (!transitionHolds.TryGetValue(pending.Result.ResultPopulationId,
                         out TransitionHold hold))
@@ -165,13 +172,23 @@ public sealed partial class PopulationVisualPresenter
             Sprite targetSprite = SpriteFor(targetData);
             Vector3 start = pending.Start;
             Vector3 end = TileAnchor(targetTile);
+            if (targetData.ecologicalNiche == EcologicalNiche.Air)
+                end.y = PopulationFlight.CruiseHeight(targetTile, movement.Settings);
             if (visuals.TryGetValue(result.ResultPopulationId,
                     out WhiteboxPopulation targetView) && targetView != null &&
                 targetView.TileId == targetTile.Coordinate && targetView.Leader != null)
                 end = targetView.Leader.position;
 
-            bool hasRoute = TryNavigationPath(start, end, out Vector3[] path);
+            Vector3[] path = null;
+            bool hasRoute = !pending.Flying && TryNavigationPath(start, end, out path);
             if (!hasRoute) path = new[] { start, end };
+            if (pending.Flying && TryFindTile(result.SourceBlock, out MapTileInstance fromTile))
+            {
+                float cruise = Mathf.Max(PopulationFlight.CruiseHeight(fromTile, movement.Settings),
+                    PopulationFlight.CruiseHeight(targetTile, movement.Settings), start.y, end.y);
+                path = new[] { start, new Vector3(start.x, cruise, start.z),
+                    new Vector3(end.x, cruise, end.z), end };
+            }
             if (result.SourceBlock == result.TargetBlock &&
                 Vector3.Distance(start, end) < 0.8f)
             {
@@ -196,11 +213,11 @@ public sealed partial class PopulationVisualPresenter
                 Held = pending.Held
             };
             activeTransitions.Add(running);
-            transition.Begin(path, !hasRoute ? fallbackArcHeight : 0f, duration,
+            transition.Begin(path, !hasRoute && !pending.Flying ? fallbackArcHeight : 0f, duration,
                 movement.Settings,
                 pending.Material, pending.SourceSprite, targetSprite,
                 pending.SourceColor, targetColor, movement.ViewCamera,
-                () => FinishTransition(running));
+                () => FinishTransition(running), pending.Flying);
         }
     }
 
