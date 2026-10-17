@@ -63,7 +63,7 @@ public sealed class GameInformationUI : MonoBehaviour
     public void SetMobilePresentation(bool mobile)
     {
         mobilePresentation = mobile;
-        if (!mobile && ToolModeActive && tileWindow != null) tileWindow.Close();
+        if (ToolModeActive && tileWindow != null) tileWindow.Close();
         if (tileWindow != null) tileWindow.SetPresentationVisible(!mobile);
         if (populationWindow != null) populationWindow.SetPresentationVisible(!mobile);
     }
@@ -283,9 +283,9 @@ public sealed class GameInformationUI : MonoBehaviour
         if (tile == null) return false;
         selectedTile = tile;
         RefreshTile();
-        // Desktop tool targeting needs a selected tile, not an information window.
-        // Mobile keeps its logical window open to drive the existing drawer.
-        if (ToolModeActive && !mobilePresentation) tileWindow.Close();
+        // Tool targeting selects a tile independently of either platform's
+        // information window. Only an information request opens that window.
+        if (ToolModeActive) tileWindow.Close();
         else tileWindow.Open();
         SelectionChanged?.Invoke(false);
         return true;

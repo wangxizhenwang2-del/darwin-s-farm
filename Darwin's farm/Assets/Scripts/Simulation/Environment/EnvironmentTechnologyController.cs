@@ -115,7 +115,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 {
                     if (!grid.TryGetTile(member, out MapTileInstance tile) ||
                         tile.HeightLevel + shift < 0 || tile.HeightLevel + shift > 2)
-                    { result.Error = "有地块会越过海拔 0～2 的边界"; return result; }
+                    { result.Error = "有地块会越过海拔 0至2 的边界"; return result; }
                 }
                 result.After = "海拔 " + (state.Elevation + shift) +
                     (water ? "；整片水域 " + area.Count + " 格同步改高" : "");

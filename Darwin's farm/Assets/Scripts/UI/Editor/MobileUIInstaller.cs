@@ -131,6 +131,7 @@ public static class MobileUIInstaller
 
         BuildPalette(saved, safe, placement);
         saved.ApplyModifiedPropertiesWithoutUndo();
+        EnvironmentToolsInstaller.ConfigureToolPanels(information, ui);
         EditorUtility.SetDirty(ui);
         EditorSceneManager.MarkSceneDirty(root.scene);
         ui.RefreshLayout();
@@ -186,7 +187,7 @@ public static class MobileUIInstaller
         var body = Rect("TechnologyBody", root, Vector2.up, Vector2.up, new Vector2(476, 394), new Vector2(0, -56));
         Set(saved, "body", body.gameObject);
         var kindRow = Rect("TechnologyKinds", body, Vector2.up, Vector2.up, new Vector2(476, 48), Vector2.zero);
-        Row(kindRow, 5); string[] kinds = { "温度", "湿度", "存量", "增量", "海拔" };
+        Row(kindRow, 5); string[] kinds = { "温度", "海拔", "湿度", "植物增量", "植物存量" };
         var kindButtons = new UnityEngine.UI.Button[kinds.Length];
         for (int i = 0; i < kinds.Length; i++) { kindButtons[i] = Button("Kind" + i, kindRow, kinds[i], new Vector2(88, 48)); Layout((RectTransform)kindButtons[i].transform, 88); }
         Array(saved, "kindButtons", kindButtons);

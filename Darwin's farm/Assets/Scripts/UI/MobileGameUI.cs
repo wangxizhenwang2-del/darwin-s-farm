@@ -33,6 +33,10 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Text tileDetails;
     [SerializeField] private PopulationInfoPanel populationPanel;
     [SerializeField] private MobileTechnologyPanel technologyPanel;
+    [Header("Independent environment tool window")]
+    [SerializeField] private InformationWindow toolsDrawer;
+    [SerializeField] private RectTransform toolsDrawerRect, toolsViewport, toolsContent;
+    [SerializeField] private UnityEngine.UI.ScrollRect toolsScroll;
     [SerializeField] private GameObject buildPalette, placementControls;
     [SerializeField] private UnityEngine.UI.Button buildButton, pauseButton, speedButton, locateButton;
     [SerializeField] private UnityEngine.UI.Button environmentTabButton, populationTabButton, closeButton;
@@ -41,6 +45,7 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private MapTileDefinition[] tileDefinitions;
     [SerializeField] private TextMeshProUGUI dayLabel, pauseLabel, speedLabel, buildLabel, titleLabel, placementLabel;
     [Header("Mobile layout (Canvas units)")]
+    [SerializeField] private RectTransform statusBar, actionColumn, gestureHelp;
     [SerializeField, Min(320f)] private float maximumDrawerWidth = 520f;
     [SerializeField, Range(.3f, .6f)] private float drawerWidthFraction = .43f;
     [SerializeField] private Vector2 drawerDefaultPosition = new Vector2(-8f, -92f);
@@ -116,15 +121,15 @@ public sealed class MobileGameUI : MonoBehaviour
         bound = true;
         Canvas.ForceUpdateCanvases();
         drawer.Initialize(safeArea, drawerDefaultPosition);
+        if (toolsDrawer != null) toolsDrawer.Initialize(safeArea, drawerDefaultPosition);
         populationPanel.Initialize(drawer);
         foreach (InformationTextDragHandle handle in GetComponentsInChildren<InformationTextDragHandle>(true))
-            handle.Initialize(drawer);
+            handle.Initialize(toolsDrawer != null && handle.transform.IsChildOf(toolsDrawer.transform) ? toolsDrawer : drawer);
         technologyPanel.Initialize();
         toolSession = information.GetComponent<EnvironmentToolSession>();
         if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
-        pauseButton.onClick.AddListener(() => { if (clock != null) clock.TogglePause(); RefreshRuntime(); });
-        speedButton.onClick.AddListener(() => { if (clock != null) clock.CycleSpeed(); RefreshRuntime(); });
+        speedButton.onClick.AddListener(CycleMobileSimulationSpeed);
         locateButton.onClick.AddListener(() => { if (mapCamera != null) mapCamera.ReturnToPlayer(); });
         environmentTabButton.onClick.AddListener(() => SelectTab(InformationTab.Environment));
         populationTabButton.onClick.AddListener(() => SelectTab(InformationTab.Population));
@@ -153,10 +158,12 @@ public sealed class MobileGameUI : MonoBehaviour
             previousToolMode = toolMode;
             technologyPanel.Refresh();
             RefreshLayout();
-            if (toolMode) { SelectTab(InformationTab.Environment); ScrollToTools(); }
+            if (toolMode && toolsScroll != null)
+            { toolsScroll.StopMovement(); toolsScroll.verticalNormalizedPosition = 1f; }
+            RefreshRuntime();
         }
         if (environmentToolsButton != null)
-            environmentToolsButton.GetComponentInChildren<TextMeshProUGUI>().text = toolMode ? "退出工具" : "环境工具";
+            environmentToolsButton.GetComponentInChildren<TextMeshProUGUI>().text = "环境工具";
         // The desktop build Controller owns its mode; mobile only supplies a view.
         if (desktopBuildPanel != null && desktopBuildPanel.activeSelf) desktopBuildPanel.SetActive(false);
         if (Time.unscaledTime < nextRefresh) return;
@@ -177,11 +184,13 @@ public sealed class MobileGameUI : MonoBehaviour
             // Canvas visibility previews do not delete or deactivate authored objects.
             if (desktopCanvas != null) desktopCanvas.enabled = !mobile;
             drawer.gameObject.SetActive(true);
+            if (toolsDrawer != null) toolsDrawer.gameObject.SetActive(false);
             buildPalette.SetActive(true); placementControls.SetActive(true);
             if (mobile) ShowTab();
             return;
         }
         if (!mobile) drawer.HideImmediately();
+        if (!mobile && toolsDrawer != null) toolsDrawer.HideImmediately();
         safeArea.gameObject.SetActive(mobile);
         if (desktopCanvas != null) desktopCanvas.enabled = true; // Keep world population markers.
         if (desktopHud != null) desktopHud.SetActive(!mobile);
@@ -204,9 +213,9 @@ public sealed class MobileGameUI : MonoBehaviour
         safeArea.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
         safeArea.offsetMin = safeArea.offsetMax = Vector2.zero;
         Canvas.ForceUpdateCanvases();
+        LayoutMobileControls();
         float width = Mathf.Clamp(safeArea.rect.width * drawerWidthFraction, 320f, maximumDrawerWidth);
-        float clearance = Application.isPlaying && toolSession != null && toolSession.Active ? 20f : drawerBottomClearance;
-        float height = Mathf.Max(240f, safeArea.rect.height + drawerDefaultPosition.y - clearance);
+        float height = Mathf.Max(240f, safeArea.rect.height + drawerDefaultPosition.y - drawerBottomClearance);
         drawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
         drawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
         titleLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width - 24f);
@@ -214,6 +223,69 @@ public sealed class MobileGameUI : MonoBehaviour
         if (Application.isPlaying && bound) drawer.SetDragBounds(safeArea, drawerDefaultPosition);
         float scale = Mathf.Min(1f, viewport.rect.width / 500f);
         tileContent.localScale = populationContent.localScale = Vector3.one * scale;
+        if (toolsDrawerRect != null)
+        {
+            toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                Mathf.Clamp(safeArea.rect.height + drawerDefaultPosition.y - 20f, 180f, 612f));
+            if (!Application.isPlaying || !toolsDrawer.IsOpen) toolsDrawerRect.anchoredPosition = drawerDefaultPosition;
+            if (Application.isPlaying && bound) toolsDrawer.SetDragBounds(safeArea, drawerDefaultPosition);
+            if (toolsContent != null && toolsViewport != null)
+                toolsContent.localScale = Vector3.one * Mathf.Min(1f, Mathf.Max(1f, width - 40f) / 500f);
+        }
+    }
+    private void LayoutMobileControls()
+    {
+        if (statusBar == null || actionColumn == null || gestureHelp == null) return;
+        float statusHeight = Mathf.Clamp(safeArea.rect.height * .086f, 44f, 62f);
+        float hintHeight = Mathf.Clamp(safeArea.rect.height * .1f, 44f, 72f);
+        float buttonHeight = Mathf.Clamp((safeArea.rect.height - statusHeight - hintHeight - 56f) / 4f, 44f, 64f);
+        void Place(RectTransform rect, Vector2 position, Vector2 size)
+        {
+            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.up;
+            rect.anchoredPosition = position; rect.sizeDelta = size;
+        }
+        statusBar.anchorMin=Vector2.up;statusBar.anchorMax=Vector2.one;statusBar.pivot=Vector2.up;
+        statusBar.anchoredPosition=new Vector2(8,-8);statusBar.sizeDelta=new Vector2(-16,statusHeight);
+        statusBar.localScale = Vector3.one;
+        var economy = statusBar.Find("Economy") as RectTransform;
+        var day = statusBar.Find("Day") as RectTransform;
+        var speed = speedButton != null ? speedButton.transform as RectTransform : null;
+        if (economy != null) Place(economy,Vector2.zero,new Vector2(190,statusHeight));
+        if (day != null)
+        {
+            Place(day,new Vector2(-153,0),new Vector2(140,statusHeight));
+            day.anchorMin=day.anchorMax=day.pivot=Vector2.one;
+        }
+        if (speed != null)
+        {
+            Place(speed,Vector2.zero,new Vector2(145,statusHeight));
+            speed.anchorMin=speed.anchorMax=speed.pivot=Vector2.one;
+        }
+        float drawerWidth = Mathf.Clamp(safeArea.rect.width * drawerWidthFraction,320f,maximumDrawerWidth);
+        Place(gestureHelp,new Vector2(8,-statusHeight-16),
+            new Vector2(Mathf.Clamp(safeArea.rect.width-drawerWidth-32,200,620),hintHeight));
+        if (pauseButton != null) pauseButton.gameObject.SetActive(false);
+        Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*3+16));
+        var buttons = new[] { environmentToolsButton, locateButton, buildButton };
+        for (int i=0;i<buttons.Length;i++)
+            if (buttons[i]!=null) Place((RectTransform)buttons[i].transform,new Vector2(0,-i*(buttonHeight+8)),new Vector2(168,buttonHeight));
+        if (placementControls != null)
+        {
+            float actionBottom=statusHeight+hintHeight+24+buttonHeight*3+16;
+            float placementLeft=actionBottom+4>safeArea.rect.height-276 ? 196 : 8;
+            var controls=(RectTransform)placementControls.transform;
+            controls.anchorMin=controls.anchorMax=controls.pivot=Vector2.zero;
+            controls.anchoredPosition=new Vector2(placementLeft,144);
+            controls.sizeDelta=new Vector2(Mathf.Min(600,safeArea.rect.width-placementLeft-8),132);
+            if (buildPalette != null)
+            {
+                var palette=(RectTransform)buildPalette.transform;
+                float paletteLeft=actionBottom+4>safeArea.rect.height-140 ? 196 : 8;
+                palette.offsetMin=new Vector2(paletteLeft,8);
+                palette.offsetMax=new Vector2(-8,140);
+            }
+        }
     }
     private Rect ReadSafeArea()
     {
@@ -257,7 +329,6 @@ public sealed class MobileGameUI : MonoBehaviour
             scrollPositions[(int)tab] = 1f;
             informationScroll.StopMovement();
             informationScroll.verticalNormalizedPosition = 1f;
-            if (!population && toolSession != null && toolSession.Active) ScrollToTools();
         }
         else
         {
@@ -268,7 +339,6 @@ public sealed class MobileGameUI : MonoBehaviour
     }
     private void CloseActiveInformation()
     {
-        if (toolSession != null && toolSession.Active) toolSession.End();
         if (informationTab == InformationTab.Environment) information.CloseTile();
         else information.ClosePopulation();
     }
@@ -278,29 +348,43 @@ public sealed class MobileGameUI : MonoBehaviour
         buildMode.SetBuildMode(!buildMode.IsBuildMode);
         RefreshRuntime();
     }
+    private void CycleMobileSimulationSpeed()
+    {
+        if (clock == null) return;
+        // One touch target cycles through running speeds and pause.
+        if (clock.IsPaused) clock.Play();
+        else if (clock.Speed >= 4f) clock.Pause();
+        else clock.CycleSpeed();
+        RefreshRuntime();
+    }
     private void RefreshRuntime()
     {
         if (!mobile || !bound) return;
         if (lastTab != informationTab) ShowTab();
-        bool any = information.TileIsOpen || information.PopulationIsOpen || (toolSession != null && toolSession.Active);
+        bool operating = toolSession != null && toolSession.Active;
+        bool any = information.TileIsOpen || information.PopulationIsOpen;
+        drawer.SetPresentationVisible(!operating);
         if (any && !drawer.IsOpen) { ShowTab(); drawer.Open(); }
         else if (!any && drawer.IsOpen) drawer.Close();
+        if (toolsDrawer != null)
+        {
+            if (operating && !toolsDrawer.IsOpen) toolsDrawer.Open();
+            else if (!operating && toolsDrawer.IsOpen) toolsDrawer.Close();
+        }
         bool tile = informationTab == InformationTab.Environment;
         titleLabel.text = tile ? "环境信息 · 拖动标题移动" : "生物信息 · 拖动标题移动";
-        closeButton.interactable = (toolSession != null && toolSession.Active) || (tile ? information.TileIsOpen : information.PopulationIsOpen);
+        closeButton.interactable = tile ? information.TileIsOpen : information.PopulationIsOpen;
         if (tile)
         {
-            bool operating = toolSession != null && toolSession.Active;
-            trendPanel.Chart.transform.parent.gameObject.SetActive(!operating);
-            tileDetails.gameObject.SetActive(!operating);
+            trendPanel.Chart.transform.parent.gameObject.SetActive(true);
+            tileDetails.gameObject.SetActive(true);
             tileDetails.text = information.TileIsOpen ? information.ReadTileDetails() : "长按地图地块查看环境信息";
             trendPanel.Show(information.TileIsOpen ? information.SelectedTile : null, history);
-            technologyPanel.SetTarget(information.TileIsOpen ? information.SelectedTile : null);
         }
         else if (information.PopulationIsOpen) information.RefreshPopulationView(populationPanel);
         else populationPanel.ShowUnavailable("点击种群查看生物信息");
+        technologyPanel.Refresh();
         dayLabel.text = clock == null ? "时间未接入" : "Day " + clock.currentDay;
-        pauseLabel.text = clock != null && clock.IsPaused ? "继续模拟" : "暂停模拟";
         speedLabel.text = clock == null ? "倍速未接入" : clock.IsPaused ? "倍速：暂停" : "倍速 " + clock.Speed.ToString("0.#") + "X";
         bool building = buildMode != null && buildMode.IsBuildMode;
         buildLabel.text = building ? "退出建造" : "建造地块";
@@ -309,14 +393,6 @@ public sealed class MobileGameUI : MonoBehaviour
         placementControls.SetActive(placing);
         confirmButton.interactable = placing && placement.CanConfirmTouchPlacement;
         if (placing) placementLabel.text = placement.TouchPreviewStatus;
-    }
-    private void ScrollToTools()
-    {
-        technologyPanel.Refresh();
-        Canvas.ForceUpdateCanvases();
-        scrollPositions[0] = 1f;
-        informationScroll.StopMovement();
-        informationScroll.verticalNormalizedPosition = 1f;
     }
     private void OnDisable()
     {

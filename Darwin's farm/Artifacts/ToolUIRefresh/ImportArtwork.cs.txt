@@ -1,0 +1,101 @@
+// Run as a statement block through the Unity Editor eval command, outside Play mode.
+// Original image pixels are preserved. ArtworkSilhouette clips the opaque paper exteriors.
+if (UnityEngine.Application.isPlaying) throw new System.InvalidOperationException("Exit Play mode first.");
+UnityEditor.AssetDatabase.Refresh();
+const string folder = "Assets/Resources/GameUI/ToolArt/";
+var report = new System.Collections.Generic.List<string>();
+var clipping = new System.Collections.Generic.List<EnvironmentToolArtwork.ClippedSprite>();
+UnityEngine.Sprite[] Import(string file, int expected, bool opaque)
+{
+    string path = folder + file + ".png";
+    var importer = (UnityEditor.TextureImporter)UnityEditor.AssetImporter.GetAtPath(path);
+    importer.textureType = UnityEditor.TextureImporterType.Default;
+    importer.alphaIsTransparency = true;
+    importer.mipmapEnabled = false;
+    importer.wrapMode = UnityEngine.TextureWrapMode.Clamp;
+    importer.maxTextureSize = 4096;
+    importer.npotScale = UnityEditor.TextureImporterNPOTScale.None;
+    importer.textureCompression = UnityEditor.TextureImporterCompression.Uncompressed;
+    importer.isReadable = true;
+    importer.SaveAndReimport();
+    var texture = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Texture2D>(path);
+    int w = texture.width, h = texture.height;
+    var pixels = texture.GetPixels32();
+    bool Ink(int x, int y)
+    {
+        var c = pixels[y*w+x];
+        return opaque ? c.a > 128 && c.r < 185 && c.g < 185 && c.b < 185 : c.a > 40;
+    }
+    var columns = new bool[w];
+    int minY = h, maxY = -1;
+    for (int y=0;y<h;y++) for(int x=0;x<w;x++) if(Ink(x,y))
+    { columns[x]=true; minY=System.Math.Min(minY,y); maxY=System.Math.Max(maxY,y); }
+    var ranges = new System.Collections.Generic.List<UnityEngine.Vector2Int>();
+    int start=-1, last=-1;
+    for(int x=0;x<w;x++)
+    {
+        if(columns[x]) { if(start<0)start=x; last=x; }
+        if(start>=0 && (x-last>12 || x==w-1))
+        { if(last-start>60)ranges.Add(new UnityEngine.Vector2Int(start,last)); start=-1; }
+    }
+    if(ranges.Count!=expected) throw new System.Exception(file+": expected "+expected+" icons, got "+ranges.Count);
+    var sprites = new UnityEngine.Sprite[expected];
+    for(int i=0;i<expected;i++)
+    {
+        int left=ranges[i].x, right=ranges[i].y, bottom=h, top=-1;
+        for(int y=minY;y<=maxY;y++) for(int x=left;x<=right;x++) if(Ink(x,y))
+        {bottom=System.Math.Min(bottom,y);top=System.Math.Max(top,y);}
+        var rect=new UnityEngine.Rect(left,bottom,right-left+1,top-bottom+1);
+        var sprite=UnityEngine.Sprite.Create(texture,rect,new UnityEngine.Vector2(.5f,.5f),100,0,UnityEngine.SpriteMeshType.FullRect);
+        sprite.name=file+(expected>1?"_"+i:"");
+        UnityEngine.Vector2[] silhouette=null;
+        if(opaque)
+        {
+            var polygon = new System.Collections.Generic.List<UnityEngine.Vector2>();
+            var rowYs=new System.Collections.Generic.List<int>();
+            for(int y=bottom;y<=top;y+=4)rowYs.Add(y);
+            if(rowYs[rowYs.Count-1]!=top)rowYs.Add(top);
+            var leftEdge=new System.Collections.Generic.List<UnityEngine.Vector2>();
+            var rightEdge=new System.Collections.Generic.List<UnityEngine.Vector2>();
+            foreach(int y in rowYs)
+            {
+                int a=right,b=left;
+                for(int x=left;x<=right;x++)if(Ink(x,y)){a=System.Math.Min(a,x);b=System.Math.Max(b,x);}
+                if(b<a)continue;
+                leftEdge.Add(new UnityEngine.Vector2(a,y));rightEdge.Add(new UnityEngine.Vector2(b,y));
+            }
+            polygon.AddRange(leftEdge);rightEdge.Reverse();polygon.AddRange(rightEdge);
+            var vertices=new UnityEngine.Vector2[polygon.Count+1];
+            vertices[0]=UnityEngine.Vector2.zero;
+            for(int j=0;j<polygon.Count;j++)vertices[j+1]=(polygon[j]-rect.center)/100f;
+            silhouette=vertices.Skip(1).ToArray();
+        }
+        string spritePath=folder+sprite.name+".asset";
+        var existing=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Sprite>(spritePath);
+        if(existing==null)UnityEditor.AssetDatabase.CreateAsset(sprite,spritePath);
+        else {UnityEditor.EditorUtility.CopySerialized(sprite,existing);UnityEngine.Object.DestroyImmediate(sprite);sprite=existing;}
+        sprites[i]=sprite;
+        if(silhouette!=null)clipping.Add(new EnvironmentToolArtwork.ClippedSprite{sprite=sprite,outline=silhouette});
+        report.Add(sprite.name+" "+rect);
+    }
+    importer.isReadable=false;
+    importer.textureCompression=UnityEditor.TextureImporterCompression.CompressedHQ;
+    importer.SaveAndReimport();
+    return sprites;
+}
+var artwork=UnityEditor.AssetDatabase.LoadAssetAtPath<EnvironmentToolArtwork>("Assets/Resources/GameUI/ToolArtwork.asset");
+if(artwork==null){artwork=UnityEngine.ScriptableObject.CreateInstance<EnvironmentToolArtwork>();UnityEditor.AssetDatabase.CreateAsset(artwork,"Assets/Resources/GameUI/ToolArtwork.asset");}
+artwork.toolbar=Import("Toolbar",1,false)[0];
+artwork.temperature=Import("Temperature",4,false);
+var height=Import("Elevation",2,false);
+artwork.elevation=new UnityEngine.Sprite[]{null,height[0],height[1],null};
+artwork.humidity=Import("Humidity",4,false);
+artwork.plantGrowth=Import("PlantGrowth",4,false);
+artwork.plantStock=Import("PlantStock",4,false);
+artwork.actionBackground=Import("ActionBackground",1,true)[0];
+artwork.hintBackground=Import("HintBackground",1,true)[0];
+artwork.exitBadge=Import("ExitBadge",1,true)[0];
+artwork.clippedSprites=clipping.ToArray();
+UnityEditor.EditorUtility.SetDirty(artwork);
+UnityEditor.AssetDatabase.SaveAssets();
+return string.Join("\n",report);

@@ -50,7 +50,7 @@ public sealed class EnvironmentToolsInputChecks : MonoBehaviour
         var env=FindFirstObjectByType<SimulationEnvironmentController>();
         env.TryRead(tile.Coordinate,out var before);
         var account=FindFirstObjectByType<BioenergyAccount>(); long money=account.Balance;
-        session.SelectKind(2);
+        session.SelectKind(4);
         Require(session.Choice.Kind == DarwinFarm.Environment.EnvironmentTechnologyKind.PlantStockChange,
             "Plant stock button maps to the wrong tool");
         session.SelectKind(3); session.SelectOption(1); session.Refresh();

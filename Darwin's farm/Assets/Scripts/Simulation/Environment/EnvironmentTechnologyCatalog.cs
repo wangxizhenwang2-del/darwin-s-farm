@@ -40,11 +40,24 @@ namespace DarwinFarm.Environment
         public static readonly EnvironmentTechnologyKind[] All =
         {
             EnvironmentTechnologyKind.TemperatureChange,
+            EnvironmentTechnologyKind.ElevationChange,
             EnvironmentTechnologyKind.HumidityChange,
-            EnvironmentTechnologyKind.PlantStockChange,
             EnvironmentTechnologyKind.PlantRecoveryChange,
-            EnvironmentTechnologyKind.ElevationChange
+            EnvironmentTechnologyKind.PlantStockChange
         };
+
+        public static string ShortName(EnvironmentTechnologyKind kind)
+        {
+            switch (kind)
+            {
+                case EnvironmentTechnologyKind.TemperatureChange: return "温度";
+                case EnvironmentTechnologyKind.ElevationChange: return "海拔";
+                case EnvironmentTechnologyKind.HumidityChange: return "湿度";
+                case EnvironmentTechnologyKind.PlantRecoveryChange: return "植物增量";
+                case EnvironmentTechnologyKind.PlantStockChange: return "植物存量";
+                default: return "未知工具";
+            }
+        }
 
         public static string Name(EnvironmentTechnologyKind kind)
         {
