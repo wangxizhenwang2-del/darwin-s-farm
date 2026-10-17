@@ -15,8 +15,7 @@ public partial class SimulationController
     // Existing physical environment tracks continue when a population clears
     // its old personal influence during formal evolution.
     public void RecordPlayerTechnology(BlockInfo block,
-        EnvironmentTechnologyKind kind, int tier, int day,
-        int temperatureOffset = 0, int humidityOffset = 0)
+        EnvironmentTechnologyKind kind, int tier, int day)
     {
         if (block == null || block.community == null ||
             block.waterCoverage != WaterCoverage.Land) return;
@@ -25,7 +24,8 @@ public partial class SimulationController
             if (population == null || population.speciesAmount <= 0) continue;
             switch (kind)
             {
-                case EnvironmentTechnologyKind.PlantChange:
+                case EnvironmentTechnologyKind.PlantStockChange:
+                case EnvironmentTechnologyKind.PlantRecoveryChange:
                     if (tier > 0)
                     {
                         AddInfluence(population, 3, PrimaryInfluence, day);
@@ -50,16 +50,6 @@ public partial class SimulationController
                     if (tier != 0)
                         AddInfluence(population, 4,
                             Math.Sign(tier) * SecondaryInfluence, day);
-                    break;
-                case EnvironmentTechnologyKind.MonsoonAnchor:
-                    if (temperatureOffset != 0)
-                        AddInfluence(population, 3,
-                            -Math.Sign(temperatureOffset) * SecondaryInfluence,
-                            day);
-                    if (humidityOffset != 0)
-                        AddInfluence(population, 4,
-                            Math.Sign(humidityOffset) * SecondaryInfluence,
-                            day);
                     break;
             }
         }

@@ -1,0 +1,386 @@
+{
+  "status": "FAIL",
+  "unity": "6000.2.9f1",
+  "project": "G:\\unity\\darwin-s-farm\\Task9_Unity_Isolated_20261016",
+  "switch": "useCompensatedEvolutionFoodGate",
+  "defaultEnabled": false,
+  "economyCostsDisabled": true,
+  "color": {
+    "status": "PASS",
+    "detail": "formal conversion and 500-day survival",
+    "input": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-color-formal.json",
+    "jsonl": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-color-formal.jsonl",
+    "log": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-color-formal.log",
+    "source": "鸡",
+    "target": "彩鸡",
+    "firstConversionDay": 132,
+    "foundersAtConversion": 374,
+    "sourceBefore": 3740,
+    "sourcePreviousDay": 3709,
+    "sourceAfter": 3366,
+    "conversionLog": "[Ecology] day=132 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:132:0 target=彩鸡 amount=374 plantPayment=29350.91 excessBody=0.00 count=374",
+    "conversionDayMaterialResidual": -43242.882804870605,
+    "dayPlus1": 375,
+    "dayPlus7": 387,
+    "dayPlus30": 427,
+    "dayPlus100": 425,
+    "dayPlus500": 58,
+    "finalDay": 750,
+    "finalTarget": 28,
+    "lastLivingDay": 750,
+    "post500MaterialCreationAnomalies": 0,
+    "post500MaxMaterialResidual": -43330.717292785645,
+    "post500UnpaidBirthAnomalies": 0,
+    "post500NegativeBodyOrReserve": 0,
+    "post500TargetBirths": 1153,
+    "post500TargetDeaths": 1469,
+    "rejectedActions": 0
+  },
+  "mushroom": {
+    "status": "FAIL",
+    "detail": "formal conversion succeeded; target extinct by day 512",
+    "input": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-mushroom-formal.json",
+    "jsonl": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-mushroom-formal.jsonl",
+    "log": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-mushroom-formal.log",
+    "source": "鸡",
+    "target": "灵感菇狸",
+    "firstConversionDay": 429,
+    "foundersAtConversion": 267,
+    "sourceBefore": 5792,
+    "sourcePreviousDay": 5778,
+    "sourceAfter": 5525,
+    "conversionLog": "[Ecology] day=429 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:429:0 target=灵感菇狸 amount=267 plantPayment=49936.50 excessBody=0.00 count=267",
+    "conversionDayMaterialResidual": -68984.72265720367,
+    "dayPlus1": 275,
+    "dayPlus7": 332,
+    "dayPlus30": 688,
+    "dayPlus100": 0,
+    "dayPlus500": 0,
+    "finalDay": 1050,
+    "finalTarget": 0,
+    "lastLivingDay": 511,
+    "post500MaterialCreationAnomalies": 0,
+    "post500MaxMaterialResidual": -5795.28564453125,
+    "post500UnpaidBirthAnomalies": 0,
+    "post500NegativeBodyOrReserve": 0,
+    "post500TargetBirths": 3078,
+    "post500TargetDeaths": 3344,
+    "rejectedActions": 0,
+    "day425PredatorTrials": [
+      {
+        "preyCount": 5470,
+        "preyRenewal": 0.0,
+        "candidateCatches": 0.0,
+        "candidateFood": 0.0,
+        "candidateAdultCoverage": 0.0,
+        "candidateNet": -162.3247528076172,
+        "pass": false
+      },
+      {
+        "preyCount": 4649,
+        "preyRenewal": 0.0,
+        "candidateCatches": 0.0,
+        "candidateFood": 0.0,
+        "candidateAdultCoverage": 0.0,
+        "candidateNet": -162.3247528076172,
+        "pass": false
+      },
+      {
+        "preyCount": 3829,
+        "preyRenewal": 14.1934814453125,
+        "candidateCatches": 14.0,
+        "candidateFood": 5727.75341796875,
+        "candidateAdultCoverage": 1.697824478149414,
+        "candidateNet": -0.35674387216567993,
+        "pass": false
+      },
+      {
+        "preyCount": 3008,
+        "preyRenewal": 30.17414093017578,
+        "candidateCatches": 30.0,
+        "candidateFood": 12273.7578125,
+        "candidateAdultCoverage": 3.638195514678955,
+        "candidateNet": 4.315256118774414,
+        "pass": true
+      },
+      {
+        "preyCount": 2188,
+        "preyRenewal": 46.14827346801758,
+        "candidateCatches": 42.0,
+        "candidateFood": 17183.259765625,
+        "candidateAdultCoverage": 5.093473434448242,
+        "candidateNet": 7.81925630569458,
+        "pass": true
+      },
+      {
+        "preyCount": 1641,
+        "preyRenewal": 54.365203857421875,
+        "candidateCatches": 42.0,
+        "candidateFood": 17183.26171875,
+        "candidateAdultCoverage": 5.0934739112854,
+        "candidateNet": 7.81925630569458,
+        "pass": true
+      }
+    ],
+    "highDensitySafety": "FAIL: full-density prey renewal zero; lower-density trials passed, but real conversion collapsed"
+  },
+  "negativeControls": {
+    "status": "PASS",
+    "cases": {
+      "task9-negative-color128": [
+        {
+          "caseName": "positive",
+          "plan": true,
+          "foodSupport": true,
+          "eligible": true,
+          "rejected": false,
+          "founders": 361
+        },
+        {
+          "caseName": "lowR",
+          "plan": true,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 361
+        },
+        {
+          "caseName": "noFood",
+          "plan": false,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 0
+        },
+        {
+          "caseName": "lowStock",
+          "plan": false,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 0
+        },
+        {
+          "caseName": "duplicateTarget",
+          "plan": true,
+          "foodSupport": true,
+          "eligible": false,
+          "rejected": true,
+          "founders": 361
+        },
+        {
+          "caseName": "fullSlot",
+          "plan": true,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 361
+        },
+        {
+          "caseName": "unaffordableFounder",
+          "plan": false,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 0
+        },
+        {
+          "caseName": "otherConsumerPressure",
+          "plan": true,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 361
+        }
+      ],
+      "task9-negative-mushroom425": [
+        {
+          "caseName": "positive",
+          "plan": true,
+          "foodSupport": true,
+          "eligible": true,
+          "rejected": false,
+          "founders": 268
+        },
+        {
+          "caseName": "lowR",
+          "plan": true,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 268
+        },
+        {
+          "caseName": "noFood",
+          "plan": false,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 0
+        },
+        {
+          "caseName": "lowStock",
+          "plan": false,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 0
+        },
+        {
+          "caseName": "noLegalPrey",
+          "plan": true,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 268
+        },
+        {
+          "caseName": "duplicateTarget",
+          "plan": true,
+          "foodSupport": true,
+          "eligible": false,
+          "rejected": true,
+          "founders": 268
+        },
+        {
+          "caseName": "fullSlot",
+          "plan": true,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 268
+        },
+        {
+          "caseName": "unaffordableFounder",
+          "plan": false,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 0
+        },
+        {
+          "caseName": "otherConsumerPressure",
+          "plan": true,
+          "foodSupport": false,
+          "eligible": false,
+          "rejected": true,
+          "founders": 268
+        }
+      ]
+    }
+  },
+  "regression": {
+    "status": "FAIL",
+    "strictStage0DoubleHash": "FAIL",
+    "stage0Ecology": "PASS",
+    "threeSpecies": "PASS",
+    "readOnly": "PASS",
+    "material": "PASS",
+    "performance": "PASS",
+    "detailFile": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Acceptance_20261017\\TASK9_ACCEPTANCE_REGRESSION.json"
+  },
+  "predatorGateSpec": {
+    "status": "FAIL",
+    "detail": "no isolated short high-density counterfactual before enablement"
+  },
+  "rawEvidence": {
+    "task9-color-formal": {
+      "input": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-color-formal.json",
+        "sha256": "33dd6bcfa048971dc8cab5a68a0d26408287ac1305a1fe8c8fdfea3efcff03f8"
+      },
+      "jsonl": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-color-formal.jsonl",
+        "sha256": "196c18b4ce332abf5a6e12fb04304078bf6817192f1c5dca41d4f48f4531db15"
+      },
+      "log": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-color-formal.log",
+        "sha256": "b5b1fa0101dcbf3632381239a44c5ee2bc210d4f74ccabb159b731a97efbdba1"
+      }
+    },
+    "task9-mushroom-formal": {
+      "input": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-mushroom-formal.json",
+        "sha256": "96df41a2724a0a8133d2a59425f41f786a1f0b6297c097b481eab918486a6a79"
+      },
+      "jsonl": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-mushroom-formal.jsonl",
+        "sha256": "1d667c926815e0a430820a70300a729fe88b070864c8f2bb9dfa332c4c9c08bf"
+      },
+      "log": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-mushroom-formal.log",
+        "sha256": "c07d42dedc5db333c5c0d84f1fac852bd519d3bbc68e9059a1993fa2e0a8abe5"
+      }
+    },
+    "task9-negative-color128": {
+      "input": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-negative-color128.json",
+        "sha256": "1e0c1893ce87e767504ea234a53cce2a5fb7007192d74f9e2a8e1b7b547be9e9"
+      },
+      "jsonl": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-negative-color128.jsonl",
+        "sha256": "ebd0764dcd68e9ed8fcfbe951064d0b6c66c075bb4610f35d7b677d43b8f32e1"
+      },
+      "log": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-negative-color128.log",
+        "sha256": "5ac63ced02c72baf2666629b5ed189fd5480d780eb89f62c4c0b1ba24be57173"
+      }
+    },
+    "task9-negative-mushroom425": {
+      "input": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-negative-mushroom425.json",
+        "sha256": "ed4acb8c2d56842abd7518adbce1fb34c4489ddc0045044f22c47f24cb57a992"
+      },
+      "jsonl": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-negative-mushroom425.jsonl",
+        "sha256": "c405580a9ed1cd9094b0f3004e0b64f8a48de3e0b2bb1622d9b1af9bf91e83fc"
+      },
+      "log": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-negative-mushroom425.log",
+        "sha256": "edd101f13871e26b88a7d02aeb6336e71e72deaa62603f606894bcdef686c728"
+      }
+    },
+    "task9-off-stage0-final-deer10-rich": {
+      "input": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-off-stage0-final-deer10-rich.json",
+        "sha256": "beceabf9b6ad61df2c0f5dddf953270343d2a484ea75a09c238f1a149e8c0811"
+      },
+      "jsonl": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-off-stage0-final-deer10-rich.jsonl",
+        "sha256": "44a7d3ee2d99dae81ecb5cec47333e0c41fcd1cc4a3c98f785f471a237ac3812"
+      },
+      "log": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-off-stage0-final-deer10-rich.log",
+        "sha256": "29a7347ba248fe40adb140727f6abe34f8f4612a7ec8f52d08dde05b14bd7bd6"
+      }
+    },
+    "task9-off-stage0-final-predator": {
+      "input": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-off-stage0-final-predator.json",
+        "sha256": "5f94c67ed2372353b8d2ab223aa5ec69a39efc306b183d3fac24a9e6a9a73b88"
+      },
+      "jsonl": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-off-stage0-final-predator.jsonl",
+        "sha256": "2e97a0152a4dc27d6e9333e50d14072ea2e53450eba483a5b3d24288d40cef0a"
+      },
+      "log": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-off-stage0-final-predator.log",
+        "sha256": "e25e57c524d43cbce83814b004614c3649766fc864e24baf6e9493460b317324"
+      }
+    },
+    "task9-three-species-on": {
+      "input": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\task9-three-species-on.json",
+        "sha256": "a8cbaa260b047976e05405d2f3646b419b2e5a57d4d7b28b171c618f5895fad7"
+      },
+      "jsonl": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-three-species-on.jsonl",
+        "sha256": "75e4b4c5749d8c6f7fdac62cbbf85ee7ebc5177a057becd78ec179bf1d7dfd6a"
+      },
+      "log": {
+        "path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\task9-three-species-on.log",
+        "sha256": "caef90e9886b19b0a62b66313a9be7701fd619f380472af44061eef0448951ab"
+      }
+    }
+  }
+}

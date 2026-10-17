@@ -40,6 +40,9 @@ public class BlockInfo : MonoBehaviour
     [SerializeField]public float plantBiomass;   //植物库存为0~maxPlantBiomass
     [SerializeField]public float maxPlantBiomass = 10000f; //植物生物量上限
     [SerializeField]public int habitatRecovery; //每日恢复的生物量
+    // Stable terrain reference for optional prey-density feedback. Rebuilt
+    // from the tile definition on load; short-lived R tools do not alter it.
+    [System.NonSerialized] public int predationReferenceRecovery;
     [SerializeField] public float algaeBiomass; //水域生产者库存；生态位系统启用后由水域共享
     [SerializeField] public float maxAlgaeBiomass = 10000f;
     [SerializeField] public int algaeRecovery;

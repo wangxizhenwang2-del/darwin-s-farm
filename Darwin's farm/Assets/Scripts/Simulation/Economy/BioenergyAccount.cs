@@ -14,7 +14,6 @@ public sealed class BioenergyAccount : MonoBehaviour
         public string reason;
         public int day;
         public long amount;
-        public bool refunded;
     }
 
     [Serializable]
@@ -34,7 +33,6 @@ public sealed class BioenergyAccount : MonoBehaviour
     private bool initialSpeciesCaptured;
     private SimulationController simulation;
     private SimulationTime clock;
-    private SimulationEnvironmentController environment;
     private readonly HashSet<string> rewardedSpecies = new HashSet<string>(StringComparer.Ordinal);
     private readonly List<Receipt> receipts = new List<Receipt>();
 
@@ -49,7 +47,7 @@ public sealed class BioenergyAccount : MonoBehaviour
             var snapshot = new List<Receipt>(receipts.Count);
             foreach (Receipt receipt in receipts)
                 snapshot.Add(new Receipt { id = receipt.id, reason = receipt.reason,
-                    day = receipt.day, amount = receipt.amount, refunded = receipt.refunded });
+                    day = receipt.day, amount = receipt.amount });
             return snapshot.AsReadOnly();
         }
     }
@@ -59,7 +57,6 @@ public sealed class BioenergyAccount : MonoBehaviour
         balance = BioenergySettings.Current.initialBalance;
         simulation = GetComponent<SimulationController>();
         clock = GetComponent<SimulationTime>();
-        environment = GetComponent<SimulationEnvironmentController>();
     }
 
     private void OnEnable()
@@ -70,10 +67,7 @@ public sealed class BioenergyAccount : MonoBehaviour
             simulation.OnDaySimulated += AfterDay;
         }
         if (clock != null) clock.OnDayReset += RebaseDay;
-        if (environment != null) environment.SettlementAvailable += OnSettlement;
     }
-
-    private void Start() => ConsumePendingSettlements();
 
     private void OnDisable()
     {
@@ -83,7 +77,6 @@ public sealed class BioenergyAccount : MonoBehaviour
             simulation.OnDaySimulated -= AfterDay;
         }
         if (clock != null) clock.OnDayReset -= RebaseDay;
-        if (environment != null) environment.SettlementAvailable -= OnSettlement;
     }
 
     // The command is applied after a temporary debit. A rejected command leaves no debit.
@@ -129,34 +122,9 @@ public sealed class BioenergyAccount : MonoBehaviour
         BalanceChanged?.Invoke(balance);
     }
 
-    public bool TryRefund(EnvironmentPayment payment)
-    {
-        if (payment == null || payment.PaidAmount <= 0 ||
-            payment.PaidAmount > long.MaxValue ||
-            payment.PaidAmount != decimal.Truncate(payment.PaidAmount)) return false;
-        Receipt receipt = receipts.Find(entry => entry.id == payment.ReceiptId);
-        if (receipt == null || receipt.refunded || receipt.amount != -(long)payment.PaidAmount)
-            return false;
-        receipt.refunded = true;
-        Grant((long)payment.PaidAmount, "季风重叠退款:" + receipt.id);
-        return true;
-    }
-
-    private void OnSettlement(MonsoonSettlement settlement) => ConsumePendingSettlements();
     private void RebaseDay(int day)
     {
         if (day < lastSettledDay) lastSettledDay = day;
-    }
-
-    public void ConsumePendingSettlements()
-    {
-        if (environment == null) return;
-        foreach (MonsoonSettlement settlement in environment.PendingSettlements)
-        {
-            if (settlement.RefundAmount > 0 &&
-                (settlement.Payment == null || !TryRefund(settlement.Payment))) continue;
-            environment.AcknowledgeSettlement(settlement.MonsoonId);
-        }
     }
 
     private void BeforeDay(int day)
@@ -184,7 +152,6 @@ public sealed class BioenergyAccount : MonoBehaviour
         }
         if (daily > 0) Grant(daily, "每日收成:" + day);
         lastSettledDay = day;
-        ConsumePendingSettlements();
     }
 
     private struct SpeciesCount
@@ -263,7 +230,6 @@ public sealed class BioenergyAccount : MonoBehaviour
         foreach (string key in state.rewardedSpecies) if (!string.IsNullOrEmpty(key)) rewardedSpecies.Add(key);
         receipts.Clear(); receipts.AddRange(state.receipts);
         BalanceChanged?.Invoke(balance);
-        ConsumePendingSettlements();
         return true;
     }
 }

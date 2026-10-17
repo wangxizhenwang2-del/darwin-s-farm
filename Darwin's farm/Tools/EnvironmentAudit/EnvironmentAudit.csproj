@@ -12,5 +12,6 @@
     <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentState.cs" Link="EnvironmentState.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs" Link="EnvironmentWorld.cs" />
     <Compile Include="../../Assets/Scripts/Simulation/Environment/EnvironmentTechnologyCatalog.cs" Link="EnvironmentTechnologyCatalog.cs" />
+    <Compile Include="../EnvironmentV50Smoke/BioenergySettingsStub.cs" Link="BioenergySettingsStub.cs" />
   </ItemGroup>
 </Project>

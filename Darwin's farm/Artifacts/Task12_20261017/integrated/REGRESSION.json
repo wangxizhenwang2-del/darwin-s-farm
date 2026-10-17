@@ -1,0 +1,83 @@
+{
+  "baseline": {
+    "deer": {
+      "comparedDays": 101,
+      "environmentHashesEqual": 101,
+      "modelHashesEqual": 0,
+      "originalEcologyFieldsEqual": 101,
+      "firstEcologyDifference": null
+    },
+    "predator": {
+      "comparedDays": 1001,
+      "environmentHashesEqual": 1001,
+      "modelHashesEqual": 0,
+      "originalEcologyFieldsEqual": 1001,
+      "firstEcologyDifference": null
+    },
+    "threeSpecies": {
+      "comparedDays": 5001,
+      "environmentHashesEqual": 5001,
+      "modelHashesEqual": 0,
+      "originalEcologyFieldsEqual": 5001,
+      "firstEcologyDifference": null
+    }
+  },
+  "herbivoreNeutral": {
+    "a": {
+      "comparedDays": 5001,
+      "environmentHashesEqual": 5001,
+      "modelHashesEqual": 0,
+      "originalEcologyFieldsEqual": 5001,
+      "firstEcologyDifference": null
+    },
+    "b": {
+      "comparedDays": 5001,
+      "environmentHashesEqual": 5001,
+      "modelHashesEqual": 0,
+      "originalEcologyFieldsEqual": 5001,
+      "firstEcologyDifference": null
+    }
+  },
+  "readOnly": {
+    "color": {
+      "comparedDays": 129,
+      "environmentHashesEqual": 129,
+      "modelHashesEqual": 129,
+      "originalEcologyFieldsEqual": 129,
+      "firstEcologyDifference": null
+    },
+    "mushroom": {
+      "comparedDays": 426,
+      "environmentHashesEqual": 426,
+      "modelHashesEqual": 426,
+      "originalEcologyFieldsEqual": 426,
+      "firstEcologyDifference": null
+    }
+  },
+  "determinism": {
+    "off": {
+      "comparedDays": 5001,
+      "environmentHashesEqual": 5001,
+      "modelHashesEqual": 5001,
+      "originalEcologyFieldsEqual": 5001,
+      "firstEcologyDifference": null
+    },
+    "on": {
+      "comparedDays": 5001,
+      "environmentHashesEqual": 5001,
+      "modelHashesEqual": 5001,
+      "originalEcologyFieldsEqual": 5001,
+      "firstEcologyDifference": null
+    }
+  },
+  "timingsSeconds": {
+    "int-d-off": 40.491,
+    "int-d-on": 46.858,
+    "int-d-off-repeat": 41.656,
+    "int-d-on-repeat": 40.702
+  },
+  "performanceRatio": 1.0658940679513556,
+  "performanceStatus": "PASS",
+  "baselineStatus": "PASS",
+  "determinismStatus": "PASS"
+}

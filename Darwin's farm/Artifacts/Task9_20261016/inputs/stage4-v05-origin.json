@@ -1,0 +1,16 @@
+{
+  "seed": 240,
+  "disableCosts": false,
+  "restrictedV05": false,
+  "mechanismFixture": false,
+  "tiles": [],
+  "actions": [],
+  "enablePreyDensityFeedback": true,
+  "enablePaidBirthStress": true,
+  "enablePriorityPlantBudgets": true,
+  "reproductionStressPerBirth": 0.8,
+  "adultMaintenanceScale": 0.4,
+  "scenarioId": "stage4-v05-origin",
+  "endDay": 1,
+  "useV05Sandbox": true
+}

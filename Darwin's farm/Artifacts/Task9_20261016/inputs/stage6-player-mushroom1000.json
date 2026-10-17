@@ -1,0 +1,257 @@
+{
+  "scenarioId": "stage6-player-mushroom1000",
+  "seed": 240,
+  "endDay": 1000,
+  "disableCosts": false,
+  "restrictedV05": false,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1,
+      "sequence": 0
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 2,
+      "sequence": 1
+    },
+    {
+      "day": 220,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -2,
+      "sequence": 2
+    },
+    {
+      "day": 220,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -2,
+      "sequence": 3
+    },
+    {
+      "day": 230,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -2,
+      "sequence": 4
+    },
+    {
+      "day": 230,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -2,
+      "sequence": 5
+    },
+    {
+      "day": 250,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 6
+    },
+    {
+      "day": 250,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 7
+    },
+    {
+      "day": 260,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 8
+    },
+    {
+      "day": 260,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 9
+    },
+    {
+      "day": 270,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 10
+    },
+    {
+      "day": 270,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 11
+    },
+    {
+      "day": 280,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 12
+    },
+    {
+      "day": 280,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 13
+    },
+    {
+      "day": 340,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 14
+    },
+    {
+      "day": 340,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -1,
+      "sequence": 15
+    },
+    {
+      "day": 350,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 16
+    },
+    {
+      "day": 350,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -1,
+      "sequence": 17
+    },
+    {
+      "day": 360,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 18
+    },
+    {
+      "day": 360,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -1,
+      "sequence": 19
+    },
+    {
+      "day": 380,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 20
+    },
+    {
+      "day": 380,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 21
+    },
+    {
+      "day": 390,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 22
+    },
+    {
+      "day": 390,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 23
+    },
+    {
+      "day": 400,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 24
+    },
+    {
+      "day": 400,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 25
+    },
+    {
+      "day": 410,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 26
+    },
+    {
+      "day": 410,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 27
+    },
+    {
+      "day": 475,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 1,
+      "sequence": 28
+    },
+    {
+      "day": 475,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 1,
+      "sequence": 29
+    }
+  ],
+  "useV05Sandbox": true,
+  "enablePreyDensityFeedback": true,
+  "enablePaidBirthStress": true,
+  "enablePriorityPlantBudgets": true,
+  "adultMaintenanceScale": 0.4,
+  "reproductionStressPerBirth": 0.8
+}

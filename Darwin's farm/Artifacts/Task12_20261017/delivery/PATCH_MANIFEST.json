@@ -1,0 +1,47 @@
+[
+  {
+    "path": "Assets/Scripts/Simulation/LandLifeRules.cs",
+    "sha256_after": "66d177d72ad03adaea0d9118d7060be2d1db6f46bb0a9ee1a8a582292bb49bfd",
+    "sha256_before": "3c6ec2b3fc4f816c7e78b37d999bee37edb16d8fc5ad8c206ed50f875d6c2d64"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/PopulationTransitionResult.cs",
+    "sha256_after": "8c2d836aa48f2245db2ce963431c50dc5a371f94d933977d1377b3debc96af51",
+    "sha256_before": "fbbda92bfc780248fcdc8463c976b29b609ef90f531d3883f11842aca409e1f6"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/SimulationController.Migration.cs",
+    "sha256_after": "422e367ad3017c65d40abc5d45824f3b10d834ab169377e966817eaa9e6c0043",
+    "sha256_before": "7960ab7e2a2e754f6ad8a794a31ac0714843c00c37d837bf6c9e3b84bc6e803c"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs",
+    "sha256_after": "39e8731777d69267aa448cad39c27bb98ef03405355b7a41c4aaadc433a58d61",
+    "sha256_before": "04cfdaec8eccbb659ce3ec4511c897a3d7cf3ea78bfa46d737d9b8534c7adb7d"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/Environment/EnvironmentRules.cs",
+    "sha256_after": "36d6c84892b1e6cb21c016554777d4164679baf65e5fd02fb1fc2a733e2aada0",
+    "sha256_before": "773772541009d590cba4c72a5b84dbb13b0acb26db004281856ac6defebd0262"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/Environment/EnvironmentState.cs",
+    "sha256_after": "3652e2537856015787324ed562470d26ccb5253b55d00cbf08b04a885082c656",
+    "sha256_before": "f00f4adcf9421c590a298daffeee6cb6cf1e2270b3de7b666e93a4597a03ca43"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs",
+    "sha256_after": "f601ebe1bc8703c4aa2a55cdcba85295ee072ac40cf80ed2fa619d9375d9ffa6",
+    "sha256_before": "29d69223b0a13e3423bd10aaa401f69a239a0c8c395d6080bfafbffad64b195d"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs",
+    "sha256_after": "6a608e85bde0a2799b15bc0a8f1d95d801ed7c1e899102592117a020e0daed61",
+    "sha256_before": "5f1d8c318a1ca171b7049b7433f80cdc4f9632e91a0383ac25dd31e554e4089b"
+  },
+  {
+    "path": "Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs",
+    "sha256_after": "c7a2e1bf54c92469fc4d2011f6c46f7ed6f574fd4c68d47f2104734ed456a436",
+    "sha256_before": "4b1909fbda2086ee5678c8ce0e2ca523545bd4c37721a4be753701aada5666c3"
+  }
+]

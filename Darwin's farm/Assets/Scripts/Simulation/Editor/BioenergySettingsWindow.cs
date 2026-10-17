@@ -30,12 +30,11 @@ public sealed class BioenergySettingsWindow : EditorWindow
     {
         ("climateSmallCost", "温度／湿度 ±25"),
         ("climateLargeCost", "温度／湿度 ±50"),
-        ("plantIncreaseSmallCost", "植物增加低档"),
-        ("plantIncreaseLargeCost", "植物增加高档"),
-        ("plantDecreaseSmallCost", "植物减少低档"),
-        ("plantDecreaseLargeCost", "植物减少高档"),
+        ("plantIncreaseSmallCost", "植物 S／R 增加低档（各次同价）"),
+        ("plantIncreaseLargeCost", "植物 S／R 增加高档（各次同价）"),
+        ("plantDecreaseSmallCost", "植物 S／R 减少低档（各次同价）"),
+        ("plantDecreaseLargeCost", "植物 S／R 减少高档（各次同价）"),
         ("elevationCost", "海拔 ±1"),
-        ("monsoonCost", "季风锚点"),
     };
     private static readonly (string field, string label)[] FallbackFields =
     {

@@ -84,8 +84,15 @@ public sealed class MapSimulationBridge : MonoBehaviour
             else if (block.elevation != tile.HeightLevel)
             {
                 block.elevation = tile.HeightLevel;
+                block.predationReferenceRecovery =
+                    SimulationEnvironmentController.InitialDefaults(
+                        tile.Definition, tile.HeightLevel).Recovery;
                 existingHeightChanged = true;
             }
+            if (block.predationReferenceRecovery <= 0)
+                block.predationReferenceRecovery =
+                    SimulationEnvironmentController.InitialDefaults(
+                        tile.Definition, tile.HeightLevel).Recovery;
 
             if (block.community == null)
                 block.community = new List<PopulationData>();
@@ -127,6 +134,9 @@ public sealed class MapSimulationBridge : MonoBehaviour
             DarwinFarm.Environment.EnvironmentRules.PlantCapacity;
         block.plantBiomass = water ? DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
         block.habitatRecovery = water ? DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
+        block.predationReferenceRecovery = water ?
+            DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery :
+            defaults.Recovery;
         block.waterCoverage = preset.initialWaterCoverage;
         block.community = new List<PopulationData>();
     }

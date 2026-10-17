@@ -102,6 +102,7 @@ public class PopulationData
     [System.NonSerialized] public int predationDeathsToday; //测试诊断：当日被捕食数量
     [System.NonSerialized] public float adultDemandToday, adultPaidToday;
     [System.NonSerialized] public float birthOpportunityToday, birthBudgetToday;
+    [System.NonSerialized] public float birthStressDeathsToday;
     [System.NonSerialized] public float newbornCostToday, unusedBirthFoodToday;
     public int nextMigrationDay; //迁徙冷却结束后可再次参与检查的日期
     public BlockInfo lastMigrationSource; // 环境未改变时，禁止自动迁回上次迁出的地块

@@ -29,7 +29,7 @@ public sealed class EnvironmentOperationPreview
 }
 
 // Controller is the sole bridge between the pure environment Model and live ecology/map data.
-// Visuals consume immutable snapshots; an economy adapter can consume settlement receipts later.
+// Visuals consume immutable snapshots.
 [DisallowMultipleComponent]
 public sealed class SimulationEnvironmentController : MonoBehaviour
 {
@@ -40,11 +40,7 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     private EnvironmentWorld world;
     private readonly Dictionary<GridPosition, BlockInfo> blocks = new Dictionary<GridPosition, BlockInfo>();
     private readonly Dictionary<GridPosition, string> waterGroups = new Dictionary<GridPosition, string>();
-    private readonly HashSet<long> notifiedSettlements = new HashSet<long>();
     public event Action<IReadOnlyList<EnvironmentReadSnapshot>> Changed;
-    public event Action<MonsoonSettlement> SettlementAvailable;
-    public IReadOnlyList<MonsoonSnapshot> Monsoons => world?.ReadMonsoons() ?? Array.Empty<MonsoonSnapshot>();
-    public IReadOnlyList<MonsoonSettlement> PendingSettlements => world?.ReadSettlements() ?? Array.Empty<MonsoonSettlement>();
 
     private void Awake()
     {
@@ -219,8 +215,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
             snapshots.Add(new EnvironmentReadSnapshot(state, block.plantBiomass));
         }
         if (notifyReaders) Changed?.Invoke(snapshots.AsReadOnly());
-        foreach (var settlement in world.ReadSettlements())
-            if (notifiedSettlements.Add(settlement.MonsoonId)) SettlementAvailable?.Invoke(settlement);
     }
     public bool TryRead(Vector2Int coordinate, out EnvironmentReadSnapshot snapshot)
     {
@@ -236,8 +230,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
             if (blocks.TryGetValue(state.Position, out var block)) result.Add(new EnvironmentReadSnapshot(state, block.plantBiomass));
         return result.AsReadOnly();
     }
-    public bool AcknowledgeSettlement(long id) => world != null && world.AcknowledgeSettlement(id);
-
     public bool TryPreview(Vector2Int coordinate, SimulationInterventionKind kind, float amount,
         out EnvironmentOperationPreview preview, out string error)
     {
@@ -256,9 +248,7 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水格不能进行温湿度干预"; return false; }
                 if (!EnvironmentRules.IsClimateStrength(amount)) { error = "温湿度强度必须为 ±25 或 ±50"; return false; }
                 var attribute = kind == SimulationInterventionKind.Temperature ? EnvironmentAttribute.Temperature : EnvironmentAttribute.Humidity;
-                target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount +
-                    (attribute == EnvironmentAttribute.Temperature ? state.MonsoonTemperatureOffset :
-                        state.MonsoonHumidityOffset));
+                target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount);
                 if (attribute == EnvironmentAttribute.Temperature) t = target; else h = target;
                 enter = EnvironmentRules.TransitionDays;
                 hold = EnvironmentRules.ClimateHoldDays;
@@ -273,7 +263,8 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
             case SimulationInterventionKind.PlantBiomass:
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
                 if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f) { error = "库存操作使用 ±0.25 或 ±0.5（25%／50%）"; return false; }
-                target = EnvironmentRules.ChangeStock(snapshot.PlantStock, amount); break;
+                target = EnvironmentRules.MultiplyStock(snapshot.PlantStock,
+                    EnvironmentRules.PlantCapacity, amount); break;
             case SimulationInterventionKind.Elevation:
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域整域改高尚未接入，不能按单格处理"; return false; }
                 if (Math.Abs(amount) != 1 || z + (int)amount < 0 || z + (int)amount > 2) { error = "海拔只能 ±1，且必须保持在 0–2"; return false; }
@@ -332,17 +323,17 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         switch (kind)
         {
             case SimulationInterventionKind.PlantRecovery:
-                if (amount != 25000f && amount != 50000f)
-                { error = "增产档位必须为 +25000 或 +50000"; return false; }
+                if (!EnvironmentRules.IsRecoveryStrength(amount))
+                { error = "日增量档位必须为 ±25000 或 ±50000"; return false; }
                 if (!world.TrySetRecoveryBatch(positions, amount, false, out error)) return false;
                 Publish(); return true;
             case SimulationInterventionKind.PlantBiomass:
-                if (amount != .25f && amount != .5f)
-                { error = "播种档位必须为容量的 25% 或 50%"; return false; }
+                if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f)
+                { error = "存量档位必须为 ±25% 或 ±50%"; return false; }
                 double totalStock = 0;
                 foreach (Vector2Int member in area) totalStock += blocks[Position(member)].plantBiomass;
                 double capacity = (double)EnvironmentRules.WaterPlantCapacity * area.Count;
-                float next = (float)(EnvironmentRules.ChangeStock(totalStock, capacity, amount) / area.Count);
+                float next = (float)(EnvironmentRules.MultiplyStock(totalStock, capacity, amount) / area.Count);
                 foreach (Vector2Int member in area)
                     simulation.ApplyPlantBiomass(blocks[Position(member)], next);
                 Publish(); return true;
@@ -360,70 +351,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         }
     }
 
-    // The positive plant tier changes production and stock as one player action.
-    public bool TryApplyPlantIncrease(Vector2Int coordinate, int recoveryIncrease,
-        float stockFraction, out string error)
-    {
-        error = null;
-        if (!EnvironmentRules.IsRecoveryStrength(recoveryIncrease) || recoveryIncrease < 0 ||
-            stockFraction != recoveryIncrease / 100000f ||
-            !TryRead(coordinate, out EnvironmentReadSnapshot snapshot))
-        { error = "植物增产档位无效或目标地块不存在"; return false; }
-        var area = new List<Vector2Int>();
-        if (snapshot.Environment.IsWater)
-        {
-            if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> members, out error)) return false;
-            area.AddRange(members);
-        }
-        else area.Add(coordinate);
-        var positions = new List<GridPosition>(area.Count);
-        double totalStock = 0;
-        foreach (Vector2Int member in area)
-        {
-            GridPosition position = Position(member);
-            if (!blocks.TryGetValue(position, out BlockInfo block))
-            { error = "植物操作范围内有未就绪地块"; return false; }
-            positions.Add(position);
-            totalStock += block.plantBiomass;
-        }
-        double capacity = (snapshot.Environment.IsWater ? EnvironmentRules.WaterPlantCapacity :
-            EnvironmentRules.PlantCapacity) * (double)area.Count;
-        float nextPerCell = (float)(EnvironmentRules.MultiplyStock(totalStock, capacity,
-            stockFraction) / area.Count);
-        if (!world.TrySetRecoveryBatch(positions, recoveryIncrease, false, out error)) return false;
-        foreach (Vector2Int member in area)
-            simulation.ApplyPlantBiomass(blocks[Position(member)], nextPerCell);
-        Publish();
-        return true;
-    }
-
-    public bool TryApplySuppression(Vector2Int coordinate, float fraction, out string error)
-    {
-        error = null;
-        if (fraction != .25f && fraction != .5f)
-        { error = "生态抑制档位必须为 25% 或 50%"; return false; }
-        if (!TryRead(coordinate, out EnvironmentReadSnapshot snapshot))
-        { error = "目标地块不存在"; return false; }
-        var area = new List<Vector2Int>();
-        if (snapshot.Environment.IsWater)
-        {
-            if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> members, out error)) return false;
-            area.AddRange(members);
-        }
-        else area.Add(coordinate);
-        var positions = new List<GridPosition>(area.Count);
-        double totalStock = 0;
-        foreach (Vector2Int member in area) positions.Add(Position(member));
-        foreach (Vector2Int member in area) totalStock += blocks[Position(member)].plantBiomass;
-        if (!world.TrySetRecoveryBatch(positions, fraction, true, out error)) return false;
-        float nextPerCell = (float)(totalStock * (1f - fraction) / area.Count);
-        foreach (Vector2Int member in area)
-        {
-            BlockInfo block = blocks[Position(member)];
-            simulation.ApplyPlantBiomass(block, nextPerCell);
-        }
-        Publish(); return true;
-    }
     public bool TryCancel(Vector2Int coordinate, EnvironmentAttribute attribute, out string error)
     {
         error = null;
@@ -441,28 +368,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
             world.TryCancelRecovery(Position(coordinate), out error) :
             world.TryCancelClimate(Position(coordinate), attribute, out error);
         if (result) Publish(); return result;
-    }
-    public bool TryPreviewMonsoon(Vector2Int source, int temperatureOffset, int humidityOffset,
-        out IReadOnlyList<GridPosition> area, out string error)
-    {
-        area = Array.Empty<GridPosition>(); error = null;
-        if (!isActiveAndEnabled || world == null) { error = "环境控制器未就绪"; return false; }
-        return world.TryPreviewMonsoon(Position(source), temperatureOffset, humidityOffset, out area, out error);
-    }
-    // Payment is supplied by a future trusted economy adapter, never inferred from UI input.
-    public bool TryDeployMonsoon(Vector2Int source, int temperatureOffset, int humidityOffset,
-        out long id, out string error, EnvironmentPayment payment = null)
-    {
-        id = 0; error = null;
-        if (!isActiveAndEnabled || world == null) { error = "环境控制器未就绪"; return false; }
-        bool result = world.TryDeployMonsoon(Position(source), temperatureOffset, humidityOffset, payment, out id, out error);
-        if (result) Publish(); return result;
-    }
-    public bool TryCancelMonsoon(long id, out string error)
-    {
-        error = null;
-        if (!isActiveAndEnabled || world == null) { error = "环境控制器未就绪"; return false; }
-        bool result = world.TryCancelMonsoon(id, out error); if (result) Publish(); return result;
     }
     public bool TryEditEnvironment(Vector2Int coordinate, SimulationEnvironmentEdit edit, out string error)
     {

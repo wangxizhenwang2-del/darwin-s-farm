@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using DarwinFarm.Environment;
@@ -22,12 +23,32 @@ public static class V048ScenarioReplay
         public int endDay;
         public bool disableCosts;
         public bool restrictedV05;
+        public bool useV05Sandbox;
+        public bool recordPredatorFoodK;
+        public bool t95Diagnostics;
+        public string t95SourceId, t95TargetId;
+        public int t95bFoodProbeDay;
+        public bool t95eSingleOriginFixture;
+        public bool fixtureDisableEvolution;
+        public int t95eShadowDay;
+        public string t95eShadowTargetId;
+        public bool t95eTraceMutation;
+        public bool t95eRouteStop;
         public bool mechanismFixture;
         public bool fixtureFreezeTraits;
         public bool fixtureDisableMigration;
         public bool fixtureFixedEnvironment;
         public bool fixtureSkipDiagnostics;
         public bool useFoodKForSelection;
+        public bool enablePreyDensityFeedback;
+        public bool enablePaidBirthStress;
+        public bool enablePriorityPlantBudgets;
+        public bool t95FinalGate;
+        public int t95FinalProbeStart, t95FinalProbeEnd;
+        public int t95FinalNegativeDay;
+        public bool t10Quota, t10Diagnostics;
+        public float reproductionStressPerBirth;
+        public float adultMaintenanceScale;
         public bool overridePreyEncounter;
         public float preyEncounterHalfSaturation;
         public string counterfactualTarget;
@@ -64,7 +85,6 @@ public static class V048ScenarioReplay
         public string kind, preset;
         public string species;
         public int amount, recovery;
-        public int temperatureOffset, humidityOffset;
         [NonSerialized] public int inputIndex;
     }
 
@@ -104,7 +124,72 @@ public static class V048ScenarioReplay
         public float birthRemainder, deathRemainder;
         public float adultDemand, adultPaid, birthOpportunity;
         public float birthBudget, newbornCost, unusedBirthFood;
+        public float birthStressDeaths;
         public int populationBeforePredation, endangeredDays;
+        public T95EvolutionState t95;
+        public string t95eTrackedTarget, t95eLastMutationEffect;
+        public int[] t95eProtectionSince;
+        public bool[] t95eProtectionReleased;
+        public T10QuotaRecord t10;
+    }
+
+    [Serializable] private sealed class T10QuotaRecord
+    {
+        public int quota;
+        public float unhuntedGrowth, equilibrium;
+        public bool equilibriumFound;
+    }
+
+    [Serializable] private sealed class T95EvolutionState
+    {
+        public string source, target, connectedTargets, stage;
+        public int nextEvolutionDay, effectiveDays, requiredDays;
+        public int nextLocalSplitDay, plannedFounders;
+        public bool localSplitBranch, directedTraitLocked;
+        public float foodSatisfaction10;
+        public int dT, dH, dMovement, dSize, dFertility;
+        public string graphConnection, cooldown, traitTolerance, targetAbsent, space,
+            materialPlan, foodSupport, eligible;
+        public T95BFoodProbe foodProbe;
+        public T95FinalGateProbe finalProbe;
+        public T95FinalNegative[] finalNegatives;
+    }
+
+    [Serializable] private sealed class T95FinalNegative
+    {
+        public string caseName;
+        public bool plan, foodSupport, eligible, rejected;
+        public int founders;
+    }
+
+    [Serializable] private sealed class T95FinalGateProbe
+    {
+        public float plantPayment, sourceAdultDemand, sourceNow,
+            sourceRenewal, childAdultDemand, childNow, childRenewal,
+            expectedPredationDeaths, netNow, netRenewal;
+        public bool sourceNowPass, sourceRenewalPass, childNowPass,
+            childRenewalPass, netNowPass, netRenewalPass;
+        public T95FinalPredatorTrial[] predatorTrials;
+        public bool predatorPass;
+    }
+
+    [Serializable] private sealed class T95FinalPredatorTrial
+    {
+        public int preyCount;
+        public float preyRenewal, candidateCatches, candidateFood;
+        public float candidateAdultCoverage, candidateNet;
+        public bool pass;
+    }
+
+    [Serializable] private sealed class T95BFoodProbe
+    {
+        public int candidateCount, remainingSourceCount;
+        public int blockTemperature, blockHumidity;
+        public float candidateFitness;
+        public float plantStock, consumedToday, recovery, currentPlantBudget;
+        public float plantPayment, excessBody, demand, today, renewable;
+        public float todayRatio, renewableRatio, todayThreshold, renewalThreshold;
+        public bool positiveDemand, todayPass, renewalPass, completePass;
     }
 
     [Serializable] private sealed class EcologyDiagnostic
@@ -118,6 +203,19 @@ public static class V048ScenarioReplay
     private const string Pending = "DarwinFarm.V048Replay.Pending";
     private static double startedAt;
     private static bool complete;
+    private static readonly Dictionary<PopulationData, T10QuotaRecord>
+        t10QuotaByPopulation = new Dictionary<PopulationData, T10QuotaRecord>();
+
+    private static void ObserveT10Quota(BlockInfo block,
+        PopulationData prey, int quota, float growth, float equilibrium,
+        bool found)
+    {
+        t10QuotaByPopulation[prey] = new T10QuotaRecord
+        {
+            quota = quota, unhuntedGrowth = growth,
+            equilibrium = equilibrium, equilibriumFound = found
+        };
+    }
 
     static V048ScenarioReplay()
     {
@@ -134,7 +232,8 @@ public static class V048ScenarioReplay
             string.IsNullOrEmpty(output))
             throw new InvalidOperationException("Set DF_V048_SCENARIO and DF_V048_OUTPUT.");
         Scenario selected = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
-        EditorSceneManager.OpenScene(selected != null && selected.restrictedV05
+        EditorSceneManager.OpenScene(selected != null &&
+            (selected.restrictedV05 || selected.useV05Sandbox)
             ? "Assets/Scenes/V05FiveSpeciesSandbox.unity" :
             "Assets/Scenes/WhiteBox.unity");
         SessionState.SetBool(Pending, true);
@@ -169,7 +268,8 @@ public static class V048ScenarioReplay
         if (!string.IsNullOrEmpty(input) && File.Exists(input))
         {
             Scenario pending = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
-            if (pending != null && pending.restrictedV05)
+            if (pending != null &&
+                (pending.restrictedV05 || pending.useV05Sandbox))
             {
                 var grid = environment.GetComponent<MapGridManager>();
                 if (grid == null || !grid.TryGetTile(Vector2Int.zero,
@@ -235,15 +335,29 @@ public static class V048ScenarioReplay
                 origin.Block.community.Clear();
         }
         account.CostsEnabled = !scenario.disableCosts;
+        if (scenario.t95eSingleOriginFixture)
+        {
+            if (!scenario.mechanismFixture || scenario.restrictedV05 ||
+                scenario.tiles.Length != 1 ||
+                scenario.tiles[0].x != 0 || scenario.tiles[0].y != 0 ||
+                !grid.TryGetTile(Vector2Int.zero, out MapTileInstance originFixture))
+                throw new InvalidOperationException("T95E requires one origin fixture.");
+            originFixture.Block.community.Clear();
+        }
         foreach (Tile tile in scenario.tiles)
         {
             var coordinate = new Vector2Int(tile.x, tile.y);
             MapTileDefinition preset = AssetDatabase.LoadAssetAtPath<MapTileDefinition>(tile.preset);
-            if (preset == null || !grid.TryPlaceTile(coordinate, preset) ||
+            bool useOrigin = scenario.mechanismFixture &&
+                scenario.t95eSingleOriginFixture && coordinate == Vector2Int.zero;
+            if (preset == null ||
+                (useOrigin ? !grid.TryGetTile(coordinate, out MapTileInstance existing) ||
+                    existing.Definition != preset : !grid.TryPlaceTile(coordinate, preset)) ||
                 !bridge.TryGetBlock(coordinate, out BlockInfo block))
                 throw new InvalidOperationException("Cannot place preset at " + coordinate);
             block.community.Clear();
             if (tile.initialStock > 0f &&
+                Mathf.Abs(block.plantBiomass - tile.initialStock) > 0.0001f &&
                 !simulation.ApplyPlantBiomass(block, tile.initialStock))
                 throw new InvalidOperationException("Cannot set starting plant stock.");
             if (tile.overrideEnvironment)
@@ -260,6 +374,7 @@ public static class V048ScenarioReplay
                         plantBiomass = tile.initialStock
                     }, out string fixtureError))
                     throw new InvalidOperationException("Fixture environment: " + fixtureError);
+                block.predationReferenceRecovery = tile.recovery;
             }
             if (tile.populations == null) continue;
             foreach (Population entry in tile.populations)
@@ -298,16 +413,39 @@ public static class V048ScenarioReplay
         simulation.RefreshSpeciesStatuses();
         LandRuleTuning selectedRules = simulation.ReadLandRules();
         selectedRules.useFoodCapacityForSelection = scenario.useFoodKForSelection;
+        selectedRules.enablePreyDensityFeedback =
+            scenario.enablePreyDensityFeedback;
+        selectedRules.enablePaidBirthStress = scenario.enablePaidBirthStress;
+        selectedRules.enablePriorityPlantBudgets =
+            scenario.enablePriorityPlantBudgets;
+        selectedRules.useCompensatedEvolutionFoodGate = scenario.t95FinalGate;
+        selectedRules.enableDynamicPreyRenewalQuota = scenario.t10Quota;
+        if (scenario.reproductionStressPerBirth > 0f)
+            selectedRules.reproductionStressPerBirth =
+                scenario.reproductionStressPerBirth;
+        if (scenario.adultMaintenanceScale > 0f)
+            selectedRules.adultMaintenanceScale =
+                scenario.adultMaintenanceScale;
         if (scenario.overridePreyEncounter)
             throw new InvalidOperationException(
                 "Encounter experiments require the archived experiment-encounter-v3 code.");
         simulation.ApplyLandRules(selectedRules);
+        t10QuotaByPopulation.Clear();
+        Type landRulesType = typeof(SimulationController).Assembly.GetType(
+            "LandLifeRules", true);
+        landRulesType.GetField("RenewableQuotaObserved",
+            BindingFlags.Static | BindingFlags.NonPublic).SetValue(null,
+                scenario.t10Diagnostics ?
+                (System.Action<BlockInfo, PopulationData, int, float, float, bool>)
+                    ObserveT10Quota : null);
         if (scenario.mechanismFixture)
         {
             SimulationTuning fixtureTuning = simulation.ReadTuning();
             if (scenario.fixtureFreezeTraits) fixtureTuning.mutationEnabled = false;
             if (scenario.fixtureDisableMigration) fixtureTuning.migrationEnabled = false;
             simulation.ApplyTuning(fixtureTuning);
+            if (scenario.fixtureDisableEvolution)
+                simulation.SetPresetEvolutionParameters(false, 0, 0f, 0);
             if (scenario.fixtureFixedEnvironment)
                 simulation.OnBeforeDaySimulated += _ =>
                 {
@@ -349,9 +487,11 @@ public static class V048ScenarioReplay
         {
             if (action.day < 0 || action.day > scenario.endDay)
                 throw new InvalidOperationException("Action day outside run.");
+            if (action.kind == "PlantChange")
+                throw new InvalidOperationException(
+                    "Combined PlantChange was removed; use separate PlantStockChange and PlantRecoveryChange actions.");
             if (scenario.restrictedV05 &&
                 (action.x < -1 || action.x > 1 || action.y < -1 || action.y > 1 ||
-                 action.kind == "MonsoonAnchor" ||
                  !(action.kind == "PlaceTile" ||
                    scenario.mechanismFixture &&
                        (action.kind == "FixtureRecovery" || action.kind == "FixtureCull") ||
@@ -389,7 +529,8 @@ public static class V048ScenarioReplay
         simulation.OnPresetEvolutionResolved += RecordTransition;
         simulation.OnEcologyEvent += (day, block, population, kind, detail) =>
         {
-            if (kind == "trait_mutation" || kind == "mutation_choice") return;
+            if (!scenario.t95eTraceMutation &&
+                (kind == "trait_mutation" || kind == "mutation_choice")) return;
             trace.AppendLine("ecology day=" + day + " tile=" + block.name +
                 " kind=" + kind + " population=" +
                 (population != null ? population.PopulationId : "") +
@@ -446,7 +587,9 @@ public static class V048ScenarioReplay
             " bindingSha256=" + HashFiles(bindingFiles));
         trace.AppendLine("landRules=" + JsonUtility.ToJson(simulation.ReadLandRules()));
         trace.AppendLine("simulationTuning=" + JsonUtility.ToJson(simulation.ReadTuning()));
-        WriteDay(trace, clock.currentDay, simulation, environment, grid, account);
+        WriteDay(trace, clock.currentDay, simulation, environment, grid,
+            account, scenario);
+        UpdateExternalProgress(clock.currentDay);
         if (scenario.mechanismFixture && !scenario.fixtureSkipDiagnostics)
             WriteDiagnostics(trace, 0, simulation, grid);
         if (scenario.mechanismFixture && scenario.counterfactualCounts != null &&
@@ -517,6 +660,22 @@ public static class V048ScenarioReplay
                     cost = 0;
                     error = accepted ? null : "Fixture harvest rejected.";
                 }
+                else if (action.kind == "Harvest")
+                {
+                    if (!bridge.TryGetBlock(coordinate, out BlockInfo harvestBlock) ||
+                        harvestBlock.community == null)
+                        throw new InvalidOperationException(
+                            "Harvest target tile is missing.");
+                    PopulationData resident = harvestBlock.community.Find(p =>
+                        p != null && p.species != null &&
+                        p.species.SpeciesName == action.species);
+                    accepted = economy.TryHarvest(harvestBlock, resident,
+                        out int harvested, out long earned, out error);
+                    cost = 0;
+                    action.amount = harvested;
+                    action.recovery = earned > int.MaxValue ? int.MaxValue :
+                        (int)earned;
+                }
                 else if (action.kind == "PlaceTile")
                 {
                     MapTileDefinition preset = AssetDatabase.LoadAssetAtPath<MapTileDefinition>(
@@ -547,10 +706,7 @@ public static class V048ScenarioReplay
                         !Enum.IsDefined(typeof(EnvironmentTechnologyKind), kind))
                         throw new InvalidOperationException(
                             "Unknown player action " + action.kind);
-                    var choice = new EnvironmentTechnologyChoice(kind,
-                        action.tier,
-                        action.temperatureOffset == 0 ? 20 : action.temperatureOffset,
-                        action.humidityOffset == 0 ? 20 : action.humidityOffset);
+                    var choice = new EnvironmentTechnologyChoice(kind, action.tier);
                     accepted = player.TryDeploy(coordinate, choice,
                         out EnvironmentTechnologyPreview preview);
                     cost = preview.Cost;
@@ -569,10 +725,36 @@ public static class V048ScenarioReplay
                     " accepted=" + accepted +
                     (accepted ? "" : " error=" + error));
                 if (scenario.restrictedV05) ValidateRestrictedV05World(grid);
-                WriteDay(trace, day, simulation, environment, grid, account);
+                WriteDay(trace, day, simulation, environment, grid, account,
+                    scenario);
+            }
+            if (scenario.t95eShadowDay > 0 && day == scenario.t95eShadowDay)
+            {
+                RunT95EShadowConversion(trace, simulation, grid, day,
+                    scenario);
+                WriteDay(trace, day, simulation, environment, grid, account,
+                    scenario);
+            }
+            if (scenario.t95eRouteStop &&
+                grid.TryGetTile(Vector2Int.zero, out MapTileInstance routeTile))
+            {
+                bool sourceAlive = routeTile.Block.community.Exists(p =>
+                    p != null && p.species != null &&
+                    p.species.SpeciesName == "鸡" && p.speciesAmount > 0);
+                bool targetAlive = routeTile.Block.community.Exists(p =>
+                    p != null && p.species != null &&
+                    p.species.SpeciesId == scenario.t95TargetId &&
+                    p.speciesAmount > 0);
+                if (!sourceAlive || targetAlive)
+                {
+                    trace.AppendLine("routeStop day=" + day + " reason=" +
+                        (targetAlive ? "TARGET_FORMAL" : "SOURCE_EXTINCT"));
+                    break;
+                }
             }
             if (day == scenario.endDay) break;
             double beforeMaterial = TotalMaterial(grid);
+            t10QuotaByPopulation.Clear();
             clock.NextDay();
             if (clock.currentDay != day + 1)
                 throw new InvalidOperationException("Clock skipped a day.");
@@ -585,11 +767,14 @@ public static class V048ScenarioReplay
                 throw new InvalidOperationException("Unfunded material on Day " +
                     clock.currentDay + ": " + afterMaterial + " > " +
                     (beforeMaterial + growth));
-            WriteDay(trace, clock.currentDay, simulation, environment, grid, account);
+            WriteDay(trace, clock.currentDay, simulation, environment, grid,
+                account, scenario);
+            if (clock.currentDay % 25 == 0 || clock.currentDay == scenario.endDay)
+                UpdateExternalProgress(clock.currentDay);
         }
         if (scenario.mechanismFixture && !scenario.fixtureSkipDiagnostics)
             WriteDiagnostics(trace, scenario.endDay, simulation, grid);
-        trace.AppendLine("result completedDays=" + scenario.endDay +
+        trace.AppendLine("result completedDays=" + clock.currentDay +
             " rejectedActions=" + rejected);
         File.WriteAllText(output, trace.ToString(), Encoding.UTF8);
         Debug.Log("V048_REPLAY_COMPLETE " + scenario.scenarioId +
@@ -678,9 +863,497 @@ public static class V048ScenarioReplay
             throw new InvalidOperationException("V05 supports one initial and at most four added tiles.");
     }
 
+    private static void UpdateExternalProgress(int day)
+    {
+        string path = Environment.GetEnvironmentVariable("DF_TASK9_PROGRESS");
+        if (!string.IsNullOrEmpty(path))
+            File.WriteAllText(path, day.ToString(CultureInfo.InvariantCulture),
+                Encoding.ASCII);
+    }
+
+    // Task 9.5: editor-only, post-step observation. Calls the production
+    // read-only planning/food predicates without advancing evolution records.
+    private static void RunT95EShadowConversion(StringBuilder trace,
+        SimulationController simulation, MapGridManager grid, int day,
+        Scenario scenario)
+    {
+        if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance tile))
+            throw new InvalidOperationException("Shadow origin is missing.");
+        BlockInfo block = tile.Block;
+        SpeciesData target = simulation.FindSpeciesByEconomyId(
+            scenario.t95eShadowTargetId);
+        PopulationData source = block.community.Find(p => p != null &&
+            p.species != null && p.species.SpeciesName == "鸡" &&
+            p.speciesAmount > 0);
+        if (source == null || target == null)
+            throw new InvalidOperationException("Shadow source or target is missing.");
+        T95EvolutionState gates = ReadT95Evolution(simulation, block, source,
+            day, scenario);
+        if (gates == null || gates.graphConnection != "PASS" ||
+            gates.cooldown != "PASS" || gates.traitTolerance != "PASS" ||
+            gates.targetAbsent != "PASS" || gates.space != "PASS" ||
+            gates.materialPlan != "PASS" || gates.foodSupport != "FAIL")
+            throw new InvalidOperationException(
+                "Shadow requires food support to be the only failed gate.");
+        int founders = gates.plannedFounders;
+        string sourceHash = simulation.CanonicalModelHash();
+        double materialBefore = TotalMaterial(grid);
+        float plantBefore = block.plantBiomass;
+        float sourceBodyBefore = source.bodyBiomass;
+        int sourceCountBefore = source.speciesAmount;
+        LandRuleTuning original = simulation.ReadLandRules();
+        try
+        {
+            LandRuleTuning bypass = original.Copy();
+            bypass.evolutionTodaySatisfaction = 0f;
+            bypass.evolutionRenewalSatisfaction = 0f;
+            simulation.ApplyLandRules(bypass);
+            MethodInfo convert = typeof(SimulationController).GetMethod(
+                "ConvertToPresetSpecies",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            convert.Invoke(simulation, new object[] { block, source, target, day });
+        }
+        finally { simulation.ApplyLandRules(original); }
+        PopulationData child = block.community.Find(p => p != null &&
+            p.species == target && p.speciesAmount > 0);
+        double materialAfter = TotalMaterial(grid);
+        if (child == null || child.speciesAmount != founders ||
+            source.speciesAmount != sourceCountBefore - founders ||
+            plantBefore <= block.plantBiomass ||
+            Math.Abs(materialAfter - materialBefore) >
+                Math.Max(1d, materialBefore * 0.00001))
+            throw new InvalidOperationException(
+                "Shadow conversion failed population or material checks.");
+        trace.AppendLine("shadow day=" + day +
+            " sourceHash=" + sourceHash +
+            " sourceBefore=" + sourceCountBefore +
+            " sourceAfter=" + source.speciesAmount +
+            " targetAfter=" + child.speciesAmount +
+            " plantPayment=" + (plantBefore - block.plantBiomass)
+                .ToString("R", CultureInfo.InvariantCulture) +
+            " sourceBodyDelta=" + (sourceBodyBefore - source.bodyBiomass)
+                .ToString("R", CultureInfo.InvariantCulture) +
+            " childBody=" + child.bodyBiomass.ToString("R", CultureInfo.InvariantCulture) +
+            " materialResidual=" + (materialAfter - materialBefore)
+                .ToString("R", CultureInfo.InvariantCulture));
+    }
+
+    private static T95EvolutionState ReadT95Evolution(
+        SimulationController simulation, BlockInfo block,
+        PopulationData source, int day, Scenario scenario)
+    {
+        if (source.species == null ||
+            source.species.SpeciesId != scenario.t95SourceId) return null;
+        string before = simulation.CanonicalModelHash();
+        SpeciesData target = simulation.FindSpeciesByEconomyId(
+            scenario.t95TargetId);
+        var result = new T95EvolutionState
+        {
+            source = source.species.SpeciesName,
+            target = target != null ? target.SpeciesName : "UNKNOWN",
+            nextEvolutionDay = source.nextEvolutionDay,
+            nextLocalSplitDay = block.nextLocalSplitDay,
+            localSplitBranch = source.localSplitBranch,
+            directedTraitLocked = SimulationController.IsDirectedTraitLocked(
+                source, day),
+            requiredDays = block.community.FindAll(p => p != null &&
+                p.speciesAmount > 0).Count == 4 ?
+                simulation.ReadLandRules().evolutionRequiredDaysAtFour :
+                simulation.ReadLandRules().evolutionRequiredDays,
+            graphConnection = "NOT_EVALUATED", cooldown = "NOT_EVALUATED",
+            traitTolerance = "NOT_EVALUATED",
+            targetAbsent = "NOT_EVALUATED", space = "NOT_EVALUATED",
+            materialPlan = "NOT_EVALUATED", foodSupport = "NOT_EVALUATED",
+            eligible = "NOT_EVALUATED"
+        };
+        MethodInfo graph = typeof(SimulationController).GetMethod(
+            "ConnectedTargets", BindingFlags.Instance | BindingFlags.NonPublic);
+        var connected = graph.Invoke(simulation,
+            new object[] { source.species }) as List<SpeciesData>;
+        var connectedNames = new List<string>();
+        if (connected != null)
+            foreach (SpeciesData species in connected)
+                if (species != null) connectedNames.Add(species.SpeciesName);
+        connectedNames.Sort(StringComparer.Ordinal);
+        result.connectedTargets = string.Join("|", connectedNames);
+        if (source.foodSatisfactionHistory != null &&
+            source.foodSatisfactionHistory.Count > 0)
+        {
+            float sum = 0f;
+            foreach (float value in source.foodSatisfactionHistory) sum += value;
+            result.foodSatisfaction10 = sum /
+                source.foodSatisfactionHistory.Count;
+        }
+        if (target != null)
+        {
+            result.dT = Mathf.Abs(source.fitTemperature -
+                target.baseFitTemperature);
+            result.dH = Mathf.Abs(source.fitHumidity -
+                target.baseFitHumidity);
+            result.dMovement = Mathf.Abs(source.movementAbility -
+                target.baseMovementAbility);
+            result.dSize = Mathf.Abs(source.size - target.baseSize);
+            result.dFertility = Mathf.Abs(source.fertility -
+                target.baseFertility);
+            if (source.evolutionConversions != null)
+                foreach (EvolutionConversionRecord record in
+                    source.evolutionConversions)
+                    if (record != null && record.target == target)
+                        result.effectiveDays = record.effectiveDays;
+        }
+        if (target == null) result.stage = "TARGET_UNKNOWN";
+        else if (connected == null || !connected.Contains(target))
+        {
+            result.stage = "GRAPH_DISCONNECTED";
+            result.graphConnection = "FAIL";
+        }
+        else if (day < source.nextEvolutionDay)
+        {
+            result.graphConnection = "PASS";
+            result.stage = result.cooldown = "COOLDOWN";
+        }
+        else
+        {
+            result.graphConnection = "PASS";
+            result.cooldown = "PASS";
+            int tolerance = simulation.ReadLandRules().evolutionTraitTolerance;
+            bool traits = result.dT <= tolerance && result.dH <= tolerance &&
+                result.dMovement <= tolerance && result.dSize <= tolerance &&
+                result.dFertility <= tolerance;
+            result.traitTolerance = traits ? "PASS" : "FAIL";
+            if (!traits) result.stage = "TRAIT_DISTANCE";
+            else
+            {
+                bool absent = !block.community.Exists(p => p != null &&
+                    p.species == target && p.speciesAmount > 0);
+                result.targetAbsent = absent ? "PASS" : "FAIL";
+                if (!absent) result.stage = "TARGET_PRESENT";
+                else
+                {
+                    bool space = block.community.FindAll(p => p != null &&
+                        p.speciesAmount > 0).Count < 5;
+                    result.space = space ? "PASS" : "FAIL";
+                    if (!space) result.stage = "SPACE";
+                    else
+                    {
+                        MethodInfo plan = typeof(SimulationController).GetMethod(
+                            "TryPlanFormalEvolution",
+                            BindingFlags.Instance | BindingFlags.NonPublic);
+                        object[] args = { block, source, target, 0, 0f, 0f };
+                        bool planned = (bool)plan.Invoke(simulation, args);
+                        result.materialPlan = planned ? "PASS" : "FAIL";
+                        result.plannedFounders = (int)args[3];
+                        if (planned && scenario.t95FinalGate &&
+                            day >= scenario.t95FinalProbeStart &&
+                            day <= scenario.t95FinalProbeEnd)
+                            result.finalProbe = ReadT95FinalGateProbe(
+                                simulation, block, source, target,
+                                (int)args[3], (float)args[4]);
+                        if (planned && scenario.t95bFoodProbeDay > 0 &&
+                            day == scenario.t95bFoodProbeDay &&
+                            target.trophicLevel == 0)
+                            result.foodProbe = ReadT95BPlantProbe(simulation,
+                                block, source, target, (int)args[3],
+                                (float)args[4], (float)args[5]);
+                        if (!planned) result.stage = "MATERIAL_PLAN";
+                        else
+                        {
+                            MethodInfo food = typeof(SimulationController).GetMethod(
+                                "HasEvolutionFoodSupport",
+                                BindingFlags.Instance | BindingFlags.NonPublic);
+                            bool supported = (bool)food.Invoke(simulation,
+                                new object[] { block, source, target,
+                                    result.plannedFounders });
+                            result.foodSupport = supported ? "PASS" : "FAIL";
+                            result.eligible = supported ? "PASS" : "FAIL";
+                            result.stage = supported ? "ELIGIBLE_POST_STEP" :
+                                "FOOD_SUPPORT";
+                        }
+                    }
+                }
+            }
+        }
+        if (scenario.t95FinalGate && scenario.t95FinalNegativeDay == day &&
+            source.species != null && source.species.SpeciesId == scenario.t95SourceId &&
+            target != null)
+            result.finalNegatives = RunT95FinalNegatives(simulation, block,
+                source, target, day);
+        if (before != simulation.CanonicalModelHash())
+            throw new InvalidOperationException(
+                "T95 read-only evolution diagnostic changed model state.");
+        return result;
+    }
+
+    private static T95FinalNegative[] RunT95FinalNegatives(
+        SimulationController simulation, BlockInfo original,
+        PopulationData originalSource, SpeciesData target, int day)
+    {
+        var answer = new List<T95FinalNegative>();
+        Type type = typeof(SimulationController);
+        var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        MethodInfo plan = type.GetMethod("TryPlanFormalEvolution", flags);
+        MethodInfo food = type.GetMethod("HasEvolutionFoodSupport", flags);
+        MethodInfo eligible = type.GetMethod("IsEligibleEvolutionTarget", flags);
+        MethodInfo targetPopulation = type.GetMethod("TargetPopulation",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        string[] cases = { "positive", "lowR", "noFood", "lowStock",
+            "noLegalPrey", "duplicateTarget", "fullSlot",
+            "unaffordableFounder", "otherConsumerPressure" };
+        foreach (string name in cases)
+        {
+            if (name == "noLegalPrey" && target.trophicLevel == 0) continue;
+            GameObject temporary = new GameObject("T95 negative " + name);
+            try
+            {
+                BlockInfo block = temporary.AddComponent<BlockInfo>();
+                block.temperature = original.temperature;
+                block.humidity = original.humidity;
+                block.plantBiomass = original.plantBiomass;
+                block.maxPlantBiomass = original.maxPlantBiomass;
+                block.habitatRecovery = original.habitatRecovery;
+                block.predationReferenceRecovery =
+                    original.predationReferenceRecovery;
+                block.waterCoverage = original.waterCoverage;
+                block.community = new List<PopulationData>();
+                PopulationData source = null;
+                foreach (PopulationData old in original.community)
+                {
+                    if (old == null) continue;
+                    PopulationData copy = CloneT95Population(old);
+                    block.community.Add(copy);
+                    if (old == originalSource) source = copy;
+                }
+                if (source == null) continue;
+                switch (name)
+                {
+                    case "lowR": block.habitatRecovery = 0; break;
+                    case "noFood":
+                        block.plantBiomass = 0f;
+                        block.habitatRecovery = 0;
+                        break;
+                    case "lowStock": block.plantBiomass = 1f; break;
+                    case "noLegalPrey": source.species = null; break;
+                    case "duplicateTarget":
+                        block.community.Add((PopulationData)targetPopulation.Invoke(
+                            null, new object[] { target, 1 }));
+                        break;
+                    case "fullSlot":
+                        while (block.community.Count < 5)
+                            block.community.Add(CloneT95Population(source));
+                        break;
+                    case "unaffordableFounder":
+                        block.plantBiomass = 0f;
+                        break;
+                    case "otherConsumerPressure":
+                        PopulationData competitor = CloneT95Population(source);
+                        competitor.speciesAmount = 100000;
+                        competitor.bodyBiomass *= 100000f /
+                            Mathf.Max(1, source.speciesAmount);
+                        block.community.Add(competitor);
+                        break;
+                }
+                object[] arguments = { block, source, target, 0, 0f, 0f };
+                bool planned = (bool)plan.Invoke(simulation, arguments);
+                int founders = (int)arguments[3];
+                bool supported = planned && (bool)food.Invoke(simulation,
+                    new object[] { block, source, target, founders });
+                bool allowed = (bool)eligible.Invoke(simulation,
+                    new object[] { block, source, target, day });
+                answer.Add(new T95FinalNegative { caseName = name,
+                    plan = planned, founders = founders,
+                    foodSupport = supported, eligible = allowed,
+                    rejected = !allowed });
+            }
+            finally { UnityEngine.Object.DestroyImmediate(temporary); }
+        }
+        return answer.ToArray();
+    }
+
+    private static PopulationData CloneT95Population(PopulationData source) =>
+        new PopulationData
+        {
+            species = source.species,
+            speciesAmount = source.speciesAmount,
+            trophicLevel = source.trophicLevel,
+            trophicLevelInitialized = source.trophicLevelInitialized,
+            ecologicalNiche = source.ecologicalNiche,
+            movementAbility = source.movementAbility,
+            size = source.size,
+            fertility = source.fertility,
+            fitTemperature = source.fitTemperature,
+            fitHumidity = source.fitHumidity,
+            habitatNiche = source.habitatNiche,
+            bodyBiomass = source.bodyBiomass,
+            bodyBiomassInitialized = source.bodyBiomassInitialized,
+            birthRemainder = source.birthRemainder,
+            deathRemainder = source.deathRemainder,
+            energyReserve = source.energyReserve,
+            nextEvolutionDay = source.nextEvolutionDay
+        };
+
+    private static T95FinalGateProbe ReadT95FinalGateProbe(
+        SimulationController simulation, BlockInfo block,
+        PopulationData source, SpeciesData target, int amount,
+        float plantPayment)
+    {
+        var privateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+        var privateStatic = BindingFlags.Static | BindingFlags.NonPublic;
+        PopulationData candidate = (PopulationData)typeof(SimulationController)
+            .GetMethod("TargetPopulation", privateStatic)
+            .Invoke(null, new object[] { target, amount });
+        Type land = typeof(SimulationController).Assembly.GetType(
+            "LandLifeRules", true);
+        object[] values = { block, source, source.speciesAmount - amount,
+            candidate, plantPayment, simulation.ReadLandRules(),
+            null, null, null };
+        land.GetMethod("ForecastEvolutionPlantsAfterPayment", privateStatic)
+            .Invoke(null, values);
+        var groups = (List<PopulationData>)values[6];
+        float[] now = (float[])values[7];
+        float[] renewable = (float[])values[8];
+        int sourceIndex = groups.IndexOf(source);
+        int childIndex = groups.IndexOf(candidate);
+        MethodInfo need = land.GetMethod("AdultNeed", BindingFlags.Static |
+            BindingFlags.NonPublic);
+        LandRuleTuning rules = simulation.ReadLandRules();
+        float sourceAdult = (source.speciesAmount - amount) *
+            (float)need.Invoke(null, new object[] { (float)source.size,
+                (float)source.movementAbility, rules });
+        float childAdult = amount * (float)need.Invoke(null,
+            new object[] { (float)candidate.size,
+                (float)candidate.movementAbility, rules });
+        if (candidate.trophicLevel != 0)
+        {
+            MethodInfo predator = typeof(SimulationController).GetMethod(
+                "HasCompensatedPredatorFoodSupport", privateInstance);
+            object[] predatorArgs = { block, source, candidate,
+                source.speciesAmount - amount, plantPayment, null };
+            bool passed = (bool)predator.Invoke(simulation, predatorArgs);
+            Array trialValues = (Array)predatorArgs[5];
+            var results = new T95FinalPredatorTrial[trialValues.Length];
+            for (int i = 0; i < trialValues.Length; i++)
+            {
+                object value = trialValues.GetValue(i);
+                Type type = value.GetType();
+                results[i] = new T95FinalPredatorTrial
+                {
+                    preyCount = (int)type.GetField("preyCount").GetValue(value),
+                    preyRenewal = (float)type.GetField("preyRenewal").GetValue(value),
+                    candidateCatches = (float)type.GetField("candidateCatches").GetValue(value),
+                    candidateFood = (float)type.GetField("candidateFood").GetValue(value),
+                    candidateAdultCoverage = (float)type.GetField("candidateAdultCoverage").GetValue(value),
+                    candidateNet = (float)type.GetField("candidateNet").GetValue(value),
+                    pass = (bool)type.GetField("pass").GetValue(value)
+                };
+            }
+            return new T95FinalGateProbe
+            {
+                plantPayment = plantPayment,
+                sourceAdultDemand = sourceAdult,
+                sourceNow = sourceIndex < 0 ? 0f : now[sourceIndex],
+                sourceRenewal = sourceIndex < 0 ? 0f : renewable[sourceIndex],
+                sourceNowPass = sourceIndex >= 0 && sourceAdult > 0f &&
+                    now[sourceIndex] / sourceAdult >= 0.95f,
+                predatorTrials = results,
+                predatorPass = passed
+            };
+        }
+        float predation = (float)typeof(SimulationController).GetMethod(
+            "ForecastEvolutionPredationDeaths", privateInstance)
+            .Invoke(simulation, new object[] { block, candidate });
+        MethodInfo netMethod = typeof(SimulationController).GetMethod(
+            "ForecastEvolutionPaidNet", privateInstance);
+        float netNow = (float)netMethod.Invoke(simulation,
+            new object[] { block, candidate, amount, now[childIndex],
+                predation });
+        float netRenewal = (float)netMethod.Invoke(simulation,
+            new object[] { block, candidate, amount,
+                renewable[childIndex], predation });
+        return new T95FinalGateProbe
+        {
+            plantPayment = plantPayment,
+            sourceAdultDemand = sourceAdult,
+            sourceNow = sourceIndex < 0 ? 0f : now[sourceIndex],
+            sourceRenewal = sourceIndex < 0 ? 0f : renewable[sourceIndex],
+            childAdultDemand = childAdult,
+            childNow = childIndex < 0 ? 0f : now[childIndex],
+            childRenewal = childIndex < 0 ? 0f : renewable[childIndex],
+            expectedPredationDeaths = predation,
+            netNow = netNow, netRenewal = netRenewal,
+            sourceNowPass = sourceIndex >= 0 &&
+                now[sourceIndex] / sourceAdult >= 0.95f,
+            sourceRenewalPass = sourceIndex >= 0 &&
+                renewable[sourceIndex] / sourceAdult >= 0.95f,
+            childNowPass = childIndex >= 0 &&
+                now[childIndex] / childAdult >= 0.95f,
+            childRenewalPass = childIndex >= 0 &&
+                renewable[childIndex] / childAdult >= 0.95f,
+            netNowPass = netNow >= -0.001f * amount,
+            netRenewalPass = netRenewal > 0f
+        };
+    }
+
+    private static T95BFoodProbe ReadT95BPlantProbe(
+        SimulationController simulation, BlockInfo block,
+        PopulationData source, SpeciesData target, int amount,
+        float plantPayment, float excessBody)
+    {
+        var runtime = BindingFlags.Static | BindingFlags.NonPublic;
+        MethodInfo create = typeof(SimulationController).GetMethod(
+            "TargetPopulation", runtime);
+        PopulationData candidate = (PopulationData)create.Invoke(null,
+            new object[] { target, amount });
+        int remaining = source.trophicLevel == 0 ?
+            source.speciesAmount - amount : source.speciesAmount;
+        Type landRulesType = typeof(SimulationController).Assembly.GetType(
+            "LandLifeRules", true);
+        MethodInfo forecast = landRulesType.GetMethod(
+            "ForecastEvolutionPlantSupport", runtime);
+        object[] values = { block, source, candidate, remaining,
+            simulation.ReadLandRules(), 0f, 0f, 0f };
+        forecast.Invoke(null, values);
+        float demand = (float)values[5];
+        float today = (float)values[6];
+        float renewable = (float)values[7];
+        LandRuleTuning rules = simulation.ReadLandRules();
+        MethodInfo budget = landRulesType.GetMethod(
+            "PlantFoodBudget", runtime);
+        float currentBudget = (float)budget.Invoke(null,
+            new object[] { block,
+                block.plantBiomass + block.consumedBiomassToday, rules });
+        float todayRatio = demand > 0f ? today / demand : 0f;
+        float renewalRatio = demand > 0f ? renewable / demand : 0f;
+        return new T95BFoodProbe
+        {
+            candidateCount = amount, remainingSourceCount = remaining,
+            blockTemperature = block.temperature,
+            blockHumidity = block.humidity,
+            candidateFitness = Mathf.Clamp01(1f -
+                (Mathf.Abs(block.temperature - target.baseFitTemperature) +
+                 Mathf.Abs(block.humidity - target.baseFitHumidity)) / 90f),
+            plantStock = block.plantBiomass,
+            consumedToday = block.consumedBiomassToday,
+            recovery = block.habitatRecovery,
+            currentPlantBudget = currentBudget,
+            plantPayment = plantPayment, excessBody = excessBody,
+            demand = demand, today = today, renewable = renewable,
+            todayRatio = todayRatio, renewableRatio = renewalRatio,
+            todayThreshold = rules.evolutionTodaySatisfaction,
+            renewalThreshold = rules.evolutionRenewalSatisfaction,
+            positiveDemand = demand > 0f,
+            todayPass = demand > 0f &&
+                todayRatio >= rules.evolutionTodaySatisfaction,
+            renewalPass = demand > 0f &&
+                renewalRatio >= rules.evolutionRenewalSatisfaction,
+            completePass = demand > 0f &&
+                todayRatio >= rules.evolutionTodaySatisfaction &&
+                renewalRatio >= rules.evolutionRenewalSatisfaction
+        };
+    }
+
     private static void WriteDay(StringBuilder trace, int day,
         SimulationController simulation, SimulationEnvironmentController environment,
-        MapGridManager grid, BioenergyAccount account)
+        MapGridManager grid, BioenergyAccount account, Scenario scenario)
     {
         var state = new StringBuilder();
         var tiles = new List<MapTileInstance>(grid.GetPlacedTiles());
@@ -735,7 +1408,9 @@ public static class V048ScenarioReplay
                             environmentalK = population.environmentalCarryingCapacity,
                             foodK = population.trophicLevel == 0
                                 ? simulation.ReadFoodCarryingCapacity(block, population)
-                                : -1f,
+                                : scenario.recordPredatorFoodK ?
+                                    simulation.ReadPredatorFoodCarryingCapacity(
+                                        block, population) : -1f,
                             allocatedFood = population.allocatedBiomass,
                             adultNeedPerHead = population.energyNeed,
                             energySatisfaction = population.energySatisfactionToday,
@@ -748,8 +1423,24 @@ public static class V048ScenarioReplay
                             birthBudget = population.birthBudgetToday,
                             newbornCost = population.newbornCostToday,
                             unusedBirthFood = population.unusedBirthFoodToday,
+                            birthStressDeaths = population.birthStressDeathsToday,
                             populationBeforePredation = population.populationBeforePredation,
-                            endangeredDays = population.endangeredDays
+                            endangeredDays = population.endangeredDays,
+                            t95 = scenario.t95Diagnostics ? ReadT95Evolution(
+                                simulation, block, population, day, scenario) : null,
+                            t95eTrackedTarget = scenario.t95eTraceMutation &&
+                                population.trackedEvolutionTarget != null ?
+                                population.trackedEvolutionTarget.SpeciesName : null,
+                            t95eLastMutationEffect = scenario.t95eTraceMutation ?
+                                population.lastMutationEffect : null,
+                            t95eProtectionSince = scenario.t95eTraceMutation ?
+                                population.targetProtectionSince : null,
+                            t95eProtectionReleased = scenario.t95eTraceMutation ?
+                                population.targetProtectionReleased : null,
+                            t10 = scenario.t10Diagnostics &&
+                                t10QuotaByPopulation.TryGetValue(population,
+                                    out T10QuotaRecord quotaRecord) ?
+                                quotaRecord : null
                         });
             populations.Sort((a, b) => string.CompareOrdinal(a.id, b.id));
             tileStates.Add(new TileState

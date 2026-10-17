@@ -1,0 +1,11 @@
+{
+  "scenarioId": "task12-whitebox-origin-check",
+  "seed": 240,
+  "endDay": 10,
+  "disableCosts": true,
+  "restrictedV05": false,
+  "useV05Sandbox": false,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": []
+}

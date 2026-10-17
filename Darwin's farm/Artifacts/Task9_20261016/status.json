@@ -1,0 +1,59 @@
+{
+  "state": "COMPLETE_WITH_FAILURES",
+  "message": "联合验收结束：Task 9 FAIL，Task 10 FAIL；单一交付 ZIP 已校验。",
+  "active": "验收结束；原始证据已打包",
+  "stages": [
+    {
+      "name": "Stage 0 · 旧模式基线",
+      "status": "PASS",
+      "detail": "鹿101日与捕食1001日双哈希逐条相同"
+    },
+    {
+      "name": "Stage 1 · A/B/C 独立及联合",
+      "status": "PASS",
+      "detail": "A/B/C 独立、边界、100日联合与重复双哈希通过"
+    },
+    {
+      "name": "Stage 2 · 0.40 与长期群落",
+      "status": "PASS",
+      "detail": "14 组长测；15–500 初始菇狸共存，10 组灭绝；5001 条独立双哈希重复及 4 邻点通过"
+    },
+    {
+      "name": "Stage 3 · 27 生境及扰动",
+      "status": "PASS",
+      "detail": "27 组生境 T/H/z/R/S₀ 与 3 组扰动 Unity 审计通过；50% 减产菇狸灭绝"
+    },
+    {
+      "name": "Stage 4 · 五工具",
+      "status": "PASS",
+      "detail": "WhiteBox 与 V5.1 荒漠沙盒各 13 组五工具 Unity 回放通过；WhiteBox 起点与策划案不符"
+    },
+    {
+      "name": "Stage 5 · 动态 K",
+      "status": "PASS",
+      "detail": "只读捕食者 K 的 101 条双哈希逐条相同；第 100 日菇狸 K_food=1089"
+    },
+    {
+      "name": "Stage 6 · 进化与经济",
+      "status": "FAIL",
+      "detail": "四条付费正式路线均无目标物种；菇狸及鹿路线各 20 次生物能不足拒绝。收割夹具 PASS。"
+    },
+    {
+      "name": "Task 9 · 正式进化候选验收",
+      "status": "FAIL",
+      "detail": "彩鸡第132日转化并存活500日；菇狸第429日转化、第512日灭绝；负控及三物种回归完成。"
+    },
+    {
+      "name": "Task 9 + Task 10 · 联合验收",
+      "status": "FAIL",
+      "detail": "25 条真实 Unity 回放已完成；正式转化 PASS，但彩鸡衰退、继续操作路线菇狸第529日灭绝。负控、回归与性能数据已打包。"
+    }
+  ],
+  "activeLog": null,
+  "activeJsonl": null,
+  "targetDay": null,
+  "day": null,
+  "activeProgress": null,
+  "stageFraction": 0,
+  "stageRuns": null
+}

@@ -274,8 +274,16 @@ public partial class SimulationController
         float sourcePerHead = sourceBody / source.speciesAmount;
         float targetPerHead = LandLifeRules.BodyMass(target.baseSize, LandRules);
         float extraPerHead = Mathf.Max(0f, targetPerHead - sourcePerHead);
+        float spendable = Mathf.Max(0f, block.plantBiomass);
+        if (LandRules.useCompensatedEvolutionFoodGate)
+        {
+            float floor = Mathf.Min(spendable * 0.5f,
+                Mathf.Max(0f, block.maxPlantBiomass) *
+                LandRules.minimumPlantReserveFraction);
+            spendable = Mathf.Max(0f, spendable - floor);
+        }
         int affordable = extraPerHead > 0f
-            ? Mathf.FloorToInt(Mathf.Max(0f, block.plantBiomass) / extraPerHead)
+            ? Mathf.FloorToInt(spendable / extraPerHead)
             : requested;
         amount = Mathf.Min(requested, affordable);
         if (amount < 1) return false;
@@ -287,6 +295,9 @@ public partial class SimulationController
     private bool HasEvolutionFoodSupport(BlockInfo block, PopulationData source,
         SpeciesData target, int amount)
     {
+        if (LandRules.useCompensatedEvolutionFoodGate)
+            return HasCompensatedEvolutionFoodSupport(block, source,
+                target, amount);
         PopulationData candidate = TargetPopulation(target, amount);
         float fitness = LandLifeRules.Fitness(block,
             candidate.fitTemperature, candidate.fitHumidity);
@@ -350,6 +361,276 @@ public partial class SimulationController
                 >= LandRules.evolutionRenewalSatisfaction
             && sustainableEnergy >= LandRules.evolutionPreyRenewalCoverage
                 * predatorDemand;
+    }
+
+    private bool HasCompensatedEvolutionFoodSupport(BlockInfo block,
+        PopulationData source, SpeciesData target, int amount)
+    {
+        if (!TryPlanFormalEvolution(block, source, target,
+                out int planned, out float plantPayment, out _) ||
+            planned != amount) return false;
+        PopulationData candidate = TargetPopulation(target, amount);
+        int remaining = source.speciesAmount - amount;
+        LandLifeRules.ForecastEvolutionPlantsAfterPayment(block, source,
+            remaining, candidate, plantPayment, LandRules,
+            out List<PopulationData> groups, out float[] now,
+            out float[] renewable);
+        int sourceIndex = groups.IndexOf(source);
+        if (source.trophicLevel == 0)
+        {
+            if (sourceIndex < 0) return false;
+            float sourceAdult = remaining * LandLifeRules.AdultNeed(
+                source.size, source.movementAbility, LandRules);
+            if (sourceAdult > 0f &&
+                (now[sourceIndex] / sourceAdult < 0.95f ||
+                 candidate.trophicLevel == 0 &&
+                 renewable[sourceIndex] / sourceAdult < 0.95f))
+                return false;
+        }
+        if (candidate.trophicLevel != 0)
+            return HasCompensatedPredatorFoodSupport(block, source,
+                candidate, remaining, plantPayment, out _);
+        int childIndex = groups.IndexOf(candidate);
+        if (childIndex < 0) return false;
+        float adult = amount * LandLifeRules.AdultNeed(candidate.size,
+            candidate.movementAbility, LandRules);
+        if (adult <= 0f || now[childIndex] / adult < 0.95f ||
+            renewable[childIndex] / adult < 0.95f) return false;
+        float expectedPredation = ForecastEvolutionPredationDeaths(block,
+            candidate);
+        float netNow = ForecastEvolutionPaidNet(block, candidate, amount,
+            now[childIndex], expectedPredation);
+        float netRenewal = ForecastEvolutionPaidNet(block, candidate, amount,
+            renewable[childIndex], expectedPredation);
+        return netNow >= -0.001f * amount && netRenewal > 0f;
+    }
+
+    private sealed class PredatorFoodTrial
+    {
+        public int preyCount;
+        public float preyRenewal, candidateCatches, candidateFood;
+        public float candidateAdultCoverage, candidateNet;
+        public bool pass;
+    }
+
+    // Formal-evolution-only counterfactual. No live population, stock,
+    // remainder, or random source is changed by these six fixed trials.
+    private bool HasCompensatedPredatorFoodSupport(BlockInfo block,
+        PopulationData source, PopulationData candidate, int remaining,
+        float plantPayment, out PredatorFoodTrial[] trials)
+    {
+        float[] densities = { 1f, 0.85f, 0.70f, 0.55f, 0.40f, 0.30f };
+        trials = new PredatorFoodTrial[densities.Length];
+        if (source.trophicLevel != 0 || remaining <= 0) return false;
+        bool previousPassed = false;
+        bool adjacentPassed = false;
+        for (int t = 0; t < densities.Length; t++)
+        {
+            int trialCount = Mathf.Max(1, Mathf.FloorToInt(
+                remaining * densities[t]));
+            var sourceTrial = new PopulationData
+            {
+                species = source.species,
+                speciesAmount = trialCount,
+                trophicLevel = source.trophicLevel,
+                movementAbility = source.movementAbility,
+                size = source.size,
+                fertility = source.fertility,
+                fitTemperature = source.fitTemperature,
+                fitHumidity = source.fitHumidity,
+                birthRemainder = source.birthRemainder,
+                bodyBiomassInitialized = source.bodyBiomassInitialized,
+                bodyBiomass = source.speciesAmount > 0
+                    ? source.bodyBiomass * trialCount / source.speciesAmount
+                    : 0f
+            };
+            LandLifeRules.ForecastEvolutionPlantsAfterPayment(block, source,
+                trialCount, candidate, plantPayment, LandRules,
+                out List<PopulationData> groups, out float[] now, out _);
+            var trial = new PredatorFoodTrial { preyCount = trialCount };
+            trials[t] = trial;
+            float candidateTarget = ForecastEvolutionHuntTarget(block,
+                candidate, candidate.speciesAmount);
+            float candidatePreference = 0f;
+            foreach (PopulationData prey in block.community)
+            {
+                if (prey == null || prey.speciesAmount <= 0) continue;
+                PopulationData option = prey == source ? sourceTrial : prey;
+                candidatePreference += LandLifeRules.HuntPreference(candidate,
+                    option, LandRules);
+            }
+            if (candidatePreference <= 0f) continue;
+            bool supported = true;
+            foreach (PopulationData prey in block.community)
+            {
+                if (prey == null || prey.speciesAmount <= 0 ||
+                    !FoodWeb.CanEat(candidate, prey)) continue;
+                PopulationData option = prey == source ? sourceTrial : prey;
+                // Higher-level renewal lacks a plant-budget counterfactual.
+                if (option.trophicLevel != 0) { supported = false; break; }
+                int index = groups.IndexOf(prey);
+                if (index < 0) continue;
+                float renewal = Mathf.Max(0f, ForecastEvolutionPaidNet(
+                    block, option, option.speciesAmount, now[index], 0f));
+                if (prey == source) trial.preyRenewal = renewal;
+                int wholeRenewal = Mathf.FloorToInt(renewal);
+                if (wholeRenewal <= 0) continue;
+                float preference = LandLifeRules.HuntPreference(candidate,
+                    option, LandRules);
+                float density = ForecastEvolutionPreyDensity(block,
+                    option);
+                float chance = Mathf.Min(1f,
+                    10f / Mathf.Max(1f, option.size)) *
+                    LandLifeRules.CaptureChance(candidate, option,
+                        LandRules) * density;
+                float candidateIntent = candidate.speciesAmount *
+                    preference / candidatePreference * chance;
+                float candidateClaim = LandLifeRules.WholePreyClaim(
+                    candidateIntent, candidateTarget,
+                    LandLifeRules.PreyEnergy(candidate, option, LandRules));
+                float existingClaims = 0f;
+                foreach (PopulationData hunter in block.community)
+                {
+                    if (hunter == null || hunter == source ||
+                        hunter.speciesAmount <= 0 ||
+                        !FoodWeb.CanEat(hunter, option)) continue;
+                    float totalPreference = 0f;
+                    foreach (PopulationData possible in block.community)
+                        if (possible != null && possible.speciesAmount > 0)
+                            totalPreference += LandLifeRules.HuntPreference(
+                                hunter, possible == source ? sourceTrial :
+                                possible, LandRules);
+                    if (totalPreference <= 0f) continue;
+                    float hunterIntent = hunter.speciesAmount *
+                        LandLifeRules.HuntPreference(hunter, option,
+                            LandRules) / totalPreference * chance /
+                        Mathf.Max(0.0001f, LandLifeRules.CaptureChance(
+                            candidate, option, LandRules)) *
+                        LandLifeRules.CaptureChance(hunter, option,
+                            LandRules);
+                    existingClaims += LandLifeRules.WholePreyClaim(
+                        hunterIntent, ForecastEvolutionHuntTarget(block,
+                            hunter, hunter.speciesAmount),
+                        LandLifeRules.PreyEnergy(hunter, option, LandRules));
+                }
+                int available = Mathf.Max(0, wholeRenewal -
+                    Mathf.CeilToInt(existingClaims));
+                int catches = Mathf.Min(available,
+                    Mathf.FloorToInt(candidateClaim));
+                trial.candidateCatches += catches;
+                trial.candidateFood += catches *
+                    LandLifeRules.PreyEnergy(candidate, option, LandRules);
+            }
+            float adult = candidate.speciesAmount * LandLifeRules.AdultNeed(
+                candidate.size, candidate.movementAbility, LandRules);
+            trial.candidateAdultCoverage = adult > 0f
+                ? trial.candidateFood / adult : 0f;
+            trial.candidateNet = ForecastEvolutionPaidNet(block, candidate,
+                candidate.speciesAmount, trial.candidateFood,
+                ForecastEvolutionPredationDeaths(block, candidate));
+            trial.pass = supported && trial.preyRenewal > 0f &&
+                trial.candidateCatches > 0f &&
+                trial.candidateAdultCoverage >= 0.95f &&
+                trial.candidateNet >= 0.001f * candidate.speciesAmount;
+            adjacentPassed |= previousPassed && trial.pass;
+            previousPassed = trial.pass;
+        }
+        return adjacentPassed;
+    }
+
+    private float ForecastEvolutionHuntTarget(BlockInfo block,
+        PopulationData hunter, int count)
+    {
+        float adult = count * LandLifeRules.AdultNeed(hunter.size,
+            hunter.movementAbility, LandRules);
+        float births = count * LandRules.birthRate * hunter.fertility / 100f *
+            LandLifeRules.Fitness(block, hunter.fitTemperature,
+                hunter.fitHumidity);
+        return Mathf.Max(0f, adult + births *
+            (LandLifeRules.YoungNeed(hunter.size, LandRules) +
+             LandLifeRules.BodyMass(hunter.size, LandRules)) +
+            adult * LandRules.reserveHuntFraction - hunter.energyReserve);
+    }
+
+    private float ForecastEvolutionPreyDensity(BlockInfo block,
+        PopulationData prey)
+    {
+        if (!LandRules.enablePreyDensityFeedback || prey.trophicLevel != 0)
+            return 1f;
+        float reference = block.predationReferenceRecovery > 0f
+            ? block.predationReferenceRecovery : block.habitatRecovery;
+        float adult = LandLifeRules.AdultNeed(prey.size,
+            prey.movementAbility, LandRules);
+        float half = Mathf.Max(1f,
+            LandRules.preyDensityHalfSaturationScale *
+            Mathf.Max(1f, reference) / Mathf.Max(0.0001f, adult));
+        float n = prey.speciesAmount;
+        return n * n / (n * n + half * half);
+    }
+
+    private float ForecastEvolutionPaidNet(BlockInfo block,
+        PopulationData population, int count, float realFood,
+        float expectedPredationDeaths)
+    {
+        float adult = count * LandLifeRules.AdultNeed(population.size,
+            population.movementAbility, LandRules);
+        float satisfaction = adult > 0f ?
+            Mathf.Clamp01(realFood / adult) : 1f;
+        float fitness = LandLifeRules.Fitness(block,
+            population.fitTemperature, population.fitHumidity);
+        float opportunity = count * LandRules.birthRate *
+            population.fertility / 100f * fitness * satisfaction;
+        float newbornCost = LandLifeRules.YoungNeed(population.size,
+            LandRules) + LandLifeRules.BodyMass(population.size, LandRules);
+        int paidBirths = Mathf.Min(Mathf.FloorToInt(
+                population.birthRemainder + opportunity),
+            Mathf.FloorToInt(Mathf.Max(0f, realFood - adult) /
+                Mathf.Max(0.0001f, newbornCost)));
+        float baseDeaths = LandRules.starvationDeathRate * count *
+            (1f - satisfaction) +
+            LandLifeRules.ColdDeaths(count, block.temperature, LandRules) +
+            LandRules.climateMismatchDeathRate * count * (1f - fitness) +
+            LandLifeRules.NaturalAdultDeaths(count, population.size,
+                LandRules);
+        float stress = LandRules.enablePaidBirthStress ?
+            LandLifeRules.PaidBirthStressDeaths(paidBirths,
+                population.size, population.fertility, LandRules) :
+            LandLifeRules.ReproductionStressDeaths(count,
+                population.size, population.fertility, LandRules,
+                satisfaction: satisfaction, fitness: fitness);
+        return paidBirths - baseDeaths - stress - expectedPredationDeaths;
+    }
+
+    private float ForecastEvolutionPredationDeaths(BlockInfo block,
+        PopulationData candidate)
+    {
+        float claims = 0f;
+        foreach (PopulationData hunter in block.community)
+        {
+            if (hunter == null || hunter.speciesAmount <= 0 ||
+                !FoodWeb.CanEat(hunter, candidate)) continue;
+            float preference = LandLifeRules.HuntPreference(hunter,
+                candidate, LandRules);
+            float totalPreference = preference;
+            foreach (PopulationData prey in block.community)
+                if (prey != null && prey.speciesAmount > 0)
+                    totalPreference += LandLifeRules.HuntPreference(hunter,
+                        prey, LandRules);
+            if (totalPreference <= 0f) continue;
+            float demand = LandLifeRules.Demand(hunter,
+                hunter.speciesAmount,
+                LandLifeRules.Fitness(block, hunter.fitTemperature,
+                    hunter.fitHumidity), LandRules);
+            float intent = hunter.speciesAmount * preference /
+                totalPreference *
+                Mathf.Min(1f, 10f / Mathf.Max(1f, candidate.size)) *
+                LandLifeRules.CaptureChance(hunter, candidate, LandRules) *
+                LandLifeRules.PreyDensityFactor(block, candidate, LandRules);
+            claims += LandLifeRules.WholePreyClaim(intent,
+                Mathf.Max(0f, demand - hunter.energyReserve),
+                LandLifeRules.PreyEnergy(hunter, candidate, LandRules));
+        }
+        return Mathf.Min(candidate.speciesAmount, claims);
     }
 
     private static bool IsLocalSplitPair(BlockInfo block, PopulationData source)

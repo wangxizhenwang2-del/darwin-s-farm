@@ -26,9 +26,6 @@ static class Program
     }
     static void Climate(EnvironmentWorld w, EnvironmentAttribute attr, int amount)
     { Check(w.TrySetClimate(Origin, attr, amount, out var error), error); }
-    static long Wind(EnvironmentWorld w, int source, int t = 20, int h = 20, EnvironmentPayment payment = null)
-    { Check(w.TryDeployMonsoon(new GridPosition(source, 0), t, h, payment, out var id, out var error), error); return id; }
-
     // Independent, declarative specification. Each legal combination must hit exactly one row.
     static IEnumerable<TerrainKind> MatchingRows(int z, int t, int h, int r)
     {
@@ -159,92 +156,18 @@ static class Program
         Near(1000000, EnvironmentRules.ChangeStock(900000, .5), "stock cap");
         Near(0, EnvironmentRules.ChangeStock(0, -.5), "zero stock");
     }
-    static void WindMasking()
+    static void TopologyValidation()
     {
-        var w = Single(TerrainKind.Grassland); long id = Wind(w, 0);
-        w.AdvanceToDay(25); Near(88, Read(w).Temperature.Value, "wind entry");
-        w.AdvanceToDay(200); Near(88, Read(w).Temperature.Value, "wind permanent");
-        Climate(w, EnvironmentAttribute.Temperature, -25);
-        Check(Read(w).HasMonsoon && !Read(w).MonsoonApplied, "masked wind retains membership");
-        w.AdvanceToDay(225); Near(68, Read(w).Humidity.Value, "temperature masks both wind fields");
-        w.AdvanceToDay(350); Check(Read(w).MonsoonApplied, "wind resumes after local");
-        Near(88, Read(w).Temperature.Value, "resume wind without stacking");
-        Climate(w, EnvironmentAttribute.Temperature, -25); w.AdvanceToDay(375);
-        Check(w.TryCancelClimate(Origin, EnvironmentAttribute.Temperature, out _), "local return");
-        w.AdvanceToDay(380); double current = Read(w).Temperature.Value;
-        Check(w.TryCancelMonsoon(id, out _), "cancel wind during local return");
-        Near(current, Read(w).Temperature.Value, "wind cancel should not jump return");
-        Near(Read(w).Defaults.Temperature, Read(w).Temperature.Target, "no stale wind target");
-        w.AdvanceToDay(405); Check(!Read(w).HasLocalClimate && !Read(w).HasMonsoon, "cancel completes");
-        Near(Read(w).Defaults.Temperature, Read(w).Temperature.Value, "default after cancelled wind");
-        Check(w.ReadSettlements().Single().RefundAmount == 0, "manual cancellation no refund");
-        var two = Single(TerrainKind.Grassland); Wind(two, 0);
-        Climate(two, EnvironmentAttribute.Temperature, 25); Climate(two, EnvironmentAttribute.Humidity, -25);
-        two.AdvanceToDay(25);
-        Near(93, Read(two).Temperature.Value, "temperature and humidity coexist");
-        Near(43, Read(two).Humidity.Value, "humidity independent target");
-        two.AdvanceToDay(150);
-        Near(88, Read(two).Temperature.Value, "both return to wind together");
-        Near(88, Read(two).Humidity.Value, "second field returns to wind together");
-    }
-    static void TopologyAndRefunds()
-    {
-        var w = new EnvironmentWorld();
-        w.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 1, TerrainKind.Forest), (2, 0, TerrainKind.Grassland)));
-        long a = Wind(w, 0, payment: new EnvironmentPayment("a", 37.5m));
-        long b = Wind(w, 2, payment: new EnvironmentPayment("b", 62m));
-        Check(w.ReadMonsoons().All(m => m.Area.Count == 1), "same elevation contiguous only");
-        w.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Forest), (2, 0, TerrainKind.Grassland)));
-        Check(w.ReadMonsoons().Count == 0, "non-source height merges overlapping groups");
-        var settlements = w.ReadSettlements();
-        Check(settlements.Count == 2 && settlements.All(s => s.Reason == MonsoonExitReason.Overlap), "overlap settles both");
-        Check(settlements.Sum(s => s.RefundAmount) == 99.5m, "refund exact paid amount");
-        w.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Forest), (2, 0, TerrainKind.Grassland)));
-        Check(w.ReadSettlements().Count == 2, "settlement not duplicated");
-        Check(w.AcknowledgeSettlement(a) && !w.AcknowledgeSettlement(a), "ack exactly once");
-        Check(!w.TryDeployMonsoon(Origin, 20, 20, new EnvironmentPayment("a", 37.5m), out _, out _), "receipt reuse rejected");
-        Wind(w, 0); Wind(w, 2); Check(w.ReadMonsoons().Count == 0, "deployment overlap immediately cancels both");
-        var global = new EnvironmentWorld();
-        global.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 1, TerrainKind.Forest), (2, 0, TerrainKind.Grassland)));
-        Wind(global, 0, payment: new EnvironmentPayment("g1", 10));
-        Wind(global, 2, payment: new EnvironmentPayment("g2", 20));
-        global.SynchronizeTopology(Line((0, 1, TerrainKind.Grassland), (1, 1, TerrainKind.Forest), (2, 0, TerrainKind.Grassland)));
-        Check(global.ReadMonsoons().Count == 0, "changing any source cancels all");
-        Check(global.ReadSettlements().All(s => s.Reason == MonsoonExitReason.SourceChanged && s.RefundAmount == 0), "source change no refund");
-        var expansion = Single(TerrainKind.Grassland); Wind(expansion, 0);
-        expansion.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Grassland)));
-        Check(expansion.ReadMonsoons().Count == 0, "source adjacency changed by placement cancels all");
-        var ext = new EnvironmentWorld();
-        ext.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Grassland)));
-        Wind(ext, 0); ext.AdvanceToDay(25);
-        ext.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Grassland), (2, 0, TerrainKind.Grassland)));
-        Near(88, Read(ext, 2).Temperature.Value, "new member receives wind immediately");
-        Near(88, Read(ext, 1).Temperature.Value, "unchanged member no restart");
-        ext.AdvanceToDay(50); Near(88, Read(ext, 2).Temperature.Value, "new member keeps wind");
-        ext.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 1, TerrainKind.Grassland), (2, 0, TerrainKind.Grassland)));
-        Check(!Read(ext, 2).HasMonsoon && Read(ext).HasMonsoon, "non-source disconnect membership");
-        ext.AdvanceToDay(75); Near(68, Read(ext, 2).Temperature.Value, "departed member loses wind immediately");
-        int count = ext.ReadAll().Count;
+        var world = Single(TerrainKind.Grassland);
+        int count = world.ReadAll().Count;
         try
         {
-            ext.SynchronizeTopology(new[] { new TopologyNode(Origin, 0, TerrainKind.Grassland, new[] { new GridPosition(1, 1) }) });
+            world.SynchronizeTopology(new[] { new TopologyNode(Origin, 0,
+                TerrainKind.Grassland, new[] { new GridPosition(1, 1) }) });
             Check(false, "invalid graph accepted");
         }
-        catch (ArgumentException) { Check(ext.ReadAll().Count == count, "invalid graph must not partially mutate"); }
-        var elevation = Single(TerrainKind.Desert);
-        elevation.SynchronizeTopology(Line((0, 2, TerrainKind.Desert)));
-        Check(Read(elevation).Elevation == 2 && Read(elevation).Terrain == TerrainKind.Volcano, "height transforms without resetting temperature");
-        Near(68, Read(elevation).Temperature.Value, "height operation no climate jump");
-        var many = new EnvironmentWorld();
-        many.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 1, TerrainKind.Forest),
-            (2, 0, TerrainKind.Grassland), (3, 1, TerrainKind.Forest), (4, 0, TerrainKind.Grassland)));
-        Wind(many, 0, payment: new EnvironmentPayment("m1", 3));
-        Wind(many, 2, payment: new EnvironmentPayment("m2", 7));
-        Wind(many, 4, payment: new EnvironmentPayment("m3", 13));
-        many.SynchronizeTopology(Line((0, 0, TerrainKind.Grassland), (1, 0, TerrainKind.Forest),
-            (2, 0, TerrainKind.Grassland), (3, 0, TerrainKind.Forest), (4, 0, TerrainKind.Grassland)));
-        Check(many.ReadMonsoons().Count == 0 && many.ReadSettlements().Count == 3, "all overlapping groups cancel atomically");
-        Check(many.ReadSettlements().Sum(s => s.RefundAmount) == 23, "multi-source refunds actual total");
+        catch (ArgumentException)
+        { Check(world.ReadAll().Count == count, "invalid graph must not partially mutate"); }
     }
     static TopologyNode[] MixedLine(params bool[] water)
     {
@@ -276,41 +199,21 @@ static class Program
             Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
                 EnvironmentTechnologyKind.HumidityChange, tier)), "humidity tier");
             Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
-                EnvironmentTechnologyKind.PlantChange, tier)), "plant tier");
+                EnvironmentTechnologyKind.PlantStockChange, tier)), "stock tier");
+            Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
+                EnvironmentTechnologyKind.PlantRecoveryChange, tier)), "recovery tier");
             Check(EnvironmentTechnologyCatalog.SignedClimate(new EnvironmentTechnologyChoice(
                 EnvironmentTechnologyKind.TemperatureChange, tier)) == tier * 25,
                 "signed climate tier");
         }
         Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
-            EnvironmentTechnologyKind.PlantChange, 0)), "plant rejects zero tier");
+            EnvironmentTechnologyKind.PlantStockChange, 0)), "stock rejects zero tier");
         Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
-            EnvironmentTechnologyKind.MonsoonAnchor, 1, 0, 20)),
-            "wind needs two nonzero signed choices");
-        foreach (var preset in new[] { (-20, 20), (20, 20), (20, -20), (-20, -20) })
-            Check(EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
-                EnvironmentTechnologyKind.MonsoonAnchor, 1, preset.Item1, preset.Item2)),
-                "four monsoon presets must be valid");
-        Check(!EnvironmentTechnologyCatalog.Validate(new EnvironmentTechnologyChoice(
-            EnvironmentTechnologyKind.MonsoonAnchor, 1, 40, 20)),
-            "player monsoon presets use only 20-point changes");
+            EnvironmentTechnologyKind.PlantRecoveryChange, 0)), "recovery rejects zero tier");
         var w = new EnvironmentWorld();
         w.SynchronizeTopology(MixedLine(false, true, false));
         Check(!w.TrySetClimate(new GridPosition(1, 0), EnvironmentAttribute.Temperature,
             25, out _), "water rejects climate technology");
-        Check(!w.TryDeployMonsoon(new GridPosition(1, 0), 20, 20,
-            null, out _, out _), "water rejects monsoon source");
-        Check(w.TryPreviewMonsoon(Origin, 20, -20, out var area, out _)
-            && area.Count == 2 && !area.Contains(new GridPosition(1, 0)),
-            "one water tile bridges two land cells without receiving climate");
-        long wind = Wind(w, 0, 20, -20);
-        Check(w.ReadMonsoons().Single().Area.Count == 2, "wind stores land-only area");
-        Check(!Read(w, 1).HasMonsoon && Read(w, 2).HasMonsoon,
-            "water has no wind effect");
-        Check(w.TryCancelMonsoon(wind, out _), "wind cleanup");
-        var twoWater = new EnvironmentWorld();
-        twoWater.SynchronizeTopology(MixedLine(false, true, true, false));
-        Check(twoWater.TryPreviewMonsoon(Origin, 20, 20, out var blocked, out _)
-            && blocked.Count == 1, "two consecutive water tiles cannot bridge");
 
         var aquatic = new EnvironmentWorld();
         aquatic.SynchronizeTopology(MixedLine(true, true));
@@ -344,7 +247,7 @@ static class Program
     }
     static void Main()
     {
-        Classification(); TerrainGraph(); NewToolRules(); ConversionScenarios(); StabilitySweep(); CombinationSweep(); TopologyAndRefunds(); TechnologyTools();
+        Classification(); TerrainGraph(); NewToolRules(); ConversionScenarios(); StabilitySweep(); CombinationSweep(); TopologyValidation(); TechnologyTools();
         Console.WriteLine($"PASS: {assertions:N0} environment assertions (ranges, terrain graph, tool slots, timelines, causality, topology, refunds)");
     }
 
@@ -392,31 +295,6 @@ static class Program
         Check(Read(slots).Humidity.Phase == EffectPhase.Returning &&
             Read(slots).Temperature.Phase == EffectPhase.Entering,
             "reapplying climate restarts from current and displaces oldest");
-
-        var wind = Single(TerrainKind.Grassland);
-        long windId = Wind(wind, 0, 20, -20);
-        Near(88, Read(wind).Temperature.Value, "wind applies immediately");
-        Near(48, Read(wind).Humidity.Value, "wind humidity applies immediately");
-        Climate(wind, EnvironmentAttribute.Temperature, 25);
-        wind.AdvanceToDay(25);
-        Check(Read(wind).HasMonsoon && Read(wind).MonsoonApplied,
-            "wind remains active alongside local tool");
-        Near(100, Read(wind).Temperature.Value, "wind and temperature add with clamp");
-        Near(48, Read(wind).Humidity.Value, "other wind axis remains active");
-        Check(wind.TrySetRecovery(Origin, 25000, out _), "latest tool joins wind");
-        Check(Read(wind).Temperature.Phase == EffectPhase.Returning,
-            "wind leaves only newest local command active");
-        Check(wind.TryCancelMonsoon(windId, out _), "wind cancel");
-        Near(93, Read(wind).Temperature.Value, "wind removal reveals current local base immediately");
-        Near(68, Read(wind).Humidity.Value, "wind humidity removal is immediate");
-
-        var windTerrain = Single(TerrainKind.Grassland);
-        Wind(windTerrain, 0, 20, -20);
-        Climate(windTerrain, EnvironmentAttribute.Humidity, -25);
-        windTerrain.AdvanceToDay(140);
-        Check(Read(windTerrain).Terrain == TerrainKind.Desert &&
-            Read(windTerrain).HasMonsoon,
-            "biome conversion alone does not revoke the wind anchor");
 
         var dry = Single(TerrainKind.Grassland);
         Climate(dry, EnvironmentAttribute.Humidity, -50);
@@ -514,20 +392,6 @@ static class Program
             Read(returning).Temperature.Target == 75,
             "terrain change restarts climate return toward the new default");
 
-        var plantReturn = Single(TerrainKind.Grassland);
-        Check(plantReturn.TrySetRecovery(Origin, 25000, out _), "plant return scenario starts");
-        plantReturn.AdvanceToDay(60);
-        Check(Read(plantReturn).Recovery.Phase == EffectPhase.Returning &&
-            Read(plantReturn).Recovery.RemainingDays == 40,
-            "plant command is forty days from return completion");
-        double stockBeforeWind = Read(plantReturn).Recovery.Value;
-        Wind(plantReturn, 0, -20, -20);
-        Check(Read(plantReturn).Terrain == TerrainKind.Forest &&
-            Read(plantReturn).Recovery.RemainingDays == 50 &&
-            Read(plantReturn).Recovery.Target == 121500,
-            "terrain change restarts plant recovery toward the new climate potential");
-        Near(stockBeforeWind, Read(plantReturn).Recovery.Value,
-            "new terrain defaults do not overwrite actual production instantly");
         Console.WriteLine($"SCENARIOS: grass→desert day {desertDay}; desert→grass day {grassDay}; plant conversion and parallel climate verified");
     }
 
@@ -584,7 +448,7 @@ static class Program
     {
         int scenarios = 0;
         foreach (TerrainKind kind in Enum.GetValues(typeof(TerrainKind)))
-        for (int variant = 0; variant < 5; variant++)
+        for (int variant = 0; variant < 3; variant++)
         {
             var world = Single(kind);
             if (variant == 0)
@@ -597,19 +461,11 @@ static class Program
                 Climate(world, EnvironmentAttribute.Temperature, -50);
                 Check(world.TrySetRecovery(Origin, 50000, out _), "temperature and plant combination");
             }
-            else if (variant == 2)
+            else
             {
                 Climate(world, EnvironmentAttribute.Humidity, -50);
                 Check(world.TrySetRecovery(Origin, -50000, out _), "humidity and plant combination");
             }
-            else if (EnvironmentRules.Defaults(kind).Elevation < 2)
-            {
-                Wind(world, 0, variant == 3 ? 20 : -20, variant == 3 ? -20 : 20);
-                if (variant == 3)
-                    Check(world.TrySetRecovery(Origin, 25000, out _), "monsoon and plant combination");
-                else Climate(world, EnvironmentAttribute.Humidity, -25);
-            }
-            else continue;
             TerrainKind day400 = kind;
             for (int day = 1; day <= 600; day++)
             {

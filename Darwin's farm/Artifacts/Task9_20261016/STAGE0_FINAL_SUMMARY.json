@@ -1,0 +1,16 @@
+[
+  {
+    "scenario": "deer10-rich",
+    "records": 101,
+    "modelHashMatches": 0,
+    "environmentHashMatches": 101,
+    "ecologicalRecordsEqual": 101
+  },
+  {
+    "scenario": "predator",
+    "records": 1001,
+    "modelHashMatches": 0,
+    "environmentHashMatches": 1001,
+    "ecologicalRecordsEqual": 1001
+  }
+]

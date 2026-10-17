@@ -1,0 +1,45 @@
+{
+  "stage0DeerOff": {
+    "days": 101,
+    "modelHashMatches": 0,
+    "environmentHashMatches": 101,
+    "ecologyFieldMatches": 101
+  },
+  "stage0PredatorOff": {
+    "days": 1001,
+    "modelHashMatches": 0,
+    "environmentHashMatches": 1001,
+    "ecologyFieldMatches": 1001
+  },
+  "threeSpecies": {
+    "days": 5001,
+    "modelHashMatches": 0,
+    "environmentHashMatches": 5001,
+    "ecologyFieldMatches": 5001,
+    "day5000": {
+      "灵感菇狸": 428,
+      "鸡": 1040,
+      "鹿": 1053
+    }
+  },
+  "strictStage0DoubleHash": "FAIL: default-off tuning field added to CanonicalModelHash",
+  "oldEcologyOutput": "PASS: all exported ecology fields matched every Stage0 day",
+  "unity": "6000.2.9f1",
+  "colorNegative": {
+    "days": 129,
+    "modelHashMatches": 129,
+    "environmentHashMatches": 129
+  },
+  "mushroomNegative": {
+    "days": 426,
+    "modelHashMatches": 426,
+    "environmentHashMatches": 426
+  },
+  "material": "PASS",
+  "performanceSeconds": {
+    "T95E-community-D": 25.698,
+    "task9-three-species-on": 21.778,
+    "task9-color-formal": 18.343,
+    "task9-mushroom-formal": 18.271
+  }
+}

@@ -71,7 +71,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
             int count = 0;
             if (Environment != null)
                 foreach (var item in Environment.ReadAll())
-                    if (item.Environment.HasLocalClimate || item.Environment.HasMonsoon ||
+                    if (item.Environment.HasLocalClimate ||
                         item.Environment.Recovery.Phase != DarwinFarm.Environment.EffectPhase.None) count++;
             return count;
         }
@@ -179,7 +179,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
         }
         if (request.radius != 0 || float.IsNaN(request.amount) || float.IsInfinity(request.amount))
         {
-            preview.Error = "单格操作只允许半径 0；季风通过发源点专用接口部署";
+            preview.Error = "单格操作只允许半径 0";
             return preview;
         }
         if (!bridge.TryGetBlock(request.center, out BlockInfo block))

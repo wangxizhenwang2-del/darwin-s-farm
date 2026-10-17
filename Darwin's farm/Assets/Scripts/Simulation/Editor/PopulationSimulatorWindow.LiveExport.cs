@@ -89,7 +89,6 @@ public partial class PopulationSimulatorWindow
         public float plants, plantCapacity, plantGrowth, plantConsumed, algae;
         public int algaeRecovery;
         public int nextSplitDay;
-        public long monsoonId;
         public List<ExportPopulation> populations = new List<ExportPopulation>();
     }
 
@@ -371,7 +370,6 @@ public partial class PopulationSimulatorWindow
                 row.temperatureDays = state.Environment.Temperature.RemainingDays;
                 row.humidityDays = state.Environment.Humidity.RemainingDays;
                 row.recoveryDays = state.Environment.Recovery.RemainingDays;
-                row.monsoonId = state.Environment.MonsoonId ?? 0;
             }
             if (block.community != null)
                 foreach (PopulationData population in block.community)

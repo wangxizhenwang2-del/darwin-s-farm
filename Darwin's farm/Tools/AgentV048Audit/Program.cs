@@ -150,7 +150,7 @@ internal static class Program
         mother.directedSplitTarget = childSpecies;
         mother.mutationSelectionProgress = .5f;
         simulation.RecordPlayerTechnology(block,
-            EnvironmentTechnologyKind.PlantChange, -1, 4);
+            EnvironmentTechnologyKind.PlantRecoveryChange, -1, 4);
         mother.evolutionConversions.Add(new EvolutionConversionRecord
             { target = childSpecies, effectiveDays = 5 });
         Convert(simulation, block, mother, childSpecies);
@@ -172,7 +172,7 @@ internal static class Program
             Math.Abs(mother.bodyBiomass + child.bodyBiomass - 1260000f) < .01f,
             "extra child body material is paid from real plant stock");
         simulation.RecordPlayerTechnology(block,
-            EnvironmentTechnologyKind.PlantChange, -1, 5);
+            EnvironmentTechnologyKind.PlantRecoveryChange, -1, 5);
         Require(mother.directedInfluences.Count == 3 &&
             child.directedInfluences.Count == 3 &&
             mother.directedInfluences[0].firstDay == 6,

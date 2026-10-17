@@ -325,6 +325,18 @@ public partial class SimulationController : MonoBehaviour
     public float ReadFoodCarryingCapacity(BlockInfo block, PopulationData population)
         => LandLifeRules.FoodCarryingCapacity(block, population, LandRules);
 
+    public float ReadPredatorFoodCarryingCapacity(BlockInfo block,
+        PopulationData population)
+    {
+        string before = CanonicalModelHash();
+        float value = LandLifeRules.PredatorFoodCarryingCapacity(block,
+            population, LandRules);
+        if (CanonicalModelHash() != before)
+            throw new System.InvalidOperationException(
+                "Predator food capacity diagnostic changed live state.");
+        return value;
+    }
+
     public float ReadCounterfactualPlantIntake(BlockInfo block,
         PopulationData target, PopulationData changedCount, int proposedCount)
     {

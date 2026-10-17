@@ -1,0 +1,10 @@
+{
+  "LandLifeRules.cs": {
+    "baseline_sha256": "9a58ef14755e40045bbb0cb7279c2b8dc8934bc78099786774c6fdeedef670d9",
+    "candidate_sha256": "8d453fae6ed59a698b9423f4ec5003475421a462f2b986fb5b5b274c764953d9"
+  },
+  "LandRuleTuning.cs": {
+    "baseline_sha256": "252c204bd25dee170d0a6cf51959ea95bc2f41b8124bde4bcb32dd55d8f84bf4",
+    "candidate_sha256": "c521860b8f97a1c07b94d85c3200a6486256298e4d51232de1a1c58f9692f6e9"
+  }
+}

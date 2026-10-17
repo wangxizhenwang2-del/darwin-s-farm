@@ -1,0 +1,756 @@
+{
+  "unityVersion": "6000.2.9f1",
+  "isolationProject": "G:\\unity\\darwin-s-farm\\Task9_Unity_Isolated_20261016",
+  "files": [
+    {
+      "archivePath": "EXECUTION_SUMMARY.md",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\handoff\\EXECUTION_SUMMARY.md",
+      "bytes": 940,
+      "sha256": "37381cbf0c1e922f65b555a6c41e3a57cf0f3fc6713f92cec5b68dae3c37a3ea"
+    },
+    {
+      "archivePath": "INPUT_PROVENANCE.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\handoff\\INPUT_PROVENANCE.json",
+      "bytes": 1055,
+      "sha256": "c7ca70affdf596c3a842f191220a92119a30217afae39c67855070a4fc46b3c2"
+    },
+    {
+      "archivePath": "INTEGRATED_RESULT.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\handoff\\INTEGRATED_RESULT.json",
+      "bytes": 27515,
+      "sha256": "e3c9650be7b5d6a9d694d2fc9551ccce2ea7c9380b16f0db3c1226c25374cca1"
+    },
+    {
+      "archivePath": "PATCH_DIFF.txt",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\handoff\\PATCH_DIFF.txt",
+      "bytes": 137881,
+      "sha256": "ff1e2bc81f5fe345273dcfc2fc3f5c83bd78e887bf29da50df8e63cbe81624d2"
+    },
+    {
+      "archivePath": "REGRESSION.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\handoff\\REGRESSION.json",
+      "bytes": 2209,
+      "sha256": "5989ef41f7cd3e90fe9574540f9372275c943a70002868c5874fa54d40add576"
+    },
+    {
+      "archivePath": "ROUTE_DAILY.csv",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\handoff\\ROUTE_DAILY.csv",
+      "bytes": 533674,
+      "sha256": "2541c512be4aa5d27f97de414e0429bd9ac34e18fb2cdd3ffdb4927c9909603c"
+    },
+    {
+      "archivePath": "SCENARIO_MATRIX.csv",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\handoff\\SCENARIO_MATRIX.csv",
+      "bytes": 4589,
+      "sha256": "8271e24ca9b67c6a682093a44ebe8ef6d6d00686d393e8a5d9f12d4ab9d8cbbd"
+    },
+    {
+      "archivePath": "inputs/int-a-off.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-a-off.json",
+      "bytes": 1310,
+      "sha256": "28d5bf61ebaa9012dc80492740547ab50b6b88bd43323093e095a28b2f5890dd"
+    },
+    {
+      "archivePath": "inputs/int-a-on.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-a-on.json",
+      "bytes": 1308,
+      "sha256": "0f72b8f4860550f23e17baa0c425d36c963cd62bcc451b44991e7049cdbecc14"
+    },
+    {
+      "archivePath": "inputs/int-b-off.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-b-off.json",
+      "bytes": 1426,
+      "sha256": "46435f21a6133f4656588224730acd207fcffb776a89e31e921e85fc1f58efc6"
+    },
+    {
+      "archivePath": "inputs/int-b-on.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-b-on.json",
+      "bytes": 1424,
+      "sha256": "43b0de1d2bbaf63e88afc845e5a418693eb3117d59ab8a1ed2a0cafbf0774010"
+    },
+    {
+      "archivePath": "inputs/int-c-off.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-c-off.json",
+      "bytes": 1593,
+      "sha256": "dd313b1814394cccb539749e6883f9d34ef32de0efd64c87ce7c305f6484bffc"
+    },
+    {
+      "archivePath": "inputs/int-c-on.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-c-on.json",
+      "bytes": 1590,
+      "sha256": "76a241f7b50be9d5faa1f687bd895ef5bc042364d375442dd1b7c39da28853be"
+    },
+    {
+      "archivePath": "inputs/int-color-s1.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-color-s1.json",
+      "bytes": 1488,
+      "sha256": "a76e9ca27c95381689402c32dcbf92e736a32370b4ac2d3829a70ccf5a9e98c7"
+    },
+    {
+      "archivePath": "inputs/int-color-s2.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-color-s2.json",
+      "bytes": 1486,
+      "sha256": "9ee29cc7cbb1f2002095d31a2ec905c807cf0f83882a2b96f7b1825197693b49"
+    },
+    {
+      "archivePath": "inputs/int-d-off-repeat.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-d-off-repeat.json",
+      "bytes": 1716,
+      "sha256": "d30f957b5e158bef8b00f720b34fb114c81a6d17d4e18d8e9b7d9d0034b4d889"
+    },
+    {
+      "archivePath": "inputs/int-d-off.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-d-off.json",
+      "bytes": 1709,
+      "sha256": "949c4f39654e4926344a05d573b4f52dbd3c7613aa280a35f1804cbe27931d23"
+    },
+    {
+      "archivePath": "inputs/int-d-on-repeat.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-d-on-repeat.json",
+      "bytes": 1713,
+      "sha256": "0fa978a3e3c8af3440fab3c6dc890ce6dd0894839c9b2cc2939bfaf67684d712"
+    },
+    {
+      "archivePath": "inputs/int-d-on.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-d-on.json",
+      "bytes": 1706,
+      "sha256": "363d03951e3dc451c6cd6b8e4ac3f14577c0200fb0ef27ae1ffaf324bb79470f"
+    },
+    {
+      "archivePath": "inputs/int-gate-negative-color.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-gate-negative-color.json",
+      "bytes": 1586,
+      "sha256": "255dfe78b3d8e3555c87b6356d5d9619a6b7420f9109648f6f2a40ab1a0be948"
+    },
+    {
+      "archivePath": "inputs/int-gate-negative-mushroom.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-gate-negative-mushroom.json",
+      "bytes": 4101,
+      "sha256": "f41cc0338f281c53afc4c3176e80bee9e6e3e306df5ea2f9c074a7e23019fc5c"
+    },
+    {
+      "archivePath": "inputs/int-mushroom-s1.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-mushroom-s1.json",
+      "bytes": 5322,
+      "sha256": "8f98b30980977f46d0bd731f867ce5a44809f3e83427e662c0ad36a06d171203"
+    },
+    {
+      "archivePath": "inputs/int-mushroom-s2.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-mushroom-s2.json",
+      "bytes": 5320,
+      "sha256": "bb51e93ec8f831abb830b2c4f2101e95c05714ce7d80ce76058e0b06350397bc"
+    },
+    {
+      "archivePath": "inputs/int-mushroom-stop-s2.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-mushroom-stop-s2.json",
+      "bytes": 4065,
+      "sha256": "afa37346be7d442e619075646acfd2b92ca3dff447ba755df6979a26d092e1d4"
+    },
+    {
+      "archivePath": "inputs/int-neg-few-prey.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-neg-few-prey.json",
+      "bytes": 1594,
+      "sha256": "c06a16db7099f783896fa0876ae2e8221339907aec26f6b7d5a69437d851987f"
+    },
+    {
+      "archivePath": "inputs/int-neg-half-r.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-neg-half-r.json",
+      "bytes": 1595,
+      "sha256": "003bc68f411061a96e397943e6d8b73f7cc487575c6222dfee00e43cdc11724d"
+    },
+    {
+      "archivePath": "inputs/int-neg-many-hunters.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-neg-many-hunters.json",
+      "bytes": 1602,
+      "sha256": "6d27a8e4cebc7e9b6e02f6860100265b0a4fcf319901a0a37baa741f9841e3b2"
+    },
+    {
+      "archivePath": "inputs/int-neg-no-legal-prey.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-neg-no-legal-prey.json",
+      "bytes": 1602,
+      "sha256": "ef1efe20c0e7d3e9f21416b509155b5650ebda220ec84b1bc8048940b1d1e798"
+    },
+    {
+      "archivePath": "inputs/int-neg-two-hunters.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-neg-two-hunters.json",
+      "bytes": 1877,
+      "sha256": "fd7bc0fbf2cfb3234292bbb6a860670e5500f19b9f8da93cc51e77593eb06e0f"
+    },
+    {
+      "archivePath": "inputs/int-neg-zero-r.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-neg-zero-r.json",
+      "bytes": 1591,
+      "sha256": "d2e3c1e44929db2c946e5903b99bd70e147085b9543e7ebf902ff81f91cf3676"
+    },
+    {
+      "archivePath": "inputs/int-s0-deer.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-s0-deer.json",
+      "bytes": 835,
+      "sha256": "e66ec9e87e1d0d444dbca79edce7f5b0b7d82038181b1742c71daba2f087f48b"
+    },
+    {
+      "archivePath": "inputs/int-s0-predator.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\inputs\\int-s0-predator.json",
+      "bytes": 1399,
+      "sha256": "7900b69445ff9350417f0bd02aeeb2bade71cac9c232b413f32ec38e93b57a63"
+    },
+    {
+      "archivePath": "unity_runs/T95E-community-D.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\T95E-community-D.jsonl",
+      "bytes": 28884501,
+      "sha256": "c7287f27ff5dfa3f349d0b5c4a24071ba6dc8812dcb6e423d3ea14777d89dfae"
+    },
+    {
+      "archivePath": "unity_runs/T95E-community-D.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\T95E-community-D.log",
+      "bytes": 33388,
+      "sha256": "363a120f6309fa275beca12f474b20acba12560994afee6107f00f794c820966"
+    },
+    {
+      "archivePath": "unity_runs/T95E-community-D.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\T95E-community-D.execution.json",
+      "bytes": 372,
+      "sha256": "208755d8df728c59d6ec9bde3b9c4eb13171d63fe39735f32f348ce635c12f76"
+    },
+    {
+      "archivePath": "unity_runs/int-a-off.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-a-off.jsonl",
+      "bytes": 14060695,
+      "sha256": "8f034370145c5e21207dc8bfa7177aa4702fce9cb94465b6a845fd754bdd4e29"
+    },
+    {
+      "archivePath": "unity_runs/int-a-off.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-a-off.log",
+      "bytes": 33400,
+      "sha256": "1cc59062e77da135d144a23b17acff219eaae3d8362a6aea4082af0d4ff024c5"
+    },
+    {
+      "archivePath": "unity_runs/int-a-off.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-a-off.execution.json",
+      "bytes": 372,
+      "sha256": "b74fc96d66aa69ba95d2ced97970c3e18c41f0db32c436d95deebdad748a6ac5"
+    },
+    {
+      "archivePath": "unity_runs/int-a-on.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-a-on.jsonl",
+      "bytes": 14060693,
+      "sha256": "b891c7e3f0f256740d36969d1c801146f8cacbc6fa5709fcc305c3778d138b60"
+    },
+    {
+      "archivePath": "unity_runs/int-a-on.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-a-on.log",
+      "bytes": 33394,
+      "sha256": "4de96d255a0879d5200b5e3a45b885be438cba4d539734f345a12748f6e2bcaa"
+    },
+    {
+      "archivePath": "unity_runs/int-a-on.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-a-on.execution.json",
+      "bytes": 371,
+      "sha256": "6bce716094232339f4bbe59216082e60b14e040c3a534807f4944ca101080ce7"
+    },
+    {
+      "archivePath": "unity_runs/int-b-off.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-b-off.jsonl",
+      "bytes": 25100854,
+      "sha256": "09860323439ac93603d4e244415afb3ec2242f48ca5521cb762fe5b21a4b7692"
+    },
+    {
+      "archivePath": "unity_runs/int-b-off.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-b-off.log",
+      "bytes": 33403,
+      "sha256": "23895226903ea31953e085fccf297b52a2c8168b536aeeafcd31bd4d087a6bf7"
+    },
+    {
+      "archivePath": "unity_runs/int-b-off.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-b-off.execution.json",
+      "bytes": 372,
+      "sha256": "699b08dcfc9e2a01795ace08b6f35529db8c28def77f8fa2eb350d82efec029b"
+    },
+    {
+      "archivePath": "unity_runs/int-b-on.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-b-on.jsonl",
+      "bytes": 25100852,
+      "sha256": "043057dd985719d53c4ab35e8ad7df0efd4ccedf925243ab07b6f32df2c85bc9"
+    },
+    {
+      "archivePath": "unity_runs/int-b-on.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-b-on.log",
+      "bytes": 33394,
+      "sha256": "b1194530ae604db5609694decf596b379c2ef36a81591853b8bc37b11d57129e"
+    },
+    {
+      "archivePath": "unity_runs/int-b-on.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-b-on.execution.json",
+      "bytes": 371,
+      "sha256": "79a1cbed3f14d612b01bf0f6b2123586fac238e559ddf3f015fc76c0fa05c180"
+    },
+    {
+      "archivePath": "unity_runs/int-c-off.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-c-off.jsonl",
+      "bytes": 25289880,
+      "sha256": "82a3c5ad6d8f673d9cd2e064528d615df01b4df01630a3a5fe5ed9a7225e79cc"
+    },
+    {
+      "archivePath": "unity_runs/int-c-off.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-c-off.log",
+      "bytes": 33398,
+      "sha256": "eeecd2c673f2a6222ab134d340a640214a1083197b514f73b2268450bcce8551"
+    },
+    {
+      "archivePath": "unity_runs/int-c-off.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-c-off.execution.json",
+      "bytes": 372,
+      "sha256": "9c58fb732c0c5294ae08a17d3fe8f981283d1f6e4cb98176329c69523b6f84a4"
+    },
+    {
+      "archivePath": "unity_runs/int-c-on.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-c-on.jsonl",
+      "bytes": 25282817,
+      "sha256": "60ec6dc86427387d130d9fd571900b88a9ff8a79a2029ffe7696b39cbb99f441"
+    },
+    {
+      "archivePath": "unity_runs/int-c-on.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-c-on.log",
+      "bytes": 33425,
+      "sha256": "0851d327434e59c5b110178469d030007e5703644a1e970137ad44f54b4d644f"
+    },
+    {
+      "archivePath": "unity_runs/int-c-on.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-c-on.execution.json",
+      "bytes": 370,
+      "sha256": "4daefe6373ad01579ec32a8ef18420abb16f5f75dbc6ba5155dd3bb6b7053937"
+    },
+    {
+      "archivePath": "unity_runs/int-color-s1.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-color-s1.jsonl",
+      "bytes": 3594484,
+      "sha256": "7f42c85e5882201e2a990b1356df83d27f934d966ad979b1dbdaff03bb219453"
+    },
+    {
+      "archivePath": "unity_runs/int-color-s1.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-color-s1.log",
+      "bytes": 34997,
+      "sha256": "0ea7dad9a07e1d94d09ae082c14e0fa2734ea7af542a45b56af1b3bd17b4f8f3"
+    },
+    {
+      "archivePath": "unity_runs/int-color-s1.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-color-s1.execution.json",
+      "bytes": 375,
+      "sha256": "c1dfc61f7906b2715825705deaff97d7b5076ee7b141a57c8a15923ed104d100"
+    },
+    {
+      "archivePath": "unity_runs/int-color-s2.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-color-s2.jsonl",
+      "bytes": 3594483,
+      "sha256": "26dfb24712a236b1236c53e580c911443eb8f5613b0f2f44e415a849789bd68b"
+    },
+    {
+      "archivePath": "unity_runs/int-color-s2.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-color-s2.log",
+      "bytes": 34995,
+      "sha256": "b19edcd1959a7a2f2a2ea2000f057589c7b42d8b1eda4edb52c27545dcb87a91"
+    },
+    {
+      "archivePath": "unity_runs/int-color-s2.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-color-s2.execution.json",
+      "bytes": 375,
+      "sha256": "9d13e09c6847b488694347317e0a82a8a0fc95d199522d01515b4c484ebf828b"
+    },
+    {
+      "archivePath": "unity_runs/int-d-off.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-off.jsonl",
+      "bytes": 36236122,
+      "sha256": "474f245d93e1bf0d0617e24f0a33398c99013a7fa4d15ba8e11dec586e8c5aaa"
+    },
+    {
+      "archivePath": "unity_runs/int-d-off.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-off.log",
+      "bytes": 33437,
+      "sha256": "e8d06d914736c3da82b35ea3bd37b01865a902a656f766d8cddb02477719e212"
+    },
+    {
+      "archivePath": "unity_runs/int-d-off.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-off.execution.json",
+      "bytes": 372,
+      "sha256": "b244c67d6784216512f80a4f94928a325f6fe48e633ba94ea69e960cee626c1b"
+    },
+    {
+      "archivePath": "unity_runs/int-d-off-repeat.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-off-repeat.jsonl",
+      "bytes": 36236129,
+      "sha256": "8f03e63edc8f359d52381ef403eaef250a2f1aa243a4c4071faea92c0a5ad121"
+    },
+    {
+      "archivePath": "unity_runs/int-d-off-repeat.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-off-repeat.log",
+      "bytes": 33404,
+      "sha256": "ecebb4b41f83d84bdcb8af79dcdafb72b5cfef92fb5fbb70cc916d745b0738ce"
+    },
+    {
+      "archivePath": "unity_runs/int-d-off-repeat.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-off-repeat.execution.json",
+      "bytes": 379,
+      "sha256": "abb0cd82ed5eb4e77a2de50a36f6bd1c9a4364597ca28e6e2d84f4a97fcda35a"
+    },
+    {
+      "archivePath": "unity_runs/int-d-on.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-on.jsonl",
+      "bytes": 36416998,
+      "sha256": "1cf86d004d0853838a5499abe031bb58f2e4360694b48790c22cd65db0cbf544"
+    },
+    {
+      "archivePath": "unity_runs/int-d-on.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-on.log",
+      "bytes": 33532,
+      "sha256": "f12beef222d5bb191a5176836cc934b48d34207e09338733a67ffec219b908f4"
+    },
+    {
+      "archivePath": "unity_runs/int-d-on.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-on.execution.json",
+      "bytes": 371,
+      "sha256": "39cce803f3b3b8b18dac9fc9f1ecc9beb4d497cf133ec811326f164232678fcc"
+    },
+    {
+      "archivePath": "unity_runs/int-d-on-repeat.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-on-repeat.jsonl",
+      "bytes": 36417005,
+      "sha256": "1f18571104ccb638ce261a0d43f378368df5fdc868d56173bb08355a07005df9"
+    },
+    {
+      "archivePath": "unity_runs/int-d-on-repeat.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-on-repeat.log",
+      "bytes": 33396,
+      "sha256": "2c9ff676b9494253d5ea44daa6caa3a4b5ca7ce3fcd1ba02da4f860f95d4ff7d"
+    },
+    {
+      "archivePath": "unity_runs/int-d-on-repeat.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-d-on-repeat.execution.json",
+      "bytes": 378,
+      "sha256": "079365229f2c8f8086d0fcec1ccaf9160decc932621c9be19ee736e306b1159c"
+    },
+    {
+      "archivePath": "unity_runs/int-gate-negative-color.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-gate-negative-color.jsonl",
+      "bytes": 402443,
+      "sha256": "c15df96ee52787c0e11feea2cf462cd511bcd3a2fecd9a19746b56a75587c1eb"
+    },
+    {
+      "archivePath": "unity_runs/int-gate-negative-color.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-gate-negative-color.log",
+      "bytes": 33424,
+      "sha256": "00811606fde1b54af7a9b8c3da2554d11d69b640ed4bac5c74f2c209c51b01e1"
+    },
+    {
+      "archivePath": "unity_runs/int-gate-negative-color.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-gate-negative-color.execution.json",
+      "bytes": 386,
+      "sha256": "ec3e8c15df0ecac40036fc0a963f1c2284a285c0e9473df99daa52be49e55537"
+    },
+    {
+      "archivePath": "unity_runs/int-gate-negative-mushroom.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-gate-negative-mushroom.jsonl",
+      "bytes": 1446180,
+      "sha256": "6bc0a81431c063395bc1007d5ee8a9e70800aef89533290a88f87c5de8b3dcf5"
+    },
+    {
+      "archivePath": "unity_runs/int-gate-negative-mushroom.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-gate-negative-mushroom.log",
+      "bytes": 33513,
+      "sha256": "ec84d92c3edd57916e310c9b6e405147d028d5e1b27984af28631434b799f4fe"
+    },
+    {
+      "archivePath": "unity_runs/int-gate-negative-mushroom.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-gate-negative-mushroom.execution.json",
+      "bytes": 389,
+      "sha256": "bb5af3b1fd51f328fbe53cf51f0d266527e2f97796baa3e1f5db4582ebba5fcc"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-s1.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-s1.jsonl",
+      "bytes": 3663082,
+      "sha256": "07f49ccaa195a1d4e8f3ca312a8d14ecb505ee081b55af90e9103164dea7b1da"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-s1.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-s1.log",
+      "bytes": 37932,
+      "sha256": "f61843de1f350e2af753193e6accf43183ea643b4842a5eb2feff28c80e41a80"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-s1.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-s1.execution.json",
+      "bytes": 377,
+      "sha256": "fcc2565d8a2666ad4ee39b1871b5c5893b6ee4a8d8f1c16304b9b9c70489e635"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-s2.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-s2.jsonl",
+      "bytes": 3710443,
+      "sha256": "7ffb3babc2a68e0252553e11d06f7909d81b1e726d6e4cca9164bbb6c9352b59"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-s2.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-s2.log",
+      "bytes": 37923,
+      "sha256": "37404751ce27b5e9a243077592c0f997eb5ca57e453113311ffb09a60f52d4c6"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-s2.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-s2.execution.json",
+      "bytes": 378,
+      "sha256": "41ebf12a3fa2b23ab86f4506c17edf1f02718a69ffc6a4d1a033310c31e043c4"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-stop-s2.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-stop-s2.jsonl",
+      "bytes": 4948301,
+      "sha256": "cfa12bd4dafbdb681704e1b583363f97f0c2be1752558d86f941b0496aaae2ac"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-stop-s2.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-stop-s2.log",
+      "bytes": 34971,
+      "sha256": "bb079f101bfa13d853f12eba6cd0bebd178730ffc59a52fb81a3226cc546dbf6"
+    },
+    {
+      "archivePath": "unity_runs/int-mushroom-stop-s2.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-mushroom-stop-s2.execution.json",
+      "bytes": 383,
+      "sha256": "8f064147b5aba058427362d9d7515ae8b80c350613959e56eba6663ed8c9dd3a"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-few-prey.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-few-prey.jsonl",
+      "bytes": 125240,
+      "sha256": "a0ca0d38224a15805b1efe94f3fda0a70d0be642cc6e3de050b011c8575257bb"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-few-prey.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-few-prey.log",
+      "bytes": 36097,
+      "sha256": "f2a764e05d7a6295ba53e8b6d54c1baa1b4e7d341f5bce9a4923b07bf556314e"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-few-prey.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-few-prey.execution.json",
+      "bytes": 379,
+      "sha256": "eb896df1d117a7be1157a1876bda55d629a98226dce6dc1023f6557a8b86faf1"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-half-r.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-half-r.jsonl",
+      "bytes": 2545929,
+      "sha256": "4da0384b1142d4c2e73cfc1880075ef2e9b715ec2d8c1043a529ca819603d13b"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-half-r.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-half-r.log",
+      "bytes": 33384,
+      "sha256": "69b30d576b2052f0a1ff88b76ddce2563a7dce68e1885c56848a887c94535220"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-half-r.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-half-r.execution.json",
+      "bytes": 377,
+      "sha256": "2d165b3b9be50b5f4175260bec7eaa864ca76575b19f9462cd53dd2877ffe652"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-many-hunters.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-many-hunters.jsonl",
+      "bytes": 1278578,
+      "sha256": "264df3ef313311a52a0ad844055c668999b916068f719f6548e7ce340cf80e6e"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-many-hunters.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-many-hunters.log",
+      "bytes": 33408,
+      "sha256": "62380b17b62ae5cc344201dd020b4bdf186a63788a29895db4268a39ba3de1c2"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-many-hunters.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-many-hunters.execution.json",
+      "bytes": 383,
+      "sha256": "e988e55128dcddd3d85c18f46814b23a5c5a8dbe29ac77e19381cfac480a5f8e"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-no-legal-prey.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-no-legal-prey.jsonl",
+      "bytes": 441802,
+      "sha256": "9cc4f6e5328dbd8f33610b9ad9d603922854ace6a0c5ff044c57cb76bf8b13b7"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-no-legal-prey.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-no-legal-prey.log",
+      "bytes": 34765,
+      "sha256": "7e913a4c77d508fcac320f621337fe25cd36218f8326c5052141eaecab3f1cf7"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-no-legal-prey.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-no-legal-prey.execution.json",
+      "bytes": 383,
+      "sha256": "ed2d07570f0ac5ff7d326d05e46cdc38612271481cd8dd96c22d6fbb944b4718"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-two-hunters.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-two-hunters.jsonl",
+      "bytes": 785409,
+      "sha256": "1735b4e23479f41ed43446951194a8776b6401ed5019b780058b930a120f01aa"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-two-hunters.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-two-hunters.log",
+      "bytes": 34766,
+      "sha256": "8af0e0065fddfc849436819ae84936df6ede24d3726fccd38de3dbfa5b20c9b5"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-two-hunters.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-two-hunters.execution.json",
+      "bytes": 382,
+      "sha256": "542d6716afde227dd3592fb85e8b7ce768c3317f7465a5516aa57c02ea92a2ed"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-zero-r.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-zero-r.jsonl",
+      "bytes": 159263,
+      "sha256": "a6baccede8326d154540419ed56813675a83e05aa5af08c2d8d6a64c5435344c"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-zero-r.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-zero-r.log",
+      "bytes": 36087,
+      "sha256": "f96cf5d6111b10f8f4bac9367eb38dc19dd7b91290d97453f0f32d666900979b"
+    },
+    {
+      "archivePath": "unity_runs/int-neg-zero-r.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-neg-zero-r.execution.json",
+      "bytes": 377,
+      "sha256": "86d4988c1a0df1ea45ab6d3765c480f740dba26d3f806dd2d4ea6ad1b376a7e5"
+    },
+    {
+      "archivePath": "unity_runs/int-s0-deer.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-s0-deer.jsonl",
+      "bytes": 335761,
+      "sha256": "b9d6294df8b05138d9bb2d931cadfd1f58c0cd20f2dda7184831fa1ed70e5e17"
+    },
+    {
+      "archivePath": "unity_runs/int-s0-deer.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-s0-deer.log",
+      "bytes": 37040,
+      "sha256": "e524df1abdb3062628ab227a77b40fd45b17b90745f4f25daf79b4bf1e12f78d"
+    },
+    {
+      "archivePath": "unity_runs/int-s0-deer.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-s0-deer.execution.json",
+      "bytes": 374,
+      "sha256": "82b15d9018d610150e21f82d39aa2e083582242ce7b434cfb8e577bd610c6cb5"
+    },
+    {
+      "archivePath": "unity_runs/int-s0-predator.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-s0-predator.jsonl",
+      "bytes": 3539983,
+      "sha256": "22dbaf3aa4ae3c232cf46bc613eb8e68a70208b07c567aaa6dd839c2e2a0cbcc"
+    },
+    {
+      "archivePath": "unity_runs/int-s0-predator.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-s0-predator.log",
+      "bytes": 37191,
+      "sha256": "7314f1daa051ef10a02257c26be6dc9d8379734e3191862554cce20d6b2751d1"
+    },
+    {
+      "archivePath": "unity_runs/int-s0-predator.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\int-s0-predator.execution.json",
+      "bytes": 378,
+      "sha256": "0bd6d8086cf2263d9c0eaa282b3bb2fcd93c9257abaf419260c31e38dcf1de0f"
+    },
+    {
+      "archivePath": "unity_runs/stage0-final-deer10-rich.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage0-final-deer10-rich.jsonl",
+      "bytes": 188257,
+      "sha256": "0e634c1a35125ee9831d8663f9af0170a6cfe0433c8c113bf934a48591ce05e0"
+    },
+    {
+      "archivePath": "unity_runs/stage0-final-deer10-rich.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage0-final-deer10-rich.log",
+      "bytes": 34448,
+      "sha256": "9134c6ee7f2ce3298d786b5221a810ef4aff225f4a0af05329a35b496c3a3676"
+    },
+    {
+      "archivePath": "unity_runs/stage0-final-deer10-rich.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage0-final-deer10-rich.execution.json",
+      "bytes": 380,
+      "sha256": "98988eac5007554972d1115469a8c4e3a6ee6564e810d123abfa6f04a94e99b4"
+    },
+    {
+      "archivePath": "unity_runs/stage0-final-predator.jsonl",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage0-final-predator.jsonl",
+      "bytes": 1796326,
+      "sha256": "e4a4a29373f4c29164f3975997e7be4bc4391a379e9ced1ee42c1fcb2b282e6f"
+    },
+    {
+      "archivePath": "unity_runs/stage0-final-predator.log",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage0-final-predator.log",
+      "bytes": 37146,
+      "sha256": "4a55440cab05f72456136cd75432e5ddb8fc226e15758ecdca8335fe25167419"
+    },
+    {
+      "archivePath": "unity_runs/stage0-final-predator.execution.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage0-final-predator.execution.json",
+      "bytes": 377,
+      "sha256": "230f751abd80443508466d4b0a86edb4e466cee16489c460103a46262cfff521"
+    },
+    {
+      "archivePath": "source/Assets/Scripts/Simulation/LandLifeRules.cs",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Assets\\Scripts\\Simulation\\LandLifeRules.cs",
+      "bytes": 55953,
+      "sha256": "3c6ec2b3fc4f816c7e78b37d999bee37edb16d8fc5ad8c206ed50f875d6c2d64"
+    },
+    {
+      "archivePath": "source/Assets/Scripts/Simulation/LandRuleTuning.cs",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Assets\\Scripts\\Simulation\\LandRuleTuning.cs",
+      "bytes": 12465,
+      "sha256": "976d5de7cc5ed8b5e71c430b9dda50acbf4f03682c04b7912150b65b93035c77"
+    },
+    {
+      "archivePath": "source/Assets/Scripts/Simulation/SimulationController.Evolution.cs",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Assets\\Scripts\\Simulation\\SimulationController.Evolution.cs",
+      "bytes": 41392,
+      "sha256": "4c0ddf2cce716b5308c63776978144a77c3e91a380b0ca5396eb087943f5e029"
+    },
+    {
+      "archivePath": "source/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Assets\\Scripts\\Simulation\\Editor\\V048ScenarioReplay.cs",
+      "bytes": 81819,
+      "sha256": "04cfdaec8eccbb659ce3ec4511c897a3d7cf3ea78bfa46d737d9b8534c7adb7d"
+    },
+    {
+      "archivePath": "supplied_spec/INTEGRATED_AGENT_TASK.md",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\source_package\\INTEGRATED_AGENT_TASK.md",
+      "bytes": 8969,
+      "sha256": "60daa067326d68c595d6f9506bddbf9e7d8d563603f7029bbf4ed828ec530045"
+    },
+    {
+      "archivePath": "supplied_spec/task10/TASK10_DESIGN_AND_VERIFICATION.md",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\source_package\\task10\\TASK10_DESIGN_AND_VERIFICATION.md",
+      "bytes": 7383,
+      "sha256": "01822038fd24aed0a6bf68ee2acc03a0e0ad5d66ee99748d9d480fe518673d62"
+    },
+    {
+      "archivePath": "supplied_spec/task10/TASK10_DYNAMIC_K_CANDIDATE.patch",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\source_package\\task10\\TASK10_DYNAMIC_K_CANDIDATE.patch",
+      "bytes": 10236,
+      "sha256": "ebc829661e676ef04c67511bb9c3dd1bc42444dfd010505931f9e86eb0e4c11b"
+    },
+    {
+      "archivePath": "supplied_spec/task10/TASK10_SOURCE_MANIFEST.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\source_package\\task10\\TASK10_SOURCE_MANIFEST.json",
+      "bytes": 425,
+      "sha256": "762e813ce63ed68be32b5cdce8bc7e93dd83c8f0d6e5e92a58c1b3639f38f696"
+    },
+    {
+      "archivePath": "fixture_attempts/int-neg-two-hunters-duplicate.json",
+      "originalPath": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\fixture_attempts\\int-neg-two-hunters-duplicate.json",
+      "bytes": 1883,
+      "sha256": "d4570321a8517cf4be5e7256dc8bb447d265e110c63352b07d2c0e0ae02b00d8"
+    }
+  ]
+}

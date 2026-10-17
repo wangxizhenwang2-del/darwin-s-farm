@@ -1,0 +1,41 @@
+{
+  "task12-rainforest-two-species-seed240": {
+    "formalEvolutions": 1,
+    "final": {
+      "鸡": 2318,
+      "彩鸡": 366
+    },
+    "minimumAfterRecovery": {
+      "鸡": 2071,
+      "彩鸡": 230
+    },
+    "maximumAbsoluteMassResidual": 1.999725341796875,
+    "finalTotalMaterial": 53696913.062072754
+  },
+  "task12-rainforest-two-species-seed241": {
+    "formalEvolutions": 1,
+    "final": {
+      "鸡": 2456,
+      "彩鸡": 266
+    },
+    "minimumAfterRecovery": {
+      "鸡": 2102,
+      "彩鸡": 231
+    },
+    "maximumAbsoluteMassResidual": 2.0,
+    "finalTotalMaterial": 52302728.14840698
+  },
+  "task12-rainforest-two-species-seed242": {
+    "formalEvolutions": 1,
+    "final": {
+      "鸡": 2198,
+      "彩鸡": 508
+    },
+    "minimumAfterRecovery": {
+      "鸡": 2081,
+      "彩鸡": 240
+    },
+    "maximumAbsoluteMassResidual": 1.999298095703125,
+    "finalTotalMaterial": 52868565.7796936
+  }
+}

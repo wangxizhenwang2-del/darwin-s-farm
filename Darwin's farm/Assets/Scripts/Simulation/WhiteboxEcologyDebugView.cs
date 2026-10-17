@@ -19,16 +19,11 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
     private readonly Dictionary<Vector2Int, EnvironmentTechnologyKind> selections =
         new Dictionary<Vector2Int, EnvironmentTechnologyKind>();
     private readonly Dictionary<Vector2Int, int> tiers = new Dictionary<Vector2Int, int>();
-    private readonly Dictionary<Vector2Int, int> windTemperatures = new Dictionary<Vector2Int, int>();
-    private readonly Dictionary<Vector2Int, int> windHumidities = new Dictionary<Vector2Int, int>();
     private readonly Dictionary<Vector2Int, string> notices = new Dictionary<Vector2Int, string>();
     private Vector2Int? openTechnologyMenu;
     private Rect openMenuRect;
     private readonly List<Rect> interactiveRects = new List<Rect>();
     private static readonly int[] FourTiers = { 2, 1, -1, -2 };
-    private static readonly string[] MonsoonNames = { "冷湿", "暖湿", "干热", "干冷" };
-    private static readonly int[] MonsoonTemperatures = { -20, 20, 20, -20 };
-    private static readonly int[] MonsoonHumidities = { 20, 20, -20, -20 };
     private static WhiteboxEcologyDebugView activeView;
 
     private void OnEnable() => activeView = this;
@@ -145,32 +140,14 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         EnvironmentTechnologyKind kind = selections.TryGetValue(coordinate, out var selected)
             ? selected : EnvironmentTechnologyKind.TemperatureChange;
         int tier = tiers.TryGetValue(coordinate, out int rememberedTier) ? rememberedTier : 1;
-        if (kind == EnvironmentTechnologyKind.MonsoonAnchor) tier = 1;
         if (kind == EnvironmentTechnologyKind.ElevationChange && (tier == 2 || tier == -2)) tier = 1;
-        int windT = windTemperatures.TryGetValue(coordinate, out int selectedT) ? selectedT : 20;
-        int windH = windHumidities.TryGetValue(coordinate, out int selectedH) ? selectedH : 20;
         Rect menuButton = new Rect(x + 5f, y + 78f, width - 10f, 23f);
         if (GUI.Button(menuButton, EnvironmentTechnologyCatalog.Name(kind) + "  ▾"))
         {
             openTechnologyMenu = openTechnologyMenu == coordinate ? (Vector2Int?)null : coordinate;
             openMenuRect = menuButton;
         }
-        if (kind == EnvironmentTechnologyKind.MonsoonAnchor)
-        {
-            for (int i = 0; i < MonsoonNames.Length; i++)
-            {
-                float buttonX = x + (i % 2 == 0 ? 5f : 168f);
-                float buttonY = y + (i < 2 ? 105f : 130f);
-                int temperature = MonsoonTemperatures[i], humidity = MonsoonHumidities[i];
-                if (GUI.Button(new Rect(buttonX, buttonY, 157f, 22f),
-                    MonsoonNames[i] + (windT == temperature && windH == humidity ? " ✓" : "")))
-                {
-                    windTemperatures[coordinate] = windT = temperature;
-                    windHumidities[coordinate] = windH = humidity;
-                }
-            }
-        }
-        else if (kind == EnvironmentTechnologyKind.ElevationChange)
+        if (kind == EnvironmentTechnologyKind.ElevationChange)
         {
             if (GUI.Button(new Rect(x + 5f, y + 105f, 157f, 22f), "高1档" + (tier == 1 ? " ✓" : "")))
                 tiers[coordinate] = tier = 1;
@@ -190,7 +167,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
             }
         }
 
-        var choice = new EnvironmentTechnologyChoice(kind, tier, windT, windH);
+        var choice = new EnvironmentTechnologyChoice(kind, tier);
         EnvironmentTechnologyPreview preview = technology.Preview(coordinate, choice);
         string effect = preview.IsValid ? preview.After : preview.Error;
         GUI.Label(new Rect(x + 5f, y + 157f, width - 10f, 72f),

@@ -1,0 +1,79 @@
+        public bool t95FinalGate;
+        public int t95FinalProbeStart, t95FinalProbeEnd;
+        public int t95FinalNegativeDay;
+        public bool t10Quota, t10Diagnostics;
+        public float reproductionStressPerBirth;
+        public float adultMaintenanceScale;
+        public bool overridePreyEncounter;
+        public string t95eTrackedTarget, t95eLastMutationEffect;
+        public int[] t95eProtectionSince;
+        public bool[] t95eProtectionReleased;
+        public T10QuotaRecord t10;
+    }
+
+    [Serializable] private sealed class T10QuotaRecord
+    {
+        public int quota;
+        public float unhuntedGrowth, equilibrium;
+        public bool equilibriumFound;
+    }
+
+    [Serializable] private sealed class T95EvolutionState
+    private const string Pending = "DarwinFarm.V048Replay.Pending";
+    private static double startedAt;
+    private static bool complete;
+    private static readonly Dictionary<PopulationData, T10QuotaRecord>
+        t10QuotaByPopulation = new Dictionary<PopulationData, T10QuotaRecord>();
+
+    private static void ObserveT10Quota(BlockInfo block,
+        PopulationData prey, int quota, float growth, float equilibrium,
+        bool found)
+    {
+        t10QuotaByPopulation[prey] = new T10QuotaRecord
+        {
+            quota = quota, unhuntedGrowth = growth,
+            equilibrium = equilibrium, equilibriumFound = found
+        };
+    }
+
+    static V048ScenarioReplay()
+    {
+        selectedRules.enablePriorityPlantBudgets =
+            scenario.enablePriorityPlantBudgets;
+        selectedRules.useCompensatedEvolutionFoodGate = scenario.t95FinalGate;
+        selectedRules.enableDynamicPreyRenewalQuota = scenario.t10Quota;
+        if (scenario.reproductionStressPerBirth > 0f)
+            selectedRules.reproductionStressPerBirth =
+                scenario.reproductionStressPerBirth;
+            throw new InvalidOperationException(
+                "Encounter experiments require the archived experiment-encounter-v3 code.");
+        simulation.ApplyLandRules(selectedRules);
+        t10QuotaByPopulation.Clear();
+        Type landRulesType = typeof(SimulationController).Assembly.GetType(
+            "LandLifeRules", true);
+        landRulesType.GetField("RenewableQuotaObserved",
+            BindingFlags.Static | BindingFlags.NonPublic).SetValue(null,
+                scenario.t10Diagnostics ?
+                (System.Action<BlockInfo, PopulationData, int, float, float, bool>)
+                    ObserveT10Quota : null);
+        if (scenario.mechanismFixture)
+        {
+            SimulationTuning fixtureTuning = simulation.ReadTuning();
+            }
+            if (day == scenario.endDay) break;
+            double beforeMaterial = TotalMaterial(grid);
+            t10QuotaByPopulation.Clear();
+            clock.NextDay();
+            if (clock.currentDay != day + 1)
+                throw new InvalidOperationException("Clock skipped a day.");
+                            t95eProtectionSince = scenario.t95eTraceMutation ?
+                                population.targetProtectionSince : null,
+                            t95eProtectionReleased = scenario.t95eTraceMutation ?
+                                population.targetProtectionReleased : null,
+                            t10 = scenario.t10Diagnostics &&
+                                t10QuotaByPopulation.TryGetValue(population,
+                                    out T10QuotaRecord quotaRecord) ?
+                                quotaRecord : null
+                        });
+            populations.Sort((a, b) => string.CompareOrdinal(a.id, b.id));
+            tileStates.Add(new TileState
