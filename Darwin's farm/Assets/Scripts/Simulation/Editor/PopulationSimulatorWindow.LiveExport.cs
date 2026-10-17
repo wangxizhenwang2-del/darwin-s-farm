@@ -303,7 +303,9 @@ public partial class PopulationSimulatorWindow
         liveExportWriter = null;
         try
         {
-            writer.Flush();
+            // Close the exclusive writer before reopening the file for the
+            // two hashes. Windows will reject a reader while it remains open.
+            writer.Dispose();
             var end = new ExportEnd
             {
                 reason = reason,
@@ -313,8 +315,9 @@ public partial class PopulationSimulatorWindow
             };
             ComputeExportHashes(liveExportPath, end, out end.logSha256,
                 out end.replaySha256);
-            writer.WriteLine(JsonUtility.ToJson(end));
-            writer.Flush();
+            using (var endWriter = new StreamWriter(liveExportPath, true,
+                new UTF8Encoding(false)))
+                endWriter.WriteLine(JsonUtility.ToJson(end));
             liveExportConfirmation = end.replaySha256;
             liveExportIntegrity = end.logSha256;
         }
