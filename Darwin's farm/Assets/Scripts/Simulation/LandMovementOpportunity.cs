@@ -23,4 +23,10 @@ internal static class LandMovementOpportunity
         if (population < 95) return 0;
         return population >= 1000 ? 100 : (population + 5) / 10;
     }
+
+    internal static bool AcceptNaturalOpportunity(float chance, float draw) =>
+        draw < chance;
+
+    internal static bool CanOfferNeighborSlot(int occupied, bool sameSpecies) =>
+        sameSpecies || occupied < 5;
 }

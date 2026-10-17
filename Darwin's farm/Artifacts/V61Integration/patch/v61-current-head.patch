@@ -139,7 +139,7 @@ index f5f88722..375fb373 100644
              case EnvironmentTechnologyKind.ElevationChange:
                  int shift = choice.Tier;
 diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs
-index adfcaae7..bd1e2bc1 100644
+index adfcaae7..e4b48e64 100644
 --- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs	
 +++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs	
 @@ -64,8 +64,12 @@ namespace DarwinFarm.Environment
@@ -298,7 +298,18 @@ index adfcaae7..bd1e2bc1 100644
                      tile.RecoveryCancelIssued = true;
                      StartRecoveryReturn(tile);
                  }
-@@ -330,7 +369,7 @@ namespace DarwinFarm.Environment
+@@ -320,6 +359,10 @@ namespace DarwinFarm.Environment
+             if (habitat == tile.Habitat) return;
+             tile.Habitat = habitat;
+             tile.Terrain = EnvironmentRules.VisualTerrain(habitat);
++            // A completed land recovery command preserves its captured baseline
++            // only in the habitat where it was submitted.
++            if (tile.RecoveryDetached && !tile.RecoveryReturning)
++                tile.RecoveryDetached = false;
+             for (int i = 0; i < 2; i++)
+             {
+                 if (tile.Locals[i] != null && !tile.Locals[i].Active)
+@@ -330,7 +373,7 @@ namespace DarwinFarm.Environment
                  else if (tile.Locals[i] == null && tile.Tracks[i].Phase == EffectPhase.Automatic)
                      tile.Tracks[i].Stop(tile.Values[i]);
              }
@@ -606,7 +617,7 @@ index cf748d17..951cc40a 100644
                      + Mathf.Max(0f, population.energyReserve);
                  block.community.RemoveAt(i);
 diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs
-index 1f83ac1f..cda0d7b2 100644
+index 1f83ac1f..899a3903 100644
 --- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs	
 +++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.LandTraits.cs	
 @@ -3,6 +3,12 @@ using UnityEngine;
@@ -645,7 +656,7 @@ index 1f83ac1f..cda0d7b2 100644
          return new LandSelectionSignals
          {
              stockDays = stockDays,
-@@ -138,6 +154,89 @@ public partial class SimulationController
+@@ -138,6 +154,92 @@ public partial class SimulationController
          return scoreSum > 0f ? weighted / scoreSum : 0f;
      }
  
@@ -716,6 +727,9 @@ index 1f83ac1f..cda0d7b2 100644
 +            if (!reciprocal) continue;
 +            int step = Mathf.Abs(neighbor.elevation - source.elevation);
 +            if (step > 1) continue;
++            if (!LandMovementOpportunity.CanOfferNeighborSlot(
++                LivingPopulationCount(neighbor), HasSameSpeciesResident(neighbor, p)))
++                continue;
 +            float value = SustainableSurvivalValue(neighbor, p, traits);
 +            float opportunity = (step == 0 ? 1f : 0.5f) *
 +                Mathf.Max(0f, value - sourceValue);
@@ -735,7 +749,7 @@ index 1f83ac1f..cda0d7b2 100644
      private float BestNeighborAttraction(BlockInfo source, PopulationData p,
          out int ceiling)
      {
-@@ -237,7 +336,8 @@ public partial class SimulationController
+@@ -237,7 +339,8 @@ public partial class SimulationController
          if (!mutationEnabled || mutationStep <= 0f) return;
          foreach (PopulationData population in block.community)
          {
@@ -745,7 +759,7 @@ index 1f83ac1f..cda0d7b2 100644
              population.mutationDaysElapsed++;
              if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval))
                  continue;
-@@ -269,6 +369,8 @@ public partial class SimulationController
+@@ -269,6 +372,8 @@ public partial class SimulationController
                  for (int trait = 2; trait < 5; trait++)
                      for (int direction = -1; direction <= 1; direction += 2)
                      {
@@ -754,7 +768,7 @@ index 1f83ac1f..cda0d7b2 100644
                          int next = TraitLimit(trait,
                              TraitValue(population, trait) + direction);
                          if (next == TraitValue(population, trait) ||
-@@ -290,6 +392,63 @@ public partial class SimulationController
+@@ -290,6 +395,67 @@ public partial class SimulationController
                                  0.05f, 5f), "sustainable");
                      }
  
@@ -787,9 +801,13 @@ index 1f83ac1f..cda0d7b2 100644
 +                    float deltaUtility = direction > 0 ? deltaPlus : deltaMinus;
 +                    if (deltaUtility <= LandRules.mutationGainThreshold)
 +                        continue;
++                    if (!LandMovementOpportunity.AcceptNaturalOpportunity(
++                        naturalChance, ModelRandom01(currentSimulationDay,
++                            "mutation.neighbor", block, population, null,
++                            direction > 0 ? 1 : 0))) continue;
 +                    AddMutationCandidate(choices, 2, direction,
-+                        Mathf.Clamp(deltaUtility * selectionStrength * 100f *
-+                            naturalChance, 0.0001f, 5f),
++                        Mathf.Clamp(deltaUtility * selectionStrength * 100f,
++                            0.0001f, 5f),
 +                        opportunity > 0f ? "neighbor_opportunity" :
 +                            "sustainable");
 +                }
@@ -818,7 +836,7 @@ index 1f83ac1f..cda0d7b2 100644
              for (int trait = 2; trait < 5; trait++)
              {
                  float net = InfluenceNet(population, trait,
-@@ -305,15 +464,21 @@ public partial class SimulationController
+@@ -305,15 +471,21 @@ public partial class SimulationController
              }
  
              float totalWeight = 0f;
@@ -846,7 +864,7 @@ index 1f83ac1f..cda0d7b2 100644
              }
              float draw = ModelRandom01(currentSimulationDay,
                  "mutation.choose", block, population) * totalWeight;
-@@ -348,12 +513,13 @@ public partial class SimulationController
+@@ -348,12 +520,13 @@ public partial class SimulationController
                              influence.weight * winner.direction > 0f)
                              influence.potential *= 0.5f;
              }
@@ -867,7 +885,7 @@ index 1f83ac1f..cda0d7b2 100644
      }
  }
 diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs
-index 118237a6..3501734d 100644
+index 118237a6..0c5ef652 100644
 --- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs	
 +++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Migration.cs	
 @@ -79,7 +79,7 @@ public partial class SimulationController
@@ -923,35 +941,26 @@ index 118237a6..3501734d 100644
                      foreach (BlockInfo destination in destinations)
                      {
                          if (plans.Exists(move => move.target == destination &&
-@@ -241,8 +246,18 @@ public partial class SimulationController
+@@ -240,7 +245,9 @@ public partial class SimulationController
+                 if (move.target == neighbor &&
                      !neighbor.community.Exists(existing => existing != null &&
                          SameSpecies(existing, move.population))) reserved++;
-             if (neighbor.community.Count + reserved >= 5) continue;
-+            float targetCapacity = EstimateTargetCapacity(neighbor, population);
-+            int residentCount = 0;
-+            foreach (PopulationData resident in neighbor.community)
-+                if (resident != null &&
-+                    resident.ecologicalNiche == population.ecologicalNiche &&
-+                    SameSpecies(resident, population))
-+                    residentCount += Mathf.Max(0, resident.speciesAmount);
-+            int admissible = Mathf.Min(amount, Mathf.FloorToInt(
-+                Mathf.Max(0f, targetCapacity - residentCount)));
-+            if (admissible < 10) continue;
+-            if (neighbor.community.Count + reserved >= 5) continue;
++            if (!LandMovementOpportunity.CanOfferNeighborSlot(
++                LivingPopulationCount(neighbor) + reserved,
++                HasSameSpeciesResident(neighbor, population))) continue;
              float attraction = NeighborAttraction(source, neighbor,
--                population, amount);
-+                population, admissible);
+                 population, amount);
              float capacityCorrection = TargetCapacityCorrection(neighbor,
-                 population);
-             float chance = Mathf.Clamp01(attraction)
-@@ -253,6 +268,7 @@ public partial class SimulationController
+@@ -253,6 +260,7 @@ public partial class SimulationController
              candidates.Add(new MoveCandidate
              {
                  target = neighbor, chance = Mathf.Clamp01(chance),
-+                amount = admissible,
++                amount = amount,
                  tieBreaker = ModelRandom01(day, "migration.tie", source,
                      population, neighbor)
              });
-@@ -273,7 +289,7 @@ public partial class SimulationController
+@@ -273,7 +281,7 @@ public partial class SimulationController
              plan = new MovePlan
              {
                  source = source, target = candidate.target,
@@ -960,7 +969,7 @@ index 118237a6..3501734d 100644
              };
              return true;
          }
-@@ -370,19 +386,41 @@ public partial class SimulationController
+@@ -370,19 +378,41 @@ public partial class SimulationController
  
      [Header("Ecological Niches")]
      [SerializeField] private bool ecologicalNichesEnabled = false;
@@ -1004,7 +1013,7 @@ index 118237a6..3501734d 100644
  
      public void SetEcologicalNicheProbabilities(float landToWater, float landToAir,
          float waterDown, float waterUp, float waterToLand)
-@@ -440,7 +478,7 @@ public partial class SimulationController
+@@ -440,7 +470,7 @@ public partial class SimulationController
      public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
          RiverBankSide side, PopulationData population)
      {
@@ -1013,7 +1022,7 @@ index 118237a6..3501734d 100644
              population == null || population.speciesAmount <= 0 ||
              population.ecologicalNiche != EcologicalNiche.Land ||
              !home.community.Contains(population)) return false;
-@@ -462,7 +500,7 @@ public partial class SimulationController
+@@ -462,7 +492,7 @@ public partial class SimulationController
  
      public bool TryReturnFromRiverBank(BlockInfo home, PopulationData population)
      {
@@ -1022,7 +1031,7 @@ index 118237a6..3501734d 100644
              population == null || population.ecologicalNiche != EcologicalNiche.Land ||
              population.speciesAmount <= 0 ||
              !home.community.Contains(population) ||
-@@ -526,7 +564,7 @@ public partial class SimulationController
+@@ -526,7 +556,7 @@ public partial class SimulationController
                   population.landPositionBlock == neighbor) &&
                  (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
                  waterTarget = neighbor;
@@ -1031,7 +1040,7 @@ index 118237a6..3501734d 100644
          {
              if (ModelRandom01(day, "niche.land-water", source, population,
                      waterTarget) < landToWaterProbability)
-@@ -535,7 +573,7 @@ public partial class SimulationController
+@@ -535,7 +565,7 @@ public partial class SimulationController
              return false;
          }
  
@@ -1040,7 +1049,7 @@ index 118237a6..3501734d 100644
              population.speciesAmount >= population.carryingCapacity &&
              ModelRandom01(day, "niche.land-air", source, population)
                  < landToAirProbability)
-@@ -635,7 +673,10 @@ public partial class SimulationController
+@@ -635,7 +665,10 @@ public partial class SimulationController
  
      private bool CanDepart(BlockInfo source, PopulationData population,
          EcologicalNiche niche, int day) =>

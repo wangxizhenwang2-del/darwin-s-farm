@@ -7,6 +7,7 @@ PASS 100-day return restores captured baselines
 PASS negative recovery accepted
 PASS repeated cancel is idempotent
 PASS cancel from current actual returns to baseline in 100 days
+PASS recovery follows a later habitat change after command return
 PASS stock plus 50 percent multiplies current stock
 PASS stock minus 25 percent multiplies current stock
 PASS diagonal contact rejected

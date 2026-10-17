@@ -359,6 +359,10 @@ namespace DarwinFarm.Environment
             if (habitat == tile.Habitat) return;
             tile.Habitat = habitat;
             tile.Terrain = EnvironmentRules.VisualTerrain(habitat);
+            // A completed land recovery command preserves its captured baseline
+            // only in the habitat where it was submitted.
+            if (tile.RecoveryDetached && !tile.RecoveryReturning)
+                tile.RecoveryDetached = false;
             for (int i = 0; i < 2; i++)
             {
                 if (tile.Locals[i] != null && !tile.Locals[i].Active)

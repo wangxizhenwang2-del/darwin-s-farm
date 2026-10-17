@@ -219,3 +219,7 @@ PASS advantage monotonic m=97
 PASS diminishing bonus m=98
 PASS advantage monotonic m=98
 PASS movement upper boundary
+PASS high density opportunity can miss its mutation interval
+PASS low density opportunity can enter the shared slot
+PASS five distinct residents block a new species opportunity
+PASS five residents still allow same species migration merge

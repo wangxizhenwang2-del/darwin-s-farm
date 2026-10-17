@@ -36,5 +36,13 @@ internal static class MovementMathProgram
         }
         Check(LandMovementOpportunity.BonusPlus(100, .5f) == 0f,
             "movement upper boundary");
+        Check(!LandMovementOpportunity.AcceptNaturalOpportunity(.005f, .1f),
+            "high density opportunity can miss its mutation interval");
+        Check(LandMovementOpportunity.AcceptNaturalOpportunity(.5f, .1f),
+            "low density opportunity can enter the shared slot");
+        Check(!LandMovementOpportunity.CanOfferNeighborSlot(5, false),
+            "five distinct residents block a new species opportunity");
+        Check(LandMovementOpportunity.CanOfferNeighborSlot(5, true),
+            "five residents still allow same species migration merge");
     }
 }

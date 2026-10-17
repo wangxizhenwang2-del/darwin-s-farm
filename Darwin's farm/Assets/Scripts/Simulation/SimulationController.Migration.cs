@@ -245,19 +245,11 @@ public partial class SimulationController
                 if (move.target == neighbor &&
                     !neighbor.community.Exists(existing => existing != null &&
                         SameSpecies(existing, move.population))) reserved++;
-            if (neighbor.community.Count + reserved >= 5) continue;
-            float targetCapacity = EstimateTargetCapacity(neighbor, population);
-            int residentCount = 0;
-            foreach (PopulationData resident in neighbor.community)
-                if (resident != null &&
-                    resident.ecologicalNiche == population.ecologicalNiche &&
-                    SameSpecies(resident, population))
-                    residentCount += Mathf.Max(0, resident.speciesAmount);
-            int admissible = Mathf.Min(amount, Mathf.FloorToInt(
-                Mathf.Max(0f, targetCapacity - residentCount)));
-            if (admissible < 10) continue;
+            if (!LandMovementOpportunity.CanOfferNeighborSlot(
+                LivingPopulationCount(neighbor) + reserved,
+                HasSameSpeciesResident(neighbor, population))) continue;
             float attraction = NeighborAttraction(source, neighbor,
-                population, admissible);
+                population, amount);
             float capacityCorrection = TargetCapacityCorrection(neighbor,
                 population);
             float chance = Mathf.Clamp01(attraction)
@@ -268,7 +260,7 @@ public partial class SimulationController
             candidates.Add(new MoveCandidate
             {
                 target = neighbor, chance = Mathf.Clamp01(chance),
-                amount = admissible,
+                amount = amount,
                 tieBreaker = ModelRandom01(day, "migration.tie", source,
                     population, neighbor)
             });

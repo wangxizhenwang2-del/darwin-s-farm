@@ -60,6 +60,14 @@ internal static class Program
         world.TryRead(site, out now);
         Check(Math.Abs(now.Recovery.Value - r0) < .01,
             "cancel from current actual returns to baseline in 100 days");
+        var raised = new GridPosition(0, 0);
+        var adjacent = new GridPosition(1, 0);
+        world.SynchronizeTopology(new[] {
+            new TopologyNode(raised, 1, TerrainKind.Grassland, new[] { adjacent }),
+            new TopologyNode(adjacent, 0, TerrainKind.Grassland, new[] { raised }) });
+        world.TryRead(site, out now);
+        Check(now.Recovery.Target == now.Defaults.Recovery,
+            "recovery follows a later habitat change after command return");
         Check(Math.Abs(EnvironmentRules.MultiplyStock(100000, 1000000, .5)
             - 150000) < .01, "stock plus 50 percent multiplies current stock");
         Check(Math.Abs(EnvironmentRules.MultiplyStock(100000, 1000000, -.25)

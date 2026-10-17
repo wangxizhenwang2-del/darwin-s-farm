@@ -221,6 +221,9 @@ public partial class SimulationController
             if (!reciprocal) continue;
             int step = Mathf.Abs(neighbor.elevation - source.elevation);
             if (step > 1) continue;
+            if (!LandMovementOpportunity.CanOfferNeighborSlot(
+                LivingPopulationCount(neighbor), HasSameSpeciesResident(neighbor, p)))
+                continue;
             float value = SustainableSurvivalValue(neighbor, p, traits);
             float opportunity = (step == 0 ? 1f : 0.5f) *
                 Mathf.Max(0f, value - sourceValue);
@@ -421,9 +424,13 @@ public partial class SimulationController
                     float deltaUtility = direction > 0 ? deltaPlus : deltaMinus;
                     if (deltaUtility <= LandRules.mutationGainThreshold)
                         continue;
+                    if (!LandMovementOpportunity.AcceptNaturalOpportunity(
+                        naturalChance, ModelRandom01(currentSimulationDay,
+                            "mutation.neighbor", block, population, null,
+                            direction > 0 ? 1 : 0))) continue;
                     AddMutationCandidate(choices, 2, direction,
-                        Mathf.Clamp(deltaUtility * selectionStrength * 100f *
-                            naturalChance, 0.0001f, 5f),
+                        Mathf.Clamp(deltaUtility * selectionStrength * 100f,
+                            0.0001f, 5f),
                         opportunity > 0f ? "neighbor_opportunity" :
                             "sustainable");
                 }
