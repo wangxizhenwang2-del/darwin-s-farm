@@ -1,0 +1,6 @@
+PASS: all original Biomes and Waterfall files retain their initial hashes.
+PASS: main runtime, Inspector and water shader sources match native validation.
+PASS: all new serialized references resolve in main Assets / URP.
+PASS: no duplicate asset GUIDs.
+PASS: four separate scene assets installed.
+Errors: 0

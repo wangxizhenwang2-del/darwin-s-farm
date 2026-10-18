@@ -1,0 +1,68 @@
+L_New: port South centre=(0.00, -8.50) width=5
+L_New: port West centre=(-8.50, 0.00) width=5
+PASS: L_New: authored river mouths detected
+Cross_River: port North centre=(0.00, 8.50) width=5
+Cross_River: port East centre=(8.50, 0.00) width=5
+Cross_River: port South centre=(0.00, -8.50) width=5
+Cross_River: port West centre=(-8.50, 0.00) width=5
+PASS: Cross_River: authored river mouths detected
+Land source ground: Land1 bounds Center: (-0.117, 1.048, 0.241), Extents: (5.759, 1.016, 5.759)
+Land aligned ground: Center: (0.000, -0.400, 0.000), Extents: (8.500, 1.500, 8.500); entire model Center: (0.000, 3.141, -0.105), Extents: (8.500, 5.041, 8.605)
+PASS: Visible land model aligns with its 17 metre wrapper
+PASS: Original pre-connection water shader available for comparison
+PASS: Existing water unchanged with river lip fade disabled; mean RGB difference=0
+PASS: 01_Connected_Rivers: network builds: 
+PASS: 01_Connected_Rivers: expected level joins 1
+PASS: 01_Connected_Rivers: expected waterfalls 0
+PASS: 01_Connected_Rivers: rounded ends generated 4
+PASS: 01_Connected_Rivers: scene saved
+PASS: 01_Connected_Rivers: transient meshes are not serialized into the scene
+PASS: 01_Connected_Rivers: unchanged topology does not rebuild
+PASS: 01_Connected_Rivers: reload rebuilds from persistent profiles: 
+PASS: 01_Connected_Rivers: waterfall count survives reload
+PASS: River L: original meshes and runtime source retained
+PASS: River Cross: original meshes and runtime source retained
+PASS: Rotating mismatched mouths automatically closes both sides
+PASS: A displaced tile no longer connects
+PASS: Changing terrain elevation automatically creates a downhill waterfall
+PASS: Curved waterfall lip meets the upstream mean water level
+PASS: Curved waterfall ends with a horizontal tangent
+PASS: Repeated height edits restore the join without accumulating generated objects
+PASS: Disabling the network restores original water renderers
+PASS: Re-enabling the network restores automatic connections
+PASS: 02_River_To_Land_Capsule: network builds: 
+PASS: 02_River_To_Land_Capsule: expected level joins 0
+PASS: 02_River_To_Land_Capsule: expected waterfalls 0
+PASS: 02_River_To_Land_Capsule: rounded ends generated 2
+PASS: 02_River_To_Land_Capsule: scene saved
+PASS: 02_River_To_Land_Capsule: transient meshes are not serialized into the scene
+PASS: 02_River_To_Land_Capsule: unchanged topology does not rebuild
+PASS: 02_River_To_Land_Capsule: reload rebuilds from persistent profiles: 
+PASS: 02_River_To_Land_Capsule: waterfall count survives reload
+PASS: River L: original meshes and runtime source retained
+PASS: 03_Height_Difference_Waterfall: network builds: 
+PASS: 03_Height_Difference_Waterfall: expected level joins 0
+PASS: 03_Height_Difference_Waterfall: expected waterfalls 1
+PASS: 03_Height_Difference_Waterfall: rounded ends generated 4
+PASS: 03_Height_Difference_Waterfall: scene saved
+PASS: 03_Height_Difference_Waterfall: transient meshes are not serialized into the scene
+PASS: 03_Height_Difference_Waterfall: unchanged topology does not rebuild
+PASS: 03_Height_Difference_Waterfall: reload rebuilds from persistent profiles: 
+PASS: 03_Height_Difference_Waterfall: waterfall count survives reload
+PASS: Upper River L: original meshes and runtime source retained
+PASS: Lower River Cross: original meshes and runtime source retained
+PASS: 04_Multiple_Water_Heights: network builds: 
+PASS: 04_Multiple_Water_Heights: expected level joins 0
+PASS: 04_Multiple_Water_Heights: expected waterfalls 3
+PASS: 04_Multiple_Water_Heights: rounded ends generated 6
+PASS: 04_Multiple_Water_Heights: scene saved
+PASS: 04_Multiple_Water_Heights: transient meshes are not serialized into the scene
+PASS: 04_Multiple_Water_Heights: unchanged topology does not rebuild
+PASS: 04_Multiple_Water_Heights: reload rebuilds from persistent profiles: 
+PASS: 04_Multiple_Water_Heights: waterfall count survives reload
+PASS: Upper East River: original meshes and runtime source retained
+PASS: Middle River: original meshes and runtime source retained
+PASS: Lower West River: original meshes and runtime source retained
+PASS: Upper North River: original meshes and runtime source retained
+PASS: No Unity or shader errors: 
+Errors: 0

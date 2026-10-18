@@ -27,6 +27,25 @@ float3 WaterWaveShape(float2 p)
         wave.yz = wave.yz*fade + wave.x*fadeDerivative*shore.yz;
         wave.x *= fade;
     }
+    // Only connected-river instances set these widths. Existing water defaults to zero.
+    // Flatten the last few centimetres of the upper surface into the curved waterfall lip.
+    if (any(_RiverWaveFadeWidths > 0))
+    {
+        float2 local = TransformWorldToObject(float3(p.x,GetObjectToWorldMatrix()._m13,p.y)).xz;
+        float4 distances = float4(_RiverWaveFadeRect.w-local.y, _RiverWaveFadeRect.z-local.x,
+            local.y-_RiverWaveFadeRect.y, local.x-_RiverWaveFadeRect.x);
+        float2 axisX = TransformObjectToWorldDir(float3(1,0,0),true).xz;
+        float2 axisZ = TransformObjectToWorldDir(float3(0,0,1),true).xz;
+        [unroll] for (int edge=0; edge<4; edge++) if (_RiverWaveFadeWidths[edge]>0)
+        {
+            float width=max(_RiverWaveFadeWidths[edge],0.01);
+            float t=saturate(distances[edge]/width);
+            float fade=t*t*(3-2*t), derivative=6*t*(1-t)/width;
+            float2 gradient=edge==0?-axisZ:edge==1?-axisX:edge==2?axisZ:axisX;
+            wave.yz=wave.yz*fade+wave.x*derivative*gradient;
+            wave.x*=fade;
+        }
+    }
     return wave;
 }
 struct WaterAttributes

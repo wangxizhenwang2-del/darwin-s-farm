@@ -80,6 +80,8 @@ Shader "Darwin/Moebius Water"
         _ImpactLifetimeFade("Lifetime Fade (Life Fraction)",Range(0.05,0.8))=0.35
         _ImpactPhase("Impact Phase (Seconds)",Float)=0
         _AnimationPhase("Animation Phase Offset (Seconds)", Float) = 0
+        [HideInInspector] _RiverWaveFadeRect("River Lip Bounds", Vector) = (0,0,0,0)
+        [HideInInspector] _RiverWaveFadeWidths("River Lip Fade N E S W", Vector) = (0,0,0,0)
     }
     SubShader
     {
