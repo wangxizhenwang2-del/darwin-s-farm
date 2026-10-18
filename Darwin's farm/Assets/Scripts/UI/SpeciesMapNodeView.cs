@@ -38,6 +38,8 @@ public sealed class SpeciesMapNodeView : MonoBehaviour, IPointerEnterHandler, IP
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button != PointerEventData.InputButton.Left) return;
+        var map = GetComponentInParent<SpeciesMapsUI>();
+        if (eventData.dragging || (map != null && map.SuppressNodeClicks)) return;
         if (ContainsPortrait(eventData.position, eventData.pressEventCamera)) clicked?.Invoke(this);
     }
 

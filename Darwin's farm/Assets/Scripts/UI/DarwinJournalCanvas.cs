@@ -15,6 +15,7 @@ using UnityEngine.InputSystem;
 public sealed class DarwinJournalCanvas : MonoBehaviour
 {
     public event Action<bool> GameEntered;
+    public bool IsGameplayVisible => inGame && page == Page.Game;
     [Serializable] private sealed class SettingsData
     {
         public int schemaVersion = 1;
@@ -103,6 +104,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
 #endif
         if (back)
         {
+            var maps = FindFirstObjectByType<SpeciesMapsUI>();
+            if (maps != null && maps.IsOpen) return;
             var unlock = FindFirstObjectByType<SpeciesUnlockPresenter>();
             if (unlock == null || !unlock.IsPresenting) Back();
         }

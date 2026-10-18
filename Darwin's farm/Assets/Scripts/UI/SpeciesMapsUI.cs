@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 // Binds the two authored WhiteBox panels. No map GameObjects are created at runtime.
 [RequireComponent(typeof(Canvas))]
+[DefaultExecutionOrder(50)]
 public sealed class SpeciesMapsUI : MonoBehaviour
 {
     [System.Serializable] private sealed class MapLink { public string from, to; }
@@ -36,6 +37,13 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private Vector2 lastPointer;
     private RectTransform cluePopup;
     private TextMeshProUGUI clueText;
+    private int touchId = -1;
+    private float pinchDistance;
+    private float suppressNodeClicksUntil;
+    private SpeciesMapNodeView clueNode;
+    private Vector2 lastOverlaySize;
+    public bool IsOpen => open;
+    public bool SuppressNodeClicks => Time.unscaledTime < suppressNodeClicksUntil;
 
     private void Start()
     {
@@ -107,7 +115,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame) { Close(); return; }
         MapPage page = pages[activePage];
         Mouse mouse = Mouse.current;
-        if (mouse != null)
+        bool touching = UpdateTouches(page);
+        if (mouse != null && !touching)
         {
             Vector2 pointer = mouse.position.ReadValue();
             if (mouse.leftButton.wasPressedThisFrame && cluePopup != null && cluePopup.gameObject.activeSelf &&
@@ -144,6 +153,12 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void LateUpdate()
     {
         if (!open) return;
+        Vector2 overlaySize = ((RectTransform)overlay.transform).rect.size;
+        if (overlaySize != lastOverlaySize)
+        {
+            lastOverlaySize = overlaySize;
+            if (clueNode != null && cluePopup.gameObject.activeSelf) ShowClue(clueNode);
+        }
         MapPage page = pages[activePage];
         float minimum = MinimumZoom(page);
         if (page.zoom < minimum || page.zoom > minimum * Mathf.Max(1f, maxZoomMultiplier))
@@ -152,12 +167,21 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             Clamp(page);
     }
 
-    private void Open()
+    public void Open()
     {
-        if (overlay == null) return;
+        if (overlay == null || open || !enabled) return;
+        var journal = FindFirstObjectByType<DarwinJournalCanvas>();
+        var discovery = FindFirstObjectByType<SpeciesUnlockPresenter>();
+        if ((journal != null && !journal.IsGameplayVisible) || (discovery != null && discovery.IsPresenting)) return;
+        var placement = FindFirstObjectByType<MapTilePlacementController>();
+        if (placement != null && placement.IsDragging) placement.CancelDrag();
+        FindFirstObjectByType<MapTouchInput>()?.CancelGesture();
         open = true;
         activePage = 0;
         overlay.SetActive(true);
+        // Unity initializes an inactive nested Canvas on first activation.
+        Canvas modalCanvas = overlay.GetComponent<Canvas>();
+        if (modalCanvas != null) { modalCanvas.overrideSorting = true; modalCanvas.sortingOrder = 300; }
         HideClue();
         pages[0].panel.SetActive(true);
         pages[1].panel.SetActive(false);
@@ -168,12 +192,61 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         Clamp(pages[0]);
     }
 
-    private void Close()
+    public void Close()
     {
+        if (!open) return;
         open = dragging = false;
+        touchId = -1;
+        pinchDistance = 0f;
         HideClue();
         overlay.SetActive(false);
         if (clock != null) clock.ReleaseModalPause();
+    }
+
+    public void Toggle() { if (open) Close(); else Open(); }
+
+    // Touch positions are in screen pixels, matching the desktop pointer path.
+    private bool UpdateTouches(MapPage page)
+    {
+        Touchscreen screen = Touchscreen.current;
+        if (screen == null) return false;
+        UnityEngine.InputSystem.Controls.TouchControl first = null, second = null;
+        foreach (var contact in screen.touches)
+        {
+            if (!contact.press.isPressed) continue;
+            if (first == null) first = contact;
+            else { second = contact; break; }
+        }
+        if (first == null) { touchId = -1; pinchDistance = 0f; return false; }
+        Vector2 position = first.position.ReadValue();
+        if (second != null)
+        {
+            Vector2 other = second.position.ReadValue();
+            bool inside = RectTransformUtility.RectangleContainsScreenPoint(page.viewport, position, canvas.worldCamera) &&
+                RectTransformUtility.RectangleContainsScreenPoint(page.viewport, other, canvas.worldCamera);
+            float distance = Vector2.Distance(position, other);
+            if (inside && pinchDistance > 1f) SetZoom(page, page.zoom * distance / pinchDistance);
+            pinchDistance = inside ? distance : 0f;
+            touchId = -1; dragging = false;
+            suppressNodeClicksUntil = Time.unscaledTime + .3f;
+            return true;
+        }
+        if (pinchDistance > 0f) { pinchDistance = 0f; touchId = -1; }
+        int id = first.touchId.ReadValue();
+        if (touchId != id)
+        {
+            touchId = id; lastPointer = position;
+            dragging = first.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began &&
+                RectTransformUtility.RectangleContainsScreenPoint(page.viewport, position, canvas.worldCamera) && IsBlank(position);
+            if (first.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began && !PointerHitsClueOrNode(position)) HideClue();
+        }
+        if (dragging)
+        {
+            page.content.anchoredPosition += (position - lastPointer) / Mathf.Max(.01f, canvas.scaleFactor);
+            lastPointer = position;
+            Clamp(page);
+        }
+        return true;
     }
 
     private void Switch()
@@ -198,10 +271,10 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         cluePopup = (RectTransform)root.transform;
         cluePopup.SetParent(overlay.transform, false);
         cluePopup.anchorMin = cluePopup.anchorMax = new Vector2(.5f, .5f);
-        cluePopup.sizeDelta = new Vector2(560f, 290f);
+        cluePopup.sizeDelta = new Vector2(720f, 480f);
         Image paper = root.GetComponent<Image>();
         paper.sprite = Resources.Load<Sprite>("GameUI/SpeciesCluePaper");
-        paper.type = paper.sprite != null ? Image.Type.Sliced : Image.Type.Simple;
+        paper.type = Image.Type.Simple;
         paper.color = paper.sprite != null ? Color.white : new Color(.96f, .93f, .82f);
         paper.raycastTarget = true;
 
@@ -210,11 +283,14 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         textRect.SetParent(cluePopup, false);
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = new Vector2(42f, 30f);
-        textRect.offsetMax = new Vector2(-42f, -30f);
+        textRect.offsetMin = new Vector2(76f, 64f);
+        textRect.offsetMax = new Vector2(-76f, -64f);
         clueText = textObject.GetComponent<TextMeshProUGUI>();
         clueText.font = GameUITheme.TMPFont;
         clueText.fontSize = GameUITheme.ReadableFontSize(22);
+        clueText.enableAutoSizing = true;
+        clueText.fontSizeMin = 22f;
+        clueText.fontSizeMax = 28f;
         clueText.color = new Color(.12f, .17f, .13f);
         clueText.textWrappingMode = TextWrappingModes.Normal;
         clueText.overflowMode = TextOverflowModes.Truncate;
@@ -227,11 +303,14 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void ShowClue(SpeciesMapNodeView node)
     {
         if (!open || node == null || node.Species == null || cluePopup == null) return;
+        clueNode = node;
         clueText.text = node.Species.FormattedBreedingClue;
         RectTransform overlayRect = (RectTransform)overlay.transform;
         Rect bounds = overlayRect.rect;
-        cluePopup.sizeDelta = new Vector2(Mathf.Min(560f, bounds.width - 20f),
-            Mathf.Min(290f, bounds.height - 20f));
+        float width = Mathf.Min(720f, bounds.width - 32f);
+        float textHeight = clueText.GetPreferredValues(clueText.text, width - 152f, 0f).y;
+        cluePopup.sizeDelta = new Vector2(width,
+            Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 128f), bounds.height - 32f));
         Vector2 local = overlayRect.InverseTransformPoint(node.transform.position);
         Vector2 half = cluePopup.sizeDelta * .5f;
         float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);
@@ -305,8 +384,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private float MinimumZoom(MapPage page)
     {
         Vector2 imageSize = page.content.rect.size;
-        float scaleFactor = Mathf.Max(.01f, canvas.scaleFactor);
-        Vector2 screenSize = new Vector2(Screen.width / scaleFactor, Screen.height / scaleFactor);
+        Vector2 screenSize = page.viewport.rect.size;
         if (imageSize.x <= 0f || imageSize.y <= 0f || screenSize.x <= 0f || screenSize.y <= 0f)
             return 1f;
         return Mathf.Min(screenSize.x / imageSize.x, screenSize.y / imageSize.y);
