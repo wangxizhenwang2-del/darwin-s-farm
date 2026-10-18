@@ -18,13 +18,14 @@ OUT = ROOT / "Assets" / "BiowebV46"
 SPECIES = OUT / "Species"
 SPRITES = OUT / "Sprites"
 SOURCE = OUT / "bioweb.json"
+PORTRAITS = ROOT / "Assets" / "2DAsset"
 SCRIPT_GUID = "4dba79df3cdc97a43a021e65f117e9a0"
 SPRITE_META = (ROOT / "Assets" / "2DAsset" / "孔雀.PNG.meta").read_text(encoding="utf-8")
 FIT = {
     "鸡": (55, 35), "孔雀": (58, 58), "灵感菇狸": (75, 80),
     "雪狼": (28, 28), "鹿": (30, 70), "雀狮": (52, 66),
     "彩鸡": (70, 49), "鹿驯": (25, 20), "鹿飞": (40, 45),
-    "飞狸": (67, 20),
+    "哈激麟": (67, 20),
 }
 NICHE = {"Land": 0, "Water": 1, "Air": 2}
 
@@ -44,6 +45,18 @@ def folder(path):
         meta.write_text("fileFormatVersion: 2\nguid: " + guid("folder", path.name) +
                         "\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData: \n"
                         "  assetBundleName: \n  assetBundleVariant: \n", encoding="utf-8")
+
+
+def portrait_guid(name):
+    images = [path for path in PORTRAITS.iterdir()
+              if path.is_file() and path.suffix.lower() == ".png" and path.stem == name]
+    if len(images) != 1:
+        raise ValueError(f"Expected one 2DAsset portrait for {name}, found {len(images)}")
+    meta = pathlib.Path(str(images[0]) + ".meta").read_text(encoding="utf-8")
+    match = re.search(r"^guid: ([0-9a-f]{32})$", meta, re.MULTILINE)
+    if not match:
+        raise ValueError(f"Missing Unity GUID for {images[0]}")
+    return match.group(1)
 
 
 def main(source_path):
@@ -97,7 +110,10 @@ def main(source_path):
             for other in sorted(prey[key]))
         evo_yaml = "\n" + evo_refs if evo_refs else " []"
         prey_yaml = "\n" + prey_refs if prey_refs else " []"
-        ref = f"{{fileID: 21300000, guid: {sprite_guid}, type: 3}}"
+        new_portrait_guid = portrait_guid(name)
+        portrait_ref = f"{{fileID: 21300000, guid: {new_portrait_guid}, type: 3}}"
+        world_sprite_guid = new_portrait_guid if name == "哈激麟" else sprite_guid
+        sprite_ref = f"{{fileID: 21300000, guid: {world_sprite_guid}, type: 3}}"
         text = f"""%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
@@ -113,9 +129,9 @@ MonoBehaviour:
   m_Name: {yaml_string(name)}
   m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
   speciesName: {yaml_string(name)}
-  sprite: {ref}
+  sprite: {sprite_ref}
   speciesId: {key.replace('-', '')}
-  portrait: {ref}
+  portrait: {portrait_ref}
   description: {yaml_string(row.get('description', ''))}
   evolutionTargets:{evo_yaml}
   preySpecies:{prey_yaml}

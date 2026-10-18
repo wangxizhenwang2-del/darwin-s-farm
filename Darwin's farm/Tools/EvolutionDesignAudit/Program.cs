@@ -95,7 +95,7 @@ internal static class Program
             AllEdges.Add((a, b));
             if (a.baseEcologicalNiche == EcologicalNiche.Land &&
                 b.baseEcologicalNiche == EcologicalNiche.Land &&
-                a.name != "飞狸" && b.name != "飞狸") Edges.Add((a, b));
+                a.name != "哈激麟" && b.name != "哈激麟") Edges.Add((a, b));
         }
         foreach (var row in json.RootElement.GetProperty("foodLinks").EnumerateArray())
             ids[row.GetProperty("to").GetString()].preySpecies.Add(ids[row.GetProperty("from").GetString()]);

@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dba79df3cdc97a43a021e65f117e9a0, type: 3}
   m_Name: "\u9e21"
   m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
-  speciesName: "\u9e21"
+  speciesName: "\u9e3d\u9e3d"
   sprite: {fileID: 21300000, guid: fd5808305f1553ffa0b51d924d001b60, type: 3}
   speciesId: 7f1137399e3946cf95ad1054096acacb
-  portrait: {fileID: 21300000, guid: fd5808305f1553ffa0b51d924d001b60, type: 3}
+  portrait: {fileID: 21300000, guid: 32e35bd7ef293a74a9785195eaf3fd6f, type: 3}
+  populationAnimation: {fileID: 11400000, guid: babd5c9b12be2ec4d8b75f6fa9df068d, type: 2}
   description: "\u9e3d\u9e3d\u559c\u6b22\u628a\u5730\u4e0a\u7684\u5c0f\u77f3\u5b50\u6392\u6210\u4e00\u5217\uff0c\u4eff\u4f5b\u5728\u4e3e\u884c\u4ec0\u4e48\u9686\u91cd\u7684\u4eea\u5f0f\u3002\u81f3\u4eca\u6ca1\u4eba\u77e5\u9053\u5b83\u4eec\u662f\u5728\u6570\u6570\uff0c\u8fd8\u662f\u5355\u7eaf\u89c9\u5f97\u77f3\u5b50\u5f88\u597d\u770b\u3002\n\n\u5b83\u559c\u6b22\u4e0d\u51b7\u4e0d\u70ed\u3001\u7a0d\u5fae\u5e72\u71e5\u7684\u5730\u65b9\u3002\u5c0f\u5c0f\u7684\u8eab\u4f53\u8dd1\u4e0d\u4e86\u591a\u8fdc\uff0c\u5374\u603b\u80fd\u70ed\u70ed\u95f9\u95f9\u5730\u517b\u51fa\u4e00\u5927\u7fa4\u540e\u4ee3\u3002"
   traitClueAnchors:
   - "\u4e0d\u51b7\u4e0d\u70ed"
