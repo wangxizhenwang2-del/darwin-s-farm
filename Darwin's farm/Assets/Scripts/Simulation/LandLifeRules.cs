@@ -91,6 +91,10 @@ internal static class LandLifeRules
         Mathf.Clamp01(1f - (Mathf.Abs(block.temperature - temperature)
             + Mathf.Abs(block.humidity - humidity)) / 90f);
 
+    internal static float Fitness(BlockInfo block, PopulationData population) =>
+        population.ecologicalNiche == EcologicalNiche.Water ? 1f :
+        Fitness(block, population.fitTemperature, population.fitHumidity);
+
     internal static float Demand(PopulationData p, int count, float fitness,
         LandRuleTuning rules = null, float birthFactor = 1f)
     {
@@ -235,8 +239,7 @@ internal static class LandLifeRules
             if (population != null)
             {
                 population.environmentalFitness = Mathf.RoundToInt(100f *
-                    Fitness(block, population.fitTemperature,
-                        population.fitHumidity));
+                    Fitness(block, population));
                 population.environmentalCarryingCapacity =
                     EnvironmentalCarryingCapacity(block, population, rules);
             }
@@ -292,7 +295,8 @@ internal static class LandLifeRules
             float fert = changedTraits ? fertility : p.fertility;
             int individuals = Mathf.Max(0,
                 p == countOverride ? overrideCount : p.speciesAmount);
-            float fitness = Fitness(block, t, h);
+            float fitness = p.ecologicalNiche == EcologicalNiche.Water
+                ? 1f : Fitness(block, t, h);
             adultNeed[i] = individuals * AdultNeed(sz, mov, rules);
             birthNeed[i] = individuals * rules.birthRate *
                 Mathf.Clamp01(fert / 100f) * fitness *
@@ -504,7 +508,7 @@ internal static class LandLifeRules
             return 0f;
         var groups = new List<PopulationData>(block.community.Count + 1);
         foreach (PopulationData resident in block.community)
-            if (resident != null && resident.ecologicalNiche == EcologicalNiche.Land &&
+            if (resident != null && resident.ecologicalNiche == candidate.ecologicalNiche &&
                 resident.trophicLevel == 0 && resident.speciesAmount > 0)
                 groups.Add(resident);
         if (!groups.Contains(candidate)) groups.Add(candidate);
@@ -531,7 +535,7 @@ internal static class LandLifeRules
         groups.Add(candidate);
         float birthFactor = 1f;
         demand = Demand(candidate, candidate.speciesAmount,
-            Fitness(block, candidate.fitTemperature, candidate.fitHumidity),
+            Fitness(block, candidate),
             rules, birthFactor);
         int index = groups.Count - 1;
         float currentBudget = PlantFoodBudget(block,
@@ -643,7 +647,7 @@ internal static class LandLifeRules
             prey.trophicLevel != 0 || proposedCount <= 0) return 0f;
         float food = CounterfactualPlantIntake(block, prey, prey,
             proposedCount, rules);
-        float fitness = Fitness(block, prey.fitTemperature, prey.fitHumidity);
+        float fitness = Fitness(block, prey);
         float adult = proposedCount * AdultNeed(prey.size,
             prey.movementAbility, rules);
         float covered = adult > Epsilon
@@ -656,7 +660,7 @@ internal static class LandLifeRules
             Mathf.Max(0f, food - adult) / Mathf.Max(Epsilon, newbornCost));
         float deaths = rules.starvationDeathRate * proposedCount *
             (1f - covered) + ColdDeaths(proposedCount,
-            block.temperature, rules) +
+            block.temperature, rules) * (prey.ecologicalNiche == EcologicalNiche.Water ? 0f : 1f) +
             rules.climateMismatchDeathRate * proposedCount * (1f - fitness) +
             NaturalAdultDeaths(proposedCount, prey.size, rules);
         if (rules.enablePaidBirthStress)
@@ -796,7 +800,7 @@ internal static class LandLifeRules
                 }
                 if (totalPreference <= 0f) continue;
                 float otherDemand = Demand(other, otherCount,
-                    Fitness(block, other.fitTemperature, other.fitHumidity),
+                    Fitness(block, other),
                     rules);
                 renewal -= otherDemand * preference / totalPreference /
                     Mathf.Max(Epsilon, PreyEnergy(other, prey, rules));
@@ -912,7 +916,7 @@ internal static class LandLifeRules
                 hunter.movementAbility, rules);
             float births = hunter.speciesAmount * rules.birthRate
                 * hunter.fertility / 100f
-                * Fitness(block, hunter.fitTemperature, hunter.fitHumidity);
+                * Fitness(block, hunter);
             targetEnergy[i] = Mathf.Max(0f, adult + births *
                 (YoungNeed(hunter.size, rules) + BodyMass(hunter.size, rules))
                 + adult * rules.reserveHuntFraction - hunter.energyReserve);
@@ -1034,7 +1038,7 @@ internal static class LandLifeRules
             p.reserveAtDayStart = p.energyReserve;
             p.allocatedBiomass = p.carryingCapacity = 0f;
             p.environmentalFitness = Mathf.RoundToInt(100f
-                * Fitness(block, p.fitTemperature, p.fitHumidity));
+                * Fitness(block, p));
             p.energyNeed = AdultNeed(p.size, p.movementAbility, rules);
         }
         Dictionary<PopulationData, int> renewableQuotas = null;
@@ -1076,7 +1080,7 @@ internal static class LandLifeRules
             p.allocatedBiomass = allocation[i];
             eaten += allocation[i];
             float demand = Demand(p, p.speciesAmount,
-                Fitness(block, p.fitTemperature, p.fitHumidity), rules);
+                Fitness(block, p), rules);
             AddHistory(p.renewalSatisfactionHistory, demand > 0f
                 ? Mathf.Clamp01(renewal[i] / demand) : 1f);
         }
@@ -1088,7 +1092,7 @@ internal static class LandLifeRules
             if (p.trophicLevel > 0)
             {
                 float demand = Demand(p, count,
-                    Fitness(block, p.fitTemperature, p.fitHumidity), rules);
+                    Fitness(block, p), rules);
                 p.allocatedBiomass = Mathf.Min(demand, p.energyReserve);
                 p.energyReserve = Mathf.Max(0f, p.energyReserve - p.allocatedBiomass);
             }
@@ -1109,7 +1113,7 @@ internal static class LandLifeRules
             // retain the unspent balance across days, with the existing cap.
             float savedReserve = p.energyReserve;
             float availableResources = p.allocatedBiomass + savedReserve;
-            float fitness = Fitness(block, p.fitTemperature, p.fitHumidity);
+            float fitness = Fitness(block, p);
             float adultDemand = count * p.energyNeed;
             float satisfaction = adultDemand > 0f
                 ? Mathf.Clamp01(availableResources / adultDemand) : 1f;
@@ -1119,7 +1123,8 @@ internal static class LandLifeRules
             float births = count * rules.birthRate * p.fertility / 100f
                 * fitness * satisfaction;
             float baseDeaths = rules.starvationDeathRate * count * (1f - satisfaction)
-                + ColdDeaths(count, block.temperature, rules)
+                + (niche == EcologicalNiche.Water ? 0f :
+                    ColdDeaths(count, block.temperature, rules))
                 + rules.climateMismatchDeathRate * count * (1f - fitness)
                 + NaturalAdultDeaths(count, p.size, rules);
             p.birthRemainder += births;
@@ -1183,7 +1188,7 @@ internal static class LandLifeRules
             int settledCount = Mathf.Max(0, p.populationBeforePredation
                 - p.predationDeathsToday);
             float demand = Demand(p, settledCount,
-                Fitness(block, p.fitTemperature, p.fitHumidity), rules);
+                Fitness(block, p), rules);
             float sustainableFood = AvailableSustainablePreyFood(block,
                 p, rules);
             AddHistory(p.renewalSatisfactionHistory, demand > 0f

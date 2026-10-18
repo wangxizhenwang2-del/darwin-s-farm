@@ -8,15 +8,13 @@ public partial class SimulationController
     [SerializeField, Range(0f, 1f)] private float landToFlightChance = .05f;
     [SerializeField, Range(0f, 1f)] private float flightToLandChance = .005f;
     [SerializeField, Range(0f, 1f)] private float flightReverseFounderFraction = .1f;
-    [SerializeField, Min(1)] private int flightBranchMaximum = 50;
-    [SerializeField, Range(0f, 1f)] private float flightMigrationChanceMaximum = .1f;
-    [SerializeField, Range(0f, 1f)] private float withinBasinMoveChance = .05f;
+    [SerializeField, Range(0f, 1f)] private float flightMigrationChanceMaximum = .05f;
+    [SerializeField, Range(0f, 1f)] private float waterMigrationDebugChance;
 
     public void SetFlightCandidateParameters(float reverseFraction,
         int branchMaximum, float migrationChanceMaximum)
     {
         flightReverseFounderFraction = Mathf.Clamp(reverseFraction, .01f, .5f);
-        flightBranchMaximum = Mathf.Max(1, branchMaximum);
         flightMigrationChanceMaximum = Mathf.Clamp01(migrationChanceMaximum);
     }
 
@@ -25,7 +23,7 @@ public partial class SimulationController
     {
         landToFlightChance = Mathf.Clamp01(landAir);
         flightToLandChance = Mathf.Clamp01(airLand);
-        withinBasinMoveChance = Mathf.Clamp01(withinWater);
+        waterMigrationDebugChance = Mathf.Clamp01(withinWater);
     }
 
     private static int GroundPopulationCount(BlockInfo block)
@@ -131,8 +129,6 @@ public partial class SimulationController
     {
         payment = excess = 0f;
         if (source.speciesAmount <= 50 || HasAirPopulation(block) ||
-            GroundPopulationCount(block) < 3 ||
-            GroundPopulationCount(block) > 4 ||
             target.trophicLevel != 2 || source.movementAbility <= 50 ||
             Mathf.Abs(source.fitTemperature - target.baseFitTemperature) > 5 ||
             Mathf.Abs(source.fitHumidity - target.baseFitHumidity) > 5 ||
@@ -179,9 +175,7 @@ public partial class SimulationController
     {
         freeFood = need = 0f;
         if (flyer == null || flyer.trophicLevel != 2 || target == null ||
-            HabitatTopology.IsWater(target) ||
-            HasAirPopulation(target) || GroundPopulationCount(target) < 3 ||
-            GroundPopulationCount(target) > 4) return false;
+            HabitatTopology.IsWater(target) || HasAirPopulation(target)) return false;
         var candidate = new PopulationData(false)
         {
             species = flyer.species,
@@ -227,9 +221,30 @@ public partial class SimulationController
             var neighbors = new List<BlockInfo>(source.Neighbors);
             neighbors.Sort((a, b) => string.CompareOrdinal(StableTileKey(a),
                 StableTileKey(b)));
+            BlockInfo best = null;
+            float bestAdvantage = 0f;
+            float sourceFood = LandLifeRules.AvailableSustainablePreyFood(
+                source, population, LandRules);
             foreach (BlockInfo target in neighbors)
-                if (TryFlightMigrationOnce(source, target, population,
-                    day, out _)) break;
+            {
+                MapTileInstance fromTile = source.GetComponent<MapTileInstance>();
+                MapTileInstance toTile = target == null ? null :
+                    target.GetComponent<MapTileInstance>();
+                if (fromTile == null || toTile == null ||
+                    Mathf.Abs(fromTile.Coordinate.x - toTile.Coordinate.x) +
+                    Mathf.Abs(fromTile.Coordinate.y - toTile.Coordinate.y) != 1)
+                    continue;
+                if (target == population.lastMigrationSource ||
+                    !AreNeighbors(source, target) ||
+                    !FlightTargetCanFeed(target, population,
+                        out float food, out float need)) continue;
+                float advantage = Mathf.Clamp01((food - sourceFood) /
+                    Mathf.Max(1f, food, need));
+                if (advantage > bestAdvantage)
+                { best = target; bestAdvantage = advantage; }
+            }
+            if (best != null)
+                TryFlightMigrationOnce(source, best, population, day, out _);
         }
     }
 
@@ -247,28 +262,25 @@ public partial class SimulationController
             Mathf.Abs(a.Coordinate.y - b.Coordinate.y) != 1 ||
             !FlightTargetCanFeed(target, population,
                 out float freeFood, out float need)) return false;
-        float opportunity = flightMigrationChanceMaximum *
-            freeFood / Mathf.Max(.001f, freeFood + need);
+        // Source and target use the same real legal-prey renewal forecast.
+        float sourceFood = LandLifeRules.AvailableSustainablePreyFood(
+            source, population, LandRules);
+        float attraction = Mathf.Clamp01((freeFood - sourceFood) /
+            Mathf.Max(1f, freeFood, need));
+        if (attraction <= 0f) return false;
+        float opportunity = flightMigrationChanceMaximum * attraction;
         if (ModelRandom01(day, "flight.move.chance", source,
-            population, target) >= opportunity) return false;
-        float outcome = ModelRandom01(day, "flight.move.outcome", source,
-            population, target);
-        int amount = outcome < .5f ? population.speciesAmount :
-            outcome < .75f ? Mathf.Min(flightBranchMaximum,
-                population.speciesAmount / 2) : 0;
-        if (amount > 0)
-        {
-            ApplyMovePlans(new List<MovePlan> { new MovePlan {
-                source = source, target = target,
-                population = population, amount = amount } }, day);
-            moved = true;
-        }
-        return true; // The 25% no-op consumes this day's attempt.
+            population, target) >= opportunity) return true;
+        ApplyMovePlans(new List<MovePlan> { new MovePlan {
+            source = source, target = target,
+            population = population, amount = population.speciesAmount } }, day);
+        moved = true;
+        return true;
     }
 
     private void RunWaterHabitatMigration(int day)
     {
-        WaterRegionMap regions = BuildWaterRegions();
+        if (day <= 0 || day % Mathf.Max(1, migrationInterval) != 0) return;
         var sources = new List<(BlockInfo block, PopulationData population)>();
         foreach (BlockInfo block in blockInfos)
             if (block != null && block.community != null &&
@@ -289,18 +301,8 @@ public partial class SimulationController
                 StableTileKey(b)));
             foreach (BlockInfo target in neighbors)
             {
-                if (!HabitatTopology.ChannelsConnect(source, target) ||
-                    target == population.lastMigrationSource) continue;
-                WaterRegion from = regions.GetRegion(source);
-                WaterRegion to = regions.GetRegion(target);
-                if (from == null || to == null) continue;
-                if (from == to &&
-                    ModelRandom01(day, "water.within.move", source,
-                        population, target) < withinBasinMoveChance &&
-                    MoveWithinWaterRegion(source, target, population,
-                        regions, day)) break;
-                if (from != to && TryWaterMigration(source, target,
-                    population, regions, day)) break;
+                if (TryWaterMigration(source, target, population,
+                    null, day)) break;
             }
         }
     }

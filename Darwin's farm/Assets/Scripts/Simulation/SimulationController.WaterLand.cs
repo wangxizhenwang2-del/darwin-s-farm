@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Water/land formal evolution and basin settlement. Routes use the source
-// population's one actual tile, never its entire water region.
+// Water/land formal evolution and per-cell water settlement.
 public partial class SimulationController
 {
     // Formal cross habitat evolution uses the same 10% body/payment transfer
@@ -30,9 +29,10 @@ public partial class SimulationController
             targets.Sort(CompareSpeciesOrder);
             foreach (SpeciesData species in targets)
             {
-                if (species == null || species.baseEcologicalNiche ==
-                    ancestor.ecologicalNiche ||
-                    species.baseEcologicalNiche == EcologicalNiche.Air) continue;
+                if (species == null ||
+                    species.baseEcologicalNiche == EcologicalNiche.Air ||
+                    ancestor.ecologicalNiche == EcologicalNiche.Land &&
+                    species.baseEcologicalNiche == EcologicalNiche.Land) continue;
                 EvolutionConversionRecord record = GetEvolutionRecord(ancestor,
                     species, true);
                 BlockInfo destination = null;
@@ -82,18 +82,8 @@ public partial class SimulationController
             return false;
         int requested = Mathf.Min(ancestor.speciesAmount - 1,
             Mathf.FloorToInt(ancestor.speciesAmount * .1f + .5f));
-        float stock = 0f, capacity = 0f;
-        if (HabitatTopology.IsWater(source))
-        {
-            WaterRegion region = BuildWaterRegions().GetRegion(source);
-            if (region == null) return false;
-            foreach (BlockInfo cell in region.Members)
-            { stock += Mathf.Max(0f, cell.plantBiomass);
-              capacity += Mathf.Max(0f, cell.maxPlantBiomass); }
-        }
-        else
-        { stock = Mathf.Max(0f, source.plantBiomass);
-          capacity = Mathf.Max(0f, source.maxPlantBiomass); }
+        float stock = Mathf.Max(0f, source.plantBiomass);
+        float capacity = Mathf.Max(0f, source.maxPlantBiomass);
         float spendable = stock;
         if (LandRules.useCompensatedEvolutionFoodGate)
             spendable -= Mathf.Min(spendable * .5f,
@@ -104,8 +94,8 @@ public partial class SimulationController
         float sourcePerHead = sourceBody / ancestor.speciesAmount;
         float targetPerHead = LandLifeRules.BodyMass(target.baseSize, LandRules);
         float extra = Mathf.Max(0f, targetPerHead - sourcePerHead);
-        amount = Mathf.Min(requested, extra > 0f
-            ? Mathf.FloorToInt(spendable / extra) : requested);
+        amount = requested;
+        if (spendable + .01f < amount * extra) return false;
         if (amount < 1 || target.trophicLevel == 2 && amount < 10)
             return false;
         payment = amount * extra;
@@ -116,55 +106,7 @@ public partial class SimulationController
     private bool CrossTargetFoodSupported(BlockInfo targetBlock,
         SpeciesData target, int amount)
     {
-        if (!HabitatTopology.IsWater(targetBlock))
-            return CrossTargetFoodSupportedHere(targetBlock, target, amount);
-        WaterRegion region = BuildWaterRegions().GetRegion(targetBlock);
-        if (region == null) return false;
-        List<PopulationData> oldCommunity = targetBlock.community;
-        float oldStock = targetBlock.plantBiomass;
-        float oldCapacity = targetBlock.maxPlantBiomass;
-        int oldRecovery = targetBlock.habitatRecovery;
-        float oldConsumed = targetBlock.consumedBiomassToday;
-        int oldTemperature = targetBlock.temperature;
-        int oldHumidity = targetBlock.humidity;
-        var basin = new List<PopulationData>();
-        float stock = 0f, capacity = 0f;
-        int recovery = 0, temperature = 0, humidity = 0;
-        foreach (BlockInfo cell in region.Members)
-        {
-            stock += Mathf.Max(0f, cell.plantBiomass);
-            capacity += Mathf.Max(0f, cell.maxPlantBiomass);
-            recovery += Mathf.Max(0, cell.habitatRecovery);
-            temperature += cell.temperature;
-            humidity += cell.humidity;
-            if (cell.community != null)
-                foreach (PopulationData p in cell.community)
-                    if (p != null && p.speciesAmount > 0 &&
-                        p.ecologicalNiche == EcologicalNiche.Water) basin.Add(p);
-        }
-        try
-        {
-            targetBlock.community = basin;
-            targetBlock.plantBiomass = stock;
-            targetBlock.maxPlantBiomass = capacity;
-            targetBlock.habitatRecovery = recovery;
-            targetBlock.consumedBiomassToday = 0f;
-            targetBlock.temperature = Mathf.RoundToInt(temperature /
-                (float)region.Members.Count);
-            targetBlock.humidity = Mathf.RoundToInt(humidity /
-                (float)region.Members.Count);
-            return CrossTargetFoodSupportedHere(targetBlock, target, amount);
-        }
-        finally
-        {
-            targetBlock.community = oldCommunity;
-            targetBlock.plantBiomass = oldStock;
-            targetBlock.maxPlantBiomass = oldCapacity;
-            targetBlock.habitatRecovery = oldRecovery;
-            targetBlock.consumedBiomassToday = oldConsumed;
-            targetBlock.temperature = oldTemperature;
-            targetBlock.humidity = oldHumidity;
-        }
+        return CrossTargetFoodSupportedHere(targetBlock, target, amount);
     }
 
     private bool CrossTargetFoodSupportedHere(BlockInfo block,
@@ -194,104 +136,25 @@ public partial class SimulationController
             renewable / demand >= LandRules.evolutionRenewalSatisfaction;
     }
 
-    // Settle every connected, equal-height water component once. The first
-    // physical cell temporarily presents the basin to the existing life
-    // allocator; population objects remain owned by their original cells.
-    private void SimulateWaterBasins(int day)
+    // Each physical water cell owns its complete food web and resource ledger.
+    private void SimulateWaterCells(int day)
     {
-        foreach (WaterRegion region in BuildWaterRegions().Regions)
+        foreach (BlockInfo cell in blockInfos)
         {
-            var cells = new List<BlockInfo>(region.Members);
-            cells.Sort((left, right) =>
-            {
-                MapTileInstance a = left.GetComponent<MapTileInstance>();
-                MapTileInstance b = right.GetComponent<MapTileInstance>();
-                if (a != null && b != null)
-                {
-                    int x = a.Coordinate.x.CompareTo(b.Coordinate.x);
-                    if (x != 0) return x;
-                    int y = a.Coordinate.y.CompareTo(b.Coordinate.y);
-                    if (y != 0) return y;
-                }
-                return string.CompareOrdinal(left.name, right.name);
-            });
-            if (cells.Count == 0) continue;
-            var community = new List<PopulationData>();
-            float stock = 0f, capacity = 0f, growth = 0f;
-            int recovery = 0;
-            int temperature = 0, humidity = 0;
-            foreach (BlockInfo cell in cells)
-            {
-                stock += Mathf.Max(0f, cell.plantBiomass);
-                capacity += Mathf.Max(0f, cell.maxPlantBiomass);
-                growth += Mathf.Max(0f, cell.plantGrowthToday);
-                recovery += Mathf.Max(0, cell.habitatRecovery);
-                temperature += cell.temperature;
-                humidity += cell.humidity;
-                cell.consumedBiomassToday = 0f;
-                cell.accountedBiomassSinkToday = 0f;
-                if (cell.community == null) continue;
-                foreach (PopulationData population in cell.community)
-                    if (population != null && population.speciesAmount > 0 &&
-                        population.ecologicalNiche == EcologicalNiche.Water)
-                    {
-                        InitializeMutationState(population);
-                        community.Add(population);
-                    }
-            }
-            if (community.Count == 0) continue;
-            BlockInfo basin = cells[0];
-            List<PopulationData> originalCommunity = basin.community;
-            float originalStock = basin.plantBiomass;
-            float originalCapacity = basin.maxPlantBiomass;
-            int originalRecovery = basin.habitatRecovery;
-            float originalGrowth = basin.plantGrowthToday;
-            int originalTemperature = basin.temperature;
-            int originalHumidity = basin.humidity;
-            bool physicalStockRestored = false;
-            try
-            {
-                basin.community = community;
-                basin.plantBiomass = stock;
-                basin.maxPlantBiomass = capacity;
-                basin.habitatRecovery = recovery;
-                basin.plantGrowthToday = growth;
-                basin.temperature = Mathf.RoundToInt(temperature /
-                    (float)cells.Count);
-                basin.humidity = Mathf.RoundToInt(humidity /
-                    (float)cells.Count);
-                LandLifeRules.Simulate(basin, LandRules, EcologicalNiche.Water,
-                    growPlants: false);
-                LandLifeRules.RefreshEnvironmentMetrics(basin, LandRules);
-                float consumed = basin.consumedBiomassToday;
-                if (consumed < -0.01f || consumed > stock + 0.01f)
-                    throw new InvalidOperationException("Water basin debit exceeds stock");
-                basin.plantBiomass = originalStock;
-                physicalStockRestored = true;
-                float remaining = Mathf.Max(0f, consumed);
-                foreach (BlockInfo cell in cells)
-                {
-                    float paid = Mathf.Min(cell.plantBiomass, remaining);
-                    cell.plantBiomass -= paid;
-                    cell.consumedBiomassToday = paid;
-                    remaining -= paid;
-                }
-                if (remaining > 0.1f)
-                    throw new InvalidOperationException("Water basin debit did not settle");
-            }
-            finally
-            {
-                basin.community = originalCommunity;
-                // The representative cell was temporarily assigned aggregate
-                // S/R. Its physical S was already debited in the loop above.
-                if (!physicalStockRestored)
-                    basin.plantBiomass = originalStock;
-                basin.maxPlantBiomass = originalCapacity;
-                basin.habitatRecovery = originalRecovery;
-                basin.plantGrowthToday = originalGrowth;
-                basin.temperature = originalTemperature;
-                basin.humidity = originalHumidity;
-            }
+            if (cell == null || !HabitatTopology.IsWater(cell) ||
+                cell.community == null) continue;
+            bool occupied = false;
+            foreach (PopulationData population in cell.community)
+                if (population != null && population.speciesAmount > 0 &&
+                    population.ecologicalNiche == EcologicalNiche.Water)
+                { InitializeMutationState(population); occupied = true; }
+            if (!occupied) continue;
+            cell.consumedBiomassToday = 0f;
+            cell.accountedBiomassSinkToday = 0f;
+            LandLifeRules.Simulate(cell, LandRules, EcologicalNiche.Water,
+                growPlants: false);
+            EvolveCommunityNewRules(cell);
+            LandLifeRules.RefreshEnvironmentMetrics(cell, LandRules);
         }
     }
 
@@ -305,12 +168,16 @@ public partial class SimulationController
             return "INVALID_SOURCE";
         if (target == null || targetSpecies == null || target.community == null ||
             !blockInfos.Contains(target)) return "INVALID_TARGET";
-        if (!WaterLandBoundary.IsLocalCrossHabitatEdge(source, target))
+        bool waterToWater = ancestor.ecologicalNiche == EcologicalNiche.Water &&
+            targetSpecies.baseEcologicalNiche == EcologicalNiche.Water;
+        if (waterToWater ? source != target :
+            !WaterLandBoundary.IsLocalCrossHabitatEdge(source, target))
             return "NO_LOCAL_EDGE";
         bool fromWater = source.waterCoverage != WaterCoverage.Land;
         if (ancestor.ecologicalNiche != (fromWater ? EcologicalNiche.Water :
                 EcologicalNiche.Land) ||
-            targetSpecies.baseEcologicalNiche != (fromWater ? EcologicalNiche.Land :
+            targetSpecies.baseEcologicalNiche != (waterToWater ? EcologicalNiche.Water :
+                fromWater ? EcologicalNiche.Land :
                 EcologicalNiche.Water)) return "INVALID_NICHE";
         if (!ConnectedTargets(ancestor.species).Contains(targetSpecies))
             return "NO_GRAPH_EDGE";

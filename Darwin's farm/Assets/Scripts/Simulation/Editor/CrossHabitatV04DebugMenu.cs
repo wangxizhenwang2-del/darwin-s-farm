@@ -35,17 +35,8 @@ public static class CrossHabitatV04DebugMenu
     [MenuItem("Tools/Darwin Farm/Debug/Cross Habitat/Force Air To Land Roll")]
     private static void ForceAirLand() => SetRolls(0f, 1f, 0f);
 
-    [MenuItem("Tools/Darwin Farm/Debug/Cross Habitat/Force Within Water Move")]
+    [MenuItem("Tools/Darwin Farm/Debug/Cross Habitat/Force Eligible Water Migration Roll")]
     private static void ForceWaterMove() => SetRolls(0f, 0f, 1f);
-
-    [MenuItem("Tools/Darwin Farm/Debug/Cross Habitat/Increase Cross Basin Move Opportunity")]
-    private static void CrossBasinMove()
-    {
-        SimulationController simulation = Current();
-        if (simulation == null) return;
-        simulation.SetEcologicalNicheProbabilities(0f, 0f, 1f, 1f, 0f);
-        Debug.Log("Cross basin up/down chance multipliers set to 1 for this scene instance.");
-    }
 
     [MenuItem("Tools/Darwin Farm/Debug/Cross Habitat/Increase Flight Move Opportunity")]
     private static void FlightMove()
@@ -61,8 +52,8 @@ public static class CrossHabitatV04DebugMenu
     {
         SimulationController simulation = Current();
         if (simulation == null) return;
-        simulation.SetCrossHabitatDebugProbabilities(.05f, .005f, .05f);
-        simulation.SetFlightCandidateParameters(.1f, 50, .1f);
+        simulation.SetCrossHabitatDebugProbabilities(.05f, .005f, 0f);
+        simulation.SetFlightCandidateParameters(.1f, 50, .05f);
         simulation.SetEcologicalNicheProbabilities(.02f, .01f, .05f,
             .002f, .001f);
         Debug.Log("Cross habitat candidate probabilities restored.");
@@ -75,7 +66,7 @@ public static class CrossHabitatV04DebugMenu
         simulation.SetCrossHabitatDebugProbabilities(landAir,
             airLand, waterMove);
         Debug.Log("Cross habitat debug probabilities: land-air=" + landAir +
-            " air-land=" + airLand + " within-water=" + waterMove);
+            " air-land=" + airLand + " eligible-water=" + waterMove);
     }
 }
 #endif

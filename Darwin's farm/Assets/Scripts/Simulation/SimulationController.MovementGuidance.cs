@@ -16,7 +16,7 @@ public partial class SimulationController
             foreach (PopulationData resident in tile.community)
                 if (resident != null && resident.speciesAmount > 0 &&
                     resident.trophicLevel == 0 &&
-                    resident.ecologicalNiche == EcologicalNiche.Land)
+                     resident.ecologicalNiche == population.ecologicalNiche)
                     demand += resident.speciesAmount * LandLifeRules.AdultNeed(
                         resident.size, resident.movementAbility, LandRules);
         }
@@ -42,8 +42,7 @@ public partial class SimulationController
         }
         float free = Mathf.Clamp01((supply - demand) /
             Mathf.Max(.0001f, supply));
-        score = LandLifeRules.Fitness(tile, population.fitTemperature,
-            population.fitHumidity) * (.3f + .7f * free);
+        score = LandLifeRules.Fitness(tile, population) * (.3f + .7f * free);
         return true;
     }
 
@@ -62,7 +61,7 @@ public partial class SimulationController
             species = population.species,
             lineageName = population.lineageName,
             speciesId = population.speciesId,
-            ecologicalNiche = EcologicalNiche.Land,
+            ecologicalNiche = population.ecologicalNiche,
             trophicLevel = 0,
             speciesAmount = migrants,
             movementAbility = population.movementAbility,
@@ -117,9 +116,10 @@ public partial class SimulationController
         PopulationData population)
     {
         if (!enableNeighborMovementFormula || source == null ||
-            source.Neighbors == null || source.waterCoverage != WaterCoverage.Land ||
+            source.Neighbors == null ||
             population == null || population.speciesAmount <= 0 ||
-            population.ecologicalNiche != EcologicalNiche.Land ||
+            (population.ecologicalNiche != EcologicalNiche.Land &&
+             population.ecologicalNiche != EcologicalNiche.Water) ||
             !MovementFoodScore(source, population, out float homeScore))
             return null;
         int migrants = StandardMigrationAmount(population.speciesAmount);
@@ -129,10 +129,13 @@ public partial class SimulationController
         foreach (BlockInfo target in source.Neighbors)
         {
             if (target == null || target == source ||
-                target.waterCoverage != WaterCoverage.Land ||
+                (population.ecologicalNiche == EcologicalNiche.Land
+                    ? target.waterCoverage != WaterCoverage.Land
+                    : !HabitatTopology.ChannelsConnect(source, target)) ||
                 target.community == null || target.Neighbors == null ||
                 !blockInfos.Contains(target) || !V62HasNeighbor(target, source) ||
                 Mathf.Abs(target.elevation - source.elevation) > 1 ||
+                HasSameSpeciesResident(target, population) ||
                 !LandMovementOpportunity.CanOfferNeighborSlot(
                     LivingPopulationCount(target),
                     HasSameSpeciesResident(target, population)) ||

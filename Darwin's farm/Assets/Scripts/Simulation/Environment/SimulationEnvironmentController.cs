@@ -46,7 +46,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         Publish();
     }
     private readonly Dictionary<GridPosition, BlockInfo> blocks = new Dictionary<GridPosition, BlockInfo>();
-    private readonly Dictionary<GridPosition, string> waterGroups = new Dictionary<GridPosition, string>();
     public event Action<IReadOnlyList<EnvironmentReadSnapshot>> Changed;
 
     private void Awake()
@@ -141,32 +140,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 ? EnvironmentRules.WaterPlantCapacity : EnvironmentRules.PlantCapacity;
             block.plantBiomass = Mathf.Clamp(block.plantBiomass, 0, block.maxPlantBiomass);
         }
-        // 2026-10-09 14:34 +08:00: regroup shared water stock by physical
-        // openings and equal height. A changed membership detaches the old R
-        // timeline while retaining its actual per-cell value.
-        var nextGroups = new Dictionary<GridPosition, string>();
-        foreach (List<MapTileInstance> area in WaterBodyTopology.AllAreas(grid))
-        {
-            string identity = string.Join(";", area.ConvertAll(tile =>
-                tile.Coordinate.x + "," + tile.Coordinate.y));
-            bool changed = false;
-            foreach (MapTileInstance tile in area)
-            {
-                GridPosition position = Position(tile.Coordinate);
-                changed |= waterGroups.TryGetValue(position, out string previous) && previous != identity;
-                nextGroups[position] = identity;
-            }
-            if (changed)
-            {
-                var positions = new List<GridPosition>(area.Count);
-                foreach (MapTileInstance tile in area) positions.Add(Position(tile.Coordinate));
-                world.ReconcileWaterRecovery(positions);
-            }
-            // A basin shares food access, not physical stock ownership.
-            // Keep each tile's S when openings rotate or the basin splits.
-        }
-        waterGroups.Clear();
-        foreach (var pair in nextGroups) waterGroups.Add(pair.Key, pair.Value);
         Publish();
     }
     private static readonly GridPosition[] Directions =
@@ -181,20 +154,18 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     private void GrowWaterPlants()
     {
         if (grid == null) return;
-        foreach (List<MapTileInstance> area in WaterBodyTopology.AllAreas(grid))
+        foreach (MapTileInstance tile in grid.GetPlacedTiles())
         {
-            foreach (MapTileInstance tile in area)
-            {
-                float before = tile.Block.plantBiomass;
-                double recovery = 0;
-                if (world.TryRead(Position(tile.Coordinate), out EnvironmentSnapshot state))
-                    recovery = state.Recovery.Value;
-                float capacity = tile.Block.maxPlantBiomass;
-                float growth = (float)Math.Min(Math.Max(0, recovery),
-                    Math.Max(0, capacity - before));
-                tile.Block.plantGrowthToday = growth;
-                tile.Block.plantBiomass = before + growth;
-            }
+            if (!HabitatTopology.IsWater(tile.Block)) continue;
+            float before = tile.Block.plantBiomass;
+            double recovery = 0;
+            if (world.TryRead(Position(tile.Coordinate), out EnvironmentSnapshot state))
+                recovery = state.Recovery.Value;
+            float capacity = tile.Block.maxPlantBiomass;
+            float growth = (float)Math.Min(Math.Max(0, recovery),
+                Math.Max(0, capacity - before));
+            tile.Block.plantGrowthToday = growth;
+            tile.Block.plantBiomass = before + growth;
         }
     }
     private void RebaseClock(int day) => world.RebaseClock(day);
@@ -302,11 +273,10 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         members = Array.Empty<Vector2Int>(); error = null;
         if (!isActiveAndEnabled || grid == null || world == null)
         { error = "环境控制器未就绪"; return false; }
-        List<MapTileInstance> area = WaterBodyTopology.Area(grid, coordinate);
-        if (area.Count == 0) { error = "目标不是已建水格"; return false; }
-        var coordinates = new List<Vector2Int>(area.Count);
-        foreach (MapTileInstance tile in area) coordinates.Add(tile.Coordinate);
-        members = coordinates.AsReadOnly();
+        if (!grid.TryGetTile(coordinate, out MapTileInstance tile) ||
+            !HabitatTopology.IsWater(tile.Block))
+        { error = "目标不是已建水格"; return false; }
+        members = new[] { coordinate };
         return true;
     }
 

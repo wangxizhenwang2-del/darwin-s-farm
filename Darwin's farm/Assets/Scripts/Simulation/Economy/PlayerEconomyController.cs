@@ -330,10 +330,14 @@ public sealed class PlayerEconomyController : MonoBehaviour
         if ((population.ecologicalNiche == EcologicalNiche.Water && !water) ||
             (population.ecologicalNiche == EcologicalNiche.Land && water))
         { error = "目标地块与生态位不匹配"; return false; }
+        if (source != null && !simulation.CanLegalMigration(source, target,
+            population, population.speciesAmount))
+        { error = "迁徙需要合法邻边、空位和足够的真实食物，目标不可已有同种"; return false; }
         if (population.ecologicalNiche == EcologicalNiche.Air &&
             !SimulationController.CanAcceptAirSpecies(target, population))
         { error = "目标天空槽位已被其他物种占用"; return false; }
-        if (SimulationController.LivingPopulationCount(target) >= 5 && !target.community.Exists(resident =>
+        if (population.ecologicalNiche != EcologicalNiche.Air &&
+            SimulationController.LivingPopulationCount(target) >= 5 && !target.community.Exists(resident =>
             resident != null &&
             resident.ecologicalNiche == population.ecologicalNiche &&
             PopulationTransfer.IsSameSpecies(resident, population)))
@@ -359,6 +363,9 @@ public sealed class PlayerEconomyController : MonoBehaviour
             arrival.birthRemainder = population.birthRemainder;
             arrival.deathRemainder = population.deathRemainder;
             arrival.lastMigrationSource = source;
+            if (arrival.ecologicalNiche == EcologicalNiche.Air)
+                arrival.nextMigrationDay = Mathf.Max(arrival.nextMigrationDay,
+                    (clock != null ? clock.currentDay : 0) + 30);
             arrival.landPositionBlock = null;
             arrival.landPositionBank = default(RiverBankSide);
             int movedAmount = population.speciesAmount;

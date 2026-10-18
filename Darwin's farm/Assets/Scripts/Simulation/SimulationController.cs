@@ -488,7 +488,7 @@ public partial class SimulationController : MonoBehaviour
         {
             SimulateBlock(block);
         }
-        if (EnableWaterEcology) SimulateWaterBasins(day);
+        if (EnableWaterEcology) SimulateWaterCells(day);
         if (EnableAirEcology) SimulateAirHabitats();
         CaptureLifeFlows();
         RemoveEndangered(day);
@@ -514,7 +514,7 @@ public partial class SimulationController : MonoBehaviour
     public void SimulateBlock(BlockInfo block)
     {
         if (block == null || block.community == null) return;
-        // Water is settled once per basin by SimulateWaterBasins.
+        // Each water cell is settled in its own pass.
         if (HabitatTopology.IsWater(block)) return;
 
         block.community.RemoveAll(population => population == null);
