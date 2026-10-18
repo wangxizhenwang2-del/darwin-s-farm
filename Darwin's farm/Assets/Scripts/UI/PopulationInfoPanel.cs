@@ -85,7 +85,8 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         count.text = "数量：" + (data != null ? data.speciesAmount : visual.Count);
         // Mutation accumulators are fractional calculation state, not mutation history.
         mutation.text = "变异：暂无记录";
-        SetScrollText(description, species != null ? species.Description : "暂无物种介绍");
+        description.richText = true;
+        SetScrollText(description, species != null ? species.FormattedDescription : "暂无物种介绍");
         if (data == null)
         {
             radar.SetValues(0, 0, 0, 0, 0); foreach (var label in labels) label.text = "未接入";
