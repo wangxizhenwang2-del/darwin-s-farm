@@ -28,7 +28,7 @@ float3 WaterWaveShape(float2 p)
         wave.x *= fade;
     }
     // Only connected-river instances set these widths. Existing water defaults to zero.
-    // Flatten the last few centimetres of the upper surface into the curved waterfall lip.
+    // Flatten into a shared river seam or the curved waterfall lip. Flow still animates.
     if (any(_RiverWaveFadeWidths > 0))
     {
         float2 local = TransformWorldToObject(float3(p.x,GetObjectToWorldMatrix()._m13,p.y)).xz;

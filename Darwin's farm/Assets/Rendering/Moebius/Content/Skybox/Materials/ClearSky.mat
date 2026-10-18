@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ClearSky
+  m_Shader: {fileID: 4800000, guid: 6ffe0dbd25634ba5bd314373def77038, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ENABLECLOUDS_ON
+  - _ENABLESUN_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _AnimationPhase: 0
+    - _BelowFade: 0.35
+    - _CloudCoverage: 0.65
+    - _CloudDensity: 1
+    - _CloudEdgeSoftness: 0.001
+    - _CloudInkStrength: 0.3
+    - _CloudInkWidth: 0.65
+    - _CloudRotation: 25
+    - _CloudScale: 1.1
+    - _CloudShadeStrength: 0.6
+    - _CloudShapeVariation: 0.5
+    - _CloudSpeed: 0.025
+    - _EnableClouds: 1
+    - _EnableSun: 1
+    - _Exposure: 0
+    - _FogColorMatch: 0
+    - _GradientSteps: 0
+    - _HaloRadius: 12
+    - _HaloStrength: 0
+    - _HorizonHeight: 0
+    - _LowerTransition: 0.12
+    - _MidTransition: 0.38
+    - _PaperStrength: 0
+    - _PigmentScale: 5
+    - _PigmentStrength: 0
+    - _Saturation: 1
+    - _SunBrightness: 1
+    - _SunHazeHeight: -0.25
+    - _SunHazeStrength: 0.7
+    - _SunHazeWidth: 0.012
+    - _SunHorizonInfluence: 0
+    - _SunInkStrength: 0.4
+    - _SunInkWidth: 0.65
+    - _SunRadius: 7.5
+    - _SunSoftness: 0.035
+    - _TransitionSoftness: 0.17
+    - _UseMainLightSun: 0
+    - _ZenithTransition: 0.72
+    m_Colors:
+    - _BelowColor: {r: 0.8, g: 0.91, b: 0.89, a: 1}
+    - _CloudColor: {r: 1, g: 0.97999996, b: 0.85, a: 1}
+    - _CloudElevationRange: {r: 3, g: 12, b: 0, a: 0}
+    - _CloudInkColor: {r: 0.76, g: 0.67, b: 0.53, a: 1}
+    - _CloudShadeColor: {r: 0.91, g: 0.83, b: 0.71, a: 1}
+    - _CloudWindDirection: {r: 1, g: 0, b: 0, a: 0}
+    - _HaloColor: {r: 0.97999996, g: 0.85, b: 0.65, a: 1}
+    - _HorizonColor: {r: 0.92, g: 0.96, b: 0.82, a: 1}
+    - _LowerColor: {r: 0.65999997, g: 0.88, b: 0.9, a: 1}
+    - _MidColor: {r: 0.4699999, g: 0.81, b: 0.92, a: 1}
+    - _SunColor: {r: 1, g: 0.96999997, b: 0.81, a: 1}
+    - _SunDirection: {r: -0.38, g: 0.24, b: 0.89, a: 0}
+    - _SunInkColor: {r: 0.76, g: 0.59, b: 0.49, a: 1}
+    - _ZenithColor: {r: 0.38999996, g: 0.76, b: 0.91, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
