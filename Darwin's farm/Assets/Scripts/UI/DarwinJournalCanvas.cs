@@ -42,6 +42,9 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     [SerializeField] private TMP_Text[] categoryLabels, pageLabels;
     [SerializeField] private TMP_Text tutorialBody;
     [SerializeField] private ScrollRect tutorialScroll, infoScroll;
+    [SerializeField] private Image tutorialIllustration;
+    [SerializeField] private Button[] slotLoadButtons, slotSaveButtons, slotDeleteButtons;
+    [SerializeField] private TMP_Text[] slotLabels;
 
     private SettingsData settings = new SettingsData();
     private Page page = Page.Title, parent = Page.Title;
@@ -51,6 +54,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private Vector2Int previousScreen;
     private int currentCategory, currentPage;
     private bool inGame, busy;
+    private Action confirmedAction;
+    private Page confirmReturn=Page.Pause;
     private float worldScale = 1f;
 
     private void Awake()
@@ -63,13 +68,22 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         LoadSettings();
         Bind();
         UpdateSafeArea();
-        Show(Page.Title);
+        Show(saveMessage.text.StartsWith("读档失败：",StringComparison.Ordinal)?Page.Saves:Page.Title);
     }
 
     private void OnDestroy()
     {
         if (clock != null) clock.ReleaseModalPause();
         if (Time.timeScale == 0f) Time.timeScale = worldScale;
+    }
+
+    private System.Collections.IEnumerator Start()
+    {
+        if(!GameSaveService.HasPending)yield break;
+        yield return null; // Map and simulation bridge finish Start before restoration.
+        yield return null; // WhiteboxBiowebTestSetup seeds its initial population one frame later.
+        if(GameSaveService.TryRestorePending(out _))NewGame();
+        else ReloadForSave(); // Discard any world that was only partly restored.
     }
 
     private void Update()
@@ -104,15 +118,22 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         pauseSettings.onClick.AddListener(() => Open(Page.Settings));
         pauseSaves.onClick.AddListener(() => Open(Page.Saves));
         pauseTutorial.onClick.AddListener(() => Open(Page.Tutorial));
-        pauseTitle.onClick.AddListener(() => Open(Page.Confirm));
+        pauseTitle.onClick.AddListener(() => Confirm("尚未保存的进度将丢失。确定回到标题吗？",ReturnToTitle));
         settingsClose.onClick.AddListener(Back);
         tutorialClose.onClick.AddListener(Back);
         infoClose.onClick.AddListener(Back);
         savesClose.onClick.AddListener(Back);
-        confirmYes.onClick.AddListener(ReturnToTitle);
+        confirmYes.onClick.AddListener(() => { Action action=confirmedAction; confirmedAction=null; action?.Invoke(); });
         confirmNo.onClick.AddListener(Back);
-        confirmMessage.text = "尚未保存的进度将丢失。确定回到标题吗？";
-        saveMessage.text = "完整生态快照尚未接入。本版禁止写入或读取不完整进度。";
+        string loadError=GameSaveService.ConsumePendingError();
+        saveMessage.text = string.IsNullOrEmpty(loadError)?"选择一个存档槽位。":"读档失败："+loadError;
+        for(int i=0;i<3;i++)
+        {
+            int slot=i+1;
+            slotLoadButtons[i].onClick.AddListener(() => RequestLoad(slot));
+            slotSaveButtons[i].onClick.AddListener(() => RequestSave(slot));
+            slotDeleteButtons[i].onClick.AddListener(() => RequestDelete(slot));
+        }
         BindSettings();
         if (tutorial != null)
         {
@@ -139,6 +160,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         tutorialPanel.SetActive(target == Page.Tutorial);
         infoPanel.SetActive(target == Page.Info);
         saveLoadPanel.SetActive(target == Page.Saves);
+        if(target==Page.Saves)RefreshSlots();
         confirmDialog.SetActive(target == Page.Confirm);
         gameMenuButton.SetActive(target == Page.Game);
         if (target == Page.Tutorial && tutorialScroll != null) tutorialScroll.verticalNormalizedPosition=1;
@@ -155,7 +177,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (busy) return;
         if (page == Page.Game) { Pause(); return; }
         if (page == Page.Pause) { Resume(); return; }
-        if (page == Page.Confirm) { Show(Page.Pause); return; }
+        if (page == Page.Confirm) { Show(confirmReturn); return; }
         Show(parent);
     }
     private void NewGame()
@@ -189,6 +211,68 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         else UnityEditor.SceneManagement.EditorSceneManager.LoadSceneInPlayMode(scene.path, new LoadSceneParameters(LoadSceneMode.Single));
 #endif
     }
+    private void ReloadForSave()
+    {
+        busy=true;
+        Scene scene=SceneManager.GetActiveScene();
+        if(scene.buildIndex>=0)SceneManager.LoadScene(scene.buildIndex);
+#if UNITY_EDITOR
+        else UnityEditor.SceneManagement.EditorSceneManager.LoadSceneInPlayMode(scene.path,new LoadSceneParameters(LoadSceneMode.Single));
+#endif
+    }
+    private void Confirm(string message,Action action)
+    {
+        if(busy)return;
+        confirmReturn=page;
+        confirmedAction=action;
+        confirmMessage.text=message;
+        Show(Page.Confirm);
+    }
+    private void RefreshSlots()
+    {
+        if(slotLabels==null||slotLabels.Length!=3)return;
+        for(int i=0;i<3;i++)
+        {
+            var info=GameSaveService.ReadSlot(i+1);
+            string date=DateTime.TryParse(info.timestamp,null,
+                System.Globalization.DateTimeStyles.RoundtripKind,out DateTime parsed)
+                ?parsed.ToLocalTime().ToString("yyyy-MM-dd HH:mm"):info.timestamp;
+            slotLabels[i].text=!info.exists ? $"槽位 {i+1} · 空白" :
+                !info.valid ? $"槽位 {i+1} · 文件损坏" :
+                $"槽位 {i+1} · 第 {info.day} 日{(info.backup?" · 备份":"")}\n{date}";
+            slotLoadButtons[i].interactable=info.valid;
+            slotSaveButtons[i].gameObject.SetActive(inGame);
+            slotDeleteButtons[i].gameObject.SetActive(inGame && info.exists);
+        }
+    }
+    private void RequestSave(int slot)
+    {
+        if(!inGame)return;
+        var info=GameSaveService.ReadSlot(slot);
+        Confirm(info.exists?$"覆盖槽位 {slot} 的已有存档？":$"保存到槽位 {slot}？",()=>
+        {
+            Show(Page.Saves);
+            saveMessage.text=GameSaveService.TrySave(slot,out string error)?"存档完成。":"存档失败："+error;
+            RefreshSlots();
+        });
+    }
+    private void RequestLoad(int slot)
+    {
+        Confirm($"读取槽位 {slot}？当前未保存的进度会丢失。",()=>
+        {
+            if(GameSaveService.TryPrepareLoad(slot,out string error))ReloadForSave();
+            else {Show(Page.Saves);saveMessage.text="读档失败："+error;RefreshSlots();}
+        });
+    }
+    private void RequestDelete(int slot)
+    {
+        Confirm($"永久删除槽位 {slot} 的存档？",()=>
+        {
+            Show(Page.Saves);
+            saveMessage.text=GameSaveService.TryDelete(slot,out string error)?"存档已删除。":"删除失败："+error;
+            RefreshSlots();
+        });
+    }
     private void UpdateSafeArea()
     {
         if (safeArea == null || Screen.width <= 0 || Screen.height <= 0) return;
@@ -218,12 +302,64 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             if(view==null)continue;
             var paper=view.transform.Find("Paper") as RectTransform;
             if(paper==null)continue;
+            if(view==tutorialPanel)LayoutTutorial(safeArea.rect.height>safeArea.rect.width*1.18f);
             float scale=Mathf.Min(1f,(safeArea.rect.width-24f)/paper.sizeDelta.x,
                 (safeArea.rect.height-24f)/paper.sizeDelta.y);
             paper.localScale=Vector3.one*Mathf.Max(.25f,scale);
         }
         var toast=safeArea.Find("EcologyNewsToast") as RectTransform;
         if(toast!=null)toast.localScale=Vector3.one*Mathf.Min(1f,(safeArea.rect.width-24f)/toast.sizeDelta.x);
+    }
+    private void LayoutTutorial(bool portrait)
+    {
+        var paper=tutorialPanel.transform.Find("Paper") as RectTransform;
+        if(paper==null)return;
+        paper.sizeDelta=portrait?new Vector2(680,1040):new Vector2(960,620);
+        var heading=paper.Find("Heading") as RectTransform;
+        var close=paper.Find("Close") as RectTransform;
+        if(heading!=null)
+        {
+            heading.anchoredPosition=new Vector2(0,portrait?468:259);
+            heading.sizeDelta=new Vector2(portrait?530:800,52);
+        }
+        if(close!=null)close.anchoredPosition=new Vector2(portrait?295:435,portrait?475:265);
+        for(int i=0;i<categoryButtons.Length;i++)
+        {
+            var item=(RectTransform)categoryButtons[i].transform;
+            item.sizeDelta=portrait?new Vector2(145,46):new Vector2(205,44);
+            item.anchoredPosition=portrait?
+                new Vector2(-225+(i%4)*150,397-(i/4)*52):new Vector2(-337,201-i*49);
+            categoryLabels[i].fontSize=portrait?18:19;
+            ((RectTransform)categoryLabels[i].transform).sizeDelta=item.sizeDelta-new Vector2(8,4);
+        }
+        for(int i=0;i<pageButtons.Length;i++)
+        {
+            var item=(RectTransform)pageButtons[i].transform;
+            item.sizeDelta=portrait?new Vector2(110,43):new Vector2(123,43);
+            item.anchoredPosition=portrait?
+                new Vector2(-230+i*116,286):new Vector2(-172+i*130,171);
+            pageLabels[i].fontSize=portrait?16:17;
+            ((RectTransform)pageLabels[i].transform).sizeDelta=item.sizeDelta-new Vector2(8,4);
+            var pages=tutorial.categories[currentCategory].pages;
+            if(i<pages.Length)
+            {
+                string shortTitle=pages[i].title;
+                int limit=portrait?5:6;
+                if(shortTitle.Length>limit)shortTitle=shortTitle.Substring(0,limit)+"…";
+                pageLabels[i].text=(i==currentPage?"◆":"")+shortTitle;
+            }
+        }
+        bool art=tutorialIllustration!=null&&tutorialIllustration.gameObject.activeSelf;
+        var body=(RectTransform)tutorialScroll.transform;
+        body.sizeDelta=portrait?new Vector2(590,art?600:745):new Vector2(642,art?260:380);
+        body.anchoredPosition=portrait?new Vector2(0,art?-210:-129):
+            new Vector2(119,art?-136:-60);
+        if(tutorialIllustration!=null)
+        {
+            var illustration=(RectTransform)tutorialIllustration.transform;
+            illustration.sizeDelta=portrait?new Vector2(550,145):new Vector2(550,145);
+            illustration.anchoredPosition=portrait?new Vector2(0,177):new Vector2(119,68);
+        }
     }
 
     private void BindSettings()
@@ -333,7 +469,15 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         currentPage=index;
         for(int i=0;i<pageButtons.Length;i++)
             if(i<pages.Length)pageLabels[i].text=(i==index?"◆ ":"  ")+pages[i].title;
-        tutorialBody.text="<size=130%>"+pages[index].title+"</size>\n\n"+pages[index].content;
+        string content=Application.isMobilePlatform&&!string.IsNullOrEmpty(pages[index].mobileContent)
+            ?pages[index].mobileContent:pages[index].content;
+        tutorialBody.text="<size=130%>"+pages[index].title+"</size>\n\n"+content;
+        if(tutorialIllustration!=null)
+        {
+            tutorialIllustration.sprite=pages[index].illustration;
+            tutorialIllustration.gameObject.SetActive(pages[index].illustration!=null);
+            LayoutTutorial(safeArea.rect.height>safeArea.rect.width*1.18f);
+        }
         if(tutorialScroll!=null)tutorialScroll.verticalNormalizedPosition=1;
     }
 }

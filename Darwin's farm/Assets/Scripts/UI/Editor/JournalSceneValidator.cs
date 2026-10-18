@@ -33,12 +33,22 @@ public static class JournalSceneValidator
                      "settingsClose", "tutorialClose", "infoClose", "savesClose", "confirmYes", "confirmNo",
                      "confirmMessage", "saveMessage", "masterSlider", "musicSlider", "effectsSlider",
                      "qualityDropdown", "resolutionDropdown", "fullscreenToggle", "resolutionRow", "fullscreenRow",
-                     "tutorial", "tutorialBody", "tutorialScroll", "infoScroll"})
+                     "tutorial", "tutorialBody", "tutorialScroll", "tutorialIllustration", "infoScroll"})
         {
             var property = serialized.FindProperty(name);
             Require(property != null && property.objectReferenceValue != null, name + " unassigned");
         }
         Require(root.GetComponentsInChildren<Button>(true).Length >= 20, "Expected authored buttons missing");
+        var categories=serialized.FindProperty("categoryButtons");
+        var pages=serialized.FindProperty("pageButtons");
+        Require(categories.arraySize==7&&pages.arraySize==5,"Seven-chapter navigation is incomplete");
+        foreach(string field in new[]{"slotLoadButtons","slotSaveButtons","slotDeleteButtons","slotLabels"})
+            Require(serialized.FindProperty(field).arraySize==3,field+" has no three-slot binding");
+        var database=serialized.FindProperty("tutorial").objectReferenceValue as TutorialDatabase;
+        Require(database.categories.Length==7&&database.categories.Sum(x=>x.pages.Length)==26,
+            "Tutorial content is incomplete");
+        Require(database.categories.SelectMany(x=>x.pages).Count(x=>x.illustration!=null)>=8,
+            "Tutorial illustrations are not connected");
         Require(root.GetComponentsInChildren<TextMeshProUGUI>(true).All(x => x.font != null),
             "One or more labels has no font");
         Require(root.GetComponentsInChildren<Image>(true).Any(x => x.sprite != null && x.sprite.name == "TitleLandscape"),
