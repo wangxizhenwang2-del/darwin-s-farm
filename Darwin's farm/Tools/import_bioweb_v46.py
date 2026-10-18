@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {{fileID: 11500000, guid: {SCRIPT_GUID}, type: 3}}
-  m_Name: {yaml_string(name)}
+  m_Name: {yaml_string(stem)}
   m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
   speciesName: {yaml_string(name)}
   sprite: {sprite_ref}

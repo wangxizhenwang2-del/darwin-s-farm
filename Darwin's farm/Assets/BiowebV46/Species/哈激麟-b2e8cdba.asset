@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4dba79df3cdc97a43a021e65f117e9a0, type: 3}
-  m_Name: "\u54c8\u6fc0\u9e9f"
+  m_Name: "\u54c8\u6fc0\u9e9f-b2e8cdba"
   m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
   speciesName: "\u54c8\u6fc0\u9e9f"
   sprite: {fileID: 21300000, guid: 012cea5d95c24170a5019df980dd1d7a, type: 3}
