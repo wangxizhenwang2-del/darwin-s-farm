@@ -180,24 +180,10 @@ public static class SpeciesUnlockSceneInstaller
     private static Sprite[] Slice(string name)
     {
         string path = Art + name + ".png";
-        var importer = AssetImporter.GetAtPath(path) as TextureImporter;
-        if (importer == null) throw new IOException("Missing unlock stickers: " + path);
-        importer.textureType = TextureImporterType.Sprite;
-        importer.spriteImportMode = SpriteImportMode.Multiple;
-        importer.mipmapEnabled = false;
-        var slices = new SpriteMetaData[6];
-        for (int row = 0; row < 2; row++)
-            for (int column = 0; column < 3; column++)
-            {
-                int index = row * 3 + column;
-                slices[index] = new SpriteMetaData {
-                    name = name + index,
-                    rect = new Rect(column * 418, (1 - row) * 627, 418, 627),
-                    alignment = (int)SpriteAlignment.Center
-                };
-            }
-        importer.spritesheet = slices;
-        importer.SaveAndReimport();
+        // The six sprite rectangles are authored in the texture's .meta file.
+        // Read those sub-assets without changing the importer during scene installation.
+        if (AssetImporter.GetAtPath(path) == null)
+            throw new IOException("Missing unlock stickers: " + path);
         var results = new Sprite[6];
         foreach (UnityEngine.Object item in AssetDatabase.LoadAllAssetsAtPath(path))
             if (item is Sprite sprite)
