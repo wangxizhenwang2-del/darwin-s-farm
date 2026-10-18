@@ -28,6 +28,8 @@ public partial class SimulationController
         Add(data, EnableRandomEvents ? "random:1" : "random:0");
         Add(data, EnableNeighborMovementFormula ? "movement-b:1" :
             "movement-b:0");
+        Add(data, "neighbor-lambda:" +
+            NeighborOpportunityLambda.ToString("R", CultureInfo.InvariantCulture));
         if (enableV62Mobility)
         {
             Add(data, "movement-v62:1");
