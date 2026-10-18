@@ -154,7 +154,12 @@ public partial class MapTileColorTransitionSystem
                 if (renderer.enabled && renderer.gameObject.activeInHierarchy && IsGroundMesh(biome, renderer.name))
                 { ground = renderer; break; }
             MeshFilter filter = ground == null ? null : ground.GetComponent<MeshFilter>();
-            Material source = ground == null ? null : ground.sharedMaterial;
+            // The improved volcano uses lava on the top and NPR on its sides.
+            // Preserve all native slots; only the joining rim needs an NPR source.
+            Material source = null;
+            if (ground != null)
+                foreach (Material slot in ground.sharedMaterials)
+                    if (slot != null && slot.shader.name == "Darwin/Moebius NPR") { source = slot; break; }
             if (filter == null || filter.sharedMesh == null || source == null ||
                 source.shader.name != "Darwin/Moebius NPR") return null;
             if (!filter.sharedMesh.isReadable)

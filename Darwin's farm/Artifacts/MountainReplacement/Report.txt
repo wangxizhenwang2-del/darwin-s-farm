@@ -1,0 +1,22 @@
+已完成：将改良后的 SnowMountain_Moebius、Volcano_Moebius 示例接入 WhiteBox 的雪山与火山。
+
+资源：
+- 源场景：Assets/Rendering/Moebius/Samples/Biomes/Scenes 下的两个同名场景，原场景、材质和导入设置未修改。
+- 正式适配：Assets/Rendering/WhiteBoxCalibratedBiomes/SnowMountain_WhiteBoxVisual.prefab、Volcano_WhiteBoxVisual.prefab；沿用原 GUID 和 WhiteBox 引用。
+- 保留完整地块布局，按地面 footprint 适配，不再把整块地貌缩成小摆件；保留熔岩顶面与原多材质槽。
+- 雪山接入 Fine Snowfall、Larger Drawn Snowflakes；火山接入 12 秒喷发、灰烬、余烬及两个蒸汽口。
+- 预览不启动粒子，正式放置后初始化；粒子使用地块边界和山体接触网格，动物避障排除粒子专用碰撞体。
+- 山体采用真实网格轮廓作为导航障碍；地貌切换和高度变化继续使用现有流程。
+- 雪山生成可读取网格副本，顶点流和索引流与原模型逐字节一致，原模型仍保持不可读取设置。
+
+验证：
+- Unity 6000.2.9f1 Play Mode 完成 21 组整合检查，详见 Integration.md。
+- 32 个地貌/旋转组合，原材质、UV、接缝、碰撞归属、建造预览通过。
+- 雪山和火山分别通过 120 秒模拟及 5 秒实际行走检查，数量与身份保持一致。
+- 56 对有向地貌转换、112 次往返，及 16 次中途打断后清理通过。
+- 28 秒实际粒子观察中，全部 7 个发射器均出现活跃粒子，详见 LiveParticles.json。
+- 最终可读取副本重新生成后，两个地块四个旋转方向均完成导航构建，无新增控制台错误。
+- 编辑器内观察并保存 Overview.png、SnowMountain.png、Volcano.png。
+
+维护入口：Tools > Darwin's Farm > Update snow and volcano artwork，仅重新生成这两个适配预制体。
+未执行独立 Player 打包或真机验证。验证布局仅存在于运行时，已退出 Play Mode，WhiteBox 未保存测试地块。

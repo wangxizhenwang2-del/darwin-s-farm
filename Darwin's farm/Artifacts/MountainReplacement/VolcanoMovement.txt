@@ -1,0 +1,2 @@
+- Volcano: Real terrain movement checks: One representative / 120 simulated seconds: 199.8m, reached 61/62 targets, longest stop 0.04s, max sideways visual drift 0.000000m.
+- Volcano: live movement 5.46m / 5 seconds, identity/count preserved.

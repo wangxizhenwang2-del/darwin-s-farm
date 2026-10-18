@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.Collections;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -244,37 +245,114 @@ public static class BiomeArtworkRolloutSetup
     private static void SaveMountain(bool volcano)
     {
         string name = volcano ? "Volcano" : "SnowMountain";
+        Scene sourceScene = EditorSceneManager.OpenPreviewScene(Samples + "Scenes/" + name + "_Moebius.unity");
         Scene scene = EditorSceneManager.NewPreviewScene();
         GameObject wrapper = new GameObject(name + "_WhiteBoxVisual");
         SceneManager.MoveGameObjectToScene(wrapper, scene);
         try
         {
-            GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            ground.name = "BiomeGround";
-            ground.transform.SetParent(wrapper.transform, false);
-            ground.transform.localPosition = Vector3.down * .25f;
-            ground.transform.localScale = new Vector3(15f, .5f, 15f);
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(volcano ?
-                "Assets/Rendering/Moebius/Samples/Lava/Materials/AshPaperGround.mat" :
-                "Assets/Rendering/Moebius/Content/Biomes/Tundra/Materials/Tundra_Snow_Ivory.mat");
-            ground.GetComponent<Renderer>().sharedMaterial = material;
-            UnityEngine.Object.DestroyImmediate(ground.GetComponent<Collider>());
-            GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(volcano ?
-                Samples + "Prefabs/Volcano_Moebius.prefab" : Samples + "Prefabs/SnowMountain_Moebius.prefab");
+            GameObject source = sourceScene.GetRootGameObjects().First(g => g.GetComponentsInChildren<ParticleSystem>(true).Length > 0);
             GameObject model = UnityEngine.Object.Instantiate(source, wrapper.transform, false);
-            model.name = volcano ? "VolcanoModel" : "Mountain_Snow";
-            Renderer[] renderers = model.GetComponentsInChildren<Renderer>(true)
-                .Where(r => r.enabled && r.gameObject.activeInHierarchy).ToArray();
-            Bounds bounds = renderers[0].bounds;
-            foreach (Renderer renderer in renderers.Skip(1)) bounds.Encapsulate(renderer.bounds);
-            float factor = (volcano ? 6.5f : 5.8f) / Mathf.Max(bounds.size.x, bounds.size.z);
-            Vector3 pivot = model.transform.localPosition;
+            model.name = name + "Model";
+            model.transform.SetPositionAndRotation(source.transform.position, source.transform.rotation);
+            model.transform.localScale = source.transform.lossyScale;
+            // Snow's main mesh lives on the same root as every prop. Give it a
+            // leaf transform so terrain projection/growth cannot move the whole tile.
+            if (model.TryGetComponent<MeshRenderer>(out var mainRenderer))
+            {
+                var mountain = new GameObject("Mountain_Snow", typeof(MeshFilter), typeof(MeshRenderer));
+                mountain.transform.SetParent(model.transform, false);
+                mountain.GetComponent<MeshFilter>().sharedMesh = model.GetComponent<MeshFilter>().sharedMesh;
+                EditorUtility.CopySerialized(mainRenderer, mountain.GetComponent<MeshRenderer>());
+                UnityEngine.Object.DestroyImmediate(mainRenderer);
+                UnityEngine.Object.DestroyImmediate(model.GetComponent<MeshFilter>());
+            }
+            var readableMeshes = new Dictionary<Mesh, Mesh>();
+            foreach (var filter in model.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (!filter.sharedMesh || filter.sharedMesh.isReadable) continue;
+                var original = filter.sharedMesh;
+                if (!readableMeshes.TryGetValue(original, out var readable))
+                    readableMeshes.Add(original, readable = SaveReadableMountainMesh(original, name));
+                filter.sharedMesh = readable;
+            }
+            var ground = model.GetComponentsInChildren<MeshRenderer>(true).First(r => r.name == "Biome Foundation");
+            ground.name = "BiomeGround";
+            PreserveReadableGround(ground.GetComponent<MeshFilter>(), name);
+            Bounds bounds = ground.bounds;
+            float factor = 15f / Mathf.Max(bounds.size.x, bounds.size.z);
             model.transform.localScale *= factor;
-            model.transform.localPosition = (pivot - new Vector3(bounds.center.x, bounds.min.y, bounds.center.z)) * factor +
-                new Vector3(-2.5f, .02f, 2f);
+            model.transform.localPosition = (model.transform.localPosition -
+                new Vector3(bounds.center.x, bounds.max.y, bounds.center.z)) * factor;
+            foreach (var preview in model.GetComponentsInChildren<Darwin.Rendering.MoebiusParticlePreview>(true))
+                UnityEngine.Object.DestroyImmediate(preview);
+            foreach (var particles in model.GetComponentsInChildren<ParticleSystem>(true))
+                UnityEngine.Object.DestroyImmediate(particles.gameObject);
+            // The demo's extra underside slab is superseded by WhiteBox's rim.
+            foreach (var renderer in model.GetComponentsInChildren<Renderer>(true))
+                if (renderer.name.StartsWith("Biome Foundation")) renderer.gameObject.SetActive(false);
+            foreach (var collider in model.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
+
+            Matrix4x4 sceneToTile = model.transform.localToWorldMatrix * source.transform.worldToLocalMatrix;
+            var rig = new GameObject(name + "VFX");
+            rig.transform.SetParent(wrapper.transform, false);
+            foreach (var original in source.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                var particles = UnityEngine.Object.Instantiate(original.gameObject, rig.transform, false).GetComponent<ParticleSystem>();
+                particles.name = original.name;
+                particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+                particles.transform.localPosition = sceneToTile.MultiplyPoint3x4(original.transform.position);
+                particles.transform.localRotation = sceneToTile.rotation * original.transform.rotation;
+                particles.transform.localScale = original.transform.lossyScale * factor;
+                var main = particles.main; main.playOnAwake = false;
+                main.scalingMode = ParticleSystemScalingMode.Hierarchy;
+            }
+            var adapter = rig.AddComponent<BiomeTileVfx>();
+            var settings = new SerializedObject(adapter);
+            settings.FindProperty("useAuthoredCollision").boolValue = true;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+            rig.SetActive(false);
             PrefabUtility.SaveAsPrefabAsset(wrapper, Folder + name + "_WhiteBoxVisual.prefab");
         }
-        finally { EditorSceneManager.ClosePreviewScene(scene); }
+        finally { EditorSceneManager.ClosePreviewScene(scene); EditorSceneManager.ClosePreviewScene(sourceScene); }
+    }
+
+    private static Mesh SaveReadableMountainMesh(Mesh source, string biome)
+    {
+        string folder = Folder + "NativeGroundMeshes";
+        if (!AssetDatabase.IsValidFolder(folder)) AssetDatabase.CreateFolder(Folder.TrimEnd('/'), "NativeGroundMeshes");
+        string path = folder + "/" + biome + "_" + source.name.Replace('/', '_') + "_Readable.asset";
+        var copy = new Mesh { name = source.name + " (WhiteBox Readable)" };
+        using (var input = MeshUtility.AcquireReadOnlyMeshData(source))
+        {
+            var output = Mesh.AllocateWritableMeshData(1);
+            var from = input[0]; var to = output[0];
+            to.SetVertexBufferParams(from.vertexCount, source.GetVertexAttributes());
+            for (int stream = 0; stream < from.vertexBufferCount; stream++)
+                to.GetVertexData<byte>(stream).CopyFrom(from.GetVertexData<byte>(stream));
+            int indexBytes = from.GetIndexData<byte>().Length;
+            to.SetIndexBufferParams(indexBytes / (source.indexFormat == UnityEngine.Rendering.IndexFormat.UInt16 ? 2 : 4), source.indexFormat);
+            to.GetIndexData<byte>().CopyFrom(from.GetIndexData<byte>());
+            to.subMeshCount = from.subMeshCount;
+            for (int i = 0; i < from.subMeshCount; i++)
+                to.SetSubMesh(i, from.GetSubMesh(i), UnityEngine.Rendering.MeshUpdateFlags.DontRecalculateBounds);
+            Mesh.ApplyAndDisposeWritableMeshData(output, copy, UnityEngine.Rendering.MeshUpdateFlags.DontRecalculateBounds);
+        }
+        copy.bounds = source.bounds;
+        Mesh saved = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+        if (saved == null) { saved = copy; AssetDatabase.CreateAsset(saved, path); }
+        else { EditorUtility.CopySerialized(copy, saved); UnityEngine.Object.DestroyImmediate(copy); EditorUtility.SetDirty(saved); }
+        AssetDatabase.SaveAssetIfDirty(saved);
+        return saved;
+    }
+
+    [MenuItem("Tools/Darwin's Farm/Update snow and volcano artwork")]
+    public static void UpdateMountainArtwork()
+    {
+        if (Application.isPlaying) throw new InvalidOperationException("Exit Play mode first.");
+        SaveMountain(false); SaveMountain(true);
+        // Existing WhiteBox references/GUIDs remain valid; other biomes are untouched.
+        Debug.Log("Updated WhiteBox snow and volcano adapters from the authored sample scenes, including native particles.");
     }
 
     private static bool Ground(BiomeType biome, string name)

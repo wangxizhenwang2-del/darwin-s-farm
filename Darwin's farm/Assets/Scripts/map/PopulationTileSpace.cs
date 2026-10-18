@@ -235,6 +235,9 @@ public sealed class PopulationTileSpace
     private bool IsObstacle(Collider collider)
     {
         if (collider == null || !collider.enabled || collider.isTrigger) return false;
+        // Native VFX contacts include snow drifts and other walkable decoration.
+        // Their dedicated proxies must not obstruct the animal's swept capsule.
+        if (collider.name.StartsWith("ParticleCollision_")) return false;
         if (collider.GetComponentInParent<WhiteboxPopulation>() != null) return false;
         // Other terrain is handled by the owning boundary and NavMesh.
         MapTileInstance owner = collider.GetComponentInParent<MapTileInstance>();
