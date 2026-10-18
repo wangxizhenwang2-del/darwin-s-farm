@@ -7,6 +7,9 @@ public sealed class GameUITheme : ScriptableObject
     [SerializeField] private TMPro.TMP_FontAsset textMeshProFont;
     private static GameUITheme loaded;
     private static TMPro.TMP_FontAsset tmpFont;
+    // Keep the existing title/body hierarchy with a modest increase for small copy.
+    public static int ReadableFontSize(float size) =>
+        size >= 48f ? Mathf.RoundToInt(size) : Mathf.Max(20, Mathf.RoundToInt(size * 1.14f));
     public static TMPro.TMP_FontAsset TMPFont
     {
         get

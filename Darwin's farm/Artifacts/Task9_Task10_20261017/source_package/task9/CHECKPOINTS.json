@@ -1,0 +1,516 @@
+{
+  "color": {
+    "132": {
+      "S": 70649.09375,
+      "R": 103200,
+      "species": {
+        "鸡": {
+          "N": 3366,
+          "births": 99,
+          "deaths": 68,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 80,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 374,
+          "births": 0,
+          "deaths": 0,
+          "predationDeaths": 0,
+          "size": 14,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 0.0
+        }
+      }
+    },
+    "165": {
+      "S": 100000.0,
+      "R": 101880,
+      "species": {
+        "鸡": {
+          "N": 4073,
+          "births": 76,
+          "deaths": 61,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 80,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 430,
+          "births": 6,
+          "deaths": 5,
+          "predationDeaths": 0,
+          "size": 14,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "232": {
+      "S": 90000.0,
+      "R": 90000,
+      "species": {
+        "鸡": {
+          "N": 4415,
+          "births": 54,
+          "deaths": 53,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 80,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 425,
+          "births": 4,
+          "deaths": 5,
+          "predationDeaths": 0,
+          "size": 14,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "332": {
+      "S": 90000.0,
+      "R": 90000,
+      "species": {
+        "鸡": {
+          "N": 4511,
+          "births": 56,
+          "deaths": 55,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 81,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 318,
+          "births": 2,
+          "deaths": 3,
+          "predationDeaths": 0,
+          "size": 12,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "432": {
+      "S": 90000.0,
+      "R": 90000,
+      "species": {
+        "鸡": {
+          "N": 4612,
+          "births": 56,
+          "deaths": 56,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 82,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 196,
+          "births": 2,
+          "deaths": 3,
+          "predationDeaths": 0,
+          "size": 11,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "532": {
+      "S": 90000.0,
+      "R": 90000,
+      "species": {
+        "鸡": {
+          "N": 4682,
+          "births": 58,
+          "deaths": 57,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 82,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 107,
+          "births": 1,
+          "deaths": 2,
+          "predationDeaths": 0,
+          "size": 10,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "632": {
+      "S": 90000.0,
+      "R": 90000,
+      "species": {
+        "鸡": {
+          "N": 4733,
+          "births": 58,
+          "deaths": 58,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 82,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 58,
+          "births": 0,
+          "deaths": 1,
+          "predationDeaths": 0,
+          "size": 10,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "750": {
+      "S": 90000.0,
+      "R": 90000,
+      "species": {
+        "鸡": {
+          "N": 4768,
+          "births": 58,
+          "deaths": 58,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 10,
+          "fertility": 82,
+          "adultSatisfaction": 1.0
+        },
+        "彩鸡": {
+          "N": 28,
+          "births": 0,
+          "deaths": 0,
+          "predationDeaths": 0,
+          "size": 10,
+          "movement": 15,
+          "fertility": 75,
+          "adultSatisfaction": 1.0
+        }
+      }
+    }
+  },
+  "predator": {
+    "429": {
+      "S": 50063.50390625,
+      "R": 115720,
+      "species": {
+        "鸡": {
+          "N": 5525,
+          "births": 78,
+          "deaths": 64,
+          "predationDeaths": 0,
+          "size": 15,
+          "movement": 32,
+          "fertility": 60,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 267,
+          "births": 0,
+          "deaths": 0,
+          "predationDeaths": 0,
+          "size": 20,
+          "movement": 35,
+          "fertility": 65,
+          "adultSatisfaction": 0.0
+        }
+      }
+    },
+    "445": {
+      "S": 100000.0,
+      "R": 126600,
+      "species": {
+        "鸡": {
+          "N": 5244,
+          "births": 142,
+          "deaths": 145,
+          "predationDeaths": 59,
+          "size": 11,
+          "movement": 34,
+          "fertility": 59,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 443,
+          "births": 26,
+          "deaths": 12,
+          "predationDeaths": 0,
+          "size": 19,
+          "movement": 39,
+          "fertility": 61,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "459": {
+      "S": 100000.0,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 5080,
+          "births": 175,
+          "deaths": 196,
+          "predationDeaths": 96,
+          "size": 9,
+          "movement": 38,
+          "fertility": 58,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 688,
+          "births": 39,
+          "deaths": 18,
+          "predationDeaths": 0,
+          "size": 19,
+          "movement": 46,
+          "fertility": 59,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "475": {
+      "S": 100000.0,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 4313,
+          "births": 204,
+          "deaths": 276,
+          "predationDeaths": 183,
+          "size": 9,
+          "movement": 39,
+          "fertility": 52,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 1137,
+          "births": 62,
+          "deaths": 27,
+          "predationDeaths": 0,
+          "size": 16,
+          "movement": 52,
+          "fertility": 56,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "485": {
+      "S": 282262.8125,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 2906,
+          "births": 133,
+          "deaths": 339,
+          "predationDeaths": 280,
+          "size": 9,
+          "movement": 40,
+          "fertility": 47,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 1553,
+          "births": 83,
+          "deaths": 35,
+          "predationDeaths": 0,
+          "size": 13,
+          "movement": 55,
+          "fertility": 55,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "490": {
+      "S": 457832.6875,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 1612,
+          "births": 74,
+          "deaths": 371,
+          "predationDeaths": 338,
+          "size": 10,
+          "movement": 41,
+          "fertility": 47,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 1814,
+          "births": 97,
+          "deaths": 42,
+          "predationDeaths": 0,
+          "size": 13,
+          "movement": 55,
+          "fertility": 55,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "492": {
+      "S": 649799.3125,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 951,
+          "births": 43,
+          "deaths": 373,
+          "predationDeaths": 354,
+          "size": 9,
+          "movement": 42,
+          "fertility": 47,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 1930,
+          "births": 101,
+          "deaths": 42,
+          "predationDeaths": 0,
+          "size": 13,
+          "movement": 56,
+          "fertility": 54,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "494": {
+      "S": 874777.875,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 522,
+          "births": 23,
+          "deaths": 162,
+          "predationDeaths": 152,
+          "size": 9,
+          "movement": 43,
+          "fertility": 46,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 1965,
+          "births": 9,
+          "deaths": 19,
+          "predationDeaths": 0,
+          "size": 11,
+          "movement": 56,
+          "fertility": 54,
+          "adultSatisfaction": 1.0
+        }
+      }
+    },
+    "495": {
+      "S": 986887.6875,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 445,
+          "births": 20,
+          "deaths": 97,
+          "predationDeaths": 88,
+          "size": 9,
+          "movement": 44,
+          "fertility": 46,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 1520,
+          "births": 0,
+          "deaths": 445,
+          "predationDeaths": 0,
+          "size": 10,
+          "movement": 56,
+          "fertility": 54,
+          "adultSatisfaction": 0.6362733840942383
+        }
+      }
+    },
+    "500": {
+      "S": 988378.9375,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 403,
+          "births": 17,
+          "deaths": 11,
+          "predationDeaths": 4,
+          "size": 9,
+          "movement": 46,
+          "fertility": 44,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 93,
+          "births": 0,
+          "deaths": 72,
+          "predationDeaths": 0,
+          "size": 10,
+          "movement": 58,
+          "fertility": 53,
+          "adultSatisfaction": 0.2891979515552521
+        }
+      }
+    },
+    "505": {
+      "S": 856673.0,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 450,
+          "births": 20,
+          "deaths": 8,
+          "predationDeaths": 0,
+          "size": 9,
+          "movement": 46,
+          "fertility": 45,
+          "adultSatisfaction": 1.0
+        },
+        "灵感菇狸": {
+          "N": 3,
+          "births": 0,
+          "deaths": 4,
+          "predationDeaths": 0,
+          "size": 11,
+          "movement": 58,
+          "fertility": 51,
+          "adultSatisfaction": 0.0
+        }
+      }
+    },
+    "512": {
+      "S": 985149.375,
+      "R": 130000,
+      "species": {
+        "鸡": {
+          "N": 531,
+          "births": 21,
+          "deaths": 9,
+          "predationDeaths": 0,
+          "size": 9,
+          "movement": 48,
+          "fertility": 41,
+          "adultSatisfaction": 1.0
+        }
+      }
+    }
+  }
+}

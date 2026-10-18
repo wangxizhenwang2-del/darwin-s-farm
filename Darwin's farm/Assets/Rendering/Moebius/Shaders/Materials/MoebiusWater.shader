@@ -52,7 +52,7 @@ Shader "Darwin/Moebius Water"
         _WaterShadowColor("Shadow Ink Color", Color) = (0.19,0.32,0.34,1)
         _WaterShadowStrength("Shadow Ink Strength", Range(0,1)) = 0.65
         _WaterShadowDensity("Shadow Hatch Density (Lines / Metre)", Range(1,24)) = 8
-        [Enum(Composite,0,Flow,1,WaveHeight,2,ShoreDistance,3,Foam,4,Normals,5,ImpactFoam,6,ImpactRipples,7)] _DebugView("Debug View", Float) = 0
+        [Enum(Darwin.Rendering.WaterDebugView)] _DebugView("Debug View", Float) = 0
         [Toggle] _EnableWaterfallImpact("Enable Waterfall Impact",Float)=0
         _ImpactPointA("Impact Line Start (World)",Vector)=(-2.9,0,1.7,0)
         _ImpactPointB("Impact Line End (World)",Vector)=(2.9,0,1.7,0)

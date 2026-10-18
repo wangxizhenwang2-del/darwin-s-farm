@@ -20,6 +20,8 @@ namespace Darwin.Rendering
         public Material bankMaterial;
         public Material foundationMaterial;
         [Min(.1f)] public float foundationDepth = .6f;
+        [Tooltip("Disable when land is already rendered by the map terrain system.")]
+        public bool generateLandFoundations = true;
         [Header("Existing Waterfall Style")]
         public GameObject waterfallPrefab;
         public Material impactMaterial;
@@ -31,8 +33,18 @@ namespace Darwin.Rendering
         public int RebuildCount { get; private set; }
         public string LastError { get; private set; }
         public GameObject GeneratedRoot => generated;
+        public bool TryGetWater(MoebiusRiverTile tile, out MeshRenderer renderer) => waterRenderers.TryGetValue(tile, out renderer);
 
         readonly List<UnityEngine.Object> owned = new List<UnityEngine.Object>();
+        sealed class TileGeometry
+        {
+            public GameObject root;
+            public int signature;
+            public readonly List<UnityEngine.Object> resources = new List<UnityEngine.Object>();
+        }
+        readonly Dictionary<MoebiusRiverTile, TileGeometry> geometry = new Dictionary<MoebiusRiverTile, TileGeometry>();
+        TileGeometry currentGeometry;
+        int geometrySettings;
         readonly Dictionary<MoebiusRiverTile, MeshRenderer> waterRenderers = new Dictionary<MoebiusRiverTile, MeshRenderer>();
         MoebiusRiverTile[] tiles = Array.Empty<MoebiusRiverTile>();
         GameObject generated;
@@ -74,6 +86,7 @@ namespace Darwin.Rendering
 #if UNITY_EDITOR
         void EditorTick()
         {
+            if (!this) { UnityEditor.EditorApplication.update -= EditorTick; return; }
             if (Application.isPlaying || !autoRefresh || !isActiveAndEnabled || UnityEditor.EditorApplication.isCompiling ||
                 UnityEditor.EditorUtility.IsPersistent(this) || !gameObject.scene.IsValid() || !gameObject.scene.isLoaded) return;
             double now = UnityEditor.EditorApplication.timeSinceStartup;
@@ -107,22 +120,24 @@ namespace Darwin.Rendering
         }
 
         [ContextMenu("Rebuild Connections")]
-        public bool RebuildNow()
+        public bool RebuildNow() => RebuildInternal(false);
+        public bool RebuildChanged() => RebuildInternal(true);
+        bool RebuildInternal(bool incremental)
         {
             if (building || !isActiveAndEnabled) return false;
             building = true;
             try
             {
-                Clear();
+                if (!incremental) Clear();
                 var candidates = GetComponentsInChildren<MoebiusRiverTile>(); var active = new List<MoebiusRiverTile>();
                 foreach (var tile in candidates) if (tile.isActiveAndEnabled && tile.GetComponentInParent<MoebiusRiverNetwork>() == this) active.Add(tile);
                 tiles = active.ToArray();
-                if (tiles.Length == 0) { LastError = null; return true; }
+                if (tiles.Length == 0) { Clear(); LastError = null; return true; }
                 if (!bankMaterial || !foundationMaterial) throw new InvalidOperationException("Assign the network's bank and foundation materials.");
                 foreach (var tile in tiles)
                     if ((tile.transform.lossyScale - Vector3.one).sqrMagnitude > .0001f || Vector3.Dot(tile.transform.up, Vector3.up) < .9999f)
                         throw new InvalidOperationException("River tile wrappers need unit world scale and horizontal terrain. Scale the model inside the wrapper instead.");
-                generated = NewObject("Generated River Connections", transform);
+                if (!generated) generated = NewObject("Generated River Connections", transform);
                 var allEnds = new List<RiverEnd>(); var byTile = new Dictionary<MoebiusRiverTile, List<RiverEnd>>();
                 float floor = transform.position.y;
                 foreach (var tile in tiles)
@@ -135,13 +150,49 @@ namespace Darwin.Rendering
                         var end = Describe(tile, port); ends.Add(end); allEnds.Add(end);
                     }
                 }
+                int settingsSignature = HashCode.Combine(capInset, bankRounding, foundationDepth, lipRadius,
+                    bankMaterial, foundationMaterial, waterfallPrefab, impactMaterial);
+                settingsSignature = HashCode.Combine(settingsSignature, floor);
+                settingsSignature = HashCode.Combine(settingsSignature, generateLandFoundations);
+                var affected = new HashSet<MoebiusRiverTile>();
+                var signatures = new Dictionary<MoebiusRiverTile, int>();
                 foreach (var tile in tiles)
                 {
+                    int signature = HashCode.Combine(tile.transform.localToWorldMatrix, tile.profile,
+                        tile.waterLevel, tile.foundationTop, tile.landSurfaceHeight, tile.originalWater);
+                    foreach (var end in byTile[tile])
+                        signature = HashCode.Combine(signature, end.kind, end.neighbour,
+                            end.neighbour ? end.neighbour.transform.localToWorldMatrix : Matrix4x4.identity,
+                            end.neighbour ? end.neighbour.WorldWaterHeight : 0, end.port.center, end.port.width,
+                            end.neighbour ? end.neighbour.profile : null);
+                    foreach (var end in byTile[tile]) signature = HashCode.Combine(signature, end.bankHeight, end.lipRadius);
+                    signatures[tile] = signature;
+                    if (!geometry.TryGetValue(tile, out var cached) || cached.signature != signature || geometrySettings != settingsSignature)
+                        affected.Add(tile);
+                }
+                // Impact overlays retain the receiving mesh, so include upstream owners
+                // whenever a receiving surface is regenerated.
+                bool expanded;
+                do
+                {
+                    expanded = false;
+                    foreach (var end in allEnds)
+                        if (end.kind == RiverEndKind.Falling && affected.Contains(end.neighbour) && affected.Add(end.tile)) expanded = true;
+                } while (expanded);
+                foreach (var old in new List<MoebiusRiverTile>(geometry.Keys))
+                    if (!byTile.ContainsKey(old) || affected.Contains(old)) ClearTile(old);
+                geometrySettings = settingsSignature;
+                foreach (var tile in tiles)
+                {
+                    if (!affected.Contains(tile)) continue;
+                    currentGeometry = new TileGeometry { root = NewObject(tile.name + " Connections", generated.transform), signature = signatures[tile] };
+                    geometry.Add(tile, currentGeometry);
                     var ends = byTile[tile]; var inset = Vector4.zero;
                     foreach (var end in ends) if (end.kind == RiverEndKind.Falling) inset[(int)end.port.side] = .09f;
-                    OwnMesh("Terrain Foundation", tile, RiverConnectionGeometry.Foundation((tile.IsRiver ? tile.profile.tileSize : 17) * .5f,
-                        floor - foundationDepth - tile.transform.position.y, tile.foundationTop, inset,
-                        includeTop: !tile.IsRiver), foundationMaterial);
+                    if (tile.IsRiver || generateLandFoundations)
+                        OwnMesh("Terrain Foundation", tile, RiverConnectionGeometry.Foundation((tile.IsRiver ? tile.profile.tileSize : 17) * .5f,
+                            floor - foundationDepth - tile.transform.position.y, tile.IsRiver && tile.profile.fullTileWater ? tile.waterLevel : tile.foundationTop, inset,
+                            includeTop: !tile.IsRiver), foundationMaterial);
                     if (!tile.IsRiver) continue;
                     var material = Own(new Material(tile.profile.waterMaterial) { name = tile.name + " Connected Water", hideFlags = HideFlags.DontSave });
                     material.SetFloat("_AnimationPhase", 0); material.SetFloat("_EnableWaterfallImpact", 0);
@@ -166,21 +217,27 @@ namespace Darwin.Rendering
                     var renderer = OwnMesh("Connected Water", tile, RiverConnectionGeometry.Water(tile.profile, tile.waterLevel, ends), material);
                     renderer.shadowCastingMode = ShadowCastingMode.Off; waterRenderers.Add(tile, renderer);
                     if (tile.originalWater) tile.originalWater.forceRenderingOff = true;
-                    foreach (var end in ends) if (end.kind == RiverEndKind.Closed)
+                    foreach (var end in ends) if (end.kind == RiverEndKind.Closed && !tile.profile.fullTileWater)
                     {
                         var cap = OwnMesh("Capsule Bank " + end.port.side, tile, RiverConnectionGeometry.Cap(end, tile.waterLevel, bankRounding), bankMaterial);
-                        cap.sharedMaterials = new[] { bankMaterial, foundationMaterial }; ClosedCount++;
+                        cap.sharedMaterials = new[] { bankMaterial, foundationMaterial };
                     }
                 }
+                JoinedCount = ClosedCount = WaterfallCount = 0;
                 foreach (var end in allEnds)
                 {
+                    if (end.kind == RiverEndKind.Closed) ClosedCount++;
                     if (end.kind == RiverEndKind.Joined) JoinedCount++;
-                    else if (end.kind == RiverEndKind.Falling) { CreateWaterfall(end); WaterfallCount++; }
+                    else if (end.kind == RiverEndKind.Falling)
+                    {
+                        if (affected.Contains(end.tile)) { currentGeometry = geometry[end.tile]; CreateWaterfall(end); }
+                        WaterfallCount++;
+                    }
                 }
                 JoinedCount /= 2; LastError = null; RebuildCount++; return true;
             }
             catch (Exception error) { LastError = error.Message; Clear(); return false; }
-            finally { lastSignature = Signature(); dirty = false; building = false; }
+            finally { currentGeometry = null; lastSignature = Signature(); dirty = false; building = false; }
         }
 
         RiverEnd Describe(MoebiusRiverTile tile, RiverPort port)
@@ -197,20 +254,30 @@ namespace Darwin.Rendering
             var result = new RiverEnd { tile = tile, neighbour = neighbour, port = port, kind = RiverEndKind.Closed,
                 capInset = capInset, bankHeight = Mathf.Max(tile.profile.bankHeight, neighbour ? neighbour.WorldBankHeight - tile.transform.position.y : tile.profile.bankHeight) };
             if (!neighbour || !neighbour.IsRiver) return result;
-            var position = tile.transform.TransformPoint(port.Center);
-            foreach (var other in neighbour.profile.ports)
+            if (RiverConnectionRules.Match(tile, port, neighbour, out var other, positionTolerance))
             {
-                var opposite = neighbour.transform.TransformDirection(other.Normal);
-                var difference = neighbour.transform.TransformPoint(other.Center) - position; difference.y = 0;
-                if (Vector3.Dot(normal, opposite) > -.999f || difference.sqrMagnitude > positionTolerance * positionTolerance || Mathf.Abs(port.width - other.width) > .12f) continue;
+                if (tile.profile.fullTileWater && !neighbour.profile.fullTileWater)
+                {
+                    var center = tile.transform.InverseTransformPoint(neighbour.transform.TransformPoint(other.Center));
+                    var narrow = port; narrow.center = new Vector2(center.x, center.z); narrow.width = other.width; result.port = narrow;
+                }
                 float drop = tile.WorldWaterHeight - neighbour.WorldWaterHeight;
                 result.kind = Mathf.Abs(drop) <= heightTolerance ? RiverEndKind.Joined : drop > 0 ? RiverEndKind.Falling : RiverEndKind.Receiving;
                 if (result.kind == RiverEndKind.Joined)
                 {
+                    var position = tile.transform.TransformPoint(port.Center);
                     var common = (position + neighbour.transform.TransformPoint(other.Center)) * .5f;
                     common.y = (tile.WorldWaterHeight + neighbour.WorldWaterHeight) * .5f;
                     result.joinCenter = tile.transform.InverseTransformPoint(common);
                     result.joinWidth = (port.width + other.width) * .5f;
+                    if (tile.profile.fullTileWater || neighbour.profile.fullTileWater)
+                    {
+                        common = position + normal * (Vector3.Dot(neighbour.transform.TransformPoint(other.Center) - position, normal) * .5f);
+                        common.y = (tile.WorldWaterHeight + neighbour.WorldWaterHeight) * .5f;
+                        result.joinCenter = tile.transform.InverseTransformPoint(common);
+                        result.joinWidth = port.width;
+                        result.port = port;
+                    }
                 }
                 result.lipRadius = Mathf.Min(lipRadius, Mathf.Abs(drop) * .4f); return result;
             }
@@ -224,7 +291,7 @@ namespace Darwin.Rendering
             // Put the curved overhang beyond the upper tile's perimeter ledge, not inside its ground mesh.
             var center = end.tile.transform.TransformPoint(end.port.Center) + normal * end.lipRadius; center.y = end.neighbour.WorldWaterHeight;
             float height = end.tile.WorldWaterHeight - center.y, width = end.port.width;
-            var root = Instantiate(waterfallPrefab, generated.transform); root.name = "Waterfall " + end.tile.name + " to " + end.neighbour.name;
+            var root = Instantiate(waterfallPrefab, currentGeometry.root.transform); root.name = "Waterfall " + end.tile.name + " to " + end.neighbour.name;
             foreach (var t in root.GetComponentsInChildren<Transform>(true)) t.gameObject.hideFlags = HideFlags.DontSave;
             root.transform.SetPositionAndRotation(center, Quaternion.LookRotation(-normal, Vector3.up)); root.transform.localScale = Vector3.one;
             var sheet = root.transform.Find("Waterfall Sheet");
@@ -251,7 +318,7 @@ namespace Darwin.Rendering
             // Separate cutout impact meshes reuse the receiving geometry and existing impact HLSL.
             // This permits several incoming falls without overwriting a single water-material impact line.
             var receiving = waterRenderers[end.neighbour];
-            var impact = NewObject("Impact Foam and Ripples", generated.transform);
+            var impact = NewObject("Impact Foam and Ripples", currentGeometry.root.transform);
             impact.transform.SetPositionAndRotation(end.neighbour.transform.position + Vector3.up * .05f, end.neighbour.transform.rotation);
             impact.AddComponent<MeshFilter>().sharedMesh = receiving.GetComponent<MeshFilter>().sharedMesh;
             var impactRenderer = impact.AddComponent<MeshRenderer>(); impactRenderer.shadowCastingMode = ShadowCastingMode.Off;
@@ -267,10 +334,10 @@ namespace Darwin.Rendering
 
         MeshRenderer OwnMesh(string name, MoebiusRiverTile tile, Mesh mesh, Material material)
         {
-            var go = NewObject(name, generated.transform); go.transform.SetPositionAndRotation(tile.transform.position, tile.transform.rotation);
+            var go = NewObject(name, currentGeometry.root.transform); go.transform.SetPositionAndRotation(tile.transform.position, tile.transform.rotation);
             go.AddComponent<MeshFilter>().sharedMesh = Own(mesh); var renderer = go.AddComponent<MeshRenderer>(); renderer.sharedMaterial = material; renderer.receiveShadows = true; return renderer;
         }
-        T Own<T>(T value) where T : UnityEngine.Object { owned.Add(value); return value; }
+        T Own<T>(T value) where T : UnityEngine.Object { (currentGeometry != null ? currentGeometry.resources : owned).Add(value); return value; }
         static GameObject NewObject(string name, Transform parent)
         {
             var go = new GameObject(name) { hideFlags = HideFlags.DontSave }; go.transform.SetParent(parent, false); return go;
@@ -282,10 +349,19 @@ namespace Darwin.Rendering
         }
         void Clear()
         {
+            foreach (var tile in new List<MoebiusRiverTile>(geometry.Keys)) ClearTile(tile);
             foreach (var tile in tiles) if (tile && tile.originalWater) tile.originalWater.forceRenderingOff = false;
             if (generated) { generated.SetActive(false); Release(generated); generated = null; }
             foreach (var value in owned) Release(value); owned.Clear(); waterRenderers.Clear();
             JoinedCount = ClosedCount = WaterfallCount = 0;
+        }
+        void ClearTile(MoebiusRiverTile tile)
+        {
+            if (!geometry.TryGetValue(tile, out var data)) return;
+            if (tile && tile.originalWater) tile.originalWater.forceRenderingOff = false;
+            if (data.root) { data.root.SetActive(false); Release(data.root); }
+            foreach (var resource in data.resources) Release(resource);
+            geometry.Remove(tile); waterRenderers.Remove(tile);
         }
     }
 }

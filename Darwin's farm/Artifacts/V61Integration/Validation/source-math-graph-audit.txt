@@ -1,0 +1,4 @@
+PASS: graph SHA256/15 species/20 bidirectional candidate evolution edges/25 directional food edges
+PASS: five target templates and food whitelist sanity
+PASS: revised DIMINISHING-RETURN movement equation, stopping points and boundary monotonicity
+Scope: math contracts ONLY. No independent Unity runtime testing, no inference of 1500-2000-day reachability.

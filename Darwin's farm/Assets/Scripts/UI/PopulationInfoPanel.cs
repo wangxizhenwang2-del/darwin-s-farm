@@ -85,7 +85,8 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         count.text = "数量：" + (data != null ? data.speciesAmount : visual.Count);
         // Mutation accumulators are fractional calculation state, not mutation history.
         mutation.text = "变异：暂无记录";
-        SetScrollText(description, species != null ? species.Description : "暂无物种介绍");
+        description.richText = true;
+        SetScrollText(description, species != null ? species.FormattedDescription : "暂无物种介绍");
         if (data == null)
         {
             radar.SetValues(0, 0, 0, 0, 0); foreach (var label in labels) label.text = "未接入";
@@ -129,7 +130,7 @@ public sealed class PopulationInfoPanel : MonoBehaviour
     {
         RectTransform rect = Rect(name, parent, position, dimensions);
         var label = rect.gameObject.AddComponent<TextMeshProUGUI>();
-        label.font = GameUITheme.TMPFont; label.fontSize = size; label.color = new Color(.11f, .16f, .17f);
+        label.font = GameUITheme.TMPFont; label.fontSize = GameUITheme.ReadableFontSize(size); label.color = new Color(.11f, .16f, .17f);
         label.textWrappingMode = TextWrappingModes.Normal; label.overflowMode = TextOverflowModes.Truncate;
         label.richText = false; label.text = value; label.raycastTarget = true;
         rect.gameObject.AddComponent<InformationTextDragHandle>().Initialize(window);

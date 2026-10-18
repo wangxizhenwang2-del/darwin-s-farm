@@ -1,0 +1,149 @@
+{
+  "task": "Task 9.5-B A",
+  "scope": "Read-only source evidence for chicken to color-chicken day 128",
+  "unityVersion": "6000.2.9f1",
+  "formula": {
+    "sourceLocations": {
+      "formalGate": "Assets/Scripts/Simulation/SimulationController.Evolution.cs:245-259",
+      "founderMaterialPlan": "Assets/Scripts/Simulation/SimulationController.Evolution.cs:263-285",
+      "foodSupport": "Assets/Scripts/Simulation/SimulationController.Evolution.cs:287-353",
+      "targetTemplate": "Assets/Scripts/Simulation/SimulationController.Evolution.cs:364-372",
+      "plantForecast": "Assets/Scripts/Simulation/LandLifeRules.cs:487-519",
+      "plantBudget": "Assets/Scripts/Simulation/LandLifeRules.cs:407-422",
+      "demandAndCosts": "Assets/Scripts/Simulation/LandLifeRules.cs:12-27,81-101",
+      "plantAllocator": "Assets/Scripts/Simulation/LandLifeRules.cs:260-380",
+      "thresholds": "Assets/Scripts/Simulation/LandRuleTuning.cs:57-59",
+      "targetAsset": "Assets/BiowebV46/Species/彩鸡-b59a4a82.asset"
+    },
+    "conditionOrder": [
+      "target population at template traits/count",
+      "candidate trophicLevel==0",
+      "remaining source N = source N - amount",
+      "ForecastEvolutionPlantSupport",
+      "demand>0",
+      "today/demand>=evolutionTodaySatisfaction",
+      "renewable/demand>=evolutionRenewalSatisfaction"
+    ],
+    "targetTemplate": {
+      "fitT": 70,
+      "fitH": 49,
+      "movement": 15,
+      "size": 14,
+      "fertility": 75,
+      "trophicLevel": 0
+    },
+    "candidateFitness": "clamp01(1-(abs(block.temperature-70)+abs(block.humidity-49))/90)",
+    "candidateDemand": "N*AdultNeed(14,15) + N*birthRate*(75/100)*fitness*(YoungNeed(14)+BodyMass(14)); birthFactor=1",
+    "adultNeed": "adultMaintenanceScale*(size+smallBodyMaintenance/max(1,size))*(1+movementFoodCost*(clamp(movement,0,100)/100)^2)",
+    "youngNeed": "youngLinearCost*size+youngQuadraticCost*size^2",
+    "bodyMass": "max(1,size)*preyEnergyPerSize",
+    "currentBudget": "PlantFoodBudget(block, S_after_day+consumedPlantsToday): floor=min(capacity*minimumReserveFraction, stockAfterGrowth/2) when R>0; growth=clamp(plantGrowthToday,0,stockAfterGrowth); standing=max(0,stockAfterGrowth-growth); draw=min(max(0,standing-floor),standing*dailyPlantStockDrawFraction); P=max(0,min(stockAfterGrowth-floor,growth+draw))",
+    "renewableBudget": "max(0,block.habitatRecovery)",
+    "allocation": "The same AllocatePlants uses Psmall=0.7P, Plarge=0.3P; adult allocation first, unused lane budget crosses to other adults, then birth allocation. Candidate receives index of appended target group while source count is overridden to remaining N.",
+    "herbivorePass": "demand>0 AND today/demand>=0.9 AND renewable/demand>=0.8",
+    "predatorBranchNotEvaluatedForColor": {
+      "demand": "Demand(candidate,amount,fitness)",
+      "prerequisites": [
+        "demand>0",
+        "legal-prey HuntPreference sum>0"
+      ],
+      "expectedCatch": "For each legal prey, compute attempts=min(1,10/max(1,prey.size))*CaptureChance; candidateKills=amount*HuntPreference/totalPreference*attempts; claim=WholePreyClaim(candidateKills,max(0,demand-previousExpectedEnergy),PreyEnergy); wholeCatches=min(available,floor(min(available,claim+predationRemainder))); sum wholeCatches*PreyEnergy.",
+      "renewal": "AvailableSustainablePreyFood(block,candidate,replaced=source,replacedCount=sourceN-amount)",
+      "pass": [
+        "min(demand,expectedCatchEnergy)/demand>=0.9",
+        "min(demand,sustainableEnergy)/demand>=0.8",
+        "sustainableEnergy>=0.8*demand"
+      ]
+    }
+  },
+  "actualObservation": {
+    "recoveryMethod": "Real Unity 6000.2.9f1 short replay through day 128, original seed and action schedule, costs disabled; Editor-only read-only reflection probe.",
+    "historicalEquivalence": {
+      "comparedDays": 129,
+      "modelHashMatches": 129,
+      "environmentHashMatches": 129,
+      "day128ModelHash": "7f4cba986bd031527e744ffb49b51863a4c422c1322f42a150fbf01ee97bf402",
+      "day128EnvironmentHash": "a90cc44230a7bbf024e8c2dbc01738c8acd63d948d52f429856973e20ff2c8b1"
+    },
+    "timing": "After day 128 simulation step; same timing as Task 9 historical daily JSONL. This is a recovered equivalent state, not the original saved in-memory object.",
+    "sourcePopulation": {
+      "species": "鸡",
+      "N": 3613,
+      "traits": {
+        "fitT": 65,
+        "fitH": 46,
+        "movement": 10,
+        "size": 15,
+        "fertility": 80
+      },
+      "environmentalK": 3375.937744140625,
+      "foodSatisfactionHistoryMean": 1.0
+    },
+    "environment": {
+      "displayTemperature": 66.19999694824219,
+      "displayHumidity": 46.20000076293945,
+      "modelBlockTemperature": 66,
+      "modelBlockHumidity": 46,
+      "plantStock": 100000.0,
+      "consumedToday": 103200.0,
+      "recovery": 103200.0
+    },
+    "preFoodGates": {
+      "graphConnected": "PASS",
+      "cooldown": "PASS",
+      "fiveTraitTolerance": "PASS",
+      "targetAbsent": "PASS",
+      "space": "PASS",
+      "materialPlan": "PASS",
+      "plannedFounders": 361,
+      "remainingSourceCount": 3252,
+      "plannedPlantPaymentNotCommitted": 33336.015625,
+      "plannedExcessBodyNotCommitted": 0.0
+    },
+    "foodSubconditions": {
+      "positiveDemand": {
+        "actual": 18341.65625,
+        "required": ">0",
+        "pass": true
+      },
+      "today": {
+        "allocated": 8650.3671875,
+        "demand": 18341.65625,
+        "ratio": 0.47162410616874695,
+        "minimumRatio": 0.8999999761581421,
+        "minimumAllocated": 16507.490187700838,
+        "shortfall": 7857.123000200838,
+        "pass": false
+      },
+      "renewal": {
+        "allocated": 8650.3671875,
+        "demand": 18341.65625,
+        "ratio": 0.47162410616874695,
+        "minimumRatio": 0.800000011920929,
+        "minimumAllocated": 14673.325218649581,
+        "shortfall": 6022.958031149581,
+        "pass": false
+      }
+    },
+    "inputsForRecalculation": {
+      "candidateFitness": 0.9222221970558167,
+      "adultMaintenanceScale": 0.4,
+      "smallBodyMaintenance": 200,
+      "movementFoodCost": 0.4,
+      "birthRate": 0.1,
+      "youngLinearCost": 0.4,
+      "youngQuadraticCost": 0.02,
+      "preyEnergyPerSize": 40,
+      "smallPlantShare": 0.7,
+      "largePlantShare": 0.3,
+      "currentPlantBudget": 103200.0,
+      "renewableBudget": 103200.0
+    },
+    "completeFoodSupportPass": false
+  },
+  "unknown": {
+    "historicalInMemoryObject": "Not preserved; deterministic recovered state verified by 129 daily double hashes.",
+    "otherDates": "Not probed in this task.",
+    "allocatorIntermediatePerPass": "Not exported; candidate final allocations and budgets are observed."
+  }
+}

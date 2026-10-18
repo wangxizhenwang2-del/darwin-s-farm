@@ -1,0 +1,23 @@
+{
+  "scenarioId": "v61-core-color-route-seed240",
+  "seed": 240,
+  "endDay": 1800,
+  "coreV61": true,
+  "disableCosts": true,
+  "sourceGraph": "Assets/Resources/V61Bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {"day": 100, "sequence": 0, "x": 0, "y": 0,
+     "kind": "TemperatureChange", "tier": 1},
+    {"day": 100, "sequence": 1, "x": 0, "y": 0,
+     "kind": "HumidityChange", "tier": 1},
+    {"day": 110, "sequence": 2, "x": 0, "y": 0,
+     "kind": "CancelTemperatureChange"},
+    {"day": 110, "sequence": 3, "x": 0, "y": 0,
+     "kind": "CancelHumidityChange"},
+    {"day": 110, "sequence": 4, "x": 0, "y": 0,
+     "kind": "PlantStockChange", "tier": 2},
+    {"day": 110, "sequence": 5, "x": 0, "y": 0,
+     "kind": "PlantRecoveryChange", "tier": 2}
+  ]
+}

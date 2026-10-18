@@ -1,0 +1,10 @@
+Event	ID	Name			Wwise Object Path	Notes
+	106991668	Play___amb_water			\Default Work Unit\Play___amb_water	
+	4094435342	Stop___amb_water			\Default Work Unit\Stop___amb_water	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	2177779877	Tile_Gain			\Default Work Unit\Tile_Gain	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	324699839	水域	.cache\F7\{F7228FB7-DF33-879D-F868-1FD4B682C64F}.wem		\Containers\Default Work Unit\ambience\水域		9280096
+

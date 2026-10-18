@@ -36,4 +36,3 @@ MonoBehaviour:
   plantDecreaseSmallCost: 420
   plantDecreaseLargeCost: 960
   elevationCost: 500
-  monsoonCost: 1000

@@ -12,10 +12,44 @@ public class SpeciesData: ScriptableObject
     [Header("Species presentation (shared by all populations)")]
     [SerializeField] private string speciesId;
     [SerializeField] private Sprite portrait;
+    [SerializeField] private PopulationAnimationSet populationAnimation;
     [SerializeField, TextArea(4, 12)] private string description;
+    [SerializeField] private string[] traitClueAnchors = new string[5];
     public string SpeciesId => speciesId;
     public Sprite Portrait => portrait != null ? portrait : sprite;
+    public PopulationAnimationSet PopulationAnimation => populationAnimation;
     public string Description => string.IsNullOrWhiteSpace(description) ? "暂无物种介绍" : description;
+    public string BreedingClue
+    {
+        get
+        {
+            string value = Description;
+            int separator = value.IndexOf("\n\n", StringComparison.Ordinal);
+            return separator < 0 ? value : value.Substring(separator + 2);
+        }
+    }
+    public string FormattedDescription => Description.Replace(BreedingClue, FormattedBreedingClue);
+
+    public string FormattedBreedingClue
+    {
+        get
+        {
+            string clue = BreedingClue;
+            if (traitClueAnchors == null) return clue;
+            for (int trait = 0; trait < Mathf.Min(5, traitClueAnchors.Length); trait++)
+            {
+                string anchor = traitClueAnchors[trait];
+                if (!HasRevealedTrait(trait) || string.IsNullOrEmpty(anchor)) continue;
+                int position = clue.IndexOf(anchor, StringComparison.Ordinal);
+                if (position < 0) continue;
+                string[] names = { "适温", "适湿", "运动", "体型", "繁殖" };
+                int[] values = { baseFitTemperature, baseFitHumidity, baseMovementAbility, baseSize, baseFertility };
+                string reveal = "<color=#C3342D>（" + names[trait] + " " + values[trait] + "）</color>";
+                clue = clue.Insert(position + anchor.Length, reveal);
+            }
+            return clue;
+        }
+    }
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -59,8 +93,15 @@ public class SpeciesData: ScriptableObject
     // 一局游戏内的状态；未来存档系统可读取并恢复，不写回物种资产。
     [NonSerialized] private bool hasEverUnlocked;
     [NonSerialized] private bool isExtinct;
+    [NonSerialized] private int revealedTraitMask;
     public bool HasEverUnlocked => hasEverUnlocked;
     public bool IsExtinct => isExtinct;
+    public int RevealedTraitMask => revealedTraitMask;
+    public bool HasRevealedTrait(int trait) => trait >= 0 && trait < 5 && (revealedTraitMask & (1 << trait)) != 0;
+    public void RevealTrait(int trait)
+    {
+        if (trait >= 0 && trait < 5) revealedTraitMask |= 1 << trait;
+    }
     public string SpeciesName => speciesName;
 
     // One-based column (x), row (y); independent layouts for the two maps.
@@ -74,8 +115,12 @@ public class SpeciesData: ScriptableObject
     }
 
     public void RestoreProgress(bool unlocked, bool extinct)
+        => RestoreProgress(unlocked, extinct, 0);
+
+    public void RestoreProgress(bool unlocked, bool extinct, int traitMask)
     {
         hasEverUnlocked = unlocked;
         isExtinct = unlocked && extinct;
+        revealedTraitMask = traitMask & 31;
     }
 }

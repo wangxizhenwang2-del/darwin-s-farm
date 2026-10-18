@@ -24,7 +24,7 @@ Shader "Darwin/Moebius Volcano Rock Baked"
         _LightingRamp("Lighting Ramp (clamp)", 2D) = "white" {}
         _ControlMap("Control: R Hatch G Detail B Highlight A Shadow", 2D) = "white" {}
         [Toggle] _UseVertexColor("Vertex: R Hatch G Highlight B Shadow", Float) = 0
-        [Enum(Composite,0,BaseColor,1,WorldNormal,2,NdotL,3,Shadow,4,DeepShadow,5,HatchR,6,HatchG,7,HatchB,8,CombinedHatch,9,Stipple,10,Highlight,11,CastShadow,12)] _DebugMode("Surface Debug", Float) = 0
+        [Enum(Darwin.Rendering.Editor.MoebiusSurfaceDebugView)] _DebugMode("Surface Debug", Float) = 0
         _InkColor("Hatch Ink", Color) = (0.12,0.10,0.09,1)
         [Toggle(_USE_HATCHING)] _UseHatching("Hatching", Float) = 0
         [Toggle(_USE_TRIPLANAR)] _UseTriplanar("World Triplanar (otherwise screen)", Float) = 0

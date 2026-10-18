@@ -1,0 +1,126 @@
+{
+  "scenarioId": "task12-rainforest-two-evo-stockonly",
+  "seed": 240,
+  "endDay": 800,
+  "disableCosts": true,
+  "restrictedV05": false,
+  "useV05Sandbox": false,
+  "mechanismFixture": true,
+  "t95eSingleOriginFixture": true,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [
+    {
+      "x": 0,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/雨林.asset",
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/鸡-7f113739.asset",
+          "count": 160
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "day": 0,
+      "sequence": 0,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": -1
+    },
+    {
+      "day": 300,
+      "sequence": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 314,
+      "sequence": 101,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 328,
+      "sequence": 102,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 342,
+      "sequence": 103,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 356,
+      "sequence": 104,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 370,
+      "sequence": 105,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 384,
+      "sequence": 106,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 398,
+      "sequence": 107,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 412,
+      "sequence": 108,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 426,
+      "sequence": 109,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    },
+    {
+      "day": 440,
+      "sequence": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    }
+  ],
+  "t95Diagnostics": true,
+  "t95SourceId": "7f1137399e3946cf95ad1054096acacb",
+  "t95TargetId": "761468a5c8a547f184caf7004ed6d4ae",
+  "t95eTraceMutation": true
+}

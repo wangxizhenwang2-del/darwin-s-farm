@@ -1,0 +1,3209 @@
+diff --git a/Darwin's farm/Assets/Resources/BioenergySettings.asset b/Darwin's farm/Assets/Resources/BioenergySettings.asset
+index 7bcfe937..f2680663 100644
+--- a/Darwin's farm/Assets/Resources/BioenergySettings.asset	
++++ b/Darwin's farm/Assets/Resources/BioenergySettings.asset	
+@@ -36,4 +36,3 @@ MonoBehaviour:
+   plantDecreaseSmallCost: 420
+   plantDecreaseLargeCost: 960
+   elevationCost: 500
+-  monsoonCost: 1000
+diff --git a/Darwin's farm/Assets/Scripts/BioData/BlockInfo.cs b/Darwin's farm/Assets/Scripts/BioData/BlockInfo.cs
+index 2872b97f..4e9efbf1 100644
+--- a/Darwin's farm/Assets/Scripts/BioData/BlockInfo.cs	
++++ b/Darwin's farm/Assets/Scripts/BioData/BlockInfo.cs	
+@@ -40,6 +40,9 @@ public class BlockInfo : MonoBehaviour
+     [SerializeField]public float plantBiomass;   //植物库存为0~maxPlantBiomass
+     [SerializeField]public float maxPlantBiomass = 10000f; //植物生物量上限
+     [SerializeField]public int habitatRecovery; //每日恢复的生物量
++    // Stable terrain reference for optional prey-density feedback. Rebuilt
++    // from the tile definition on load; short-lived R tools do not alter it.
++    [System.NonSerialized] public int predationReferenceRecovery;
+     [SerializeField] public float algaeBiomass; //水域生产者库存；生态位系统启用后由水域共享
+     [SerializeField] public float maxAlgaeBiomass = 10000f;
+     [SerializeField] public int algaeRecovery;
+diff --git a/Darwin's farm/Assets/Scripts/BioData/PopulationData.cs b/Darwin's farm/Assets/Scripts/BioData/PopulationData.cs
+index aa4766a9..4d962127 100644
+--- a/Darwin's farm/Assets/Scripts/BioData/PopulationData.cs	
++++ b/Darwin's farm/Assets/Scripts/BioData/PopulationData.cs	
+@@ -102,6 +102,7 @@ public class PopulationData
+     [System.NonSerialized] public int predationDeathsToday; //测试诊断：当日被捕食数量
+     [System.NonSerialized] public float adultDemandToday, adultPaidToday;
+     [System.NonSerialized] public float birthOpportunityToday, birthBudgetToday;
++    [System.NonSerialized] public float birthStressDeathsToday;
+     [System.NonSerialized] public float newbornCostToday, unusedBirthFoodToday;
+     public int nextMigrationDay; //迁徙冷却结束后可再次参与检查的日期
+     public BlockInfo lastMigrationSource; // 环境未改变时，禁止自动迁回上次迁出的地块
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs b/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs
+index 102ee8fb..75b1e149 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergyAccount.cs	
+@@ -14,7 +14,6 @@ public sealed class BioenergyAccount : MonoBehaviour
+         public string reason;
+         public int day;
+         public long amount;
+-        public bool refunded;
+     }
+ 
+     [Serializable]
+@@ -34,7 +33,6 @@ public sealed class BioenergyAccount : MonoBehaviour
+     private bool initialSpeciesCaptured;
+     private SimulationController simulation;
+     private SimulationTime clock;
+-    private SimulationEnvironmentController environment;
+     private readonly HashSet<string> rewardedSpecies = new HashSet<string>(StringComparer.Ordinal);
+     private readonly List<Receipt> receipts = new List<Receipt>();
+ 
+@@ -49,7 +47,7 @@ public sealed class BioenergyAccount : MonoBehaviour
+             var snapshot = new List<Receipt>(receipts.Count);
+             foreach (Receipt receipt in receipts)
+                 snapshot.Add(new Receipt { id = receipt.id, reason = receipt.reason,
+-                    day = receipt.day, amount = receipt.amount, refunded = receipt.refunded });
++                    day = receipt.day, amount = receipt.amount });
+             return snapshot.AsReadOnly();
+         }
+     }
+@@ -59,7 +57,6 @@ public sealed class BioenergyAccount : MonoBehaviour
+         balance = BioenergySettings.Current.initialBalance;
+         simulation = GetComponent<SimulationController>();
+         clock = GetComponent<SimulationTime>();
+-        environment = GetComponent<SimulationEnvironmentController>();
+     }
+ 
+     private void OnEnable()
+@@ -70,11 +67,8 @@ public sealed class BioenergyAccount : MonoBehaviour
+             simulation.OnDaySimulated += AfterDay;
+         }
+         if (clock != null) clock.OnDayReset += RebaseDay;
+-        if (environment != null) environment.SettlementAvailable += OnSettlement;
+     }
+ 
+-    private void Start() => ConsumePendingSettlements();
+-
+     private void OnDisable()
+     {
+         if (simulation != null)
+@@ -83,7 +77,6 @@ public sealed class BioenergyAccount : MonoBehaviour
+             simulation.OnDaySimulated -= AfterDay;
+         }
+         if (clock != null) clock.OnDayReset -= RebaseDay;
+-        if (environment != null) environment.SettlementAvailable -= OnSettlement;
+     }
+ 
+     // The command is applied after a temporary debit. A rejected command leaves no debit.
+@@ -129,36 +122,11 @@ public sealed class BioenergyAccount : MonoBehaviour
+         BalanceChanged?.Invoke(balance);
+     }
+ 
+-    public bool TryRefund(EnvironmentPayment payment)
+-    {
+-        if (payment == null || payment.PaidAmount <= 0 ||
+-            payment.PaidAmount > long.MaxValue ||
+-            payment.PaidAmount != decimal.Truncate(payment.PaidAmount)) return false;
+-        Receipt receipt = receipts.Find(entry => entry.id == payment.ReceiptId);
+-        if (receipt == null || receipt.refunded || receipt.amount != -(long)payment.PaidAmount)
+-            return false;
+-        receipt.refunded = true;
+-        Grant((long)payment.PaidAmount, "季风重叠退款:" + receipt.id);
+-        return true;
+-    }
+-
+-    private void OnSettlement(MonsoonSettlement settlement) => ConsumePendingSettlements();
+     private void RebaseDay(int day)
+     {
+         if (day < lastSettledDay) lastSettledDay = day;
+     }
+ 
+-    public void ConsumePendingSettlements()
+-    {
+-        if (environment == null) return;
+-        foreach (MonsoonSettlement settlement in environment.PendingSettlements)
+-        {
+-            if (settlement.RefundAmount > 0 &&
+-                (settlement.Payment == null || !TryRefund(settlement.Payment))) continue;
+-            environment.AcknowledgeSettlement(settlement.MonsoonId);
+-        }
+-    }
+-
+     private void BeforeDay(int day)
+     {
+         if (initialSpeciesCaptured) return;
+@@ -184,7 +152,6 @@ public sealed class BioenergyAccount : MonoBehaviour
+         }
+         if (daily > 0) Grant(daily, "每日收成:" + day);
+         lastSettledDay = day;
+-        ConsumePendingSettlements();
+     }
+ 
+     private struct SpeciesCount
+@@ -263,7 +230,6 @@ public sealed class BioenergyAccount : MonoBehaviour
+         foreach (string key in state.rewardedSpecies) if (!string.IsNullOrEmpty(key)) rewardedSpecies.Add(key);
+         receipts.Clear(); receipts.AddRange(state.receipts);
+         BalanceChanged?.Invoke(balance);
+-        ConsumePendingSettlements();
+         return true;
+     }
+ }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergySettings.cs b/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergySettings.cs
+index f23ed346..6986d1b3 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergySettings.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Economy/BioenergySettings.cs	
+@@ -48,7 +48,6 @@ public sealed class BioenergySettings : ScriptableObject
+     public int plantDecreaseSmallCost = 420;
+     public int plantDecreaseLargeCost = 960;
+     public int elevationCost = 500;
+-    public int monsoonCost = 1000;
+ 
+     public int FallbackSpeciesValue(int level) =>
+         level <= 0 ? fallbackHerbivoreValue :
+@@ -84,6 +83,5 @@ public sealed class BioenergySettings : ScriptableObject
+         plantDecreaseSmallCost = Mathf.Max(0, plantDecreaseSmallCost);
+         plantDecreaseLargeCost = Mathf.Max(0, plantDecreaseLargeCost);
+         elevationCost = Mathf.Max(0, elevationCost);
+-        monsoonCost = Mathf.Max(0, monsoonCost);
+     }
+ }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Economy/README.md b/Darwin's farm/Assets/Scripts/Simulation/Economy/README.md
+index 9b1d0140..7f65d2ff 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Economy/README.md	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Economy/README.md	
+@@ -1,4 +1,4 @@
+-# V4.4 生物能经济系统
++# V5.0 生物能经济系统
+ 
+ `BioenergyAccount` 是唯一余额与收据账本。场景中的 `MapSimulationBridge` 在运行时为地图对象装配账户、玩家操作控制器和白盒操作面板。正式界面应调用 `PlayerEconomyController`、`EnvironmentTechnologyController`，只读取预览，不直接改地图、种群或余额。
+ 
+@@ -12,11 +12,11 @@
+ - 每日收入：每种野外物种计算 `floor(V × ln(N))`，再求和；`N ≤ 1` 收入 0。仓内备份不计。初始物种不领取首次解锁奖。后续首次出现按营养级领取 200／500／1,000，账户按模拟日去重。
+ - V4.6 的 15 种正式物种价值读取 `Assets/BiowebV46/Species`，范围 1～30，各物种有稳定 `economyId`。无物种资产的旧动态种群仍按营养级 10／20／40 取备用值。
+ - 扩张 600、改水道形状或旋转 500、拆除 200、整群迁移 1,000、定向进化 1,000、生态仓建造和首次复制 5,000。释放免费。拆除拒绝初始格、有种群格、河岸被占用格，以及会切断地图的格。定向进化两项都被边界裁剪到不变时拒绝且不扣费。
+-- 温湿度 ±25／±50 分别 220／480；植物高档 260／560，低档 420／960；海拔 ±1 为 500；季风为 1,000。价格按每次操作计，整片水域不另收每格费用。主动撤销不退款；季风因覆盖重叠被取消时，按实际支付凭据退还，零支付的季风退款也是零。
++- 温湿度 ±25／±50 分别 220／480；植物存量 S 和植物日增量 R 是两种独立工具，各自高档 260／560、低档 420／960；海拔 ±1 为 500。价格按每次操作计，整片水域不另收每格费用。主动撤销不退款。
+ - 收割人数 `min(N, max(ceil(N/2), 50))`，收入 `floor(10 × V × ln(H))`，`H ≤ 1` 收入 0。提交同时减少种群。生态仓保存 50 只、不减少来源，释放后仓位消失。
+ 
+ ## 接口与存档
+ 
+-`BioenergyAccount.CaptureState/TryRestoreState` 保存余额、开关、结算日、首次奖励标记和交易收据。`PlayerEconomyController.CaptureStorageState/TryRestoreStorageState` 保存生态仓备份。加载顺序：先恢复地图、物种图与模拟日，再恢复账户和生态仓，最后恢复环境时间线和待结算退款；在下一模拟日前完成。仓库当前没有完整世界存档系统，这两个接口用于与其后续对接，不能单独作为完整游戏存档。
++`BioenergyAccount.CaptureState/TryRestoreState` 保存余额、开关、结算日、首次奖励标记和交易收据。`PlayerEconomyController.CaptureStorageState/TryRestoreStorageState` 保存生态仓备份。加载顺序：先恢复地图、物种图与模拟日，再恢复账户和生态仓，最后恢复环境时间线；在下一模拟日前完成。仓库当前没有完整世界存档系统，这两个接口用于与其后续对接，不能单独作为完整游戏存档。
+ 
+ 正式玩家的地图放置入口已改由 `PlayerEconomyController.TryExpand` 提交。WhiteBox 地块面板增加横向、弯曲、三叉与湖泊四种水格预设，初次放置的旋转免费。场景中的科技面板会显示余额、预估日收和费用；经营面板提供经济限制开关、收割、仓库、迁移、进化、拆除与水道改造操作。编辑器审计以及旧的 `SimulationInterventionController` 仍是开发测试入口，可直接调用底层环境模型，不属于正式玩家付费通道。
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/BioenergySettingsWindow.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/BioenergySettingsWindow.cs
+index 5afdddcc..eb7ddb57 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/BioenergySettingsWindow.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/BioenergySettingsWindow.cs	
+@@ -30,12 +30,11 @@ public sealed class BioenergySettingsWindow : EditorWindow
+     {
+         ("climateSmallCost", "温度／湿度 ±25"),
+         ("climateLargeCost", "温度／湿度 ±50"),
+-        ("plantIncreaseSmallCost", "植物增加低档"),
+-        ("plantIncreaseLargeCost", "植物增加高档"),
+-        ("plantDecreaseSmallCost", "植物减少低档"),
+-        ("plantDecreaseLargeCost", "植物减少高档"),
++        ("plantIncreaseSmallCost", "植物 S／R 增加低档（各次同价）"),
++        ("plantIncreaseLargeCost", "植物 S／R 增加高档（各次同价）"),
++        ("plantDecreaseSmallCost", "植物 S／R 减少低档（各次同价）"),
++        ("plantDecreaseLargeCost", "植物 S／R 减少高档（各次同价）"),
+         ("elevationCost", "海拔 ±1"),
+-        ("monsoonCost", "季风锚点"),
+     };
+     private static readonly (string field, string label)[] FallbackFields =
+     {
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs
+index 087e3d0f..6e1c673f 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/EnvironmentIntegrationAudit.cs	
+@@ -91,19 +91,17 @@ public static class EnvironmentIntegrationAudit
+         Check(bridge.TryGetBlock(new Vector2Int(6, 0), out var highland) && highland.temperature == 52,
+             "Environment must publish before the ecological day.");
+         Check(highland.plantGrowthToday > 0, "Ecology must still grow plants.");
+-        Check(c.TryDeployMonsoon(Vector2Int.zero, 20, 20, out long wind, out var error), error);
++        string error;
+         Apply(c, 0, SimulationInterventionKind.Temperature, 25);
+-        Check(Read(c, 0).Environment.HasMonsoon && Read(c, 0).Environment.MonsoonApplied,
+-            "Wind remains active beside the newest local tool.");
+         for (int day = 0; day < 25; day++) clock.NextDay();
+-        Check(Read(c, 0).Environment.Temperature.Value == 100, "Runtime 25day stacked entry.");
++        Check(Read(c, 0).Environment.Temperature.Value == 100, "Runtime 25day climate entry.");
+         int oldDay = clock.currentDay;
+         clock.ResetDay(); clock.NextDay();
+         Check(clock.currentDay == 1 && oldDay > 1 && Read(c, 0).Environment.Temperature.Value == 100, "Clock reset preserves effects.");
+         Check(c.TryCancel(Vector2Int.zero, EnvironmentAttribute.Temperature, out error), error);
+         for (int day = 0; day < 150; day++) clock.NextDay();
+-        Check(Read(c, 0).Environment.MonsoonApplied && Read(c, 0).Environment.Temperature.Value == 88,
+-            "Runtime climate recovers while monsoon stays active.");
++        Check(!Read(c, 0).Environment.HasLocalTemperature,
++            "Runtime climate command completes after recovery.");
+         float stock = Read(c, 0).PlantStock;
+         Apply(c, 0, SimulationInterventionKind.PlantBiomass, -.25f);
+         Check(Math.Abs(Read(c, 0).PlantStock - stock * .75f) < .1f, "Runtime percentage stock basis.");
+@@ -111,20 +109,12 @@ public static class EnvironmentIntegrationAudit
+         Apply(c, 0, SimulationInterventionKind.PlantRecovery, 25000);
+         Check(Read(c, 0).Environment.Recovery.Value >= 25000 && Read(c, 0).PlantStock == stock,
+             "Plant recovery changes without replacing stock.");
+-        Check(c.TryCancelMonsoon(wind, out error), error);
+         var grass = AssetDatabase.LoadAssetAtPath<MapTileDefinition>("Assets/Scripts/map/data/草原.asset");
+         Check(grid.TryPlaceTile(new Vector2Int(9, 0), grass) && grid.TryPlaceTile(new Vector2Int(10, 0), grass), "Extend real map.");
+-        Check(c.TryDeployMonsoon(new Vector2Int(9, 0), 20, -20, out _, out error, new EnvironmentPayment("unity-a", 11)), error);
+-        Check(c.TryDeployMonsoon(new Vector2Int(10, 0), -20, 20, out _, out error, new EnvironmentPayment("unity-b", 23)), error);
+-        decimal refunds = 0;
+-        foreach (var settlement in c.PendingSettlements) refunds += settlement.RefundAmount;
+-        Check(c.Monsoons.Count == 0 && refunds == 34, "Real graph overlap cancellation and exact settlement.");
+-        Check(c.TryDeployMonsoon(new Vector2Int(9, 0), 20, 20, out _, out error), error);
+-        Check(c.TryDeployMonsoon(Vector2Int.zero, -20, -20, out _, out error), error);
+         stock = Read(c, 9).PlantStock;
+         Apply(c, 9, SimulationInterventionKind.Elevation, 1);
+-        Check(c.Monsoons.Count == 0 && Read(c, 9).Environment.Elevation == 1 && Read(c, 9).PlantStock == stock,
+-            "Real source height change cancels all without regenerating stock.");
++        Check(Read(c, 9).Environment.Elevation == 1 && Read(c, 9).PlantStock == stock,
++            "Height change preserves stock.");
+         Check(c.GetComponent<SimulationInterventionController>().TryApply(new SimulationInterventionRequest
+         { center = new Vector2Int(6, 0), kind = SimulationInterventionKind.Humidity, amount = 25, radius = 0 }, out _),
+             "Legacy editor adapter must use new controller.");
+@@ -194,8 +184,10 @@ public static class EnvironmentIntegrationAudit
+             new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.TemperatureChange, -2),
+             new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.HumidityChange, 2),
+             new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.HumidityChange, -2),
+-            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantChange, 2),
+-            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantChange, -2),
++            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantStockChange, 2),
++            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantStockChange, -2),
++            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantRecoveryChange, 2),
++            new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.PlantRecoveryChange, -2),
+             new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.ElevationChange, 1),
+             new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.ElevationChange, -1)
+         };
+@@ -204,18 +196,26 @@ public static class EnvironmentIntegrationAudit
+             var before = Read(c, land.x);
+             Check(player.TryDeploy(land, choice, out var preview) && preview.Cost == 0,
+                 "Zero-cost land technology " + choice.Kind + " " + choice.Tier + ": " + preview.Error);
+-            if (choice.Kind == EnvironmentTechnologyKind.PlantChange)
++            if (choice.Kind == EnvironmentTechnologyKind.PlantStockChange)
+             {
+                 var after = Read(c, land.x);
+                 float fraction = EnvironmentTechnologyCatalog.Fraction(choice);
+                 double expectedStock = EnvironmentRules.MultiplyStock(before.PlantStock,
+                     EnvironmentRules.PlantCapacity, choice.Tier > 0 ? fraction : -fraction);
++                Check(Math.Abs(after.PlantStock - expectedStock) < .1f &&
++                      Math.Abs(after.Environment.Recovery.Value -
++                          before.Environment.Recovery.Value) < .1f,
++                    "Stock tier changes only stock");
++            }
++            if (choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange)
++            {
++                var after = Read(c, land.x);
+                 double expectedRecovery = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+-                    before.Environment.Recovery.Value + (choice.Tier > 0 ? 1 : -1) *
++                    before.Environment.Recovery.Value + Math.Sign(choice.Tier) *
+                     EnvironmentTechnologyCatalog.GrowthAmount(choice));
+-                Check(Math.Abs(after.PlantStock - expectedStock) < .1f &&
++                Check(Math.Abs(after.PlantStock - before.PlantStock) < .1f &&
+                       Math.Abs(after.Environment.Recovery.Value - expectedRecovery) < .1f,
+-                    "Plant tier must change stock and daily recovery together");
++                    "Recovery tier changes only daily recovery");
+             }
+         }
+         var lake = ScriptableObject.CreateInstance<MapTileDefinition>();
+@@ -230,28 +230,34 @@ public static class EnvironmentIntegrationAudit
+             DarwinFarm.Environment.EnvironmentTechnologyKind.TemperatureChange)).IsValid,
+             "Water rejects climate technology");
+         Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+-            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantChange), out _),
+-            "Whole-water positive plant tier");
++            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantRecoveryChange), out _),
++            "Whole-water positive recovery tier");
+         Check(Read(c, 12).Environment.Recovery.Value == 100000 &&
+-            Read(c, 13).Environment.Recovery.Value == 100000, "Water positive tier reaches both cells");
++            Read(c, 13).Environment.Recovery.Value == 100000 &&
++            Read(c, 12).PlantStock + Read(c, 13).PlantStock == 150000,
++            "Water recovery tier reaches both cells without changing stock");
++        Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
++            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantStockChange), out _),
++            "Whole-water positive stock tier");
+         Check(Read(c, 12).PlantStock + Read(c, 13).PlantStock == 187500,
+-            "Whole-water positive tier multiplies existing stock");
++            "Whole-water stock tier multiplies existing stock");
++        Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
++            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantRecoveryChange, -1), out _),
++            "Whole-water negative recovery tier");
++        Check(Read(c, 12).Environment.Recovery.Value == 75000 &&
++            Read(c, 12).PlantStock + Read(c, 13).PlantStock == 187500,
++            "Whole-water recovery reduction leaves stock unchanged");
+         Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+-            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantChange, -1), out _),
+-            "Whole-water negative plant tier");
++            DarwinFarm.Environment.EnvironmentTechnologyKind.PlantStockChange, -1), out _),
++            "Whole-water negative stock tier");
+         Check(Read(c, 12).Environment.Recovery.Value == 75000 &&
+             Read(c, 12).PlantStock + Read(c, 13).PlantStock == 140625,
+-            "Whole-water suppression changes R and S together");
++            "Whole-water stock reduction leaves recovery unchanged");
+         Check(player.TryDeploy(water, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+             DarwinFarm.Environment.EnvironmentTechnologyKind.ElevationChange), out _),
+             "Whole-water height transaction");
+         Check(Read(c, 12).Environment.Elevation == 1 &&
+             Read(c, 13).Environment.Elevation == 1, "All water heights committed");
+-        Check(player.TryDeploy(land, new DarwinFarm.Environment.EnvironmentTechnologyChoice(
+-            DarwinFarm.Environment.EnvironmentTechnologyKind.MonsoonAnchor, 1, 20, -20), out _),
+-            "Hot-dry monsoon preset");
+-        Check(c.Monsoons.Count == 1 && player.CurrentApplied(land).Contains("季风工具"),
+-            "Current technology readback includes wind");
+         long freeBalance = account.Balance;
+         Check(player.TryDeploy(land, new EnvironmentTechnologyChoice(
+             EnvironmentTechnologyKind.HumidityChange, 1), out var freePreview) &&
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveExport.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveExport.cs
+index c2ad52d2..04e697e1 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveExport.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveExport.cs	
+@@ -89,7 +89,6 @@ public partial class PopulationSimulatorWindow
+         public float plants, plantCapacity, plantGrowth, plantConsumed, algae;
+         public int algaeRecovery;
+         public int nextSplitDay;
+-        public long monsoonId;
+         public List<ExportPopulation> populations = new List<ExportPopulation>();
+     }
+ 
+@@ -371,7 +370,6 @@ public partial class PopulationSimulatorWindow
+                 row.temperatureDays = state.Environment.Temperature.RemainingDays;
+                 row.humidityDays = state.Environment.Humidity.RemainingDays;
+                 row.recoveryDays = state.Environment.Recovery.RemainingDays;
+-                row.monsoonId = state.Environment.MonsoonId ?? 0;
+             }
+             if (block.community != null)
+                 foreach (PopulationData population in block.community)
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveGame.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveGame.cs
+index ee01c87d..33da7ed7 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveGame.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/PopulationSimulatorWindow.LiveGame.cs	
+@@ -286,7 +286,7 @@ public partial class PopulationSimulatorWindow
+             EditorGUILayout.EndVertical();
+             return;
+         }
+-        EditorGUILayout.HelpBox("经济系统尚未接入。此开发入口执行单格操作；季风通过独立控制器接口部署。",
++        EditorGUILayout.HelpBox("此开发入口执行单格操作。",
+             MessageType.Info);
+ 
+         liveKind = (SimulationInterventionKind)EditorGUILayout.Popup("操作",
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs b/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs
+index 1cf6383b..72e9a448 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs	
+@@ -2,6 +2,7 @@ using System;
+ using System.Collections.Generic;
+ using System.IO;
+ using System.Globalization;
++using System.Reflection;
+ using System.Security.Cryptography;
+ using System.Text;
+ using DarwinFarm.Environment;
+@@ -22,12 +23,32 @@ public static class V048ScenarioReplay
+         public int endDay;
+         public bool disableCosts;
+         public bool restrictedV05;
++        public bool useV05Sandbox;
++        public bool recordPredatorFoodK;
++        public bool t95Diagnostics;
++        public string t95SourceId, t95TargetId;
++        public int t95bFoodProbeDay;
++        public bool t95eSingleOriginFixture;
++        public bool fixtureDisableEvolution;
++        public int t95eShadowDay;
++        public string t95eShadowTargetId;
++        public bool t95eTraceMutation;
++        public bool t95eRouteStop;
+         public bool mechanismFixture;
+         public bool fixtureFreezeTraits;
+         public bool fixtureDisableMigration;
+         public bool fixtureFixedEnvironment;
+         public bool fixtureSkipDiagnostics;
+         public bool useFoodKForSelection;
++        public bool enablePreyDensityFeedback;
++        public bool enablePaidBirthStress;
++        public bool enablePriorityPlantBudgets;
++        public bool t95FinalGate;
++        public int t95FinalProbeStart, t95FinalProbeEnd;
++        public int t95FinalNegativeDay;
++        public bool t10Quota, t10Diagnostics;
++        public float reproductionStressPerBirth;
++        public float adultMaintenanceScale;
+         public bool overridePreyEncounter;
+         public float preyEncounterHalfSaturation;
+         public string counterfactualTarget;
+@@ -64,7 +85,6 @@ public static class V048ScenarioReplay
+         public string kind, preset;
+         public string species;
+         public int amount, recovery;
+-        public int temperatureOffset, humidityOffset;
+         [NonSerialized] public int inputIndex;
+     }
+ 
+@@ -104,7 +124,72 @@ public static class V048ScenarioReplay
+         public float birthRemainder, deathRemainder;
+         public float adultDemand, adultPaid, birthOpportunity;
+         public float birthBudget, newbornCost, unusedBirthFood;
++        public float birthStressDeaths;
+         public int populationBeforePredation, endangeredDays;
++        public T95EvolutionState t95;
++        public string t95eTrackedTarget, t95eLastMutationEffect;
++        public int[] t95eProtectionSince;
++        public bool[] t95eProtectionReleased;
++        public T10QuotaRecord t10;
++    }
++
++    [Serializable] private sealed class T10QuotaRecord
++    {
++        public int quota;
++        public float unhuntedGrowth, equilibrium;
++        public bool equilibriumFound;
++    }
++
++    [Serializable] private sealed class T95EvolutionState
++    {
++        public string source, target, connectedTargets, stage;
++        public int nextEvolutionDay, effectiveDays, requiredDays;
++        public int nextLocalSplitDay, plannedFounders;
++        public bool localSplitBranch, directedTraitLocked;
++        public float foodSatisfaction10;
++        public int dT, dH, dMovement, dSize, dFertility;
++        public string graphConnection, cooldown, traitTolerance, targetAbsent, space,
++            materialPlan, foodSupport, eligible;
++        public T95BFoodProbe foodProbe;
++        public T95FinalGateProbe finalProbe;
++        public T95FinalNegative[] finalNegatives;
++    }
++
++    [Serializable] private sealed class T95FinalNegative
++    {
++        public string caseName;
++        public bool plan, foodSupport, eligible, rejected;
++        public int founders;
++    }
++
++    [Serializable] private sealed class T95FinalGateProbe
++    {
++        public float plantPayment, sourceAdultDemand, sourceNow,
++            sourceRenewal, childAdultDemand, childNow, childRenewal,
++            expectedPredationDeaths, netNow, netRenewal;
++        public bool sourceNowPass, sourceRenewalPass, childNowPass,
++            childRenewalPass, netNowPass, netRenewalPass;
++        public T95FinalPredatorTrial[] predatorTrials;
++        public bool predatorPass;
++    }
++
++    [Serializable] private sealed class T95FinalPredatorTrial
++    {
++        public int preyCount;
++        public float preyRenewal, candidateCatches, candidateFood;
++        public float candidateAdultCoverage, candidateNet;
++        public bool pass;
++    }
++
++    [Serializable] private sealed class T95BFoodProbe
++    {
++        public int candidateCount, remainingSourceCount;
++        public int blockTemperature, blockHumidity;
++        public float candidateFitness;
++        public float plantStock, consumedToday, recovery, currentPlantBudget;
++        public float plantPayment, excessBody, demand, today, renewable;
++        public float todayRatio, renewableRatio, todayThreshold, renewalThreshold;
++        public bool positiveDemand, todayPass, renewalPass, completePass;
+     }
+ 
+     [Serializable] private sealed class EcologyDiagnostic
+@@ -118,6 +203,19 @@ public static class V048ScenarioReplay
+     private const string Pending = "DarwinFarm.V048Replay.Pending";
+     private static double startedAt;
+     private static bool complete;
++    private static readonly Dictionary<PopulationData, T10QuotaRecord>
++        t10QuotaByPopulation = new Dictionary<PopulationData, T10QuotaRecord>();
++
++    private static void ObserveT10Quota(BlockInfo block,
++        PopulationData prey, int quota, float growth, float equilibrium,
++        bool found)
++    {
++        t10QuotaByPopulation[prey] = new T10QuotaRecord
++        {
++            quota = quota, unhuntedGrowth = growth,
++            equilibrium = equilibrium, equilibriumFound = found
++        };
++    }
+ 
+     static V048ScenarioReplay()
+     {
+@@ -134,7 +232,8 @@ public static class V048ScenarioReplay
+             string.IsNullOrEmpty(output))
+             throw new InvalidOperationException("Set DF_V048_SCENARIO and DF_V048_OUTPUT.");
+         Scenario selected = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
+-        EditorSceneManager.OpenScene(selected != null && selected.restrictedV05
++        EditorSceneManager.OpenScene(selected != null &&
++            (selected.restrictedV05 || selected.useV05Sandbox)
+             ? "Assets/Scenes/V05FiveSpeciesSandbox.unity" :
+             "Assets/Scenes/WhiteBox.unity");
+         SessionState.SetBool(Pending, true);
+@@ -169,7 +268,8 @@ public static class V048ScenarioReplay
+         if (!string.IsNullOrEmpty(input) && File.Exists(input))
+         {
+             Scenario pending = JsonUtility.FromJson<Scenario>(File.ReadAllText(input));
+-            if (pending != null && pending.restrictedV05)
++            if (pending != null &&
++                (pending.restrictedV05 || pending.useV05Sandbox))
+             {
+                 var grid = environment.GetComponent<MapGridManager>();
+                 if (grid == null || !grid.TryGetTile(Vector2Int.zero,
+@@ -235,15 +335,29 @@ public static class V048ScenarioReplay
+                 origin.Block.community.Clear();
+         }
+         account.CostsEnabled = !scenario.disableCosts;
++        if (scenario.t95eSingleOriginFixture)
++        {
++            if (!scenario.mechanismFixture || scenario.restrictedV05 ||
++                scenario.tiles.Length != 1 ||
++                scenario.tiles[0].x != 0 || scenario.tiles[0].y != 0 ||
++                !grid.TryGetTile(Vector2Int.zero, out MapTileInstance originFixture))
++                throw new InvalidOperationException("T95E requires one origin fixture.");
++            originFixture.Block.community.Clear();
++        }
+         foreach (Tile tile in scenario.tiles)
+         {
+             var coordinate = new Vector2Int(tile.x, tile.y);
+             MapTileDefinition preset = AssetDatabase.LoadAssetAtPath<MapTileDefinition>(tile.preset);
+-            if (preset == null || !grid.TryPlaceTile(coordinate, preset) ||
++            bool useOrigin = scenario.mechanismFixture &&
++                scenario.t95eSingleOriginFixture && coordinate == Vector2Int.zero;
++            if (preset == null ||
++                (useOrigin ? !grid.TryGetTile(coordinate, out MapTileInstance existing) ||
++                    existing.Definition != preset : !grid.TryPlaceTile(coordinate, preset)) ||
+                 !bridge.TryGetBlock(coordinate, out BlockInfo block))
+                 throw new InvalidOperationException("Cannot place preset at " + coordinate);
+             block.community.Clear();
+             if (tile.initialStock > 0f &&
++                Mathf.Abs(block.plantBiomass - tile.initialStock) > 0.0001f &&
+                 !simulation.ApplyPlantBiomass(block, tile.initialStock))
+                 throw new InvalidOperationException("Cannot set starting plant stock.");
+             if (tile.overrideEnvironment)
+@@ -260,6 +374,7 @@ public static class V048ScenarioReplay
+                         plantBiomass = tile.initialStock
+                     }, out string fixtureError))
+                     throw new InvalidOperationException("Fixture environment: " + fixtureError);
++                block.predationReferenceRecovery = tile.recovery;
+             }
+             if (tile.populations == null) continue;
+             foreach (Population entry in tile.populations)
+@@ -298,16 +413,39 @@ public static class V048ScenarioReplay
+         simulation.RefreshSpeciesStatuses();
+         LandRuleTuning selectedRules = simulation.ReadLandRules();
+         selectedRules.useFoodCapacityForSelection = scenario.useFoodKForSelection;
++        selectedRules.enablePreyDensityFeedback =
++            scenario.enablePreyDensityFeedback;
++        selectedRules.enablePaidBirthStress = scenario.enablePaidBirthStress;
++        selectedRules.enablePriorityPlantBudgets =
++            scenario.enablePriorityPlantBudgets;
++        selectedRules.useCompensatedEvolutionFoodGate = scenario.t95FinalGate;
++        selectedRules.enableDynamicPreyRenewalQuota = scenario.t10Quota;
++        if (scenario.reproductionStressPerBirth > 0f)
++            selectedRules.reproductionStressPerBirth =
++                scenario.reproductionStressPerBirth;
++        if (scenario.adultMaintenanceScale > 0f)
++            selectedRules.adultMaintenanceScale =
++                scenario.adultMaintenanceScale;
+         if (scenario.overridePreyEncounter)
+             throw new InvalidOperationException(
+                 "Encounter experiments require the archived experiment-encounter-v3 code.");
+         simulation.ApplyLandRules(selectedRules);
++        t10QuotaByPopulation.Clear();
++        Type landRulesType = typeof(SimulationController).Assembly.GetType(
++            "LandLifeRules", true);
++        landRulesType.GetField("RenewableQuotaObserved",
++            BindingFlags.Static | BindingFlags.NonPublic).SetValue(null,
++                scenario.t10Diagnostics ?
++                (System.Action<BlockInfo, PopulationData, int, float, float, bool>)
++                    ObserveT10Quota : null);
+         if (scenario.mechanismFixture)
+         {
+             SimulationTuning fixtureTuning = simulation.ReadTuning();
+             if (scenario.fixtureFreezeTraits) fixtureTuning.mutationEnabled = false;
+             if (scenario.fixtureDisableMigration) fixtureTuning.migrationEnabled = false;
+             simulation.ApplyTuning(fixtureTuning);
++            if (scenario.fixtureDisableEvolution)
++                simulation.SetPresetEvolutionParameters(false, 0, 0f, 0);
+             if (scenario.fixtureFixedEnvironment)
+                 simulation.OnBeforeDaySimulated += _ =>
+                 {
+@@ -349,9 +487,11 @@ public static class V048ScenarioReplay
+         {
+             if (action.day < 0 || action.day > scenario.endDay)
+                 throw new InvalidOperationException("Action day outside run.");
++            if (action.kind == "PlantChange")
++                throw new InvalidOperationException(
++                    "Combined PlantChange was removed; use separate PlantStockChange and PlantRecoveryChange actions.");
+             if (scenario.restrictedV05 &&
+                 (action.x < -1 || action.x > 1 || action.y < -1 || action.y > 1 ||
+-                 action.kind == "MonsoonAnchor" ||
+                  !(action.kind == "PlaceTile" ||
+                    scenario.mechanismFixture &&
+                        (action.kind == "FixtureRecovery" || action.kind == "FixtureCull") ||
+@@ -389,7 +529,8 @@ public static class V048ScenarioReplay
+         simulation.OnPresetEvolutionResolved += RecordTransition;
+         simulation.OnEcologyEvent += (day, block, population, kind, detail) =>
+         {
+-            if (kind == "trait_mutation" || kind == "mutation_choice") return;
++            if (!scenario.t95eTraceMutation &&
++                (kind == "trait_mutation" || kind == "mutation_choice")) return;
+             trace.AppendLine("ecology day=" + day + " tile=" + block.name +
+                 " kind=" + kind + " population=" +
+                 (population != null ? population.PopulationId : "") +
+@@ -446,7 +587,9 @@ public static class V048ScenarioReplay
+             " bindingSha256=" + HashFiles(bindingFiles));
+         trace.AppendLine("landRules=" + JsonUtility.ToJson(simulation.ReadLandRules()));
+         trace.AppendLine("simulationTuning=" + JsonUtility.ToJson(simulation.ReadTuning()));
+-        WriteDay(trace, clock.currentDay, simulation, environment, grid, account);
++        WriteDay(trace, clock.currentDay, simulation, environment, grid,
++            account, scenario);
++        UpdateExternalProgress(clock.currentDay);
+         if (scenario.mechanismFixture && !scenario.fixtureSkipDiagnostics)
+             WriteDiagnostics(trace, 0, simulation, grid);
+         if (scenario.mechanismFixture && scenario.counterfactualCounts != null &&
+@@ -517,6 +660,22 @@ public static class V048ScenarioReplay
+                     cost = 0;
+                     error = accepted ? null : "Fixture harvest rejected.";
+                 }
++                else if (action.kind == "Harvest")
++                {
++                    if (!bridge.TryGetBlock(coordinate, out BlockInfo harvestBlock) ||
++                        harvestBlock.community == null)
++                        throw new InvalidOperationException(
++                            "Harvest target tile is missing.");
++                    PopulationData resident = harvestBlock.community.Find(p =>
++                        p != null && p.species != null &&
++                        p.species.SpeciesName == action.species);
++                    accepted = economy.TryHarvest(harvestBlock, resident,
++                        out int harvested, out long earned, out error);
++                    cost = 0;
++                    action.amount = harvested;
++                    action.recovery = earned > int.MaxValue ? int.MaxValue :
++                        (int)earned;
++                }
+                 else if (action.kind == "PlaceTile")
+                 {
+                     MapTileDefinition preset = AssetDatabase.LoadAssetAtPath<MapTileDefinition>(
+@@ -547,10 +706,7 @@ public static class V048ScenarioReplay
+                         !Enum.IsDefined(typeof(EnvironmentTechnologyKind), kind))
+                         throw new InvalidOperationException(
+                             "Unknown player action " + action.kind);
+-                    var choice = new EnvironmentTechnologyChoice(kind,
+-                        action.tier,
+-                        action.temperatureOffset == 0 ? 20 : action.temperatureOffset,
+-                        action.humidityOffset == 0 ? 20 : action.humidityOffset);
++                    var choice = new EnvironmentTechnologyChoice(kind, action.tier);
+                     accepted = player.TryDeploy(coordinate, choice,
+                         out EnvironmentTechnologyPreview preview);
+                     cost = preview.Cost;
+@@ -569,10 +725,36 @@ public static class V048ScenarioReplay
+                     " accepted=" + accepted +
+                     (accepted ? "" : " error=" + error));
+                 if (scenario.restrictedV05) ValidateRestrictedV05World(grid);
+-                WriteDay(trace, day, simulation, environment, grid, account);
++                WriteDay(trace, day, simulation, environment, grid, account,
++                    scenario);
++            }
++            if (scenario.t95eShadowDay > 0 && day == scenario.t95eShadowDay)
++            {
++                RunT95EShadowConversion(trace, simulation, grid, day,
++                    scenario);
++                WriteDay(trace, day, simulation, environment, grid, account,
++                    scenario);
++            }
++            if (scenario.t95eRouteStop &&
++                grid.TryGetTile(Vector2Int.zero, out MapTileInstance routeTile))
++            {
++                bool sourceAlive = routeTile.Block.community.Exists(p =>
++                    p != null && p.species != null &&
++                    p.species.SpeciesName == "鸡" && p.speciesAmount > 0);
++                bool targetAlive = routeTile.Block.community.Exists(p =>
++                    p != null && p.species != null &&
++                    p.species.SpeciesId == scenario.t95TargetId &&
++                    p.speciesAmount > 0);
++                if (!sourceAlive || targetAlive)
++                {
++                    trace.AppendLine("routeStop day=" + day + " reason=" +
++                        (targetAlive ? "TARGET_FORMAL" : "SOURCE_EXTINCT"));
++                    break;
++                }
+             }
+             if (day == scenario.endDay) break;
+             double beforeMaterial = TotalMaterial(grid);
++            t10QuotaByPopulation.Clear();
+             clock.NextDay();
+             if (clock.currentDay != day + 1)
+                 throw new InvalidOperationException("Clock skipped a day.");
+@@ -585,11 +767,14 @@ public static class V048ScenarioReplay
+                 throw new InvalidOperationException("Unfunded material on Day " +
+                     clock.currentDay + ": " + afterMaterial + " > " +
+                     (beforeMaterial + growth));
+-            WriteDay(trace, clock.currentDay, simulation, environment, grid, account);
++            WriteDay(trace, clock.currentDay, simulation, environment, grid,
++                account, scenario);
++            if (clock.currentDay % 25 == 0 || clock.currentDay == scenario.endDay)
++                UpdateExternalProgress(clock.currentDay);
+         }
+         if (scenario.mechanismFixture && !scenario.fixtureSkipDiagnostics)
+             WriteDiagnostics(trace, scenario.endDay, simulation, grid);
+-        trace.AppendLine("result completedDays=" + scenario.endDay +
++        trace.AppendLine("result completedDays=" + clock.currentDay +
+             " rejectedActions=" + rejected);
+         File.WriteAllText(output, trace.ToString(), Encoding.UTF8);
+         Debug.Log("V048_REPLAY_COMPLETE " + scenario.scenarioId +
+@@ -678,9 +863,497 @@ public static class V048ScenarioReplay
+             throw new InvalidOperationException("V05 supports one initial and at most four added tiles.");
+     }
+ 
++    private static void UpdateExternalProgress(int day)
++    {
++        string path = Environment.GetEnvironmentVariable("DF_TASK9_PROGRESS");
++        if (!string.IsNullOrEmpty(path))
++            File.WriteAllText(path, day.ToString(CultureInfo.InvariantCulture),
++                Encoding.ASCII);
++    }
++
++    // Task 9.5: editor-only, post-step observation. Calls the production
++    // read-only planning/food predicates without advancing evolution records.
++    private static void RunT95EShadowConversion(StringBuilder trace,
++        SimulationController simulation, MapGridManager grid, int day,
++        Scenario scenario)
++    {
++        if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance tile))
++            throw new InvalidOperationException("Shadow origin is missing.");
++        BlockInfo block = tile.Block;
++        SpeciesData target = simulation.FindSpeciesByEconomyId(
++            scenario.t95eShadowTargetId);
++        PopulationData source = block.community.Find(p => p != null &&
++            p.species != null && p.species.SpeciesName == "鸡" &&
++            p.speciesAmount > 0);
++        if (source == null || target == null)
++            throw new InvalidOperationException("Shadow source or target is missing.");
++        T95EvolutionState gates = ReadT95Evolution(simulation, block, source,
++            day, scenario);
++        if (gates == null || gates.graphConnection != "PASS" ||
++            gates.cooldown != "PASS" || gates.traitTolerance != "PASS" ||
++            gates.targetAbsent != "PASS" || gates.space != "PASS" ||
++            gates.materialPlan != "PASS" || gates.foodSupport != "FAIL")
++            throw new InvalidOperationException(
++                "Shadow requires food support to be the only failed gate.");
++        int founders = gates.plannedFounders;
++        string sourceHash = simulation.CanonicalModelHash();
++        double materialBefore = TotalMaterial(grid);
++        float plantBefore = block.plantBiomass;
++        float sourceBodyBefore = source.bodyBiomass;
++        int sourceCountBefore = source.speciesAmount;
++        LandRuleTuning original = simulation.ReadLandRules();
++        try
++        {
++            LandRuleTuning bypass = original.Copy();
++            bypass.evolutionTodaySatisfaction = 0f;
++            bypass.evolutionRenewalSatisfaction = 0f;
++            simulation.ApplyLandRules(bypass);
++            MethodInfo convert = typeof(SimulationController).GetMethod(
++                "ConvertToPresetSpecies",
++                BindingFlags.Instance | BindingFlags.NonPublic);
++            convert.Invoke(simulation, new object[] { block, source, target, day });
++        }
++        finally { simulation.ApplyLandRules(original); }
++        PopulationData child = block.community.Find(p => p != null &&
++            p.species == target && p.speciesAmount > 0);
++        double materialAfter = TotalMaterial(grid);
++        if (child == null || child.speciesAmount != founders ||
++            source.speciesAmount != sourceCountBefore - founders ||
++            plantBefore <= block.plantBiomass ||
++            Math.Abs(materialAfter - materialBefore) >
++                Math.Max(1d, materialBefore * 0.00001))
++            throw new InvalidOperationException(
++                "Shadow conversion failed population or material checks.");
++        trace.AppendLine("shadow day=" + day +
++            " sourceHash=" + sourceHash +
++            " sourceBefore=" + sourceCountBefore +
++            " sourceAfter=" + source.speciesAmount +
++            " targetAfter=" + child.speciesAmount +
++            " plantPayment=" + (plantBefore - block.plantBiomass)
++                .ToString("R", CultureInfo.InvariantCulture) +
++            " sourceBodyDelta=" + (sourceBodyBefore - source.bodyBiomass)
++                .ToString("R", CultureInfo.InvariantCulture) +
++            " childBody=" + child.bodyBiomass.ToString("R", CultureInfo.InvariantCulture) +
++            " materialResidual=" + (materialAfter - materialBefore)
++                .ToString("R", CultureInfo.InvariantCulture));
++    }
++
++    private static T95EvolutionState ReadT95Evolution(
++        SimulationController simulation, BlockInfo block,
++        PopulationData source, int day, Scenario scenario)
++    {
++        if (source.species == null ||
++            source.species.SpeciesId != scenario.t95SourceId) return null;
++        string before = simulation.CanonicalModelHash();
++        SpeciesData target = simulation.FindSpeciesByEconomyId(
++            scenario.t95TargetId);
++        var result = new T95EvolutionState
++        {
++            source = source.species.SpeciesName,
++            target = target != null ? target.SpeciesName : "UNKNOWN",
++            nextEvolutionDay = source.nextEvolutionDay,
++            nextLocalSplitDay = block.nextLocalSplitDay,
++            localSplitBranch = source.localSplitBranch,
++            directedTraitLocked = SimulationController.IsDirectedTraitLocked(
++                source, day),
++            requiredDays = block.community.FindAll(p => p != null &&
++                p.speciesAmount > 0).Count == 4 ?
++                simulation.ReadLandRules().evolutionRequiredDaysAtFour :
++                simulation.ReadLandRules().evolutionRequiredDays,
++            graphConnection = "NOT_EVALUATED", cooldown = "NOT_EVALUATED",
++            traitTolerance = "NOT_EVALUATED",
++            targetAbsent = "NOT_EVALUATED", space = "NOT_EVALUATED",
++            materialPlan = "NOT_EVALUATED", foodSupport = "NOT_EVALUATED",
++            eligible = "NOT_EVALUATED"
++        };
++        MethodInfo graph = typeof(SimulationController).GetMethod(
++            "ConnectedTargets", BindingFlags.Instance | BindingFlags.NonPublic);
++        var connected = graph.Invoke(simulation,
++            new object[] { source.species }) as List<SpeciesData>;
++        var connectedNames = new List<string>();
++        if (connected != null)
++            foreach (SpeciesData species in connected)
++                if (species != null) connectedNames.Add(species.SpeciesName);
++        connectedNames.Sort(StringComparer.Ordinal);
++        result.connectedTargets = string.Join("|", connectedNames);
++        if (source.foodSatisfactionHistory != null &&
++            source.foodSatisfactionHistory.Count > 0)
++        {
++            float sum = 0f;
++            foreach (float value in source.foodSatisfactionHistory) sum += value;
++            result.foodSatisfaction10 = sum /
++                source.foodSatisfactionHistory.Count;
++        }
++        if (target != null)
++        {
++            result.dT = Mathf.Abs(source.fitTemperature -
++                target.baseFitTemperature);
++            result.dH = Mathf.Abs(source.fitHumidity -
++                target.baseFitHumidity);
++            result.dMovement = Mathf.Abs(source.movementAbility -
++                target.baseMovementAbility);
++            result.dSize = Mathf.Abs(source.size - target.baseSize);
++            result.dFertility = Mathf.Abs(source.fertility -
++                target.baseFertility);
++            if (source.evolutionConversions != null)
++                foreach (EvolutionConversionRecord record in
++                    source.evolutionConversions)
++                    if (record != null && record.target == target)
++                        result.effectiveDays = record.effectiveDays;
++        }
++        if (target == null) result.stage = "TARGET_UNKNOWN";
++        else if (connected == null || !connected.Contains(target))
++        {
++            result.stage = "GRAPH_DISCONNECTED";
++            result.graphConnection = "FAIL";
++        }
++        else if (day < source.nextEvolutionDay)
++        {
++            result.graphConnection = "PASS";
++            result.stage = result.cooldown = "COOLDOWN";
++        }
++        else
++        {
++            result.graphConnection = "PASS";
++            result.cooldown = "PASS";
++            int tolerance = simulation.ReadLandRules().evolutionTraitTolerance;
++            bool traits = result.dT <= tolerance && result.dH <= tolerance &&
++                result.dMovement <= tolerance && result.dSize <= tolerance &&
++                result.dFertility <= tolerance;
++            result.traitTolerance = traits ? "PASS" : "FAIL";
++            if (!traits) result.stage = "TRAIT_DISTANCE";
++            else
++            {
++                bool absent = !block.community.Exists(p => p != null &&
++                    p.species == target && p.speciesAmount > 0);
++                result.targetAbsent = absent ? "PASS" : "FAIL";
++                if (!absent) result.stage = "TARGET_PRESENT";
++                else
++                {
++                    bool space = block.community.FindAll(p => p != null &&
++                        p.speciesAmount > 0).Count < 5;
++                    result.space = space ? "PASS" : "FAIL";
++                    if (!space) result.stage = "SPACE";
++                    else
++                    {
++                        MethodInfo plan = typeof(SimulationController).GetMethod(
++                            "TryPlanFormalEvolution",
++                            BindingFlags.Instance | BindingFlags.NonPublic);
++                        object[] args = { block, source, target, 0, 0f, 0f };
++                        bool planned = (bool)plan.Invoke(simulation, args);
++                        result.materialPlan = planned ? "PASS" : "FAIL";
++                        result.plannedFounders = (int)args[3];
++                        if (planned && scenario.t95FinalGate &&
++                            day >= scenario.t95FinalProbeStart &&
++                            day <= scenario.t95FinalProbeEnd)
++                            result.finalProbe = ReadT95FinalGateProbe(
++                                simulation, block, source, target,
++                                (int)args[3], (float)args[4]);
++                        if (planned && scenario.t95bFoodProbeDay > 0 &&
++                            day == scenario.t95bFoodProbeDay &&
++                            target.trophicLevel == 0)
++                            result.foodProbe = ReadT95BPlantProbe(simulation,
++                                block, source, target, (int)args[3],
++                                (float)args[4], (float)args[5]);
++                        if (!planned) result.stage = "MATERIAL_PLAN";
++                        else
++                        {
++                            MethodInfo food = typeof(SimulationController).GetMethod(
++                                "HasEvolutionFoodSupport",
++                                BindingFlags.Instance | BindingFlags.NonPublic);
++                            bool supported = (bool)food.Invoke(simulation,
++                                new object[] { block, source, target,
++                                    result.plannedFounders });
++                            result.foodSupport = supported ? "PASS" : "FAIL";
++                            result.eligible = supported ? "PASS" : "FAIL";
++                            result.stage = supported ? "ELIGIBLE_POST_STEP" :
++                                "FOOD_SUPPORT";
++                        }
++                    }
++                }
++            }
++        }
++        if (scenario.t95FinalGate && scenario.t95FinalNegativeDay == day &&
++            source.species != null && source.species.SpeciesId == scenario.t95SourceId &&
++            target != null)
++            result.finalNegatives = RunT95FinalNegatives(simulation, block,
++                source, target, day);
++        if (before != simulation.CanonicalModelHash())
++            throw new InvalidOperationException(
++                "T95 read-only evolution diagnostic changed model state.");
++        return result;
++    }
++
++    private static T95FinalNegative[] RunT95FinalNegatives(
++        SimulationController simulation, BlockInfo original,
++        PopulationData originalSource, SpeciesData target, int day)
++    {
++        var answer = new List<T95FinalNegative>();
++        Type type = typeof(SimulationController);
++        var flags = BindingFlags.Instance | BindingFlags.NonPublic;
++        MethodInfo plan = type.GetMethod("TryPlanFormalEvolution", flags);
++        MethodInfo food = type.GetMethod("HasEvolutionFoodSupport", flags);
++        MethodInfo eligible = type.GetMethod("IsEligibleEvolutionTarget", flags);
++        MethodInfo targetPopulation = type.GetMethod("TargetPopulation",
++            BindingFlags.Static | BindingFlags.NonPublic);
++        string[] cases = { "positive", "lowR", "noFood", "lowStock",
++            "noLegalPrey", "duplicateTarget", "fullSlot",
++            "unaffordableFounder", "otherConsumerPressure" };
++        foreach (string name in cases)
++        {
++            if (name == "noLegalPrey" && target.trophicLevel == 0) continue;
++            GameObject temporary = new GameObject("T95 negative " + name);
++            try
++            {
++                BlockInfo block = temporary.AddComponent<BlockInfo>();
++                block.temperature = original.temperature;
++                block.humidity = original.humidity;
++                block.plantBiomass = original.plantBiomass;
++                block.maxPlantBiomass = original.maxPlantBiomass;
++                block.habitatRecovery = original.habitatRecovery;
++                block.predationReferenceRecovery =
++                    original.predationReferenceRecovery;
++                block.waterCoverage = original.waterCoverage;
++                block.community = new List<PopulationData>();
++                PopulationData source = null;
++                foreach (PopulationData old in original.community)
++                {
++                    if (old == null) continue;
++                    PopulationData copy = CloneT95Population(old);
++                    block.community.Add(copy);
++                    if (old == originalSource) source = copy;
++                }
++                if (source == null) continue;
++                switch (name)
++                {
++                    case "lowR": block.habitatRecovery = 0; break;
++                    case "noFood":
++                        block.plantBiomass = 0f;
++                        block.habitatRecovery = 0;
++                        break;
++                    case "lowStock": block.plantBiomass = 1f; break;
++                    case "noLegalPrey": source.species = null; break;
++                    case "duplicateTarget":
++                        block.community.Add((PopulationData)targetPopulation.Invoke(
++                            null, new object[] { target, 1 }));
++                        break;
++                    case "fullSlot":
++                        while (block.community.Count < 5)
++                            block.community.Add(CloneT95Population(source));
++                        break;
++                    case "unaffordableFounder":
++                        block.plantBiomass = 0f;
++                        break;
++                    case "otherConsumerPressure":
++                        PopulationData competitor = CloneT95Population(source);
++                        competitor.speciesAmount = 100000;
++                        competitor.bodyBiomass *= 100000f /
++                            Mathf.Max(1, source.speciesAmount);
++                        block.community.Add(competitor);
++                        break;
++                }
++                object[] arguments = { block, source, target, 0, 0f, 0f };
++                bool planned = (bool)plan.Invoke(simulation, arguments);
++                int founders = (int)arguments[3];
++                bool supported = planned && (bool)food.Invoke(simulation,
++                    new object[] { block, source, target, founders });
++                bool allowed = (bool)eligible.Invoke(simulation,
++                    new object[] { block, source, target, day });
++                answer.Add(new T95FinalNegative { caseName = name,
++                    plan = planned, founders = founders,
++                    foodSupport = supported, eligible = allowed,
++                    rejected = !allowed });
++            }
++            finally { UnityEngine.Object.DestroyImmediate(temporary); }
++        }
++        return answer.ToArray();
++    }
++
++    private static PopulationData CloneT95Population(PopulationData source) =>
++        new PopulationData
++        {
++            species = source.species,
++            speciesAmount = source.speciesAmount,
++            trophicLevel = source.trophicLevel,
++            trophicLevelInitialized = source.trophicLevelInitialized,
++            ecologicalNiche = source.ecologicalNiche,
++            movementAbility = source.movementAbility,
++            size = source.size,
++            fertility = source.fertility,
++            fitTemperature = source.fitTemperature,
++            fitHumidity = source.fitHumidity,
++            habitatNiche = source.habitatNiche,
++            bodyBiomass = source.bodyBiomass,
++            bodyBiomassInitialized = source.bodyBiomassInitialized,
++            birthRemainder = source.birthRemainder,
++            deathRemainder = source.deathRemainder,
++            energyReserve = source.energyReserve,
++            nextEvolutionDay = source.nextEvolutionDay
++        };
++
++    private static T95FinalGateProbe ReadT95FinalGateProbe(
++        SimulationController simulation, BlockInfo block,
++        PopulationData source, SpeciesData target, int amount,
++        float plantPayment)
++    {
++        var privateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
++        var privateStatic = BindingFlags.Static | BindingFlags.NonPublic;
++        PopulationData candidate = (PopulationData)typeof(SimulationController)
++            .GetMethod("TargetPopulation", privateStatic)
++            .Invoke(null, new object[] { target, amount });
++        Type land = typeof(SimulationController).Assembly.GetType(
++            "LandLifeRules", true);
++        object[] values = { block, source, source.speciesAmount - amount,
++            candidate, plantPayment, simulation.ReadLandRules(),
++            null, null, null };
++        land.GetMethod("ForecastEvolutionPlantsAfterPayment", privateStatic)
++            .Invoke(null, values);
++        var groups = (List<PopulationData>)values[6];
++        float[] now = (float[])values[7];
++        float[] renewable = (float[])values[8];
++        int sourceIndex = groups.IndexOf(source);
++        int childIndex = groups.IndexOf(candidate);
++        MethodInfo need = land.GetMethod("AdultNeed", BindingFlags.Static |
++            BindingFlags.NonPublic);
++        LandRuleTuning rules = simulation.ReadLandRules();
++        float sourceAdult = (source.speciesAmount - amount) *
++            (float)need.Invoke(null, new object[] { (float)source.size,
++                (float)source.movementAbility, rules });
++        float childAdult = amount * (float)need.Invoke(null,
++            new object[] { (float)candidate.size,
++                (float)candidate.movementAbility, rules });
++        if (candidate.trophicLevel != 0)
++        {
++            MethodInfo predator = typeof(SimulationController).GetMethod(
++                "HasCompensatedPredatorFoodSupport", privateInstance);
++            object[] predatorArgs = { block, source, candidate,
++                source.speciesAmount - amount, plantPayment, null };
++            bool passed = (bool)predator.Invoke(simulation, predatorArgs);
++            Array trialValues = (Array)predatorArgs[5];
++            var results = new T95FinalPredatorTrial[trialValues.Length];
++            for (int i = 0; i < trialValues.Length; i++)
++            {
++                object value = trialValues.GetValue(i);
++                Type type = value.GetType();
++                results[i] = new T95FinalPredatorTrial
++                {
++                    preyCount = (int)type.GetField("preyCount").GetValue(value),
++                    preyRenewal = (float)type.GetField("preyRenewal").GetValue(value),
++                    candidateCatches = (float)type.GetField("candidateCatches").GetValue(value),
++                    candidateFood = (float)type.GetField("candidateFood").GetValue(value),
++                    candidateAdultCoverage = (float)type.GetField("candidateAdultCoverage").GetValue(value),
++                    candidateNet = (float)type.GetField("candidateNet").GetValue(value),
++                    pass = (bool)type.GetField("pass").GetValue(value)
++                };
++            }
++            return new T95FinalGateProbe
++            {
++                plantPayment = plantPayment,
++                sourceAdultDemand = sourceAdult,
++                sourceNow = sourceIndex < 0 ? 0f : now[sourceIndex],
++                sourceRenewal = sourceIndex < 0 ? 0f : renewable[sourceIndex],
++                sourceNowPass = sourceIndex >= 0 && sourceAdult > 0f &&
++                    now[sourceIndex] / sourceAdult >= 0.95f,
++                predatorTrials = results,
++                predatorPass = passed
++            };
++        }
++        float predation = (float)typeof(SimulationController).GetMethod(
++            "ForecastEvolutionPredationDeaths", privateInstance)
++            .Invoke(simulation, new object[] { block, candidate });
++        MethodInfo netMethod = typeof(SimulationController).GetMethod(
++            "ForecastEvolutionPaidNet", privateInstance);
++        float netNow = (float)netMethod.Invoke(simulation,
++            new object[] { block, candidate, amount, now[childIndex],
++                predation });
++        float netRenewal = (float)netMethod.Invoke(simulation,
++            new object[] { block, candidate, amount,
++                renewable[childIndex], predation });
++        return new T95FinalGateProbe
++        {
++            plantPayment = plantPayment,
++            sourceAdultDemand = sourceAdult,
++            sourceNow = sourceIndex < 0 ? 0f : now[sourceIndex],
++            sourceRenewal = sourceIndex < 0 ? 0f : renewable[sourceIndex],
++            childAdultDemand = childAdult,
++            childNow = childIndex < 0 ? 0f : now[childIndex],
++            childRenewal = childIndex < 0 ? 0f : renewable[childIndex],
++            expectedPredationDeaths = predation,
++            netNow = netNow, netRenewal = netRenewal,
++            sourceNowPass = sourceIndex >= 0 &&
++                now[sourceIndex] / sourceAdult >= 0.95f,
++            sourceRenewalPass = sourceIndex >= 0 &&
++                renewable[sourceIndex] / sourceAdult >= 0.95f,
++            childNowPass = childIndex >= 0 &&
++                now[childIndex] / childAdult >= 0.95f,
++            childRenewalPass = childIndex >= 0 &&
++                renewable[childIndex] / childAdult >= 0.95f,
++            netNowPass = netNow >= -0.001f * amount,
++            netRenewalPass = netRenewal > 0f
++        };
++    }
++
++    private static T95BFoodProbe ReadT95BPlantProbe(
++        SimulationController simulation, BlockInfo block,
++        PopulationData source, SpeciesData target, int amount,
++        float plantPayment, float excessBody)
++    {
++        var runtime = BindingFlags.Static | BindingFlags.NonPublic;
++        MethodInfo create = typeof(SimulationController).GetMethod(
++            "TargetPopulation", runtime);
++        PopulationData candidate = (PopulationData)create.Invoke(null,
++            new object[] { target, amount });
++        int remaining = source.trophicLevel == 0 ?
++            source.speciesAmount - amount : source.speciesAmount;
++        Type landRulesType = typeof(SimulationController).Assembly.GetType(
++            "LandLifeRules", true);
++        MethodInfo forecast = landRulesType.GetMethod(
++            "ForecastEvolutionPlantSupport", runtime);
++        object[] values = { block, source, candidate, remaining,
++            simulation.ReadLandRules(), 0f, 0f, 0f };
++        forecast.Invoke(null, values);
++        float demand = (float)values[5];
++        float today = (float)values[6];
++        float renewable = (float)values[7];
++        LandRuleTuning rules = simulation.ReadLandRules();
++        MethodInfo budget = landRulesType.GetMethod(
++            "PlantFoodBudget", runtime);
++        float currentBudget = (float)budget.Invoke(null,
++            new object[] { block,
++                block.plantBiomass + block.consumedBiomassToday, rules });
++        float todayRatio = demand > 0f ? today / demand : 0f;
++        float renewalRatio = demand > 0f ? renewable / demand : 0f;
++        return new T95BFoodProbe
++        {
++            candidateCount = amount, remainingSourceCount = remaining,
++            blockTemperature = block.temperature,
++            blockHumidity = block.humidity,
++            candidateFitness = Mathf.Clamp01(1f -
++                (Mathf.Abs(block.temperature - target.baseFitTemperature) +
++                 Mathf.Abs(block.humidity - target.baseFitHumidity)) / 90f),
++            plantStock = block.plantBiomass,
++            consumedToday = block.consumedBiomassToday,
++            recovery = block.habitatRecovery,
++            currentPlantBudget = currentBudget,
++            plantPayment = plantPayment, excessBody = excessBody,
++            demand = demand, today = today, renewable = renewable,
++            todayRatio = todayRatio, renewableRatio = renewalRatio,
++            todayThreshold = rules.evolutionTodaySatisfaction,
++            renewalThreshold = rules.evolutionRenewalSatisfaction,
++            positiveDemand = demand > 0f,
++            todayPass = demand > 0f &&
++                todayRatio >= rules.evolutionTodaySatisfaction,
++            renewalPass = demand > 0f &&
++                renewalRatio >= rules.evolutionRenewalSatisfaction,
++            completePass = demand > 0f &&
++                todayRatio >= rules.evolutionTodaySatisfaction &&
++                renewalRatio >= rules.evolutionRenewalSatisfaction
++        };
++    }
++
+     private static void WriteDay(StringBuilder trace, int day,
+         SimulationController simulation, SimulationEnvironmentController environment,
+-        MapGridManager grid, BioenergyAccount account)
++        MapGridManager grid, BioenergyAccount account, Scenario scenario)
+     {
+         var state = new StringBuilder();
+         var tiles = new List<MapTileInstance>(grid.GetPlacedTiles());
+@@ -735,7 +1408,9 @@ public static class V048ScenarioReplay
+                             environmentalK = population.environmentalCarryingCapacity,
+                             foodK = population.trophicLevel == 0
+                                 ? simulation.ReadFoodCarryingCapacity(block, population)
+-                                : -1f,
++                                : scenario.recordPredatorFoodK ?
++                                    simulation.ReadPredatorFoodCarryingCapacity(
++                                        block, population) : -1f,
+                             allocatedFood = population.allocatedBiomass,
+                             adultNeedPerHead = population.energyNeed,
+                             energySatisfaction = population.energySatisfactionToday,
+@@ -748,8 +1423,24 @@ public static class V048ScenarioReplay
+                             birthBudget = population.birthBudgetToday,
+                             newbornCost = population.newbornCostToday,
+                             unusedBirthFood = population.unusedBirthFoodToday,
++                            birthStressDeaths = population.birthStressDeathsToday,
+                             populationBeforePredation = population.populationBeforePredation,
+-                            endangeredDays = population.endangeredDays
++                            endangeredDays = population.endangeredDays,
++                            t95 = scenario.t95Diagnostics ? ReadT95Evolution(
++                                simulation, block, population, day, scenario) : null,
++                            t95eTrackedTarget = scenario.t95eTraceMutation &&
++                                population.trackedEvolutionTarget != null ?
++                                population.trackedEvolutionTarget.SpeciesName : null,
++                            t95eLastMutationEffect = scenario.t95eTraceMutation ?
++                                population.lastMutationEffect : null,
++                            t95eProtectionSince = scenario.t95eTraceMutation ?
++                                population.targetProtectionSince : null,
++                            t95eProtectionReleased = scenario.t95eTraceMutation ?
++                                population.targetProtectionReleased : null,
++                            t10 = scenario.t10Diagnostics &&
++                                t10QuotaByPopulation.TryGetValue(population,
++                                    out T10QuotaRecord quotaRecord) ?
++                                quotaRecord : null
+                         });
+             populations.Sort((a, b) => string.CompareOrdinal(a.id, b.id));
+             tileStates.Add(new TileState
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs
+index 38b015e7..1c1494ad 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs	
+@@ -16,7 +16,6 @@ namespace DarwinFarm.Environment
+     public enum TerrainConnection { Grass, Sand, Rock }
+     public enum EnvironmentAttribute { Temperature, Humidity, Recovery }
+     public enum EffectPhase { None, Entering, Holding, Returning, Automatic }
+-    public enum MonsoonExitReason { Manual, SourceChanged, Overlap, Replaced }
+ 
+     public readonly struct GridPosition : IEquatable<GridPosition>, IComparable<GridPosition>
+     {
+@@ -149,7 +148,6 @@ namespace DarwinFarm.Environment
+             Math.Min(attribute == EnvironmentAttribute.Recovery ? MaximumRecovery : 100, value));
+         public static bool IsFinite(double value) => !double.IsNaN(value) && !double.IsInfinity(value);
+         public static bool IsClimateStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25 || Math.Abs(value) == 50);
+-        public static bool IsMonsoonStrength(double value) => IsFinite(value) && Math.Abs(value) == 20;
+         public static bool IsRecoveryStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25000 || Math.Abs(value) == 50000);
+         public static double ChangeStock(double stock, double signedFraction)
+             => ChangeStock(stock, PlantCapacity, signedFraction);
+@@ -161,7 +159,7 @@ namespace DarwinFarm.Environment
+             return Math.Max(0, Math.Min(capacity, stock + signedFraction * (signedFraction > 0 ? capacity : stock)));
+         }
+ 
+-        // The combined plant tool always acts on the stock that exists now.
++        // The stock tool acts on the stock that exists when it is submitted.
+         public static double MultiplyStock(double stock, double capacity, double signedFraction)
+         {
+             if (!IsFinite(stock) || !IsFinite(capacity) || capacity <= 0 || stock < 0 || stock > capacity ||
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs
+index 39edef01..252f7bf5 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentState.cs	
+@@ -46,11 +46,6 @@ namespace DarwinFarm.Environment
+         public AttributeSnapshot Temperature { get; }
+         public AttributeSnapshot Humidity { get; }
+         public AttributeSnapshot Recovery { get; }
+-        public long? MonsoonId { get; }
+-        public double MonsoonTemperatureOffset { get; }
+-        public double MonsoonHumidityOffset { get; }
+-        public bool HasMonsoon => MonsoonId.HasValue;
+-        public bool MonsoonApplied { get; }
+         public bool HasLocalClimate { get; }
+         public bool HasLocalTemperature { get; }
+         public bool HasLocalHumidity { get; }
+@@ -62,60 +57,16 @@ namespace DarwinFarm.Environment
+             Habitat = tile.Habitat; IsWater = tile.IsWater;
+             NaturalDefaults = EnvironmentRules.Defaults(tile.Habitat);
+             Temperature = tile.Attribute(0); Humidity = tile.Attribute(1); Recovery = tile.Attribute(2);
+-            MonsoonId = tile.MonsoonId; HasLocalClimate = tile.HasLocalClimate;
+-            MonsoonTemperatureOffset = tile.WindOffsets[0];
+-            MonsoonHumidityOffset = tile.WindOffsets[1];
++            HasLocalClimate = tile.HasLocalClimate;
+             HasLocalTemperature = tile.Locals[0] != null;
+             HasLocalHumidity = tile.Locals[1] != null;
+             HasRecoveryCommand = tile.RecoveryReturning;
+             CanCancelRecovery = tile.RecoveryReturning &&
+                 tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
+                 !tile.RecoveryCancelIssued;
+-            MonsoonApplied = HasMonsoon;
+         }
+     }
+ 
+-    public sealed class MonsoonSnapshot
+-    {
+-        public long Id { get; }
+-        public GridPosition Source { get; }
+-        public int TemperatureOffset { get; }
+-        public int HumidityOffset { get; }
+-        public IReadOnlyList<GridPosition> Area { get; }
+-        internal MonsoonSnapshot(MonsoonState state)
+-        {
+-            Id = state.Id; Source = state.Source;
+-            TemperatureOffset = state.TemperatureOffset; HumidityOffset = state.HumidityOffset;
+-            var area = new List<GridPosition>(state.Area); area.Sort(); Area = area.AsReadOnly();
+-        }
+-    }
+-
+-    // Reserved settlement contract: no balances, prices, deductions or refund execution here.
+-    public sealed class EnvironmentPayment
+-    {
+-        public string ReceiptId { get; }
+-        public decimal PaidAmount { get; }
+-        public EnvironmentPayment(string receiptId, decimal paidAmount)
+-        {
+-            if (string.IsNullOrWhiteSpace(receiptId)) throw new ArgumentException("A payment receipt needs an identity.", nameof(receiptId));
+-            if (paidAmount < 0) throw new ArgumentOutOfRangeException(nameof(paidAmount));
+-            ReceiptId = receiptId; PaidAmount = paidAmount;
+-        }
+-    }
+-
+-    public sealed class MonsoonSettlement
+-    {
+-        public long MonsoonId { get; }
+-        public MonsoonExitReason Reason { get; }
+-        public EnvironmentPayment Payment { get; }
+-        public decimal RefundAmount => Reason == MonsoonExitReason.Overlap ? Payment?.PaidAmount ?? 0 : 0;
+-        internal MonsoonSettlement(MonsoonState state, MonsoonExitReason reason)
+-        { MonsoonId = state.Id; Reason = reason; Payment = state.Payment; }
+-    }
+-
+-    // A future economy adapter consumes idempotent settlements, keyed by MonsoonId/ReceiptId.
+-    public interface IEnvironmentEconomySink { void OnMonsoonEnded(MonsoonSettlement settlement); }
+-
+     internal sealed class Transition
+     {
+         internal double Start, Target;
+@@ -154,8 +105,6 @@ namespace DarwinFarm.Environment
+         internal bool RecoveryReturning;
+         internal bool RecoveryCancelIssued;
+         internal bool RecoveryDetached;
+-        internal long? MonsoonId;
+-        internal readonly double[] WindOffsets = new double[2];
+         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
+         internal EnvironmentTile(TopologyNode node)
+         {
+@@ -178,21 +127,12 @@ namespace DarwinFarm.Environment
+                 EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays - local.Age :
+                 index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays ?
+                     EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
+-            double offset = index < 2 ? WindOffsets[index] : 0;
+             double target = index == 2 && RecoveryReturning &&
+                 RecoveryAge < EnvironmentRules.RecoveryHoldDays ? Values[2] : track.Target;
+-            return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index] + offset),
+-                EnvironmentRules.Clamp((EnvironmentAttribute)index, target + offset),
++            return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index]),
++                EnvironmentRules.Clamp((EnvironmentAttribute)index, target),
+                 phase, remaining, track.Progress);
+         }
+     }
+ 
+-    internal sealed class MonsoonState
+-    {
+-        internal long Id;
+-        internal GridPosition Source;
+-        internal int TemperatureOffset, HumidityOffset;
+-        internal EnvironmentPayment Payment;
+-        internal HashSet<GridPosition> Area = new HashSet<GridPosition>();
+-    }
+ }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyCatalog.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyCatalog.cs
+index e085dbd3..fc691625 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyCatalog.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyCatalog.cs	
+@@ -2,21 +2,19 @@ using System;
+ 
+ namespace DarwinFarm.Environment
+ {
+-    // Five player-facing tools.
++    // Five player-facing tools. Stock and daily recovery are separate actions.
+     public enum EnvironmentTechnologyKind
+     {
+-        TemperatureChange, HumidityChange, PlantChange, ElevationChange, MonsoonAnchor
++        TemperatureChange = 0, HumidityChange = 1, PlantStockChange = 2,
++        ElevationChange = 3, PlantRecoveryChange = 5
+     }
+ 
+     public readonly struct EnvironmentTechnologyChoice
+     {
+         public readonly EnvironmentTechnologyKind Kind;
+         public readonly int Tier;
+-        public readonly int TemperatureOffset;
+-        public readonly int HumidityOffset;
+-        public EnvironmentTechnologyChoice(EnvironmentTechnologyKind kind, int tier = 1,
+-            int temperatureOffset = 20, int humidityOffset = 20)
+-        { Kind = kind; Tier = tier; TemperatureOffset = temperatureOffset; HumidityOffset = humidityOffset; }
++        public EnvironmentTechnologyChoice(EnvironmentTechnologyKind kind, int tier = 1)
++        { Kind = kind; Tier = tier; }
+     }
+ 
+     public static class EnvironmentTechnologyCatalog
+@@ -30,12 +28,12 @@ namespace DarwinFarm.Environment
+                 case EnvironmentTechnologyKind.TemperatureChange:
+                 case EnvironmentTechnologyKind.HumidityChange:
+                     return tier == 1 ? settings.climateSmallCost : settings.climateLargeCost;
+-                case EnvironmentTechnologyKind.PlantChange:
++                case EnvironmentTechnologyKind.PlantStockChange:
++                case EnvironmentTechnologyKind.PlantRecoveryChange:
+                     return choice.Tier > 0 ?
+                         (tier == 1 ? settings.plantIncreaseSmallCost : settings.plantIncreaseLargeCost) :
+                         (tier == 1 ? settings.plantDecreaseSmallCost : settings.plantDecreaseLargeCost);
+                 case EnvironmentTechnologyKind.ElevationChange: return settings.elevationCost;
+-                case EnvironmentTechnologyKind.MonsoonAnchor: return settings.monsoonCost;
+                 default: return 0;
+             }
+         }
+@@ -43,9 +41,9 @@ namespace DarwinFarm.Environment
+         {
+             EnvironmentTechnologyKind.TemperatureChange,
+             EnvironmentTechnologyKind.HumidityChange,
+-            EnvironmentTechnologyKind.PlantChange,
+-            EnvironmentTechnologyKind.ElevationChange,
+-            EnvironmentTechnologyKind.MonsoonAnchor
++            EnvironmentTechnologyKind.PlantStockChange,
++            EnvironmentTechnologyKind.PlantRecoveryChange,
++            EnvironmentTechnologyKind.ElevationChange
+         };
+ 
+         public static string Name(EnvironmentTechnologyKind kind)
+@@ -54,9 +52,9 @@ namespace DarwinFarm.Environment
+             {
+                 case EnvironmentTechnologyKind.TemperatureChange: return "温度变化工具";
+                 case EnvironmentTechnologyKind.HumidityChange: return "湿度变化工具";
+-                case EnvironmentTechnologyKind.PlantChange: return "植物变化工具";
++                case EnvironmentTechnologyKind.PlantStockChange: return "植物存量工具";
++                case EnvironmentTechnologyKind.PlantRecoveryChange: return "植物日增量工具";
+                 case EnvironmentTechnologyKind.ElevationChange: return "海拔变化工具";
+-                case EnvironmentTechnologyKind.MonsoonAnchor: return "季风工具";
+                 default: return "未知科技";
+             }
+         }
+@@ -64,10 +62,6 @@ namespace DarwinFarm.Environment
+         public static bool Validate(EnvironmentTechnologyChoice choice)
+         {
+             if (!Enum.IsDefined(typeof(EnvironmentTechnologyKind), choice.Kind)) return false;
+-            if (choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor)
+-                return choice.Tier == 1 &&
+-                    Math.Abs(choice.TemperatureOffset) == 20 &&
+-                    Math.Abs(choice.HumidityOffset) == 20;
+             if (choice.Kind == EnvironmentTechnologyKind.ElevationChange)
+                 return choice.Tier == 1 || choice.Tier == -1;
+             return choice.Tier == 1 || choice.Tier == 2 || choice.Tier == -1 || choice.Tier == -2;
+@@ -81,11 +75,5 @@ namespace DarwinFarm.Environment
+             Math.Abs(choice.Tier) * 25000;
+         public static float Fraction(EnvironmentTechnologyChoice choice) =>
+             Math.Abs(choice.Tier) * .25f;
+-        public static string MonsoonPatternName(EnvironmentTechnologyChoice choice)
+-        {
+-            if (choice.TemperatureOffset < 0)
+-                return choice.HumidityOffset > 0 ? "冷湿" : "干冷";
+-            return choice.HumidityOffset > 0 ? "暖湿" : "干热";
+-        }
+     }
+ }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs
+index de82db07..f5f88722 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs	
+@@ -56,9 +56,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+         if (water)
+         {
+             if (choice.Kind == EnvironmentTechnologyKind.TemperatureChange ||
+-                choice.Kind == EnvironmentTechnologyKind.HumidityChange ||
+-                choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor)
+-            { result.Error = "温湿度科技和季风锚不能以水格为目标"; return result; }
++                choice.Kind == EnvironmentTechnologyKind.HumidityChange)
++            { result.Error = "温湿度科技不能以水格为目标"; return result; }
+             if (!environment.TryGetWaterArea(coordinate,
+                 out IReadOnlyList<Vector2Int> waterArea, out validationError))
+             { result.Error = validationError; return result; }
+@@ -82,50 +81,32 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                     EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
+                 result.Timing = "25天进入 · 150天维持 · 150天恢复";
+                 break;
+-            case EnvironmentTechnologyKind.PlantChange:
+-                float fraction = EnvironmentTechnologyCatalog.Fraction(choice);
+-                if (choice.Tier > 0)
+-                {
+-                    int growth = EnvironmentTechnologyCatalog.GrowthAmount(choice);
+-                    double capacity = (water ? EnvironmentRules.WaterPlantCapacity :
+-                        EnvironmentRules.PlantCapacity) * (double)area.Count;
+-                    double stock = water ? WaterStock(area) : read.PlantStock;
+-                    double nextStock = EnvironmentRules.MultiplyStock(stock, capacity, fraction);
+-                    if (water)
+-                        result.After = "整域库存 " + nextStock.ToString("F0") +
+-                            "；每格日增量 " + Math.Min(EnvironmentRules.MaximumRecovery,
+-                                state.Recovery.Value + growth).ToString("F0");
+-                    else
+-                    {
+-                        if (!environment.TryPreview(coordinate, SimulationInterventionKind.PlantRecovery,
+-                            growth, out EnvironmentOperationPreview increased, out validationError))
+-                        { result.Error = validationError; return result; }
+-                        result.After = "库存 " + nextStock.ToString("F0") +
+-                            "；日增量 " + increased.Target.ToString("F0") +
+-                            "；预计生境 " + EnvironmentRules.Profile(increased.EstimatedHabitat).Title;
+-                    }
+-                    result.Timing = "库存立即乘算 · 日增量立即提高并维持50天，再用50天恢复";
+-                }
++            case EnvironmentTechnologyKind.PlantStockChange:
++                double capacity = (water ? EnvironmentRules.WaterPlantCapacity :
++                    EnvironmentRules.PlantCapacity) * (double)area.Count;
++                double stock = water ? WaterStock(area) : read.PlantStock;
++                double nextStock = EnvironmentRules.MultiplyStock(stock, capacity,
++                    Math.Sign(choice.Tier) * EnvironmentTechnologyCatalog.Fraction(choice));
++                result.After = (water ? "整域库存 " : "库存 ") + nextStock.ToString("F0") +
++                    "；日增量不变";
++                result.Timing = "库存立即乘算 · 无维持或恢复阶段";
++                break;
++            case EnvironmentTechnologyKind.PlantRecoveryChange:
++                int growth = Math.Sign(choice.Tier) *
++                    EnvironmentTechnologyCatalog.GrowthAmount(choice);
++                if (water)
++                    result.After = "每格日增量 " + EnvironmentRules.Clamp(
++                        EnvironmentAttribute.Recovery, state.Recovery.Value + growth).ToString("F0") +
++                        "；库存不即时改变";
+                 else
+                 {
+-                    float factor = 1f - fraction;
+-                    if (water)
+-                        result.After = "整域库存 " + (WaterStock(area) * factor).ToString("F0") +
+-                            "；每格日增量 " + Math.Max(0, state.Recovery.Value -
+-                                EnvironmentTechnologyCatalog.GrowthAmount(choice)).ToString("F0");
+-                    else
+-                    {
+-                        int recovery = EnvironmentRules.Round(Math.Max(0, state.Recovery.Value -
+-                            EnvironmentTechnologyCatalog.GrowthAmount(choice)));
+-                        TerrainKind terrain = EnvironmentRules.Classify(state.Elevation,
+-                            EnvironmentRules.Round(state.Temperature.Value),
+-                            EnvironmentRules.Round(state.Humidity.Value), recovery);
+-                        result.After = "库存 " + (read.PlantStock * factor).ToString("F0") +
+-                            "；日增量 " + recovery.ToString("F0") +
+-                            "；预计地形 " + terrain;
+-                    }
+-                    result.Timing = "库存立即乘算 · 日增量立即降低并维持50天，再用50天恢复";
++                    if (!environment.TryPreview(coordinate, SimulationInterventionKind.PlantRecovery,
++                        growth, out EnvironmentOperationPreview increased, out validationError))
++                    { result.Error = validationError; return result; }
++                    result.After = "日增量 " + increased.Target.ToString("F0") +
++                        "；库存不即时改变";
+                 }
++                result.Timing = "日增量立即变化 · 维持50天 · 恢复50天";
+                 break;
+             case EnvironmentTechnologyKind.ElevationChange:
+                 int shift = choice.Tier;
+@@ -147,19 +128,6 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                 }
+                 result.Timing = "立即生效 · 不回滚";
+                 break;
+-            case EnvironmentTechnologyKind.MonsoonAnchor:
+-                if (!environment.TryPreviewMonsoon(coordinate,
+-                    choice.TemperatureOffset, choice.HumidityOffset,
+-                    out IReadOnlyList<GridPosition> covered, out validationError))
+-                { result.Error = validationError; return result; }
+-                area.Clear();
+-                foreach (GridPosition member in covered) area.Add(new Vector2Int(member.X, member.Y));
+-                result.Area = area.AsReadOnly();
+-                result.After = EnvironmentTechnologyCatalog.MonsoonPatternName(choice) + "：覆盖 " +
+-                    area.Count + " 个陆格，温度 " + Signed(choice.TemperatureOffset) +
+-                    "，湿度 " + Signed(choice.HumidityOffset);
+-                result.Timing = "立即生效 · 持续至撤销或锚点拓扑变化";
+-                break;
+             default: result.Error = "未知科技"; break;
+         }
+         return result;
+@@ -191,22 +159,26 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                     choice.Kind == EnvironmentTechnologyKind.TemperatureChange ?
+                         SimulationInterventionKind.Temperature : SimulationInterventionKind.Humidity,
+                     EnvironmentTechnologyCatalog.SignedClimate(choice), out error); break;
+-            case EnvironmentTechnologyKind.PlantChange:
+-                success = choice.Tier > 0 ? environment.TryApplyPlantIncrease(coordinate,
+-                    EnvironmentTechnologyCatalog.GrowthAmount(choice),
+-                    EnvironmentTechnologyCatalog.Fraction(choice), out error) :
+-                    environment.TryApplySuppression(coordinate,
+-                    EnvironmentTechnologyCatalog.Fraction(choice), out error); break;
++            case EnvironmentTechnologyKind.PlantStockChange:
++                float fraction = Math.Sign(choice.Tier) *
++                    EnvironmentTechnologyCatalog.Fraction(choice);
++                success = water ? environment.TryApplyWater(coordinate,
++                    SimulationInterventionKind.PlantBiomass, fraction, out error) :
++                    environment.TryApply(coordinate,
++                        SimulationInterventionKind.PlantBiomass, fraction, out error); break;
++            case EnvironmentTechnologyKind.PlantRecoveryChange:
++                float growthAmount = Math.Sign(choice.Tier) *
++                    EnvironmentTechnologyCatalog.GrowthAmount(choice);
++                success = water ? environment.TryApplyWater(coordinate,
++                    SimulationInterventionKind.PlantRecovery, growthAmount, out error) :
++                    environment.TryApply(coordinate,
++                        SimulationInterventionKind.PlantRecovery, growthAmount, out error); break;
+             case EnvironmentTechnologyKind.ElevationChange:
+                 float shift = choice.Tier;
+                 success = water ? environment.TryApplyWater(coordinate,
+                     SimulationInterventionKind.Elevation, shift, out error) :
+                     environment.TryApply(coordinate, SimulationInterventionKind.Elevation,
+                         shift, out error); break;
+-            case EnvironmentTechnologyKind.MonsoonAnchor:
+-                success = environment.TryDeployMonsoon(coordinate,
+-                    choice.TemperatureOffset, choice.HumidityOffset, out _, out error,
+-                    new EnvironmentPayment(receiptId, paid)); break;
+             default: success = false; error = "未知科技"; break;
+           }
+           return success;
+@@ -221,20 +193,16 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                 "rejected:technology_deploy:" + choice.Kind + ";reason=" + result.Error);
+             return false;
+         }
+-        if (choice.Kind != EnvironmentTechnologyKind.MonsoonAnchor)
+-            foreach (Vector2Int member in result.Area) Record(member, choice);
++        foreach (Vector2Int member in result.Area) Record(member, choice);
+         SimulationController ecology = GetComponent<SimulationController>();
+         SimulationTime clock = GetComponent<SimulationTime>();
+         if (ecology != null && clock != null)
+             foreach (Vector2Int member in result.Area)
+                 if (grid.TryGetTile(member, out MapTileInstance affected))
+                     ecology.RecordPlayerTechnology(affected.Block, choice.Kind,
+-                        choice.Tier, clock.currentDay,
+-                        choice.TemperatureOffset, choice.HumidityOffset);
+-        account.ConsumePendingSettlements();
++                        choice.Tier, clock.currentDay);
+         OperationCommitted?.Invoke(coordinate, "technology_deploy:" + choice.Kind +
+-            ";tier=" + choice.Tier + ";temperatureOffset=" + choice.TemperatureOffset +
+-            ";humidityOffset=" + choice.HumidityOffset + ";affectedTiles=" + result.Area.Count);
++            ";tier=" + choice.Tier + ";affectedTiles=" + result.Area.Count);
+         return true;
+     }
+ 
+@@ -254,18 +222,6 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                 recent = EnvironmentTechnologyCatalog.Name(instant.Kind) +
+                     "(" + TierLabel(instant) + ")";
+         }
+-        if (state.MonsoonId.HasValue)
+-            foreach (MonsoonSnapshot wind in environment.Monsoons)
+-                if (wind.Id == state.MonsoonId.Value)
+-                {
+-                    var windChoice = new EnvironmentTechnologyChoice(
+-                        EnvironmentTechnologyKind.MonsoonAnchor, 1,
+-                        wind.TemperatureOffset, wind.HumidityOffset);
+-                    labels.Add("季风工具 " + EnvironmentTechnologyCatalog.MonsoonPatternName(windChoice) +
+-                        " " + Signed(wind.TemperatureOffset) + "/" +
+-                        Signed(wind.HumidityOffset));
+-                    break;
+-                }
+         return labels.Count > 0 ? "当前科技：" + string.Join("；", labels) :
+             recent != null ? "最近投放：" + recent : "当前科技：无";
+     }
+@@ -286,12 +242,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+             case EnvironmentTechnologyKind.HumidityChange:
+                 return ownsHumidity && state.HasLocalHumidity &&
+                     state.Humidity.Phase != EffectPhase.Returning;
+-            case EnvironmentTechnologyKind.PlantChange:
++            case EnvironmentTechnologyKind.PlantRecoveryChange:
+                 return ownsRecovery && state.CanCancelRecovery;
+-            case EnvironmentTechnologyKind.MonsoonAnchor:
+-                foreach (MonsoonSnapshot wind in environment.Monsoons)
+-                    if (wind.Source.X == coordinate.x && wind.Source.Y == coordinate.y) return true;
+-                return false;
+             default: return false;
+         }
+     }
+@@ -307,18 +259,6 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+                 "rejected:technology_cancel:" + kind + ";reason=" + error);
+             return false;
+         }
+-        if (kind == EnvironmentTechnologyKind.MonsoonAnchor)
+-        {
+-            foreach (MonsoonSnapshot wind in environment.Monsoons)
+-                if (wind.Source.X == coordinate.x && wind.Source.Y == coordinate.y)
+-                {
+-                    bool canceled = environment.TryCancelMonsoon(wind.Id, out error);
+-                    if (canceled) OperationCommitted?.Invoke(coordinate,
+-                        "technology_cancel:" + kind + ";monsoonId=" + wind.Id);
+-                    return canceled;
+-                }
+-            error = "季风已不存在"; return false;
+-        }
+         EnvironmentAttribute attribute = kind == EnvironmentTechnologyKind.TemperatureChange
+             ? EnvironmentAttribute.Temperature : kind == EnvironmentTechnologyKind.HumidityChange
+                 ? EnvironmentAttribute.Humidity : EnvironmentAttribute.Recovery;
+@@ -348,7 +288,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+         { channels = new Dictionary<int, EnvironmentTechnologyChoice>(); applied.Add(coordinate, channels); }
+         int channel = choice.Kind == EnvironmentTechnologyKind.TemperatureChange ? 0 :
+             choice.Kind == EnvironmentTechnologyKind.HumidityChange ? 1 :
+-            choice.Kind == EnvironmentTechnologyKind.PlantChange ? 2 : 3;
++            choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange ? 2 : 3;
+         channels[channel] = choice;
+         channels[3] = choice;
+     }
+@@ -376,9 +316,6 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
+         "；生境 " + read.Environment.HabitatTitle +
+         "；默认温/湿/增量 " + read.Environment.Defaults.Temperature + "/" +
+         read.Environment.Defaults.Humidity + "/" + read.Environment.Defaults.Recovery;
+-    private static string Signed(int value) => value > 0 ? "+" + value : value.ToString();
+     private static string TierLabel(EnvironmentTechnologyChoice choice) =>
+-        choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor ?
+-            EnvironmentTechnologyCatalog.MonsoonPatternName(choice) :
+-            (choice.Tier > 0 ? "高" : "低") + Math.Abs(choice.Tier) + "档";
++        (choice.Tier > 0 ? "高" : "低") + Math.Abs(choice.Tier) + "档";
+ }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs
+index 3544b0ac..adfcaae7 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs	
+@@ -7,11 +7,6 @@ namespace DarwinFarm.Environment
+     public sealed class EnvironmentWorld
+     {
+         private readonly Dictionary<GridPosition, EnvironmentTile> tiles = new Dictionary<GridPosition, EnvironmentTile>();
+-        private Dictionary<GridPosition, TopologyNode> topology = new Dictionary<GridPosition, TopologyNode>();
+-        private readonly Dictionary<long, MonsoonState> monsoons = new Dictionary<long, MonsoonState>();
+-        private readonly List<MonsoonSettlement> settlements = new List<MonsoonSettlement>();
+-        private readonly HashSet<string> usedReceipts = new HashSet<string>(StringComparer.Ordinal);
+-        private long nextMonsoonId = 1;
+         private long nextCommandSequence = 1;
+         public int CurrentDay { get; private set; }
+         public EnvironmentWorld(int currentDay = 0) { CurrentDay = currentDay; }
+@@ -28,16 +23,6 @@ namespace DarwinFarm.Environment
+             foreach (var position in positions) result.Add(new EnvironmentSnapshot(tiles[position]));
+             return result.AsReadOnly();
+         }
+-        public IReadOnlyList<MonsoonSnapshot> ReadMonsoons()
+-        {
+-            var ids = new List<long>(monsoons.Keys); ids.Sort();
+-            var result = new List<MonsoonSnapshot>(ids.Count);
+-            foreach (long id in ids) result.Add(new MonsoonSnapshot(monsoons[id]));
+-            return result.AsReadOnly();
+-        }
+-        public IReadOnlyList<MonsoonSettlement> ReadSettlements() => new List<MonsoonSettlement>(settlements).AsReadOnly();
+-        public bool AcknowledgeSettlement(long id) => settlements.RemoveAll(x => x.MonsoonId == id) > 0;
+-
+         public void SynchronizeTopology(IEnumerable<TopologyNode> nodes)
+         {
+             var next = new Dictionary<GridPosition, TopologyNode>();
+@@ -57,18 +42,9 @@ namespace DarwinFarm.Environment
+                         !Contains(other.Neighbors, node.Position)) throw new ArgumentException("Topology must have symmetric four-neighbor edges.");
+                 }
+             }
+-            bool sourceChanged = false;
+-            foreach (var wind in monsoons.Values)
+-                if (!next.TryGetValue(wind.Source, out TopologyNode node) ||
+-                    !topology.TryGetValue(wind.Source, out TopologyNode previous) ||
+-                    node.Elevation != previous.Elevation || node.IsWater != previous.IsWater ||
+-                    !SameNeighbors(node.Neighbors, previous.Neighbors))
+-                    sourceChanged = true;
+-
+             var removed = new List<GridPosition>();
+             foreach (var position in tiles.Keys) if (!next.ContainsKey(position)) removed.Add(position);
+             foreach (var position in removed) tiles.Remove(position);
+-            topology = next;
+             foreach (var node in next.Values)
+             {
+                 if (!tiles.TryGetValue(node.Position, out EnvironmentTile tile)) tiles.Add(node.Position, new EnvironmentTile(node));
+@@ -78,9 +54,6 @@ namespace DarwinFarm.Environment
+                     Reclassify(tile);
+                 }
+             }
+-            if (sourceChanged)
+-                foreach (long id in new List<long>(monsoons.Keys)) EndMonsoon(id, MonsoonExitReason.SourceChanged);
+-            else RecomputeMonsoons();
+         }
+ 
+         public bool TrySetClimate(GridPosition position, EnvironmentAttribute attribute, double amount, out string error)
+@@ -206,44 +179,6 @@ namespace DarwinFarm.Environment
+             }
+         }
+ 
+-        public bool TryPreviewMonsoon(GridPosition source, int temperatureOffset, int humidityOffset,
+-            out IReadOnlyList<GridPosition> area, out string error)
+-        {
+-            area = Array.Empty<GridPosition>(); error = null;
+-            if (!EnvironmentRules.IsMonsoonStrength(temperatureOffset) || !EnvironmentRules.IsMonsoonStrength(humidityOffset))
+-            { error = "季风温湿度强度分别必须为 ±20"; return false; }
+-            if (!topology.TryGetValue(source, out TopologyNode node) || node.Elevation == 2 || node.IsWater)
+-            { error = "季风发源点必须是海拔 0 或 1 的已放置陆格"; return false; }
+-            var positions = new List<GridPosition>(Flood(source)); positions.Sort(); area = positions.AsReadOnly();
+-            return true;
+-        }
+-
+-        public bool TryDeployMonsoon(GridPosition source, int temperatureOffset, int humidityOffset,
+-            EnvironmentPayment payment, out long id, out string error)
+-        {
+-            id = 0;
+-            if (!TryPreviewMonsoon(source, temperatureOffset, humidityOffset, out _, out error)) return false;
+-            if (payment != null && usedReceipts.Contains(payment.ReceiptId))
+-            { error = "支付凭据已经绑定其他季风"; return false; }
+-            long existing = 0;
+-            foreach (var wind in monsoons.Values) if (wind.Source.Equals(source)) existing = wind.Id;
+-            if (existing != 0) EndMonsoon(existing, MonsoonExitReason.Replaced);
+-            id = nextMonsoonId++;
+-            var state = new MonsoonState { Id = id, Source = source, TemperatureOffset = temperatureOffset,
+-                HumidityOffset = humidityOffset, Payment = payment };
+-            if (payment != null) usedReceipts.Add(payment.ReceiptId);
+-            monsoons.Add(id, state);
+-            RecomputeMonsoons();
+-            return true;
+-        }
+-
+-        public bool TryCancelMonsoon(long id, out string error)
+-        {
+-            error = null;
+-            if (!monsoons.ContainsKey(id)) { error = "季风已不存在"; return false; }
+-            EndMonsoon(id, MonsoonExitReason.Manual); return true;
+-        }
+-
+         // Developer editing must go through this boundary so it cannot leave stale timelines.
+         public bool TryEditEnvironment(GridPosition position, int temperature, int humidity, int recovery, out string error)
+         {
+@@ -254,10 +189,8 @@ namespace DarwinFarm.Environment
+             tile.RecoveryAge = 0;
+             tile.RecoveryCancelIssued = false;
+             tile.RecoveryDetached = false;
+-            tile.Values[0] = EnvironmentRules.Clamp(EnvironmentAttribute.Temperature,
+-                temperature - tile.WindOffsets[0]);
+-            tile.Values[1] = EnvironmentRules.Clamp(EnvironmentAttribute.Humidity,
+-                humidity - tile.WindOffsets[1]);
++            tile.Values[0] = EnvironmentRules.Clamp(EnvironmentAttribute.Temperature, temperature);
++            tile.Values[1] = EnvironmentRules.Clamp(EnvironmentAttribute.Humidity, humidity);
+             tile.Values[2] = recovery;
+             for (int i = 0; i < 3; i++) tile.Tracks[i].Stop(tile.Values[i]);
+             Reclassify(tile);
+@@ -349,7 +282,7 @@ namespace DarwinFarm.Environment
+         }
+         private void EnforceSlots(EnvironmentTile tile)
+         {
+-            int allowed = tile.MonsoonId.HasValue ? 1 : 2;
++            const int allowed = 2;
+             while (true)
+             {
+                 int count = tile.RecoveryReturning &&
+@@ -402,82 +335,8 @@ namespace DarwinFarm.Environment
+             else RefreshRecoveryTarget(tile);
+         }
+         private static double EffectiveClimate(EnvironmentTile tile, int index) =>
+-            EnvironmentRules.Clamp((EnvironmentAttribute)index,
+-                tile.Values[index] + tile.WindOffsets[index]);
+-
+-        private HashSet<GridPosition> Flood(GridPosition source)
+-        {
+-            var result = new HashSet<GridPosition>();
+-            if (!topology.TryGetValue(source, out TopologyNode root) || root.Elevation == 2 || root.IsWater) return result;
+-            var queue = new Queue<GridPosition>(); result.Add(source); queue.Enqueue(source);
+-            while (queue.Count > 0)
+-            {
+-                TopologyNode current = topology[queue.Dequeue()];
+-                foreach (GridPosition neighbor in current.Neighbors)
+-                {
+-                    TopologyNode next = topology[neighbor];
+-                    if (next.Elevation != root.Elevation) continue;
+-                    if (!next.IsWater)
+-                    { if (result.Add(neighbor)) queue.Enqueue(neighbor); continue; }
+-                    // Exactly one water tile may bridge two land segments.
+-                    foreach (GridPosition across in next.Neighbors)
+-                        if (topology[across].Elevation == root.Elevation &&
+-                            !topology[across].IsWater && result.Add(across)) queue.Enqueue(across);
+-                }
+-            }
+-            return result;
+-        }
+-        private void RecomputeMonsoons()
+-        {
+-            var occupied = new Dictionary<GridPosition, long>();
+-            var conflicts = new HashSet<long>();
+-            foreach (var wind in monsoons.Values)
+-            {
+-                wind.Area = Flood(wind.Source);
+-                foreach (var position in wind.Area)
+-                    if (occupied.TryGetValue(position, out long other)) { conflicts.Add(other); conflicts.Add(wind.Id); }
+-                    else occupied.Add(position, wind.Id);
+-            }
+-            // Detect the whole conflict graph before cancelling, including paused wind cells.
+-            var conflictIds = new List<long>(conflicts); conflictIds.Sort();
+-            foreach (long id in conflictIds) EndMonsoon(id, MonsoonExitReason.Overlap);
+-            occupied.Clear();
+-            foreach (var wind in monsoons.Values) foreach (var position in wind.Area) occupied.Add(position, wind.Id);
+-            foreach (var tile in tiles.Values)
+-            {
+-                long? desired = occupied.TryGetValue(tile.Position, out long id) ? id : (long?)null;
+-                if (tile.MonsoonId == desired) continue;
+-                tile.MonsoonId = desired;
+-                if (desired.HasValue)
+-                {
+-                    var wind = monsoons[desired.Value];
+-                    tile.WindOffsets[0] = wind.TemperatureOffset;
+-                    tile.WindOffsets[1] = wind.HumidityOffset;
+-                }
+-                else { tile.WindOffsets[0] = 0; tile.WindOffsets[1] = 0; }
+-                EnforceSlots(tile);
+-                Reclassify(tile);
+-            }
+-        }
+-        private void EndMonsoon(long id, MonsoonExitReason reason)
+-        {
+-            if (!monsoons.TryGetValue(id, out MonsoonState wind)) return;
+-            monsoons.Remove(id); settlements.Add(new MonsoonSettlement(wind, reason));
+-            foreach (var tile in tiles.Values)
+-                if (tile.MonsoonId == id)
+-                {
+-                    tile.MonsoonId = null;
+-                    tile.WindOffsets[0] = tile.WindOffsets[1] = 0;
+-                    Reclassify(tile);
+-                }
+-        }
++            EnvironmentRules.Clamp((EnvironmentAttribute)index, tile.Values[index]);
+         private static bool Contains(IReadOnlyList<GridPosition> positions, GridPosition value)
+         { foreach (var position in positions) if (position.Equals(value)) return true; return false; }
+-        private static bool SameNeighbors(IReadOnlyList<GridPosition> a, IReadOnlyList<GridPosition> b)
+-        {
+-            if (a.Count != b.Count) return false;
+-            for (int i = 0; i < a.Count; i++) if (!a[i].Equals(b[i])) return false;
+-            return true;
+-        }
+     }
+ }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs b/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs
+index 1be1b7eb..b6cef96c 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs	
+@@ -29,7 +29,7 @@ public sealed class EnvironmentOperationPreview
+ }
+ 
+ // Controller is the sole bridge between the pure environment Model and live ecology/map data.
+-// Visuals consume immutable snapshots; an economy adapter can consume settlement receipts later.
++// Visuals consume immutable snapshots.
+ [DisallowMultipleComponent]
+ public sealed class SimulationEnvironmentController : MonoBehaviour
+ {
+@@ -40,11 +40,7 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+     private EnvironmentWorld world;
+     private readonly Dictionary<GridPosition, BlockInfo> blocks = new Dictionary<GridPosition, BlockInfo>();
+     private readonly Dictionary<GridPosition, string> waterGroups = new Dictionary<GridPosition, string>();
+-    private readonly HashSet<long> notifiedSettlements = new HashSet<long>();
+     public event Action<IReadOnlyList<EnvironmentReadSnapshot>> Changed;
+-    public event Action<MonsoonSettlement> SettlementAvailable;
+-    public IReadOnlyList<MonsoonSnapshot> Monsoons => world?.ReadMonsoons() ?? Array.Empty<MonsoonSnapshot>();
+-    public IReadOnlyList<MonsoonSettlement> PendingSettlements => world?.ReadSettlements() ?? Array.Empty<MonsoonSettlement>();
+ 
+     private void Awake()
+     {
+@@ -219,8 +215,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+             snapshots.Add(new EnvironmentReadSnapshot(state, block.plantBiomass));
+         }
+         if (notifyReaders) Changed?.Invoke(snapshots.AsReadOnly());
+-        foreach (var settlement in world.ReadSettlements())
+-            if (notifiedSettlements.Add(settlement.MonsoonId)) SettlementAvailable?.Invoke(settlement);
+     }
+     public bool TryRead(Vector2Int coordinate, out EnvironmentReadSnapshot snapshot)
+     {
+@@ -236,8 +230,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+             if (blocks.TryGetValue(state.Position, out var block)) result.Add(new EnvironmentReadSnapshot(state, block.plantBiomass));
+         return result.AsReadOnly();
+     }
+-    public bool AcknowledgeSettlement(long id) => world != null && world.AcknowledgeSettlement(id);
+-
+     public bool TryPreview(Vector2Int coordinate, SimulationInterventionKind kind, float amount,
+         out EnvironmentOperationPreview preview, out string error)
+     {
+@@ -256,9 +248,7 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水格不能进行温湿度干预"; return false; }
+                 if (!EnvironmentRules.IsClimateStrength(amount)) { error = "温湿度强度必须为 ±25 或 ±50"; return false; }
+                 var attribute = kind == SimulationInterventionKind.Temperature ? EnvironmentAttribute.Temperature : EnvironmentAttribute.Humidity;
+-                target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount +
+-                    (attribute == EnvironmentAttribute.Temperature ? state.MonsoonTemperatureOffset :
+-                        state.MonsoonHumidityOffset));
++                target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount);
+                 if (attribute == EnvironmentAttribute.Temperature) t = target; else h = target;
+                 enter = EnvironmentRules.TransitionDays;
+                 hold = EnvironmentRules.ClimateHoldDays;
+@@ -273,7 +263,8 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+             case SimulationInterventionKind.PlantBiomass:
+                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
+                 if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f) { error = "库存操作使用 ±0.25 或 ±0.5（25%／50%）"; return false; }
+-                target = EnvironmentRules.ChangeStock(snapshot.PlantStock, amount); break;
++                target = EnvironmentRules.MultiplyStock(snapshot.PlantStock,
++                    EnvironmentRules.PlantCapacity, amount); break;
+             case SimulationInterventionKind.Elevation:
+                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域整域改高尚未接入，不能按单格处理"; return false; }
+                 if (Math.Abs(amount) != 1 || z + (int)amount < 0 || z + (int)amount > 2) { error = "海拔只能 ±1，且必须保持在 0–2"; return false; }
+@@ -332,17 +323,17 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+         switch (kind)
+         {
+             case SimulationInterventionKind.PlantRecovery:
+-                if (amount != 25000f && amount != 50000f)
+-                { error = "增产档位必须为 +25000 或 +50000"; return false; }
++                if (!EnvironmentRules.IsRecoveryStrength(amount))
++                { error = "日增量档位必须为 ±25000 或 ±50000"; return false; }
+                 if (!world.TrySetRecoveryBatch(positions, amount, false, out error)) return false;
+                 Publish(); return true;
+             case SimulationInterventionKind.PlantBiomass:
+-                if (amount != .25f && amount != .5f)
+-                { error = "播种档位必须为容量的 25% 或 50%"; return false; }
++                if (Math.Abs(amount) != .25f && Math.Abs(amount) != .5f)
++                { error = "存量档位必须为 ±25% 或 ±50%"; return false; }
+                 double totalStock = 0;
+                 foreach (Vector2Int member in area) totalStock += blocks[Position(member)].plantBiomass;
+                 double capacity = (double)EnvironmentRules.WaterPlantCapacity * area.Count;
+-                float next = (float)(EnvironmentRules.ChangeStock(totalStock, capacity, amount) / area.Count);
++                float next = (float)(EnvironmentRules.MultiplyStock(totalStock, capacity, amount) / area.Count);
+                 foreach (Vector2Int member in area)
+                     simulation.ApplyPlantBiomass(blocks[Position(member)], next);
+                 Publish(); return true;
+@@ -360,70 +351,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+         }
+     }
+ 
+-    // The positive plant tier changes production and stock as one player action.
+-    public bool TryApplyPlantIncrease(Vector2Int coordinate, int recoveryIncrease,
+-        float stockFraction, out string error)
+-    {
+-        error = null;
+-        if (!EnvironmentRules.IsRecoveryStrength(recoveryIncrease) || recoveryIncrease < 0 ||
+-            stockFraction != recoveryIncrease / 100000f ||
+-            !TryRead(coordinate, out EnvironmentReadSnapshot snapshot))
+-        { error = "植物增产档位无效或目标地块不存在"; return false; }
+-        var area = new List<Vector2Int>();
+-        if (snapshot.Environment.IsWater)
+-        {
+-            if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> members, out error)) return false;
+-            area.AddRange(members);
+-        }
+-        else area.Add(coordinate);
+-        var positions = new List<GridPosition>(area.Count);
+-        double totalStock = 0;
+-        foreach (Vector2Int member in area)
+-        {
+-            GridPosition position = Position(member);
+-            if (!blocks.TryGetValue(position, out BlockInfo block))
+-            { error = "植物操作范围内有未就绪地块"; return false; }
+-            positions.Add(position);
+-            totalStock += block.plantBiomass;
+-        }
+-        double capacity = (snapshot.Environment.IsWater ? EnvironmentRules.WaterPlantCapacity :
+-            EnvironmentRules.PlantCapacity) * (double)area.Count;
+-        float nextPerCell = (float)(EnvironmentRules.MultiplyStock(totalStock, capacity,
+-            stockFraction) / area.Count);
+-        if (!world.TrySetRecoveryBatch(positions, recoveryIncrease, false, out error)) return false;
+-        foreach (Vector2Int member in area)
+-            simulation.ApplyPlantBiomass(blocks[Position(member)], nextPerCell);
+-        Publish();
+-        return true;
+-    }
+-
+-    public bool TryApplySuppression(Vector2Int coordinate, float fraction, out string error)
+-    {
+-        error = null;
+-        if (fraction != .25f && fraction != .5f)
+-        { error = "生态抑制档位必须为 25% 或 50%"; return false; }
+-        if (!TryRead(coordinate, out EnvironmentReadSnapshot snapshot))
+-        { error = "目标地块不存在"; return false; }
+-        var area = new List<Vector2Int>();
+-        if (snapshot.Environment.IsWater)
+-        {
+-            if (!TryGetWaterArea(coordinate, out IReadOnlyList<Vector2Int> members, out error)) return false;
+-            area.AddRange(members);
+-        }
+-        else area.Add(coordinate);
+-        var positions = new List<GridPosition>(area.Count);
+-        double totalStock = 0;
+-        foreach (Vector2Int member in area) positions.Add(Position(member));
+-        foreach (Vector2Int member in area) totalStock += blocks[Position(member)].plantBiomass;
+-        if (!world.TrySetRecoveryBatch(positions, fraction, true, out error)) return false;
+-        float nextPerCell = (float)(totalStock * (1f - fraction) / area.Count);
+-        foreach (Vector2Int member in area)
+-        {
+-            BlockInfo block = blocks[Position(member)];
+-            simulation.ApplyPlantBiomass(block, nextPerCell);
+-        }
+-        Publish(); return true;
+-    }
+     public bool TryCancel(Vector2Int coordinate, EnvironmentAttribute attribute, out string error)
+     {
+         error = null;
+@@ -442,28 +369,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
+             world.TryCancelClimate(Position(coordinate), attribute, out error);
+         if (result) Publish(); return result;
+     }
+-    public bool TryPreviewMonsoon(Vector2Int source, int temperatureOffset, int humidityOffset,
+-        out IReadOnlyList<GridPosition> area, out string error)
+-    {
+-        area = Array.Empty<GridPosition>(); error = null;
+-        if (!isActiveAndEnabled || world == null) { error = "环境控制器未就绪"; return false; }
+-        return world.TryPreviewMonsoon(Position(source), temperatureOffset, humidityOffset, out area, out error);
+-    }
+-    // Payment is supplied by a future trusted economy adapter, never inferred from UI input.
+-    public bool TryDeployMonsoon(Vector2Int source, int temperatureOffset, int humidityOffset,
+-        out long id, out string error, EnvironmentPayment payment = null)
+-    {
+-        id = 0; error = null;
+-        if (!isActiveAndEnabled || world == null) { error = "环境控制器未就绪"; return false; }
+-        bool result = world.TryDeployMonsoon(Position(source), temperatureOffset, humidityOffset, payment, out id, out error);
+-        if (result) Publish(); return result;
+-    }
+-    public bool TryCancelMonsoon(long id, out string error)
+-    {
+-        error = null;
+-        if (!isActiveAndEnabled || world == null) { error = "环境控制器未就绪"; return false; }
+-        bool result = world.TryCancelMonsoon(id, out error); if (result) Publish(); return result;
+-    }
+     public bool TryEditEnvironment(Vector2Int coordinate, SimulationEnvironmentEdit edit, out string error)
+     {
+         error = null;
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs b/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs
+index fae1140a..b54b1b90 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/LandLifeRules.cs	
+@@ -8,12 +8,17 @@ internal static class LandLifeRules
+     internal const float StarvationRate = 0.60f;
+     internal const int HistoryDays = 10;
+     private const float Epsilon = 0.0001f;
++    // Optional Editor-only observation of the exact pre-hunt quota. It must
++    // never alter the live food or material ledger.
++    internal static System.Action<BlockInfo, PopulationData, int, float, float, bool>
++        RenewableQuotaObserved;
+ 
+     internal static float AdultNeed(float size, float movement,
+         LandRuleTuning rules = null)
+     {
+         float m = Mathf.Clamp(movement, 0f, 100f) / 100f;
+-        return (Mathf.Max(0f, size) +
++        return (rules != null ? rules.adultMaintenanceScale : 1f) *
++            (Mathf.Max(0f, size) +
+             (rules != null ? rules.smallBodyMaintenance : 0f) /
+             Mathf.Max(1f, size)) * (1f +
+             (rules != null ? rules.movementFoodCost : 0.4f) * m * m);
+@@ -71,6 +76,12 @@ internal static class LandLifeRules
+             * YoungNeed(size, rules) / Mathf.Max(1f, size);
+     }
+ 
++    internal static float PaidBirthStressDeaths(int paidBirths, float size,
++        float fertility, LandRuleTuning rules) =>
++        Mathf.Max(0, paidBirths) * rules.reproductionStressPerBirth *
++        Mathf.Clamp01(fertility / 100f) * YoungNeed(size, rules) /
++        Mathf.Max(1f, size);
++
+     internal static float Fitness(BlockInfo block, float temperature, float humidity) =>
+         Mathf.Clamp01(1f - (Mathf.Abs(block.temperature - temperature)
+             + Mathf.Abs(block.humidity - humidity)) / 90f);
+@@ -261,6 +272,9 @@ internal static class LandLifeRules
+         var adultNeed = new float[count];
+         var birthNeed = new float[count];
+         var access = new float[count];
++        var smallAccess = new float[count];
++        var largeAccess = new float[count];
++        var lane = new int[count];
+         for (int i = 0; i < count; i++)
+         {
+             PopulationData p = groups[i];
+@@ -281,6 +295,11 @@ internal static class LandLifeRules
+             float common = fitness * ForagingAccess(sz, mov, rules) *
+                 (1f + rules.movementForagingGain * mov);
+             int preferred = PlantNiche(p) <= 0 ? 0 : 1;
++            lane[i] = preferred;
++            smallAccess[i] = common * NicheEfficiency(sz, 0, rules) *
++                (preferred == 0 ? 1f : rules.unspecializedPlantEfficiency);
++            largeAccess[i] = common * NicheEfficiency(sz, 1, rules) *
++                (preferred == 1 ? 1f : rules.unspecializedPlantEfficiency);
+             for (int channel = 0; channel < 2; channel++)
+                 access[i] += common *
+                     (channel == 0 ? rules.smallPlantNicheShare :
+@@ -289,6 +308,10 @@ internal static class LandLifeRules
+                     (channel == preferred ? 1f :
+                         rules.unspecializedPlantEfficiency);
+         }
++        if (rules.enablePriorityPlantBudgets)
++            return AllocatePlantsPriority(adultNeed, birthNeed, smallAccess,
++                largeAccess, lane, food, rules.smallPlantNicheShare,
++                adultsOnly);
+         float remaining = Mathf.Max(0f, food);
+         var allocation = new float[count];
+         AllocatePlantStage(adultNeed, access, ref remaining, allocation);
+@@ -297,6 +320,43 @@ internal static class LandLifeRules
+         return allocation;
+     }
+ 
++    private static float[] AllocatePlantsPriority(float[] adultNeed,
++        float[] birthNeed, float[] smallAccess, float[] largeAccess,
++        int[] lane, float food, float smallShare, bool adultsOnly)
++    {
++        float budget = Mathf.Max(0f, food);
++        float small = budget * smallShare;
++        float large = budget - small;
++        var adult = new float[lane.Length];
++        PriorityPlantPass(adultNeed, adult, lane, 0, smallAccess, ref small);
++        PriorityPlantPass(adultNeed, adult, lane, 1, largeAccess, ref large);
++        PriorityPlantPass(adultNeed, adult, lane, 1, smallAccess, ref small);
++        PriorityPlantPass(adultNeed, adult, lane, 0, largeAccess, ref large);
++        if (adultsOnly) return adult;
++        var births = new float[lane.Length];
++        PriorityPlantPass(birthNeed, births, lane, 0, smallAccess, ref small);
++        PriorityPlantPass(birthNeed, births, lane, 1, largeAccess, ref large);
++        PriorityPlantPass(birthNeed, births, lane, 1, smallAccess, ref small);
++        PriorityPlantPass(birthNeed, births, lane, 0, largeAccess, ref large);
++        for (int i = 0; i < adult.Length; i++) adult[i] += births[i];
++        return adult;
++    }
++
++    private static void PriorityPlantPass(float[] need, float[] received,
++        int[] lane, int targetLane, float[] access, ref float budget)
++    {
++        if (budget <= Epsilon) return;
++        var unmet = new float[need.Length];
++        var weights = new float[need.Length];
++        for (int i = 0; i < need.Length; i++)
++            if (lane[i] == targetLane)
++            {
++                unmet[i] = Mathf.Max(0f, need[i] - received[i]);
++                weights[i] = access[i];
++            }
++        AllocatePlantStage(unmet, weights, ref budget, received);
++    }
++
+     private static void AllocatePlantStage(float[] need, float[] access,
+         ref float remaining, float[] totalAllocation)
+     {
+@@ -459,6 +519,48 @@ internal static class LandLifeRules
+             countOverride: source, overrideCount: remainingSource)[index];
+     }
+ 
++    // Formal-evolution-only, read-only projection. The payment happens after
++    // today's ecology step; forecast the following growth and feed from S'.
++    internal static void ForecastEvolutionPlantsAfterPayment(BlockInfo block,
++        PopulationData source, int sourceCount, PopulationData candidate,
++        float plantPayment, LandRuleTuning rules,
++        out List<PopulationData> groups, out float[] now,
++        out float[] renewable)
++    {
++        groups = new List<PopulationData>(5);
++        foreach (PopulationData population in block.community)
++        {
++            if (population == null || population.trophicLevel != 0) continue;
++            int count = population == source ? sourceCount :
++                population.speciesAmount;
++            if (count > 0) groups.Add(population);
++        }
++        if (candidate != null && candidate.trophicLevel == 0 &&
++            candidate.speciesAmount > 0) groups.Add(candidate);
++        float maximum = Mathf.Max(0f, block.maxPlantBiomass);
++        float paidStock = Mathf.Clamp(block.plantBiomass - plantPayment,
++            0f, maximum);
++        float growth = SimulationController.CalculatePlantGrowth(paidStock,
++            maximum, block.habitatRecovery);
++        float stockAfterGrowth = Mathf.Min(maximum, paidStock + growth);
++        // Same floor, stock draw and growth cap as PlantFoodBudget, with the
++        // projected growth instead of the previous day's growth field.
++        float floor = block.habitatRecovery > 0 ?
++            Mathf.Min(maximum * rules.minimumPlantReserveFraction,
++                stockAfterGrowth * 0.5f) : 0f;
++        float standing = Mathf.Max(0f, stockAfterGrowth - growth);
++        float draw = block.habitatRecovery <= 0 ? standing :
++            Mathf.Min(Mathf.Max(0f, standing - floor),
++                standing * rules.dailyPlantStockDrawFraction);
++        float budget = Mathf.Max(0f,
++            Mathf.Min(stockAfterGrowth - floor, growth + draw));
++        now = AllocatePlants(groups, budget, block, rules: rules,
++            countOverride: source, overrideCount: sourceCount);
++        renewable = AllocatePlants(groups, Mathf.Max(0f,
++            block.habitatRecovery), block, rules: rules,
++            countOverride: source, overrideCount: sourceCount);
++    }
++
+     internal static float CaptureChance(PopulationData hunter, PopulationData prey,
+         LandRuleTuning rules = null)
+     {
+@@ -486,6 +588,135 @@ internal static class LandLifeRules
+             * PreyEnergy(hunter, prey, rules);
+     }
+ 
++    // Only herbivore prey currently have a defined stable plant-production
++    // reference. Higher-trophic prey need their own sustainable-food model.
++    internal static float PreyDensityFactor(BlockInfo block,
++        PopulationData prey, LandRuleTuning rules)
++    {
++        if (prey == null || prey.speciesAmount <= 0) return 0f;
++        if (rules == null || !rules.enablePreyDensityFeedback ||
++            prey.trophicLevel != 0) return 1f;
++        float reference = block.predationReferenceRecovery > 0
++            ? block.predationReferenceRecovery : block.habitatRecovery;
++        float adult = AdultNeed(prey.size, prey.movementAbility, rules);
++        float half = Mathf.Max(1f,
++            rules.preyDensityHalfSaturationScale *
++            Mathf.Max(1f, reference) / Mathf.Max(Epsilon, adult));
++        float n = prey.speciesAmount;
++        return n * n / (n * n + half * half);
++    }
++
++    // TASK10: zero-predation expected net renewal in the SAME shared renewable
++    // plant allocator as the live simulation. No mutation of BlockInfo/Population.
++    // Fractional newborn expectations avoid false 0-growth under small N;
++    // actual live births are still whole animals fully paid with biomass.
++    internal static float RenewableUnhuntedPreyGrowth(BlockInfo block,
++        PopulationData prey, int proposedCount, LandRuleTuning rules)
++    {
++        if (block == null || prey == null || rules == null ||
++            prey.trophicLevel != 0 || proposedCount <= 0) return 0f;
++        float food = CounterfactualPlantIntake(block, prey, prey,
++            proposedCount, rules);
++        float fitness = Fitness(block, prey.fitTemperature, prey.fitHumidity);
++        float adult = proposedCount * AdultNeed(prey.size,
++            prey.movementAbility, rules);
++        float covered = adult > Epsilon
++            ? Mathf.Clamp01(food / adult) : 1f;
++        float opportunity = proposedCount * rules.birthRate *
++            Mathf.Clamp01(prey.fertility / 100f) * fitness * covered;
++        float newbornCost = YoungNeed(prey.size, rules) +
++            BodyMass(prey.size, rules);
++        float births = Mathf.Min(opportunity,
++            Mathf.Max(0f, food - adult) / Mathf.Max(Epsilon, newbornCost));
++        float deaths = rules.starvationDeathRate * proposedCount *
++            (1f - covered) + ColdDeaths(proposedCount,
++            block.temperature, rules) +
++            rules.climateMismatchDeathRate * proposedCount * (1f - fitness) +
++            NaturalAdultDeaths(proposedCount, prey.size, rules);
++        if (rules.enablePaidBirthStress)
++            deaths += births * rules.reproductionStressPerBirth *
++                Mathf.Clamp01(prey.fertility / 100f) *
++                YoungNeed(prey.size, rules) / Mathf.Max(1f, prey.size);
++        else
++            deaths += ReproductionStressDeaths(proposedCount, prey.size,
++                prey.fertility, rules, satisfaction: covered,
++                fitness: fitness);
++        return births - deaths;
++    }
++
++    // Fast conditional zero-net-growth estimate for L0. Other species are
++    // held at present counts. This is not a promise of whole-web stability.
++    // Returns false if the expected growth has no upper stable crossing.
++    internal static bool TryRenewablePreyEquilibrium(BlockInfo block,
++        PopulationData prey, LandRuleTuning rules, out float equilibrium)
++    {
++        equilibrium = 0f;
++        if (block == null || prey == null || rules == null ||
++            prey.trophicLevel != 0 || block.habitatRecovery <= 0)
++            return false;
++        float adult = AdultNeed(prey.size, prey.movementAbility, rules);
++        int bound = Mathf.Clamp(Mathf.CeilToInt(Mathf.Max(100f,
++            3f * SustainablePlantSupply(block, rules) /
++            Mathf.Max(Epsilon, adult))), 100, 100000);
++        // Explicit small-N samples prevent a large linear grid from
++        // swallowing Allee-like low-density crossings.
++        int previous = 1;
++        float last = RenewableUnhuntedPreyGrowth(block, prey,
++            previous, rules);
++        int lower = 0, upper = 0;
++        for (int i = 0; i < 100 && previous < bound; i++)
++        {
++            int next = Mathf.Min(bound, previous < 100
++                ? previous + (previous < 20 ? 1 : 10)
++                : Mathf.Max(previous + 1,
++                    Mathf.CeilToInt(previous * 1.25f)));
++            float value = RenewableUnhuntedPreyGrowth(block, prey,
++                next, rules);
++            if (last > 0f && value <= 0f)
++            {
++                lower = previous;
++                upper = next;
++            }
++            previous = next;
++            last = value;
++        }
++        if (upper <= lower) return false;
++        while (upper - lower > 1)
++        {
++            int mid = lower + (upper - lower) / 2;
++            if (RenewableUnhuntedPreyGrowth(block, prey,
++                mid, rules) > 0f) lower = mid;
++            else upper = mid;
++        }
++        equilibrium = (lower + upper) * 0.5f;
++        return equilibrium > 0f;
++    }
++
++    // Actual captured prey cannot exceed today's renewable replacement plus
++    // a slow withdrawal from population above its conditional recovery refuge.
++    // Below the refuge, the term is NEGATIVE to allow the prey to recover.
++    // No instantaneous population cull and no extra food is introduced.
++    internal static int RenewablePreyHarvestQuota(BlockInfo block,
++        PopulationData prey, LandRuleTuning rules)
++    {
++        if (prey == null || prey.speciesAmount <= 0 ||
++            prey.trophicLevel != 0 || block == null || rules == null)
++            return 0;
++        int n = prey.speciesAmount;
++        float g = RenewableUnhuntedPreyGrowth(block, prey, n, rules);
++        float eq;
++        bool hasEquilibrium = TryRenewablePreyEquilibrium(block, prey,
++            rules, out eq);
++        float buffer = hasEquilibrium
++            ? (n - rules.dynamicPreyRefugeFraction * eq) /
++                Mathf.Max(10f, rules.dynamicPreyAdjustmentDays) : 0f;
++        int quota = Mathf.Clamp(Mathf.FloorToInt(Mathf.Max(0f, g + buffer)),
++            0, n);
++        RenewableQuotaObserved?.Invoke(block, prey, quota, g, eq,
++            hasEquilibrium);
++        return quota;
++    }
++
+     // Hunting resolves whole animals. A group that can catch at least one prey
+     // may take the final animal needed to cover its remaining energy target;
+     // the unused energy stays in the existing reserve ledger. Fractional
+@@ -549,7 +780,84 @@ internal static class LandLifeRules
+         return total;
+     }
+ 
+-    private static void HuntLevel(BlockInfo block, int level, LandRuleTuning rules)
++    // Read-only predator maintenance boundary. Historical prey births minus
++    // non-predation deaths are the renewable catch, while today's prey count
++    // controls encounter density. Competing hunters share that renewable catch.
++    internal static float PredatorFoodCarryingCapacity(BlockInfo block,
++        PopulationData target, LandRuleTuning rules)
++    {
++        if (block == null || block.community == null || target == null ||
++            target.trophicLevel <= 0) return 0f;
++        float adult = AdultNeed(target.size, target.movementAbility, rules);
++        if (adult <= Epsilon) return 0f;
++        float maximumEnergy = 0f;
++        foreach (PopulationData prey in block.community)
++            if (prey != null && prey.speciesAmount > 0 &&
++                FoodWeb.CanEat(target, prey))
++                maximumEnergy += Mathf.Max(0f,
++                    Average(prey.preyNetRenewalHistory)) *
++                    PreyEnergy(target, prey, rules);
++        int low = 0;
++        int high = Mathf.Min(1000000, Mathf.Max(1,
++            Mathf.CeilToInt(maximumEnergy / adult) + 1));
++        while (low + 1 < high)
++        {
++            int mid = low + (high - low) / 2;
++            float food = PredatorRenewableCatchEnergy(block, target,
++                rules, mid);
++            if (food >= mid * adult -
++                Mathf.Max(0.01f, mid * adult * 0.00001f)) low = mid;
++            else high = mid;
++        }
++        return low;
++    }
++
++    private static float PredatorRenewableCatchEnergy(BlockInfo block,
++        PopulationData target, LandRuleTuning rules, int proposedCount)
++    {
++        float energy = 0f;
++        foreach (PopulationData prey in block.community)
++        {
++            if (prey == null || prey.speciesAmount <= 0 ||
++                !FoodWeb.CanEat(target, prey)) continue;
++            float renewal = Mathf.Max(0f,
++                Average(prey.preyNetRenewalHistory));
++            if (renewal <= Epsilon) continue;
++            float own = proposedCount * CaptureIntentPerHunter(block,
++                target, prey, rules);
++            if (own <= Epsilon) continue;
++            float all = own;
++            foreach (PopulationData other in block.community)
++                if (other != null && other != target &&
++                    other.trophicLevel > 0 && other.speciesAmount > 0 &&
++                    FoodWeb.CanEat(other, prey))
++                    all += other.speciesAmount * CaptureIntentPerHunter(
++                        block, other, prey, rules);
++            float ownCatch = Mathf.Min(renewal, all) * own /
++                Mathf.Max(Epsilon, all);
++            energy += ownCatch * PreyEnergy(target, prey, rules);
++        }
++        return energy;
++    }
++
++    private static float CaptureIntentPerHunter(BlockInfo block,
++        PopulationData hunter, PopulationData prey, LandRuleTuning rules)
++    {
++        float score = HuntPreference(hunter, prey, rules);
++        if (score <= Epsilon) return 0f;
++        float totalScore = 0f;
++        foreach (PopulationData option in block.community)
++            if (option != null && option.speciesAmount > 0)
++                totalScore += HuntPreference(hunter, option, rules);
++        if (totalScore <= Epsilon) return 0f;
++        return score / totalScore *
++            Mathf.Min(1f, 10f / Mathf.Max(1f, prey.size)) *
++            CaptureChance(hunter, prey, rules) *
++            PreyDensityFactor(block, prey, rules);
++    }
++
++    private static void HuntLevel(BlockInfo block, int level, LandRuleTuning rules,
++        Dictionary<PopulationData, int> preyQuotaLeft = null)
+     {
+         var hunters = new List<PopulationData>(5);
+         var prey = new List<PopulationData>(5);
+@@ -586,7 +894,8 @@ internal static class LandLifeRules
+             for (int j = 0; j < q; j++)
+                 intent[i, j] = hunter.speciesAmount * score[i, j] / totalScore
+                     * Mathf.Min(1f, 10f / Mathf.Max(1f, prey[j].size))
+-                    * CaptureChance(hunter, prey[j], rules);
++                    * CaptureChance(hunter, prey[j], rules)
++                    * PreyDensityFactor(block, prey[j], rules);
+         }
+         // Each submitted attempt is committed once against the live prey ledger.
+         for (int j = 0; j < q; j++)
+@@ -622,8 +931,20 @@ internal static class LandLifeRules
+                 }
+                 float expected = Mathf.Min(victim.speciesAmount,
+                     total + victim.predationRemainder);
+-                int kills = Mathf.Min(victim.speciesAmount, Mathf.FloorToInt(expected));
+-                victim.predationRemainder = expected - kills;
++                int ordinaryKills = Mathf.Min(victim.speciesAmount,
++                    Mathf.FloorToInt(expected));
++                int kills = ordinaryKills;
++                if (preyQuotaLeft != null &&
++                    preyQuotaLeft.TryGetValue(victim, out int quota))
++                    kills = Mathf.Min(kills, quota);
++                // Preserve ONLY fractional capture attempt, never a backlog
++                // of forbidden kills that could explode on a later day.
++                victim.predationRemainder = expected -
++                    Mathf.FloorToInt(expected);
++                if (preyQuotaLeft != null &&
++                    preyQuotaLeft.ContainsKey(victim))
++                    preyQuotaLeft[victim] = Mathf.Max(0,
++                        preyQuotaLeft[victim] - kills);
+                 if (kills <= 0) continue;
+                 float removedBody = victim.bodyBiomass * kills /
+                     victim.speciesAmount;
+@@ -665,6 +986,7 @@ internal static class LandLifeRules
+             p.huntingEnergyToday = 0f;
+             p.adultDemandToday = p.adultPaidToday = 0f;
+             p.birthOpportunityToday = p.birthBudgetToday = 0f;
++            p.birthStressDeathsToday = 0f;
+             p.newbornCostToday = p.unusedBirthFoodToday = 0f;
+             p.reserveAtDayStart = p.energyReserve;
+             p.allocatedBiomass = p.carryingCapacity = 0f;
+@@ -672,8 +994,25 @@ internal static class LandLifeRules
+                 * Fitness(block, p.fitTemperature, p.fitHumidity));
+             p.energyNeed = AdultNeed(p.size, p.movementAbility, rules);
+         }
+-        HuntLevel(block, 2, rules);
+-        HuntLevel(block, 1, rules);
++        Dictionary<PopulationData, int> renewableQuotas = null;
++        if (rules.enableDynamicPreyRenewalQuota)
++        {
++            bool hasHunter = false;
++            foreach (PopulationData p in block.community)
++                if (p != null && p.speciesAmount > 0 &&
++                    p.trophicLevel > 0) { hasHunter = true; break; }
++            if (hasHunter)
++            {
++                renewableQuotas = new Dictionary<PopulationData, int>();
++                foreach (PopulationData prey in block.community)
++                    if (prey != null && prey.trophicLevel == 0 &&
++                        prey.speciesAmount > 0)
++                        renewableQuotas[prey] = RenewablePreyHarvestQuota(
++                            block, prey, rules);
++            }
++        }
++        HuntLevel(block, 2, rules, renewableQuotas);
++        HuntLevel(block, 1, rules, renewableQuotas);
+         foreach (PopulationData p in block.community)
+             if (p.trophicLevel == 0 && p.speciesAmount > 0) herbivores.Add(p);
+         float[] allocation = AllocatePlants(herbivores,
+@@ -706,6 +1045,8 @@ internal static class LandLifeRules
+             }
+             if (count <= 0)
+             {
++                if (rules.enablePaidBirthStress)
++                    p.birthRemainder = p.deathRemainder = 0f;
+                 p.actualEnergySatisfactionToday = p.energySatisfactionToday = 0f;
+                 AddHistory(p.foodSatisfactionHistory, 0f);
+                 AddHistory(p.preyNetRenewalHistory, 0f);
+@@ -728,17 +1069,11 @@ internal static class LandLifeRules
+                 ? p.allocatedBiomass / p.energyNeed : 0f;
+             float births = count * rules.birthRate * p.fertility / 100f
+                 * fitness * satisfaction;
+-            float deaths = rules.starvationDeathRate * count * (1f - satisfaction)
++            float baseDeaths = rules.starvationDeathRate * count * (1f - satisfaction)
+                 + ColdDeaths(count, block.temperature, rules)
+                 + rules.climateMismatchDeathRate * count * (1f - fitness)
+-                + NaturalAdultDeaths(count, p.size, rules)
+-                + ReproductionStressDeaths(count, p.size, p.fertility, rules,
+-                    satisfaction: satisfaction, fitness: fitness);
++                + NaturalAdultDeaths(count, p.size, rules);
+             p.birthRemainder += births;
+-            // A day's lethal pressure cannot become a debt that kills later
+-            // migrants or newborns after every current adult has died.
+-            p.deathRemainder = Mathf.Min(count,
+-                p.deathRemainder + Mathf.Max(0f, deaths));
+             int possibleBirths = Mathf.FloorToInt(p.birthRemainder);
+             float bodyPerNewborn = BodyMass(p.size, rules);
+             float newbornCost = YoungNeed(p.size, rules) + bodyPerNewborn;
+@@ -746,6 +1081,15 @@ internal static class LandLifeRules
+                 availableResources - adultDemand);
+             int born = Mathf.Min(possibleBirths,
+                 Mathf.FloorToInt(availableForBirth / newbornCost));
++            p.birthStressDeathsToday = rules.enablePaidBirthStress
++                ? PaidBirthStressDeaths(born, p.size, p.fertility, rules)
++                : ReproductionStressDeaths(count, p.size, p.fertility, rules,
++                    satisfaction: satisfaction, fitness: fitness);
++            float deaths = baseDeaths + p.birthStressDeathsToday;
++            // A day's lethal pressure cannot become a debt that kills later
++            // migrants or newborns after every current adult has died.
++            p.deathRemainder = Mathf.Min(count,
++                p.deathRemainder + Mathf.Max(0f, deaths));
+             p.adultDemandToday = count * p.energyNeed;
+             p.adultPaidToday = Mathf.Min(availableResources, p.adultDemandToday);
+             p.birthOpportunityToday = births;
+@@ -771,6 +1115,8 @@ internal static class LandLifeRules
+             p.birthsToday = born;
+             p.deathsToday += died;
+             p.speciesAmount = count + born - died;
++            if (rules.enablePaidBirthStress && p.speciesAmount == 0)
++                p.birthRemainder = p.deathRemainder = 0f;
+             AddHistory(p.foodSatisfactionHistory, satisfaction);
+             AddHistory(p.preyNetRenewalHistory, born - died);
+             AddHistory(p.populationGrowthHistory,
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/LandRuleTuning.cs b/Darwin's farm/Assets/Scripts/Simulation/LandRuleTuning.cs
+index cdf87330..ad64ba62 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/LandRuleTuning.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/LandRuleTuning.cs	
+@@ -8,6 +8,18 @@ public sealed class LandRuleTuning
+ {
+     [SerializeField] private int ruleVersion = 5;
+     public bool useFoodCapacityForSelection;
++    public bool enablePreyDensityFeedback;
++    public bool enablePaidBirthStress;
++    public bool enablePriorityPlantBudgets;
++    // Experimental formal-evolution gate. Old saves and scenes leave it off.
++    public bool useCompensatedEvolutionFoodGate;
++    // TASK10: OFF by default; protect renewable prey replenishment without
++    // creating or destroying prey outside the ordinary hunt/material ledger.
++    public bool enableDynamicPreyRenewalQuota = false;
++    [Range(0.1f, 0.7f)] public float dynamicPreyRefugeFraction = 0.35f;
++    [Min(10f)] public float dynamicPreyAdjustmentDays = 45f;
++    [Min(0f)] public float adultMaintenanceScale = 1f;
++    [Min(0f)] public float preyDensityHalfSaturationScale = 0.58f;
+     [Min(0f)] public float birthRate = 0.1f;
+     [Range(0f, 1f)] public float starvationDeathRate = 0.6f;
+     [Min(0f)] public float coldDeathRate = 0.005f;
+@@ -124,12 +136,23 @@ public sealed class LandRuleTuning
+             splitMinimumRenewalPressure = 0.9f;
+             ruleVersion = 5;
+         }
++        // Old serialized ruleVersion=5 assets may omit these new fields.
++        // This candidate is disabled unless explicitly opted into in a test.
++        if (dynamicPreyRefugeFraction <= 0f)
++            dynamicPreyRefugeFraction = 0.35f;
++        if (dynamicPreyAdjustmentDays <= 0f)
++            dynamicPreyAdjustmentDays = 45f;
++        dynamicPreyRefugeFraction = Mathf.Clamp(dynamicPreyRefugeFraction, 0.1f, 0.7f);
++        dynamicPreyAdjustmentDays = Mathf.Max(10f, dynamicPreyAdjustmentDays);
+         birthRate = NonNegative(birthRate, 0.1f);
+         starvationDeathRate = Unit(starvationDeathRate, 0.6f);
+         coldDeathRate = NonNegative(coldDeathRate, 0.005f);
+         climateMismatchDeathRate = NonNegative(climateMismatchDeathRate, 0.01f);
+         reproductionStressPerBirth = NonNegative(reproductionStressPerBirth,
+             1.2f);
++        preyDensityHalfSaturationScale = NonNegative(
++            preyDensityHalfSaturationScale, 0.58f);
++        adultMaintenanceScale = NonNegative(adultMaintenanceScale, 1f);
+         baselineAdultDeathRate = NonNegative(baselineAdultDeathRate, 0.008f);
+         smallBodyFrailtyRate = NonNegative(smallBodyFrailtyRate, 0.5f);
+         adultSizeMortalityScale = Mathf.Max(1f,
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs
+index 8cf7946d..7c646601 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Evolution.cs	
+@@ -274,8 +274,16 @@ public partial class SimulationController
+         float sourcePerHead = sourceBody / source.speciesAmount;
+         float targetPerHead = LandLifeRules.BodyMass(target.baseSize, LandRules);
+         float extraPerHead = Mathf.Max(0f, targetPerHead - sourcePerHead);
++        float spendable = Mathf.Max(0f, block.plantBiomass);
++        if (LandRules.useCompensatedEvolutionFoodGate)
++        {
++            float floor = Mathf.Min(spendable * 0.5f,
++                Mathf.Max(0f, block.maxPlantBiomass) *
++                LandRules.minimumPlantReserveFraction);
++            spendable = Mathf.Max(0f, spendable - floor);
++        }
+         int affordable = extraPerHead > 0f
+-            ? Mathf.FloorToInt(Mathf.Max(0f, block.plantBiomass) / extraPerHead)
++            ? Mathf.FloorToInt(spendable / extraPerHead)
+             : requested;
+         amount = Mathf.Min(requested, affordable);
+         if (amount < 1) return false;
+@@ -287,6 +295,9 @@ public partial class SimulationController
+     private bool HasEvolutionFoodSupport(BlockInfo block, PopulationData source,
+         SpeciesData target, int amount)
+     {
++        if (LandRules.useCompensatedEvolutionFoodGate)
++            return HasCompensatedEvolutionFoodSupport(block, source,
++                target, amount);
+         PopulationData candidate = TargetPopulation(target, amount);
+         float fitness = LandLifeRules.Fitness(block,
+             candidate.fitTemperature, candidate.fitHumidity);
+@@ -352,6 +363,276 @@ public partial class SimulationController
+                 * predatorDemand;
+     }
+ 
++    private bool HasCompensatedEvolutionFoodSupport(BlockInfo block,
++        PopulationData source, SpeciesData target, int amount)
++    {
++        if (!TryPlanFormalEvolution(block, source, target,
++                out int planned, out float plantPayment, out _) ||
++            planned != amount) return false;
++        PopulationData candidate = TargetPopulation(target, amount);
++        int remaining = source.speciesAmount - amount;
++        LandLifeRules.ForecastEvolutionPlantsAfterPayment(block, source,
++            remaining, candidate, plantPayment, LandRules,
++            out List<PopulationData> groups, out float[] now,
++            out float[] renewable);
++        int sourceIndex = groups.IndexOf(source);
++        if (source.trophicLevel == 0)
++        {
++            if (sourceIndex < 0) return false;
++            float sourceAdult = remaining * LandLifeRules.AdultNeed(
++                source.size, source.movementAbility, LandRules);
++            if (sourceAdult > 0f &&
++                (now[sourceIndex] / sourceAdult < 0.95f ||
++                 candidate.trophicLevel == 0 &&
++                 renewable[sourceIndex] / sourceAdult < 0.95f))
++                return false;
++        }
++        if (candidate.trophicLevel != 0)
++            return HasCompensatedPredatorFoodSupport(block, source,
++                candidate, remaining, plantPayment, out _);
++        int childIndex = groups.IndexOf(candidate);
++        if (childIndex < 0) return false;
++        float adult = amount * LandLifeRules.AdultNeed(candidate.size,
++            candidate.movementAbility, LandRules);
++        if (adult <= 0f || now[childIndex] / adult < 0.95f ||
++            renewable[childIndex] / adult < 0.95f) return false;
++        float expectedPredation = ForecastEvolutionPredationDeaths(block,
++            candidate);
++        float netNow = ForecastEvolutionPaidNet(block, candidate, amount,
++            now[childIndex], expectedPredation);
++        float netRenewal = ForecastEvolutionPaidNet(block, candidate, amount,
++            renewable[childIndex], expectedPredation);
++        return netNow >= -0.001f * amount && netRenewal > 0f;
++    }
++
++    private sealed class PredatorFoodTrial
++    {
++        public int preyCount;
++        public float preyRenewal, candidateCatches, candidateFood;
++        public float candidateAdultCoverage, candidateNet;
++        public bool pass;
++    }
++
++    // Formal-evolution-only counterfactual. No live population, stock,
++    // remainder, or random source is changed by these six fixed trials.
++    private bool HasCompensatedPredatorFoodSupport(BlockInfo block,
++        PopulationData source, PopulationData candidate, int remaining,
++        float plantPayment, out PredatorFoodTrial[] trials)
++    {
++        float[] densities = { 1f, 0.85f, 0.70f, 0.55f, 0.40f, 0.30f };
++        trials = new PredatorFoodTrial[densities.Length];
++        if (source.trophicLevel != 0 || remaining <= 0) return false;
++        bool previousPassed = false;
++        bool adjacentPassed = false;
++        for (int t = 0; t < densities.Length; t++)
++        {
++            int trialCount = Mathf.Max(1, Mathf.FloorToInt(
++                remaining * densities[t]));
++            var sourceTrial = new PopulationData
++            {
++                species = source.species,
++                speciesAmount = trialCount,
++                trophicLevel = source.trophicLevel,
++                movementAbility = source.movementAbility,
++                size = source.size,
++                fertility = source.fertility,
++                fitTemperature = source.fitTemperature,
++                fitHumidity = source.fitHumidity,
++                birthRemainder = source.birthRemainder,
++                bodyBiomassInitialized = source.bodyBiomassInitialized,
++                bodyBiomass = source.speciesAmount > 0
++                    ? source.bodyBiomass * trialCount / source.speciesAmount
++                    : 0f
++            };
++            LandLifeRules.ForecastEvolutionPlantsAfterPayment(block, source,
++                trialCount, candidate, plantPayment, LandRules,
++                out List<PopulationData> groups, out float[] now, out _);
++            var trial = new PredatorFoodTrial { preyCount = trialCount };
++            trials[t] = trial;
++            float candidateTarget = ForecastEvolutionHuntTarget(block,
++                candidate, candidate.speciesAmount);
++            float candidatePreference = 0f;
++            foreach (PopulationData prey in block.community)
++            {
++                if (prey == null || prey.speciesAmount <= 0) continue;
++                PopulationData option = prey == source ? sourceTrial : prey;
++                candidatePreference += LandLifeRules.HuntPreference(candidate,
++                    option, LandRules);
++            }
++            if (candidatePreference <= 0f) continue;
++            bool supported = true;
++            foreach (PopulationData prey in block.community)
++            {
++                if (prey == null || prey.speciesAmount <= 0 ||
++                    !FoodWeb.CanEat(candidate, prey)) continue;
++                PopulationData option = prey == source ? sourceTrial : prey;
++                // Higher-level renewal lacks a plant-budget counterfactual.
++                if (option.trophicLevel != 0) { supported = false; break; }
++                int index = groups.IndexOf(prey);
++                if (index < 0) continue;
++                float renewal = Mathf.Max(0f, ForecastEvolutionPaidNet(
++                    block, option, option.speciesAmount, now[index], 0f));
++                if (prey == source) trial.preyRenewal = renewal;
++                int wholeRenewal = Mathf.FloorToInt(renewal);
++                if (wholeRenewal <= 0) continue;
++                float preference = LandLifeRules.HuntPreference(candidate,
++                    option, LandRules);
++                float density = ForecastEvolutionPreyDensity(block,
++                    option);
++                float chance = Mathf.Min(1f,
++                    10f / Mathf.Max(1f, option.size)) *
++                    LandLifeRules.CaptureChance(candidate, option,
++                        LandRules) * density;
++                float candidateIntent = candidate.speciesAmount *
++                    preference / candidatePreference * chance;
++                float candidateClaim = LandLifeRules.WholePreyClaim(
++                    candidateIntent, candidateTarget,
++                    LandLifeRules.PreyEnergy(candidate, option, LandRules));
++                float existingClaims = 0f;
++                foreach (PopulationData hunter in block.community)
++                {
++                    if (hunter == null || hunter == source ||
++                        hunter.speciesAmount <= 0 ||
++                        !FoodWeb.CanEat(hunter, option)) continue;
++                    float totalPreference = 0f;
++                    foreach (PopulationData possible in block.community)
++                        if (possible != null && possible.speciesAmount > 0)
++                            totalPreference += LandLifeRules.HuntPreference(
++                                hunter, possible == source ? sourceTrial :
++                                possible, LandRules);
++                    if (totalPreference <= 0f) continue;
++                    float hunterIntent = hunter.speciesAmount *
++                        LandLifeRules.HuntPreference(hunter, option,
++                            LandRules) / totalPreference * chance /
++                        Mathf.Max(0.0001f, LandLifeRules.CaptureChance(
++                            candidate, option, LandRules)) *
++                        LandLifeRules.CaptureChance(hunter, option,
++                            LandRules);
++                    existingClaims += LandLifeRules.WholePreyClaim(
++                        hunterIntent, ForecastEvolutionHuntTarget(block,
++                            hunter, hunter.speciesAmount),
++                        LandLifeRules.PreyEnergy(hunter, option, LandRules));
++                }
++                int available = Mathf.Max(0, wholeRenewal -
++                    Mathf.CeilToInt(existingClaims));
++                int catches = Mathf.Min(available,
++                    Mathf.FloorToInt(candidateClaim));
++                trial.candidateCatches += catches;
++                trial.candidateFood += catches *
++                    LandLifeRules.PreyEnergy(candidate, option, LandRules);
++            }
++            float adult = candidate.speciesAmount * LandLifeRules.AdultNeed(
++                candidate.size, candidate.movementAbility, LandRules);
++            trial.candidateAdultCoverage = adult > 0f
++                ? trial.candidateFood / adult : 0f;
++            trial.candidateNet = ForecastEvolutionPaidNet(block, candidate,
++                candidate.speciesAmount, trial.candidateFood,
++                ForecastEvolutionPredationDeaths(block, candidate));
++            trial.pass = supported && trial.preyRenewal > 0f &&
++                trial.candidateCatches > 0f &&
++                trial.candidateAdultCoverage >= 0.95f &&
++                trial.candidateNet >= 0.001f * candidate.speciesAmount;
++            adjacentPassed |= previousPassed && trial.pass;
++            previousPassed = trial.pass;
++        }
++        return adjacentPassed;
++    }
++
++    private float ForecastEvolutionHuntTarget(BlockInfo block,
++        PopulationData hunter, int count)
++    {
++        float adult = count * LandLifeRules.AdultNeed(hunter.size,
++            hunter.movementAbility, LandRules);
++        float births = count * LandRules.birthRate * hunter.fertility / 100f *
++            LandLifeRules.Fitness(block, hunter.fitTemperature,
++                hunter.fitHumidity);
++        return Mathf.Max(0f, adult + births *
++            (LandLifeRules.YoungNeed(hunter.size, LandRules) +
++             LandLifeRules.BodyMass(hunter.size, LandRules)) +
++            adult * LandRules.reserveHuntFraction - hunter.energyReserve);
++    }
++
++    private float ForecastEvolutionPreyDensity(BlockInfo block,
++        PopulationData prey)
++    {
++        if (!LandRules.enablePreyDensityFeedback || prey.trophicLevel != 0)
++            return 1f;
++        float reference = block.predationReferenceRecovery > 0f
++            ? block.predationReferenceRecovery : block.habitatRecovery;
++        float adult = LandLifeRules.AdultNeed(prey.size,
++            prey.movementAbility, LandRules);
++        float half = Mathf.Max(1f,
++            LandRules.preyDensityHalfSaturationScale *
++            Mathf.Max(1f, reference) / Mathf.Max(0.0001f, adult));
++        float n = prey.speciesAmount;
++        return n * n / (n * n + half * half);
++    }
++
++    private float ForecastEvolutionPaidNet(BlockInfo block,
++        PopulationData population, int count, float realFood,
++        float expectedPredationDeaths)
++    {
++        float adult = count * LandLifeRules.AdultNeed(population.size,
++            population.movementAbility, LandRules);
++        float satisfaction = adult > 0f ?
++            Mathf.Clamp01(realFood / adult) : 1f;
++        float fitness = LandLifeRules.Fitness(block,
++            population.fitTemperature, population.fitHumidity);
++        float opportunity = count * LandRules.birthRate *
++            population.fertility / 100f * fitness * satisfaction;
++        float newbornCost = LandLifeRules.YoungNeed(population.size,
++            LandRules) + LandLifeRules.BodyMass(population.size, LandRules);
++        int paidBirths = Mathf.Min(Mathf.FloorToInt(
++                population.birthRemainder + opportunity),
++            Mathf.FloorToInt(Mathf.Max(0f, realFood - adult) /
++                Mathf.Max(0.0001f, newbornCost)));
++        float baseDeaths = LandRules.starvationDeathRate * count *
++            (1f - satisfaction) +
++            LandLifeRules.ColdDeaths(count, block.temperature, LandRules) +
++            LandRules.climateMismatchDeathRate * count * (1f - fitness) +
++            LandLifeRules.NaturalAdultDeaths(count, population.size,
++                LandRules);
++        float stress = LandRules.enablePaidBirthStress ?
++            LandLifeRules.PaidBirthStressDeaths(paidBirths,
++                population.size, population.fertility, LandRules) :
++            LandLifeRules.ReproductionStressDeaths(count,
++                population.size, population.fertility, LandRules,
++                satisfaction: satisfaction, fitness: fitness);
++        return paidBirths - baseDeaths - stress - expectedPredationDeaths;
++    }
++
++    private float ForecastEvolutionPredationDeaths(BlockInfo block,
++        PopulationData candidate)
++    {
++        float claims = 0f;
++        foreach (PopulationData hunter in block.community)
++        {
++            if (hunter == null || hunter.speciesAmount <= 0 ||
++                !FoodWeb.CanEat(hunter, candidate)) continue;
++            float preference = LandLifeRules.HuntPreference(hunter,
++                candidate, LandRules);
++            float totalPreference = preference;
++            foreach (PopulationData prey in block.community)
++                if (prey != null && prey.speciesAmount > 0)
++                    totalPreference += LandLifeRules.HuntPreference(hunter,
++                        prey, LandRules);
++            if (totalPreference <= 0f) continue;
++            float demand = LandLifeRules.Demand(hunter,
++                hunter.speciesAmount,
++                LandLifeRules.Fitness(block, hunter.fitTemperature,
++                    hunter.fitHumidity), LandRules);
++            float intent = hunter.speciesAmount * preference /
++                totalPreference *
++                Mathf.Min(1f, 10f / Mathf.Max(1f, candidate.size)) *
++                LandLifeRules.CaptureChance(hunter, candidate, LandRules) *
++                LandLifeRules.PreyDensityFactor(block, candidate, LandRules);
++            claims += LandLifeRules.WholePreyClaim(intent,
++                Mathf.Max(0f, demand - hunter.energyReserve),
++                LandLifeRules.PreyEnergy(hunter, candidate, LandRules));
++        }
++        return Mathf.Min(candidate.speciesAmount, claims);
++    }
++
+     private static bool IsLocalSplitPair(BlockInfo block, PopulationData source)
+     {
+         if (!source.localSplitBranch) return false;
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs
+index b598456a..28a73697 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.Influence.cs	
+@@ -15,8 +15,7 @@ public partial class SimulationController
+     // Existing physical environment tracks continue when a population clears
+     // its old personal influence during formal evolution.
+     public void RecordPlayerTechnology(BlockInfo block,
+-        EnvironmentTechnologyKind kind, int tier, int day,
+-        int temperatureOffset = 0, int humidityOffset = 0)
++        EnvironmentTechnologyKind kind, int tier, int day)
+     {
+         if (block == null || block.community == null ||
+             block.waterCoverage != WaterCoverage.Land) return;
+@@ -25,7 +24,8 @@ public partial class SimulationController
+             if (population == null || population.speciesAmount <= 0) continue;
+             switch (kind)
+             {
+-                case EnvironmentTechnologyKind.PlantChange:
++                case EnvironmentTechnologyKind.PlantStockChange:
++                case EnvironmentTechnologyKind.PlantRecoveryChange:
+                     if (tier > 0)
+                     {
+                         AddInfluence(population, 3, PrimaryInfluence, day);
+@@ -51,16 +51,6 @@ public partial class SimulationController
+                         AddInfluence(population, 4,
+                             Math.Sign(tier) * SecondaryInfluence, day);
+                     break;
+-                case EnvironmentTechnologyKind.MonsoonAnchor:
+-                    if (temperatureOffset != 0)
+-                        AddInfluence(population, 3,
+-                            -Math.Sign(temperatureOffset) * SecondaryInfluence,
+-                            day);
+-                    if (humidityOffset != 0)
+-                        AddInfluence(population, 4,
+-                            Math.Sign(humidityOffset) * SecondaryInfluence,
+-                            day);
+-                    break;
+             }
+         }
+     }
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs
+index 9bcb42df..c7ea3b69 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationController.cs	
+@@ -325,6 +325,18 @@ public partial class SimulationController : MonoBehaviour
+     public float ReadFoodCarryingCapacity(BlockInfo block, PopulationData population)
+         => LandLifeRules.FoodCarryingCapacity(block, population, LandRules);
+ 
++    public float ReadPredatorFoodCarryingCapacity(BlockInfo block,
++        PopulationData population)
++    {
++        string before = CanonicalModelHash();
++        float value = LandLifeRules.PredatorFoodCarryingCapacity(block,
++            population, LandRules);
++        if (CanonicalModelHash() != before)
++            throw new System.InvalidOperationException(
++                "Predator food capacity diagnostic changed live state.");
++        return value;
++    }
++
+     public float ReadCounterfactualPlantIntake(BlockInfo block,
+         PopulationData target, PopulationData changedCount, int proposedCount)
+     {
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/SimulationInterventionController.cs b/Darwin's farm/Assets/Scripts/Simulation/SimulationInterventionController.cs
+index ef969a11..9e250847 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/SimulationInterventionController.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/SimulationInterventionController.cs	
+@@ -71,7 +71,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
+             int count = 0;
+             if (Environment != null)
+                 foreach (var item in Environment.ReadAll())
+-                    if (item.Environment.HasLocalClimate || item.Environment.HasMonsoon ||
++                    if (item.Environment.HasLocalClimate ||
+                         item.Environment.Recovery.Phase != DarwinFarm.Environment.EffectPhase.None) count++;
+             return count;
+         }
+@@ -179,7 +179,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
+         }
+         if (request.radius != 0 || float.IsNaN(request.amount) || float.IsInfinity(request.amount))
+         {
+-            preview.Error = "单格操作只允许半径 0；季风通过发源点专用接口部署";
++            preview.Error = "单格操作只允许半径 0";
+             return preview;
+         }
+         if (!bridge.TryGetBlock(request.center, out BlockInfo block))
+diff --git a/Darwin's farm/Assets/Scripts/Simulation/WhiteboxEcologyDebugView.cs b/Darwin's farm/Assets/Scripts/Simulation/WhiteboxEcologyDebugView.cs
+index 571d2c28..111806ac 100644
+--- a/Darwin's farm/Assets/Scripts/Simulation/WhiteboxEcologyDebugView.cs	
++++ b/Darwin's farm/Assets/Scripts/Simulation/WhiteboxEcologyDebugView.cs	
+@@ -19,16 +19,11 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
+     private readonly Dictionary<Vector2Int, EnvironmentTechnologyKind> selections =
+         new Dictionary<Vector2Int, EnvironmentTechnologyKind>();
+     private readonly Dictionary<Vector2Int, int> tiers = new Dictionary<Vector2Int, int>();
+-    private readonly Dictionary<Vector2Int, int> windTemperatures = new Dictionary<Vector2Int, int>();
+-    private readonly Dictionary<Vector2Int, int> windHumidities = new Dictionary<Vector2Int, int>();
+     private readonly Dictionary<Vector2Int, string> notices = new Dictionary<Vector2Int, string>();
+     private Vector2Int? openTechnologyMenu;
+     private Rect openMenuRect;
+     private readonly List<Rect> interactiveRects = new List<Rect>();
+     private static readonly int[] FourTiers = { 2, 1, -1, -2 };
+-    private static readonly string[] MonsoonNames = { "冷湿", "暖湿", "干热", "干冷" };
+-    private static readonly int[] MonsoonTemperatures = { -20, 20, 20, -20 };
+-    private static readonly int[] MonsoonHumidities = { 20, 20, -20, -20 };
+     private static WhiteboxEcologyDebugView activeView;
+ 
+     private void OnEnable() => activeView = this;
+@@ -145,32 +140,14 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
+         EnvironmentTechnologyKind kind = selections.TryGetValue(coordinate, out var selected)
+             ? selected : EnvironmentTechnologyKind.TemperatureChange;
+         int tier = tiers.TryGetValue(coordinate, out int rememberedTier) ? rememberedTier : 1;
+-        if (kind == EnvironmentTechnologyKind.MonsoonAnchor) tier = 1;
+         if (kind == EnvironmentTechnologyKind.ElevationChange && (tier == 2 || tier == -2)) tier = 1;
+-        int windT = windTemperatures.TryGetValue(coordinate, out int selectedT) ? selectedT : 20;
+-        int windH = windHumidities.TryGetValue(coordinate, out int selectedH) ? selectedH : 20;
+         Rect menuButton = new Rect(x + 5f, y + 78f, width - 10f, 23f);
+         if (GUI.Button(menuButton, EnvironmentTechnologyCatalog.Name(kind) + "  ▾"))
+         {
+             openTechnologyMenu = openTechnologyMenu == coordinate ? (Vector2Int?)null : coordinate;
+             openMenuRect = menuButton;
+         }
+-        if (kind == EnvironmentTechnologyKind.MonsoonAnchor)
+-        {
+-            for (int i = 0; i < MonsoonNames.Length; i++)
+-            {
+-                float buttonX = x + (i % 2 == 0 ? 5f : 168f);
+-                float buttonY = y + (i < 2 ? 105f : 130f);
+-                int temperature = MonsoonTemperatures[i], humidity = MonsoonHumidities[i];
+-                if (GUI.Button(new Rect(buttonX, buttonY, 157f, 22f),
+-                    MonsoonNames[i] + (windT == temperature && windH == humidity ? " ✓" : "")))
+-                {
+-                    windTemperatures[coordinate] = windT = temperature;
+-                    windHumidities[coordinate] = windH = humidity;
+-                }
+-            }
+-        }
+-        else if (kind == EnvironmentTechnologyKind.ElevationChange)
++        if (kind == EnvironmentTechnologyKind.ElevationChange)
+         {
+             if (GUI.Button(new Rect(x + 5f, y + 105f, 157f, 22f), "高1档" + (tier == 1 ? " ✓" : "")))
+                 tiers[coordinate] = tier = 1;
+@@ -190,7 +167,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
+             }
+         }
+ 
+-        var choice = new EnvironmentTechnologyChoice(kind, tier, windT, windH);
++        var choice = new EnvironmentTechnologyChoice(kind, tier);
+         EnvironmentTechnologyPreview preview = technology.Preview(coordinate, choice);
+         string effect = preview.IsValid ? preview.After : preview.Error;
+         GUI.Label(new Rect(x + 5f, y + 157f, width - 10f, 72f),
+diff --git a/Darwin's farm/Assets/Scripts/map/MapSimulationBridge.cs b/Darwin's farm/Assets/Scripts/map/MapSimulationBridge.cs
+index 75d76d8b..1465e0e8 100644
+--- a/Darwin's farm/Assets/Scripts/map/MapSimulationBridge.cs	
++++ b/Darwin's farm/Assets/Scripts/map/MapSimulationBridge.cs	
+@@ -84,8 +84,15 @@ public sealed class MapSimulationBridge : MonoBehaviour
+             else if (block.elevation != tile.HeightLevel)
+             {
+                 block.elevation = tile.HeightLevel;
++                block.predationReferenceRecovery =
++                    SimulationEnvironmentController.InitialDefaults(
++                        tile.Definition, tile.HeightLevel).Recovery;
+                 existingHeightChanged = true;
+             }
++            if (block.predationReferenceRecovery <= 0)
++                block.predationReferenceRecovery =
++                    SimulationEnvironmentController.InitialDefaults(
++                        tile.Definition, tile.HeightLevel).Recovery;
+ 
+             if (block.community == null)
+                 block.community = new List<PopulationData>();
+@@ -127,6 +134,9 @@ public sealed class MapSimulationBridge : MonoBehaviour
+             DarwinFarm.Environment.EnvironmentRules.PlantCapacity;
+         block.plantBiomass = water ? DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
+         block.habitatRecovery = water ? DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
++        block.predationReferenceRecovery = water ?
++            DarwinFarm.Environment.EnvironmentRules.WaterDefaultRecovery :
++            defaults.Recovery;
+         block.waterCoverage = preset.initialWaterCoverage;
+         block.community = new List<PopulationData>();
+     }

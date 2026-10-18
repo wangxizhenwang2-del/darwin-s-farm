@@ -1,0 +1,994 @@
+{
+  "unityVersion": "6000.2.9f1",
+  "costsDisabled": true,
+  "defaultSwitches": {
+    "E": false,
+    "Q": false
+  },
+  "task9": {
+    "color": {
+      "s1": {
+        "status": "PASS",
+        "source": "鸡",
+        "target": "彩鸡",
+        "firstDay": 132,
+        "founders": 374,
+        "plantPayment": 29350.91,
+        "excessBody": 0.0,
+        "event": "[Ecology] day=132 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:132:0 target=彩鸡 amount=374 plantPayment=29350.91 excessBody=0.00 count=374",
+        "sourcePriorDay": 3709,
+        "sourceAfter": 3366,
+        "targetAfter": 374,
+        "counts": {
+          "plus1": 375,
+          "plus7": 387,
+          "plus30": 427,
+          "plus100": 425,
+          "plus200": 318,
+          "plus300": 196,
+          "plus500": 58
+        },
+        "sourceMinimum500": 3366,
+        "targetMaximum500": 443,
+        "targetFirstExtinctDay": null,
+        "survived500": "PASS",
+        "coexist500": "PASS",
+        "late100Mean": 79.89,
+        "late100SlopePerDay": -0.494949494949495,
+        "late100Start": 107,
+        "late100End": 58,
+        "late100Minimum": 58,
+        "late100Maximum": 107
+      },
+      "s2": {
+        "status": "PASS",
+        "source": "鸡",
+        "target": "彩鸡",
+        "firstDay": 132,
+        "founders": 374,
+        "plantPayment": 29350.91,
+        "excessBody": 0.0,
+        "event": "[Ecology] day=132 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:132:0 target=彩鸡 amount=374 plantPayment=29350.91 excessBody=0.00 count=374",
+        "sourcePriorDay": 3709,
+        "sourceAfter": 3366,
+        "targetAfter": 374,
+        "counts": {
+          "plus1": 375,
+          "plus7": 387,
+          "plus30": 427,
+          "plus100": 425,
+          "plus200": 318,
+          "plus300": 196,
+          "plus500": 58
+        },
+        "sourceMinimum500": 3366,
+        "targetMaximum500": 443,
+        "targetFirstExtinctDay": null,
+        "survived500": "PASS",
+        "coexist500": "PASS",
+        "late100Mean": 79.89,
+        "late100SlopePerDay": -0.494949494949495,
+        "late100Start": 107,
+        "late100End": 58,
+        "late100Minimum": 58,
+        "late100Maximum": 107
+      }
+    },
+    "mushroom": {
+      "s1": {
+        "status": "PASS",
+        "source": "鸡",
+        "target": "灵感菇狸",
+        "firstDay": 429,
+        "founders": 267,
+        "plantPayment": 49936.5,
+        "excessBody": 0.0,
+        "event": "[Ecology] day=429 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:429:0 target=灵感菇狸 amount=267 plantPayment=49936.50 excessBody=0.00 count=267",
+        "sourcePriorDay": 5778,
+        "sourceAfter": 5525,
+        "targetAfter": 267,
+        "counts": {
+          "plus1": 275,
+          "plus7": 332,
+          "plus30": 688,
+          "plus100": 0,
+          "plus200": 0,
+          "plus300": 0,
+          "plus500": 0
+        },
+        "sourceMinimum500": 395,
+        "targetMaximum500": 1975,
+        "targetFirstExtinctDay": 512,
+        "survived500": "FAIL",
+        "coexist500": "FAIL",
+        "late100Mean": 0,
+        "late100SlopePerDay": 0.0,
+        "late100Start": 0,
+        "late100End": 0,
+        "late100Minimum": 0,
+        "late100Maximum": 0
+      },
+      "s2": {
+        "status": "PASS",
+        "source": "鸡",
+        "target": "灵感菇狸",
+        "firstDay": 429,
+        "founders": 267,
+        "plantPayment": 49936.5,
+        "excessBody": 0.0,
+        "event": "[Ecology] day=429 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:429:0 target=灵感菇狸 amount=267 plantPayment=49936.50 excessBody=0.00 count=267",
+        "sourcePriorDay": 5778,
+        "sourceAfter": 5525,
+        "targetAfter": 267,
+        "counts": {
+          "plus1": 275,
+          "plus7": 332,
+          "plus30": 688,
+          "plus100": 0,
+          "plus200": 0,
+          "plus300": 0,
+          "plus500": 0
+        },
+        "sourceMinimum500": 3115,
+        "targetMaximum500": 1332,
+        "targetFirstExtinctDay": 529,
+        "survived500": "FAIL",
+        "coexist500": "FAIL",
+        "late100Mean": 0,
+        "late100SlopePerDay": 0.0,
+        "late100Start": 0,
+        "late100End": 0,
+        "late100Minimum": 0,
+        "late100Maximum": 0
+      },
+      "stopS2": {
+        "status": "PASS",
+        "source": "鸡",
+        "target": "灵感菇狸",
+        "firstDay": 429,
+        "founders": 267,
+        "plantPayment": 49936.5,
+        "excessBody": 0.0,
+        "event": "[Ecology] day=429 kind=preset_evolution population=seed:240:Tile_0_0_荒漠:0:429:0 target=灵感菇狸 amount=267 plantPayment=49936.50 excessBody=0.00 count=267",
+        "sourcePriorDay": 5778,
+        "sourceAfter": 5525,
+        "targetAfter": 267,
+        "counts": {
+          "plus1": 275,
+          "plus7": 332,
+          "plus30": 676,
+          "plus100": 1467,
+          "plus200": 1856,
+          "plus300": 1908,
+          "plus500": 1726
+        },
+        "sourceMinimum500": 2255,
+        "targetMaximum500": 1908,
+        "targetFirstExtinctDay": null,
+        "survived500": "PASS",
+        "coexist500": "PASS",
+        "late100Mean": 1791.48,
+        "late100SlopePerDay": -1.2727272727272727,
+        "late100Start": 1852,
+        "late100End": 1726,
+        "late100Minimum": 1726,
+        "late100Maximum": 1852
+      }
+    },
+    "preConversion": {
+      "color": {
+        "comparedDays": 132,
+        "environmentHashesEqual": 132,
+        "modelHashesEqual": 0,
+        "originalEcologyFieldsEqual": 132,
+        "firstEcologyDifference": null
+      },
+      "mushroom": {
+        "comparedDays": 429,
+        "environmentHashesEqual": 429,
+        "modelHashesEqual": 0,
+        "originalEcologyFieldsEqual": 429,
+        "firstEcologyDifference": null
+      }
+    },
+    "stopPreConversion": {
+      "comparedDays": 430,
+      "environmentHashesEqual": 430,
+      "modelHashesEqual": 430,
+      "originalEcologyFieldsEqual": 430,
+      "firstEcologyDifference": null
+    },
+    "gateNegative": {
+      "color": {
+        "status": "PASS",
+        "cases": [
+          {
+            "caseName": "positive",
+            "plan": true,
+            "foodSupport": true,
+            "eligible": true,
+            "rejected": false,
+            "founders": 361
+          },
+          {
+            "caseName": "lowR",
+            "plan": true,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 361
+          },
+          {
+            "caseName": "noFood",
+            "plan": false,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 0
+          },
+          {
+            "caseName": "lowStock",
+            "plan": false,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 0
+          },
+          {
+            "caseName": "duplicateTarget",
+            "plan": true,
+            "foodSupport": true,
+            "eligible": false,
+            "rejected": true,
+            "founders": 361
+          },
+          {
+            "caseName": "fullSlot",
+            "plan": true,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 361
+          },
+          {
+            "caseName": "unaffordableFounder",
+            "plan": false,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 0
+          },
+          {
+            "caseName": "otherConsumerPressure",
+            "plan": true,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 361
+          }
+        ]
+      },
+      "mushroom": {
+        "status": "PASS",
+        "cases": [
+          {
+            "caseName": "positive",
+            "plan": true,
+            "foodSupport": true,
+            "eligible": true,
+            "rejected": false,
+            "founders": 268
+          },
+          {
+            "caseName": "lowR",
+            "plan": true,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 268
+          },
+          {
+            "caseName": "noFood",
+            "plan": false,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 0
+          },
+          {
+            "caseName": "lowStock",
+            "plan": false,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 0
+          },
+          {
+            "caseName": "noLegalPrey",
+            "plan": true,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 268
+          },
+          {
+            "caseName": "duplicateTarget",
+            "plan": true,
+            "foodSupport": true,
+            "eligible": false,
+            "rejected": true,
+            "founders": 268
+          },
+          {
+            "caseName": "fullSlot",
+            "plan": true,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 268
+          },
+          {
+            "caseName": "unaffordableFounder",
+            "plan": false,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 0
+          },
+          {
+            "caseName": "otherConsumerPressure",
+            "plan": true,
+            "foodSupport": false,
+            "eligible": false,
+            "rejected": true,
+            "founders": 268
+          }
+        ]
+      }
+    },
+    "resourceAudit": {
+      "int-color-s1": {
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -2144.094512939453,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        },
+        "quota": {
+          "observedPreyDays": 0,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": null,
+          "maxQuota": null
+        }
+      },
+      "int-color-s2": {
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -2144.094512939453,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        },
+        "quota": {
+          "observedPreyDays": 0,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": null,
+          "maxQuota": null
+        }
+      },
+      "int-mushroom-s1": {
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -2144.094512939453,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        },
+        "quota": {
+          "observedPreyDays": 0,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": null,
+          "maxQuota": null
+        }
+      },
+      "int-mushroom-s2": {
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -2144.094512939453,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        },
+        "quota": {
+          "observedPreyDays": 100,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": 150,
+          "maxQuota": 150
+        }
+      },
+      "int-mushroom-stop-s2": {
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -2144.094512939453,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        },
+        "quota": {
+          "observedPreyDays": 621,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": 97,
+          "maxQuota": 98
+        }
+      }
+    },
+    "formalConversionStatus": "PASS",
+    "materialStatus": "PASS",
+    "longTermStable": {
+      "colorS2": "FAIL",
+      "mushroomS2": "FAIL",
+      "mushroomStopS2": "FAIL"
+    },
+    "status": "FAIL"
+  },
+  "task10": {
+    "communities": {
+      "a": {
+        "off": {
+          "day5000": {
+            "鸡": 4028
+          },
+          "mean1000to2000": {
+            "鸡": 4028.046953046953
+          },
+          "mean4000to5000": {
+            "鸡": 4028.0449550449553
+          },
+          "minimum": {
+            "鸡": 1000
+          },
+          "maximum": {
+            "鸡": 4521
+          },
+          "births": {
+            "鸡": 413362
+          },
+          "deaths": {
+            "鸡": 410334
+          },
+          "predationDeaths": {
+            "鸡": 0
+          },
+          "quota": {
+            "observedPreyDays": 0,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 0,
+            "maxKills": null,
+            "maxQuota": null
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -13566.396667480469,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        },
+        "on": {
+          "day5000": {
+            "鸡": 4028
+          },
+          "mean1000to2000": {
+            "鸡": 4028.046953046953
+          },
+          "mean4000to5000": {
+            "鸡": 4028.0449550449553
+          },
+          "minimum": {
+            "鸡": 1000
+          },
+          "maximum": {
+            "鸡": 4521
+          },
+          "births": {
+            "鸡": 413362
+          },
+          "deaths": {
+            "鸡": 410334
+          },
+          "predationDeaths": {
+            "鸡": 0
+          },
+          "quota": {
+            "observedPreyDays": 0,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 0,
+            "maxKills": null,
+            "maxQuota": null
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -13566.396667480469,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        }
+      },
+      "b": {
+        "off": {
+          "day5000": {
+            "鸡": 2819,
+            "鹿": 581
+          },
+          "mean1000to2000": {
+            "鸡": 2819.631368631369,
+            "鹿": 580.7672327672327
+          },
+          "mean4000to5000": {
+            "鸡": 2819.631368631369,
+            "鹿": 580.7662337662338
+          },
+          "minimum": {
+            "鸡": 1000,
+            "鹿": 100
+          },
+          "maximum": {
+            "鸡": 3768,
+            "鹿": 581
+          },
+          "births": {
+            "鸡": 289838,
+            "鹿": 21807
+          },
+          "deaths": {
+            "鸡": 288019,
+            "鹿": 21326
+          },
+          "predationDeaths": {
+            "鸡": 0,
+            "鹿": 0
+          },
+          "quota": {
+            "observedPreyDays": 0,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 0,
+            "maxKills": null,
+            "maxQuota": null
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -16384.271911621094,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        },
+        "on": {
+          "day5000": {
+            "鸡": 2819,
+            "鹿": 581
+          },
+          "mean1000to2000": {
+            "鸡": 2819.631368631369,
+            "鹿": 580.7672327672327
+          },
+          "mean4000to5000": {
+            "鸡": 2819.631368631369,
+            "鹿": 580.7662337662338
+          },
+          "minimum": {
+            "鸡": 1000,
+            "鹿": 100
+          },
+          "maximum": {
+            "鸡": 3768,
+            "鹿": 581
+          },
+          "births": {
+            "鸡": 289838,
+            "鹿": 21807
+          },
+          "deaths": {
+            "鸡": 288019,
+            "鹿": 21326
+          },
+          "predationDeaths": {
+            "鸡": 0,
+            "鹿": 0
+          },
+          "quota": {
+            "observedPreyDays": 0,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 0,
+            "maxKills": null,
+            "maxQuota": null
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -16384.271911621094,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        }
+      },
+      "c": {
+        "off": {
+          "day5000": {
+            "灵感菇狸": 429,
+            "鸡": 1040
+          },
+          "mean1000to2000": {
+            "灵感菇狸": 428.16083916083915,
+            "鸡": 1039.8451548451549
+          },
+          "mean4000to5000": {
+            "灵感菇狸": 428.15984015984014,
+            "鸡": 1039.8501498501498
+          },
+          "minimum": {
+            "灵感菇狸": 50,
+            "鸡": 716
+          },
+          "maximum": {
+            "灵感菇狸": 823,
+            "鸡": 4035
+          },
+          "births": {
+            "灵感菇狸": 27218,
+            "鸡": 363997
+          },
+          "deaths": {
+            "灵感菇狸": 26839,
+            "鸡": 363957
+          },
+          "predationDeaths": {
+            "灵感菇狸": 0,
+            "鸡": 175957
+          },
+          "quota": {
+            "observedPreyDays": 0,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 0,
+            "maxKills": null,
+            "maxQuota": null
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -14156.034606933594,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        },
+        "on": {
+          "day5000": {
+            "灵感菇狸": 568,
+            "鸡": 1380
+          },
+          "mean1000to2000": {
+            "灵感菇狸": 568.1968031968032,
+            "鸡": 1379.931068931069
+          },
+          "mean4000to5000": {
+            "灵感菇狸": 568.1958041958042,
+            "鸡": 1379.931068931069
+          },
+          "minimum": {
+            "灵感菇狸": 50,
+            "鸡": 1000
+          },
+          "maximum": {
+            "灵感菇狸": 811,
+            "鸡": 4035
+          },
+          "births": {
+            "灵感菇狸": 35528,
+            "鸡": 481265
+          },
+          "deaths": {
+            "灵感菇狸": 35010,
+            "鸡": 480885
+          },
+          "predationDeaths": {
+            "灵感菇狸": 0,
+            "鸡": 232478
+          },
+          "quota": {
+            "observedPreyDays": 5000,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 0,
+            "maxKills": 93,
+            "maxQuota": 93
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -14156.034606933594,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        }
+      },
+      "d": {
+        "off": {
+          "day5000": {
+            "灵感菇狸": 428,
+            "鸡": 1040,
+            "鹿": 1053
+          },
+          "mean1000to2000": {
+            "灵感菇狸": 428.16083916083915,
+            "鸡": 1039.844155844156,
+            "鹿": 1053.1868131868132
+          },
+          "mean4000to5000": {
+            "灵感菇狸": 428.16383616383615,
+            "鸡": 1039.8451548451549,
+            "鹿": 1053.1898101898103
+          },
+          "minimum": {
+            "灵感菇狸": 50,
+            "鸡": 856,
+            "鹿": 100
+          },
+          "maximum": {
+            "灵感菇狸": 576,
+            "鸡": 3357,
+            "鹿": 1054
+          },
+          "births": {
+            "灵感菇狸": 26599,
+            "鸡": 359967,
+            "鹿": 39410
+          },
+          "deaths": {
+            "灵感菇狸": 26221,
+            "鸡": 359927,
+            "鹿": 38457
+          },
+          "predationDeaths": {
+            "灵感菇狸": 0,
+            "鸡": 174115,
+            "鹿": 0
+          },
+          "quota": {
+            "observedPreyDays": 0,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 0,
+            "maxKills": null,
+            "maxQuota": null
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -16973.90985107422,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        },
+        "on": {
+          "day5000": {
+            "灵感菇狸": 428,
+            "鸡": 1040,
+            "鹿": 1053
+          },
+          "mean1000to2000": {
+            "灵感菇狸": 428.16183816183815,
+            "鸡": 1039.8471528471528,
+            "鹿": 1053.184815184815
+          },
+          "mean4000to5000": {
+            "灵感菇狸": 428.16183816183815,
+            "鸡": 1039.8431568431567,
+            "鹿": 1053.1878121878121
+          },
+          "minimum": {
+            "灵感菇狸": 50,
+            "鸡": 978,
+            "鹿": 100
+          },
+          "maximum": {
+            "灵感菇狸": 582,
+            "鸡": 3357,
+            "鹿": 1054
+          },
+          "births": {
+            "灵感菇狸": 26674,
+            "鸡": 361667,
+            "鹿": 39199
+          },
+          "deaths": {
+            "灵感菇狸": 26296,
+            "鸡": 361627,
+            "鹿": 38246
+          },
+          "predationDeaths": {
+            "灵感菇狸": 0,
+            "鸡": 174610,
+            "鹿": 0
+          },
+          "quota": {
+            "observedPreyDays": 10000,
+            "quotaViolations": 0,
+            "noRootDays": 0,
+            "zeroQuotaDays": 21,
+            "maxKills": 65,
+            "maxQuota": 77
+          },
+          "material": {
+            "materialCreationDays": [],
+            "largestResidual": -16973.90985107422,
+            "unpaidBirthRows": 0,
+            "negativeBodyOrReserveRows": 0
+          }
+        }
+      }
+    },
+    "negative": {
+      "int-neg-few-prey": {
+        "lastCounts": {},
+        "quota": {
+          "observedPreyDays": 6,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 6,
+          "maxKills": 0,
+          "maxQuota": 0
+        },
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": 0.0,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        }
+      },
+      "int-neg-half-r": {
+        "lastCounts": {
+          "灵感菇狸": 289,
+          "鸡": 699
+        },
+        "quota": {
+          "observedPreyDays": 500,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": 46,
+          "maxQuota": 46
+        },
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -12842.163055419922,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        }
+      },
+      "int-neg-many-hunters": {
+        "lastCounts": {
+          "灵感菇狸": 548,
+          "鸡": 1346
+        },
+        "quota": {
+          "observedPreyDays": 250,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": 45,
+          "maxQuota": 45
+        },
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -19524.61685180664,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        }
+      },
+      "int-neg-no-legal-prey": {
+        "lastCounts": {
+          "鹿": 4037
+        },
+        "quota": {
+          "observedPreyDays": 6,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": 0,
+          "maxQuota": 35
+        },
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -13566.396667480469,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        }
+      },
+      "int-neg-two-hunters": {
+        "lastCounts": {
+          "鸡": 1943,
+          "飞狸": 732
+        },
+        "quota": {
+          "observedPreyDays": 150,
+          "quotaViolations": 0,
+          "noRootDays": 0,
+          "zeroQuotaDays": 0,
+          "maxKills": 93,
+          "maxQuota": 93
+        },
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": -14191.646240234375,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        }
+      },
+      "int-neg-zero-r": {
+        "lastCounts": {},
+        "quota": {
+          "observedPreyDays": 6,
+          "quotaViolations": 0,
+          "noRootDays": 6,
+          "zeroQuotaDays": 6,
+          "maxKills": 0,
+          "maxQuota": 0
+        },
+        "material": {
+          "materialCreationDays": [],
+          "largestResidual": 0.0,
+          "unpaidBirthRows": 0,
+          "negativeBodyOrReserveRows": 0
+        }
+      }
+    },
+    "l2Prey": "OUT_OF_SCOPE",
+    "performance": "PASS",
+    "quotaBound": "PASS",
+    "communityStatus": {
+      "c": "PASS",
+      "d": "PASS"
+    },
+    "materialStatus": "PASS",
+    "negativeStatus": "PASS",
+    "legacyRegression": "PASS",
+    "determinism": "PASS",
+    "herbivoreNeutral": "PASS",
+    "formalRouteContinue500": "FAIL",
+    "formalRouteStop500": "PASS",
+    "stopRoutePopulationRisk": "FAIL",
+    "status": "FAIL"
+  },
+  "runStatus": {
+    "int-s0-predator": "PASS",
+    "int-a-off": "PASS",
+    "int-a-on": "PASS",
+    "int-b-off": "PASS",
+    "int-b-on": "PASS",
+    "int-c-off": "PASS",
+    "int-c-on": "PASS",
+    "int-d-off": "PASS",
+    "int-d-on": "PASS",
+    "int-color-s1": "PASS",
+    "int-color-s2": "PASS",
+    "int-mushroom-s1": "PASS",
+    "int-mushroom-s2": "PASS",
+    "int-mushroom-stop-s2": "PASS",
+    "int-gate-negative-color": "PASS",
+    "int-gate-negative-mushroom": "PASS",
+    "int-neg-zero-r": "PASS",
+    "int-neg-half-r": "PASS",
+    "int-neg-no-legal-prey": "PASS",
+    "int-neg-few-prey": "PASS",
+    "int-neg-many-hunters": "PASS",
+    "int-neg-two-hunters": "PASS",
+    "int-d-off-repeat": "PASS",
+    "int-d-on-repeat": "PASS",
+    "int-s0-deer": "PASS"
+  }
+}

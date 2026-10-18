@@ -1,0 +1,59 @@
+{
+  "input": "Artifacts\\V61Integration\\Validation\\v61-core-baseline-seed240.jsonl",
+  "lastDay": 2000,
+  "days": {
+    "0": {
+      "species": {
+        "鸡": 160
+      },
+      "modelHash": "fcd4e331ab89038f30c5d5b1f34d62bc1abeeada994edb9645953878f434ea3d",
+      "totalMaterial": 168400.0
+    },
+    "100": {
+      "species": {
+        "鸡": 745
+      },
+      "modelHash": "2728b606b8087e77e3d92d97a00acb54d5b3c0af7213743b24e495fde3b2f085",
+      "totalMaterial": 1489234.4825134277
+    },
+    "500": {
+      "species": {
+        "鸡": 2945
+      },
+      "modelHash": "c7bbe0daf4beb4ff0f353d0478aca5dccf1c5a9f9eb95e6d0465976ba6c9bacd",
+      "totalMaterial": 15298797.461395264
+    },
+    "1000": {
+      "species": {
+        "鸡": 2948
+      },
+      "modelHash": "9cf2419e17b99c488f7d1af9b7acf165920d508084f402db8f750cc151d4c4c2",
+      "totalMaterial": 33833518.26483154
+    },
+    "1500": {
+      "species": {
+        "鸡": 2951
+      },
+      "modelHash": "6577989e716fd67f239c9bd2bae3d2d7216cb0c383d2a4f73fcd291a81c962f5",
+      "totalMaterial": 52391706.60858154
+    },
+    "1800": {
+      "species": {
+        "鸡": 2951
+      },
+      "modelHash": "f274ea9e723fa0f5aa59b2615c2feed84d70b39eb2c77e532712aef99fef3261",
+      "totalMaterial": 63529987.17108154
+    },
+    "2000": {
+      "species": {
+        "鸡": 2951
+      },
+      "modelHash": "7d76fff2c1eb3c99175b491f046882e3daa7a4fe48fdc3f5048f5e567fe7a8b6",
+      "totalMaterial": 70955484.87545776
+    }
+  },
+  "events": {},
+  "firstAppearance": {
+    "鸡": 0
+  }
+}

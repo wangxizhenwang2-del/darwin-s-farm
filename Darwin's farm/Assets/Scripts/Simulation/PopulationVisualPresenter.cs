@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Read-only view of the living land populations in placed tiles.
+// Read-only view of living land and air populations in placed tiles.
 // Ecology owns PopulationData; this component owns only WhiteboxPopulation objects.
 [DisallowMultipleComponent]
 public sealed partial class PopulationVisualPresenter : MonoBehaviour
@@ -82,19 +82,22 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
             foreach (PopulationData data in tile.Block.community)
             {
                 if (data == null || data.speciesAmount <= 0 ||
-                    data.ecologicalNiche != EcologicalNiche.Land) continue;
+                    (data.ecologicalNiche != EcologicalNiche.Land &&
+                     data.ecologicalNiche != EcologicalNiche.Air && data.ecologicalNiche != EcologicalNiche.Water)) continue;
                 string id = data.PopulationId;
                 if (!living.Add(id)) continue;
 
                 if (visuals.TryGetValue(id, out WhiteboxPopulation visual) && visual != null &&
-                    visual.TileId == tile.Coordinate)
+                    visual.TileId == tile.Coordinate &&
+                    visual.IsAir == (data.ecologicalNiche == EcologicalNiche.Air) &&
+                    visual.IsWater == (data.ecologicalNiche == EcologicalNiche.Water))
                 {
                     // A whole-branch evolution changes species on the same
                     // PopulationData instance and keeps the population ID.
-                    // Refresh the illustration even when the binding is unchanged.
+                    // Compare the bound appearance, never the currently animated frame.
                     if (visual.EcologicalPopulation != data ||
-                        visual.DisplaySprite != SpriteFor(data))
-                        visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data));
+                        !visual.HasAppearance(SpriteFor(data), TintFor(data), AnimationFor(data)))
+                        visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data), AnimationFor(data));
                     if (transitionHolds.TryGetValue(id, out TransitionHold hold) &&
                         hold.CountBefore == 0) continue;
                     int count = hold == null ? data.speciesAmount : hold.CountBefore;
@@ -112,14 +115,15 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                 bool held = transitionHolds.TryGetValue(id, out TransitionHold pending);
                 int initialCount = held && pending.CountBefore > 0 ?
                     pending.CountBefore : data.speciesAmount;
-                visual = movement.CreatePopulation(tile.Coordinate, initialCount);
+                visual = data.ecologicalNiche == EcologicalNiche.Water ? movement.CreateWaterPopulation(tile.Coordinate, initialCount) : movement.CreatePopulation(tile.Coordinate, initialCount,
+                    data.ecologicalNiche == EcologicalNiche.Air);
                 if (visual == null)
                 {
                     retryAt[id] = Time.unscaledTime + Mathf.Max(0.1f, failedCreationRetry);
                     continue;
                 }
 
-                visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data));
+                visual.BindEcologicalPopulation(data, SpriteFor(data), TintFor(data), AnimationFor(data));
                 if (held && pending.CountBefore == 0)
                 {
                     visual.PauseWandering(true);
@@ -170,8 +174,17 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
 
     private Sprite SpriteFor(PopulationData data)
     {
+        SpeciesData species = PresentationSpeciesFor(data);
+        return species != null ? species.Sprite : movement != null ? movement.FallbackSprite : null;
+    }
+
+    private PopulationAnimationSet AnimationFor(PopulationData data) =>
+        PresentationSpeciesFor(data)?.PopulationAnimation;
+
+    private SpeciesData PresentationSpeciesFor(PopulationData data)
+    {
         if (data.species != null && data.species.Sprite != null)
-            return data.species.Sprite;
+            return data.species;
         // Niche descendants have no SpeciesData asset. Their lineage starts
         // with the ancestor's name, so they keep its illustration.
         string lineage = data.lineageName;
@@ -180,8 +193,8 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                 if (species != null && species.Sprite != null &&
                     (lineage == species.SpeciesName ||
                      lineage.StartsWith(species.SpeciesName + "-", StringComparison.Ordinal)))
-                    return species.Sprite;
-        return movement != null ? movement.FallbackSprite : null;
+                    return species;
+        return null;
     }
 
     private Color TintFor(PopulationData data) =>

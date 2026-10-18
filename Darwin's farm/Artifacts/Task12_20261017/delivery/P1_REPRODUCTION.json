@@ -1,0 +1,445 @@
+{
+  "int-color-s2": {
+    "dayRows": 751,
+    "lastDay": 750,
+    "actions": 6,
+    "formalEvolutions": 1,
+    "migrations": 0,
+    "species": {
+      "彩鸡": {
+        "firstLivingDay": 132,
+        "lastLivingDay": 750,
+        "peak": 443,
+        "peakDay": 189,
+        "final": 28,
+        "daySamples": {
+          "132": 374,
+          "232": 425,
+          "429": 199,
+          "430": 198,
+          "434": 194,
+          "435": 193,
+          "490": 139,
+          "512": 121,
+          "529": 109,
+          "629": 59
+        }
+      },
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 750,
+        "peak": 4768,
+        "peakDay": 748,
+        "final": 4768,
+        "daySamples": {
+          "132": 3366,
+          "232": 4415,
+          "429": 4611,
+          "430": 4612,
+          "434": 4614,
+          "435": 4615,
+          "490": 4653,
+          "512": 4668,
+          "529": 4680,
+          "629": 4732
+        }
+      }
+    }
+  },
+  "int-mushroom-s2": {
+    "dayRows": 1051,
+    "lastDay": 1050,
+    "actions": 32,
+    "formalEvolutions": 1,
+    "migrations": 0,
+    "species": {
+      "灵感菇狸": {
+        "firstLivingDay": 429,
+        "lastLivingDay": 528,
+        "peak": 1332,
+        "peakDay": 493,
+        "final": 0,
+        "daySamples": {
+          "132": 0,
+          "232": 0,
+          "429": 267,
+          "430": 275,
+          "434": 311,
+          "435": 321,
+          "490": 1318,
+          "512": 686,
+          "529": 0,
+          "629": 0,
+          "929": 0,
+          "1050": 0
+        }
+      },
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 1050,
+        "peak": 6614,
+        "peakDay": 220,
+        "final": 5285,
+        "daySamples": {
+          "132": 3120,
+          "232": 3017,
+          "429": 5525,
+          "430": 5467,
+          "434": 5368,
+          "435": 5320,
+          "490": 3847,
+          "512": 3285,
+          "529": 3425,
+          "629": 4253,
+          "929": 4826,
+          "1050": 5285
+        }
+      }
+    }
+  },
+  "int-mushroom-stop-s2": {
+    "dayRows": 1051,
+    "lastDay": 1050,
+    "actions": 23,
+    "formalEvolutions": 1,
+    "migrations": 0,
+    "species": {
+      "灵感菇狸": {
+        "firstLivingDay": 429,
+        "lastLivingDay": 1050,
+        "peak": 1908,
+        "peakDay": 727,
+        "final": 1623,
+        "daySamples": {
+          "132": 0,
+          "232": 0,
+          "429": 267,
+          "430": 275,
+          "434": 311,
+          "435": 321,
+          "490": 1148,
+          "512": 1356,
+          "529": 1467,
+          "629": 1856,
+          "929": 1726,
+          "1050": 1623
+        }
+      },
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 1050,
+        "peak": 6614,
+        "peakDay": 220,
+        "final": 2170,
+        "daySamples": {
+          "132": 3120,
+          "232": 3017,
+          "429": 5525,
+          "430": 5467,
+          "434": 5368,
+          "435": 5345,
+          "490": 3619,
+          "512": 3219,
+          "529": 2999,
+          "629": 2518,
+          "929": 2255,
+          "1050": 2170
+        }
+      }
+    }
+  },
+  "task12-mush-through-476": {
+    "dayRows": 1051,
+    "lastDay": 1050,
+    "actions": 27,
+    "formalEvolutions": 1,
+    "migrations": 0,
+    "species": {
+      "灵感菇狸": {
+        "firstLivingDay": 429,
+        "lastLivingDay": 1050,
+        "peak": 1994,
+        "peakDay": 792,
+        "final": 1834,
+        "daySamples": {
+          "132": 0,
+          "232": 0,
+          "429": 267,
+          "430": 275,
+          "434": 311,
+          "435": 321,
+          "490": 1318,
+          "512": 1327,
+          "529": 1296,
+          "629": 1767,
+          "929": 1932,
+          "1050": 1834
+        }
+      },
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 1050,
+        "peak": 6614,
+        "peakDay": 220,
+        "final": 2262,
+        "daySamples": {
+          "132": 3120,
+          "232": 3017,
+          "429": 5525,
+          "430": 5467,
+          "434": 5368,
+          "435": 5320,
+          "490": 3847,
+          "512": 3300,
+          "529": 3074,
+          "629": 2723,
+          "929": 2366,
+          "1050": 2262
+        }
+      }
+    }
+  },
+  "task12-mush-through-490": {
+    "dayRows": 1051,
+    "lastDay": 1050,
+    "actions": 28,
+    "formalEvolutions": 1,
+    "migrations": 0,
+    "species": {
+      "灵感菇狸": {
+        "firstLivingDay": 429,
+        "lastLivingDay": 1050,
+        "peak": 2076,
+        "peakDay": 844,
+        "final": 2007,
+        "daySamples": {
+          "132": 0,
+          "232": 0,
+          "429": 267,
+          "430": 275,
+          "434": 311,
+          "435": 321,
+          "490": 1318,
+          "512": 1091,
+          "529": 960,
+          "629": 1402,
+          "929": 2075,
+          "1050": 2007
+        }
+      },
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 1050,
+        "peak": 6614,
+        "peakDay": 220,
+        "final": 2414,
+        "daySamples": {
+          "132": 3120,
+          "232": 3017,
+          "429": 5525,
+          "430": 5467,
+          "434": 5368,
+          "435": 5320,
+          "490": 3847,
+          "512": 3294,
+          "529": 3045,
+          "629": 2596,
+          "929": 2498,
+          "1050": 2414
+        }
+      }
+    }
+  },
+  "task12-mush-through-504": {
+    "dayRows": 1051,
+    "lastDay": 1050,
+    "actions": 29,
+    "formalEvolutions": 1,
+    "migrations": 0,
+    "species": {
+      "灵感菇狸": {
+        "firstLivingDay": 429,
+        "lastLivingDay": 1050,
+        "peak": 2056,
+        "peakDay": 941,
+        "final": 1999,
+        "daySamples": {
+          "132": 0,
+          "232": 0,
+          "429": 267,
+          "430": 275,
+          "434": 311,
+          "435": 321,
+          "490": 1318,
+          "512": 686,
+          "529": 480,
+          "629": 1432,
+          "929": 2051,
+          "1050": 1999
+        }
+      },
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 1050,
+        "peak": 6614,
+        "peakDay": 220,
+        "final": 2344,
+        "daySamples": {
+          "132": 3120,
+          "232": 3017,
+          "429": 5525,
+          "430": 5467,
+          "434": 5368,
+          "435": 5320,
+          "490": 3847,
+          "512": 3285,
+          "529": 3025,
+          "629": 2839,
+          "929": 2729,
+          "1050": 2344
+        }
+      }
+    }
+  },
+  "task12-mush-through-518": {
+    "dayRows": 1051,
+    "lastDay": 1050,
+    "actions": 30,
+    "formalEvolutions": 1,
+    "migrations": 0,
+    "species": {
+      "灵感菇狸": {
+        "firstLivingDay": 429,
+        "lastLivingDay": 528,
+        "peak": 1332,
+        "peakDay": 493,
+        "final": 0,
+        "daySamples": {
+          "132": 0,
+          "232": 0,
+          "429": 267,
+          "430": 275,
+          "434": 311,
+          "435": 321,
+          "490": 1318,
+          "512": 686,
+          "529": 0,
+          "629": 0,
+          "929": 0,
+          "1050": 0
+        }
+      },
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 1050,
+        "peak": 7571,
+        "peakDay": 581,
+        "final": 7298,
+        "daySamples": {
+          "132": 3120,
+          "232": 3017,
+          "429": 5525,
+          "430": 5467,
+          "434": 5368,
+          "435": 5320,
+          "490": 3847,
+          "512": 3285,
+          "529": 3425,
+          "629": 7189,
+          "929": 7302,
+          "1050": 7298
+        }
+      }
+    }
+  },
+  "task12-mig-flat": {
+    "dayRows": 141,
+    "lastDay": 140,
+    "actions": 0,
+    "formalEvolutions": 0,
+    "migrations": 8,
+    "species": {
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 140,
+        "peak": 3489,
+        "peakDay": 131,
+        "final": 3234,
+        "daySamples": {
+          "132": 3480
+        }
+      }
+    }
+  },
+  "task12-mig-slope1": {
+    "dayRows": 141,
+    "lastDay": 140,
+    "actions": 0,
+    "formalEvolutions": 0,
+    "migrations": 10,
+    "species": {
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 140,
+        "peak": 2937,
+        "peakDay": 140,
+        "final": 2937,
+        "daySamples": {
+          "132": 2663
+        }
+      }
+    }
+  },
+  "task12-mig-slope2": {
+    "dayRows": 141,
+    "lastDay": 140,
+    "actions": 0,
+    "formalEvolutions": 0,
+    "migrations": 6,
+    "species": {
+      "鸡": {
+        "firstLivingDay": 0,
+        "lastLivingDay": 140,
+        "peak": 2064,
+        "peakDay": 81,
+        "final": 1379,
+        "daySamples": {
+          "132": 1380
+        }
+      }
+    }
+  },
+  "mushroomComparison": {
+    "firstPostActionModelDivergenceDay": 434,
+    "continueActionsAfterEvolution": [
+      "action day=434 inputIndex=23 sequence=23 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-25000 accepted=True",
+      "action day=448 inputIndex=24 sequence=24 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-25000 accepted=True",
+      "action day=462 inputIndex=25 sequence=25 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-25000 accepted=True",
+      "action day=476 inputIndex=26 sequence=26 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-25000 accepted=True",
+      "action day=490 inputIndex=27 sequence=27 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-50033.8125 accepted=True",
+      "action day=504 inputIndex=28 sequence=28 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-125318.40625 accepted=True",
+      "action day=518 inputIndex=29 sequence=29 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-225444.3125 accepted=True",
+      "action day=532 inputIndex=30 sequence=30 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-226550 accepted=True",
+      "action day=546 inputIndex=31 sequence=31 tile=0,0 kind=PlantStockChange tier=-1 cost=0 species= amount=0 recovery=0 materialDelta=-222861.25 accepted=True"
+    ],
+    "stopActionsAfterEvolution": [],
+    "stateAtFirstDivergence": {
+      "continue": {
+        "stock": 75000.0,
+        "recovery": 119120,
+        "counts": {
+          "鸡": 5368,
+          "灵感菇狸": 311
+        }
+      },
+      "stop": {
+        "stock": 100000.0,
+        "recovery": 119120,
+        "counts": {
+          "鸡": 5368,
+          "灵感菇狸": 311
+        }
+      }
+    }
+  }
+}

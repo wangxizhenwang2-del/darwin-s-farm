@@ -8,6 +8,18 @@ public sealed class LandRuleTuning
 {
     [SerializeField] private int ruleVersion = 5;
     public bool useFoodCapacityForSelection;
+    public bool enablePreyDensityFeedback;
+    public bool enablePaidBirthStress;
+    public bool enablePriorityPlantBudgets;
+    // Experimental formal-evolution gate. Old saves and scenes leave it off.
+    public bool useCompensatedEvolutionFoodGate;
+    // TASK10: OFF by default; protect renewable prey replenishment without
+    // creating or destroying prey outside the ordinary hunt/material ledger.
+    public bool enableDynamicPreyRenewalQuota = false;
+    [Range(0.1f, 0.7f)] public float dynamicPreyRefugeFraction = 0.35f;
+    [Min(10f)] public float dynamicPreyAdjustmentDays = 45f;
+    [Min(0f)] public float adultMaintenanceScale = 1f;
+    [Min(0f)] public float preyDensityHalfSaturationScale = 0.58f;
     [Min(0f)] public float birthRate = 0.1f;
     [Range(0f, 1f)] public float starvationDeathRate = 0.6f;
     [Min(0f)] public float coldDeathRate = 0.005f;
@@ -55,7 +67,7 @@ public sealed class LandRuleTuning
     [Min(1)] public int evolutionRequiredDays = 5;
     [Min(1)] public int evolutionRequiredDaysAtFour = 10;
     [Min(0)] public int evolutionTraitTolerance = 5;
-    [Min(0)] public int evolutionCooldownDays = 50;
+    [Min(0)] public int evolutionCooldownDays = 100;
     [Min(0f)] public float neighborAttractionThreshold = 0.2f;
     [Min(0f)] public float attractionMovementGain = 2f;
     [Min(0f)] public float localMovementGain = 1f;
@@ -124,12 +136,23 @@ public sealed class LandRuleTuning
             splitMinimumRenewalPressure = 0.9f;
             ruleVersion = 5;
         }
+        // Old serialized ruleVersion=5 assets may omit these new fields.
+        // This candidate is disabled unless explicitly opted into in a test.
+        if (dynamicPreyRefugeFraction <= 0f)
+            dynamicPreyRefugeFraction = 0.35f;
+        if (dynamicPreyAdjustmentDays <= 0f)
+            dynamicPreyAdjustmentDays = 45f;
+        dynamicPreyRefugeFraction = Mathf.Clamp(dynamicPreyRefugeFraction, 0.1f, 0.7f);
+        dynamicPreyAdjustmentDays = Mathf.Max(10f, dynamicPreyAdjustmentDays);
         birthRate = NonNegative(birthRate, 0.1f);
         starvationDeathRate = Unit(starvationDeathRate, 0.6f);
         coldDeathRate = NonNegative(coldDeathRate, 0.005f);
         climateMismatchDeathRate = NonNegative(climateMismatchDeathRate, 0.01f);
         reproductionStressPerBirth = NonNegative(reproductionStressPerBirth,
             1.2f);
+        preyDensityHalfSaturationScale = NonNegative(
+            preyDensityHalfSaturationScale, 0.58f);
+        adultMaintenanceScale = NonNegative(adultMaintenanceScale, 1f);
         baselineAdultDeathRate = NonNegative(baselineAdultDeathRate, 0.008f);
         smallBodyFrailtyRate = NonNegative(smallBodyFrailtyRate, 0.5f);
         adultSizeMortalityScale = Mathf.Max(1f,
@@ -173,7 +196,9 @@ public sealed class LandRuleTuning
         evolutionRequiredDays = Mathf.Max(1, evolutionRequiredDays);
         evolutionRequiredDaysAtFour = Mathf.Max(1, evolutionRequiredDaysAtFour);
         evolutionTraitTolerance = Mathf.Max(0, evolutionTraitTolerance);
-        evolutionCooldownDays = Mathf.Max(0, evolutionCooldownDays);
+        // New formal evolutions use 100 days. Existing populations retain
+        // their serialized absolute nextEvolutionDay deadline.
+        evolutionCooldownDays = 100;
         neighborAttractionThreshold = Unit(neighborAttractionThreshold, 0.2f);
         attractionMovementGain = NonNegative(attractionMovementGain, 2f);
         localMovementGain = NonNegative(localMovementGain, 1f);

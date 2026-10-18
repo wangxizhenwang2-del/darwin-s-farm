@@ -2,21 +2,19 @@ using System;
 
 namespace DarwinFarm.Environment
 {
-    // Five player-facing tools.
+    // Five player-facing tools. Stock and daily recovery are separate actions.
     public enum EnvironmentTechnologyKind
     {
-        TemperatureChange, HumidityChange, PlantChange, ElevationChange, MonsoonAnchor
+        TemperatureChange = 0, HumidityChange = 1, PlantStockChange = 2,
+        ElevationChange = 3, PlantRecoveryChange = 5
     }
 
     public readonly struct EnvironmentTechnologyChoice
     {
         public readonly EnvironmentTechnologyKind Kind;
         public readonly int Tier;
-        public readonly int TemperatureOffset;
-        public readonly int HumidityOffset;
-        public EnvironmentTechnologyChoice(EnvironmentTechnologyKind kind, int tier = 1,
-            int temperatureOffset = 20, int humidityOffset = 20)
-        { Kind = kind; Tier = tier; TemperatureOffset = temperatureOffset; HumidityOffset = humidityOffset; }
+        public EnvironmentTechnologyChoice(EnvironmentTechnologyKind kind, int tier = 1)
+        { Kind = kind; Tier = tier; }
     }
 
     public static class EnvironmentTechnologyCatalog
@@ -30,23 +28,36 @@ namespace DarwinFarm.Environment
                 case EnvironmentTechnologyKind.TemperatureChange:
                 case EnvironmentTechnologyKind.HumidityChange:
                     return tier == 1 ? settings.climateSmallCost : settings.climateLargeCost;
-                case EnvironmentTechnologyKind.PlantChange:
+                case EnvironmentTechnologyKind.PlantStockChange:
+                case EnvironmentTechnologyKind.PlantRecoveryChange:
                     return choice.Tier > 0 ?
                         (tier == 1 ? settings.plantIncreaseSmallCost : settings.plantIncreaseLargeCost) :
                         (tier == 1 ? settings.plantDecreaseSmallCost : settings.plantDecreaseLargeCost);
                 case EnvironmentTechnologyKind.ElevationChange: return settings.elevationCost;
-                case EnvironmentTechnologyKind.MonsoonAnchor: return settings.monsoonCost;
                 default: return 0;
             }
         }
         public static readonly EnvironmentTechnologyKind[] All =
         {
             EnvironmentTechnologyKind.TemperatureChange,
-            EnvironmentTechnologyKind.HumidityChange,
-            EnvironmentTechnologyKind.PlantChange,
             EnvironmentTechnologyKind.ElevationChange,
-            EnvironmentTechnologyKind.MonsoonAnchor
+            EnvironmentTechnologyKind.HumidityChange,
+            EnvironmentTechnologyKind.PlantRecoveryChange,
+            EnvironmentTechnologyKind.PlantStockChange
         };
+
+        public static string ShortName(EnvironmentTechnologyKind kind)
+        {
+            switch (kind)
+            {
+                case EnvironmentTechnologyKind.TemperatureChange: return "温度";
+                case EnvironmentTechnologyKind.ElevationChange: return "海拔";
+                case EnvironmentTechnologyKind.HumidityChange: return "湿度";
+                case EnvironmentTechnologyKind.PlantRecoveryChange: return "植物增量";
+                case EnvironmentTechnologyKind.PlantStockChange: return "植物存量";
+                default: return "未知工具";
+            }
+        }
 
         public static string Name(EnvironmentTechnologyKind kind)
         {
@@ -54,9 +65,9 @@ namespace DarwinFarm.Environment
             {
                 case EnvironmentTechnologyKind.TemperatureChange: return "温度变化工具";
                 case EnvironmentTechnologyKind.HumidityChange: return "湿度变化工具";
-                case EnvironmentTechnologyKind.PlantChange: return "植物变化工具";
+                case EnvironmentTechnologyKind.PlantStockChange: return "植物存量工具";
+                case EnvironmentTechnologyKind.PlantRecoveryChange: return "植物日增量工具";
                 case EnvironmentTechnologyKind.ElevationChange: return "海拔变化工具";
-                case EnvironmentTechnologyKind.MonsoonAnchor: return "季风工具";
                 default: return "未知科技";
             }
         }
@@ -64,10 +75,6 @@ namespace DarwinFarm.Environment
         public static bool Validate(EnvironmentTechnologyChoice choice)
         {
             if (!Enum.IsDefined(typeof(EnvironmentTechnologyKind), choice.Kind)) return false;
-            if (choice.Kind == EnvironmentTechnologyKind.MonsoonAnchor)
-                return choice.Tier == 1 &&
-                    Math.Abs(choice.TemperatureOffset) == 20 &&
-                    Math.Abs(choice.HumidityOffset) == 20;
             if (choice.Kind == EnvironmentTechnologyKind.ElevationChange)
                 return choice.Tier == 1 || choice.Tier == -1;
             return choice.Tier == 1 || choice.Tier == 2 || choice.Tier == -1 || choice.Tier == -2;
@@ -81,11 +88,5 @@ namespace DarwinFarm.Environment
             Math.Abs(choice.Tier) * 25000;
         public static float Fraction(EnvironmentTechnologyChoice choice) =>
             Math.Abs(choice.Tier) * .25f;
-        public static string MonsoonPatternName(EnvironmentTechnologyChoice choice)
-        {
-            if (choice.TemperatureOffset < 0)
-                return choice.HumidityOffset > 0 ? "冷湿" : "干冷";
-            return choice.HumidityOffset > 0 ? "暖湿" : "干热";
-        }
     }
 }

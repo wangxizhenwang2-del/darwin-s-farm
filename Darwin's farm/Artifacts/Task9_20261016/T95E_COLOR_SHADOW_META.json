@@ -1,0 +1,70 @@
+{
+  "unityVersion": "6000.2.9f1",
+  "historicalReference": {
+    "input": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\stage6-player-color500.json",
+    "inputSha256": "61283ec16894b378ac69cb79a18a86d3aaa82e8cf3b5b8fec0cb7c9b9284dfff",
+    "unityJsonl": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage6-player-color500.jsonl",
+    "unityJsonlSha256": "1b95758182b95fac89a74c15e140a701fa3dda6aa6134acf0b6f22fd71d9d7b7",
+    "unityLog": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\stage6-player-color500.log",
+    "unityLogSha256": "fe1f0826c908b681d320accb6eca907d44cb5f7415357c917eb5f9eae5919a4b",
+    "execution": {
+      "scenario": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\stage6-player-color500.json",
+      "project": "G:\\unity\\darwin-s-farm\\Task9_Unity_Isolated_20261016",
+      "inputSha256": "61283ec16894b378ac69cb79a18a86d3aaa82e8cf3b5b8fec0cb7c9b9284dfff",
+      "exitCode": 0,
+      "replayCompleted": true,
+      "unityReplayOK": true,
+      "seconds": 19.958
+    }
+  },
+  "historicalPrefixDoubleHashMatches": 129,
+  "recoveredDay128ModelHash": "7f4cba986bd031527e744ffb49b51863a4c422c1322f42a150fbf01ee97bf402",
+  "conversion": "shadow day=128 sourceHash=7f4cba986bd031527e744ffb49b51863a4c422c1322f42a150fbf01ee97bf402 sourceBefore=3613 sourceAfter=3252 targetAfter=361 plantPayment=33336.0156 sourceBodyDelta=168824 childBody=202160 materialResidual=-0.015621185302734375",
+  "conversionMechanism": "Editor-only temporary evolutionTodaySatisfaction=0 and evolutionRenewalSatisfaction=0 during direct reflection call to production ConvertToPresetSpecies; original LandRuleTuning restored immediately. All other gate predicates checked PASS before call.",
+  "conversionDay128PreHashMatchesB0": true,
+  "conversionMomentMaterialResidual": -0.015621185302734375,
+  "firstColorExtinctionDay": null,
+  "observationEndDay": 228,
+  "runs": {
+    "B0": {
+      "input": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\T95E-color-B0.json",
+      "inputSha256": "d34b403a488d4f449b4f88e5ad98fc463686ae0211a7061f774fa0f09ade2a3a",
+      "unityJsonl": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\T95E-color-B0.jsonl",
+      "unityJsonlSha256": "a9efcecf1d02f0ad227a70e4bf6917d43e8b2ea97ff3a44311cfa5ecde526f8e",
+      "unityLog": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\T95E-color-B0.log",
+      "unityLogSha256": "bcbe3f5169978db5d39673e3d46818e94429123d05cc6d0f334e37dbd0f8d405",
+      "execution": {
+        "scenario": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\T95E-color-B0.json",
+        "project": "G:\\unity\\darwin-s-farm\\Task9_Unity_Isolated_20261016",
+        "inputSha256": "d34b403a488d4f449b4f88e5ad98fc463686ae0211a7061f774fa0f09ade2a3a",
+        "exitCode": 0,
+        "replayCompleted": true,
+        "unityReplayOK": true,
+        "seconds": 20.197
+      },
+      "replayBindingSha256": "b68d52b99da3e61004bbecb457fe8502c7e05122f1c131d4a5b8c59580d650f2",
+      "reportedUnityVersion": "6000.2.9f1"
+    },
+    "B1": {
+      "input": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\T95E-color-B1.json",
+      "inputSha256": "322e56f919fd0a99ab679094bf02cd5e5aa5498b392e3fc850ee3f366058716b",
+      "unityJsonl": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\T95E-color-B1.jsonl",
+      "unityJsonlSha256": "c2a15572e516fdcffdfb2a0d2704379b0e65645c218b560be23a9f38b23ef3e6",
+      "unityLog": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\T95E-color-B1.log",
+      "unityLogSha256": "92829764322d4bf9fd75fbd851e90c286ba34858c43d04803d43b48615fb09fc",
+      "execution": {
+        "scenario": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\T95E-color-B1.json",
+        "project": "G:\\unity\\darwin-s-farm\\Task9_Unity_Isolated_20261016",
+        "inputSha256": "322e56f919fd0a99ab679094bf02cd5e5aa5498b392e3fc850ee3f366058716b",
+        "exitCode": 0,
+        "replayCompleted": true,
+        "unityReplayOK": true,
+        "seconds": 22.567
+      },
+      "replayBindingSha256": "b68d52b99da3e61004bbecb457fe8502c7e05122f1c131d4a5b8c59580d650f2",
+      "reportedUnityVersion": "6000.2.9f1"
+    }
+  },
+  "editorReplaySha256": "3f577f4b92152441a6df76446d9c87c2b8a29c0eb673a366371bd0d5f61019eb",
+  "offlineResearchFiles": "T95_INDEPENDENT_RESEARCH_REPORT.md and T95_RESEARCH_COMPLETE.zip were not found at the named project or Downloads paths; existing equivalent Task9 configs were used without inferring missing formulas."
+}

@@ -1,0 +1,206 @@
+{
+  "scenarioId": "task12-rainforest-two-evo-v1",
+  "seed": 240,
+  "endDay": 850,
+  "disableCosts": true,
+  "restrictedV05": false,
+  "useV05Sandbox": false,
+  "mechanismFixture": true,
+  "t95eSingleOriginFixture": true,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [
+    {
+      "x": 0,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/雨林.asset",
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/鸡-7f113739.asset",
+          "count": 160
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "day": 0,
+      "sequence": 0,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": -1
+    },
+    {
+      "day": 300,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -2,
+      "sequence": 102
+    },
+    {
+      "day": 300,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -2,
+      "sequence": 103
+    },
+    {
+      "day": 310,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -2,
+      "sequence": 104
+    },
+    {
+      "day": 310,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -2,
+      "sequence": 105
+    },
+    {
+      "day": 330,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 106
+    },
+    {
+      "day": 330,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 107
+    },
+    {
+      "day": 340,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 108
+    },
+    {
+      "day": 340,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 109
+    },
+    {
+      "day": 350,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 110
+    },
+    {
+      "day": 350,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 111
+    },
+    {
+      "day": 360,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 112
+    },
+    {
+      "day": 360,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 113
+    },
+    {
+      "day": 420,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 114
+    },
+    {
+      "day": 420,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -1,
+      "sequence": 115
+    },
+    {
+      "day": 430,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 116
+    },
+    {
+      "day": 430,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": -1,
+      "sequence": 117
+    },
+    {
+      "day": 444,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 118
+    },
+    {
+      "day": 458,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 119
+    },
+    {
+      "day": 472,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 120
+    },
+    {
+      "day": 486,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 121
+    },
+    {
+      "day": 500,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1,
+      "sequence": 122
+    }
+  ],
+  "t95Diagnostics": true,
+  "t95SourceId": "7f1137399e3946cf95ad1054096acacb",
+  "t95TargetId": "761468a5c8a547f184caf7004ed6d4ae",
+  "t95eTraceMutation": true
+}

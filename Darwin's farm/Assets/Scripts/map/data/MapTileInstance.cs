@@ -11,6 +11,7 @@ public class MapTileInstance : MonoBehaviour
     [SerializeField, Range(0, 3)]
     private int rotationSteps;
 
+    public MapGridManager GridOwner { get; internal set; }
     public Vector2Int Coordinate => coordinate;
     public MapTileDefinition Definition => definition;
     public int HeightLevel => heightLevel;

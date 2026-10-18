@@ -1,0 +1,38 @@
+{
+  "status": "INCOMPLETE_AFTER_FIRST_FAILURE",
+  "oldSwitchDefaultOff": true,
+  "baseSourceSha256": {
+    "Assets/Scripts/Simulation/SimulationController.Evolution.cs": "31568d774892e340a3d5e74fbef8f86b6aaabfe28164f8ae6ac416a26de380d3",
+    "Assets/Scripts/Simulation/LandLifeRules.cs": "fdc9404c39c218718491200cda2f35bf0aeee4ad6013686ad4b77bab09a91b87",
+    "Assets/Scripts/Simulation/LandRuleTuning.cs": "0e5927ae75e431eb9a72deb3c98cec4e78004dde7d5a88bd5a89af3b45bbc9b1",
+    "Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs": "3f577f4b92152441a6df76446d9c87c2b8a29c0eb673a366371bd0d5f61019eb"
+  },
+  "candidateSourceSha256": {
+    "Assets/Scripts/Simulation/SimulationController.Evolution.cs": "6cf7e9c15e426168bc1c4ab54f4022a84a1d03fef9a311c473007bf8da5099d2",
+    "Assets/Scripts/Simulation/LandLifeRules.cs": "97474801666e04998b972907ddfdacd18151d0ed49ea3a920b6ba2782570900b",
+    "Assets/Scripts/Simulation/LandRuleTuning.cs": "98c4df8de10752c657349c30db3adfd351d816cd89e954f1fb0a002c9c35bd2a",
+    "Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs": "4e3e2f4f6b4f72ae300fc46e3f45078959125d6cb4ec8dac34f61a74c3e9699a"
+  },
+  "readOnlyProbe": {
+    "status": "PASS",
+    "matchingModelAndEnvironmentHashes": 136,
+    "comparedAgainst": "t95final-color-on days 0..135",
+    "probeMutationDetected": false
+  },
+  "materialConservation": {
+    "status": "PASS_FOR_EXECUTED_ROUTE",
+    "unityReplayCompleted": true,
+    "unfundedMaterialExceptionCount": 0,
+    "actualConversionPayment": "NOT_TESTED"
+  },
+  "oldRuleRegression": {
+    "status": "NOT_TESTED"
+  },
+  "threeSpeciesStability": {
+    "status": "NOT_TESTED"
+  },
+  "performance": {
+    "status": "NOT_TESTED",
+    "reason": "No comparable old/off versus candidate/on full validation after first failure."
+  }
+}

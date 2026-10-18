@@ -3,7 +3,7 @@ using UnityEngine;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 // One touch sequence owns one action. This has no scene or input-device writes,
-// so the same rules can be checked without moving the player's camera.
+// so the same rules can be checked without moving the map camera.
 public sealed class MapTouchGesture
 {
     public enum State { Idle, Pending, Dragging, LongPressed, Pinching, Suppressed }

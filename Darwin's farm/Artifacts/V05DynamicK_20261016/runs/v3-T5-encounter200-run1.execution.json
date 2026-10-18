@@ -1,9 +1,0 @@
-{
-  "scenario": "v3-T5-encounter200",
-  "run": 1,
-  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
-  "exitCode": 0,
-  "unityReplayOK": true,
-  "seconds": 20.835,
-  "inputSha256": "7b318b42c7a8476164b73237c97a741646795847e157b069d3557697dc9107cc"
-}

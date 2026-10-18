@@ -1,0 +1,6 @@
+Merged project compiled.
+V6.2 Model mobility checks: 9/9 passed; seed241=9:100:9ae0ebdeb95c9a4596d03a8346d4c78dc4d32efe4a545ab90200d1fb06d96871
+MapWaterVisualChecks: PASS: actual palette water rendering, natural elevations, connections and untouched land.
+WaterPopulationIntegrationChecks: PASS: 16 water integration groups.
+WaterRoamingChecks: PASS: 7 shared-water and speed-control groups.
+WaterPlacementChecks: PASS: water drag previews and first-frame placement for all four real palette entries.

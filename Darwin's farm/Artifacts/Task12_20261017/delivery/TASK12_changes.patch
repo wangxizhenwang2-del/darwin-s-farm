@@ -1,0 +1,356 @@
+--- a/Assets/Scripts/Simulation/LandLifeRules.cs
++++ b/Assets/Scripts/Simulation/LandLifeRules.cs
+@@ -121,7 +121,7 @@
+     {
+         if (block == null || target == null || block.community == null)
+             return 0f;
+-        if (rules.useFoodCapacityForSelection && target.trophicLevel == 0)
++        if (target.trophicLevel == 0)
+             return FoodCarryingCapacity(block, target, rules);
+         int niche = PlantNiche(target);
+         float renewable = target.trophicLevel == 0
+--- a/Assets/Scripts/Simulation/PopulationTransitionResult.cs
++++ b/Assets/Scripts/Simulation/PopulationTransitionResult.cs
+@@ -40,7 +40,7 @@
+         BlockInfo sourceBlock, BlockInfo targetBlock, PopulationData sourcePopulation,
+         PopulationData resultPopulation, int amount, int sourceCountBefore,
+         int targetCountBefore, PopulationArrivalOutcome outcome,
+-        SpeciesData targetSpecies = null)
++        SpeciesData targetSpecies = null, int? sourceCountAfterOverride = null)
+     {
+         Kind = kind;
+         Outcome = outcome;
+@@ -51,7 +51,7 @@
+         ResultPopulationId = resultPopulation.PopulationId;
+         Amount = amount;
+         SourceCountBefore = sourceCountBefore;
+-        SourceCountAfter = sourcePopulation.speciesAmount;
++        SourceCountAfter = sourceCountAfterOverride ?? sourcePopulation.speciesAmount;
+         TargetCountBefore = targetCountBefore;
+         TargetCountAfter = resultPopulation.speciesAmount;
+         ResultNiche = resultPopulation.ecologicalNiche;
+--- a/Assets/Scripts/Simulation/SimulationController.Migration.cs
++++ b/Assets/Scripts/Simulation/SimulationController.Migration.cs
+@@ -190,7 +190,8 @@
+                 continue;
+ 
+             bool occupied = planned.Exists(move =>
+-                move.target == neighbor &&
++                (move.target == neighbor ||
++                 (move.source == neighbor && move.target == source)) &&
+                 move.population.ecologicalNiche == population.ecologicalNiche &&
+                 SameSpecies(move.population, population));
+             if (occupied) continue;
+@@ -244,6 +245,7 @@
+         // 先让所有种群离开，再统一落地，新来者就不会在同一天连续迁徙。
+         List<PopulationData> arrivals = new List<PopulationData>(plans.Count);
+         List<int> sourceCountsBefore = new List<int>(plans.Count);
++        List<int> sourceCountsAfter = new List<int>(plans.Count);
+         foreach (MovePlan plan in plans)
+         {
+             PopulationData origin = plan.population;
+@@ -254,6 +256,7 @@
+             {
+                 plan.source.community.Remove(origin);
+             }
++            sourceCountsAfter.Add(origin.speciesAmount);
+             arrivals.Add(arrival);
+         }
+ 
+@@ -310,7 +313,7 @@
+                 plans[i].population, resultPopulation, plans[i].amount,
+                 sourceCountsBefore[i], targetCountBefore,
+                 resident == null ? PopulationArrivalOutcome.Created :
+-                    PopulationArrivalOutcome.Merged));
++                    PopulationArrivalOutcome.Merged, null, sourceCountsAfter[i]));
+             OnPopulationMigrated?.Invoke(plans[i].source, target,
+                 plans[i].population, plans[i].amount);
+             LogEcology(day, target, resultPopulation, "migration_arrival",
+--- a/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs
++++ b/Assets/Scripts/Simulation/Editor/V048ScenarioReplay.cs
+@@ -689,12 +689,15 @@
+                     cost = 0;
+                 }
+                 else if (action.kind == "CancelTemperatureChange" ||
+-                    action.kind == "CancelHumidityChange")
++                    action.kind == "CancelHumidityChange" ||
++                    action.kind == "CancelPlantRecoveryChange")
+                 {
+                     EnvironmentTechnologyKind cancelKind =
+                         action.kind == "CancelTemperatureChange" ?
+                         EnvironmentTechnologyKind.TemperatureChange :
+-                        EnvironmentTechnologyKind.HumidityChange;
++                        action.kind == "CancelHumidityChange" ?
++                        EnvironmentTechnologyKind.HumidityChange :
++                        EnvironmentTechnologyKind.PlantRecoveryChange;
+                     accepted = player.TryCancel(coordinate, cancelKind,
+                         out error);
+                     cost = 0;
+--- a/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs
++++ b/Assets/Scripts/Simulation/Environment/EnvironmentRules.cs
+@@ -49,8 +49,8 @@
+     {
+         public const int PlantCapacity = 1000000, WaterPlantCapacity = 1500000;
+         public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
+-        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 150;
+-        public const int RecoveryHoldDays = 50, RecoveryReturnDays = 50;
++        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 100;
++        public const int RecoveryEnterDays = 25, RecoveryHoldDays = 150, RecoveryReturnDays = 100;
+         public readonly struct HabitatProfile
+         {
+             public readonly string Title;
+--- a/Assets/Scripts/Simulation/Environment/EnvironmentState.cs
++++ b/Assets/Scripts/Simulation/Environment/EnvironmentState.cs
+@@ -62,8 +62,7 @@
+             HasLocalHumidity = tile.Locals[1] != null;
+             HasRecoveryCommand = tile.RecoveryReturning;
+             CanCancelRecovery = tile.RecoveryReturning &&
+-                tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
+-                !tile.RecoveryCancelIssued;
++                tile.RecoveryAge <= EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays;
+         }
+     }
+ 
+@@ -85,6 +84,7 @@
+     {
+         internal int Age;
+         internal long Sequence;
++        internal double Baseline;
+         internal bool Active => Age < EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
+         internal EffectPhase Phase => Age < EnvironmentRules.TransitionDays ? EffectPhase.Entering :
+             Active ? EffectPhase.Holding : EffectPhase.Returning;
+@@ -98,11 +98,13 @@
+         internal TerrainKind Terrain;
+         internal HabitatState Habitat;
+         internal readonly double[] Values = new double[3];
++        internal readonly double[] NaturalClimateBaseline = new double[2];
+         internal readonly Transition[] Tracks = { new Transition(), new Transition(), new Transition() };
+         internal readonly LocalClimateEffect[] Locals = new LocalClimateEffect[2];
+         internal long RecoverySequence;
+         internal int RecoveryAge;
+         internal bool RecoveryReturning;
++        internal double RecoveryBaseline;
+         internal bool RecoveryCancelIssued;
+         internal bool RecoveryDetached;
+         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
+@@ -114,6 +116,8 @@
+             Terrain = EnvironmentRules.VisualTerrain(Habitat);
+             defaults = EnvironmentRules.Defaults(Habitat);
+             Values[0] = defaults.Temperature; Values[1] = defaults.Humidity;
++            NaturalClimateBaseline[0] = Values[0];
++            NaturalClimateBaseline[1] = Values[1];
+             Values[2] = IsWater ? EnvironmentRules.WaterDefaultRecovery : defaults.Recovery;
+             for (int i = 0; i < 3; i++) Tracks[i].Stop(Values[i]);
+         }
+@@ -121,14 +125,17 @@
+         {
+             var track = Tracks[index]; var local = index < 2 ? Locals[index] : null;
+             var phase = local != null ? local.Phase :
+-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays
++                index == 2 && RecoveryReturning && RecoveryAge >= EnvironmentRules.RecoveryEnterDays &&
++                    RecoveryAge < EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays
+                     ? EffectPhase.Holding : track.Active ? track.Phase : EffectPhase.None;
+             int remaining = local != null && local.Phase == EffectPhase.Holding ?
+                 EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays - local.Age :
+-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays ?
+-                    EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
++                index == 2 && RecoveryReturning && RecoveryAge >= EnvironmentRules.RecoveryEnterDays &&
++                RecoveryAge < EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays ?
++                    EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
+             double target = index == 2 && RecoveryReturning &&
+-                RecoveryAge < EnvironmentRules.RecoveryHoldDays ? Values[2] : track.Target;
++                RecoveryAge >= EnvironmentRules.RecoveryEnterDays &&
++                RecoveryAge < EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays ? Values[2] : track.Target;
+             return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index]),
+                 EnvironmentRules.Clamp((EnvironmentAttribute)index, target),
+                 phase, remaining, track.Progress);
+--- a/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs
++++ b/Assets/Scripts/Simulation/Environment/EnvironmentTechnologyController.cs
+@@ -79,7 +79,7 @@
+                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
+                     climate.Target.ToString("F0") + "；预计生境 " +
+                     EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
+-                result.Timing = "25天进入 · 150天维持 · 150天恢复";
++                result.Timing = "25天进入 · 150天维持 · 100天恢复";
+                 break;
+             case EnvironmentTechnologyKind.PlantStockChange:
+                 double capacity = (water ? EnvironmentRules.WaterPlantCapacity :
+@@ -106,7 +106,7 @@
+                     result.After = "日增量 " + increased.Target.ToString("F0") +
+                         "；库存不即时改变";
+                 }
+-                result.Timing = "日增量立即变化 · 维持50天 · 恢复50天";
++                result.Timing = "25天进入 · 150天维持 · 100天恢复";
+                 break;
+             case EnvironmentTechnologyKind.ElevationChange:
+                 int shift = choice.Tier;
+@@ -238,10 +238,10 @@
+         {
+             case EnvironmentTechnologyKind.TemperatureChange:
+                 return ownsTemperature && state.HasLocalTemperature &&
+-                    state.Temperature.Phase != EffectPhase.Returning;
++                    state.Temperature.Phase != EffectPhase.None;
+             case EnvironmentTechnologyKind.HumidityChange:
+                 return ownsHumidity && state.HasLocalHumidity &&
+-                    state.Humidity.Phase != EffectPhase.Returning;
++                    state.Humidity.Phase != EffectPhase.None;
+             case EnvironmentTechnologyKind.PlantRecoveryChange:
+                 return ownsRecovery && state.CanCancelRecovery;
+             default: return false;
+--- a/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs
++++ b/Assets/Scripts/Simulation/Environment/EnvironmentWorld.cs
+@@ -64,7 +64,8 @@
+             if (!tiles.TryGetValue(position, out EnvironmentTile tile) || tile.IsWater)
+             { error = "温湿度科技只适用于陆格"; return false; }
+             int index = (int)attribute;
+-            tile.Locals[index] = new LocalClimateEffect { Sequence = nextCommandSequence++ };
++            tile.Locals[index] = new LocalClimateEffect
++            { Sequence = nextCommandSequence++, Baseline = tile.NaturalClimateBaseline[index] };
+             double target = EnvironmentRules.Clamp(attribute, EnvironmentRules.Defaults(tile.Habitat).Get(attribute) + amount);
+             tile.Tracks[index].Begin(tile.Values[index], target, 25, EffectPhase.Entering);
+             EnforceSlots(tile);
+@@ -78,8 +79,7 @@
+                 !tiles.TryGetValue(position, out EnvironmentTile tile) || tile.Locals[(int)attribute] == null)
+             { error = "该地块没有对应单格操作"; return false; }
+             int index = (int)attribute;
+-            if (!tile.Locals[index].Active)
+-            { error = "该单格操作已经在退出"; return false; }
++            if (!tile.Locals[index].Active) return true;
+             tile.Locals[index].Age = EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
+             StartLocalReturn(tile, index);
+             return true;
+@@ -108,8 +108,10 @@
+             foreach (EnvironmentTile tile in members)
+             {
+                 double next = tile.Values[2] + (suppress ? -amount * 100000 : amount);
+-                tile.Values[2] = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
+-                tile.Tracks[2].Stop(tile.Values[2]);
++                if (!tile.RecoveryReturning) tile.RecoveryBaseline = tile.Values[2];
++                tile.Tracks[2].Begin(tile.Values[2],
++                    EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next),
++                    EnvironmentRules.RecoveryEnterDays, EffectPhase.Entering);
+                 tile.RecoveryReturning = true;
+                 tile.RecoveryAge = 0;
+                 tile.RecoverySequence = nextCommandSequence++;
+@@ -134,19 +136,20 @@
+             foreach (GridPosition position in positions)
+             {
+                 if (!unique.Add(position) || !tiles.TryGetValue(position, out EnvironmentTile tile) ||
+-                    !tile.RecoveryReturning || tile.RecoveryCancelIssued)
++                    !tile.RecoveryReturning)
+                 { error = "目标地块没有可统一撤销的植被增量操作"; return false; }
+                 members.Add(tile);
+             }
+             foreach (EnvironmentTile tile in members)
+             {
+-                if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
+-                { error = "植物操作已经在恢复"; return false; }
++                // A repeated cancellation during return is an idempotent no-op.
+             }
+             foreach (EnvironmentTile tile in members)
+             {
++                if (tile.RecoveryAge >= EnvironmentRules.RecoveryEnterDays +
++                    EnvironmentRules.RecoveryHoldDays) continue;
+                 tile.RecoveryCancelIssued = true;
+-                tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
++                tile.RecoveryAge = EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays;
+                 StartRecoveryReturn(tile);
+             }
+             return true;
+@@ -192,6 +195,8 @@
+             tile.Values[0] = EnvironmentRules.Clamp(EnvironmentAttribute.Temperature, temperature);
+             tile.Values[1] = EnvironmentRules.Clamp(EnvironmentAttribute.Humidity, humidity);
+             tile.Values[2] = recovery;
++            tile.NaturalClimateBaseline[0] = tile.Values[0];
++            tile.NaturalClimateBaseline[1] = tile.Values[1];
+             for (int i = 0; i < 3; i++) tile.Tracks[i].Stop(tile.Values[i]);
+             Reclassify(tile);
+             RefreshRecoveryTarget(tile);
+@@ -224,15 +229,15 @@
+                     { tile.Locals[i] = null; localEnded = true; }
+                 }
+                 if (localEnded) RefreshClimateTargets(tile);
+-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays)
++                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays)
+                 {
+                     tile.RecoveryAge++;
+-                    if (tile.RecoveryAge == EnvironmentRules.RecoveryHoldDays)
++                    if (tile.RecoveryAge == EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays)
+                         StartRecoveryReturn(tile);
+                 }
+                 if (tile.RecoveryReturning && !tile.Tracks[2].Active)
+                 {
+-                    if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
++                    if (tile.RecoveryAge >= EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays)
+                     { tile.RecoveryReturning = false; RefreshRecoveryTarget(tile); }
+                 }
+                 if (!tile.RecoveryReturning && !tile.RecoveryDetached && !tile.IsWater)
+@@ -243,12 +248,12 @@
+ 
+         private void StartLocalReturn(EnvironmentTile tile, int index)
+         {
+-            tile.Tracks[index].Begin(tile.Values[index], ClimateDestination(tile, index),
++            tile.Tracks[index].Begin(tile.Values[index], tile.Locals[index].Baseline,
+                 EnvironmentRules.ClimateReturnDays, EffectPhase.Returning);
+         }
+         private void StartRecoveryReturn(EnvironmentTile tile)
+         {
+-            tile.Tracks[2].Begin(tile.Values[2], RecoveryDefault(tile),
++            tile.Tracks[2].Begin(tile.Values[2], tile.RecoveryBaseline,
+                 EnvironmentRules.RecoveryReturnDays, EffectPhase.Returning);
+         }
+         private static double ClimateDestination(EnvironmentTile tile, int index)
+@@ -286,7 +291,7 @@
+             while (true)
+             {
+                 int count = tile.RecoveryReturning &&
+-                    tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays ? 1 : 0;
++                    tile.RecoveryAge < EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays ? 1 : 0;
+                 for (int i = 0; i < 2; i++)
+                     if (tile.Locals[i] != null && tile.Locals[i].Active) count++;
+                 if (count <= allowed) return;
+@@ -296,11 +301,11 @@
+                     if (tile.Locals[i] != null && tile.Locals[i].Active &&
+                         tile.Locals[i].Sequence < oldest)
+                     { oldest = tile.Locals[i].Sequence; owner = i; }
+-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
++                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays &&
+                     tile.RecoverySequence < oldest) owner = 2;
+                 if (owner == 2)
+                 {
+-                    tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
++                    tile.RecoveryAge = EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays;
+                     tile.RecoveryCancelIssued = true;
+                     StartRecoveryReturn(tile);
+                 }
+@@ -322,7 +327,8 @@
+             tile.Terrain = EnvironmentRules.VisualTerrain(habitat);
+             for (int i = 0; i < 2; i++)
+             {
+-                if (tile.Locals[i] != null && !tile.Locals[i].Active)
++                if (tile.Locals[i] != null && !tile.Locals[i].Active &&
++                    tile.Tracks[i].Phase != EffectPhase.Returning)
+                 {
+                     tile.Locals[i].Age = EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
+                     StartLocalReturn(tile, i);
+@@ -330,7 +336,9 @@
+                 else if (tile.Locals[i] == null && tile.Tracks[i].Phase == EffectPhase.Automatic)
+                     tile.Tracks[i].Stop(tile.Values[i]);
+             }
+-            if (tile.RecoveryReturning && tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
++            if (tile.RecoveryReturning &&
++                tile.RecoveryAge >= EnvironmentRules.RecoveryEnterDays + EnvironmentRules.RecoveryHoldDays &&
++                tile.Tracks[2].Phase != EffectPhase.Returning)
+                 StartRecoveryReturn(tile);
+             else RefreshRecoveryTarget(tile);
+         }
+--- a/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs
++++ b/Assets/Scripts/Simulation/Environment/SimulationEnvironmentController.cs
+@@ -258,6 +258,7 @@
+                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水域植物工程尚未接入，不能按陆地单格处理"; return false; }
+                 if (!EnvironmentRules.IsRecoveryStrength(amount)) { error = "增量强度必须为 ±25000 或 ±50000"; return false; }
+                 target = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, state.Recovery.Value + amount);
++                enter = EnvironmentRules.RecoveryEnterDays;
+                 hold = EnvironmentRules.RecoveryHoldDays;
+                 returning = EnvironmentRules.RecoveryReturnDays; break;
+             case SimulationInterventionKind.PlantBiomass:

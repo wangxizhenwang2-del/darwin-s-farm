@@ -43,8 +43,48 @@ public class MapTilePlacementController : MonoBehaviour
     private bool canPlace;
 
     private int rotationSteps;
+    private bool touchPlacement, touchPositionSet;
 
     public bool IsDragging => draggingDefinition != null;
+    public bool IsTouchPlacement => IsDragging && touchPlacement;
+    public bool CanConfirmTouchPlacement => IsTouchPlacement && touchPositionSet &&
+        CanBuildAt(currentCoordinate);
+    public string TouchPreviewStatus => draggingDefinition == null ? "" :
+        draggingDefinition.displayName + " / " + (rotationSteps * 90) + "\u5EA6 / " +
+        (!touchPositionSet ? "\u70B9\u51FB\u5730\u56FE\u5B9A\u4F4D\u9884\u89C8" : canPlace ? "\u4F4D\u7F6E\u53EF\u653E\u7F6E" : "\u4F4D\u7F6E\u5DF2\u5360\u7528");
+
+    public void BeginTouchPlacement(MapTileDefinition definition)
+    {
+        BeginDrag(definition);
+        if (!IsDragging) return;
+        touchPlacement = true;
+        touchPositionSet = false;
+        if (screenEdgeCamera != null) screenEdgeCamera.SetTileDragActive(false);
+    }
+    public bool TrySetTouchPosition(Vector2 position)
+    {
+        if (!IsTouchPlacement || !buildMode.IsBuildMode || IsPointerOverUI(position) ||
+            !viewCamera.pixelRect.Contains(position)) return false;
+        UpdatePreview(position);
+        touchPositionSet = previewObject != null && previewObject.activeSelf;
+        return touchPositionSet;
+    }
+    public void RotateTouchPreview()
+    {
+        if (!IsTouchPlacement) return;
+        rotationSteps = (rotationSteps + 1) % 4;
+        if (previewObject != null) previewObject.transform.rotation = Quaternion.Euler(0f, rotationSteps * 90f, 0f);
+    }
+    public bool ConfirmTouchPlacement()
+    {
+        if (!CanConfirmTouchPlacement || !buildMode.IsBuildMode) return false;
+        if (economy == null && gridManager != null)
+            economy = gridManager.GetComponent<PlayerEconomyController>();
+        if (economy == null ||
+            !economy.TryExpand(currentCoordinate, draggingDefinition, rotationSteps, out _)) return false;
+        CancelDrag();
+        return true;
+    }
 
     private void Awake()
     {
@@ -103,6 +143,17 @@ public class MapTilePlacementController : MonoBehaviour
         if (!buildMode.IsBuildMode)
         {
             CancelDrag();
+            return;
+        }
+
+        // Touch placement is persistent and is confirmed by the saved mobile UI.
+        if (touchPlacement)
+        {
+            if (touchPositionSet)
+            {
+                bool allowed = CanBuildAt(currentCoordinate);
+                if (allowed != canPlace) { canPlace = allowed; RefreshPreviewColor(); }
+            }
             return;
         }
 
@@ -198,9 +249,7 @@ public class MapTilePlacementController : MonoBehaviour
         currentCoordinate = gridManager.WorldToGrid(worldPosition);
         if (economy == null && gridManager != null)
             economy = gridManager.GetComponent<PlayerEconomyController>();
-        BioenergyAccount wallet = gridManager.GetComponent<BioenergyAccount>();
-        canPlace = gridManager.CanPlaceAt(currentCoordinate) &&
-            wallet != null && (!wallet.CostsEnabled || wallet.Balance >= BioenergySettings.Current.expandTileCost);
+        canPlace = CanBuildAt(currentCoordinate);
 
         previewObject.transform.position =
     gridManager.GridToWorld(currentCoordinate) +
@@ -213,6 +262,19 @@ public class MapTilePlacementController : MonoBehaviour
 
         previewObject.SetActive(true);
 
+        RefreshPreviewColor();
+    }
+
+    private bool CanBuildAt(Vector2Int coordinate)
+    {
+        if (gridManager == null || !gridManager.CanPlaceAt(coordinate)) return false;
+        BioenergyAccount wallet = gridManager.GetComponent<BioenergyAccount>();
+        return wallet != null && (!wallet.CostsEnabled ||
+            wallet.Balance >= BioenergySettings.Current.expandTileCost);
+    }
+
+    private void RefreshPreviewColor()
+    {
         Color color = canPlace ? validColor : invalidColor;
 
         properties.Clear();
@@ -225,8 +287,7 @@ public class MapTilePlacementController : MonoBehaviour
 
     private bool IsPointerOverUI(Vector2 mousePosition)
     {
-        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(mousePosition) ||
-            EconomyOperationsView.IsPointerOverUi(mousePosition)) return true;
+        if (EconomyOperationsView.IsPointerOverUi(mousePosition)) return true;
         if (EventSystem.current == null)
             return false;
 
@@ -290,7 +351,7 @@ public class MapTilePlacementController : MonoBehaviour
         {
             Renderer[] flatGround = previewObject.GetComponentsInChildren<Renderer>();
             GameObject visual = terrainVisuals.CreatePlacementVisualPreview(
-                previewObject.transform, draggingDefinition.biome, previewMaterial, out previewGroundMesh);
+                previewObject.transform, draggingDefinition, previewMaterial, out previewGroundMesh);
             if (visual != null)
                 foreach (Renderer part in flatGround) part.enabled = false;
         }
@@ -331,6 +392,7 @@ public class MapTilePlacementController : MonoBehaviour
     {
 
         rotationSteps = 0;
+        touchPlacement = touchPositionSet = false;
         draggingDefinition = null;
         if (screenEdgeCamera != null)
             screenEdgeCamera.SetTileDragActive(false);

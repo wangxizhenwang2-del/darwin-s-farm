@@ -1,0 +1,18 @@
+{
+  "scenarioId": "stage6-harvest",
+  "seed": 240,
+  "endDay": 11,
+  "disableCosts": false,
+  "restrictedV05": false,
+  "useV05Sandbox": true,
+  "enablePreyDensityFeedback": true,
+  "enablePaidBirthStress": true,
+  "enablePriorityPlantBudgets": true,
+  "adultMaintenanceScale": 0.4,
+  "reproductionStressPerBirth": 0.8,
+  "tiles": [],
+  "actions": [
+    {"day": 10, "sequence": 0, "x": 0, "y": 0,
+     "kind": "Harvest", "species": "鸡"}
+  ]
+}

@@ -1,0 +1,9 @@
+RAW t95final-red-color128: G:\unity\darwin-s-farm\Darwin's farm\Artifacts\Task9_20261016\runs\t95final-red-color128.jsonl
+scenario=t95final-red-color128 seed=240 mechanismFixture=False random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=50000 originInitialChickenCount=160 phase=after-day-step scenarioSha256=f95542104dca818929568d6c3dd3895845fd495004257026f527fb9777cee3d1 bindingSha256=b68d52b99da3e61004bbecb457fe8502c7e05122f1c131d4a5b8c59580d650f2
+result completedDays=128 rejectedActions=0
+RAW t95final-color-on: G:\unity\darwin-s-farm\Darwin's farm\Artifacts\Task9_20261016\runs\t95final-color-on.jsonl
+scenario=t95final-color-on seed=240 mechanismFixture=False random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=50000 originInitialChickenCount=160 phase=after-day-step scenarioSha256=c77d5f311e9d912811fb4d68ec54492e740966b4cf059f703405e2aec7cc2aee bindingSha256=030daadb459faa269ce3206ac97f4b5a0878c1e1c0c6caa2eff5522f6fdc8c5f
+result completedDays=750 rejectedActions=0
+RAW t95final-color-probe135: G:\unity\darwin-s-farm\Darwin's farm\Artifacts\Task9_20261016\runs\t95final-color-probe135.jsonl
+scenario=t95final-color-probe135 seed=240 mechanismFixture=False random=DF-FNV64-1 unity=6000.2.9f1 costs=False originInitialStock=50000 originInitialChickenCount=160 phase=after-day-step scenarioSha256=579926ed5a3096c948cc8ce1be64873942a5ec5b74a6cd49dd47463ab1da45a4 bindingSha256=39279ca91e549e1c99ecd4f975d345b51f56da7f6043c54893132ab3c6c3d5a6
+result completedDays=135 rejectedActions=0

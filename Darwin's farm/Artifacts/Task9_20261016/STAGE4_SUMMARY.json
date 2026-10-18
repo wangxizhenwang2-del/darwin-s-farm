@@ -1,0 +1,171 @@
+{
+  "actualWhiteBoxOrigin": {
+    "elevation": 0,
+    "temperature": 75.0,
+    "humidity": 75.0,
+    "recovery": 130000,
+    "stock": 130000.0,
+    "populations": {},
+    "balance": 2000
+  },
+  "tools": [
+    {
+      "scenario": "stage4-PlantStockChange-tier1",
+      "price": 260,
+      "beforeS": 130000.0,
+      "afterS": 162500.0,
+      "beforeR": 130000,
+      "afterR": 130000,
+      "day1": null
+    },
+    {
+      "scenario": "stage4-PlantStockChange-tier2",
+      "price": 560,
+      "beforeS": 130000.0,
+      "afterS": 195000.0,
+      "beforeR": 130000,
+      "afterR": 130000,
+      "day1": null
+    },
+    {
+      "scenario": "stage4-PlantStockChange-tier-1",
+      "price": 420,
+      "beforeS": 130000.0,
+      "afterS": 97500.0,
+      "beforeR": 130000,
+      "afterR": 130000,
+      "day1": null
+    },
+    {
+      "scenario": "stage4-PlantStockChange-tier-2",
+      "price": 960,
+      "beforeS": 130000.0,
+      "afterS": 65000.0,
+      "beforeR": 130000,
+      "afterR": 130000,
+      "day1": null
+    },
+    {
+      "scenario": "stage4-PlantRecoveryChange-tier1",
+      "price": 260,
+      "beforeS": 130000.0,
+      "afterS": 130000.0,
+      "beforeR": 130000,
+      "afterR": 150000,
+      "day1": {
+        "x": 0,
+        "y": 0,
+        "elevation": 0,
+        "stock": 280000.0,
+        "detritus": 0.0,
+        "plantGrowth": 150000.0,
+        "consumedPlants": 0.0,
+        "recovery": 150000,
+        "temperature": 75.0,
+        "humidity": 75.0,
+        "temperaturePhase": "None",
+        "humidityPhase": "None",
+        "temperatureRemainingDays": 0,
+        "humidityRemainingDays": 0,
+        "populations": []
+      }
+    },
+    {
+      "scenario": "stage4-PlantRecoveryChange-tier2",
+      "price": 560,
+      "beforeS": 130000.0,
+      "afterS": 130000.0,
+      "beforeR": 130000,
+      "afterR": 150000,
+      "day1": {
+        "x": 0,
+        "y": 0,
+        "elevation": 0,
+        "stock": 280000.0,
+        "detritus": 0.0,
+        "plantGrowth": 150000.0,
+        "consumedPlants": 0.0,
+        "recovery": 150000,
+        "temperature": 75.0,
+        "humidity": 75.0,
+        "temperaturePhase": "None",
+        "humidityPhase": "None",
+        "temperatureRemainingDays": 0,
+        "humidityRemainingDays": 0,
+        "populations": []
+      }
+    },
+    {
+      "scenario": "stage4-PlantRecoveryChange-tier-1",
+      "price": 420,
+      "beforeS": 130000.0,
+      "afterS": 130000.0,
+      "beforeR": 130000,
+      "afterR": 105000,
+      "day1": {
+        "x": 0,
+        "y": 0,
+        "elevation": 0,
+        "stock": 235000.0,
+        "detritus": 0.0,
+        "plantGrowth": 105000.0,
+        "consumedPlants": 0.0,
+        "recovery": 105000,
+        "temperature": 75.0,
+        "humidity": 75.0,
+        "temperaturePhase": "None",
+        "humidityPhase": "None",
+        "temperatureRemainingDays": 0,
+        "humidityRemainingDays": 0,
+        "populations": []
+      }
+    },
+    {
+      "scenario": "stage4-PlantRecoveryChange-tier-2",
+      "price": 960,
+      "beforeS": 130000.0,
+      "afterS": 130000.0,
+      "beforeR": 130000,
+      "afterR": 80000,
+      "day1": {
+        "x": 0,
+        "y": 0,
+        "elevation": 0,
+        "stock": 210000.0,
+        "detritus": 0.0,
+        "plantGrowth": 80000.0,
+        "consumedPlants": 0.0,
+        "recovery": 80000,
+        "temperature": 75.0,
+        "humidity": 75.0,
+        "temperaturePhase": "None",
+        "humidityPhase": "None",
+        "temperatureRemainingDays": 0,
+        "humidityRemainingDays": 0,
+        "populations": []
+      }
+    },
+    {
+      "scenario": "stage4-TemperatureChange",
+      "day0": 75.0,
+      "day25": 100.0,
+      "day325": 75.0
+    },
+    {
+      "scenario": "stage4-HumidityChange",
+      "day0": 75.0,
+      "day25": 100.0,
+      "day325": 75.0
+    },
+    {
+      "scenario": "stage4-ElevationChange",
+      "day0Z": 1,
+      "day1Z": 0
+    },
+    {
+      "scenario": "stage4-two-slots",
+      "temperaturePhase": "Returning",
+      "humidityPhase": "Entering"
+    }
+  ]
+}

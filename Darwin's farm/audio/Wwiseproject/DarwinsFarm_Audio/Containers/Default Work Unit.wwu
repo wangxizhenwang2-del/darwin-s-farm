@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}" SchemaVersion="133">
+	<Containers>
+		<WorkUnit Name="Default Work Unit" ID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="ambience" ID="{E230A91C-4A0C-40E8-AB31-75F506468640}" ShortID="1049664760">
+					<ChildrenList>
+						<Sound Name="火山白噪音_v2_0" ID="{960656AA-CDFC-49A4-918F-E60FE15924EE}" ShortID="775545556">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="火山白噪音_v2_0" ID="{694D0AD5-DF8A-4241-8698-E978D7DF6C64}">
+									<Language>SFX</Language>
+									<AudioFile>火山白噪音_v2.0.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="587979804"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="火山白噪音_v2_0" ID="{694D0AD5-DF8A-4241-8698-E978D7DF6C64}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="森林瀑布" ID="{15D7C619-959F-4B0F-A462-4BE54612AD76}" ShortID="53356650">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="森林瀑布" ID="{B1FC33B6-B04E-4ACB-8590-9FE8F4842FDC}">
+									<Language>SFX</Language>
+									<AudioFile>森林瀑布.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="776589876"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="森林瀑布" ID="{B1FC33B6-B04E-4ACB-8590-9FE8F4842FDC}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="山地白噪音_final" ID="{AE691C75-9FA4-4460-BD64-1BF023FABF10}" ShortID="989508803">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="山地白噪音_final" ID="{61DDE069-30C2-426B-8D82-5721CD543EF3}">
+									<Language>SFX</Language>
+									<AudioFile>山地白噪音.final.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="833473170"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="山地白噪音_final" ID="{61DDE069-30C2-426B-8D82-5721CD543EF3}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="荒漠白噪音_final" ID="{579D3B9A-E6D2-458E-B70C-7746A3A82AC5}" ShortID="558180096">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="荒漠白噪音_final" ID="{4983D694-1C0F-42DD-A603-2AF5215E5A53}">
+									<Language>SFX</Language>
+									<AudioFile>荒漠白噪音.final.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="983817063"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="荒漠白噪音_final" ID="{4983D694-1C0F-42DD-A603-2AF5215E5A53}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="草原白噪音_final" ID="{DADFCAE8-425A-42DD-AB56-9BA319BCCBD4}" ShortID="161084306">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="草原白噪音_final" ID="{AF87B6D2-15B2-46F6-89CB-292E8B68A31A}">
+									<Language>SFX</Language>
+									<AudioFile>草原白噪音.final.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="583627548"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="草原白噪音_final" ID="{AF87B6D2-15B2-46F6-89CB-292E8B68A31A}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="水域" ID="{FFBF77AA-ECAC-4EE3-A353-EE922DD4E15B}" ShortID="174320045">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="水域" ID="{1CA35F14-5DB2-4DEB-9FBD-EFC22B994F21}">
+									<Language>SFX</Language>
+									<AudioFile>水域.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="324699839"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<RTPC Name="" ID="{12AB328D-7C53-4CD0-A77D-9E9E22B9E2B1}" ShortID="955855045">
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="Volume"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="Tile_Gain" ID="{1F728BBF-3344-4960-927E-C09FC41C540B}" WorkUnitID="{2C1CD560-95A6-4B89-8FA8-B26C88867893}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{3F659354-BB97-43A8-B1B2-3C991475CE24}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="3"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>-200</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>25.1356120218579</XPos>
+																<YPos>-10.7671222002153</YPos>
+																<Flags>0</Flags>
+															</Point>
+															<Point>
+																<XPos>50.27322</XPos>
+																<YPos>-6.13897</YPos>
+																<Flags>0</Flags>
+															</Point>
+															<Point>
+																<XPos>77.59563</XPos>
+																<YPos>-2.21166</YPos>
+																<Flags>0</Flags>
+															</Point>
+															<Point>
+																<XPos>100</XPos>
+																<YPos>0</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
+								</ObjectList>
+							</ObjectLists>
+							<ActiveSourceList>
+								<ActiveSource Name="水域" ID="{1CA35F14-5DB2-4DEB-9FBD-EFC22B994F21}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="苔原白噪音_final" ID="{00992E8E-7BF2-4E06-9D19-CE24C408472F}" ShortID="304660603">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="苔原白噪音_final" ID="{45C3C526-33EA-42A7-B518-6DDEF2F64DDC}">
+									<Language>SFX</Language>
+									<AudioFile>苔原白噪音.final.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="598553658"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="苔原白噪音_final" ID="{45C3C526-33EA-42A7-B518-6DDEF2F64DDC}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="雪山白噪音_final" ID="{949EF071-C448-4231-B99E-DFD2680852C1}" ShortID="955513470">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="雪山白噪音_final" ID="{D2C2BC60-6C82-4678-810A-122973D2D78F}">
+									<Language>SFX</Language>
+									<AudioFile>雪山白噪音.final.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="117732597"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="雪山白噪音_final" ID="{D2C2BC60-6C82-4678-810A-122973D2D78F}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="森林白噪音_final" ID="{8207621F-69E0-4547-B36E-F2867F48077C}" ShortID="1042149814">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="森林白噪音_final" ID="{22EC90AB-303B-42D4-975B-A870D200C67C}">
+									<Language>SFX</Language>
+									<AudioFile>森林白噪音.final.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="270077421"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="森林白噪音_final" ID="{22EC90AB-303B-42D4-975B-A870D200C67C}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="animals（true）" ID="{BA2ACBB0-4A3E-4C50-8B41-87DD50E13F14}" ShortID="759672576"/>
+			</ChildrenList>
+		</WorkUnit>
+	</Containers>
+</WwiseDocument>

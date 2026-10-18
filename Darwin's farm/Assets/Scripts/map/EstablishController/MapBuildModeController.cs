@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.InputSystem;
 #endif
 
+[DefaultExecutionOrder(-150)]
 public class MapBuildModeController : MonoBehaviour
 {
     [Header("地图和预览")]
@@ -15,8 +16,7 @@ public class MapBuildModeController : MonoBehaviour
     [Header("建造UI")]
     [SerializeField] private GameObject buildPanel;
 
-    [Header("玩家和相机")]
-    [SerializeField] private ClickToMove clickToMove;
+    [Header("相机")]
     [SerializeField] private ScreenEdgeCamera screenEdgeCamera;
 
     [Header("线框设置")]
@@ -29,9 +29,13 @@ public class MapBuildModeController : MonoBehaviour
     private float previewHeight;
 
     public bool IsBuildMode { get; private set; }
+    private MapTilePlacementController placementController;
+    private MapTouchInput touchInput;
 
     private void Awake()
     {
+        placementController = GetComponent<MapTilePlacementController>();
+        touchInput = FindFirstObjectByType<MapTouchInput>();
         if (gridManager == null ||
             previewRoot == null ||
             previewMaterial == null ||
@@ -60,14 +64,28 @@ public class MapBuildModeController : MonoBehaviour
         if (!Application.isFocused || ScreenEdgeCamera.IsTextInputFocused())
             return;
 
-        bool pressedN;
+        bool pressedN, heldAlt;
 
 #if ENABLE_INPUT_SYSTEM
         pressedN = Keyboard.current != null &&
                    Keyboard.current.nKey.wasPressedThisFrame;
+        heldAlt = Keyboard.current != null &&
+            (Keyboard.current.leftAltKey.isPressed || Keyboard.current.rightAltKey.isPressed);
 #else
         pressedN = Input.GetKeyDown(KeyCode.N);
+        heldAlt = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
 #endif
+
+        // Alt browsing takes priority over construction and pending placement.
+        if (heldAlt && (touchInput == null || !touchInput.SuppressesMouseInput))
+        {
+            if (IsBuildMode)
+            {
+                SetBuildMode(false);
+                if (placementController != null) placementController.CancelDrag();
+            }
+            return;
+        }
 
         if (pressedN)
             SetBuildMode(!IsBuildMode);
@@ -82,10 +100,6 @@ public class MapBuildModeController : MonoBehaviour
 
         if (previewRoot != null)
             previewRoot.gameObject.SetActive(value);
-
-        // 建造模式中，不接受新的点击移动指令。
-        if (clickToMove != null)
-            clickToMove.SetMovementInputEnabled(!value);
 
         // 切换浏览输入，当前视角保持不变。
         if (screenEdgeCamera != null)

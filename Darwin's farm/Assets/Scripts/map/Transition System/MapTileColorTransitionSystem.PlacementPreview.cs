@@ -3,6 +3,16 @@ using UnityEngine;
 
 public partial class MapTileColorTransitionSystem
 {
+    public GameObject CreatePlacementVisualPreview(Transform parent, MapTileDefinition definition,
+        Material material, out Mesh groundMesh)
+    {
+        groundMesh = null;
+        if (definition == null) return null;
+        if (definition.initialWaterCoverage != WaterCoverage.Land)
+            return WaterPlacementPreview.Create(parent, definition, material, out groundMesh);
+        return CreatePlacementVisualPreview(parent, definition.biome, material, out groundMesh);
+    }
+
     // Uses the same calibrated source and decoration projection as placed tiles.
     // This root stays outside MapGeometry and never owns terrain or obstacles.
     public GameObject CreatePlacementVisualPreview(Transform parent, BiomeType biome,

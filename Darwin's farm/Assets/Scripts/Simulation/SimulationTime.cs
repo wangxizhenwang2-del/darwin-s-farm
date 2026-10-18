@@ -26,6 +26,32 @@ public class SimulationTime : MonoBehaviour
     private bool wasPausedBeforeModal;
     private float speedBeforeModal;
 
+    [Serializable] public sealed class SaveState
+    {
+        public int day;
+        public float fraction, secondsPerDay, runningSpeed;
+        public bool paused;
+    }
+    public SaveState CaptureSaveState() => new SaveState {
+        day=currentDay, fraction=time, secondsPerDay=basicDayLength,
+        runningSpeed=modalPause?speedBeforeModal:RunningSpeed,
+        paused=modalPause?wasPausedBeforeModal:IsPaused
+    };
+    public void RestoreSaveState(SaveState state)
+    {
+        if (state == null || state.day < 0 || state.secondsPerDay < .05f ||
+            state.fraction < 0 || state.fraction >= state.secondsPerDay ||
+            state.runningSpeed <= 0 || float.IsNaN(state.fraction))
+            throw new ArgumentException("Invalid saved game clock.");
+        currentDay=state.day; time=state.fraction;
+        basicDayLength=state.secondsPerDay;
+        lastRunningSpeed=state.runningSpeed;
+        wasPausedBeforeModal=state.paused;
+        speedBeforeModal=state.runningSpeed;
+        simulationSpeed=0f;
+        OnSpeedChanged?.Invoke(simulationSpeed);
+    }
+
     public void AcquireModalPause()
     {
         if (modalPause) return;
@@ -96,7 +122,14 @@ public class SimulationTime : MonoBehaviour
     public void Play() => SetSpeed(1f);
     public void DoubleSpeed() => SetSpeed(2f);
     public void QuadrupleSpeed() => SetSpeed(4f);
-    public void CycleSpeed() => SetSpeed(RunningSpeed < 2f ? 2f : RunningSpeed < 4f ? 4f : 1f);
+    // Shared by desktop and mobile: 1x -> 2x -> 4x -> pause -> 1x.
+    public void CycleSpeed()
+    {
+        if (modalPause) return;
+        if (IsPaused) Play();
+        else if (Speed >= 4f) Pause();
+        else SetSpeed(Speed < 2f ? 2f : 4f);
+    }
     private void SetSpeed(float speed)
     {
         if (modalPause) return;

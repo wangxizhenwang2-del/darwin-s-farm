@@ -1,0 +1,23 @@
+{
+  "formalMushroomPackageCopies": {
+    "task9Path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\source_package\\task9\\task9-mushroom-formal.json",
+    "task9Sha256": "67aa414bf9a927aa8ad0eff358dcf36e85e163823cb22546e5370ebd7064fbd0",
+    "task10Path": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_Task10_20261017\\source_package\\task10\\Artifacts\\Task9_20261016\\inputs\\task9-mushroom-formal.json",
+    "task10Sha256": "96df41a2724a0a8133d2a59425f41f786a1f0b6297c097b481eab918486a6a79",
+    "semanticJsonEqual": true,
+    "selected": "task9Path",
+    "selectedInputChanges": [
+      "scenarioId",
+      "t95FinalGate",
+      "t10Quota",
+      "t10Diagnostics"
+    ]
+  },
+  "initialTwoHunterFixture": {
+    "status": "FAIL_FIXTURE",
+    "reason": "Identical initial groups need a single population",
+    "unityLocation": "SimulationController.Determinism.cs:173",
+    "replacement": "Chicken + civet + flying civet, distinct legal hunters",
+    "productionRulesChanged": false
+  }
+}

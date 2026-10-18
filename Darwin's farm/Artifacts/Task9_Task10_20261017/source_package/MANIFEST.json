@@ -1,0 +1,33 @@
+{
+  "description": "Task9+Task10 single integrated Unity acceptance package",
+  "source_zips": {
+    "TASK10_DYNAMIC_K_AGENT_SINGLE_PACKAGE.zip": "9eee1638f9c192a37da6a5b6462e3029ffb2c4b1ab694a9787cf78978eeed64c",
+    "TASK9_FINAL_SINGLE_PACKAGE.zip": "b924782f04c5f1b47f6607fcc35b985ab0969fb53c7d581508b6045b0f5044ca"
+  },
+  "entries_sha256": {
+    "task10/TASK10_DESIGN_AND_VERIFICATION.md": "01822038fd24aed0a6bf68ee2acc03a0e0ad5d66ee99748d9d480fe518673d62",
+    "task10/TASK10_SOURCE_MANIFEST.json": "762e813ce63ed68be32b5cdce8bc7e93dd83c8f0d6e5e92a58c1b3639f38f696",
+    "task10/TASK10_DYNAMIC_K_CANDIDATE.patch": "ebc829661e676ef04c67511bb9c3dd1bc42444dfd010505931f9e86eb0e4c11b",
+    "task10/TASK10_OFFLINE_TEST_RESULTS.json": "2503601cf47767159e2163b94d21a84fb31fb1b1bfd6c5c47349adbf3c0f2a6e",
+    "task10/T10_SURROGATE_SWEEP.csv": "f1ceb6576437b93dffebf51fd2c968d08edb415a57c82c04fb8ac7aee216c6eb",
+    "task10/SAFE_APPLY_CANDIDATE.py": "553bb08cc49184dc9bf00267119f0effa9629e9ca1c3b0d785f083d94bb50b4d",
+    "task10/t10_surrogate.py": "4f51bfde9bb55ffc568668ae66738d9b64127bf5f2fbf5202525301b6c125c03",
+    "task10/test_task10_candidate.py": "05c3c30a74c33df19f9307c785a4510d6e2c9801bb319a0ee15153e17b401e23",
+    "task10/candidate/Assets/Scripts/Simulation/LandLifeRules.cs": "8d453fae6ed59a698b9423f4ec5003475421a462f2b986fb5b5b274c764953d9",
+    "task10/candidate/Assets/Scripts/Simulation/LandRuleTuning.cs": "c521860b8f97a1c07b94d85c3200a6486256298e4d51232de1a1c58f9692f6e9",
+    "task10/baseline/Assets/Scripts/Simulation/LandLifeRules.cs": "9a58ef14755e40045bbb0cb7279c2b8dc8934bc78099786774c6fdeedef670d9",
+    "task10/baseline/Assets/Scripts/Simulation/LandRuleTuning.cs": "252c204bd25dee170d0a6cf51959ea95bc2f41b8124bde4bcb32dd55d8f84bf4",
+    "task10/Artifacts/Task9_20261016/inputs/task9-mushroom-formal.json": "96df41a2724a0a8133d2a59425f41f786a1f0b6297c097b481eab918486a6a79",
+    "task10/Artifacts/Task9_20261016/runs/task9-mushroom-formal.jsonl": "1d667c926815e0a430820a70300a729fe88b070864c8f2bb9dfa332c4c9c08bf",
+    "task9/CHECKPOINTS.json": "5e74d92afe8dbf344a43980e2c1025b6b73886fe99148cfda695ab589d9bddb3",
+    "task9/TASK9_ACCEPTANCE_IMPLEMENTATION.md": "b990be9ef35233e93211a95f6b752cb3dfd22587aafb6a1a9b8827cd6545bf12",
+    "task9/TASK9_ACCEPTANCE_REGRESSION.json": "527f7edf60c5b7c1e55bbbed4110e1c1a1fbdad36cfa034a6d05d3522709e039",
+    "task9/TASK9_ACCEPTANCE_RESULT.json": "87e5ccaa6af1c8b2f5b47ddf2afcc27ea2869251f8b952df04f2071bce8a24ae",
+    "task9/UNITY_TRAJECTORIES.csv": "4393b66aec8bf6c52019d7695d2388dcfcd0924102bcc2ef4cbded1284089b68",
+    "task9/evidence_check.py": "15bc8e5ba3ade50f004f3b4b49a5e827eaba140a351c147d9ca52a5bfae6fcbb",
+    "task9/task9-color-formal.json": "553bd8a86efc14ce38203c2693a77e9bbde00c90325ddd952e620a25d9188aa1",
+    "task9/task9-mushroom-formal.json": "67aa414bf9a927aa8ad0eff358dcf36e85e163823cb22546e5370ebd7064fbd0",
+    "task9/task9-mushroom-stop-after-429.json": "148e6bc4fd6d77946372cae7d4f39890a8b7ea54fd3b3547983893f880745fb6"
+  },
+  "priority": "INTEGRATED_AGENT_TASK.md overrides any historical task notes"
+}

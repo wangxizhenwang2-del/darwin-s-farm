@@ -7,32 +7,32 @@ public enum PopulationMovementState { Waiting, Moving, Blocked }
 public sealed class PopulationMovementSettings
 {
     [Min(0.05f)] public float leaderSize = 0.8f;
-    [Min(0.05f)] public float followerSize = 0.45f;
     [Min(0.01f)] public float speed = 1.8f;
-    [Min(0.01f)] public float followerSpeed = 2.4f;
-    [Min(0.01f)] public float spacing = 1.2f;
     [Min(0f)] public float pauseSeconds = 1.2f;
     [Min(0.1f)] public float retrySeconds = 1f;
-    [Min(0.01f)] public float arrivalDistance = 0.08f;
     [Min(0.1f)] public float turnSpeed = 8f;
     [Min(0.1f)] public float labelHeight = 0.6f;
     [Min(0.1f)] public float populationGap = 0.3f;
-    [Min(0f)] public float memberGap = 0.08f;
-    [Min(0f)] public float playerGap = 0.1f;
     [Min(0f)] public float wanderEdgeMargin = 0.8f;
     [Min(0.1f)] public float replanSeconds = 0.5f;
     [Min(0.2f)] public float blockedRetargetSeconds = 1.5f;
-    [Min(0.1f)] public float formationSlack = 0.75f;
     [Range(1, 64)] public int targetAttempts = 24;
+    [Header("Water populations")]
+    [Range(0f, .6f)] public float submergedFraction = .25f;
+    [Min(.1f)] public float swimClearanceMultiplier = .8f;
+    [Header("Air populations")]
+    [Min(0.1f)] public float flightSpeed = 3f;
+    [Min(0.75f)] public float flightHeight = 1.7f;
+    [Min(0f)] public float flightBob = 0.12f;
+    [Min(0.2f)] public float flightEdgeMargin = 0.8f;
+    [Min(0.5f)] public float flightPatrolRadius = 4.5f;
 }
 
-// Movement data deliberately stays independent from the ecological simulator's
-// migration/birth/death rules. Visible cubes represent count ranges, not individuals.
+// A single visible animal represents the entire population. Movement never
+// changes the ecological simulator's migration, birth, death or count rules.
 public sealed class WhiteboxPopulation : MonoBehaviour
 {
-    public static int VisibleMemberCount(int count) => count > 1000 ? 4 : count > 500 ? 3 : count > 100 ? 2 : 1;
-
-    internal sealed class Member : PopulationFormationMotion.Body
+    internal sealed class Representative : PopulationMotion.Body
     {
         public Transform visual;
         public SpriteRenderer sprite;
@@ -43,72 +43,95 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     [SerializeField, Min(0)] private int populationCount;
     [SerializeField] private PopulationMovementState movementState;
     [SerializeField] private Vector3 targetPosition;
+    [SerializeField] private bool wanderingPaused;
     public string UniqueId => uniqueId;
     public Vector2Int TileId => tileId;
-    public int Count { get => populationCount; set { populationCount = Mathf.Max(0, value); RefreshLabel(); SyncVisibleMembers(true); } }
+    public int Count { get => populationCount; set { populationCount = Mathf.Max(0, value); RefreshLabel(); } }
     public PopulationMovementState MovementState => movementState;
     public Vector3 TargetPosition => targetPosition;
-    public Transform Leader => members == null ? null : members[0].visual;
-    public Sprite DisplaySprite => members == null ? null : members[0].sprite.sprite;
+    public Transform Leader => leader?.visual;
+    public Sprite DisplaySprite => leader?.sprite != null ? leader.sprite.sprite : null;
     public PopulationData EcologicalPopulation { get; private set; }
+    public bool IsAir => flight != null;
+    public bool IsWater { get; private set; }
+    private MapWaterController water;
+    internal float SwimRadius => PopulationSpriteDisplay.WaterRadius(leader.size, controller.Settings.swimClearanceMultiplier,
+        leader.sprite ? leader.sprite.sprite : null, controller.ViewCamera ? controller.ViewCamera : Camera.main, controller.Settings.submergedFraction);
+    private bool WaterPose(Vector3 position) => water && water.TrySwimmingPose(tileId, position, SwimRadius, out _);
 
-    public void BindEcologicalPopulation(PopulationData data, Sprite sprite, Color tint)
-    {
-        EcologicalPopulation = data;
-        if (data == null || members == null) return;
-        Sprite selected = sprite != null ? sprite : controller.FallbackSprite;
-        foreach (Member member in members)
-        {
-            PopulationSpriteDisplay.Configure(member.sprite, selected, tint);
-            member.visual.GetComponent<MeshRenderer>().enabled = selected == null;
-        }
-    }
-
-    internal Member[] members;
+    internal Representative leader;
     internal PopulationTileSpace space;
     internal MapTileInstance tile;
     private PopulationMovementController controller;
     private TextMesh label;
     private float chooseAt;
-    private float nextMemberRetryAt;
     private int displayedCount = -1;
-    private int activeMemberCount;
-    private PopulationFormationMotion motion;
-    [SerializeField] private bool waitingForFollowers;
-    [SerializeField] private bool wanderingPaused;
+    private PopulationMotion motion;
+    private bool terrainRecoveryPending;
+    private float terrainRecoveryAt;
+    private PopulationAnimationDriver animationDriver;
+    private Sprite boundSprite;
+    private Color boundTint;
+    private PopulationAnimationSet boundAnimation;
+    private PopulationFlight flight;
+
+    public bool HasAppearance(Sprite sprite, Color tint, PopulationAnimationSet animations) =>
+        boundSprite == (sprite != null ? sprite : controller.FallbackSprite) &&
+        boundTint == tint && boundAnimation == animations;
+
+    public void BindEcologicalPopulation(PopulationData data, Sprite sprite, Color tint,
+        PopulationAnimationSet animations = null)
+    {
+        EcologicalPopulation = data;
+        if (data == null || leader == null) return;
+        Sprite selected = sprite != null ? sprite : controller.FallbackSprite;
+        flight?.SetSprite(selected);
+        boundSprite = selected;
+        boundTint = tint;
+        boundAnimation = animations;
+        if (animationDriver == null)
+            animationDriver = leader.sprite.gameObject.AddComponent<PopulationAnimationDriver>();
+        animationDriver.Bind(leader.sprite, IsAir ? null : animations, selected, tint, leader.groundPosition);
+        if (IsAir) PopulationSpriteDisplay.ConfigureAir(leader.sprite);
+        if (IsWater) PopulationSpriteDisplay.ConfigureWater(leader.sprite, water.TrySpace(tileId, out var ws) ? ws.Height : leader.groundPosition.y, controller.Settings.submergedFraction);
+        leader.visual.GetComponent<MeshRenderer>().enabled = leader.sprite.sprite == null;
+    }
 
     internal void Initialize(PopulationMovementController owner, MapTileInstance ownedTile,
-        PopulationTileSpace ownedSpace, int count, Vector3[] positions, Color color)
+        PopulationTileSpace ownedSpace, int count, Vector3 position, Color color,
+        bool airborne = false, bool aquatic = false, MapWaterController waterController = null)
     {
         controller = owner; tile = ownedTile; space = ownedSpace;
+        IsWater = aquatic; water = waterController;
         uniqueId = Guid.NewGuid().ToString("N"); tileId = tile.Coordinate;
         populationCount = Mathf.Max(0, count);
-        activeMemberCount = VisibleMemberCount(populationCount);
-        name = $"Population_{tileId.x}_{tileId.y}_{uniqueId.Substring(0, 8)}";
-        members = new Member[4];
-        for (int i = 0; i < members.Length; i++)
+        if (airborne)
         {
-            float size = i == 0 ? controller.Settings.leaderSize : controller.Settings.followerSize;
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.name = i == 0 ? "Leader" : $"Follower_{i}";
-            cube.transform.SetParent(transform, false);
-            cube.transform.localScale = Vector3.one * size;
-            // Do not feed display cubes into terrain physics, construction or baking.
-            Collider collider = cube.GetComponent<Collider>();
-            collider.enabled = false; Destroy(collider);
-            Renderer renderer = cube.GetComponent<Renderer>();
-            if (tile.Core != null) renderer.sharedMaterial = tile.Core.sharedMaterial;
-            var properties = new MaterialPropertyBlock();
-            properties.SetColor("_BaseColor", color); properties.SetColor("_Color", color);
-            renderer.SetPropertyBlock(properties);
-            renderer.enabled = controller.FallbackSprite == null;
-            SpriteRenderer sprite = PopulationSpriteDisplay.Create(cube.transform,
-                controller.FallbackSprite, Color.white);
-            members[i] = new Member { visual = cube.transform, sprite = sprite,
-                groundPosition = positions[i], size = size };
-            Place(members[i], positions[i], Vector3.forward, 1f);
-            if (i >= activeMemberCount) cube.SetActive(false);
+            flight = new PopulationFlight(tile, controller.Settings);
+            position = flight.Position;
         }
+        name = $"Population_{tileId.x}_{tileId.y}_{uniqueId.Substring(0, 8)}";
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = "Leader";
+        cube.transform.SetParent(transform, false);
+        cube.transform.localScale = Vector3.one * controller.Settings.leaderSize;
+        // The proxy supplies movement clearance, never physics collision geometry.
+        Collider collider = cube.GetComponent<Collider>();
+        collider.enabled = false; Destroy(collider);
+        Renderer renderer = cube.GetComponent<Renderer>();
+        if (tile.Core != null) renderer.sharedMaterial = tile.Core.sharedMaterial;
+        var properties = new MaterialPropertyBlock();
+        properties.SetColor("_BaseColor", color); properties.SetColor("_Color", color);
+        renderer.SetPropertyBlock(properties);
+        renderer.enabled = controller.FallbackSprite == null;
+        leader = new Representative
+        {
+            visual = cube.transform,
+            sprite = PopulationSpriteDisplay.Create(cube.transform, controller.FallbackSprite, Color.white),
+            groundPosition = position,
+            size = controller.Settings.leaderSize
+        };
+        Place(position, Vector3.forward);
         GameObject text = new GameObject("PopulationCount");
         text.transform.SetParent(transform, false);
         label = text.AddComponent<TextMesh>();
@@ -116,68 +139,13 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         label.GetComponent<MeshRenderer>().sharedMaterial = label.font.material;
         label.anchor = TextAnchor.MiddleCenter; label.alignment = TextAlignment.Center;
         label.fontSize = 64; label.characterSize = 0.075f; label.color = Color.white;
-        targetPosition = positions[0]; movementState = PopulationMovementState.Waiting;
+        targetPosition = position; movementState = PopulationMovementState.Waiting;
         chooseAt = Time.time + UnityEngine.Random.Range(0f, Mathf.Max(0.1f, controller.Settings.pauseSeconds));
-        Vector3 heading = activeMemberCount > 1 ? positions[0] - positions[1] : Vector3.forward;
-        heading.y = 0f;
-        for (int i = 0; i < activeMemberCount; i++)
-            Place(members[i], members[i].groundPosition, heading.normalized, 1f);
-        motion = new PopulationFormationMotion(members, controller.Settings,
-            (index, from, to) => space.CanTraverse(from, to, members[index].size) &&
-                controller.HasSeparation(this, members[index], from, to), PlanRoute,
-            (index, position, direction) => Place(members[index], position, direction, 1f));
-        motion.SetActiveCount(activeMemberCount);
+        if (!IsAir) motion = new PopulationMotion(leader, controller.Settings,
+            (from, to) => (IsWater ? water.SwimmingSegment(tileId, from, to, SwimRadius) :
+                space.CanTraverse(from, to, leader.size)) && controller.HasSeparation(this, from, to),
+            PlanRoute, Place);
         RefreshLabel();
-    }
-
-    private void SyncVisibleMembers(bool force)
-    {
-        if (members == null || motion == null) return;
-        int desired = VisibleMemberCount(populationCount);
-        if (desired == activeMemberCount) return;
-        if (desired < activeMemberCount)
-        {
-            for (int i = desired; i < activeMemberCount; i++) members[i].visual.gameObject.SetActive(false);
-            activeMemberCount = desired;
-            motion.SetActiveCount(activeMemberCount);
-            Wait(false);
-            return;
-        }
-        if (!force && Time.time < nextMemberRetryAt) return;
-        bool changed = false;
-        while (activeMemberCount < desired && TryActivateFollower(activeMemberCount))
-        {
-            activeMemberCount++;
-            changed = true;
-        }
-        if (changed)
-        {
-            motion.SetActiveCount(activeMemberCount);
-            Wait(false);
-        }
-        if (activeMemberCount < desired) nextMemberRetryAt = Time.time + 0.5f;
-    }
-
-    private bool TryActivateFollower(int index)
-    {
-        Member member = members[index];
-        Member predecessor = members[index - 1];
-        float spacing = motion.Spacing(index);
-        float backward = Mathf.Atan2(-predecessor.heading.x, -predecessor.heading.z);
-        for (int direction = 0; direction < 16; direction++)
-        {
-            int offset = direction == 0 ? 0 : (direction + 1) / 2 * (direction % 2 == 1 ? 1 : -1);
-            float angle = backward + offset * Mathf.PI * 0.125f;
-            Vector3 candidate = predecessor.groundPosition +
-                new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * spacing;
-            if (!space.CanTraverse(candidate, candidate, member.size) ||
-                !space.CanTraverse(predecessor.groundPosition, candidate, member.size) ||
-                !controller.HasSeparation(this, member, candidate, candidate) ||
-                !Place(member, candidate, predecessor.heading, 1f)) continue;
-            member.visual.gameObject.SetActive(true);
-            return true;
-        }
-        return false;
     }
 
     private void RefreshLabel()
@@ -192,61 +160,90 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private void LateUpdate()
     {
         RefreshLabel(); // Also supports live Inspector edits.
-        SyncVisibleMembers(false);
         if (label == null || Leader == null) return;
         label.transform.position = Leader.position + Vector3.up *
-            (members[0].size * 0.5f + controller.Settings.labelHeight);
+            (leader.size * 0.5f + controller.Settings.labelHeight);
         Camera camera = controller.ViewCamera != null ? controller.ViewCamera : Camera.main;
-        if (camera != null) label.transform.rotation = camera.transform.rotation;
-        if (camera != null)
-            foreach (Member member in members)
-                PopulationSpriteDisplay.FaceCamera(member.sprite, camera);
+        animationDriver?.SampleMotion(leader.groundPosition, camera, Mathf.Min(Time.deltaTime, 0.2f));
+        if (camera == null) return;
+        label.transform.rotation = camera.transform.rotation;
+        PopulationSpriteDisplay.FaceCamera(leader.sprite, camera);
+        if (IsWater) PopulationSpriteDisplay.ConfigureWater(leader.sprite, leader.groundPosition.y, controller.Settings.submergedFraction);
     }
 
     internal void Tick(float deltaTime)
     {
-        if (members == null || tile == null || motion == null) return;
-        SyncVisibleMembers(false);
-        bool valid = true;
-        for (int i = 0; i < activeMemberCount; i++)
+        if (IsAir)
         {
-            Member member = members[i];
-            bool placed = Place(member, member.groundPosition, member.heading, 1f);
-            member.visual.gameObject.SetActive(placed);
-            valid &= placed;
+            if (leader == null || tile == null) return;
+            Vector3 before = leader.groundPosition;
+            flight.Tick(deltaTime, wanderingPaused);
+            Place(flight.Position, flight.Position - before);
+            targetPosition = flight.Position;
+            movementState = wanderingPaused ? PopulationMovementState.Waiting : PopulationMovementState.Moving;
+            return;
         }
-        if (label != null) label.gameObject.SetActive(members[0].visual.gameObject.activeSelf);
-        if (!valid) { Wait(true); return; }
-        if (!wanderingPaused && !motion.HasLeaderRoute && Time.time >= chooseAt) ChooseTarget();
-        bool hadRoute = motion.HasLeaderRoute;
-        motion.Tick(deltaTime, Time.time);
-        waitingForFollowers = motion.WaitingForFollowers;
-        if (hadRoute && !motion.HasLeaderRoute) Wait(false);
-        else if (motion.HasLeaderRoute)
+        if (leader == null || tile == null || motion == null) return;
+        if (terrainRecoveryPending)
         {
-            movementState = waitingForFollowers ? PopulationMovementState.Waiting : PopulationMovementState.Moving;
-            if (!waitingForFollowers && members[0].blockedSeconds >= Mathf.Max(0.2f, controller.Settings.blockedRetargetSeconds))
-                Wait(true);
+            if (Time.time < terrainRecoveryAt) return;
+            if (!(IsWater ? WaterPose(leader.groundPosition) : space.CanTraverse(leader.groundPosition, leader.groundPosition, leader.size)))
+            {
+                if (!controller.TryRecoverPosition(this, out Vector3 position) || !Place(position, leader.heading))
+                {
+                    if (IsWater)
+                    {
+                        leader.visual.gameObject.SetActive(false);
+                        if (label) label.gameObject.SetActive(false);
+                    }
+                    terrainRecoveryAt = Time.time + .5f; Wait(true); return;
+                }
+            }
+            motion.ResetNavigation();
+            terrainRecoveryPending = false;
+            animationDriver?.ResetMotion(leader.groundPosition);
+            chooseAt = Time.time;
+        }
+        bool placed = Place(leader.groundPosition, leader.heading);
+        leader.visual.gameObject.SetActive(placed);
+        if (label != null) label.gameObject.SetActive(placed);
+        if (!placed) { terrainRecoveryPending = true; terrainRecoveryAt = Time.time + .5f; Wait(true); return; }
+        if (!wanderingPaused && !motion.HasRoute && Time.time >= chooseAt) ChooseTarget();
+        bool hadRoute = motion.HasRoute;
+        motion.Tick(deltaTime, Time.time);
+        if (hadRoute && !motion.HasRoute) Wait(false);
+        else if (motion.HasRoute)
+        {
+            movementState = PopulationMovementState.Moving;
+            if (motion.BlockedSeconds >= Mathf.Max(0.2f, controller.Settings.blockedRetargetSeconds)) Wait(true);
         }
     }
 
-    private bool PlanRoute(int index, Vector3 from, Vector3 target, out Vector3[] path) =>
-        space.TryPath(from, target, members[index].size, out path,
-            (a, b) => motion.Allowed(index, a, b));
+    private bool PlanRoute(Vector3 from, Vector3 target, out Vector3[] path) =>
+        IsWater ? water.TrySwimmingPath(tileId, from, target, SwimRadius, out path) :
+        space.TryPath(from, target, leader.size, out path, (a, b) => controller.HasSeparation(this, a, b));
 
     private void ChooseTarget()
     {
-        Member leader = members[0];
-        Bounds bounds = space.Bounds;
+        System.Collections.Generic.IReadOnlyList<MapTileInstance> area = null;
+        if (IsWater && !water.TrySwimmingArea(tileId, out area)) { Wait(true); return; }
         for (int pass = 0; pass < 2; pass++)
             for (int attempt = 0; attempt < Mathf.Clamp(controller.Settings.targetAttempts, 1, 64); attempt++)
             {
+                Bounds bounds;
+                if (IsWater)
+                {
+                    var destination = area[UnityEngine.Random.Range(0, area.Count)];
+                    if (!water.TrySpace(destination.Coordinate, out var ws)) continue;
+                    bounds = ws.Bounds;
+                }
+                else bounds = space.Bounds;
                 Vector3 candidate = new Vector3(UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
                     leader.groundPosition.y, UnityEngine.Random.Range(bounds.min.z, bounds.max.z));
                 if (Vector2.Distance(PopulationCollisionMath.Flat(candidate), PopulationCollisionMath.Flat(leader.groundPosition)) < 1f ||
-                    !space.CanWanderAt(candidate, leader.size, pass == 0 ? controller.Settings.wanderEdgeMargin : 0f)) continue;
-                if (!motion.SetLeaderTarget(candidate, Time.time)) continue;
-                targetPosition = leader.goal; movementState = PopulationMovementState.Moving;
+                    !(IsWater ? WaterPose(candidate) : space.CanWanderAt(candidate, leader.size, pass == 0 ? controller.Settings.wanderEdgeMargin : 0f))) continue;
+                if (!motion.SetTarget(candidate, Time.time)) continue;
+                targetPosition = motion.Goal; movementState = PopulationMovementState.Moving;
                 return;
             }
         Wait(true);
@@ -254,7 +251,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
 
     private void Wait(bool blocked)
     {
-        motion?.CancelLeaderRoute();
+        motion?.CancelRoute();
         movementState = blocked ? PopulationMovementState.Blocked : PopulationMovementState.Waiting;
         chooseAt = Time.time + Mathf.Max(0.1f, blocked ? controller.Settings.retrySeconds : controller.Settings.pauseSeconds);
     }
@@ -266,40 +263,32 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         else chooseAt = Time.time;
     }
 
-    internal bool ValidateFormation(out string problem)
+    internal bool ValidateMovement(out string problem)
     {
         problem = null;
-        if (members == null || members.Length != 4 || motion == null)
-        { problem = "Missing runtime formation; recreate the debug populations after recompilation."; return false; }
-        if (activeMemberCount != VisibleMemberCount(populationCount))
-        { problem = "Waiting for safe space to display the additional population cubes."; return false; }
-        if (motion.ActiveCount != activeMemberCount)
-        { problem = "Movement member count is out of sync with visible cubes."; return false; }
+        if (IsAir)
+        {
+            if (leader == null || !flight.Contains(Leader.position))
+            { problem = "Flying representative left its own tile airspace."; return false; }
+            if (label == null || label.text != Count.ToString())
+            { problem = "Air count label is out of sync."; return false; }
+            return true;
+        }
+        if (leader == null || motion == null)
+        { problem = "Missing runtime representative; recreate the debug populations after recompilation."; return false; }
         if (label == null || !label.gameObject.activeInHierarchy || label.text != Count.ToString())
         { problem = "Count label is hidden or out of sync."; return false; }
-        for (int i = activeMemberCount; i < members.Length; i++)
-            if (members[i].visual.gameObject.activeInHierarchy)
-            { problem = $"Member {i} should be hidden for count {populationCount}."; return false; }
-        for (int i = 0; i < activeMemberCount; i++)
-        {
-            if (!members[i].visual.gameObject.activeInHierarchy ||
-                !space.CanTraverse(members[i].groundPosition, members[i].groundPosition, members[i].size))
-            { problem = $"Member {i} is hidden or outside valid terrain."; return false; }
-            if (!controller.HasSeparation(this, members[i], members[i].groundPosition))
-            { problem = $"Member {i} overlaps another member/player."; return false; }
-            if (i == 0) continue;
-            float gap = Vector2.Distance(PopulationCollisionMath.Flat(members[i].groundPosition),
-                PopulationCollisionMath.Flat(members[i - 1].groundPosition));
-            if (gap > motion.Spacing(i) + controller.Settings.formationSlack + 0.01f)
-            { problem = $"Member {i} lost its predecessor: gap={gap:F2}."; return false; }
-        }
+        if (!leader.visual.gameObject.activeInHierarchy ||
+            !(IsWater ? WaterPose(leader.groundPosition) : space.CanTraverse(leader.groundPosition, leader.groundPosition, leader.size)))
+        { problem = "Representative is hidden or outside valid terrain."; return false; }
+        if (!controller.HasSeparation(this, leader.groundPosition))
+        { problem = "Representative overlaps another population."; return false; }
         return true;
     }
 
     internal bool RequestReverse()
     {
-        if (members == null || tile == null || motion == null) return false;
-        Member leader = members[0];
+        if (leader == null || tile == null || motion == null) return false;
         float backwardYaw = Mathf.Atan2(-leader.heading.x, -leader.heading.z);
         for (int angleIndex = 0; angleIndex < 5; angleIndex++)
             for (int distanceIndex = 0; distanceIndex < 3; distanceIndex++)
@@ -307,42 +296,53 @@ public sealed class WhiteboxPopulation : MonoBehaviour
                 float angle = angleIndex == 0 ? 0f : ((angleIndex + 1) / 2 * 30f) * (angleIndex % 2 == 1 ? 1f : -1f);
                 float yaw = backwardYaw + angle * Mathf.Deg2Rad;
                 Vector3 target = leader.groundPosition + new Vector3(Mathf.Sin(yaw), 0f, Mathf.Cos(yaw)) * (3f + distanceIndex * 1.5f);
-                if (!motion.SetLeaderTarget(target, Time.time)) continue;
-                targetPosition = leader.goal; movementState = PopulationMovementState.Moving;
+                if (!motion.SetTarget(target, Time.time)) continue;
+                targetPosition = motion.Goal; movementState = PopulationMovementState.Moving;
                 return true;
             }
         return false;
     }
 
-    private bool Place(Member member, Vector3 position, Vector3 heading, float turn)
+    private bool Place(Vector3 position, Vector3 heading)
     {
-        if (!space.TryPose(position, member.size, out Vector3 center, out Vector3 normal) ||
-            !space.TryGround(position, out RaycastHit ground)) return false;
-        Vector3 nextHeading = PopulationCollisionMath.SmoothHeading(member.heading, heading, turn);
-        Vector3 forward = Vector3.ProjectOnPlane(nextHeading, normal).normalized;
-        if (forward.sqrMagnitude < 0.001f) forward = Vector3.Cross(normal, Vector3.right).normalized;
-        Quaternion rotation = Quaternion.LookRotation(forward, normal);
-        // A single tangent plane can intersect a slope seam. Lift only as much
-        // as the sampled bottom face requires; planar slopes need no correction.
-        float support = 0f;
-        for (int x = -1; x <= 1; x++)
-            for (int z = -1; z <= 1; z++)
-            {
-                Vector3 bottom = center + rotation * new Vector3(x, -1f, z) * (member.size * 0.5f);
-                if (!space.TryGround(bottom, out RaycastHit contact)) return false;
-                support = Mathf.Max(support, contact.point.y - bottom.y);
-            }
-        center.y += support;
-        member.groundPosition = ground.point; member.heading = nextHeading;
-        member.visual.SetPositionAndRotation(center, rotation);
+        Vector3 nextHeading = PopulationCollisionMath.SmoothHeading(leader.heading, heading, 1f);
+        if (IsAir)
+        {
+            leader.groundPosition = position;
+            if (heading.sqrMagnitude > 0.00001f) leader.heading = nextHeading;
+            leader.visual.SetPositionAndRotation(position, Quaternion.LookRotation(leader.heading, Vector3.up));
+            return true;
+        }
+        if (IsWater)
+        {
+            if (!water.TrySwimmingPose(tileId, position, SwimRadius, out position)) return false;
+            leader.groundPosition = position; leader.heading = nextHeading;
+            float offset = leader.size * (.5f - 1.5f * controller.Settings.submergedFraction);
+            leader.visual.SetPositionAndRotation(position + Vector3.up * offset, Quaternion.LookRotation(nextHeading, Vector3.up));
+            return true;
+        }
+        if (!space.TryRepresentativePose(position, nextHeading, leader.size,
+            out Vector3 ground, out Vector3 center, out Quaternion rotation)) return false;
+        leader.groundPosition = ground; leader.heading = nextHeading;
+        leader.visual.SetPositionAndRotation(center, rotation);
         return true;
     }
 
-    internal void NavigationChanged() { space.Rebuild(); Wait(true); }
+    internal void NavigationChanged()
+    {
+        if (IsAir) { flight.RefreshCeiling(); return; }
+        if (IsWater) { terrainRecoveryPending = true; terrainRecoveryAt = Time.time; motion?.ResetNavigation(); Wait(true); return; }
+        if (space == null || motion == null) return;
+        space.Rebuild();
+        terrainRecoveryPending = true;
+        terrainRecoveryAt = Time.time;
+        motion.ResetNavigation();
+        Wait(true);
+    }
+
     private void OnDestroy()
     {
         if (controller != null) controller.Unregister(this);
-        // Visuals and label are children and are destroyed with this entity.
-        members = null; space = null; tile = null; label = null; controller = null; motion = null;
+        leader = null; space = null; tile = null; label = null; controller = null; motion = null;
     }
 }

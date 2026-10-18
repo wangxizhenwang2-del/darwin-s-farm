@@ -1,0 +1,58 @@
+[
+  {
+    "scenario": "stage6-player-color500",
+    "target": "彩鸡",
+    "firstTargetDay": null,
+    "final": {
+      "鸡": 4915
+    },
+    "balanceAtEnd": 4266,
+    "actions": 6,
+    "rejectedActions": 0,
+    "firstRejection": null,
+    "exitCode": 0,
+    "routePassed": false
+  },
+  {
+    "scenario": "stage6-player-mushroom1000",
+    "target": "灵感菇狸",
+    "firstTargetDay": null,
+    "final": {
+      "鸡": 7135
+    },
+    "balanceAtEnd": 4311,
+    "actions": 30,
+    "rejectedActions": 20,
+    "firstRejection": "action day=230 inputIndex=5 sequence=5 tile=0,0 kind=PlantRecoveryChange tier=-2 cost=960 species= amount=0 recovery=0 materialDelta=0 accepted=False error=生物能不足",
+    "exitCode": 1,
+    "routePassed": false
+  },
+  {
+    "scenario": "stage6-player-deer1900",
+    "target": "鹿",
+    "firstTargetDay": null,
+    "final": {
+      "鸡": 4878
+    },
+    "balanceAtEnd": 2431,
+    "actions": 62,
+    "rejectedActions": 20,
+    "firstRejection": "action day=230 inputIndex=5 sequence=5 tile=0,0 kind=PlantRecoveryChange tier=-2 cost=960 species= amount=0 recovery=0 materialDelta=0 accepted=False error=生物能不足",
+    "exitCode": 1,
+    "routePassed": false
+  },
+  {
+    "scenario": "stage6-player-peacock900",
+    "target": "孔雀",
+    "firstTargetDay": null,
+    "final": {
+      "鸡": 4537
+    },
+    "balanceAtEnd": 4366,
+    "actions": 26,
+    "rejectedActions": 0,
+    "firstRejection": null,
+    "exitCode": 0,
+    "routePassed": false
+  }
+]

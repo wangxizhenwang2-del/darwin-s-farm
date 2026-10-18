@@ -11,19 +11,33 @@ internal static class FoodWeb
     private const float SharedPlantFraction = 0.1f;
     internal const int LargeHerbivoreTrackSize = 30;
 
-    // 2026-10-09 13:49 +08:00: explicit species links take priority; the
-    // V4.3 level fallback allows L2 to hunt either lower level.
+    // The imported graph is the sole authority for preset-species prey.
     internal static bool CanEat(PopulationData predator, PopulationData prey)
     {
-        if (predator == null || prey == null || predator == prey) return false;
+        if (predator == null || prey == null || predator == prey ||
+            predator.ecologicalNiche != prey.ecologicalNiche) return false;
         bool allowedLevels = predator.trophicLevel == 1 && prey.trophicLevel == 0 ||
             predator.trophicLevel == 2 &&
             (prey.trophicLevel == 0 || prey.trophicLevel == 1);
         if (!allowedLevels) return false;
         List<SpeciesData> links = predator.species != null ? predator.species.preySpecies : null;
-        return links != null && links.Count > 0
-            ? prey.species != null && links.Contains(prey.species)
-            : true;
+        return links != null && prey.species != null &&
+            links.Contains(prey.species);
+    }
+
+    // Diet identity survives a day with no live local prey. Birth stress must
+    // still use paid newborns if a hunter lives on stored prey energy.
+    internal static bool HasLandPredatorDiet(PopulationData population)
+    {
+        if (population == null || population.ecologicalNiche != EcologicalNiche.Land ||
+            population.trophicLevel <= 0 || population.species == null ||
+            population.species.preySpecies == null) return false;
+        foreach (SpeciesData prey in population.species.preySpecies)
+            if (prey != null && prey.baseEcologicalNiche == EcologicalNiche.Land &&
+                (population.trophicLevel == 1 && prey.trophicLevel == 0 ||
+                 population.trophicLevel == 2 && prey.trophicLevel <= 1))
+                return true;
+        return false;
     }
 
     public static void GrowPlants(BlockInfo block)

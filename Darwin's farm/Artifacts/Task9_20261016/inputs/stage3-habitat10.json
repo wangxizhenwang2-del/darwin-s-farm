@@ -1,0 +1,57 @@
+{
+  "scenarioId": "stage3-habitat10",
+  "seed": 240,
+  "endDay": 10,
+  "disableCosts": true,
+  "restrictedV05": true,
+  "mechanismFixture": true,
+  "fixtureFreezeTraits": true,
+  "fixtureDisableMigration": true,
+  "fixtureFixedEnvironment": true,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [
+    {
+      "x": 1,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/森林.asset",
+      "initialStock": 70000,
+      "overrideEnvironment": true,
+      "temperature": 30,
+      "humidity": 50,
+      "recovery": 70000,
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/鸡-7f113739.asset",
+          "count": 1000,
+          "overrideTraits": true,
+          "fitT": 30,
+          "fitH": 70,
+          "movement": 10,
+          "size": 8,
+          "fertility": 71
+        },
+        {
+          "species": "Assets/BiowebV46/Species/鹿-fd1c574b.asset",
+          "count": 100
+        },
+        {
+          "species": "Assets/BiowebV46/Species/灵感菇狸-761468a5.asset",
+          "count": 50,
+          "overrideTraits": true,
+          "fitT": 30,
+          "fitH": 70,
+          "movement": 35,
+          "size": 20,
+          "fertility": 65
+        }
+      ]
+    }
+  ],
+  "actions": [],
+  "fixtureSkipDiagnostics": true,
+  "enablePreyDensityFeedback": true,
+  "enablePaidBirthStress": true,
+  "enablePriorityPlantBudgets": true,
+  "reproductionStressPerBirth": 0.8,
+  "adultMaintenanceScale": 0.4
+}

@@ -16,7 +16,6 @@ namespace DarwinFarm.Environment
     public enum TerrainConnection { Grass, Sand, Rock }
     public enum EnvironmentAttribute { Temperature, Humidity, Recovery }
     public enum EffectPhase { None, Entering, Holding, Returning, Automatic }
-    public enum MonsoonExitReason { Manual, SourceChanged, Overlap, Replaced }
 
     public readonly struct GridPosition : IEquatable<GridPosition>, IComparable<GridPosition>
     {
@@ -50,8 +49,11 @@ namespace DarwinFarm.Environment
     {
         public const int PlantCapacity = 1000000, WaterPlantCapacity = 1500000;
         public const int WaterDefaultRecovery = 75000, MaximumRecovery = 150000;
-        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 150;
+        public const int TransitionDays = 25, ClimateHoldDays = 150, ClimateReturnDays = 100;
         public const int RecoveryHoldDays = 50, RecoveryReturnDays = 50;
+        public const int LandRecoveryTransitionDays = 25;
+        public const int LandRecoveryHoldDays = 150;
+        public const int LandRecoveryReturnDays = 100;
         public readonly struct HabitatProfile
         {
             public readonly string Title;
@@ -149,7 +151,6 @@ namespace DarwinFarm.Environment
             Math.Min(attribute == EnvironmentAttribute.Recovery ? MaximumRecovery : 100, value));
         public static bool IsFinite(double value) => !double.IsNaN(value) && !double.IsInfinity(value);
         public static bool IsClimateStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25 || Math.Abs(value) == 50);
-        public static bool IsMonsoonStrength(double value) => IsFinite(value) && Math.Abs(value) == 20;
         public static bool IsRecoveryStrength(double value) => IsFinite(value) && (Math.Abs(value) == 25000 || Math.Abs(value) == 50000);
         public static double ChangeStock(double stock, double signedFraction)
             => ChangeStock(stock, PlantCapacity, signedFraction);
@@ -161,7 +162,7 @@ namespace DarwinFarm.Environment
             return Math.Max(0, Math.Min(capacity, stock + signedFraction * (signedFraction > 0 ? capacity : stock)));
         }
 
-        // The combined plant tool always acts on the stock that exists now.
+        // The stock tool acts on the stock that exists when it is submitted.
         public static double MultiplyStock(double stock, double capacity, double signedFraction)
         {
             if (!IsFinite(stock) || !IsFinite(capacity) || capacity <= 0 || stock < 0 || stock > capacity ||

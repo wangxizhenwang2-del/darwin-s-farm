@@ -26,6 +26,7 @@ public sealed partial class PopulationVisualPresenter
         public PopulationTransitionResult Result;
         public PopulationTransitionVisual View;
         public bool Held;
+        public int WaterRevision = -1;
     }
 
     private sealed class PendingTransition
@@ -36,6 +37,8 @@ public sealed partial class PopulationVisualPresenter
         public Sprite SourceSprite;
         public Material Material;
         public bool Held;
+        public bool Flying;
+        public bool Swimming;
     }
 
     private readonly Dictionary<string, TransitionHold> transitionHolds =
@@ -80,6 +83,9 @@ public sealed partial class PopulationVisualPresenter
             sourceView.Leader.position : TileAnchor(sourceTile);
         PopulationData sourceData = sourceView != null ? sourceView.EcologicalPopulation :
             FindPopulation(result.SourceBlock, result.SourcePopulationId);
+        if (sourceView == null && (sourceData != null && sourceData.ecologicalNiche == EcologicalNiche.Air ||
+            result.ResultNiche == EcologicalNiche.Air && result.Kind == PopulationTransitionKind.Migration))
+            start.y = PopulationFlight.CruiseHeight(sourceTile, movement.Settings);
         Color targetColor = TintFor(targetData);
         Color sourceColor = sourceData != null ? TintFor(sourceData) : targetColor;
         Sprite sourceSprite = sourceView != null ? sourceView.DisplaySprite :
@@ -93,10 +99,15 @@ public sealed partial class PopulationVisualPresenter
         pendingTransitions.Add(new PendingTransition
         {
             Result = result,
+            Swimming = result.ResultNiche == EcologicalNiche.Water &&
+                (sourceView != null && sourceView.IsWater || sourceData != null && sourceData.ecologicalNiche == EcologicalNiche.Water ||
+                 result.Kind == PopulationTransitionKind.Migration && HabitatTopology.IsWater(result.SourceBlock)),
             Start = start,
             SourceColor = sourceColor,
             SourceSprite = sourceSprite,
-            Material = material
+            Material = material,
+            Flying = result.ResultNiche == EcologicalNiche.Air ||
+                (sourceData != null && sourceData.ecologicalNiche == EcologicalNiche.Air)
         });
     }
 
@@ -111,7 +122,8 @@ public sealed partial class PopulationVisualPresenter
                     pending.Result.ResultPopulationId) == null) continue;
             PopulationData targetData = FindPopulation(pending.Result.TargetBlock,
                 pending.Result.ResultPopulationId);
-            if (targetData.ecologicalNiche == EcologicalNiche.Land)
+            if (targetData.ecologicalNiche == EcologicalNiche.Land ||
+                targetData.ecologicalNiche == EcologicalNiche.Air || targetData.ecologicalNiche == EcologicalNiche.Water)
             {
                 if (!transitionHolds.TryGetValue(pending.Result.ResultPopulationId,
                         out TransitionHold hold))
@@ -165,14 +177,49 @@ public sealed partial class PopulationVisualPresenter
             Sprite targetSprite = SpriteFor(targetData);
             Vector3 start = pending.Start;
             Vector3 end = TileAnchor(targetTile);
+            if (targetData.ecologicalNiche == EcologicalNiche.Air)
+                end.y = PopulationFlight.CruiseHeight(targetTile, movement.Settings);
             if (visuals.TryGetValue(result.ResultPopulationId,
                     out WhiteboxPopulation targetView) && targetView != null &&
                 targetView.TileId == targetTile.Coordinate && targetView.Leader != null)
                 end = targetView.Leader.position;
 
-            bool hasRoute = TryNavigationPath(start, end, out Vector3[] path);
+            Vector3[] path = null;
+            var water = grid.GetComponent<MapWaterController>();
+            bool hasRoute;
+            if (pending.Swimming)
+            {
+                float radius = movement.Settings.leaderSize * movement.Settings.swimClearanceMultiplier;
+                foreach (var sprite in new[] { pending.SourceSprite, targetSprite })
+                    radius = Mathf.Max(radius, PopulationSpriteDisplay.WaterRadius(movement.Settings.leaderSize,
+                        movement.Settings.swimClearanceMultiplier, sprite, movement.ViewCamera ? movement.ViewCamera : Camera.main,
+                        movement.Settings.submergedFraction));
+                if (!water || !TryFindTile(result.SourceBlock, out var sourceTile) ||
+                    !water.TrySpace(sourceTile.Coordinate, out var sourceSpace) ||
+                    !water.TrySpace(targetTile.Coordinate, out var targetSpace))
+                { ReleaseUnstartedHold(pending); continue; }
+                // A swimmer can currently be anywhere in its source water area.
+                // Start there instead of snapping it back to its ledger tile.
+                if (!water.TrySwimmingPose(sourceTile.Coordinate, start, radius, out start) &&
+                    !sourceSpace.TrySpawn(radius, out start, pending.Start))
+                { ReleaseUnstartedHold(pending); continue; }
+                if (!water.TrySwimmingPose(targetTile.Coordinate, end, radius, out end) && !targetSpace.TrySpawn(radius, out end, start))
+                { ReleaseUnstartedHold(pending); continue; }
+                hasRoute = WaterPathfinding.TryPath(water, start, end, radius, out path);
+                if (!hasRoute) { ReleaseUnstartedHold(pending); continue; }
+                float offset = movement.Settings.leaderSize * (.5f - 1.5f * movement.Settings.submergedFraction);
+                for (int i = 0; i < path.Length; i++) path[i] += Vector3.up * offset;
+            }
+            else hasRoute = !pending.Flying && TryNavigationPath(start, end, out path);
             if (!hasRoute) path = new[] { start, end };
-            if (result.SourceBlock == result.TargetBlock &&
+            if (pending.Flying && TryFindTile(result.SourceBlock, out MapTileInstance fromTile))
+            {
+                float cruise = Mathf.Max(PopulationFlight.CruiseHeight(fromTile, movement.Settings),
+                    PopulationFlight.CruiseHeight(targetTile, movement.Settings), start.y, end.y);
+                path = new[] { start, new Vector3(start.x, cruise, start.z),
+                    new Vector3(end.x, cruise, end.z), end };
+            }
+            if (!pending.Swimming && result.SourceBlock == result.TargetBlock &&
                 Vector3.Distance(start, end) < 0.8f)
             {
                 path = new[] { start, start + Vector3.right * 1.5f, end };
@@ -193,14 +240,15 @@ public sealed partial class PopulationVisualPresenter
             {
                 Result = result,
                 View = transition,
-                Held = pending.Held
+                Held = pending.Held,
+                WaterRevision = pending.Swimming ? water.Revision : -1
             };
             activeTransitions.Add(running);
-            transition.Begin(path, !hasRoute ? fallbackArcHeight : 0f, duration,
-                WhiteboxPopulation.VisibleMemberCount(result.Amount), movement.Settings,
+            transition.Begin(path, !hasRoute && !pending.Flying ? fallbackArcHeight : 0f, duration,
+                movement.Settings,
                 pending.Material, pending.SourceSprite, targetSprite,
                 pending.SourceColor, targetColor, movement.ViewCamera,
-                () => FinishTransition(running));
+                () => FinishTransition(running), pending.Flying, pending.Swimming);
         }
     }
 
@@ -209,7 +257,10 @@ public sealed partial class PopulationVisualPresenter
         if (pending.Held && transitionHolds.TryGetValue(
                 pending.Result.ResultPopulationId, out TransitionHold hold) &&
             --hold.Active <= 0)
+        {
             transitionHolds.Remove(pending.Result.ResultPopulationId);
+            if (hold.StagedView) { hold.StagedView.gameObject.SetActive(true); hold.StagedView.PauseWandering(false); }
+        }
         SyncNow();
     }
 
@@ -218,6 +269,8 @@ public sealed partial class PopulationVisualPresenter
         if (activeTransitions.Count == 0) return;
         foreach (RunningTransition running in activeTransitions.ToArray())
             if (running.View == null ||
+                running.WaterRevision >= 0 && (grid.GetComponent<MapWaterController>() == null ||
+                    running.WaterRevision != grid.GetComponent<MapWaterController>().Revision) ||
                 !TryFindTile(running.Result.TargetBlock, out _) ||
                 (running.Result.Kind != PopulationTransitionKind.LocalSplit &&
                  running.Result.Kind != PopulationTransitionKind.PresetEvolution &&

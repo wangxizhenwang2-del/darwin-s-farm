@@ -1,0 +1,206 @@
+--- a/Assets/Scripts/Simulation/LandRuleTuning.cs
++++ b/Assets/Scripts/Simulation/LandRuleTuning.cs
+@@ -13,6 +13,11 @@
+     public bool enablePriorityPlantBudgets;
+     // Experimental formal-evolution gate. Old saves and scenes leave it off.
+     public bool useCompensatedEvolutionFoodGate;
++    // TASK10: OFF by default; protect renewable prey replenishment without
++    // creating or destroying prey outside the ordinary hunt/material ledger.
++    public bool enableDynamicPreyRenewalQuota = false;
++    [Range(0.1f, 0.7f)] public float dynamicPreyRefugeFraction = 0.35f;
++    [Min(10f)] public float dynamicPreyAdjustmentDays = 45f;
+     [Min(0f)] public float adultMaintenanceScale = 1f;
+     [Min(0f)] public float preyDensityHalfSaturationScale = 0.58f;
+     [Min(0f)] public float birthRate = 0.1f;
+@@ -131,6 +136,14 @@
+             splitMinimumRenewalPressure = 0.9f;
+             ruleVersion = 5;
+         }
++        // Old serialized ruleVersion=5 assets may omit these new fields.
++        // This candidate is disabled unless explicitly opted into in a test.
++        if (dynamicPreyRefugeFraction <= 0f)
++            dynamicPreyRefugeFraction = 0.35f;
++        if (dynamicPreyAdjustmentDays <= 0f)
++            dynamicPreyAdjustmentDays = 45f;
++        dynamicPreyRefugeFraction = Mathf.Clamp(dynamicPreyRefugeFraction, 0.1f, 0.7f);
++        dynamicPreyAdjustmentDays = Mathf.Max(10f, dynamicPreyAdjustmentDays);
+         birthRate = NonNegative(birthRate, 0.1f);
+         starvationDeathRate = Unit(starvationDeathRate, 0.6f);
+         coldDeathRate = NonNegative(coldDeathRate, 0.005f);
+--- a/Assets/Scripts/Simulation/LandLifeRules.cs
++++ b/Assets/Scripts/Simulation/LandLifeRules.cs
+@@ -600,6 +600,113 @@
+             Mathf.Max(1f, reference) / Mathf.Max(Epsilon, adult));
+         float n = prey.speciesAmount;
+         return n * n / (n * n + half * half);
++    }
++
++    // TASK10: zero-predation expected net renewal in the SAME shared renewable
++    // plant allocator as the live simulation. No mutation of BlockInfo/Population.
++    // Fractional newborn expectations avoid false 0-growth under small N;
++    // actual live births are still whole animals fully paid with biomass.
++    internal static float RenewableUnhuntedPreyGrowth(BlockInfo block,
++        PopulationData prey, int proposedCount, LandRuleTuning rules)
++    {
++        if (block == null || prey == null || rules == null ||
++            prey.trophicLevel != 0 || proposedCount <= 0) return 0f;
++        float food = CounterfactualPlantIntake(block, prey, prey,
++            proposedCount, rules);
++        float fitness = Fitness(block, prey.fitTemperature, prey.fitHumidity);
++        float adult = proposedCount * AdultNeed(prey.size,
++            prey.movementAbility, rules);
++        float covered = adult > Epsilon
++            ? Mathf.Clamp01(food / adult) : 1f;
++        float opportunity = proposedCount * rules.birthRate *
++            Mathf.Clamp01(prey.fertility / 100f) * fitness * covered;
++        float newbornCost = YoungNeed(prey.size, rules) +
++            BodyMass(prey.size, rules);
++        float births = Mathf.Min(opportunity,
++            Mathf.Max(0f, food - adult) / Mathf.Max(Epsilon, newbornCost));
++        float deaths = rules.starvationDeathRate * proposedCount *
++            (1f - covered) + ColdDeaths(proposedCount,
++            block.temperature, rules) +
++            rules.climateMismatchDeathRate * proposedCount * (1f - fitness) +
++            NaturalAdultDeaths(proposedCount, prey.size, rules);
++        if (rules.enablePaidBirthStress)
++            deaths += births * rules.reproductionStressPerBirth *
++                Mathf.Clamp01(prey.fertility / 100f) *
++                YoungNeed(prey.size, rules) / Mathf.Max(1f, prey.size);
++        else
++            deaths += ReproductionStressDeaths(proposedCount, prey.size,
++                prey.fertility, rules, satisfaction: covered,
++                fitness: fitness);
++        return births - deaths;
++    }
++
++    // Fast conditional zero-net-growth estimate for L0. Other species are
++    // held at present counts. This is not a promise of whole-web stability.
++    // Returns false if the expected growth has no upper stable crossing.
++    internal static bool TryRenewablePreyEquilibrium(BlockInfo block,
++        PopulationData prey, LandRuleTuning rules, out float equilibrium)
++    {
++        equilibrium = 0f;
++        if (block == null || prey == null || rules == null ||
++            prey.trophicLevel != 0 || block.habitatRecovery <= 0)
++            return false;
++        float adult = AdultNeed(prey.size, prey.movementAbility, rules);
++        int bound = Mathf.Clamp(Mathf.CeilToInt(Mathf.Max(100f,
++            3f * SustainablePlantSupply(block, rules) /
++            Mathf.Max(Epsilon, adult))), 100, 100000);
++        // Explicit small-N samples prevent a large linear grid from
++        // swallowing Allee-like low-density crossings.
++        int previous = 1;
++        float last = RenewableUnhuntedPreyGrowth(block, prey,
++            previous, rules);
++        int lower = 0, upper = 0;
++        for (int i = 0; i < 100 && previous < bound; i++)
++        {
++            int next = Mathf.Min(bound, previous < 100
++                ? previous + (previous < 20 ? 1 : 10)
++                : Mathf.Max(previous + 1,
++                    Mathf.CeilToInt(previous * 1.25f)));
++            float value = RenewableUnhuntedPreyGrowth(block, prey,
++                next, rules);
++            if (last > 0f && value <= 0f)
++            {
++                lower = previous;
++                upper = next;
++            }
++            previous = next;
++            last = value;
++        }
++        if (upper <= lower) return false;
++        while (upper - lower > 1)
++        {
++            int mid = lower + (upper - lower) / 2;
++            if (RenewableUnhuntedPreyGrowth(block, prey,
++                mid, rules) > 0f) lower = mid;
++            else upper = mid;
++        }
++        equilibrium = (lower + upper) * 0.5f;
++        return equilibrium > 0f;
++    }
++
++    // Actual captured prey cannot exceed today's renewable replacement plus
++    // a slow withdrawal from population above its conditional recovery refuge.
++    // Below the refuge, the term is NEGATIVE to allow the prey to recover.
++    // No instantaneous population cull and no extra food is introduced.
++    internal static int RenewablePreyHarvestQuota(BlockInfo block,
++        PopulationData prey, LandRuleTuning rules)
++    {
++        if (prey == null || prey.speciesAmount <= 0 ||
++            prey.trophicLevel != 0 || block == null || rules == null)
++            return 0;
++        int n = prey.speciesAmount;
++        float g = RenewableUnhuntedPreyGrowth(block, prey, n, rules);
++        float eq;
++        float buffer = TryRenewablePreyEquilibrium(block, prey,
++            rules, out eq)
++            ? (n - rules.dynamicPreyRefugeFraction * eq) /
++                Mathf.Max(10f, rules.dynamicPreyAdjustmentDays) : 0f;
++        return Mathf.Clamp(Mathf.FloorToInt(Mathf.Max(0f, g + buffer)),
++            0, n);
+     }
+ 
+     // Hunting resolves whole animals. A group that can catch at least one prey
+@@ -741,7 +848,8 @@
+             PreyDensityFactor(block, prey, rules);
+     }
+ 
+-    private static void HuntLevel(BlockInfo block, int level, LandRuleTuning rules)
++    private static void HuntLevel(BlockInfo block, int level, LandRuleTuning rules,
++        Dictionary<PopulationData, int> preyQuotaLeft = null)
+     {
+         var hunters = new List<PopulationData>(5);
+         var prey = new List<PopulationData>(5);
+@@ -815,8 +923,20 @@
+                 }
+                 float expected = Mathf.Min(victim.speciesAmount,
+                     total + victim.predationRemainder);
+-                int kills = Mathf.Min(victim.speciesAmount, Mathf.FloorToInt(expected));
+-                victim.predationRemainder = expected - kills;
++                int ordinaryKills = Mathf.Min(victim.speciesAmount,
++                    Mathf.FloorToInt(expected));
++                int kills = ordinaryKills;
++                if (preyQuotaLeft != null &&
++                    preyQuotaLeft.TryGetValue(victim, out int quota))
++                    kills = Mathf.Min(kills, quota);
++                // Preserve ONLY fractional capture attempt, never a backlog
++                // of forbidden kills that could explode on a later day.
++                victim.predationRemainder = expected -
++                    Mathf.FloorToInt(expected);
++                if (preyQuotaLeft != null &&
++                    preyQuotaLeft.ContainsKey(victim))
++                    preyQuotaLeft[victim] = Mathf.Max(0,
++                        preyQuotaLeft[victim] - kills);
+                 if (kills <= 0) continue;
+                 float removedBody = victim.bodyBiomass * kills /
+                     victim.speciesAmount;
+@@ -866,8 +986,25 @@
+                 * Fitness(block, p.fitTemperature, p.fitHumidity));
+             p.energyNeed = AdultNeed(p.size, p.movementAbility, rules);
+         }
+-        HuntLevel(block, 2, rules);
+-        HuntLevel(block, 1, rules);
++        Dictionary<PopulationData, int> renewableQuotas = null;
++        if (rules.enableDynamicPreyRenewalQuota)
++        {
++            bool hasHunter = false;
++            foreach (PopulationData p in block.community)
++                if (p != null && p.speciesAmount > 0 &&
++                    p.trophicLevel > 0) { hasHunter = true; break; }
++            if (hasHunter)
++            {
++                renewableQuotas = new Dictionary<PopulationData, int>();
++                foreach (PopulationData prey in block.community)
++                    if (prey != null && prey.trophicLevel == 0 &&
++                        prey.speciesAmount > 0)
++                        renewableQuotas[prey] = RenewablePreyHarvestQuota(
++                            block, prey, rules);
++            }
++        }
++        HuntLevel(block, 2, rules, renewableQuotas);
++        HuntLevel(block, 1, rules, renewableQuotas);
+         foreach (PopulationData p in block.community)
+             if (p.trophicLevel == 0 && p.speciesAmount > 0) herbivores.Add(p);
+         float[] allocation = AllocatePlants(herbivores,

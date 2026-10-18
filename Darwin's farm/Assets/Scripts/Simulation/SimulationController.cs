@@ -28,6 +28,44 @@ public struct SimulationTuning
 // 只安排每天的执行顺序；具体规则放在相应脚本里。
 public partial class SimulationController : MonoBehaviour
 {
+    public const string V61SourceGraphHash =
+        "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5";
+    // V6.1 core-run switches. Economy reuses the existing account switch;
+    // there is no random-event producer in the current project.
+    [SerializeField] private bool enableRandomEvents = false;
+    public bool EnableRandomEvents
+    {
+        get => enableRandomEvents;
+        set => enableRandomEvents = value;
+    }
+    public bool EnableEconomy
+    {
+        get
+        {
+#if UNITY_5_3_OR_NEWER
+            BioenergyAccount account = GetComponent<BioenergyAccount>();
+            return account != null && account.CostsEnabled;
+#else
+            return false;
+#endif
+        }
+    }
+    public void SetEconomyEnabled(bool enabled)
+    {
+#if UNITY_5_3_OR_NEWER
+        BioenergyAccount account = GetComponent<BioenergyAccount>();
+        if (account != null) account.CostsEnabled = enabled;
+#endif
+    }
+    public void ApplyCoreEvolutionTestProfile()
+    {
+        SetEcologicalNichesEnabled(false);
+        SetEconomyEnabled(false);
+        enableRandomEvents = false;
+        EnableNeighborMovementFormula = true;
+        EnableEcologyLedgerDiagnostics = true;
+        EnableEcologyConsoleLogs = false;
+    }
     [SerializeField] private LandRuleTuning landRules = new LandRuleTuning();
     private bool landRulesValidated;
     public LandRuleTuning ReadLandRules() => LandRules.Copy();
@@ -130,6 +168,18 @@ public partial class SimulationController : MonoBehaviour
     public void SetBlocks(List<BlockInfo> blocks)
     {
         blockInfos = blocks ?? new List<BlockInfo>();
+        // Tile edits resynchronize this list. Keep the range history of living
+        // populations so a map operation cannot replay all entry messages.
+        var present = new HashSet<PopulationData>();
+        foreach (BlockInfo block in blockInfos)
+            if (block != null && block.community != null)
+                foreach (PopulationData population in block.community)
+                    if (population != null) present.Add(population);
+        var removed = new List<PopulationData>();
+        foreach (PopulationData population in evolutionTraitRangeStates.Keys)
+            if (!present.Contains(population)) removed.Add(population);
+        foreach (PopulationData population in removed)
+            evolutionTraitRangeStates.Remove(population);
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
@@ -184,7 +234,7 @@ public partial class SimulationController : MonoBehaviour
         highStockDays = LandRules.highStockDays,
         lowRenewalCoverage = LandRules.lowRenewalCoverage,
         highRenewalCoverage = LandRules.highRenewalCoverage,
-        ecologicalNichesEnabled = ecologicalNichesEnabled
+        ecologicalNichesEnabled = EnableAirEcology || EnableWaterEcology
     };
 
     public void ApplyTuning(SimulationTuning tuning)
@@ -199,7 +249,10 @@ public partial class SimulationController : MonoBehaviour
             tuning.migrationPopulationScale, tuning.overloadThreshold,
             tuning.baseOverloadProbability, tuning.overloadMigrationFraction,
             tuning.migrationCooldownDays);
-        SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
+        // A legacy combined tuning round-trip must preserve an independently
+        // enabled air-only or water-only configuration.
+        if (tuning.ecologicalNichesEnabled != EcologicalNichesEnabled)
+            SetEcologicalNichesEnabled(tuning.ecologicalNichesEnabled);
         LandRuleTuning nextLandRules = LandRules.Copy();
         nextLandRules.sameSpeciesMergeDays = tuning.sameSpeciesMergeDays;
         nextLandRules.postMergeSplitCooldownDays = tuning.postMergeSplitCooldownDays;
@@ -237,6 +290,7 @@ public partial class SimulationController : MonoBehaviour
         if (block == null || !blockInfos.Contains(block) || edits == null ||
             block.community == null) return false;
         HashSet<PopulationData> seen = new HashSet<PopulationData>();
+        PopulationData airSpecies = null;
         foreach (SimulationPopulationEdit edit in edits)
         {
             if (edit == null || edit.Draft == null ||
@@ -249,12 +303,20 @@ public partial class SimulationController : MonoBehaviour
                 edit.Draft.trophicLevel < 0 ||
                 edit.Draft.trophicLevel > MaxTrophicLevel ||
                 (edit.Resident == null && edit.Draft.speciesAmount > 0 &&
+                 edit.Draft.ecologicalNiche != EcologicalNiche.Air &&
                  HabitatTopology.IsWater(block)) ||
                 (edit.Resident != null &&
                  (!block.community.Contains(edit.Resident) || !seen.Add(edit.Resident))))
                 return false;
+            if (edit.Draft.speciesAmount > 0 && edit.Draft.ecologicalNiche == EcologicalNiche.Air)
+            {
+                if (airSpecies != null && !PopulationTransfer.IsSameSpecies(airSpecies, edit.Draft))
+                    return false;
+                airSpecies = edit.Draft;
+            }
         }
 
+        AssignCommunityEditIds(block, edits);
         List<PopulationData> next = new List<PopulationData>(edits.Count);
         foreach (SimulationPopulationEdit edit in edits)
         {
@@ -284,7 +346,7 @@ public partial class SimulationController : MonoBehaviour
             SetTrophicLevel(resident, draft.trophicLevel);
             next.Add(resident);
         }
-        // A land tile has one local population per species. New drafts from
+        // Land and air use one local population per species. New drafts from
         // the editor/test entry may match a resident; use migration's same
         // weighted transfer rule to keep one population record.
         List<PopulationData> merged = new List<PopulationData>(next.Count);
@@ -292,12 +354,13 @@ public partial class SimulationController : MonoBehaviour
         {
             PopulationData match = null;
             if (population != null && population.speciesAmount > 0 &&
-                population.ecologicalNiche == EcologicalNiche.Land &&
+                (population.ecologicalNiche == EcologicalNiche.Land ||
+                 population.ecologicalNiche == EcologicalNiche.Air) &&
                 population.landPositionBlock == null)
             {
                 match = merged.Find(resident => resident != null &&
                     resident.speciesAmount > 0 &&
-                    resident.ecologicalNiche == EcologicalNiche.Land &&
+                    resident.ecologicalNiche == population.ecologicalNiche &&
                     resident.landPositionBlock == null &&
                     PopulationTransfer.IsSameSpecies(resident, population));
             }
@@ -324,6 +387,18 @@ public partial class SimulationController : MonoBehaviour
     // Read-only diagnostic. It does not advance the day or touch random state.
     public float ReadFoodCarryingCapacity(BlockInfo block, PopulationData population)
         => LandLifeRules.FoodCarryingCapacity(block, population, LandRules);
+
+    public float ReadPredatorFoodCarryingCapacity(BlockInfo block,
+        PopulationData population)
+    {
+        string before = CanonicalModelHash();
+        float value = LandLifeRules.PredatorFoodCarryingCapacity(block,
+            population, LandRules);
+        if (CanonicalModelHash() != before)
+            throw new System.InvalidOperationException(
+                "Predator food capacity diagnostic changed live state.");
+        return value;
+    }
 
     public float ReadCounterfactualPlantIntake(BlockInfo block,
         PopulationData target, PopulationData changedCount, int proposedCount)
@@ -407,10 +482,12 @@ public partial class SimulationController : MonoBehaviour
         currentSimulationDay = day;
         SortModelState();
         OnBeforeDaySimulated?.Invoke(day);
+        BeginEcologyLedger();
         foreach (BlockInfo block in blockInfos)
         {
             SimulateBlock(block);
         }
+        CaptureLifeFlows();
         RemoveEndangered(day);
         RunPresetEvolution(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
@@ -420,6 +497,7 @@ public partial class SimulationController : MonoBehaviour
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
             LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+        FinishEcologyLedger(day);
         OnDaySimulated?.Invoke(day);
     }
 

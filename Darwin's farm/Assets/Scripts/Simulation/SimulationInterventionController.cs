@@ -71,7 +71,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
             int count = 0;
             if (Environment != null)
                 foreach (var item in Environment.ReadAll())
-                    if (item.Environment.HasLocalClimate || item.Environment.HasMonsoon ||
+                    if (item.Environment.HasLocalClimate ||
                         item.Environment.Recovery.Phase != DarwinFarm.Environment.EffectPhase.None) count++;
             return count;
         }
@@ -179,7 +179,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
         }
         if (request.radius != 0 || float.IsNaN(request.amount) || float.IsInfinity(request.amount))
         {
-            preview.Error = "单格操作只允许半径 0；季风通过发源点专用接口部署";
+            preview.Error = "单格操作只允许半径 0";
             return preview;
         }
         if (!bridge.TryGetBlock(request.center, out BlockInfo block))
@@ -235,7 +235,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
             "rejected:intervention:" + request.kind + ";amount=" + request.amount +
             ";reason=" + error);
         else OperationCommitted?.Invoke(request.center,
-            "intervention:" + request.kind + ";amount=" + request.amount);
+            "intervention:" + JsonUtility.ToJson(request));
         return applied;
     }
 
@@ -256,7 +256,8 @@ public sealed class SimulationInterventionController : MonoBehaviour
             OperationCommitted?.Invoke(coordinate, "rejected:community_edit;reason=" + error);
             return false;
         }
-        OperationCommitted?.Invoke(coordinate, "community_edit;entries=" + edits.Count);
+        OperationCommitted?.Invoke(coordinate, "community_edit:" +
+            ReplayCommunityInput(edits));
         return true;
     }
 
@@ -273,9 +274,7 @@ public sealed class SimulationInterventionController : MonoBehaviour
         }
         bool applied = Environment.TryEditEnvironment(coordinate, edit, out error);
         if (applied) OperationCommitted?.Invoke(coordinate,
-            "environment_edit;T=" + edit.temperature + ";H=" + edit.humidity +
-            ";Z=" + edit.elevation + ";R=" + edit.habitatRecovery +
-            ";stock=" + edit.plantBiomass);
+            "environment_edit:" + JsonUtility.ToJson(edit));
         else OperationCommitted?.Invoke(coordinate,
             "rejected:environment_edit;reason=" + error);
         return applied;
@@ -286,18 +285,44 @@ public sealed class SimulationInterventionController : MonoBehaviour
         simulationController.ApplyTuning(tuning);
         simulationTime.SetSecondsPerDay(secondsPerDay);
         OperationCommitted?.Invoke(Vector2Int.zero,
-            "global_tuning;secondsPerDay=" + secondsPerDay +
-            ";reproduction=" + tuning.reproductionScale +
-            ";migration=" + tuning.migrationEnabled +
-            ";mutation=" + tuning.mutationEnabled +
-            ";niches=" + tuning.ecologicalNichesEnabled +
-            ";splitK=" + tuning.splitMinimumRenewalPressure +
-            ";founder=" + tuning.splitFounderFraction +
-            ";approach=" + tuning.directedSplitTraitFraction +
-            ";traitLockDays=" + tuning.directedSplitTraitLockDays +
-            ";mergeDays=" + tuning.sameSpeciesMergeDays +
-            ";postMergeSplitCooldownDays=" + tuning.postMergeSplitCooldownDays +
-            ";resourceTraitGain=" + tuning.resourceTraitGain);
+            "global_tuning:" + JsonUtility.ToJson(tuning));
+    }
+
+    [Serializable]
+    private sealed class ReplayCommunityBatch
+    {
+        public List<ReplayCommunityEntry> entries = new List<ReplayCommunityEntry>();
+    }
+
+    [Serializable]
+    private sealed class ReplayCommunityEntry
+    {
+        public string residentId, speciesId, lineageName, niche;
+        public int count, level, fitTemperature, fitHumidity, size, movement, fertility;
+    }
+
+    private static string ReplayCommunityInput(IReadOnlyList<SimulationPopulationEdit> edits)
+    {
+        var batch = new ReplayCommunityBatch();
+        foreach (SimulationPopulationEdit edit in edits)
+        {
+            PopulationData draft = edit.Draft;
+            batch.entries.Add(new ReplayCommunityEntry
+            {
+                residentId = edit.Resident != null ? edit.Resident.PopulationId : "",
+                speciesId = draft.species != null ? draft.species.SpeciesId : draft.speciesId,
+                lineageName = draft.lineageName,
+                niche = draft.ecologicalNiche.ToString(),
+                count = draft.speciesAmount,
+                level = draft.trophicLevel,
+                fitTemperature = draft.fitTemperature,
+                fitHumidity = draft.fitHumidity,
+                size = draft.size,
+                movement = draft.movementAbility,
+                fertility = draft.fertility
+            });
+        }
+        return JsonUtility.ToJson(batch);
     }
 
     private static string FormatValue(SimulationInterventionKind kind, float value)

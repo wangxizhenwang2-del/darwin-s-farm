@@ -1,0 +1,236 @@
+{
+  "unityVersion": "6000.2.9f1",
+  "noCostColorDoubleHashMatches": 501,
+  "noCostMushroomPrefixDoubleHashMatches": 230,
+  "routes": [
+    {
+      "route": "stage6-player-color500",
+      "source": "鸡",
+      "target": "彩鸡",
+      "runtimeLegalTargets": [
+        "彩鸡",
+        "灵感菇狸"
+      ],
+      "assetGraphTargets": [
+        "彩鸡",
+        "灵感菇狸"
+      ],
+      "requestedTargetGraphConnected": true,
+      "status": "DIAGNOSED_NO_COST",
+      "originalInput": "inputs/stage6-player-color500.json",
+      "diagnosticRerun": true,
+      "rerunReason": "Missing private gate fields in historical JSONL",
+      "diagnosticConfiguration": {
+        "disableCosts": true,
+        "t95Diagnostics": true,
+        "seedAndActionsUnchanged": true
+      },
+      "historicalEconomyContaminated": false,
+      "historicalRouteFlags": [],
+      "initial": {
+        "seed": 240,
+        "stock": 50000.0,
+        "recovery": 50000,
+        "temperature": 55.0,
+        "humidity": 35.0,
+        "populations": {
+          "鸡": 160
+        },
+        "sourcePresent": true
+      },
+      "prerequisiteEverPresent": true,
+      "firstPrerequisiteDay": 0,
+      "historicalOperations": {
+        "total": 6,
+        "accepted": 6,
+        "rejected": 0,
+        "firstRejectedDay": null
+      },
+      "diagnosticOperations": {
+        "total": 6,
+        "accepted": 6,
+        "rejected": 0
+      },
+      "localSplitEvents": 0,
+      "candidatePopulationEvents": 0,
+      "formalConversionEvents": 0,
+      "targetFirstDay": null,
+      "final": {
+        "day": 500,
+        "populations": {
+          "鸡": 4915
+        }
+      },
+      "mainUnmetGate": "FOOD_SUPPORT_AFTER_TRAITS_PASS",
+      "suspiciousCause": "Actual food-support predicate returned false in all 126 post-step snapshots with traits in tolerance; subcondition margins UNKNOWN."
+    },
+    {
+      "route": "stage6-player-mushroom1000",
+      "source": "鸡",
+      "target": "灵感菇狸",
+      "runtimeLegalTargets": [
+        "彩鸡",
+        "灵感菇狸"
+      ],
+      "assetGraphTargets": [
+        "彩鸡",
+        "灵感菇狸"
+      ],
+      "requestedTargetGraphConnected": true,
+      "status": "DIAGNOSED_NO_COST",
+      "originalInput": "inputs/stage6-player-mushroom1000.json",
+      "diagnosticRerun": true,
+      "rerunReason": "Historical bioenergy rejections plus missing gate fields",
+      "diagnosticConfiguration": {
+        "disableCosts": true,
+        "t95Diagnostics": true,
+        "seedAndActionsUnchanged": true
+      },
+      "historicalEconomyContaminated": true,
+      "historicalRouteFlags": [
+        "ECONOMY_CONTAMINATED"
+      ],
+      "initial": {
+        "seed": 240,
+        "stock": 50000.0,
+        "recovery": 50000,
+        "temperature": 55.0,
+        "humidity": 35.0,
+        "populations": {
+          "鸡": 160
+        },
+        "sourcePresent": true
+      },
+      "prerequisiteEverPresent": true,
+      "firstPrerequisiteDay": 0,
+      "historicalOperations": {
+        "total": 30,
+        "accepted": 10,
+        "rejected": 20,
+        "firstRejectedDay": 230
+      },
+      "diagnosticOperations": {
+        "total": 30,
+        "accepted": 30,
+        "rejected": 0
+      },
+      "localSplitEvents": 0,
+      "candidatePopulationEvents": 0,
+      "formalConversionEvents": 0,
+      "targetFirstDay": null,
+      "final": {
+        "day": 1000,
+        "populations": {
+          "鸡": 6191
+        }
+      },
+      "mainUnmetGate": "FIVE_TRAIT_TOLERANCE",
+      "suspiciousCause": "No-cost run executed every action; five-trait tolerance never passed."
+    },
+    {
+      "route": "stage6-player-deer1900",
+      "source": "灵感菇狸",
+      "target": "鹿",
+      "runtimeLegalTargets": "UNKNOWN",
+      "assetGraphTargets": [
+        "鸡",
+        "鹿"
+      ],
+      "requestedTargetGraphConnected": "UNKNOWN_SOURCE_MISSING",
+      "status": "PREREQUISITE_MISSING",
+      "originalInput": "inputs/stage6-player-deer1900.json",
+      "diagnosticRerun": false,
+      "rerunReason": "NOT_RUN_PREREQUISITE_MISSING",
+      "diagnosticConfiguration": "NOT_RUN",
+      "historicalEconomyContaminated": true,
+      "historicalRouteFlags": [
+        "ECONOMY_CONTAMINATED",
+        "PREREQUISITE_MISSING"
+      ],
+      "initial": {
+        "seed": 240,
+        "stock": 50000.0,
+        "recovery": 50000,
+        "temperature": 55.0,
+        "humidity": 35.0,
+        "populations": {
+          "鸡": 160
+        },
+        "sourcePresent": false
+      },
+      "prerequisiteEverPresent": false,
+      "firstPrerequisiteDay": null,
+      "historicalOperations": {
+        "total": 62,
+        "accepted": 42,
+        "rejected": 20,
+        "firstRejectedDay": 230
+      },
+      "diagnosticOperations": "NOT_RUN",
+      "localSplitEvents": 0,
+      "candidatePopulationEvents": 0,
+      "formalConversionEvents": 0,
+      "targetFirstDay": null,
+      "final": {
+        "day": 1900,
+        "populations": {
+          "鸡": 4878
+        }
+      },
+      "mainUnmetGate": "PREREQUISITE_MISSING",
+      "suspiciousCause": "Required source species never appeared; edge never evaluated."
+    },
+    {
+      "route": "stage6-player-peacock900",
+      "source": "彩鸡",
+      "target": "孔雀",
+      "runtimeLegalTargets": "UNKNOWN",
+      "assetGraphTargets": [
+        "孔雀",
+        "鸡"
+      ],
+      "requestedTargetGraphConnected": "UNKNOWN_SOURCE_MISSING",
+      "status": "PREREQUISITE_MISSING",
+      "originalInput": "inputs/stage6-player-peacock900.json",
+      "diagnosticRerun": false,
+      "rerunReason": "NOT_RUN_PREREQUISITE_MISSING",
+      "diagnosticConfiguration": "NOT_RUN",
+      "historicalEconomyContaminated": false,
+      "historicalRouteFlags": [
+        "PREREQUISITE_MISSING"
+      ],
+      "initial": {
+        "seed": 240,
+        "stock": 50000.0,
+        "recovery": 50000,
+        "temperature": 55.0,
+        "humidity": 35.0,
+        "populations": {
+          "鸡": 160
+        },
+        "sourcePresent": false
+      },
+      "prerequisiteEverPresent": false,
+      "firstPrerequisiteDay": null,
+      "historicalOperations": {
+        "total": 26,
+        "accepted": 26,
+        "rejected": 0,
+        "firstRejectedDay": null
+      },
+      "diagnosticOperations": "NOT_RUN",
+      "localSplitEvents": 0,
+      "candidatePopulationEvents": 0,
+      "formalConversionEvents": 0,
+      "targetFirstDay": null,
+      "final": {
+        "day": 900,
+        "populations": {
+          "鸡": 4537
+        }
+      },
+      "mainUnmetGate": "PREREQUISITE_MISSING",
+      "suspiciousCause": "Required source species never appeared; edge never evaluated."
+    }
+  ]
+}

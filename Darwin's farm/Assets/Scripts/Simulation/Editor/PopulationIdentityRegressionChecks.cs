@@ -11,6 +11,21 @@ public static class PopulationIdentityRegressionChecks
     [MenuItem("Tools/Darwin Farm/Validation/Population/Run Identity Checks", false, 523)]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
+    public static void RunBatch()
+    {
+        try
+        {
+            Debug.Log(RunChecks());
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+        catch (Exception error)
+        {
+            Debug.LogException(error);
+            if (Application.isBatchMode) EditorApplication.Exit(1);
+            else throw;
+        }
+    }
+
     public static string RunChecks()
     {
         int passed = 0;

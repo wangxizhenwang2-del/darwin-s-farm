@@ -1,0 +1,63 @@
+{
+  "scenarioId": "stage6-player-color500",
+  "seed": 240,
+  "endDay": 500,
+  "disableCosts": false,
+  "restrictedV05": false,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1,
+      "sequence": 0
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 1,
+      "sequence": 1
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 2
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange",
+      "sequence": 3
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 4
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 5
+    }
+  ],
+  "useV05Sandbox": true,
+  "enablePreyDensityFeedback": true,
+  "enablePaidBirthStress": true,
+  "enablePriorityPlantBudgets": true,
+  "adultMaintenanceScale": 0.4,
+  "reproductionStressPerBirth": 0.8
+}

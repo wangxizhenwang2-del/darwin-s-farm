@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Darwin.Rendering
 {
     public enum RiverSide { North, East, South, West }
+    public enum WaterDebugView { Composite, Flow, WaveHeight, ShoreDistance, Foam, Normals, ImpactFoam, ImpactRipples }
 
     [Serializable]
     public struct RiverPort
@@ -19,6 +20,8 @@ namespace Darwin.Rendering
     public sealed class RiverSurfaceProfile : ScriptableObject
     {
         public float tileSize = 17;
+        [Tooltip("A lake/sea occupies the full tile, with mouths that can receive narrower rivers.")]
+        public bool fullTileWater;
         public float bankHeight = 1;
         public Mesh waterMesh;
         public Material waterMaterial;

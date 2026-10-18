@@ -48,7 +48,6 @@ public sealed class BioenergySettings : ScriptableObject
     public int plantDecreaseSmallCost = 420;
     public int plantDecreaseLargeCost = 960;
     public int elevationCost = 500;
-    public int monsoonCost = 1000;
 
     public int FallbackSpeciesValue(int level) =>
         level <= 0 ? fallbackHerbivoreValue :
@@ -84,6 +83,5 @@ public sealed class BioenergySettings : ScriptableObject
         plantDecreaseSmallCost = Mathf.Max(0, plantDecreaseSmallCost);
         plantDecreaseLargeCost = Mathf.Max(0, plantDecreaseLargeCost);
         elevationCost = Mathf.Max(0, elevationCost);
-        monsoonCost = Mathf.Max(0, monsoonCost);
     }
 }

@@ -46,11 +46,6 @@ namespace DarwinFarm.Environment
         public AttributeSnapshot Temperature { get; }
         public AttributeSnapshot Humidity { get; }
         public AttributeSnapshot Recovery { get; }
-        public long? MonsoonId { get; }
-        public double MonsoonTemperatureOffset { get; }
-        public double MonsoonHumidityOffset { get; }
-        public bool HasMonsoon => MonsoonId.HasValue;
-        public bool MonsoonApplied { get; }
         public bool HasLocalClimate { get; }
         public bool HasLocalTemperature { get; }
         public bool HasLocalHumidity { get; }
@@ -62,59 +57,15 @@ namespace DarwinFarm.Environment
             Habitat = tile.Habitat; IsWater = tile.IsWater;
             NaturalDefaults = EnvironmentRules.Defaults(tile.Habitat);
             Temperature = tile.Attribute(0); Humidity = tile.Attribute(1); Recovery = tile.Attribute(2);
-            MonsoonId = tile.MonsoonId; HasLocalClimate = tile.HasLocalClimate;
-            MonsoonTemperatureOffset = tile.WindOffsets[0];
-            MonsoonHumidityOffset = tile.WindOffsets[1];
+            HasLocalClimate = tile.HasLocalClimate;
             HasLocalTemperature = tile.Locals[0] != null;
             HasLocalHumidity = tile.Locals[1] != null;
             HasRecoveryCommand = tile.RecoveryReturning;
             CanCancelRecovery = tile.RecoveryReturning &&
-                tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
+                tile.RecoveryAge < tile.RecoveryHoldThreshold &&
                 !tile.RecoveryCancelIssued;
-            MonsoonApplied = HasMonsoon;
         }
     }
-
-    public sealed class MonsoonSnapshot
-    {
-        public long Id { get; }
-        public GridPosition Source { get; }
-        public int TemperatureOffset { get; }
-        public int HumidityOffset { get; }
-        public IReadOnlyList<GridPosition> Area { get; }
-        internal MonsoonSnapshot(MonsoonState state)
-        {
-            Id = state.Id; Source = state.Source;
-            TemperatureOffset = state.TemperatureOffset; HumidityOffset = state.HumidityOffset;
-            var area = new List<GridPosition>(state.Area); area.Sort(); Area = area.AsReadOnly();
-        }
-    }
-
-    // Reserved settlement contract: no balances, prices, deductions or refund execution here.
-    public sealed class EnvironmentPayment
-    {
-        public string ReceiptId { get; }
-        public decimal PaidAmount { get; }
-        public EnvironmentPayment(string receiptId, decimal paidAmount)
-        {
-            if (string.IsNullOrWhiteSpace(receiptId)) throw new ArgumentException("A payment receipt needs an identity.", nameof(receiptId));
-            if (paidAmount < 0) throw new ArgumentOutOfRangeException(nameof(paidAmount));
-            ReceiptId = receiptId; PaidAmount = paidAmount;
-        }
-    }
-
-    public sealed class MonsoonSettlement
-    {
-        public long MonsoonId { get; }
-        public MonsoonExitReason Reason { get; }
-        public EnvironmentPayment Payment { get; }
-        public decimal RefundAmount => Reason == MonsoonExitReason.Overlap ? Payment?.PaidAmount ?? 0 : 0;
-        internal MonsoonSettlement(MonsoonState state, MonsoonExitReason reason)
-        { MonsoonId = state.Id; Reason = reason; Payment = state.Payment; }
-    }
-
-    // A future economy adapter consumes idempotent settlements, keyed by MonsoonId/ReceiptId.
-    public interface IEnvironmentEconomySink { void OnMonsoonEnded(MonsoonSettlement settlement); }
 
     internal sealed class Transition
     {
@@ -134,6 +85,8 @@ namespace DarwinFarm.Environment
     {
         internal int Age;
         internal long Sequence;
+        internal double Baseline;
+        internal HabitatState HabitatAtSubmit;
         internal bool Active => Age < EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
         internal EffectPhase Phase => Age < EnvironmentRules.TransitionDays ? EffectPhase.Entering :
             Active ? EffectPhase.Holding : EffectPhase.Returning;
@@ -154,8 +107,15 @@ namespace DarwinFarm.Environment
         internal bool RecoveryReturning;
         internal bool RecoveryCancelIssued;
         internal bool RecoveryDetached;
-        internal long? MonsoonId;
-        internal readonly double[] WindOffsets = new double[2];
+        internal double RecoveryBaseline;
+        internal HabitatState RecoveryHabitatAtSubmit;
+        internal int RecoveryHoldThreshold => IsWater ?
+            EnvironmentRules.RecoveryHoldDays :
+            EnvironmentRules.LandRecoveryTransitionDays +
+                EnvironmentRules.LandRecoveryHoldDays;
+        internal int RecoveryReturnDuration => IsWater ?
+            EnvironmentRules.RecoveryReturnDays :
+            EnvironmentRules.LandRecoveryReturnDays;
         internal bool HasLocalClimate => Locals[0] != null || Locals[1] != null;
         internal EnvironmentTile(TopologyNode node)
         {
@@ -172,27 +132,25 @@ namespace DarwinFarm.Environment
         {
             var track = Tracks[index]; var local = index < 2 ? Locals[index] : null;
             var phase = local != null ? local.Phase :
-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays
+                index == 2 && RecoveryReturning && !IsWater &&
+                    RecoveryAge < EnvironmentRules.LandRecoveryTransitionDays
+                    ? EffectPhase.Entering :
+                index == 2 && RecoveryReturning && RecoveryAge < RecoveryHoldThreshold
                     ? EffectPhase.Holding : track.Active ? track.Phase : EffectPhase.None;
             int remaining = local != null && local.Phase == EffectPhase.Holding ?
                 EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays - local.Age :
-                index == 2 && RecoveryReturning && RecoveryAge < EnvironmentRules.RecoveryHoldDays ?
-                    EnvironmentRules.RecoveryHoldDays - RecoveryAge : Math.Max(0, track.Duration - track.Age);
-            double offset = index < 2 ? WindOffsets[index] : 0;
+                index == 2 && RecoveryReturning && !IsWater &&
+                    RecoveryAge < EnvironmentRules.LandRecoveryTransitionDays ?
+                    EnvironmentRules.LandRecoveryTransitionDays - RecoveryAge :
+                index == 2 && RecoveryReturning && RecoveryAge < RecoveryHoldThreshold ?
+                    RecoveryHoldThreshold - RecoveryAge : Math.Max(0, track.Duration - track.Age);
             double target = index == 2 && RecoveryReturning &&
-                RecoveryAge < EnvironmentRules.RecoveryHoldDays ? Values[2] : track.Target;
-            return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index] + offset),
-                EnvironmentRules.Clamp((EnvironmentAttribute)index, target + offset),
+                RecoveryAge >= EnvironmentRules.LandRecoveryTransitionDays &&
+                RecoveryAge < RecoveryHoldThreshold ? Values[2] : track.Target;
+            return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index]),
+                EnvironmentRules.Clamp((EnvironmentAttribute)index, target),
                 phase, remaining, track.Progress);
         }
     }
 
-    internal sealed class MonsoonState
-    {
-        internal long Id;
-        internal GridPosition Source;
-        internal int TemperatureOffset, HumidityOffset;
-        internal EnvironmentPayment Payment;
-        internal HashSet<GridPosition> Area = new HashSet<GridPosition>();
-    }
 }

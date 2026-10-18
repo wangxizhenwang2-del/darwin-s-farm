@@ -1,0 +1,763 @@
+{
+  "basis": "Read-only Unity Editor post-step diagnostic; production evolution source was not changed",
+  "gateOrder": [
+    "graphConnection",
+    "cooldown",
+    "fiveTraitTolerance",
+    "targetAbsent",
+    "livingPopulationSlotsBelowFive",
+    "materialFoundersPlan",
+    "foodSupport",
+    "consecutiveEligibleDays"
+  ],
+  "nonGateObservations": {
+    "N_over_environmentalK": "Recorded, but splitMinimumRenewalPressure is not read by current RunPresetEvolution/IsEligibleEvolutionTarget; no pass/fail assigned.",
+    "adultSatisfaction10": "Observed history mean, not an independent formal conversion gate.",
+    "localSplitBranch": "Formal conversion directly uses PopulationTransfer.Split; no prior local split is required in this source path."
+  },
+  "unobserved": {
+    "actualInStepGateCounters": "Would require instrumentation inside production RunPresetEvolution; UNKNOWN.",
+    "foodSupportComponentMargins": "Production HasEvolutionFoodSupport returns bool; subcondition margins UNKNOWN.",
+    "mutationChoiceCause": "Task 9 replay omitted mutation-choice events; only observed traits available."
+  },
+  "routes": {
+    "stage6-player-color500": {
+      "classification": "NO_COST_WITH_HISTORICAL_DOUBLE_HASH_MATCH",
+      "sourcePresentDays": 501,
+      "postStepGateCounts": {
+        "graphConnection": {
+          "pass": 501,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "cooldown": {
+          "pass": 501,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "traitTolerance": {
+          "pass": 126,
+          "fail": 375,
+          "notEvaluated": 0
+        },
+        "targetAbsent": {
+          "pass": 126,
+          "fail": 0,
+          "notEvaluated": 375
+        },
+        "space": {
+          "pass": 126,
+          "fail": 0,
+          "notEvaluated": 375
+        },
+        "materialPlan": {
+          "pass": 126,
+          "fail": 0,
+          "notEvaluated": 375
+        },
+        "foodSupport": {
+          "pass": 0,
+          "fail": 126,
+          "notEvaluated": 375
+        },
+        "eligible": {
+          "pass": 0,
+          "fail": 126,
+          "notEvaluated": 375
+        }
+      },
+      "consecutiveEligibleDaysGate": {
+        "pass": 0,
+        "fail": 0,
+        "notEvaluated": 501
+      },
+      "closest20PostStepMoments": [
+        {
+          "day": 128,
+          "N": 3613,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.0702211574460538,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 361
+        },
+        {
+          "day": 129,
+          "N": 3645,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.079700005228582,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 365
+        },
+        {
+          "day": 130,
+          "N": 3677,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.08917885301111,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 368
+        },
+        {
+          "day": 131,
+          "N": 3709,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.098657700793638,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 371
+        },
+        {
+          "day": 132,
+          "N": 3740,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.107840334582962,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 374
+        },
+        {
+          "day": 133,
+          "N": 3770,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.116726754379082,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 377
+        },
+        {
+          "day": 134,
+          "N": 3799,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1253169601819981,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 380
+        },
+        {
+          "day": 135,
+          "N": 3829,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1342033799781182,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 383
+        },
+        {
+          "day": 136,
+          "N": 3857,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1424973717878302,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 386
+        },
+        {
+          "day": 137,
+          "N": 3886,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.151087577590746,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 389
+        },
+        {
+          "day": 138,
+          "N": 3914,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1593815694004581,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 391
+        },
+        {
+          "day": 139,
+          "N": 3941,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.167379347216966,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 394
+        },
+        {
+          "day": 140,
+          "N": 3968,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1753771250334741,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 397
+        },
+        {
+          "day": 141,
+          "N": 3995,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1833749028499823,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 400
+        },
+        {
+          "day": 142,
+          "N": 4021,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1910764666732863,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 402
+        },
+        {
+          "day": 143,
+          "N": 4047,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.1987780304965903,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 405
+        },
+        {
+          "day": 144,
+          "N": 4072,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.2061833803266901,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 407
+        },
+        {
+          "day": 145,
+          "N": 4097,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.2135887301567903,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 410
+        },
+        {
+          "day": 146,
+          "N": 4121,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.2206978659936862,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 412
+        },
+        {
+          "day": 147,
+          "N": 4145,
+          "environmentalK": 3375.937744140625,
+          "N_over_K": 1.2278070018305822,
+          "traitExcessBeyondTolerance": 0,
+          "unmetEvaluatedGates": [
+            "foodSupport"
+          ],
+          "foodSupport": "FAIL",
+          "effectiveDays": 0,
+          "plannedFounders": 415
+        }
+      ],
+      "actualInStepPerGateCounts": "UNKNOWN",
+      "note": "Sequential post-step observations use production read-only plan and food predicates. NOT_EVALUATED is not failure."
+    },
+    "stage6-player-mushroom1000": {
+      "classification": "HISTORICAL_ECONOMY_CONTAMINATED_DIAGNOSED_NO_COST",
+      "sourcePresentDays": 1001,
+      "postStepGateCounts": {
+        "graphConnection": {
+          "pass": 1001,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "cooldown": {
+          "pass": 1001,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "traitTolerance": {
+          "pass": 0,
+          "fail": 1001,
+          "notEvaluated": 0
+        },
+        "targetAbsent": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 1001
+        },
+        "space": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 1001
+        },
+        "materialPlan": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 1001
+        },
+        "foodSupport": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 1001
+        },
+        "eligible": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 1001
+        }
+      },
+      "consecutiveEligibleDaysGate": {
+        "pass": 0,
+        "fail": 0,
+        "notEvaluated": 1001
+      },
+      "closest20PostStepMoments": [
+        {
+          "day": 366,
+          "N": 5861,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.5304095671026654,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 367,
+          "N": 5826,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.515298778014013,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 368,
+          "N": 5793,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.5010514625875686,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 369,
+          "N": 5760,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.486804147161125,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 370,
+          "N": 5728,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.472988568565785,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 371,
+          "N": 5696,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.4591729899704458,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 372,
+          "N": 5665,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.4457891482062104,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 373,
+          "N": 5634,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.432405306441975,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 374,
+          "N": 5604,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.419453201508844,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 375,
+          "N": 5574,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.4065010965757136,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 376,
+          "N": 5545,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.393980728473687,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 377,
+          "N": 5517,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.3818920972027646,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 378,
+          "N": 5489,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.3698034659318425,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 379,
+          "N": 5461,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.3577148346609205,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 380,
+          "N": 5435,
+          "environmentalK": 3947.370361328125,
+          "N_over_K": 1.3768659898868345,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 381,
+          "N": 5465,
+          "environmentalK": 3947.370361328125,
+          "N_over_K": 1.3844659861511592,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 382,
+          "N": 5488,
+          "environmentalK": 3664.83740234375,
+          "N_over_K": 1.4974743481089487,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 383,
+          "N": 5507,
+          "environmentalK": 3362.93994140625,
+          "N_over_K": 1.6375552629397205,
+          "traitExcessBeyondTolerance": 17,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 365,
+          "N": 5895,
+          "environmentalK": 2316.225830078125,
+          "N_over_K": 2.5450886193602136,
+          "traitExcessBeyondTolerance": 18,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        },
+        {
+          "day": 384,
+          "N": 5523,
+          "environmentalK": 3366.28369140625,
+          "N_over_K": 1.6406816852957486,
+          "traitExcessBeyondTolerance": 18,
+          "unmetEvaluatedGates": [
+            "traitTolerance"
+          ],
+          "foodSupport": "NOT_EVALUATED",
+          "effectiveDays": 0,
+          "plannedFounders": 0
+        }
+      ],
+      "actualInStepPerGateCounts": "UNKNOWN",
+      "note": "Sequential post-step observations use production read-only plan and food predicates. NOT_EVALUATED is not failure."
+    },
+    "stage6-player-deer1900": {
+      "classification": "PREREQUISITE_MISSING",
+      "sourcePresentDays": 0,
+      "postStepGateCounts": {
+        "graphConnection": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "cooldown": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "traitTolerance": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "targetAbsent": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "space": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "materialPlan": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "foodSupport": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "eligible": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        }
+      },
+      "consecutiveEligibleDaysGate": {
+        "pass": 0,
+        "fail": 0,
+        "notEvaluated": 1901
+      },
+      "closest20PostStepMoments": [],
+      "actualInStepPerGateCounts": "NOT_EVALUATED",
+      "note": "Sequential post-step observations use production read-only plan and food predicates. NOT_EVALUATED is not failure."
+    },
+    "stage6-player-peacock900": {
+      "classification": "PREREQUISITE_MISSING",
+      "sourcePresentDays": 0,
+      "postStepGateCounts": {
+        "graphConnection": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "cooldown": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "traitTolerance": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "targetAbsent": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "space": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "materialPlan": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "foodSupport": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        },
+        "eligible": {
+          "pass": 0,
+          "fail": 0,
+          "notEvaluated": 0
+        }
+      },
+      "consecutiveEligibleDaysGate": {
+        "pass": 0,
+        "fail": 0,
+        "notEvaluated": 901
+      },
+      "closest20PostStepMoments": [],
+      "actualInStepPerGateCounts": "NOT_EVALUATED",
+      "note": "Sequential post-step observations use production read-only plan and food predicates. NOT_EVALUATED is not failure."
+    }
+  }
+}

@@ -1,9 +1,0 @@
-{
-  "scenario": "v2-T5-rich-civet50",
-  "run": 1,
-  "project": "G:\\unity\\darwin-s-farm\\DynamicK_Unity_Isolated_20261016",
-  "exitCode": 0,
-  "unityReplayOK": true,
-  "seconds": 19.739,
-  "inputSha256": "f575a515ca7656ea2400c5ed52b234297965f4e5ed940c19d60e862a5f8dacce"
-}

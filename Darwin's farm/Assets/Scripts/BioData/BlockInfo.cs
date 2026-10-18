@@ -40,6 +40,9 @@ public class BlockInfo : MonoBehaviour
     [SerializeField]public float plantBiomass;   //植物库存为0~maxPlantBiomass
     [SerializeField]public float maxPlantBiomass = 10000f; //植物生物量上限
     [SerializeField]public int habitatRecovery; //每日恢复的生物量
+    // Stable terrain reference for optional prey-density feedback. Rebuilt
+    // from the tile definition on load; short-lived R tools do not alter it.
+    [System.NonSerialized] public int predationReferenceRecovery;
     [SerializeField] public float algaeBiomass; //水域生产者库存；生态位系统启用后由水域共享
     [SerializeField] public float maxAlgaeBiomass = 10000f;
     [SerializeField] public int algaeRecovery;
@@ -49,6 +52,15 @@ public class BlockInfo : MonoBehaviour
     public float detritusBiomass; //死亡和转化产生、尚未重新进入植物库存的物质
     [SerializeField]public List<PopulationData> community;    //群落，存储了当前地块的种群
     public int nextLocalSplitDay;
+    // One recovery-tool transaction per tile; successful guided mutations
+    // across all resident populations spend this shared quota.
+    public RecoveryGuidanceTransaction recoveryGuidance =
+        new RecoveryGuidanceTransaction();
+    public StockGuidanceTransaction stockGuidance =
+        new StockGuidanceTransaction();
+    public StockGuidancePending stockGuidancePending =
+        new StockGuidancePending();
+    public int neighborOpportunityRevision;
     [SerializeField] public WaterCoverage waterCoverage;
     // 河岸只是陆地种群可到达的位置，资源和种群仍归 landOwner。
     [SerializeField] private List<RiverBankInfo> riverBanks = new List<RiverBankInfo>();
@@ -61,4 +73,54 @@ public class BlockInfo : MonoBehaviour
     public IReadOnlyList<BlockInfo> WaterLinks => waterLinks;
     public void SetWaterLinks(List<BlockInfo> links) =>
         waterLinks = links ?? new List<BlockInfo>();
+}
+
+[System.Serializable]
+public sealed class RecoveryGuidanceTransaction
+{
+    public string key;
+    public int serial;
+    public int direction;
+    public int firstDay;
+    public int lastDay;
+    public int used;
+    public int cap;
+    public float totalDelta;
+    public float probability;
+}
+
+[System.Serializable]
+public sealed class StockGuidanceClaim
+{
+    public string key;
+    public int used;
+}
+
+[System.Serializable]
+public sealed class StockGuidanceTransaction
+{
+    public string key;
+    public int serial;
+    public int direction;
+    public int firstDay;
+    public int lastDay;
+    public int cap;
+    public float startStock;
+    public float totalDelta;
+    public float memory;
+    public int memoryDay;
+    public float pmax;
+    public float rho;
+    public List<StockGuidanceClaim> claims = new List<StockGuidanceClaim>();
+}
+
+[System.Serializable]
+public sealed class StockGuidancePending
+{
+    public bool active;
+    public int day;
+    public int tier;
+    public float startStock;
+    public float endStock;
+    public List<string> populationIds = new List<string>();
 }

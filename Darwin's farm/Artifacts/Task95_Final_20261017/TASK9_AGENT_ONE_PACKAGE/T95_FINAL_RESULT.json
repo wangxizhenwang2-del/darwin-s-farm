@@ -1,0 +1,59 @@
+{
+  "task": "Task 9.5 final candidate and Unity acceptance",
+  "status": "FAIL",
+  "unityVersion": "6000.2.9f1",
+  "project": "G:\\unity\\darwin-s-farm\\Task9_Unity_Isolated_20261016",
+  "candidateSwitch": "useCompensatedEvolutionFoodGate",
+  "defaultEnabled": false,
+  "firstBlockingGate": {
+    "route": "chicken_to_color_chicken",
+    "day": 128,
+    "sourceCount": 3613,
+    "plannedFounders": 361,
+    "plannedPlantPayment": 33336.015625,
+    "gate": "netRenewal >= 0.005 * founders",
+    "actualNetRenewal": 1.3621759414672852,
+    "requiredNetRenewal": 1.805,
+    "sourceCoverageNow": 2.099513379092751,
+    "sourceCoverageRenewal": 2.5551586914936193,
+    "childCoverageNow": 1.7574426975115556,
+    "childCoverageRenewal": 2.0989835257308047,
+    "netNow": 0.1781759262084961,
+    "netNowRequired": -0.361,
+    "foodSupport": "FAIL"
+  },
+  "colorRoute": {
+    "status": "FAIL",
+    "completedDay": 750,
+    "firstActualConversionDay": null,
+    "conversionCount": 0,
+    "maximumConsecutiveQualifiedDaysObserved": 1,
+    "postConversion500Days": "NOT_TESTED",
+    "costsDisabled": true,
+    "input": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\inputs\\t95final-color-on.json",
+    "jsonl": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\t95final-color-on.jsonl",
+    "log": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\t95final-color-on.log"
+  },
+  "mushroomRoute": {
+    "status": "NOT_TESTED",
+    "reason": "Stopped after first formal route failed, as requested."
+  },
+  "negativeFixtures": {
+    "status": "NOT_TESTED",
+    "reason": "Stopped after first formal route failed."
+  },
+  "oldRuleStage0": {
+    "status": "NOT_TESTED",
+    "reason": "Stopped after first formal route failed; old branch remains behind default-off switch."
+  },
+  "threeSpeciesFixture": {
+    "status": "NOT_TESTED",
+    "reason": "Stopped after first formal route failed."
+  },
+  "inputsAndRawUnityEvidence": {
+    "red": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\t95final-red-color128.jsonl",
+    "probe": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\t95final-color-probe135.jsonl",
+    "full": "G:\\unity\\darwin-s-farm\\Darwin's farm\\Artifacts\\Task9_20261016\\runs\\t95final-color-on.jsonl"
+  },
+  "offlineProxyClaim": "NOT_USED_AS_UNITY_PASS"
+}

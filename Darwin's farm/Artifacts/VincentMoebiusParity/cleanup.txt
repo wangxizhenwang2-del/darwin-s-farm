@@ -1,0 +1,1 @@
+PASS: after all transitions, one emission mesh per live system. Exiting Play releases all native ground, combined collision and particle emission meshes.

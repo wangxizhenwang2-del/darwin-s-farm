@@ -1,0 +1,214 @@
+{
+  "scenarioId": "stage6-player-peacock900",
+  "seed": 240,
+  "endDay": 900,
+  "disableCosts": false,
+  "restrictedV05": false,
+  "sourceGraph": "Artifacts/V05FiveSpecies_20261016/source-bioweb13.json",
+  "tiles": [],
+  "actions": [
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1,
+      "sequence": 0
+    },
+    {
+      "day": 100,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": 1,
+      "sequence": 1
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 2
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange",
+      "sequence": 3
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 4
+    },
+    {
+      "day": 110,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 5
+    },
+    {
+      "day": 450,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1,
+      "sequence": 6
+    },
+    {
+      "day": 475,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 7
+    },
+    {
+      "day": 490,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1,
+      "sequence": 8
+    },
+    {
+      "day": 491,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 9
+    },
+    {
+      "day": 505,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1,
+      "sequence": 10
+    },
+    {
+      "day": 506,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 11
+    },
+    {
+      "day": 520,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1,
+      "sequence": 12
+    },
+    {
+      "day": 521,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 13
+    },
+    {
+      "day": 535,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1,
+      "sequence": 14
+    },
+    {
+      "day": 536,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 15
+    },
+    {
+      "day": 550,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": -1,
+      "sequence": 16
+    },
+    {
+      "day": 551,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 17
+    },
+    {
+      "day": 552,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": -1,
+      "sequence": 18
+    },
+    {
+      "day": 553,
+      "x": 0,
+      "y": 0,
+      "kind": "TemperatureChange",
+      "tier": 1,
+      "sequence": 19
+    },
+    {
+      "day": 553,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange",
+      "sequence": 20
+    },
+    {
+      "day": 559,
+      "x": 0,
+      "y": 0,
+      "kind": "HumidityChange",
+      "tier": -1,
+      "sequence": 21
+    },
+    {
+      "day": 560,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelHumidityChange",
+      "sequence": 22
+    },
+    {
+      "day": 565,
+      "x": 0,
+      "y": 0,
+      "kind": "CancelTemperatureChange",
+      "sequence": 23
+    },
+    {
+      "day": 565,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": 2,
+      "sequence": 24
+    },
+    {
+      "day": 565,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantRecoveryChange",
+      "tier": 2,
+      "sequence": 25
+    }
+  ],
+  "useV05Sandbox": true,
+  "enablePreyDensityFeedback": true,
+  "enablePaidBirthStress": true,
+  "enablePriorityPlantBudgets": true,
+  "adultMaintenanceScale": 0.4,
+  "reproductionStressPerBirth": 0.8
+}

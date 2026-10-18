@@ -12,7 +12,6 @@ public sealed class MapTouchInput : MonoBehaviour
 {
     [Header("Existing scene controllers")]
     [SerializeField] private ScreenEdgeCamera mapCamera;
-    [SerializeField] private ClickToMove playerMovement;
     [SerializeField] private GameInformationUI information;
     [SerializeField] private MapBuildModeController buildMode;
     [SerializeField] private MapTilePlacementController placement;
@@ -32,6 +31,7 @@ public sealed class MapTouchInput : MonoBehaviour
     private EventSystem pointerEventSystem;
     private int suppressMouseThroughFrame = -1;
     private bool applicationPaused, previousBuildMode, previousPlacement;
+    private MobileGameUI mobileUI;
 #if UNITY_EDITOR
     private bool ownsTouchSimulation;
 #endif
@@ -41,9 +41,7 @@ public sealed class MapTouchInput : MonoBehaviour
     public bool SuppressesMouseInput => isActiveAndEnabled &&
         (contacts.Count > 0 || Time.frameCount <= suppressMouseThroughFrame || MouseSimulationEnabled);
     public MapTouchGesture.Action LastAction { get; private set; }
-    public event System.Action<MapTouchGesture.Result> GestureRecognized;
-    private float ResolutionScale => Mathf.Max(0.5f, Screen.height / 720f);
-    private bool MouseSimulationEnabled
+    public bool IsEditorTouchRequested
     {
         get
         {
@@ -54,15 +52,28 @@ public sealed class MapTouchInput : MonoBehaviour
 #endif
         }
     }
+    public event System.Action<MapTouchGesture.Result> GestureRecognized;
+    private float ResolutionScale => Mathf.Max(0.5f, Screen.height / 720f);
+    private bool MouseSimulationEnabled
+    {
+        get
+        {
+#if UNITY_EDITOR
+            return simulateTouchWithMouse || (mobileUI != null && mobileUI.IsMobileActive);
+#else
+            return false;
+#endif
+        }
+    }
 
     private void Awake()
     {
         viewCamera = GetComponent<Camera>();
         if (mapCamera == null) mapCamera = GetComponent<ScreenEdgeCamera>();
-        if (playerMovement == null) playerMovement = FindFirstObjectByType<ClickToMove>();
         if (information == null) information = FindFirstObjectByType<GameInformationUI>();
         if (buildMode == null) buildMode = FindFirstObjectByType<MapBuildModeController>();
         if (placement == null) placement = FindFirstObjectByType<MapTilePlacementController>();
+        mobileUI = FindFirstObjectByType<MobileGameUI>();
     }
 
     private void OnEnable() => EnhancedTouchSupport.Enable();
@@ -73,7 +84,8 @@ public sealed class MapTouchInput : MonoBehaviour
         LastAction = MapTouchGesture.Action.None;
         if (!Application.isFocused || applicationPaused) { CancelGesture(); return; }
         bool building = buildMode != null && buildMode.IsBuildMode;
-        bool placing = placement != null && placement.IsDragging;
+        bool persistent = placement != null && placement.IsTouchPlacement;
+        bool placing = placement != null && placement.IsDragging && !persistent;
         if (building != previousBuildMode || placing != previousPlacement) gesture.Cancel();
         previousBuildMode = building; previousPlacement = placing;
         contacts.Clear();
@@ -93,10 +105,13 @@ public sealed class MapTouchInput : MonoBehaviour
         switch (action.Kind)
         {
             case MapTouchGesture.Action.Tap:
-                if (building || placing || !viewCamera.pixelRect.Contains(action.Position) || IsPointerOverUI(action.Position)) break;
+                if (placing || !viewCamera.pixelRect.Contains(action.Position) || IsPointerOverUI(action.Position)) break;
+                if (building)
+                { if (persistent) placement.TrySetTouchPosition(action.Position); break; }
+                if (information != null && information.ToolModeActive)
+                { information.TrySelectTileAt(action.Position); break; }
                 if (information != null && information.TrySelectPopulationAt(action.Position,
                     populationPickPaddingPixels * ResolutionScale)) break;
-                if (playerMovement != null) playerMovement.TryMoveToScreenPosition(action.Position);
                 break;
             case MapTouchGesture.Action.LongPress:
                 if (!building && !placing && information != null)
@@ -118,7 +133,7 @@ public sealed class MapTouchInput : MonoBehaviour
 
     private bool IsPointerOverUI(Vector2 position)
     {
-        if (WhiteboxEcologyDebugView.IsPointerOverTestUi(position)) return true;
+        if (EconomyOperationsView.IsPointerOverUi(position)) return true;
         EventSystem events = EventSystem.current;
         if (events == null) return false;
         if (pointerEventSystem != events)
@@ -148,9 +163,9 @@ public sealed class MapTouchInput : MonoBehaviour
     private void UpdateEditorSimulation()
     {
 #if UNITY_EDITOR
-        if (simulateTouchWithMouse && (TouchSimulation.instance == null || !TouchSimulation.instance.enabled))
+        if (MouseSimulationEnabled && (TouchSimulation.instance == null || !TouchSimulation.instance.enabled))
         { TouchSimulation.Enable(); ownsTouchSimulation = true; gesture.Cancel(); }
-        else if (!simulateTouchWithMouse && ownsTouchSimulation)
+        else if (!MouseSimulationEnabled && ownsTouchSimulation)
         { TouchSimulation.Disable(); ownsTouchSimulation = false; CancelGesture(); }
 #endif
     }

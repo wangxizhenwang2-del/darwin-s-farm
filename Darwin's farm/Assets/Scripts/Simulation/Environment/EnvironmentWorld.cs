@@ -7,14 +7,110 @@ namespace DarwinFarm.Environment
     public sealed class EnvironmentWorld
     {
         private readonly Dictionary<GridPosition, EnvironmentTile> tiles = new Dictionary<GridPosition, EnvironmentTile>();
-        private Dictionary<GridPosition, TopologyNode> topology = new Dictionary<GridPosition, TopologyNode>();
-        private readonly Dictionary<long, MonsoonState> monsoons = new Dictionary<long, MonsoonState>();
-        private readonly List<MonsoonSettlement> settlements = new List<MonsoonSettlement>();
-        private readonly HashSet<string> usedReceipts = new HashSet<string>(StringComparer.Ordinal);
-        private long nextMonsoonId = 1;
         private long nextCommandSequence = 1;
         public int CurrentDay { get; private set; }
         public EnvironmentWorld(int currentDay = 0) { CurrentDay = currentDay; }
+
+        [Serializable] public sealed class SaveState
+        {
+            public int day;
+            public long nextSequence;
+            public List<SavedTile> tiles = new List<SavedTile>();
+        }
+        [Serializable] public sealed class SavedTile
+        {
+            public int x, y, elevation, terrain, habitat;
+            public bool water, recoveryReturning, recoveryCancelIssued, recoveryDetached;
+            public long recoverySequence;
+            public int recoveryAge, recoveryHabitat;
+            public double recoveryBaseline;
+            public double[] values = new double[3];
+            public SavedTrack[] tracks = new SavedTrack[3];
+            public SavedLocal[] locals = new SavedLocal[2];
+        }
+        [Serializable] public sealed class SavedTrack
+        {
+            public double start, target;
+            public int age, duration, phase;
+        }
+        [Serializable] public sealed class SavedLocal
+        {
+            public int age, habitat;
+            public long sequence;
+            public double baseline;
+        }
+        public SaveState CaptureState()
+        {
+            var state = new SaveState { day = CurrentDay, nextSequence = nextCommandSequence };
+            foreach (EnvironmentTile tile in tiles.Values)
+            {
+                var saved = new SavedTile {
+                    x = tile.Position.X, y = tile.Position.Y, elevation = tile.Elevation,
+                    terrain = (int)tile.Terrain, habitat = (int)tile.Habitat, water = tile.IsWater,
+                    recoveryReturning = tile.RecoveryReturning,
+                    recoveryCancelIssued = tile.RecoveryCancelIssued,
+                    recoveryDetached = tile.RecoveryDetached,
+                    recoverySequence = tile.RecoverySequence, recoveryAge = tile.RecoveryAge,
+                    recoveryHabitat = (int)tile.RecoveryHabitatAtSubmit,
+                    recoveryBaseline = tile.RecoveryBaseline
+                };
+                for (int i = 0; i < 3; i++)
+                {
+                    saved.values[i] = tile.Values[i];
+                    Transition t = tile.Tracks[i];
+                    saved.tracks[i] = new SavedTrack { start=t.Start, target=t.Target,
+                        age=t.Age, duration=t.Duration, phase=(int)t.Phase };
+                }
+                for (int i = 0; i < 2; i++)
+                {
+                    LocalClimateEffect local = tile.Locals[i];
+                    if (local != null) saved.locals[i] = new SavedLocal {
+                        age=local.Age, sequence=local.Sequence, baseline=local.Baseline,
+                        habitat=(int)local.HabitatAtSubmit };
+                }
+                state.tiles.Add(saved);
+            }
+            state.tiles.Sort((a,b) => a.x != b.x ? a.x.CompareTo(b.x) : a.y.CompareTo(b.y));
+            return state;
+        }
+        public void RestoreState(SaveState state)
+        {
+            if (state == null || state.day < 0 || state.nextSequence < 1 ||
+                state.tiles == null || state.tiles.Count != tiles.Count)
+                throw new ArgumentException("Environment save topology is invalid.");
+            foreach (SavedTile saved in state.tiles)
+            {
+                if (!tiles.TryGetValue(new GridPosition(saved.x,saved.y), out EnvironmentTile tile) ||
+                    saved.values == null || saved.values.Length != 3 ||
+                    saved.tracks == null || saved.tracks.Length != 3 ||
+                    saved.locals == null || saved.locals.Length != 2 ||
+                    tile.Elevation != saved.elevation || tile.IsWater != saved.water)
+                    throw new ArgumentException("Environment save tile is invalid.");
+                tile.Terrain=(TerrainKind)saved.terrain; tile.Habitat=(HabitatState)saved.habitat;
+                tile.RecoveryReturning=saved.recoveryReturning;
+                tile.RecoveryCancelIssued=saved.recoveryCancelIssued;
+                tile.RecoveryDetached=saved.recoveryDetached;
+                tile.RecoverySequence=saved.recoverySequence; tile.RecoveryAge=saved.recoveryAge;
+                tile.RecoveryHabitatAtSubmit=(HabitatState)saved.recoveryHabitat;
+                tile.RecoveryBaseline=saved.recoveryBaseline;
+                for (int i=0;i<3;i++)
+                {
+                    SavedTrack t=saved.tracks[i] ?? throw new ArgumentException("Missing environment track.");
+                    tile.Values[i]=saved.values[i];
+                    tile.Tracks[i].Start=t.start;tile.Tracks[i].Target=t.target;
+                    tile.Tracks[i].Age=t.age;tile.Tracks[i].Duration=t.duration;
+                    tile.Tracks[i].Phase=(EffectPhase)t.phase;
+                }
+                for(int i=0;i<2;i++)
+                {
+                    SavedLocal local=saved.locals[i];
+                    tile.Locals[i]=local==null ? null : new LocalClimateEffect {
+                        Age=local.age, Sequence=local.sequence, Baseline=local.baseline,
+                        HabitatAtSubmit=(HabitatState)local.habitat };
+                }
+            }
+            CurrentDay=state.day; nextCommandSequence=state.nextSequence;
+        }
 
         public bool TryRead(GridPosition position, out EnvironmentSnapshot snapshot)
         {
@@ -28,16 +124,6 @@ namespace DarwinFarm.Environment
             foreach (var position in positions) result.Add(new EnvironmentSnapshot(tiles[position]));
             return result.AsReadOnly();
         }
-        public IReadOnlyList<MonsoonSnapshot> ReadMonsoons()
-        {
-            var ids = new List<long>(monsoons.Keys); ids.Sort();
-            var result = new List<MonsoonSnapshot>(ids.Count);
-            foreach (long id in ids) result.Add(new MonsoonSnapshot(monsoons[id]));
-            return result.AsReadOnly();
-        }
-        public IReadOnlyList<MonsoonSettlement> ReadSettlements() => new List<MonsoonSettlement>(settlements).AsReadOnly();
-        public bool AcknowledgeSettlement(long id) => settlements.RemoveAll(x => x.MonsoonId == id) > 0;
-
         public void SynchronizeTopology(IEnumerable<TopologyNode> nodes)
         {
             var next = new Dictionary<GridPosition, TopologyNode>();
@@ -57,18 +143,9 @@ namespace DarwinFarm.Environment
                         !Contains(other.Neighbors, node.Position)) throw new ArgumentException("Topology must have symmetric four-neighbor edges.");
                 }
             }
-            bool sourceChanged = false;
-            foreach (var wind in monsoons.Values)
-                if (!next.TryGetValue(wind.Source, out TopologyNode node) ||
-                    !topology.TryGetValue(wind.Source, out TopologyNode previous) ||
-                    node.Elevation != previous.Elevation || node.IsWater != previous.IsWater ||
-                    !SameNeighbors(node.Neighbors, previous.Neighbors))
-                    sourceChanged = true;
-
             var removed = new List<GridPosition>();
             foreach (var position in tiles.Keys) if (!next.ContainsKey(position)) removed.Add(position);
             foreach (var position in removed) tiles.Remove(position);
-            topology = next;
             foreach (var node in next.Values)
             {
                 if (!tiles.TryGetValue(node.Position, out EnvironmentTile tile)) tiles.Add(node.Position, new EnvironmentTile(node));
@@ -78,9 +155,6 @@ namespace DarwinFarm.Environment
                     Reclassify(tile);
                 }
             }
-            if (sourceChanged)
-                foreach (long id in new List<long>(monsoons.Keys)) EndMonsoon(id, MonsoonExitReason.SourceChanged);
-            else RecomputeMonsoons();
         }
 
         public bool TrySetClimate(GridPosition position, EnvironmentAttribute attribute, double amount, out string error)
@@ -91,8 +165,12 @@ namespace DarwinFarm.Environment
             if (!tiles.TryGetValue(position, out EnvironmentTile tile) || tile.IsWater)
             { error = "温湿度科技只适用于陆格"; return false; }
             int index = (int)attribute;
-            tile.Locals[index] = new LocalClimateEffect { Sequence = nextCommandSequence++ };
             double target = EnvironmentRules.Clamp(attribute, EnvironmentRules.Defaults(tile.Habitat).Get(attribute) + amount);
+            if (Math.Abs(target - tile.Values[index]) < .000001)
+            { error = "环境数值未发生有效变化"; return false; }
+            tile.Locals[index] = new LocalClimateEffect {
+                Sequence = nextCommandSequence++, Baseline = tile.Values[index],
+                HabitatAtSubmit = tile.Habitat };
             tile.Tracks[index].Begin(tile.Values[index], target, 25, EffectPhase.Entering);
             EnforceSlots(tile);
             return true;
@@ -106,7 +184,7 @@ namespace DarwinFarm.Environment
             { error = "该地块没有对应单格操作"; return false; }
             int index = (int)attribute;
             if (!tile.Locals[index].Active)
-            { error = "该单格操作已经在退出"; return false; }
+                return true; // A repeated cancellation must not restart return.
             tile.Locals[index].Age = EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays;
             StartLocalReturn(tile, index);
             return true;
@@ -135,8 +213,25 @@ namespace DarwinFarm.Environment
             foreach (EnvironmentTile tile in members)
             {
                 double next = tile.Values[2] + (suppress ? -amount * 100000 : amount);
-                tile.Values[2] = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
-                tile.Tracks[2].Stop(tile.Values[2]);
+                next = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery, next);
+                if (Math.Abs(next - tile.Values[2]) < .000001)
+                { error = "环境数值未发生有效变化"; return false; }
+            }
+            foreach (EnvironmentTile tile in members)
+            {
+                double next = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+                    tile.Values[2] + (suppress ? -amount * 100000 : amount));
+                tile.RecoveryBaseline = tile.Values[2];
+                tile.RecoveryHabitatAtSubmit = tile.Habitat;
+                if (tile.IsWater)
+                {
+                    tile.Values[2] = next;
+                    tile.Tracks[2].Stop(next);
+                }
+                else
+                    tile.Tracks[2].Begin(tile.Values[2], next,
+                        EnvironmentRules.LandRecoveryTransitionDays,
+                        EffectPhase.Entering);
                 tile.RecoveryReturning = true;
                 tile.RecoveryAge = 0;
                 tile.RecoverySequence = nextCommandSequence++;
@@ -161,19 +256,22 @@ namespace DarwinFarm.Environment
             foreach (GridPosition position in positions)
             {
                 if (!unique.Add(position) || !tiles.TryGetValue(position, out EnvironmentTile tile) ||
-                    !tile.RecoveryReturning || tile.RecoveryCancelIssued)
+                    !tile.RecoveryReturning)
                 { error = "目标地块没有可统一撤销的植被增量操作"; return false; }
                 members.Add(tile);
             }
+            bool allReturning = true;
             foreach (EnvironmentTile tile in members)
-            {
-                if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
-                { error = "植物操作已经在恢复"; return false; }
-            }
+                if (tile.RecoveryAge < tile.RecoveryHoldThreshold)
+                    allReturning = false;
+            if (allReturning) return true;
+            foreach (EnvironmentTile tile in members)
+                if (tile.RecoveryAge >= tile.RecoveryHoldThreshold)
+                { error = "水域操作阶段不一致"; return false; }
             foreach (EnvironmentTile tile in members)
             {
                 tile.RecoveryCancelIssued = true;
-                tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
+                tile.RecoveryAge = tile.RecoveryHoldThreshold;
                 StartRecoveryReturn(tile);
             }
             return true;
@@ -206,44 +304,6 @@ namespace DarwinFarm.Environment
             }
         }
 
-        public bool TryPreviewMonsoon(GridPosition source, int temperatureOffset, int humidityOffset,
-            out IReadOnlyList<GridPosition> area, out string error)
-        {
-            area = Array.Empty<GridPosition>(); error = null;
-            if (!EnvironmentRules.IsMonsoonStrength(temperatureOffset) || !EnvironmentRules.IsMonsoonStrength(humidityOffset))
-            { error = "季风温湿度强度分别必须为 ±20"; return false; }
-            if (!topology.TryGetValue(source, out TopologyNode node) || node.Elevation == 2 || node.IsWater)
-            { error = "季风发源点必须是海拔 0 或 1 的已放置陆格"; return false; }
-            var positions = new List<GridPosition>(Flood(source)); positions.Sort(); area = positions.AsReadOnly();
-            return true;
-        }
-
-        public bool TryDeployMonsoon(GridPosition source, int temperatureOffset, int humidityOffset,
-            EnvironmentPayment payment, out long id, out string error)
-        {
-            id = 0;
-            if (!TryPreviewMonsoon(source, temperatureOffset, humidityOffset, out _, out error)) return false;
-            if (payment != null && usedReceipts.Contains(payment.ReceiptId))
-            { error = "支付凭据已经绑定其他季风"; return false; }
-            long existing = 0;
-            foreach (var wind in monsoons.Values) if (wind.Source.Equals(source)) existing = wind.Id;
-            if (existing != 0) EndMonsoon(existing, MonsoonExitReason.Replaced);
-            id = nextMonsoonId++;
-            var state = new MonsoonState { Id = id, Source = source, TemperatureOffset = temperatureOffset,
-                HumidityOffset = humidityOffset, Payment = payment };
-            if (payment != null) usedReceipts.Add(payment.ReceiptId);
-            monsoons.Add(id, state);
-            RecomputeMonsoons();
-            return true;
-        }
-
-        public bool TryCancelMonsoon(long id, out string error)
-        {
-            error = null;
-            if (!monsoons.ContainsKey(id)) { error = "季风已不存在"; return false; }
-            EndMonsoon(id, MonsoonExitReason.Manual); return true;
-        }
-
         // Developer editing must go through this boundary so it cannot leave stale timelines.
         public bool TryEditEnvironment(GridPosition position, int temperature, int humidity, int recovery, out string error)
         {
@@ -254,10 +314,8 @@ namespace DarwinFarm.Environment
             tile.RecoveryAge = 0;
             tile.RecoveryCancelIssued = false;
             tile.RecoveryDetached = false;
-            tile.Values[0] = EnvironmentRules.Clamp(EnvironmentAttribute.Temperature,
-                temperature - tile.WindOffsets[0]);
-            tile.Values[1] = EnvironmentRules.Clamp(EnvironmentAttribute.Humidity,
-                humidity - tile.WindOffsets[1]);
+            tile.Values[0] = EnvironmentRules.Clamp(EnvironmentAttribute.Temperature, temperature);
+            tile.Values[1] = EnvironmentRules.Clamp(EnvironmentAttribute.Humidity, humidity);
             tile.Values[2] = recovery;
             for (int i = 0; i < 3; i++) tile.Tracks[i].Stop(tile.Values[i]);
             Reclassify(tile);
@@ -291,16 +349,25 @@ namespace DarwinFarm.Environment
                     { tile.Locals[i] = null; localEnded = true; }
                 }
                 if (localEnded) RefreshClimateTargets(tile);
-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays)
+                if (tile.RecoveryReturning && tile.RecoveryAge < tile.RecoveryHoldThreshold)
                 {
                     tile.RecoveryAge++;
-                    if (tile.RecoveryAge == EnvironmentRules.RecoveryHoldDays)
+                    if (tile.RecoveryAge == tile.RecoveryHoldThreshold)
                         StartRecoveryReturn(tile);
                 }
+                if (tile.RecoveryReturning && !tile.IsWater &&
+                    tile.RecoveryAge == EnvironmentRules.LandRecoveryTransitionDays &&
+                    !tile.Tracks[2].Active)
+                    tile.Tracks[2].Stop(tile.Values[2]);
                 if (tile.RecoveryReturning && !tile.Tracks[2].Active)
                 {
-                    if (tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
-                    { tile.RecoveryReturning = false; RefreshRecoveryTarget(tile); }
+                    if (tile.RecoveryAge >= tile.RecoveryHoldThreshold)
+                    {
+                        tile.RecoveryReturning = false;
+                        tile.RecoveryDetached = !tile.IsWater &&
+                            tile.RecoveryHabitatAtSubmit == tile.Habitat;
+                        RefreshRecoveryTarget(tile);
+                    }
                 }
                 if (!tile.RecoveryReturning && !tile.RecoveryDetached && !tile.IsWater)
                     RefreshRecoveryTarget(tile);
@@ -310,13 +377,19 @@ namespace DarwinFarm.Environment
 
         private void StartLocalReturn(EnvironmentTile tile, int index)
         {
-            tile.Tracks[index].Begin(tile.Values[index], ClimateDestination(tile, index),
+            LocalClimateEffect effect = tile.Locals[index];
+            double destination = effect != null && effect.HabitatAtSubmit == tile.Habitat
+                ? effect.Baseline : ClimateDestination(tile, index);
+            tile.Tracks[index].Begin(tile.Values[index], destination,
                 EnvironmentRules.ClimateReturnDays, EffectPhase.Returning);
         }
         private void StartRecoveryReturn(EnvironmentTile tile)
         {
-            tile.Tracks[2].Begin(tile.Values[2], RecoveryDefault(tile),
-                EnvironmentRules.RecoveryReturnDays, EffectPhase.Returning);
+            double destination = tile.IsWater ? RecoveryDefault(tile) :
+                tile.RecoveryHabitatAtSubmit == tile.Habitat
+                    ? tile.RecoveryBaseline : RecoveryDefault(tile);
+            tile.Tracks[2].Begin(tile.Values[2], destination,
+                tile.RecoveryReturnDuration, EffectPhase.Returning);
         }
         private static double ClimateDestination(EnvironmentTile tile, int index)
         {
@@ -349,11 +422,11 @@ namespace DarwinFarm.Environment
         }
         private void EnforceSlots(EnvironmentTile tile)
         {
-            int allowed = tile.MonsoonId.HasValue ? 1 : 2;
+            const int allowed = 2;
             while (true)
             {
                 int count = tile.RecoveryReturning &&
-                    tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays ? 1 : 0;
+                    tile.RecoveryAge < tile.RecoveryHoldThreshold ? 1 : 0;
                 for (int i = 0; i < 2; i++)
                     if (tile.Locals[i] != null && tile.Locals[i].Active) count++;
                 if (count <= allowed) return;
@@ -363,11 +436,11 @@ namespace DarwinFarm.Environment
                     if (tile.Locals[i] != null && tile.Locals[i].Active &&
                         tile.Locals[i].Sequence < oldest)
                     { oldest = tile.Locals[i].Sequence; owner = i; }
-                if (tile.RecoveryReturning && tile.RecoveryAge < EnvironmentRules.RecoveryHoldDays &&
+                if (tile.RecoveryReturning && tile.RecoveryAge < tile.RecoveryHoldThreshold &&
                     tile.RecoverySequence < oldest) owner = 2;
                 if (owner == 2)
                 {
-                    tile.RecoveryAge = EnvironmentRules.RecoveryHoldDays;
+                    tile.RecoveryAge = tile.RecoveryHoldThreshold;
                     tile.RecoveryCancelIssued = true;
                     StartRecoveryReturn(tile);
                 }
@@ -387,6 +460,10 @@ namespace DarwinFarm.Environment
             if (habitat == tile.Habitat) return;
             tile.Habitat = habitat;
             tile.Terrain = EnvironmentRules.VisualTerrain(habitat);
+            // A completed land recovery command preserves its captured baseline
+            // only in the habitat where it was submitted.
+            if (tile.RecoveryDetached && !tile.RecoveryReturning)
+                tile.RecoveryDetached = false;
             for (int i = 0; i < 2; i++)
             {
                 if (tile.Locals[i] != null && !tile.Locals[i].Active)
@@ -397,87 +474,13 @@ namespace DarwinFarm.Environment
                 else if (tile.Locals[i] == null && tile.Tracks[i].Phase == EffectPhase.Automatic)
                     tile.Tracks[i].Stop(tile.Values[i]);
             }
-            if (tile.RecoveryReturning && tile.RecoveryAge >= EnvironmentRules.RecoveryHoldDays)
+            if (tile.RecoveryReturning && tile.RecoveryAge >= tile.RecoveryHoldThreshold)
                 StartRecoveryReturn(tile);
             else RefreshRecoveryTarget(tile);
         }
         private static double EffectiveClimate(EnvironmentTile tile, int index) =>
-            EnvironmentRules.Clamp((EnvironmentAttribute)index,
-                tile.Values[index] + tile.WindOffsets[index]);
-
-        private HashSet<GridPosition> Flood(GridPosition source)
-        {
-            var result = new HashSet<GridPosition>();
-            if (!topology.TryGetValue(source, out TopologyNode root) || root.Elevation == 2 || root.IsWater) return result;
-            var queue = new Queue<GridPosition>(); result.Add(source); queue.Enqueue(source);
-            while (queue.Count > 0)
-            {
-                TopologyNode current = topology[queue.Dequeue()];
-                foreach (GridPosition neighbor in current.Neighbors)
-                {
-                    TopologyNode next = topology[neighbor];
-                    if (next.Elevation != root.Elevation) continue;
-                    if (!next.IsWater)
-                    { if (result.Add(neighbor)) queue.Enqueue(neighbor); continue; }
-                    // Exactly one water tile may bridge two land segments.
-                    foreach (GridPosition across in next.Neighbors)
-                        if (topology[across].Elevation == root.Elevation &&
-                            !topology[across].IsWater && result.Add(across)) queue.Enqueue(across);
-                }
-            }
-            return result;
-        }
-        private void RecomputeMonsoons()
-        {
-            var occupied = new Dictionary<GridPosition, long>();
-            var conflicts = new HashSet<long>();
-            foreach (var wind in monsoons.Values)
-            {
-                wind.Area = Flood(wind.Source);
-                foreach (var position in wind.Area)
-                    if (occupied.TryGetValue(position, out long other)) { conflicts.Add(other); conflicts.Add(wind.Id); }
-                    else occupied.Add(position, wind.Id);
-            }
-            // Detect the whole conflict graph before cancelling, including paused wind cells.
-            var conflictIds = new List<long>(conflicts); conflictIds.Sort();
-            foreach (long id in conflictIds) EndMonsoon(id, MonsoonExitReason.Overlap);
-            occupied.Clear();
-            foreach (var wind in monsoons.Values) foreach (var position in wind.Area) occupied.Add(position, wind.Id);
-            foreach (var tile in tiles.Values)
-            {
-                long? desired = occupied.TryGetValue(tile.Position, out long id) ? id : (long?)null;
-                if (tile.MonsoonId == desired) continue;
-                tile.MonsoonId = desired;
-                if (desired.HasValue)
-                {
-                    var wind = monsoons[desired.Value];
-                    tile.WindOffsets[0] = wind.TemperatureOffset;
-                    tile.WindOffsets[1] = wind.HumidityOffset;
-                }
-                else { tile.WindOffsets[0] = 0; tile.WindOffsets[1] = 0; }
-                EnforceSlots(tile);
-                Reclassify(tile);
-            }
-        }
-        private void EndMonsoon(long id, MonsoonExitReason reason)
-        {
-            if (!monsoons.TryGetValue(id, out MonsoonState wind)) return;
-            monsoons.Remove(id); settlements.Add(new MonsoonSettlement(wind, reason));
-            foreach (var tile in tiles.Values)
-                if (tile.MonsoonId == id)
-                {
-                    tile.MonsoonId = null;
-                    tile.WindOffsets[0] = tile.WindOffsets[1] = 0;
-                    Reclassify(tile);
-                }
-        }
+            EnvironmentRules.Clamp((EnvironmentAttribute)index, tile.Values[index]);
         private static bool Contains(IReadOnlyList<GridPosition> positions, GridPosition value)
         { foreach (var position in positions) if (position.Equals(value)) return true; return false; }
-        private static bool SameNeighbors(IReadOnlyList<GridPosition> a, IReadOnlyList<GridPosition> b)
-        {
-            if (a.Count != b.Count) return false;
-            for (int i = 0; i < a.Count; i++) if (!a[i].Equals(b[i])) return false;
-            return true;
-        }
     }
 }

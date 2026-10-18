@@ -1,0 +1,25 @@
+{
+  "seed": 240,
+  "disableCosts": false,
+  "restrictedV05": false,
+  "mechanismFixture": false,
+  "tiles": [],
+  "actions": [
+    {
+      "day": 0,
+      "sequence": 0,
+      "x": 0,
+      "y": 0,
+      "kind": "PlantStockChange",
+      "tier": -1
+    }
+  ],
+  "enablePreyDensityFeedback": true,
+  "enablePaidBirthStress": true,
+  "enablePriorityPlantBudgets": true,
+  "reproductionStressPerBirth": 0.8,
+  "adultMaintenanceScale": 0.4,
+  "scenarioId": "stage4-v05-PlantStockChange-tier-1",
+  "endDay": 1,
+  "useV05Sandbox": true
+}

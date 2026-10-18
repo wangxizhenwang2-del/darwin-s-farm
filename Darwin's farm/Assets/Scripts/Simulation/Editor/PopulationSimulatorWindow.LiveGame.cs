@@ -286,7 +286,7 @@ public partial class PopulationSimulatorWindow
             EditorGUILayout.EndVertical();
             return;
         }
-        EditorGUILayout.HelpBox("经济系统尚未接入。此开发入口执行单格操作；季风通过独立控制器接口部署。",
+        EditorGUILayout.HelpBox("此开发入口执行单格操作。",
             MessageType.Info);
 
         liveKind = (SimulationInterventionKind)EditorGUILayout.Popup("操作",

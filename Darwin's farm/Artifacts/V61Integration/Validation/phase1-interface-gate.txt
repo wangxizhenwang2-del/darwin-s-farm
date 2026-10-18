@@ -1,0 +1,5 @@
+Baseline: 3286061c50661bbc796ce3c57009c662be6dc600
+Changed C# files: 30
+Removed public/protected declarations: 0
+Removed serialized declarations: 0
+Scene, Prefab, ProjectSettings and GameUI resource changes: 0

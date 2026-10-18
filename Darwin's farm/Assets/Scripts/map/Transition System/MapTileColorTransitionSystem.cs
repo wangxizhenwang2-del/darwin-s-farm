@@ -39,7 +39,15 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
         public Mesh mesh;
         public MeshRenderer renderer;
         public MeshCollider collider;
+        public Mesh nativeCollision;
+        public int[] fullTriangles;
+        public int[] rimTriangles;
         public Transform blockers;
+        public BiomeGroundData groundArtwork;
+        public BiomeGroundData targetArtwork;
+        public float artStrength;
+        public float targetArtStrength;
+        public MaterialPropertyBlock properties;
     }
 
     private readonly Dictionary<MapTileInstance, SurfaceData> surfaces =
@@ -81,6 +89,7 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
 
     private void OnDisable()
     {
+        FinishBiomeFeedback();
         if (gridManager != null)
             gridManager.TilesChanged -= RefreshAll;
         if (environment != null) environment.Changed -= HandleEnvironmentChanged;
@@ -94,7 +103,12 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
         if (CacheTerrain(snapshots))
         {
             // Terrain kind can now change both color and ground relief.
-            RefreshAll();
+            animateSurfaceRefresh = false;
+            foreach (MapTileInstance tile in gridManager.GetPlacedTiles())
+                if (biomeVisuals.TryGetValue(tile, out BiomeVisualData current) && current.biome != VisibleBiome(tile))
+                { animateSurfaceRefresh = true; break; }
+            try { RefreshAll(); }
+            finally { animateSurfaceRefresh = false; }
             if (gridManager.Navigation != null)
                 gridManager.Navigation.RequestUpdate();
         }
@@ -161,12 +175,14 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
 
             BuildMesh(tile, surface);
 
-            surface.renderer.sharedMaterial = vertexColorMaterial;
-            surface.collider.sharedMesh = surface.mesh;
+            if (surface.targetArtwork == null) surface.collider.sharedMesh = surface.mesh;
 
             DisableOldParts(tile);
         }
         SyncBiomeVisuals(true);
+        foreach (var tile in gridManager.GetPlacedTiles())
+            if (tile.Block != null && HabitatTopology.IsWater(tile.Block) && surfaces.TryGetValue(tile, out var waterSurface))
+                waterSurface.renderer.forceRenderingOff = true;
     }
 
     private SurfaceData GetOrCreateSurface(MapTileInstance tile)
@@ -376,6 +392,8 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
         MapTileInstance tile,
         SurfaceData surface)
     {
+        Color[] previousColors = surface.mesh.colors;
+        Vector3[] previousVertices = previousColors.Length > 0 ? surface.mesh.vertices : null;
         int rowSize = Segments + 1;
 
         List<Vector3> vertices = new List<Vector3>();
@@ -449,6 +467,9 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
         surface.mesh.SetTriangles(triangles, 0);
         surface.mesh.RecalculateNormals();
         surface.mesh.RecalculateBounds();
+        ConfigureBiomeGround(tile, surface);
+        BuildNativeGroundCollision(tile, surface);
+        BeginSurfaceFeedback(surface, previousVertices, previousColors, vertices, colors);
     }
 
     private void BuildEdge(
@@ -633,6 +654,7 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
 
     private Color LiveColor(MapTileInstance tile)
     {
+        if (TryArtworkPalette(tile, out Color artworkColor)) return artworkColor;
         if (tile.Block == null || tile.Block.waterCoverage != WaterCoverage.Land ||
             !liveTerrain.TryGetValue(tile.Coordinate, out TerrainKind kind))
             return overrideColors.TryGetValue(tile.Biome, out Color presetColor)
@@ -676,7 +698,9 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
             tile.NorthBorder,
             tile.SouthBorder,
             tile.EastBorder,
-            tile.WestBorder
+            tile.WestBorder,
+            // Direction belongs to the construction ghost, not the finished biome.
+            tile.transform.Find("DirectionMarker")?.GetComponent<Renderer>()
         };
 
         foreach (Renderer part in parts)
@@ -695,8 +719,11 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
 
     private void OnDestroy()
     {
+        FinishBiomeFeedback();
+        ReleaseBiomeGround();
         foreach (SurfaceData surface in surfaces.Values)
         {
+            if (surface.nativeCollision != null) Destroy(surface.nativeCollision);
             if (surface.mesh != null)
                 Destroy(surface.mesh);
         }
