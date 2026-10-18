@@ -18,7 +18,8 @@ public partial class SimulationController
         string kind, string detail)
     {
 #if UNITY_5_3_OR_NEWER
-        if (enableEcologyConsoleLogs)
+        if (enableEcologyConsoleLogs || kind == "formal_evolution_waiting" ||
+            kind == "evolution_gate")
             Debug.Log("[Ecology] day=" + day + " kind=" + kind + " population="
                 + (population != null ? population.PopulationId : "") + " " + detail);
 #endif

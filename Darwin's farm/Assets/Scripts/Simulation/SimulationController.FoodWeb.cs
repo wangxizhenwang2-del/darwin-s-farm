@@ -25,6 +25,21 @@ internal static class FoodWeb
             links.Contains(prey.species);
     }
 
+    // Diet identity survives a day with no live local prey. Birth stress must
+    // still use paid newborns if a hunter lives on stored prey energy.
+    internal static bool HasLandPredatorDiet(PopulationData population)
+    {
+        if (population == null || population.ecologicalNiche != EcologicalNiche.Land ||
+            population.trophicLevel <= 0 || population.species == null ||
+            population.species.preySpecies == null) return false;
+        foreach (SpeciesData prey in population.species.preySpecies)
+            if (prey != null && prey.baseEcologicalNiche == EcologicalNiche.Land &&
+                (population.trophicLevel == 1 && prey.trophicLevel == 0 ||
+                 population.trophicLevel == 2 && prey.trophicLevel <= 1))
+                return true;
+        return false;
+    }
+
     public static void GrowPlants(BlockInfo block)
     {
         float maximum = Mathf.Max(0f, block.maxPlantBiomass);

@@ -22315,7 +22315,7 @@ MonoBehaviour:
     evolutionRequiredDays: 5
     evolutionRequiredDaysAtFour: 10
     evolutionTraitTolerance: 5
-    evolutionCooldownDays: 50
+    evolutionCooldownDays: 100
     neighborAttractionThreshold: 0.2
     attractionMovementGain: 2
     localMovementGain: 1
