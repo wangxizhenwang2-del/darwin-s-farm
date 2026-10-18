@@ -11,6 +11,8 @@ public partial class SimulationController
     public const string ModelRandomVersion = "DF-FNV64-1";
     [SerializeField] private int simulationSeed = 1;
     public int SimulationSeed => simulationSeed;
+    public bool IsDeterministicRunConfigured { get; private set; }
+    private int communityEditSerial;
 
     // A complete ecology fingerprint for same-build replay comparisons.
     // Environment effect tracks are versioned separately by the action runner.
@@ -26,6 +28,13 @@ public partial class SimulationController
         Add(data, EnableRandomEvents ? "random:1" : "random:0");
         Add(data, EnableNeighborMovementFormula ? "movement-b:1" :
             "movement-b:0");
+        Add(data, "neighbor-lambda:" +
+            NeighborOpportunityLambda.ToString("R", CultureInfo.InvariantCulture));
+        if (enableV62Mobility)
+        {
+            Add(data, "movement-v62:1");
+            AddFields(data, v62Mobility);
+        }
         Add(data, simulationSeed.ToString(CultureInfo.InvariantCulture));
         Add(data, currentSimulationDay.ToString(CultureInfo.InvariantCulture));
         AddFields(data, ReadTuning());
@@ -51,6 +60,60 @@ public partial class SimulationController
             Add(data, block.algaeRecovery.ToString(CultureInfo.InvariantCulture));
             Add(data, ((int)block.waterCoverage).ToString(CultureInfo.InvariantCulture));
             Add(data, block.nextLocalSplitDay.ToString(CultureInfo.InvariantCulture));
+            Add(data, block.neighborOpportunityRevision.ToString(
+                CultureInfo.InvariantCulture));
+            if (block.recoveryGuidance != null)
+            {
+                RecoveryGuidanceTransaction guidance = block.recoveryGuidance;
+                Add(data, guidance.key);
+                Add(data, guidance.serial.ToString(CultureInfo.InvariantCulture));
+                Add(data, guidance.direction.ToString(CultureInfo.InvariantCulture));
+                Add(data, guidance.firstDay.ToString(CultureInfo.InvariantCulture));
+                Add(data, guidance.lastDay.ToString(CultureInfo.InvariantCulture));
+                Add(data, guidance.used.ToString(CultureInfo.InvariantCulture));
+                Add(data, guidance.cap.ToString(CultureInfo.InvariantCulture));
+                Add(data, guidance.totalDelta.ToString("R", CultureInfo.InvariantCulture));
+                Add(data, guidance.probability.ToString("R", CultureInfo.InvariantCulture));
+            }
+            if (block.stockGuidance != null)
+            {
+                StockGuidanceTransaction stock = block.stockGuidance;
+                Add(data, stock.key);
+                Add(data, stock.serial.ToString(CultureInfo.InvariantCulture));
+                Add(data, stock.direction.ToString(CultureInfo.InvariantCulture));
+                Add(data, stock.firstDay.ToString(CultureInfo.InvariantCulture));
+                Add(data, stock.lastDay.ToString(CultureInfo.InvariantCulture));
+                Add(data, stock.cap.ToString(CultureInfo.InvariantCulture));
+                Add(data, stock.startStock.ToString("R", CultureInfo.InvariantCulture));
+                Add(data, stock.totalDelta.ToString("R", CultureInfo.InvariantCulture));
+                Add(data, stock.memory.ToString("R", CultureInfo.InvariantCulture));
+                Add(data, stock.memoryDay.ToString(CultureInfo.InvariantCulture));
+                Add(data, stock.pmax.ToString("R", CultureInfo.InvariantCulture));
+                Add(data, stock.rho.ToString("R", CultureInfo.InvariantCulture));
+                var claims = stock.claims == null
+                    ? new List<StockGuidanceClaim>() :
+                    new List<StockGuidanceClaim>(stock.claims);
+                claims.Sort((a, b) => string.CompareOrdinal(a?.key, b?.key));
+                foreach (StockGuidanceClaim claim in claims)
+                {
+                    Add(data, claim?.key);
+                    Add(data, claim == null ? "" :
+                        claim.used.ToString(CultureInfo.InvariantCulture));
+                }
+            }
+            if (block.stockGuidancePending != null)
+            {
+                StockGuidancePending pending = block.stockGuidancePending;
+                Add(data, pending.active ? "1" : "0");
+                Add(data, pending.day.ToString(CultureInfo.InvariantCulture));
+                Add(data, pending.tier.ToString(CultureInfo.InvariantCulture));
+                Add(data, pending.startStock.ToString("R", CultureInfo.InvariantCulture));
+                Add(data, pending.endStock.ToString("R", CultureInfo.InvariantCulture));
+                var ids = pending.populationIds == null
+                    ? new List<string>() : new List<string>(pending.populationIds);
+                ids.Sort(StringComparer.Ordinal);
+                foreach (string id in ids) Add(data, id);
+            }
             var populations = block.community == null
                 ? new List<PopulationData>() : new List<PopulationData>(block.community);
             populations.Sort((a, b) => string.CompareOrdinal(
@@ -111,6 +174,59 @@ public partial class SimulationController
                     Add(data, influence.potential.ToString("R", CultureInfo.InvariantCulture));
                 }
             }
+            else if (item is FertilityGuidancePulse pulse)
+            {
+                Add(data, pulse.transactionKey);
+                Add(data, pulse.used.ToString(CultureInfo.InvariantCulture));
+            }
+            else if (item is StockGuidancePulse stockPulse)
+            {
+                Add(data, stockPulse.transactionKey);
+                Add(data, stockPulse.claimKey);
+                Add(data, stockPulse.used.ToString(CultureInfo.InvariantCulture));
+            }
+            else if (item is CliffMovementRecovery cliff)
+            {
+                Add(data, cliff.edgeKey);
+                Add(data, cliff.firstDay.ToString(CultureInfo.InvariantCulture));
+                Add(data, cliff.lastDay.ToString(CultureInfo.InvariantCulture));
+                Add(data, cliff.anchorMovement.ToString(CultureInfo.InvariantCulture));
+                Add(data, cliff.active ? "1" : "0");
+                Add(data, cliff.originSpeciesKey);
+            }
+            else if (item is List<NeighborMovementRound> movementRounds)
+            {
+                movementRounds = new List<NeighborMovementRound>(movementRounds);
+                movementRounds.Sort((a, b) =>
+                {
+                    int comparison = string.CompareOrdinal(a?.edgeKey, b?.edgeKey);
+                    if (comparison != 0 || a == null || b == null) return comparison;
+                    comparison = a.sourceRevision.CompareTo(b.sourceRevision);
+                    if (comparison != 0) return comparison;
+                    comparison = a.targetRevision.CompareTo(b.targetRevision);
+                    if (comparison != 0) return comparison;
+                    comparison = a.sourceElevation.CompareTo(b.sourceElevation);
+                    if (comparison != 0) return comparison;
+                    comparison = a.targetElevation.CompareTo(b.targetElevation);
+                    if (comparison != 0) return comparison;
+                    return a.startDay.CompareTo(b.startDay);
+                });
+                foreach (NeighborMovementRound round in movementRounds)
+                {
+                    if (round == null) { Add(data, ""); continue; }
+                    Add(data, round.edgeKey);
+                    Add(data, round.startDay.ToString(CultureInfo.InvariantCulture));
+                    Add(data, round.sourceRevision.ToString(CultureInfo.InvariantCulture));
+                    Add(data, round.targetRevision.ToString(CultureInfo.InvariantCulture));
+                    Add(data, round.sourceElevation.ToString(CultureInfo.InvariantCulture));
+                    Add(data, round.targetElevation.ToString(CultureInfo.InvariantCulture));
+                    Add(data, round.finished ? "1" : "0");
+                    Add(data, round.anchorMovement.ToString(CultureInfo.InvariantCulture));
+                    Add(data, round.guided ? "1" : "0");
+                    Add(data, round.recoveryConsumed ? "1" : "0");
+                    Add(data, round.originSpeciesKey);
+                }
+            }
             else if (item is List<EvolutionConversionRecord> records)
             {
                 records = new List<EvolutionConversionRecord>(records);
@@ -154,6 +270,7 @@ public partial class SimulationController
         if (currentSimulationDay > 0)
             throw new InvalidOperationException("Seed must be set before Day 1.");
         simulationSeed = seed;
+        communityEditSerial = 0;
         var seenTiles = new HashSet<string>(StringComparer.Ordinal);
         foreach (BlockInfo block in blockInfos)
         {
@@ -188,6 +305,19 @@ public partial class SimulationController
                 if (population != null)
                     LandLifeRules.EnsureBodyMass(population, LandRules);
         }
+        IsDeterministicRunConfigured = true;
+    }
+
+    private void AssignCommunityEditIds(BlockInfo block,
+        IReadOnlyList<SimulationPopulationEdit> edits)
+    {
+        if (!IsDeterministicRunConfigured) return;
+        int serial = ++communityEditSerial;
+        for (int i = 0; i < edits.Count; i++)
+            if (edits[i].Resident == null && edits[i].Draft.speciesAmount > 0)
+                edits[i].Draft.AssignPopulationId("seed:" + simulationSeed + ":" +
+                    StableTileKey(block) + ":edit:" + currentSimulationDay + ":" +
+                    serial + ":" + i);
     }
 
     private static string StableTileKey(BlockInfo block) =>

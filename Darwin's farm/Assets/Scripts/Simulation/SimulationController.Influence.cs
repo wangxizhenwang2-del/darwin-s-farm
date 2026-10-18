@@ -17,50 +17,61 @@ public partial class SimulationController
     public void RecordPlayerTechnology(BlockInfo block,
         EnvironmentTechnologyKind kind, int tier, int day)
     {
+        // Preserve the public transaction hook. Recovery uses the separately
+        // measured delta below. Stock probability is not yet frozen; climate
+        // follows the actual environment in the natural phase. No old 7+5 day
+        // primary/secondary pressure is issued for any player tool.
+        // A new committed tile transaction may start a fresh movement round.
+        if (block != null && block.waterCoverage == WaterCoverage.Land)
+            block.neighborOpportunityRevision++;
+    }
+
+    internal void RecordActualRecoveryGuidance(BlockInfo block,
+        float actualDelta, int day)
+    {
         if (block == null || block.community == null ||
-            block.waterCoverage != WaterCoverage.Land) return;
+            block.waterCoverage != WaterCoverage.Land ||
+            Mathf.Abs(actualDelta) < 0.0001f) return;
+        int direction = actualDelta > 0f ? 1 : -1;
+        RecoveryGuidanceTransaction pulse = block.recoveryGuidance;
+        if (pulse == null)
+            block.recoveryGuidance = pulse = new RecoveryGuidanceTransaction();
+        if (pulse.direction != direction || day > pulse.lastDay)
+        {
+            pulse.serial++;
+            pulse.key = StableTileKey(block) + ":recovery:" + pulse.serial;
+            pulse.direction = direction;
+            pulse.firstDay = day + 1;
+            pulse.lastDay = day + 175;
+            pulse.used = 0;
+            pulse.totalDelta = 0f;
+        }
+        pulse.totalDelta = Mathf.Min(50000f,
+            pulse.totalDelta + Mathf.Abs(actualDelta));
+        pulse.cap = Mathf.Min(32,
+            Mathf.CeilToInt(16f * pulse.totalDelta / 25000f));
+        pulse.probability = Mathf.Min(0.60f,
+            0.30f * pulse.totalDelta / 25000f);
+        // Enrollment happens only at a successful land deployment. Later
+        // immigrants do not inherit a tile command they never received.
         foreach (PopulationData population in block.community)
         {
-            if (population == null || population.speciesAmount <= 0) continue;
-            switch (kind)
-            {
-                case EnvironmentTechnologyKind.PlantStockChange:
-                    if (tier > 0)
-                    {
-                        AddInfluence(population, 3, PrimaryInfluence, day);
-                        AddInfluence(population, 4, SecondaryInfluence, day);
-                    }
-                    else if (tier < 0)
-                    {
-                        AddInfluence(population, 3, -PrimaryInfluence, day);
-                        AddInfluence(population, 2, SecondaryInfluence, day);
-                    }
-                    break;
-                case EnvironmentTechnologyKind.PlantRecoveryChange:
-                    if (tier > 0)
-                    {
-                        AddInfluence(population, 4, PrimaryInfluence, day);
-                        AddInfluence(population, 2, -SecondaryInfluence, day);
-                    }
-                    else if (tier < 0)
-                    {
-                        AddInfluence(population, 4, -PrimaryInfluence, day);
-                        AddInfluence(population, 3, -SecondaryInfluence, day);
-                    }
-                    break;
-                case EnvironmentTechnologyKind.TemperatureChange:
-                    if (tier != 0)
-                        AddInfluence(population, 3,
-                            -Math.Sign(tier) * SecondaryInfluence, day);
-                    break;
-                case EnvironmentTechnologyKind.HumidityChange:
-                    if (tier > 0)
-                        AddInfluence(population, 4, SecondaryInfluence, day);
-                    else if (tier < 0)
-                        AddInfluence(population, 3, SecondaryInfluence, day);
-                    break;
-            }
+            if (population == null || population.speciesAmount <= 0 ||
+                population.trophicLevel != 0) continue;
+            FertilityGuidancePulse redeemed = population.fertilityGuidance;
+            if (redeemed == null)
+                population.fertilityGuidance = redeemed =
+                    new FertilityGuidancePulse();
+            if (redeemed.transactionKey == pulse.key) continue;
+            redeemed.transactionKey = pulse.key;
+            redeemed.used = 0;
         }
+    }
+
+    internal void CancelRecoveryGuidance(BlockInfo block)
+    {
+        if (block != null && block.recoveryGuidance != null)
+            block.recoveryGuidance.direction = 0;
     }
 
     private static void AddInfluence(PopulationData population,
@@ -80,30 +91,13 @@ public partial class SimulationController
     {
         if (population.directedInfluences == null)
             population.directedInfluences = new List<DirectedInfluence>();
-        population.directedInfluences.RemoveAll(influence =>
-            influence == null || day > influence.residualLastDay);
-        foreach (DirectedInfluence influence in population.directedInfluences)
-        {
-            if (day >= influence.firstDay && day <= influence.lastDay)
-                influence.potential = Mathf.Clamp(influence.potential +
-                    influence.weight * 0.1f, -3f, 3f);
-            else if (day > influence.lastDay)
-                influence.potential = 0f;
-        }
+        population.directedInfluences.Clear();
     }
 
     private static float InfluenceNet(PopulationData population,
         int trait, int day, bool residual)
     {
-        if (population.directedInfluences == null) return 0f;
-        float sum = 0f;
-        foreach (DirectedInfluence influence in population.directedInfluences)
-            if (influence != null && influence.trait == trait &&
-                day >= influence.firstDay && day <= (residual
-                    ? influence.residualLastDay : influence.lastDay))
-                sum += residual ? influence.weight :
-                    influence.weight + influence.potential;
-        return Mathf.Abs(sum) < 0.00001f ? 0f : sum;
+        return 0f;
     }
 
     public bool SetManualEvolutionTarget(PopulationData population,

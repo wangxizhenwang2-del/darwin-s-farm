@@ -168,6 +168,18 @@ public partial class SimulationController : MonoBehaviour
     public void SetBlocks(List<BlockInfo> blocks)
     {
         blockInfos = blocks ?? new List<BlockInfo>();
+        // Tile edits resynchronize this list. Keep the range history of living
+        // populations so a map operation cannot replay all entry messages.
+        var present = new HashSet<PopulationData>();
+        foreach (BlockInfo block in blockInfos)
+            if (block != null && block.community != null)
+                foreach (PopulationData population in block.community)
+                    if (population != null) present.Add(population);
+        var removed = new List<PopulationData>();
+        foreach (PopulationData population in evolutionTraitRangeStates.Keys)
+            if (!present.Contains(population)) removed.Add(population);
+        foreach (PopulationData population in removed)
+            evolutionTraitRangeStates.Remove(population);
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
@@ -304,6 +316,7 @@ public partial class SimulationController : MonoBehaviour
             }
         }
 
+        AssignCommunityEditIds(block, edits);
         List<PopulationData> next = new List<PopulationData>(edits.Count);
         foreach (SimulationPopulationEdit edit in edits)
         {

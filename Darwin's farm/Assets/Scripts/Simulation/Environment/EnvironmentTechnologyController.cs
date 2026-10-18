@@ -27,6 +27,33 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     private BioenergyAccount account;
     private readonly Dictionary<Vector2Int, Dictionary<int, EnvironmentTechnologyChoice>>
         applied = new Dictionary<Vector2Int, Dictionary<int, EnvironmentTechnologyChoice>>();
+    [Serializable] public sealed class SavedChoice { public int x,y,channel,kind,tier; }
+    public List<SavedChoice> CaptureSaveState()
+    {
+        var result=new List<SavedChoice>();
+        foreach(var tile in applied)
+            foreach(var operation in tile.Value)
+                result.Add(new SavedChoice { x=tile.Key.x, y=tile.Key.y,
+                    channel=operation.Key,kind=(int)operation.Value.Kind, tier=operation.Value.Tier });
+        result.Sort((a,b)=>a.x!=b.x?a.x.CompareTo(b.x):a.y!=b.y?a.y.CompareTo(b.y):a.channel.CompareTo(b.channel));
+        return result;
+    }
+    public void RestoreSaveState(List<SavedChoice> state)
+    {
+        if(state==null)throw new ArgumentException("Missing technology history.");
+        applied.Clear();
+        foreach(var saved in state)
+        {
+            var choice=new EnvironmentTechnologyChoice((EnvironmentTechnologyKind)saved.kind,saved.tier);
+            if(!EnvironmentTechnologyCatalog.Validate(choice)||saved.channel<0||saved.channel>3)
+                throw new ArgumentException("Invalid saved technology choice.");
+            var coordinate=new Vector2Int(saved.x,saved.y);
+            if(grid==null || !grid.TryGetTile(coordinate,out _))throw new ArgumentException("Saved technology tile missing.");
+            if(!applied.TryGetValue(coordinate,out var choices))
+                applied[coordinate]=choices=new Dictionary<int,EnvironmentTechnologyChoice>();
+            choices[saved.channel]=choice;
+        }
+    }
 
     private void Awake()
     {
@@ -148,6 +175,16 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         if (account == null) { result.Error = "经济账户未就绪"; return false; }
         bool water = environment.TryRead(coordinate, out EnvironmentReadSnapshot read) &&
             read.Environment.IsWater;
+        var recoveryBefore = new Dictionary<Vector2Int, double>();
+        var stockBefore = new Dictionary<Vector2Int, double>();
+        if (choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange)
+            foreach (Vector2Int member in result.Area)
+                if (environment.TryRead(member, out EnvironmentReadSnapshot before))
+                    recoveryBefore[member] = before.Environment.Recovery.Value;
+        if (choice.Kind == EnvironmentTechnologyKind.PlantStockChange)
+            foreach (Vector2Int member in result.Area)
+                if (environment.TryRead(member, out EnvironmentReadSnapshot before))
+                    stockBefore[member] = before.PlantStock;
         bool success;
         string error;
         bool Commit(string receiptId, long paid)
@@ -200,8 +237,22 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         if (ecology != null && clock != null)
             foreach (Vector2Int member in result.Area)
                 if (grid.TryGetTile(member, out MapTileInstance affected))
+                {
                     ecology.RecordPlayerTechnology(affected.Block, choice.Kind,
                         choice.Tier, clock.currentDay);
+                    if (choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange &&
+                        recoveryBefore.TryGetValue(member, out double oldRecovery) &&
+                        environment.TryRead(member, out EnvironmentReadSnapshot after))
+                        ecology.RecordActualRecoveryGuidance(affected.Block,
+                            (float)(after.Environment.Recovery.Target - oldRecovery),
+                            clock.currentDay);
+                    if (choice.Kind == EnvironmentTechnologyKind.PlantStockChange &&
+                        stockBefore.TryGetValue(member, out double oldStock) &&
+                        environment.TryRead(member, out EnvironmentReadSnapshot afterStock))
+                        ecology.RecordActualStockGuidance(affected.Block,
+                            (float)oldStock, (float)afterStock.PlantStock,
+                            choice.Tier, clock.currentDay);
+                }
         OperationCommitted?.Invoke(coordinate, "technology_deploy:" + choice.Kind +
             ";tier=" + choice.Tier + ";affectedTiles=" + result.Area.Count);
         return true;
@@ -264,6 +315,13 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
             ? EnvironmentAttribute.Temperature : kind == EnvironmentTechnologyKind.HumidityChange
                 ? EnvironmentAttribute.Humidity : EnvironmentAttribute.Recovery;
         bool result = environment.TryCancel(coordinate, attribute, out error);
+        if (result && kind == EnvironmentTechnologyKind.PlantRecoveryChange)
+        {
+            SimulationController ecology = GetComponent<SimulationController>();
+            if (ecology != null && grid.TryGetTile(coordinate,
+                out MapTileInstance affected))
+                ecology.CancelRecoveryGuidance(affected.Block);
+        }
         if (result) OperationCommitted?.Invoke(coordinate, "technology_cancel:" + kind);
         return result;
     }

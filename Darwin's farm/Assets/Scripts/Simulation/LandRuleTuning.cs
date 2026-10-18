@@ -67,7 +67,7 @@ public sealed class LandRuleTuning
     [Min(1)] public int evolutionRequiredDays = 5;
     [Min(1)] public int evolutionRequiredDaysAtFour = 10;
     [Min(0)] public int evolutionTraitTolerance = 5;
-    [Min(0)] public int evolutionCooldownDays = 50;
+    [Min(0)] public int evolutionCooldownDays = 100;
     [Min(0f)] public float neighborAttractionThreshold = 0.2f;
     [Min(0f)] public float attractionMovementGain = 2f;
     [Min(0f)] public float localMovementGain = 1f;
@@ -196,7 +196,9 @@ public sealed class LandRuleTuning
         evolutionRequiredDays = Mathf.Max(1, evolutionRequiredDays);
         evolutionRequiredDaysAtFour = Mathf.Max(1, evolutionRequiredDaysAtFour);
         evolutionTraitTolerance = Mathf.Max(0, evolutionTraitTolerance);
-        evolutionCooldownDays = Mathf.Max(0, evolutionCooldownDays);
+        // New formal evolutions use 100 days. Existing populations retain
+        // their serialized absolute nextEvolutionDay deadline.
+        evolutionCooldownDays = 100;
         neighborAttractionThreshold = Unit(neighborAttractionThreshold, 0.2f);
         attractionMovementGain = NonNegative(attractionMovementGain, 2f);
         localMovementGain = NonNegative(localMovementGain, 1f);

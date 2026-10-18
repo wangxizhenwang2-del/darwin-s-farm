@@ -1,0 +1,21 @@
+{
+  "name": "PeacockWalk",
+  "view": "left side",
+  "loop": true,
+  "fps": 8,
+  "durationSeconds": 1.0,
+  "frameWidth": 512,
+  "frameHeight": 512,
+  "sheet": "PeacockWalkSheet.png",
+  "sheetColumns": 8,
+  "frames": [
+    "frame-0.png",
+    "frame-1.png",
+    "frame-2.png",
+    "frame-3.png",
+    "frame-4.png",
+    "frame-5.png",
+    "frame-6.png",
+    "frame-7.png"
+  ]
+}

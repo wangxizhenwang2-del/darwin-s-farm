@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DarwinFarm.MigrationOpportunity;
 using UnityEngine;
 
 // 负责挑目的地并提交迁徙计划；个体的拆分与合并交给 PopulationTransfer。
@@ -171,6 +172,20 @@ public partial class SimulationController
         public float tieBreaker;
     }
 
+    private void TraceLandMigration(int day, BlockInfo source,
+        BlockInfo target, PopulationData population, int amount,
+        string reason, float chance = 0f, float draw = 0f)
+    {
+        if (OnEcologyEvent == null && !EnableEcologyConsoleLogs) return;
+        LogEcology(day, source, population, "migration_attempt",
+            "target=" + (target == null ? "" : StableTileKey(target)) +
+            " amount=" + amount + " movement=" +
+            population.movementAbility + " chance=" +
+            chance.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
+            " draw=" + draw.ToString("R", System.Globalization.CultureInfo.InvariantCulture) +
+            " reason=" + reason);
+    }
+
     private void RunMigration(int day)
     {
         List<MovePlan> plans = new List<MovePlan>();
@@ -220,7 +235,8 @@ public partial class SimulationController
     {
         plan = new MovePlan();
         int amount = StandardMigrationAmount(population.speciesAmount);
-        if (amount == 0) return false;
+        if (amount == 0)
+        { TraceLandMigration(day, source, null, population, 0, "BelowAmountMinimum"); return false; }
         List<MoveCandidate> candidates = new List<MoveCandidate>();
 
         foreach (BlockInfo neighbor in source.Neighbors)
@@ -230,16 +246,25 @@ public partial class SimulationController
             if (neighbor.waterCoverage != WaterCoverage.Land ||
                 neighbor.community == null) continue;
             int heightDifference = Mathf.Abs(neighbor.elevation - source.elevation);
-            if (heightDifference >= 2) continue;
+            if (heightDifference >= 2)
+            { TraceLandMigration(day, source, neighbor, population, amount, "Cliff"); continue; }
             if (population.movementAbility <= (heightDifference == 0
                 ? LandRules.flatMigrationThreshold : LandRules.slopeMigrationThreshold))
-                continue;
+            { TraceLandMigration(day, source, neighbor, population, amount, "MovementThreshold"); continue; }
+
+            // Prevent two resident groups of the same species exchanging places
+            // across the same edge during one planning pass.
+            if (planned.Exists(move => move.source == neighbor &&
+                move.target == source && SameSpecies(move.population, population)))
+            { TraceLandMigration(day, source, neighbor, population, amount,
+                "ReciprocalSameDay"); continue; }
 
             bool occupied = planned.Exists(move =>
                 move.target == neighbor &&
                 move.population.ecologicalNiche == population.ecologicalNiche &&
                 SameSpecies(move.population, population));
-            if (occupied) continue;
+            if (occupied)
+            { TraceLandMigration(day, source, neighbor, population, amount, "PlannedSameSpecies"); continue; }
             int reserved = 0;
             foreach (MovePlan move in planned)
                 if (move.target == neighbor &&
@@ -247,20 +272,67 @@ public partial class SimulationController
                         SameSpecies(existing, move.population))) reserved++;
             if (!LandMovementOpportunity.CanOfferNeighborSlot(
                 LivingPopulationCount(neighbor) + reserved,
-                HasSameSpeciesResident(neighbor, population))) continue;
-            float attraction = NeighborAttraction(source, neighbor,
-                population, amount);
-            float capacityCorrection = TargetCapacityCorrection(neighbor,
-                population);
-            float chance = Mathf.Clamp01(attraction)
-                * population.movementAbility / 100f * capacityCorrection;
+                HasSameSpeciesResident(neighbor, population)))
+            { TraceLandMigration(day, source, neighbor, population, amount, "DestinationFull"); continue; }
+            float chance;
+            int plannedAmount = amount;
+            if (enableV62Mobility)
+            {
+                V62NeighborForecast forecast = ForecastV62Neighbor(source,
+                    neighbor, population, ReadLandTraits(population), amount,
+                    V62ReservedFood(neighbor, population, planned));
+                if (!forecast.Valid)
+                { TraceLandMigration(day, source, neighbor, population, amount, "ForecastRejected"); continue; }
+                plannedAmount = forecast.amount;
+                chance = forecast.foodAttraction *
+                    population.movementAbility / 100f *
+                    forecast.capacityCorrection *
+                    (heightDifference == 0 ? 1f : TerrainStepProbability) *
+                    forecast.normalizedGain;
+            }
+            else
+            {
+                float attraction = NeighborAttraction(source, neighbor,
+                    population, amount);
+                float capacityCorrection = TargetCapacityCorrection(neighbor,
+                    population);
+                chance = Mathf.Clamp01(attraction) *
+                    population.movementAbility / 100f * capacityCorrection;
+            }
+            // The legacy attraction probability alone permitted moves towards
+            // destinations with nonpositive sustainable growth advantage.
+            // Apply the same counterfactual used to evolve movement itself.
+            if (!enableV62Mobility && enableNeighborMovementFormula &&
+                population.trophicLevel == 0)
+            {
+                OpportunityResult value = EvaluateRealNeighborOpportunity(
+                    source, neighbor, population, ReadLandTraits(population),
+                    plannedAmount, false);
+                if (OnEcologyEvent != null || EnableEcologyConsoleLogs)
+                    LogEcology(day, source, population, "migration_forecast",
+                        "source=" + StableTileKey(source) +
+                        " target=" + StableTileKey(neighbor) +
+                        " amount=" + plannedAmount +
+                        " m=" + population.movementAbility +
+                        " delta=" + value.GrowthAdvantage.ToString("R",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        " D=" + value.AdvantageStrength.ToString("R",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        " eligible=" + value.Eligible +
+                        " reason=" + value.Rejection);
+                if (!NeighborMovementPolicyV2.CanChooseDestination(value))
+                { TraceLandMigration(day, source, neighbor, population, plannedAmount,
+                    "NonPositiveDestinationAdvantage"); continue; }
+                chance *= (float)NeighborMovementPolicyV2.MigrationChanceMultiplier(value);
+            }
             if (LivingPopulationCount(neighbor) == 4)
                 chance *= LandRules.fourEntryMigrationFactor;
-            if (chance <= 0f) continue;
+            if (chance <= 0f)
+            { TraceLandMigration(day, source, neighbor, population, amount, "NoAttraction"); continue; }
             candidates.Add(new MoveCandidate
             {
                 target = neighbor, chance = Mathf.Clamp01(chance),
-                amount = amount,
+                amount = plannedAmount,
                 tieBreaker = ModelRandom01(day, "migration.tie", source,
                     population, neighbor)
             });
@@ -276,8 +348,13 @@ public partial class SimulationController
         });
         foreach (MoveCandidate candidate in candidates)
         {
-            if (ModelRandom01(day, "migration.accept", source, population,
-                candidate.target) >= candidate.chance) continue;
+            float draw = ModelRandom01(day, "migration.accept", source, population,
+                candidate.target);
+            if (draw >= candidate.chance)
+            { TraceLandMigration(day, source, candidate.target, population,
+                candidate.amount, "Probability", candidate.chance, draw); continue; }
+            TraceLandMigration(day, source, candidate.target, population,
+                candidate.amount, "Accepted", candidate.chance, draw);
             plan = new MovePlan
             {
                 source = source, target = candidate.target,
@@ -815,6 +892,11 @@ internal static class PopulationTransfer
             directedTraitUnlockDay = source.directedTraitUnlockDay,
             sameSpeciesCoexistenceDays = 0,
             lastMutationEffect = source.lastMutationEffect,
+            fertilityGuidance = source.fertilityGuidance == null
+                ? new FertilityGuidancePulse() : source.fertilityGuidance.Copy(),
+            stockGuidance = source.stockGuidance == null
+                ? new StockGuidancePulse() : source.stockGuidance.Copy(),
+            cliffMovementRecovery = new CliffMovementRecovery(),
             mutationSelectionProgress = source.mutationSelectionProgress,
             mutationSelectionCandidate = source.mutationSelectionCandidate,
             trackedEvolutionTarget = source.trackedEvolutionTarget,
@@ -829,6 +911,9 @@ internal static class PopulationTransfer
             preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>()),
             populationGrowthHistory = new List<float>(source.populationGrowthHistory ?? new List<float>())
         };
+        if (source.neighborMovementRounds != null)
+            foreach (NeighborMovementRound round in source.neighborMovementRounds)
+                if (round != null) copy.neighborMovementRounds.Add(round.Copy());
         if (source.evolutionConversions != null)
             foreach (EvolutionConversionRecord record in source.evolutionConversions)
                 if (record != null)
@@ -914,6 +999,53 @@ internal static class PopulationTransfer
             arrival.trophicLevel, arrival.trophicMutationRemainder,
             residentAmount, arrivalAmount, total);
         resident.energyReserve += arrival.energyReserve;
+        if (resident.fertilityGuidance == null)
+            resident.fertilityGuidance = new FertilityGuidancePulse();
+        if (arrival.fertilityGuidance != null &&
+            !string.IsNullOrEmpty(resident.fertilityGuidance.transactionKey) &&
+            resident.fertilityGuidance.transactionKey ==
+                arrival.fertilityGuidance.transactionKey)
+            resident.fertilityGuidance.used += arrival.fertilityGuidance.used;
+        if (resident.stockGuidance == null)
+            resident.stockGuidance = new StockGuidancePulse();
+        if (arrival.stockGuidance != null)
+        {
+            if (string.IsNullOrEmpty(resident.stockGuidance.transactionKey))
+                resident.stockGuidance = arrival.stockGuidance.Copy();
+            else if (resident.stockGuidance.transactionKey ==
+                arrival.stockGuidance.transactionKey)
+                resident.stockGuidance.used =
+                    resident.stockGuidance.claimKey == arrival.stockGuidance.claimKey
+                    ? Mathf.Max(resident.stockGuidance.used,
+                        arrival.stockGuidance.used)
+                    : resident.stockGuidance.used + arrival.stockGuidance.used;
+        }
+        if (resident.neighborMovementRounds == null)
+            resident.neighborMovementRounds = new List<NeighborMovementRound>();
+        if (arrival.neighborMovementRounds != null)
+            foreach (NeighborMovementRound incoming in arrival.neighborMovementRounds)
+            {
+                if (incoming == null) continue;
+                NeighborMovementRound existing = resident.neighborMovementRounds.Find(
+                    round => round != null && round.edgeKey == incoming.edgeKey &&
+                        round.sourceRevision == incoming.sourceRevision &&
+                        round.targetRevision == incoming.targetRevision &&
+                        round.sourceElevation == incoming.sourceElevation &&
+                        round.targetElevation == incoming.targetElevation);
+                if (existing == null)
+                    resident.neighborMovementRounds.Add(incoming.Copy());
+                else
+                {
+                    existing.startDay = Mathf.Min(existing.startDay,
+                        incoming.startDay);
+                    existing.finished |= incoming.finished;
+                    existing.guided |= incoming.guided;
+                    existing.recoveryConsumed |= incoming.recoveryConsumed;
+                }
+            }
+        // A merged resident must not inherit an off-tile recovery command.
+        if (resident.cliffMovementRecovery != null)
+            resident.cliffMovementRecovery.active = false;
         resident.bodyBiomass += arrival.bodyBiomass;
         resident.birthRemainder += arrival.birthRemainder;
         resident.deathRemainder += arrival.deathRemainder;

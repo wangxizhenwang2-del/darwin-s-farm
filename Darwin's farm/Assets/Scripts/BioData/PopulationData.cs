@@ -25,7 +25,12 @@ public class PopulationData
     // Identifies this population instance, not its species or visual object.
     // Serialized so an existing resident keeps its identity across model saves.
     [UnityEngine.SerializeField] private string populationId;
-    public PopulationData() => RegeneratePopulationId();
+    public PopulationData() : this(true) { }
+    // Read-only evolution forecasts must not consume an OS random GUID.
+    internal PopulationData(bool allocateIdentity)
+    {
+        if (allocateIdentity) RegeneratePopulationId();
+    }
     public string PopulationId
     {
         get
@@ -133,10 +138,65 @@ public class PopulationData
     public int mutationSelectionCandidate = -1;
     public System.Collections.Generic.List<DirectedInfluence> directedInfluences =
         new System.Collections.Generic.List<DirectedInfluence>();
+    public FertilityGuidancePulse fertilityGuidance = new FertilityGuidancePulse();
+    public StockGuidancePulse stockGuidance = new StockGuidancePulse();
+    public System.Collections.Generic.List<NeighborMovementRound> neighborMovementRounds =
+        new System.Collections.Generic.List<NeighborMovementRound>();
+    public CliffMovementRecovery cliffMovementRecovery = new CliffMovementRecovery();
     public SpeciesData trackedEvolutionTarget;
     public SpeciesData manualEvolutionTarget;
     // Movement, size, fertility target protection. A released protection
     // cannot reappear until the trait leaves its target interval.
     public int[] targetProtectionSince = { -1, -1, -1 };
     public bool[] targetProtectionReleased = new bool[3];
+}
+
+[System.Serializable]
+public sealed class FertilityGuidancePulse
+{
+    public string transactionKey;
+    public int used;
+
+    public FertilityGuidancePulse Copy() => (FertilityGuidancePulse)MemberwiseClone();
+}
+
+[System.Serializable]
+public sealed class StockGuidancePulse
+{
+    public string transactionKey;
+    public string claimKey;
+    public int used;
+
+    public StockGuidancePulse Copy() => (StockGuidancePulse)MemberwiseClone();
+}
+
+[System.Serializable]
+public sealed class NeighborMovementRound
+{
+    public string edgeKey;
+    public int startDay;
+    public int sourceRevision;
+    public int targetRevision;
+    public int sourceElevation;
+    public int targetElevation;
+    public bool finished;
+    public int anchorMovement;
+    public bool guided;
+    public bool recoveryConsumed;
+    public string originSpeciesKey;
+
+    public NeighborMovementRound Copy() => (NeighborMovementRound)MemberwiseClone();
+}
+
+[System.Serializable]
+public sealed class CliffMovementRecovery
+{
+    public string edgeKey;
+    public int firstDay;
+    public int lastDay;
+    public int anchorMovement;
+    public bool active;
+    public string originSpeciesKey;
+
+    public CliffMovementRecovery Copy() => (CliffMovementRecovery)MemberwiseClone();
 }

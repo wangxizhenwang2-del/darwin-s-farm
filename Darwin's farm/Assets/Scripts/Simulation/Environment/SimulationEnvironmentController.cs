@@ -38,6 +38,13 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     private SimulationController simulation;
     private SimulationTime clock;
     private EnvironmentWorld world;
+    public EnvironmentWorld.SaveState CaptureSaveState() => world.CaptureState();
+    public void RestoreSaveState(EnvironmentWorld.SaveState state)
+    {
+        Synchronize();
+        world.RestoreState(state);
+        Publish();
+    }
     private readonly Dictionary<GridPosition, BlockInfo> blocks = new Dictionary<GridPosition, BlockInfo>();
     private readonly Dictionary<GridPosition, string> waterGroups = new Dictionary<GridPosition, string>();
     public event Action<IReadOnlyList<EnvironmentReadSnapshot>> Changed;

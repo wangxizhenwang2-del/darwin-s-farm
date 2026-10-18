@@ -13,6 +13,7 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
     public IReadOnlyList<SpeciesData> MapSpecies => species;
     [SerializeField] private SpeciesData initialChickenSpecies;
     [SerializeField, Min(1)] private int initialChickenCount = 160;
+    [SerializeField] private int replaySeed = 1;
 
     private void Awake()
     {
@@ -49,6 +50,7 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
         }
 
         simulation.SetEvolutionNetworkSpecies(species);
+        simulation.EnableNeighborMovementFormula = true;
         if (!grid.TryGetTile(Vector2Int.zero, out MapTileInstance initialTile) ||
             initialTile.Block == null)
         {
@@ -57,6 +59,9 @@ public sealed class WhiteboxBiowebTestSetup : MonoBehaviour
             yield break;
         }
         Seed(initialTile, initialChickenSpecies);
+        // Assign stable population IDs after the starting community exists.
+        // The export header records this same seed for cross-machine comparisons.
+        simulation.ConfigureDeterministicRun(replaySeed);
     }
 
     private void Seed(MapTileInstance tile, SpeciesData chicken)
