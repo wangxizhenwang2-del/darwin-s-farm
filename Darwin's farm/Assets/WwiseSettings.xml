@@ -4,11 +4,11 @@
   <GenerateSoundBanksAsPreBuildStep>false</GenerateSoundBanksAsPreBuildStep>
   <WwiseStreamingAssetsPath>Audio\GeneratedSoundBanks</WwiseStreamingAssetsPath>
   <RootOutputPath>../audio/Wwiseproject/DarwinsFarm_Audio/GeneratedSoundBanks/</RootOutputPath>
-  <CreatedPicker>false</CreatedPicker>
+  <CreatedPicker>true</CreatedPicker>
   <CreateWwiseGlobal>true</CreateWwiseGlobal>
   <CreateWwiseListener>false</CreateWwiseListener>
   <ObjectReferenceAutoCleanup>true</ObjectReferenceAutoCleanup>
-  <LoadSoundEngineInEditMode>true</LoadSoundEngineInEditMode>
+  <LoadSoundEngineInEditMode>false</LoadSoundEngineInEditMode>
   <ShowMissingRigidBodyWarning>true</ShowMissingRigidBodyWarning>
   <ShowSpatialAudioWarningMsg>true</ShowSpatialAudioWarningMsg>
   <WwiseInstallationPathMac />
