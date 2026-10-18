@@ -1,0 +1,7 @@
+PASS: Unity scripts and rendered shaders compile.
+PASS: Shared prefab and generated waterfalls hide cyan layers 1/2, retain foreground layers 3/4.
+PASS: All four scenes reuse original Biomes river prefab instances.
+PASS: River foundations have no top triangles; original Y=0 terrain ledges no longer share a coplanar foundation roof.
+PASS: Connection, capsule and waterfall counts retained.
+PASS: Four scenes rendered; close-up captured before/after and from three angles.
+PASS: Existing water matches original shader baseline.

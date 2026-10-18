@@ -92,7 +92,7 @@ namespace Darwin.Rendering.Editor
 
         static void ConfigureSplashLayers(GameObject root)
         {
-            // Two swept upward accents, one compressed hero mass, one horizontal surface fan.
+            // Keep the rear accents inactive; retain the white hero mass and surface fan.
             var positions=new[]{new Vector3(-1.8f,.08f,-.08f),new Vector3(1.35f,.08f,-.16f),new Vector3(.05f,.07f,-.60f),new Vector3(-.15f,.035f,-1.35f)};
             var scales=new[]{new Vector3(1.25f,1.2f,.75f),new Vector3(1.1f,1.05f,.65f),new Vector3(3.05f,1.05f,1.3f),new Vector3(3.5f,.26f,1.55f)};
             var fills=new[]{new Color(.73f,.88f,.89f),new Color(.80f,.92f,.91f),new Color(.97f,.98f,.95f),new Color(.88f,.96f,.94f)};
@@ -118,6 +118,7 @@ namespace Darwin.Rendering.Editor
                     child.localPosition=positions[i];child.localScale=scales[i];child.localRotation=Quaternion.identity;
                     child.GetComponent<MeshFilter>().sharedMesh=cloud;child.GetComponent<MeshRenderer>().sharedMaterial=mat;
                 }
+                root.transform.Find(name).gameObject.SetActive(i>=2);
             }
         }
 
