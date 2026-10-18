@@ -186,6 +186,7 @@ public partial class SimulationController
     private void RunPresetEvolution(int day)
     {
         if (!presetEvolutionEnabled || day <= 0) return;
+        ObserveNeighborTraitClues();
         var plans = new List<EvolutionPlan>();
         var waiting = new List<EvolutionWaitTrace>();
         foreach (BlockInfo block in blockInfos)
@@ -301,6 +302,29 @@ public partial class SimulationController
             }
             LogEvolutionGate(day, trace);
             if (trace.reason != "committed") LogEvolutionWait(day, trace);
+        }
+    }
+
+    private void ObserveNeighborTraitClues()
+    {
+        int tolerance = LandRules.evolutionTraitTolerance;
+        foreach (BlockInfo block in blockInfos)
+        {
+            if (block == null || block.community == null) continue;
+            foreach (PopulationData source in block.community)
+            {
+                if (source == null || source.species == null || source.speciesAmount <= 0) continue;
+                int[] values = { source.fitTemperature, source.fitHumidity,
+                    source.movementAbility, source.size, source.fertility };
+                foreach (SpeciesData target in ConnectedTargets(source.species))
+                {
+                    int[] centers = { target.baseFitTemperature, target.baseFitHumidity,
+                        target.baseMovementAbility, target.baseSize, target.baseFertility };
+                    for (int trait = 0; trait < values.Length; trait++)
+                        if (Mathf.Abs(values[trait] - centers[trait]) <= tolerance)
+                            target.RevealTrait(trait);
+                }
+            }
         }
     }
 

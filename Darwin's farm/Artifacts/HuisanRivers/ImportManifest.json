@@ -1,0 +1,71 @@
+{
+  "branch": "huisan",
+  "commit": "feaf8c7e114a1ffecb66e7905b53cef877eb3ac8",
+  "guidRemap": {
+    "001ac3f73f62a444cb82c3b8a26a400d": "c1c5a32ba7b59354f8b0b38adbfd42fa",
+    "48ee7bdf3c94e9342a73534f3dcf751c": "a2b21687b9844552be70889a236644d4",
+    "86e55c702cc3c674daabb71faf3e940f": "850a1104fc3b4baa88f5640ed2cffac2"
+  },
+  "assets": [
+    {
+      "source": "Assets/Rendering/Moebius/Content/Paint/Materials/Cross_River_HighlandColored_37_Meadow_0_Paint.mat",
+      "destination": "Assets/Rendering/Moebius/Content/Paint/Materials/Cross_River_HighlandColored_37_Meadow_0_Paint.mat",
+      "sourceGuid": "067961caa0d8c434392e846b6fc7fdcc",
+      "destinationGuid": "067961caa0d8c434392e846b6fc7fdcc"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Content/Paint/Materials/L_New_HighlandColored_37_Meadow_0_Paint.mat",
+      "destination": "Assets/Rendering/Moebius/Content/Paint/Materials/L_New_HighlandColored_37_Meadow_0_Paint.mat",
+      "sourceGuid": "a546496ab7d016d4aabe1f821a472c2d",
+      "destinationGuid": "a546496ab7d016d4aabe1f821a472c2d"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Content/Paint/Materials/Leaves9_Grassland_Grassland_lambert2_Paint.mat",
+      "destination": "Assets/Rendering/Moebius/Samples/Biomes/Materials/River/Huisan_River_Leaves.mat",
+      "sourceGuid": "48ee7bdf3c94e9342a73534f3dcf751c",
+      "destinationGuid": "a2b21687b9844552be70889a236644d4"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Content/Paint/Materials/Trunk14_Grassland_Grassland_lambert2_Paint.mat",
+      "destination": "Assets/Rendering/Moebius/Samples/Biomes/Materials/River/Huisan_River_Trunk.mat",
+      "sourceGuid": "86e55c702cc3c674daabb71faf3e940f",
+      "destinationGuid": "850a1104fc3b4baa88f5640ed2cffac2"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Content/Paint/Textures/Cross_River_Cross_River_HighlandColored_37_Meadow_0_Paint_Color.png",
+      "destination": "Assets/Rendering/Moebius/Content/Paint/Textures/Cross_River_Cross_River_HighlandColored_37_Meadow_0_Paint_Color.png",
+      "sourceGuid": "b3b122beb57dd654196d84afa0d06f2c",
+      "destinationGuid": "b3b122beb57dd654196d84afa0d06f2c"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Content/Paint/Textures/L_New_L_New_HighlandColored_37_Meadow_0_Paint_Color 1.png",
+      "destination": "Assets/Rendering/Moebius/Content/Paint/Textures/L_New_L_New_HighlandColored_37_Meadow_0_Paint_Color 1.png",
+      "sourceGuid": "98d95ffb7b0edf34b8d94dd8c66fbbfe",
+      "destinationGuid": "98d95ffb7b0edf34b8d94dd8c66fbbfe"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/Cross_River.prefab",
+      "destination": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/Cross_River.prefab",
+      "sourceGuid": "6f067a71e089bfb4581532d2ac1562b7",
+      "destinationGuid": "6f067a71e089bfb4581532d2ac1562b7"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/L_Cross_River.fbx",
+      "destination": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/River/L_Cross_River.fbx",
+      "sourceGuid": "f4b951be1d8056a4f87fe47ecf0f5a5d",
+      "destinationGuid": "f4b951be1d8056a4f87fe47ecf0f5a5d"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/L_New.prefab",
+      "destination": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/L_New.prefab",
+      "sourceGuid": "3466bae97c3a5e445a0f4e0b837bc27d",
+      "destinationGuid": "3466bae97c3a5e445a0f4e0b837bc27d"
+    },
+    {
+      "source": "Assets/Rendering/Moebius/Samples/Biomes/Prefabs/New_L_River.fbx",
+      "destination": "Assets/Rendering/Moebius/Samples/Biomes/Meshes/River/New_L_River.fbx",
+      "sourceGuid": "b65857fbb555b164caf0b14788cb48ee",
+      "destinationGuid": "b65857fbb555b164caf0b14788cb48ee"
+    }
+  ]
+}

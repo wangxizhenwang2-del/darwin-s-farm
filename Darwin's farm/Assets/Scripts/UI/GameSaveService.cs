@@ -67,6 +67,7 @@ public static class GameSaveService
     {
         public string id;
         public bool unlocked, extinct;
+        public int revealedTraits;
     }
     public static SlotInfo ReadSlot(int slot)
     {
@@ -177,7 +178,8 @@ public static class GameSaveService
         }
         foreach(var entry in catalog.species)
             if(entry.asset!=null)data.species.Add(new SpeciesProgress { id=entry.id,
-                unlocked=entry.asset.HasEverUnlocked,extinct=entry.asset.IsExtinct });
+                unlocked=entry.asset.HasEverUnlocked,extinct=entry.asset.IsExtinct,
+                revealedTraits=entry.asset.RevealedTraitMask });
         Validate(data);
         return data;
     }
@@ -240,7 +242,7 @@ public static class GameSaveService
         simulation.RestoreSaveState(data.simulation);
         technology.RestoreSaveState(data.technologies);
         foreach(SpeciesProgress progress in data.species)
-            catalog.Species(progress.id).RestoreProgress(progress.unlocked,progress.extinct);
+            catalog.Species(progress.id).RestoreProgress(progress.unlocked,progress.extinct,progress.revealedTraits);
         if(!account.TryRestoreState(data.bioenergy)||!economy.TryRestoreStorageState(data.storage))
             throw new InvalidOperationException("经济数据无法恢复。");
         news.RestoreSaveState(data.news);

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -33,6 +34,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private bool open, dragging;
     private int activePage;
     private Vector2 lastPointer;
+    private RectTransform cluePopup;
+    private TextMeshProUGUI clueText;
 
     private void Start()
     {
@@ -70,11 +73,12 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             page.zoom = MinimumZoom(page) * defaultZoomMultiplier;
             page.content.localScale = Vector3.one * page.zoom;
             foreach (SpeciesMapNodeView node in page.nodes)
-                if (node != null) node.Bind(Hovered);
+                if (node != null) node.Bind(Hovered, ShowClue, map == 0);
             page.switchButton.onClick.AddListener(Switch);
             page.closeButton.onClick.AddListener(Close);
             ConfigureGraph(page, map == 1 ? topology?.foodLinks : topology?.evolutionLinks, speciesById);
         }
+        CreateCluePopup();
         overlay.SetActive(false);
     }
 
@@ -87,6 +91,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (!open) return;
         open = dragging = false;
+        HideClue();
         if (overlay != null) overlay.SetActive(false);
         if (clock != null) clock.ReleaseModalPause();
     }
@@ -105,6 +110,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (mouse != null)
         {
             Vector2 pointer = mouse.position.ReadValue();
+            if (mouse.leftButton.wasPressedThisFrame && cluePopup != null && cluePopup.gameObject.activeSelf &&
+                !PointerHitsClueOrNode(pointer)) HideClue();
             if (RectTransformUtility.RectangleContainsScreenPoint(page.viewport, pointer, canvas.worldCamera))
             {
                 float scroll = mouse.scroll.ReadValue().y;
@@ -151,6 +158,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         open = true;
         activePage = 0;
         overlay.SetActive(true);
+        HideClue();
         pages[0].panel.SetActive(true);
         pages[1].panel.SetActive(false);
         foreach (MapPage page in pages)
@@ -163,12 +171,14 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void Close()
     {
         open = dragging = false;
+        HideClue();
         overlay.SetActive(false);
         if (clock != null) clock.ReleaseModalPause();
     }
 
     private void Switch()
     {
+        HideClue();
         pages[activePage].graph.SetHovered(-1);
         pages[activePage].panel.SetActive(false);
         activePage = 1 - activePage;
@@ -180,6 +190,75 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void Hovered(SpeciesData species)
     {
         pages[activePage].graph.SetHovered(species != null && indices.TryGetValue(species, out int index) ? index : -1);
+    }
+
+    private void CreateCluePopup()
+    {
+        var root = new GameObject("SpeciesCluePopup", typeof(RectTransform), typeof(Image));
+        cluePopup = (RectTransform)root.transform;
+        cluePopup.SetParent(overlay.transform, false);
+        cluePopup.anchorMin = cluePopup.anchorMax = new Vector2(.5f, .5f);
+        cluePopup.sizeDelta = new Vector2(560f, 290f);
+        Image paper = root.GetComponent<Image>();
+        paper.sprite = Resources.Load<Sprite>("GameUI/SpeciesCluePaper");
+        paper.type = paper.sprite != null ? Image.Type.Sliced : Image.Type.Simple;
+        paper.color = paper.sprite != null ? Color.white : new Color(.96f, .93f, .82f);
+        paper.raycastTarget = true;
+
+        var textObject = new GameObject("BreedingClue", typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform textRect = (RectTransform)textObject.transform;
+        textRect.SetParent(cluePopup, false);
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(42f, 30f);
+        textRect.offsetMax = new Vector2(-42f, -30f);
+        clueText = textObject.GetComponent<TextMeshProUGUI>();
+        clueText.font = GameUITheme.TMPFont;
+        clueText.fontSize = GameUITheme.ReadableFontSize(22);
+        clueText.color = new Color(.12f, .17f, .13f);
+        clueText.textWrappingMode = TextWrappingModes.Normal;
+        clueText.overflowMode = TextOverflowModes.Truncate;
+        clueText.alignment = TextAlignmentOptions.MidlineLeft;
+        clueText.richText = true;
+        clueText.raycastTarget = false;
+        root.SetActive(false);
+    }
+
+    private void ShowClue(SpeciesMapNodeView node)
+    {
+        if (!open || node == null || node.Species == null || cluePopup == null) return;
+        clueText.text = node.Species.FormattedBreedingClue;
+        RectTransform overlayRect = (RectTransform)overlay.transform;
+        Rect bounds = overlayRect.rect;
+        cluePopup.sizeDelta = new Vector2(Mathf.Min(560f, bounds.width - 20f),
+            Mathf.Min(290f, bounds.height - 20f));
+        Vector2 local = overlayRect.InverseTransformPoint(node.transform.position);
+        Vector2 half = cluePopup.sizeDelta * .5f;
+        float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);
+        cluePopup.anchoredPosition = new Vector2(
+            Mathf.Clamp(x, bounds.xMin + half.x, bounds.xMax - half.x),
+            Mathf.Clamp(local.y, bounds.yMin + half.y, bounds.yMax - half.y));
+        cluePopup.gameObject.SetActive(true);
+        cluePopup.SetAsLastSibling();
+    }
+
+    private void HideClue()
+    {
+        if (cluePopup != null) cluePopup.gameObject.SetActive(false);
+    }
+
+    private bool PointerHitsClueOrNode(Vector2 pointer)
+    {
+        if (EventSystem.current == null) return false;
+        hits.Clear();
+        EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = pointer }, hits);
+        foreach (RaycastResult hit in hits)
+        {
+            if (hit.gameObject.transform.IsChildOf(cluePopup)) return true;
+            SpeciesMapNodeView node = hit.gameObject.GetComponentInParent<SpeciesMapNodeView>();
+            if (node != null && node.ContainsPortrait(pointer, canvas.worldCamera)) return true;
+        }
+        return false;
     }
 
     private void ConfigureGraph(MapPage page, MapLink[] links, Dictionary<string, SpeciesData> speciesById)
@@ -210,6 +289,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         EventSystem.current.RaycastAll(eventData, hits);
         foreach (RaycastResult hit in hits)
             if (hit.gameObject.GetComponentInParent<SpeciesMapNodeView>() != null ||
+                cluePopup != null && hit.gameObject.transform.IsChildOf(cluePopup) ||
                 hit.gameObject.GetComponentInParent<Button>() != null) return false;
         return true;
     }

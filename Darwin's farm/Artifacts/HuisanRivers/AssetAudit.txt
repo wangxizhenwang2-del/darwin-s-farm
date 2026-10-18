@@ -1,0 +1,7 @@
+PASS: all transferred / generated asset and URP package references resolve in the main project.
+PASS: no duplicate Unity asset GUIDs.
+PASS: all finished assets match the validated fixture byte for byte.
+PASS: source hashes were unchanged before installing generated assets.
+PASS: no pre-existing destination asset was replaced; only the two newly transferred prefabs were updated with water.
+Transferred / generated assets: 17
+Errors: 0

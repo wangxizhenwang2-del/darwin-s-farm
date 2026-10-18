@@ -13,6 +13,7 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     private readonly HashSet<string> seen=new HashSet<string>();
     private EcologicalEventData current;
     private EcologyNewsDetector detector;
+    private SpeciesUnlockPresenter unlockPresenter;
     private int phase;
     private float timer;
     private const int Capacity=64;
@@ -43,6 +44,7 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     private void Start()
     {
         detector=FindFirstObjectByType<EcologyNewsDetector>();
+        unlockPresenter=FindFirstObjectByType<SpeciesUnlockPresenter>();
         if(detector!=null)detector.Bus.Published+=Enqueue;
         group.alpha=0;group.blocksRaycasts=false;group.interactable=false;
     }
@@ -50,6 +52,33 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     private void Enqueue(EcologicalEventData value)
     {
         if(value==null || !seen.Add(value.eventId))return;
+        // OnSpeciesUnlocked owns the card. The detector can publish the same
+        // discovery later in its day-end batch; its toast is released by the
+        // card's reveal callback instead of appearing at the batch boundary.
+        if(value.type==EcologicalEventType.NewSpecies && unlockPresenter!=null &&
+            unlockPresenter.HandlesSpeciesId(value.speciesId))return;
+        QueueReady(value);
+    }
+    public void ShowSpeciesUnlockAtReveal(string speciesId,string speciesName,
+        bool startup,int gameDay)
+    {
+        string id="unlock:"+(string.IsNullOrEmpty(speciesId)?speciesName:speciesId);
+        if(!seen.Add(id))return;
+        var value=new EcologicalEventData {
+            eventId=id,gameDay=gameDay,sequence=-1,type=EcologicalEventType.NewSpecies,
+            speciesId=speciesId,speciesName=speciesName,
+            message=startup?"开局观察到「"+speciesName+"」！":
+                "新物种「"+speciesName+"」已经解锁！"
+        };
+        // A discovery must appear at the reveal even when an older news card
+        // is still visible. Resume that card from the queue afterwards.
+        if(current!=null)QueueReady(current);
+        current=value;phase=0;timer=0f;
+        heading.text=Title(value.type);body.text=value.message;
+        dayLabel.text="第 "+value.gameDay+" 日";
+    }
+    private void QueueReady(EcologicalEventData value)
+    {
         if(pending.Count>=Capacity)
         {
             int weakest=pending.FindIndex(x=>x.Priority==1);
@@ -62,6 +91,12 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     {
         // Menus hide the toast and freeze the presentation clock.
         if(Time.timeScale==0f){group.alpha=0;return;}
+        if(unlockPresenter!=null && unlockPresenter.IsPresenting &&
+            unlockPresenter.Phase<SpeciesUnlockPresenter.CardPhase.Revealing)
+        {
+            group.alpha=0;
+            return;
+        }
         if(current==null)
         {
             if(pending.Count==0){group.alpha=0;return;}

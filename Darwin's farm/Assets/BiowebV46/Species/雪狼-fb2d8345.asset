@@ -16,7 +16,13 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 1afaddc60d5f594dbf3e02327832088e, type: 3}
   speciesId: fb2d8345b05a48f4a4a585b51a091a50
   portrait: {fileID: 21300000, guid: 1afaddc60d5f594dbf3e02327832088e, type: 3}
-  description: ""
+  description: "\u96ea\u72fc\u64c5\u957f\u4f0f\u5728\u96ea\u5730\u91cc\u4e00\u52a8\u4e0d\u52a8\uff0c\u7b49\u5f85\u730e\u7269\u9760\u8fd1\u3002\u552f\u4e00\u7684\u9ebb\u70e6\u662f\uff0c\u5076\u5c14\u8fde\u540c\u4f34\u4e5f\u627e\u4e0d\u5230\u5b83\uff0c\u53ea\u80fd\u5bf9\u7740\u96ea\u5806\u6328\u4e2a\u558a\u3002\n\n\u5b83\u559c\u6b22\u51b0\u51b7\u5e72\u71e5\u7684\u73af\u5883\uff0c\u708e\u70ed\u7684\u65e5\u5b50\u7b80\u76f4\u662f\u573a\u6298\u78e8\u3002\u8eab\u8eaf\u9ad8\u5927\uff0c\u884c\u52a8\u8fc5\u6377\uff0c\u4f46\u5b83\u7684\u65cf\u7fa4\u603b\u662f\u96be\u4ee5\u8fc5\u901f\u58ee\u5927\u3002"
+  traitClueAnchors:
+  - "\u51b0\u51b7"
+  - "\u5e72\u71e5\u7684\u73af\u5883"
+  - "\u884c\u52a8\u8fc5\u6377"
+  - "\u8eab\u8eaf\u9ad8\u5927"
+  - "\u96be\u4ee5\u8fc5\u901f\u58ee\u5927"
   evolutionTargets:
   - {fileID: 11400000, guid: b17d9012c94855b780c5a26689b96359, type: 2}
   - {fileID: 11400000, guid: 521e745613e9577f90aa7ae171fc0ea2, type: 2}

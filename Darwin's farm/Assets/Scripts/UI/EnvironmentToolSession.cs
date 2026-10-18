@@ -99,11 +99,110 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         }
         Changed?.Invoke();
     }
-    public string PreviewText => Preview == null || Target == null ? "点选地图地块，然后选择工具和档位。\n拖动、缩放地图仍可使用。" :
-        "目标地块 " + Target.Coordinate + " · " + EnvironmentTechnologyCatalog.Name(Choice.Kind) + "\n" +
-        (Preview.Before ?? "") + "\n" + (Preview.IsValid ? Preview.After + "\n" + Preview.Timing +
-        "\n影响 " + Preview.Area.Count + " 格 · 费用 " + Preview.Cost + " 生物能" +
-        (account != null && account.Balance < Preview.Cost ? "（余额不足）" : "") + "\n" + SlotNotice : Preview.Error);
+    public string PreviewText
+    {
+        get
+        {
+            if (Preview == null || Target == null) return "先点选一块地，再选择工具和档位。";
+            string title = EnvironmentTechnologyCatalog.ShortName(Choice.Kind) +
+                (Choice.Tier > 0 ? "+" : "-") + (Mathf.Abs(Choice.Tier) == 2 ?
+                (Choice.Tier > 0 ? "+" : "-") : "");
+            if (!Preview.IsValid) return title + " · 地块 " + Target.Coordinate + "\n" + Preview.Error;
+            EnvironmentSnapshot state = null;
+            if (environment != null && environment.TryRead(Target.Coordinate, out var read))
+                state = read.Environment;
+            return title + " · 地块 " + Target.Coordinate + "\n" +
+                "状态：" + StatusText(state) + "\n" +
+                "预计：" + Preview.After + "\n" +
+                "性状：" + TraitForecast(state) + "\n" +
+                "费用：" + Preview.Cost + " 生物能" +
+                (account != null && account.Balance < Preview.Cost ? "（余额不足）" : "") +
+                (string.IsNullOrEmpty(SlotNotice) ? "" : "\n" + SlotNotice);
+        }
+    }
+    private string TraitForecast(EnvironmentSnapshot state)
+    {
+        if (state == null || Target.Block == null) return "暂无预测";
+        if (state.IsWater) return "水域暂无明确预测";
+        var community = Target.Block.community;
+        if (community == null) return "暂无陆生动物";
+        if (Choice.Kind == EnvironmentTechnologyKind.ElevationChange)
+        {
+            foreach (PopulationData population in community)
+                if (population != null && population.speciesAmount > 0 &&
+                    population.ecologicalNiche == EcologicalNiche.Land)
+                    return "生境会变化，性状方向因种群而异";
+            return "暂无陆生动物";
+        }
+        int upward = 0, downward = 0, residents = 0;
+        bool climate = Choice.Kind == EnvironmentTechnologyKind.TemperatureChange ||
+            Choice.Kind == EnvironmentTechnologyKind.HumidityChange;
+        bool temperature = Choice.Kind == EnvironmentTechnologyKind.TemperatureChange;
+        double target = 0;
+        if (climate)
+        {
+            var attribute = temperature ? EnvironmentAttribute.Temperature :
+                EnvironmentAttribute.Humidity;
+            target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) +
+                EnvironmentTechnologyCatalog.SignedClimate(Choice));
+        }
+        foreach (PopulationData population in community)
+        {
+            if (population == null || population.speciesAmount <= 0 ||
+                population.ecologicalNiche != EcologicalNiche.Land ||
+                (!climate && population.trophicLevel != 0)) continue;
+            residents++;
+            if (climate)
+            {
+                int current = temperature ? population.fitTemperature : population.fitHumidity;
+                if (target > current) upward++;
+                else if (target < current) downward++;
+            }
+            else if (Choice.Tier > 0) upward++;
+            else downward++;
+        }
+        if (residents == 0) return "该工具暂无可引导的动物种群";
+        string trait = temperature ? "适温" :
+            Choice.Kind == EnvironmentTechnologyKind.HumidityChange ? "适湿" :
+            Choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange ? "生育" : "体型";
+        if (upward > 0 && downward > 0) return trait + "可能↑/↓（依种群而异）";
+        if (upward > 0) return trait + "可能↑";
+        if (downward > 0) return trait + "可能↓";
+        return trait + "接近预计目标";
+    }
+    private string StatusText(EnvironmentSnapshot state)
+    {
+        if (Choice.Kind == EnvironmentTechnologyKind.PlantStockChange ||
+            Choice.Kind == EnvironmentTechnologyKind.ElevationChange)
+            return "投放后立即生效";
+        bool waterRecovery = Choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange &&
+            state != null && state.IsWater;
+        if (state == null) return "待投放";
+        AttributeSnapshot attribute = Choice.Kind == EnvironmentTechnologyKind.TemperatureChange ?
+            state.Temperature : Choice.Kind == EnvironmentTechnologyKind.HumidityChange ?
+            state.Humidity : state.Recovery;
+        bool applied = Choice.Kind == EnvironmentTechnologyKind.TemperatureChange ?
+            state.HasLocalTemperature : Choice.Kind == EnvironmentTechnologyKind.HumidityChange ?
+            state.HasLocalHumidity : state.HasRecoveryCommand;
+        if (!applied || attribute.Phase == EffectPhase.None ||
+            attribute.Phase == EffectPhase.Automatic)
+            return waterRecovery ? "待投放（投放后立即生效）" :
+                "待投放（投放后约" + EnvironmentRules.TransitionDays + "天达到预计目标）";
+        int days = Mathf.Max(0, attribute.RemainingDays);
+        string target = attribute.Target.ToString("F0");
+        switch (attribute.Phase)
+        {
+            case EffectPhase.Entering:
+                return (attribute.Target >= attribute.Value ? "缓慢提升中" : "缓慢降低中") +
+                    "（约" + days + "天后达到" + target + "）";
+            case EffectPhase.Holding:
+                return "维持中（剩余" + days + "天）";
+            case EffectPhase.Returning:
+                return "恢复中（约" + days + "天后回到" + target + "）";
+            default:
+                return "待投放";
+        }
+    }
     public void Deploy()
     {
         if (!Active || Target == null || controller == null) return;
