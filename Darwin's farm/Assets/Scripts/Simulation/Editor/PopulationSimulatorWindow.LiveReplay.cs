@@ -46,8 +46,10 @@ public partial class PopulationSimulatorWindow
             using (var reader = new StreamReader(path))
             {
                 string headerLine = reader.ReadLine();
-                ExportHeader header = JsonUtility.FromJson<ExportHeader>(headerLine);
+                VersionedExportHeader header =
+                    JsonUtility.FromJson<VersionedExportHeader>(headerLine);
                 if (header.schema != 4 || !header.deterministic ||
+                    header.mutationRulesVersion != CurrentMutationRulesVersion ||
                     header.scene != UnityEngine.SceneManagement.SceneManager.GetActiveScene().name ||
                     header.unity != Application.unityVersion ||
                     header.seed != exportSimulation.SimulationSeed ||

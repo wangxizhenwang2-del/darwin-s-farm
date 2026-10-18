@@ -143,13 +143,13 @@ public static class V43LandRulesAudit
             Check(daughter != null && daughter.speciesAmount == 50 &&
                 ancestor.speciesAmount == 450, "Success must split 10% once.");
             Check(record.effectiveDays == 0 && record.failedDraws == 0 &&
-                ancestor.nextEvolutionDay == 55 && daughter.nextEvolutionDay == 55,
-                "Success must reset only its target and cool both groups for 50 days.");
+                ancestor.nextEvolutionDay == 105 && daughter.nextEvolutionDay == 105,
+                "Success must reset only its target and cool both groups for 100 days.");
             block.community.Remove(daughter);
-            Evolve(controller, 54);
-            Check(record.effectiveDays == 0, "Day D+49 is still cooling down.");
-            Evolve(controller, 55);
-            Check(record.effectiveDays == 1, "Day D+50 must be eligible again.");
+            Evolve(controller, 104);
+            Check(record.effectiveDays == 0, "Day D+99 is still cooling down.");
+            Evolve(controller, 105);
+            Check(record.effectiveDays == 1, "Day D+100 must be eligible again.");
         }
         finally { Clean(controller, block, target, source); }
     }

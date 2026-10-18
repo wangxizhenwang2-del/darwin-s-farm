@@ -22,6 +22,7 @@ public static class V048ScenarioReplay
         public int seed;
         public int endDay;
         public bool disableCosts;
+        public bool v4LandOnly;
         public bool coreV61;
         public bool v62Mobility;
         public bool restrictedV05;
@@ -464,6 +465,12 @@ public static class V048ScenarioReplay
             throw new InvalidOperationException(
                 "Encounter experiments require the archived experiment-encounter-v3 code.");
         simulation.ApplyLandRules(selectedRules);
+        if (scenario.v4LandOnly)
+        {
+            simulation.SetEcologicalNichesEnabled(false);
+            simulation.SetEconomyEnabled(false);
+            simulation.EnableRandomEvents = false;
+        }
         if (scenario.coreV61) simulation.ApplyCoreEvolutionTestProfile();
         if (scenario.v62Mobility)
         {

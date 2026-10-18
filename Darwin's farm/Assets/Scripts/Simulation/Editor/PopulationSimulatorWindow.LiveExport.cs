@@ -8,8 +8,10 @@ using UnityEngine;
 
 public partial class PopulationSimulatorWindow
 {
+    private const string CurrentMutationRulesVersion = "MutationV4.1.1-cliff-stockgate-L2BLOCKED-cd100-20261018";
+
     [Serializable]
-    private sealed class ExportHeader
+    private class ExportHeader
     {
         public string type = "header";
         public int schema = 4;
@@ -24,6 +26,12 @@ public partial class PopulationSimulatorWindow
         public string randomVersion;
         public string buildHash;
         public bool deterministic;
+    }
+
+    [Serializable]
+    private sealed class VersionedExportHeader : ExportHeader
+    {
+        public string mutationRulesVersion;
     }
 
     [Serializable]
@@ -196,7 +204,7 @@ public partial class PopulationSimulatorWindow
                 catch (Exception exception) { liveExportStatus = "校验失败：" + exception.Message; }
             }
         }
-        EditorGUILayout.LabelField("格式 v4：每行一个 JSON 对象；end 含 logSha256 和 replaySha256。先用日志校验码验文件，再用复现确认码比结果；Tools/ReplayLogAudit/verify.py 可批量定位首次分歧。",
+        EditorGUILayout.LabelField("日志格式 v4；模型版本见 header.mutationRulesVersion。每行一个 JSON 对象；end 含 logSha256 和 replaySha256。先用日志校验码验文件，再用复现确认码比结果；Tools/ReplayLogAudit/verify.py 可批量定位首次分歧。",
             EditorStyles.wordWrappedMiniLabel);
     }
 
@@ -226,8 +234,9 @@ public partial class PopulationSimulatorWindow
             liveExportConfirmation = "";
             liveExportIntegrity = "";
             liveExportMap.Clear();
-            WriteExport(new ExportHeader
+            WriteExport(new VersionedExportHeader
             {
+                mutationRulesVersion = CurrentMutationRulesVersion,
                 createdAt = DateTime.Now.ToString("O"),
                 scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
                 unity = Application.unityVersion,
@@ -686,6 +695,15 @@ public partial class PopulationSimulatorWindow
         switch (type)
         {
             case "header":
+                if (line.IndexOf("\"mutationRulesVersion\"",
+                    StringComparison.Ordinal) >= 0)
+                {
+                    var versioned = JsonUtility.FromJson<VersionedExportHeader>(line);
+                    if (versioned.schema != 4)
+                        throw new InvalidDataException("不支持的日志版本");
+                    versioned.createdAt = versioned.caseId = versioned.tester = "";
+                    return JsonUtility.ToJson(versioned);
+                }
                 var header = JsonUtility.FromJson<ExportHeader>(line);
                 if (header.schema != 4)
                     throw new InvalidDataException("不支持的日志版本");
