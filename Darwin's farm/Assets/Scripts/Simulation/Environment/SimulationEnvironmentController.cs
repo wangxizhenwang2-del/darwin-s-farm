@@ -149,27 +149,21 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         {
             string identity = string.Join(";", area.ConvertAll(tile =>
                 tile.Coordinate.x + "," + tile.Coordinate.y));
-            double stock = 0;
             bool changed = false;
             foreach (MapTileInstance tile in area)
             {
                 GridPosition position = Position(tile.Coordinate);
-                stock += tile.Block.plantBiomass;
                 changed |= waterGroups.TryGetValue(position, out string previous) && previous != identity;
                 nextGroups[position] = identity;
             }
-            float average = Mathf.Clamp((float)(stock / area.Count), 0f,
-                EnvironmentRules.WaterPlantCapacity);
             if (changed)
             {
                 var positions = new List<GridPosition>(area.Count);
                 foreach (MapTileInstance tile in area) positions.Add(Position(tile.Coordinate));
                 world.ReconcileWaterRecovery(positions);
             }
-            foreach (MapTileInstance tile in area)
-            {
-                tile.Block.plantBiomass = average;
-            }
+            // A basin shares food access, not physical stock ownership.
+            // Keep each tile's S when openings rotate or the basin splits.
         }
         waterGroups.Clear();
         foreach (var pair in nextGroups) waterGroups.Add(pair.Key, pair.Value);
@@ -189,20 +183,17 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         if (grid == null) return;
         foreach (List<MapTileInstance> area in WaterBodyTopology.AllAreas(grid))
         {
-            double totalStock = 0, dailyGrowth = 0;
             foreach (MapTileInstance tile in area)
             {
-                totalStock += tile.Block.plantBiomass;
+                float before = tile.Block.plantBiomass;
+                double recovery = 0;
                 if (world.TryRead(Position(tile.Coordinate), out EnvironmentSnapshot state))
-                    dailyGrowth += state.Recovery.Value;
-            }
-            double capacity = (double)EnvironmentRules.WaterPlantCapacity * area.Count;
-            double grown = Math.Min(dailyGrowth, Math.Max(0, capacity - totalStock));
-            float perCell = (float)((totalStock + grown) / area.Count);
-            foreach (MapTileInstance tile in area)
-            {
-                tile.Block.plantGrowthToday = (float)(grown / area.Count);
-                tile.Block.plantBiomass = perCell;
+                    recovery = state.Recovery.Value;
+                float capacity = tile.Block.maxPlantBiomass;
+                float growth = (float)Math.Min(Math.Max(0, recovery),
+                    Math.Max(0, capacity - before));
+                tile.Block.plantGrowthToday = growth;
+                tile.Block.plantBiomass = before + growth;
             }
         }
     }

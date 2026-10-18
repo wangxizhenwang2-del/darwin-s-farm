@@ -631,7 +631,7 @@ public partial class SimulationController
             if (HabitatTopology.CanLandEnterWater(source, neighbor) &&
                 (population.landPositionBlock == null ||
                  population.landPositionBlock == neighbor) &&
-                (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
+                (waterTarget == null || neighbor.plantBiomass > waterTarget.plantBiomass))
                 waterTarget = neighbor;
         if (EnableWaterEcology && waterTarget != null)
         {
@@ -672,7 +672,8 @@ public partial class SimulationController
         WaterRegion from = regions.GetRegion(source);
         WaterRegion to = regions.GetRegion(target);
         if (from == null || to == null || from == to ||
-            !WaterRegionsTouch(from, target) || target == population.lastMigrationSource)
+            !HabitatTopology.ChannelsConnect(source, target) ||
+            target == population.lastMigrationSource)
             return false;
         int difference = to.Elevation - from.Elevation;
         if (Mathf.Abs(difference) != 1 || to.AvailableFood <= 0f ||
@@ -696,7 +697,8 @@ public partial class SimulationController
             regions == null || target == null || WaterRegionMap.IsWater(target) ||
             NicheSplitAmount(population.speciesAmount) == 0) return false;
         WaterRegion region = regions.GetRegion(source);
-        if (region == null || !WaterRegionTouchesLand(region, target) ||
+        if (region == null ||
+            !WaterLandBoundary.IsLocalCrossHabitatEdge(source, target) ||
             WaterFoodPressure(region) < 1f ||
             ModelRandom01(day, "niche.water-land", source, population,
                 target) >= waterToLandProbability) return false;
@@ -784,8 +786,8 @@ public partial class SimulationController
         if (!WaterRegionMap.IsWater(target) || migrant.trophicLevel != 0)
             return TargetCapacityCorrection(target, migrant);
         // 空中种群在水面地块取用该 Block 的藻类，并与当地水生生产者消费者竞争。
-        float food = Mathf.Min(Mathf.Max(0f, target.maxAlgaeBiomass),
-            Mathf.Max(0f, target.algaeBiomass) + Mathf.Max(0, target.algaeRecovery));
+        float food = Mathf.Min(Mathf.Max(0f, target.maxPlantBiomass),
+            Mathf.Max(0f, target.plantBiomass) + Mathf.Max(0, target.habitatRecovery));
         if (food <= 0f || target.community == null) return 0f;
         float demand = EnergyNeedForNiche(migrant) * migrant.speciesAmount;
         foreach (PopulationData competitor in target.community)

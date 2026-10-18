@@ -1,0 +1,4 @@
+Modified branch V43LandRulesAudit:
+Exception: V4.3 audit: Day one must add one effective day on a reverse edge.
+Original e1e94b13 V43LandRulesAudit:
+Exception: V4.3 audit: Day one must add one effective day on a reverse edge.

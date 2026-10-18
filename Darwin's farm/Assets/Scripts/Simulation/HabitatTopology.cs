@@ -138,7 +138,7 @@ public sealed class WaterRegion
         get
         {
             float sum = 0f;
-            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.algaeBiomass);
+            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.plantBiomass);
             return sum;
         }
     }
@@ -148,7 +148,7 @@ public sealed class WaterRegion
         get
         {
             float sum = 0f;
-            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.maxAlgaeBiomass);
+            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.maxPlantBiomass);
             return sum;
         }
     }
@@ -158,7 +158,7 @@ public sealed class WaterRegion
         get
         {
             float sum = 0f;
-            foreach (BlockInfo block in members) sum += Mathf.Max(0, block.algaeRecovery);
+            foreach (BlockInfo block in members) sum += Mathf.Max(0, block.habitatRecovery);
             return sum;
         }
     }
@@ -170,8 +170,8 @@ public sealed class WaterRegion
         {
             float sum = 0f;
             foreach (BlockInfo block in members)
-                sum += Mathf.Min(Mathf.Max(0f, block.maxAlgaeBiomass),
-                    Mathf.Max(0f, block.algaeBiomass) + Mathf.Max(0, block.algaeRecovery));
+                sum += Mathf.Min(Mathf.Max(0f, block.maxPlantBiomass),
+                    Mathf.Max(0f, block.plantBiomass) + Mathf.Max(0, block.habitatRecovery));
             return sum;
         }
     }

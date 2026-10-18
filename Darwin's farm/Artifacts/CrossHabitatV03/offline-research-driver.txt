@@ -1,0 +1,74 @@
+{
+  "water_days": 4500,
+  "max_material_residual": 1.862645149230957e-09,
+  "ending_hashes": 30,
+  "productive": [
+    {
+      "day": 1,
+      "a": 253,
+      "b": 191,
+      "pred": 8,
+      "stock": 111941.05,
+      "material_residual": -0.0
+    },
+    {
+      "day": 30,
+      "a": 803,
+      "b": 644,
+      "pred": 19,
+      "stock": 49339.92,
+      "material_residual": 0.0
+    },
+    {
+      "day": 100,
+      "a": 680,
+      "b": 701,
+      "pred": 22,
+      "stock": 48000.0,
+      "material_residual": -0.0
+    },
+    {
+      "day": 200,
+      "a": 541,
+      "b": 840,
+      "pred": 23,
+      "stock": 48000.0,
+      "material_residual": 0.0
+    }
+  ],
+  "no_regen": [
+    {
+      "day": 1,
+      "a": 253,
+      "b": 191,
+      "pred": 8,
+      "stock": 63941.05,
+      "material_residual": -0.0
+    },
+    {
+      "day": 30,
+      "a": 0,
+      "b": 0,
+      "pred": 0,
+      "stock": 0.0,
+      "material_residual": 0.0
+    },
+    {
+      "day": 100,
+      "a": 0,
+      "b": 0,
+      "pred": 0,
+      "stock": 0.0,
+      "material_residual": 0.0
+    },
+    {
+      "day": 200,
+      "a": 0,
+      "b": 0,
+      "pred": 0,
+      "stock": 0.0,
+      "material_residual": 0.0
+    }
+  ],
+  "flight_daily_adult_need": 3682.363636363636
+}

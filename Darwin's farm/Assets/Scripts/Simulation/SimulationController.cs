@@ -183,7 +183,8 @@ public partial class SimulationController : MonoBehaviour
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
-            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+            if (!EnableWaterEcology || !HabitatTopology.IsWater(block))
+                LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
 
     // Model identity is repaired at the same boundary that registers blocks.
@@ -487,6 +488,7 @@ public partial class SimulationController : MonoBehaviour
         {
             SimulateBlock(block);
         }
+        if (EnableWaterEcology) SimulateWaterBasins(day);
         CaptureLifeFlows();
         RemoveEndangered(day);
         RunPresetEvolution(day);

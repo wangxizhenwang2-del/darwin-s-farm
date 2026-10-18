@@ -884,13 +884,14 @@ internal static class LandLifeRules
     }
 
     private static void HuntLevel(BlockInfo block, int level, LandRuleTuning rules,
-        Dictionary<PopulationData, int> preyQuotaLeft = null)
+        Dictionary<PopulationData, int> preyQuotaLeft = null,
+        EcologicalNiche niche = EcologicalNiche.Land)
     {
         var hunters = new List<PopulationData>(5);
         var prey = new List<PopulationData>(5);
         foreach (PopulationData p in block.community)
         {
-            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+            if (p == null || p.ecologicalNiche != niche) continue;
             if (p.speciesAmount <= 0) continue;
             if (p.trophicLevel == level) hunters.Add(p);
             if (p.trophicLevel < level) prey.Add(p);
@@ -1008,14 +1009,16 @@ internal static class LandLifeRules
             }
     }
 
-    internal static void Simulate(BlockInfo block, LandRuleTuning rules)
+    internal static void Simulate(BlockInfo block, LandRuleTuning rules,
+        EcologicalNiche niche = EcologicalNiche.Land,
+        bool growPlants = true)
     {
-        FoodWeb.GrowPlants(block);
+        if (growPlants) FoodWeb.GrowPlants(block);
         block.accountedBiomassSinkToday = 0f;
         var herbivores = new List<PopulationData>(5);
         foreach (PopulationData p in block.community)
         {
-            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+            if (p == null || p.ecologicalNiche != niche) continue;
             EnsureBodyMass(p, rules);
             p.populationBeforePredation = p.speciesAmount;
             p.predationDeathsToday = p.birthsToday = p.deathsToday = 0;
@@ -1035,24 +1038,24 @@ internal static class LandLifeRules
         {
             bool hasHunter = false;
             foreach (PopulationData p in block.community)
-                if (p != null && p.ecologicalNiche == EcologicalNiche.Land &&
+                if (p != null && p.ecologicalNiche == niche &&
                     p.speciesAmount > 0 &&
                     p.trophicLevel > 0) { hasHunter = true; break; }
             if (hasHunter)
             {
                 renewableQuotas = new Dictionary<PopulationData, int>();
                 foreach (PopulationData prey in block.community)
-                    if (prey != null && prey.ecologicalNiche == EcologicalNiche.Land &&
+                    if (prey != null && prey.ecologicalNiche == niche &&
                         prey.trophicLevel == 0 &&
                         prey.speciesAmount > 0)
                         renewableQuotas[prey] = RenewablePreyHarvestQuota(
                             block, prey, rules);
             }
         }
-        HuntLevel(block, 2, rules, renewableQuotas);
-        HuntLevel(block, 1, rules, renewableQuotas);
+        HuntLevel(block, 2, rules, renewableQuotas, niche);
+        HuntLevel(block, 1, rules, renewableQuotas, niche);
         foreach (PopulationData p in block.community)
-            if (p != null && p.ecologicalNiche == EcologicalNiche.Land &&
+            if (p != null && p.ecologicalNiche == niche &&
                 p.trophicLevel == 0 && p.speciesAmount > 0) herbivores.Add(p);
         float[] allocation = AllocatePlants(herbivores,
             PlantFoodBudget(block, block.plantBiomass, rules),
@@ -1074,7 +1077,7 @@ internal static class LandLifeRules
         FoodWeb.SpendPlants(block, eaten);
         foreach (PopulationData p in block.community)
         {
-            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+            if (p == null || p.ecologicalNiche != niche) continue;
             int count = p.speciesAmount; // after predation, before births
             if (p.trophicLevel > 0)
             {
@@ -1122,7 +1125,7 @@ internal static class LandLifeRules
             int born = Mathf.Min(possibleBirths,
                 Mathf.FloorToInt(availableForBirth / newbornCost));
             p.birthStressDeathsToday = rules.enablePaidBirthStress ||
-                FoodWeb.HasLandPredatorDiet(p)
+                FoodWeb.HasPredatorDiet(p, niche)
                 ? PaidBirthStressDeaths(born, p.size, p.fertility, rules)
                 : ReproductionStressDeaths(count, p.size, p.fertility, rules,
                     satisfaction: satisfaction, fitness: fitness);
@@ -1169,7 +1172,7 @@ internal static class LandLifeRules
         // community list order must not shift the hunter's history by a day.
         foreach (PopulationData p in block.community)
         {
-            if (p == null || p.ecologicalNiche != EcologicalNiche.Land) continue;
+            if (p == null || p.ecologicalNiche != niche) continue;
             if (p.trophicLevel <= 0) continue;
             int settledCount = Mathf.Max(0, p.populationBeforePredation
                 - p.predationDeathsToday);

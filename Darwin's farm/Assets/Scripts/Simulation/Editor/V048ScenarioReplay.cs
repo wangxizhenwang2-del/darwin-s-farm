@@ -23,6 +23,7 @@ public static class V048ScenarioReplay
         public int endDay;
         public bool disableCosts;
         public bool v4LandOnly;
+        public bool enableWaterEcology;
         public bool coreV61;
         public bool v62Mobility;
         public bool restrictedV05;
@@ -465,6 +466,15 @@ public static class V048ScenarioReplay
             throw new InvalidOperationException(
                 "Encounter experiments require the archived experiment-encounter-v3 code.");
         simulation.ApplyLandRules(selectedRules);
+        if (scenario.enableWaterEcology)
+        {
+            if (!scenario.mechanismFixture || scenario.v4LandOnly)
+                throw new InvalidOperationException(
+                    "Water ecology replay is restricted to an explicit fixture.");
+            simulation.SetWaterEcologyEnabled(true);
+            simulation.SetEconomyEnabled(false);
+            simulation.EnableRandomEvents = false;
+        }
         if (scenario.v4LandOnly)
         {
             simulation.SetEcologicalNichesEnabled(false);
@@ -1572,8 +1582,7 @@ public static class V048ScenarioReplay
         foreach (MapTileInstance tile in grid.GetPlacedTiles())
         {
             BlockInfo block = tile.Block;
-            total += block.plantBiomass + block.algaeBiomass +
-                block.detritusBiomass;
+            total += block.plantBiomass + block.detritusBiomass;
             if (block.community == null) continue;
             foreach (PopulationData population in block.community)
                 if (population != null)

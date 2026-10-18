@@ -66,8 +66,6 @@ public partial class SimulationController
             if (block == null) continue;
             total += Math.Max(0d, block.plantBiomass) +
                 Math.Max(0d, block.detritusBiomass);
-            if (EnableWaterEcology)
-                total += Math.Max(0d, block.algaeBiomass);
             if (block.community == null) continue;
             foreach (PopulationData population in block.community)
             {
@@ -75,8 +73,9 @@ public partial class SimulationController
                 double body = population.bodyBiomass;
                 // Match the land loop's pending initialization without
                 // changing model state merely to read the opening balance.
-                if (block.waterCoverage == WaterCoverage.Land &&
-                    population.ecologicalNiche == EcologicalNiche.Land &&
+                if (population.ecologicalNiche == (block.waterCoverage ==
+                        WaterCoverage.Land ? EcologicalNiche.Land :
+                        EcologicalNiche.Water) &&
                     !population.bodyBiomassInitialized &&
                     population.speciesAmount > 0)
                     body = population.speciesAmount *
@@ -91,7 +90,14 @@ public partial class SimulationController
     private void BeginEcologyLedger()
     {
         workingSpeciesLedger.Clear();
-        workingWorldMassStart = ReadWorldMaterial();
+        // Water plants grow in OnBeforeDaySimulated; land plants grow later in
+        // SimulateBlock. Move the former growth back to the opening ledger.
+        double priorWaterMass = 0d;
+        if (EnableWaterEcology)
+            foreach (BlockInfo block in blockInfos)
+                if (block != null && HabitatTopology.IsWater(block))
+                    priorWaterMass += Math.Max(0d, block.plantGrowthToday);
+        workingWorldMassStart = ReadWorldMaterial() - priorWaterMass;
         foreach (BlockInfo block in blockInfos)
             if (block != null && block.community != null)
                 foreach (PopulationData population in block.community)
@@ -105,12 +111,15 @@ public partial class SimulationController
     private void CaptureLifeFlows()
     {
         foreach (BlockInfo block in blockInfos)
-            if (block != null && block.waterCoverage == WaterCoverage.Land &&
+            if (block != null && (block.waterCoverage == WaterCoverage.Land ||
+                    EnableWaterEcology && HabitatTopology.IsWater(block)) &&
                 block.community != null)
                 foreach (PopulationData population in block.community)
                 {
                     if (population == null ||
-                        population.ecologicalNiche != EcologicalNiche.Land) continue;
+                        population.ecologicalNiche != (block.waterCoverage ==
+                            WaterCoverage.Land ? EcologicalNiche.Land :
+                            EcologicalNiche.Water)) continue;
                     EcologySpeciesDailyAccount account = SpeciesAccount(
                         LedgerSpeciesId(population));
                     account.paidBirths += Mathf.Max(0, population.birthsToday);
@@ -140,7 +149,8 @@ public partial class SimulationController
         foreach (BlockInfo block in blockInfos)
         {
             if (block == null) continue;
-            if (block.waterCoverage == WaterCoverage.Land)
+            if (block.waterCoverage == WaterCoverage.Land ||
+                EnableWaterEcology && HabitatTopology.IsWater(block))
             {
                 growth += Math.Max(0d, block.plantGrowthToday);
                 sinks += Math.Max(0d, block.accountedBiomassSinkToday);
