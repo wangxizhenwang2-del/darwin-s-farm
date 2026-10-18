@@ -14,6 +14,7 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(-900)]
 public sealed class DarwinJournalCanvas : MonoBehaviour
 {
+    public event Action<bool> GameEntered;
     [Serializable] private sealed class SettingsData
     {
         public int schemaVersion = 1;
@@ -82,7 +83,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if(!GameSaveService.HasPending)yield break;
         yield return null; // Map and simulation bridge finish Start before restoration.
         yield return null; // WhiteboxBiowebTestSetup seeds its initial population one frame later.
-        if(GameSaveService.TryRestorePending(out _))NewGame();
+        if(GameSaveService.TryRestorePending(out _))EnterGame(true);
         else ReloadForSave(); // Discard any world that was only partly restored.
     }
 
@@ -96,7 +97,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
 #else
         back = Input.GetKeyDown(KeyCode.Escape);
 #endif
-        if (back) Back();
+        if (back)
+        {
+            var unlock = FindFirstObjectByType<SpeciesUnlockPresenter>();
+            if (unlock == null || !unlock.IsPresenting) Back();
+        }
     }
 
     private void Bind()
@@ -180,12 +185,14 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (page == Page.Confirm) { Show(confirmReturn); return; }
         Show(parent);
     }
-    private void NewGame()
+    private void NewGame() => EnterGame(false);
+    private void EnterGame(bool loadedSave)
     {
         inGame = true;
         Time.timeScale = worldScale;
         clock.ReleaseModalPause();
         Show(Page.Game);
+        GameEntered?.Invoke(loadedSave);
     }
     private void Pause()
     {

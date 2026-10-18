@@ -16,7 +16,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 454e68baa8ea57a5a694b1ff01916eef, type: 3}
   speciesId: 761468a5c8a547f184caf7004ed6d4ae
   portrait: {fileID: 21300000, guid: 454e68baa8ea57a5a694b1ff01916eef, type: 3}
-  description: ""
+  description: "\u4E00\u79CD\u957F\u7740\u8611\u83C7\u5C3E\u5DF4\u7684\u5947\u5999\u751F\u7269\uFF0C\u559C\u6B22\u5728\u6E29\u6696\u6F6E\u6E7F\u7684\u73AF\u5883\u4E2D\u751F\u6D3B\u3002"
   evolutionTargets:
   - {fileID: 11400000, guid: 6e1e96d44b6f5b27849484f085712633, type: 2}
   - {fileID: 11400000, guid: 53baba3f960e5da5b0893a5ed12a2f77, type: 2}
