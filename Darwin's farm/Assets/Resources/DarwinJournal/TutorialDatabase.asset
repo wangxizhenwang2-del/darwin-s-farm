@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce9a353891ca7754f8f032105200a284, type: 3}
+  m_Name: TutorialDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialDatabase
+  categories:
+  - id: basics
+    title: "\u57FA\u7840\u64CD\u4F5C"
+    sortOrder: 0
+    pages:
+    - id: goal
+      title: "\u6E38\u620F\u76EE\u6807"
+      content: "\u5EFA\u7ACB\u5730\u5757\uFF0C\u89C2\u5BDF\u8D44\u6E90\u548C\u79CD\u7FA4\u5982\u4F55\u968F\u6E38\u620F\u65E5\u53D8\u5316\u3002\u5F53\u524D\u7248\u672C\u4E3B\u8981\u6A21\u62DF\u9646\u5730\u751F\u6001\u3002"
+      sortOrder: 0
+    - id: observe
+      title: "\u89C2\u5BDF\u5730\u5757\u4E0E\u751F\u7269"
+      content: "\u70B9\u51FB\u5730\u5757\u67E5\u770B\u73AF\u5883\uFF1B\u70B9\u51FB\u79CD\u7FA4\u67E5\u770B\u6570\u91CF\u53CA\u6027\u72B6\u3002\u624B\u673A\u4E0A\u53EF\u7528\u89E6\u6478\u624B\u52BF\u64CD\u4F5C\u5730\u56FE\u3002"
+      sortOrder: 0
+    - id: time
+      title: "\u6682\u505C\u4E0E\u500D\u901F"
+      content: "\u7A7A\u683C\u952E\u63A7\u5236\u6A21\u62DF\u6682\u505C\uFF0C2 \u548C
+        4 \u53EF\u6539\u53D8\u500D\u901F\u3002\u6253\u5F00\u83DC\u5355\u65F6\u6E38\u620F\u65E5\u505C\u6B62\u63A8\u8FDB\u3002"
+      sortOrder: 0
+  - id: ecology
+    title: "\u751F\u6001\u7CFB\u7EDF"
+    sortOrder: 0
+    pages:
+    - id: resources
+      title: "\u8D44\u6E90\u4E0E\u7ADE\u4E89"
+      content: "\u690D\u7269\u548C\u730E\u7269\u7B49\u8D44\u6E90\u4F1A\u5F71\u54CD\u79CD\u7FA4\u5B58\u6D3B\u3002\u5B9E\u65F6\u6570\u503C\u8BF7\u4EE5\u4FE1\u606F\u7A97\u4E3A\u51C6\u3002"
+      sortOrder: 0
+    - id: predation
+      title: "\u6355\u98DF\u5173\u7CFB"
+      content: "\u6355\u98DF\u7531\u5F53\u524D\u98DF\u6027\u548C\u751F\u6001\u89C4\u5219\u51B3\u5B9A\uFF1B\u53EF\u89C2\u5BDF\u6BCF\u65E5\u7ED3\u7B97\u540E\u79CD\u7FA4\u6570\u91CF\u53D8\u5316\u3002"
+      sortOrder: 0
+    - id: migration
+      title: "\u8FC1\u5F99"
+      content: "\u6EE1\u8DB3\u73B0\u6709\u8FC1\u5F99\u89C4\u5219\u540E\uFF0C\u79CD\u7FA4\u53EF\u80FD\u5411\u76F8\u90BB\u5730\u5757\u79FB\u52A8\u3002"
+      sortOrder: 0
+  - id: evolution
+    title: "\u8FDB\u5316\u7CFB\u7EDF"
+    sortOrder: 0
+    pages:
+    - id: traits
+      title: "\u4E94\u9879\u6027\u72B6"
+      content: "\u79CD\u7FA4\u7684\u6E29\u5EA6\u9002\u5E94\u3001\u6E7F\u5EA6\u9002\u5E94\u3001\u79FB\u52A8\u80FD\u529B\u3001\u4F53\u578B\u4E0E\u7E41\u6B96\u80FD\u529B\u4F1A\u6539\u53D8\u3002"
+      sortOrder: 0
+    - id: speciation
+      title: "\u79CD\u7FA4\u6F14\u5316"
+      content: "\u6B63\u5F0F\u6F14\u5316\u4E0E\u5206\u5316\u9700\u8981\u6301\u7EED\u7684\u751F\u6001\u6761\u4EF6\uFF1B\u4E00\u6B21\u6570\u503C\u6CE2\u52A8\u4E0D\u7B49\u4E8E\u65B0\u7269\u79CD\u5F62\u6210\u3002"
+      sortOrder: 0
