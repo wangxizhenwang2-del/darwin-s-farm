@@ -195,12 +195,15 @@ public partial class SimulationController
                 block.waterCoverage != WaterCoverage.Land) continue;
             foreach (PopulationData ancestor in new List<PopulationData>(block.community))
             {
-                if (ancestor == null || ancestor.species == null) continue;
+                if (ancestor == null || ancestor.species == null ||
+                    ancestor.ecologicalNiche != EcologicalNiche.Land) continue;
                 SpeciesData selected = null;
                 List<SpeciesData> targets = ConnectedTargets(ancestor.species);
                 targets.Sort(CompareSpeciesOrder);
                 foreach (SpeciesData target in targets)
                 {
+                    if (target == null || target.baseEcologicalNiche !=
+                        EcologicalNiche.Land) continue;
                     ReportEvolutionTraitRange(block, ancestor, target, day);
                     EvolutionConversionRecord record = GetEvolutionRecord(ancestor,
                         target, true);
@@ -1146,7 +1149,7 @@ public partial class SimulationController
         new PopulationData(false)
         {
             species = target, speciesAmount = count,
-            ecologicalNiche = EcologicalNiche.Land,
+            ecologicalNiche = target.baseEcologicalNiche,
             trophicLevel = target.trophicLevel, trophicLevelInitialized = true,
             fitTemperature = target.baseFitTemperature,
             fitHumidity = target.baseFitHumidity,
@@ -1172,9 +1175,12 @@ public partial class SimulationController
     internal static int LivingPopulationCount(BlockInfo block)
     {
         if (block == null || block.community == null) return 0;
+        EcologicalNiche surface = HabitatTopology.IsWater(block)
+            ? EcologicalNiche.Water : EcologicalNiche.Land;
         int count = 0;
         foreach (PopulationData population in block.community)
-            if (population != null && population.speciesAmount > 0) count++;
+            if (population != null && population.speciesAmount > 0 &&
+                population.ecologicalNiche == surface) count++;
         return count;
     }
 
@@ -1185,12 +1191,55 @@ public partial class SimulationController
             !TryPlanFormalEvolution(block, ancestor, target,
             out int amount, out float plantPayment, out float excessBody) ||
             !HasEvolutionFoodSupport(block, ancestor, target, amount)) return;
+        CommitPresetSpecies(block, block, ancestor, target, day, amount,
+            plantPayment, excessBody);
+    }
+
+    private void CommitPresetSpecies(BlockInfo sourceBlock, BlockInfo targetBlock,
+        PopulationData ancestor, SpeciesData target, int day, int amount,
+        float plantPayment, float excessBody)
+    {
+        if (sourceBlock == null || targetBlock == null ||
+            sourceBlock.community == null || targetBlock.community == null ||
+            !sourceBlock.community.Contains(ancestor) || amount < 1 ||
+            ancestor.speciesAmount <= amount || HasLivingSpecies(targetBlock,
+                target)) return;
+        WaterRegion paymentRegion = null;
+        float available = Mathf.Max(0f, sourceBlock.plantBiomass);
+        if (HabitatTopology.IsWater(sourceBlock))
+        {
+            paymentRegion = BuildWaterRegions().GetRegion(sourceBlock);
+            if (paymentRegion == null) return;
+            available = 0f;
+            foreach (BlockInfo cell in paymentRegion.Members)
+                available += Mathf.Max(0f, cell.plantBiomass);
+        }
+        if (available + .01f < plantPayment) return;
         int sourceCountBefore = ancestor.speciesAmount;
         LandLifeRules.EnsureBodyMass(ancestor, LandRules);
         PopulationData descendant = PopulationTransfer.Split(ancestor, amount,
-            block, day, migrationCooldownDays);
-        block.plantBiomass -= plantPayment;
-        block.detritusBiomass += excessBody;
+            sourceBlock, day, migrationCooldownDays);
+        float remainingPayment = plantPayment;
+        if (HabitatTopology.IsWater(sourceBlock))
+        {
+            if (paymentRegion != null)
+                foreach (BlockInfo cell in paymentRegion.Members)
+                {
+                    float debit = Mathf.Min(Mathf.Max(0f, cell.plantBiomass),
+                        remainingPayment);
+                    cell.plantBiomass -= debit;
+                    remainingPayment -= debit;
+                }
+        }
+        else
+        {
+            sourceBlock.plantBiomass = Mathf.Max(0f,
+                sourceBlock.plantBiomass - plantPayment);
+            remainingPayment = 0f;
+        }
+        if (remainingPayment > .01f)
+            throw new InvalidOperationException("Formal evolution payment failed");
+        sourceBlock.detritusBiomass += excessBody;
         descendant.bodyBiomass = amount * LandLifeRules.BodyMass(
             target.baseSize, LandRules);
         descendant.bodyBiomassInitialized = true;
@@ -1212,7 +1261,7 @@ public partial class SimulationController
         descendant.energyReserve = Mathf.Min(descendant.energyReserve,
             amount * LandLifeRules.AdultNeed(descendant.size,
                 descendant.movementAbility, LandRules) * LandRules.reserveDays);
-        block.accountedBiomassSinkToday += reserveBeforeCap - descendant.energyReserve;
+        sourceBlock.accountedBiomassSinkToday += reserveBeforeCap - descendant.energyReserve;
         descendant.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
 
         descendant.localSplitBranch = false;
@@ -1249,15 +1298,15 @@ public partial class SimulationController
         ancestor.trackedEvolutionTarget = null;
         ancestor.manualEvolutionTarget = null;
         ResetTargetProtection(ancestor);
-        block.community.Add(descendant);
-        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+        targetBlock.community.Add(descendant);
+        LandLifeRules.RefreshEnvironmentMetrics(targetBlock, LandRules);
         RegisterSpecies(target);
         OnPresetEvolutionResolved?.Invoke(new PopulationTransitionResult(
-            PopulationTransitionKind.PresetEvolution, day, block, block,
+            PopulationTransitionKind.PresetEvolution, day, sourceBlock, targetBlock,
             ancestor, descendant, amount, sourceCountBefore,
             0, PopulationArrivalOutcome.Created, target));
-        OnSpeciesEvolved?.Invoke(block, ancestor, descendant, target, amount);
-        LogEcology(day, block, descendant, "preset_evolution",
+        OnSpeciesEvolved?.Invoke(targetBlock, ancestor, descendant, target, amount);
+        LogEcology(day, targetBlock, descendant, "preset_evolution",
             "target=" + target.SpeciesName + " amount=" + amount
             + " plantPayment=" + plantPayment.ToString("F2")
             + " excessBody=" + excessBody.ToString("F2")

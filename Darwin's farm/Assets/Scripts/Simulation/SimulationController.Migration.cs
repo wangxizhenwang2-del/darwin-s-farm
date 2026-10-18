@@ -198,26 +198,8 @@ public partial class SimulationController
                     day < population.nextMigrationDay) continue;
                 if (population.ecologicalNiche == EcologicalNiche.Air && EnableAirEcology)
                 {
-                    var destinations = new List<BlockInfo>(source.Neighbors);
-                    destinations.Sort((left, right) =>
-                    {
-                        float leftDraw = ModelRandom01(day, "migration.air.destination",
-                            source, population, left);
-                        float rightDraw = ModelRandom01(day, "migration.air.destination",
-                            source, population, right);
-                        int order = leftDraw.CompareTo(rightDraw);
-                        return order != 0 ? order : string.CompareOrdinal(
-                            StableTileKey(left), StableTileKey(right));
-                    });
-                    foreach (BlockInfo destination in destinations)
-                    {
-                        if (plans.Exists(move => move.target == destination &&
-                            move.population.ecologicalNiche == EcologicalNiche.Air &&
-                            !SameSpecies(move.population, population))) continue;
-                        if (!TryPlanAirMove(source, destination, population, day, out MovePlan airPlan)) continue;
-                        plans.Add(airPlan);
-                        break;
-                    }
+                    // The daily flight pass owns air moves; do not retry at the
+                    // land migration interval.
                     continue;
                 }
                 if (source.waterCoverage != WaterCoverage.Land) continue;
@@ -547,37 +529,18 @@ public partial class SimulationController
     public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
         RiverBankSide side, PopulationData population)
     {
-        if (!EnableWaterEcology || home == null || home.community == null ||
-            population == null || population.speciesAmount <= 0 ||
-            population.ecologicalNiche != EcologicalNiche.Land ||
-            !home.community.Contains(population)) return false;
-        return HabitatTopology.TryGetBankOwner(river, side, out BlockInfo owner) &&
-            owner == home;
+        return false; // Retired riverbank stroll is not a population route.
     }
 
     public bool TryMoveToRiverBank(BlockInfo home, BlockInfo river,
         RiverBankSide side, PopulationData population)
     {
-        if (!CanMoveToRiverBank(home, river, side, population)) return false;
-        if (population.landPositionBlock == river &&
-            population.landPositionBank == side) return false;
-        population.landPositionBlock = river;
-        population.landPositionBank = side;
-        OnLandPositionChanged?.Invoke(population, river, side);
-        return true;
+        return false;
     }
 
     public bool TryReturnFromRiverBank(BlockInfo home, PopulationData population)
     {
-        if (!EnableWaterEcology || home == null || home.community == null ||
-            population == null || population.ecologicalNiche != EcologicalNiche.Land ||
-            population.speciesAmount <= 0 ||
-            !home.community.Contains(population) ||
-            population.landPositionBlock == null) return false;
-        population.landPositionBlock = null;
-        population.landPositionBank = default(RiverBankSide);
-        OnLandPositionChanged?.Invoke(population, home, null);
-        return true;
+        return false;
     }
 
     public static float CalculateWaterFitness(WaterRegion region, PopulationData population)
@@ -617,38 +580,12 @@ public partial class SimulationController
             Mathf.Clamp01(demand / region.AvailableFood);
     }
 
-    // Called once per eligible land population during the daily niche phase.
+    // Compatibility API: the retired random niche conversion is disabled.
     public bool TryLandDepartureConversion(BlockInfo source, PopulationData population,
         int day, out PopulationData descendant)
     {
         descendant = null;
-        if (!CanDepart(source, population, EcologicalNiche.Land, day) ||
-            WaterRegionMap.IsWater(source) ||
-            NicheSplitAmount(population.speciesAmount) == 0) return false;
-
-        BlockInfo waterTarget = null;
-        foreach (BlockInfo neighbor in blockInfos)
-            if (HabitatTopology.CanLandEnterWater(source, neighbor) &&
-                (population.landPositionBlock == null ||
-                 population.landPositionBlock == neighbor) &&
-                (waterTarget == null || neighbor.plantBiomass > waterTarget.plantBiomass))
-                waterTarget = neighbor;
-        if (EnableWaterEcology && waterTarget != null)
-        {
-            if (ModelRandom01(day, "niche.land-water", source, population,
-                    waterTarget) < landToWaterProbability)
-                return ConvertNiche(source, waterTarget, population, EcologicalNiche.Water,
-                    day, out descendant);
-            return false;
-        }
-
-        if (EnableAirEcology && !HasAirPopulation(source) &&
-            population.speciesAmount >= population.carryingCapacity &&
-            ModelRandom01(day, "niche.land-air", source, population)
-                < landToAirProbability)
-            return ConvertNiche(source, source, population, EcologicalNiche.Air,
-                day, out descendant);
-        return false;
+        return false; // Formal graph evolution owns all land departures.
     }
 
     // 同一 WaterRegion 内的位置调整是整个种群搬迁，不进行随机迁徙判定。
@@ -657,8 +594,11 @@ public partial class SimulationController
     {
         if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
             source == target || regions == null ||
+            !HabitatTopology.ChannelsConnect(source, target) ||
             regions.GetRegion(source) == null ||
-            regions.GetRegion(source) != regions.GetRegion(target)) return false;
+            regions.GetRegion(source) != regions.GetRegion(target) ||
+            LivingPopulationCount(target) >= 5 &&
+            !HasSameSpeciesResident(target, population)) return false;
         ApplyNicheMigration(source, target, population, population.speciesAmount, day);
         return true;
     }
@@ -673,6 +613,8 @@ public partial class SimulationController
         WaterRegion to = regions.GetRegion(target);
         if (from == null || to == null || from == to ||
             !HabitatTopology.ChannelsConnect(source, target) ||
+            LivingPopulationCount(target) >= 5 &&
+            !HasSameSpeciesResident(target, population) ||
             target == population.lastMigrationSource)
             return false;
         int difference = to.Elevation - from.Elevation;
@@ -693,26 +635,15 @@ public partial class SimulationController
         out PopulationData descendant)
     {
         descendant = null;
-        if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
-            regions == null || target == null || WaterRegionMap.IsWater(target) ||
-            NicheSplitAmount(population.speciesAmount) == 0) return false;
-        WaterRegion region = regions.GetRegion(source);
-        if (region == null ||
-            !WaterLandBoundary.IsLocalCrossHabitatEdge(source, target) ||
-            WaterFoodPressure(region) < 1f ||
-            ModelRandom01(day, "niche.water-land", source, population,
-                target) >= waterToLandProbability) return false;
-        return ConvertNiche(source, target, population, EcologicalNiche.Land,
-            day, out descendant);
+        return false; // Formal graph evolution owns all water departures.
     }
 
     // 空中使用陆地的适应度、食物空间和部分迁徙规则，但忽略海拔。
     public bool TryAirMigration(BlockInfo source, BlockInfo target,
         PopulationData population, int day)
     {
-        if (!TryPlanAirMove(source, target, population, day, out MovePlan plan)) return false;
-        ApplyMovePlans(new List<MovePlan> { plan }, day);
-        return true;
+        return TryFlightMigrationOnce(source, target, population, day,
+            out bool moved) && moved;
     }
 
     private bool TryPlanAirMove(BlockInfo source, BlockInfo target,

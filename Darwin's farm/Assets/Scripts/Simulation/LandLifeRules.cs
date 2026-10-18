@@ -891,10 +891,14 @@ internal static class LandLifeRules
         var prey = new List<PopulationData>(5);
         foreach (PopulationData p in block.community)
         {
-            if (p == null || p.ecologicalNiche != niche) continue;
+            if (p == null) continue;
             if (p.speciesAmount <= 0) continue;
-            if (p.trophicLevel == level) hunters.Add(p);
-            if (p.trophicLevel < level) prey.Add(p);
+            if (p.ecologicalNiche == niche && p.trophicLevel == level)
+                hunters.Add(p);
+            if ((p.ecologicalNiche == niche ||
+                 niche == EcologicalNiche.Air &&
+                 p.ecologicalNiche == EcologicalNiche.Land) &&
+                p.trophicLevel < level) prey.Add(p);
         }
         if (hunters.Count == 0 || prey.Count == 0) return;
         int h = hunters.Count, q = prey.Count;
@@ -1045,7 +1049,9 @@ internal static class LandLifeRules
             {
                 renewableQuotas = new Dictionary<PopulationData, int>();
                 foreach (PopulationData prey in block.community)
-                    if (prey != null && prey.ecologicalNiche == niche &&
+                    if (prey != null && (prey.ecologicalNiche == niche ||
+                        niche == EcologicalNiche.Air &&
+                        prey.ecologicalNiche == EcologicalNiche.Land) &&
                         prey.trophicLevel == 0 &&
                         prey.speciesAmount > 0)
                         renewableQuotas[prey] = RenewablePreyHarvestQuota(

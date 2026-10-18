@@ -73,9 +73,11 @@ public partial class SimulationController
                 double body = population.bodyBiomass;
                 // Match the land loop's pending initialization without
                 // changing model state merely to read the opening balance.
-                if (population.ecologicalNiche == (block.waterCoverage ==
+                if ((population.ecologicalNiche == (block.waterCoverage ==
                         WaterCoverage.Land ? EcologicalNiche.Land :
-                        EcologicalNiche.Water) &&
+                        EcologicalNiche.Water) ||
+                     EnableAirEcology &&
+                     population.ecologicalNiche == EcologicalNiche.Air) &&
                     !population.bodyBiomassInitialized &&
                     population.speciesAmount > 0)
                     body = population.speciesAmount *
@@ -119,7 +121,10 @@ public partial class SimulationController
                     if (population == null ||
                         population.ecologicalNiche != (block.waterCoverage ==
                             WaterCoverage.Land ? EcologicalNiche.Land :
-                            EcologicalNiche.Water)) continue;
+                            EcologicalNiche.Water) &&
+                        !(EnableAirEcology &&
+                          population.ecologicalNiche == EcologicalNiche.Air))
+                        continue;
                     EcologySpeciesDailyAccount account = SpeciesAccount(
                         LedgerSpeciesId(population));
                     account.paidBirths += Mathf.Max(0, population.birthsToday);

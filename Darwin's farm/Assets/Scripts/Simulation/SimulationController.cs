@@ -489,16 +489,22 @@ public partial class SimulationController : MonoBehaviour
             SimulateBlock(block);
         }
         if (EnableWaterEcology) SimulateWaterBasins(day);
+        if (EnableAirEcology) SimulateAirHabitats();
         CaptureLifeFlows();
         RemoveEndangered(day);
+        if (EnableAirEcology) RunFlightEvolution(day);
         RunPresetEvolution(day);
+        if (EnableWaterEcology) RunCrossHabitatEvolution(day);
+        if (migrationEnabled && EnableWaterEcology) RunWaterHabitatMigration(day);
+        if (migrationEnabled && EnableAirEcology) RunFlightHabitatMigration(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);
         }
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
-            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+            if (!EnableWaterEcology || !HabitatTopology.IsWater(block))
+                LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         FinishEcologyLedger(day);
         OnDaySimulated?.Invoke(day);
     }
@@ -508,7 +514,7 @@ public partial class SimulationController : MonoBehaviour
     public void SimulateBlock(BlockInfo block)
     {
         if (block == null || block.community == null) return;
-        // Aquatic ecology is not connected yet; never run the land food loop on water.
+        // Water is settled once per basin by SimulateWaterBasins.
         if (HabitatTopology.IsWater(block)) return;
 
         block.community.RemoveAll(population => population == null);
