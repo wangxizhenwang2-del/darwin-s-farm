@@ -66,6 +66,7 @@ public static class EnvironmentFiveToolsAudit
             Check(session.Choice.Kind == EnvironmentTechnologyCatalog.All[i],
                 "Tool button " + i + " must select the matching model operation.");
         }
+        session.SelectKind(Array.IndexOf(EnvironmentTechnologyCatalog.All, EnvironmentTechnologyKind.ElevationChange));
         Check(!session.OptionEnabled(0) && session.OptionEnabled(1) &&
             session.OptionEnabled(2) && !session.OptionEnabled(3),
             "Elevation options must allow only one-level changes.");

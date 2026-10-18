@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.InputSystem;
 #endif
 
+[DefaultExecutionOrder(-150)]
 public class MapBuildModeController : MonoBehaviour
 {
     [Header("µÿÕº∫Õ‘§¿¿")]
@@ -29,9 +30,13 @@ public class MapBuildModeController : MonoBehaviour
     private float previewHeight;
 
     public bool IsBuildMode { get; private set; }
+    private MapTilePlacementController placementController;
+    private MapTouchInput touchInput;
 
     private void Awake()
     {
+        placementController = GetComponent<MapTilePlacementController>();
+        touchInput = FindFirstObjectByType<MapTouchInput>();
         if (gridManager == null ||
             previewRoot == null ||
             previewMaterial == null ||
@@ -60,14 +65,28 @@ public class MapBuildModeController : MonoBehaviour
         if (!Application.isFocused || ScreenEdgeCamera.IsTextInputFocused())
             return;
 
-        bool pressedN;
+        bool pressedN, heldAlt;
 
 #if ENABLE_INPUT_SYSTEM
         pressedN = Keyboard.current != null &&
                    Keyboard.current.nKey.wasPressedThisFrame;
+        heldAlt = Keyboard.current != null &&
+            (Keyboard.current.leftAltKey.isPressed || Keyboard.current.rightAltKey.isPressed);
 #else
         pressedN = Input.GetKeyDown(KeyCode.N);
+        heldAlt = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
 #endif
+
+        // Alt browsing takes priority over construction and pending placement.
+        if (heldAlt && (touchInput == null || !touchInput.SuppressesMouseInput))
+        {
+            if (IsBuildMode)
+            {
+                SetBuildMode(false);
+                if (placementController != null) placementController.CancelDrag();
+            }
+            return;
+        }
 
         if (pressedN)
             SetBuildMode(!IsBuildMode);

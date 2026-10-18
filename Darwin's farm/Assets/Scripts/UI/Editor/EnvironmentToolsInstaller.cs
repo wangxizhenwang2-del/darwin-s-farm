@@ -27,7 +27,7 @@ public static class EnvironmentToolsInstaller
             var panel=root.gameObject.AddComponent<DesktopEnvironmentTools>(); var saved=new SerializedObject(panel);
             Set(saved,"session",session); Set(saved,"mobile",mobile);
             var toolbar=Rect("Toolbar",root,new Vector2(94,320),Vector2.zero); Set(saved,"toolbar",toolbar.gameObject);
-            var kinds=new UnityEngine.UI.Button[5]; string[] captions={"温度","湿度","植物库存","日增量","海拔"};
+            var kinds=new UnityEngine.UI.Button[5]; string[] captions={"温度","海拔","湿度","植物增量","植物存量"};
             for(int i=0;i<5;i++) kinds[i]=Button(captions[i],toolbar,captions[i],new Vector2(94,56),new Vector2(0,-i*64));
             Array(saved,"kinds",kinds);
             var body=Rect("OperationPreview",root,new Vector2(510,480),new Vector2(104,0));
@@ -48,7 +48,7 @@ public static class EnvironmentToolsInstaller
             saved.ApplyModifiedPropertiesWithoutUndo();
         }
         var safe=(RectTransform)mobile.transform.Find("SafeArea");
-        var existing=safe.Find("EnvironmentToolsButton");
+        var existing=safe.Find("MobileActions/EnvironmentToolsButton") ?? safe.Find("EnvironmentToolsButton");
         var toggle=existing != null ? existing.GetComponent<UnityEngine.UI.Button>() :
             Button("EnvironmentToolsButton",safe,"环境工具",new Vector2(136,56),new Vector2(12,-144));
         ((RectTransform)toggle.transform).anchoredPosition = new Vector2(12,-144);
@@ -63,6 +63,7 @@ public static class EnvironmentToolsInstaller
         var bodyRect=technology.transform.Find("TechnologyBody") as RectTransform;
         bodyRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,460);
         tech.ApplyModifiedPropertiesWithoutUndo();
+        ConfigureToolPanels(information, mobile);
         foreach(var component in information.GetComponentsInChildren<Component>(true)) if(component!=null) EditorUtility.SetDirty(component);
         foreach(var component in mobile.GetComponentsInChildren<Component>(true)) if(component!=null) EditorUtility.SetDirty(component);
         EditorSceneManager.MarkSceneDirty(information.gameObject.scene);
@@ -70,6 +71,104 @@ public static class EnvironmentToolsInstaller
         AssetDatabase.SaveAssets();
         Debug.Log("Environment tools and selection outlines installed.");
     }
+
+    // Move the authored tool controls out of the information tabs without
+    // replacing their buttons, callbacks or shared ecological session.
+    public static void ConfigureToolPanels(GameInformationUI information, MobileGameUI mobile)
+    {
+        if (Application.isPlaying) throw new System.InvalidOperationException("Configure outside Play mode.");
+        var saved = new SerializedObject(mobile);
+        var safe = (RectTransform)saved.FindProperty("safeArea").objectReferenceValue;
+        var technology = (MobileTechnologyPanel)saved.FindProperty("technologyPanel").objectReferenceValue;
+        if (safe == null || technology == null) throw new System.InvalidOperationException("Missing authored mobile controls.");
+        var windowRect = safe.Find("EnvironmentToolDrawer") as RectTransform;
+        if (windowRect == null) windowRect = Rect("EnvironmentToolDrawer", safe, new Vector2(520,572), new Vector2(-8,-92));
+        windowRect.anchorMin = windowRect.anchorMax = windowRect.pivot = Vector2.one;
+        windowRect.anchoredPosition = new Vector2(-8,-92);
+        if (windowRect.GetComponent<CanvasGroup>() == null) windowRect.gameObject.AddComponent<CanvasGroup>();
+        var window = windowRect.GetComponent<InformationWindow>();
+        if (window == null) window = windowRect.gameObject.AddComponent<InformationWindow>();
+        var windowSettings = new SerializedObject(window);
+        windowSettings.FindProperty("titleOnlyDragging").boolValue = true;
+        windowSettings.ApplyModifiedPropertiesWithoutUndo();
+        var title = windowRect.Find("Title")?.GetComponent<TextMeshProUGUI>();
+        if (title == null) title = Label("Title",windowRect,"环境工具",24,new Vector2(24,-14),new Vector2(310,40));
+        title.raycastTarget = true;
+        var titleHandle = title.GetComponent<InformationTextDragHandle>();
+        if (titleHandle == null) titleHandle = title.gameObject.AddComponent<InformationTextDragHandle>();
+        titleHandle.Initialize(window);
+        var titleSettings = new SerializedObject(titleHandle);
+        titleSettings.FindProperty("titleHandle").boolValue = true;
+        titleSettings.ApplyModifiedPropertiesWithoutUndo();
+
+        var scrollRect = windowRect.Find("ToolScroll") as RectTransform;
+        if (scrollRect == null) scrollRect = Rect("ToolScroll",windowRect,Vector2.zero,Vector2.zero);
+        Stretch(scrollRect,new Vector2(20,16),new Vector2(-20,-76));
+        var scroll = scrollRect.GetComponent<UnityEngine.UI.ScrollRect>();
+        if (scroll == null) scroll = scrollRect.gameObject.AddComponent<UnityEngine.UI.ScrollRect>();
+        scroll.horizontal = false; scroll.vertical = true; scroll.scrollSensitivity = 32;
+        scroll.movementType = UnityEngine.UI.ScrollRect.MovementType.Clamped;
+        var viewport = scrollRect.Find("Viewport") as RectTransform;
+        if (viewport == null) viewport = Rect("Viewport",scrollRect,Vector2.zero,Vector2.zero);
+        Stretch(viewport,Vector2.zero,Vector2.zero);
+        var viewportImage = viewport.GetComponent<UnityEngine.UI.Image>();
+        if (viewportImage == null) viewportImage = viewport.gameObject.AddComponent<UnityEngine.UI.Image>();
+        viewportImage.color = Color.clear; viewportImage.raycastTarget = true;
+        if (viewport.GetComponent<UnityEngine.UI.RectMask2D>() == null) viewport.gameObject.AddComponent<UnityEngine.UI.RectMask2D>();
+        var content = (RectTransform)technology.transform;
+        content.SetParent(viewport,false);
+        content.anchorMin = content.anchorMax = content.pivot = Vector2.up;
+        content.anchoredPosition = Vector2.zero; content.sizeDelta = new Vector2(500,480);
+        content.localScale = Vector3.one;
+        scroll.content = content; scroll.viewport = viewport;
+        var tech = new SerializedObject(technology);
+        Set(tech,"tileContent",content);
+        tech.FindProperty("expandedContentHeight").floatValue = 480;
+        tech.FindProperty("foldedContentHeight").floatValue = 480;
+        var body = (RectTransform)((GameObject)tech.FindProperty("body").objectReferenceValue).transform;
+        body.anchoredPosition = new Vector2(12,0);
+        var close = (UnityEngine.UI.Button)tech.FindProperty("foldButton").objectReferenceValue;
+        var closeRect = (RectTransform)close.transform;
+        closeRect.SetParent(windowRect,false);
+        closeRect.anchorMin = closeRect.anchorMax = closeRect.pivot = Vector2.one;
+        closeRect.anchoredPosition = new Vector2(-20,-14); closeRect.sizeDelta = new Vector2(96,40);
+        close.GetComponentInChildren<TextMeshProUGUI>(true).text = "关闭";
+        foreach (var handle in content.GetComponentsInChildren<InformationTextDragHandle>(true)) handle.Initialize(window);
+        tech.ApplyModifiedPropertiesWithoutUndo();
+        Set(saved,"toolsDrawer",window); Set(saved,"toolsDrawerRect",windowRect);
+        Set(saved,"toolsScroll",scroll); Set(saved,"toolsViewport",viewport); Set(saved,"toolsContent",content);
+        saved.ApplyModifiedPropertiesWithoutUndo();
+
+        Sprite paper = Resources.Load<Sprite>("GameUI/Editable/ToolPanelBackground");
+        if (paper != null)
+        {
+            ApplyPaper(windowRect,paper);
+            var desktop = information.GetComponentInChildren<DesktopEnvironmentTools>(true);
+            if (desktop != null)
+            {
+                var desktopSettings = new SerializedObject(desktop);
+                var bodyObject = (GameObject)desktopSettings.FindProperty("body").objectReferenceValue;
+                ApplyPaper((RectTransform)bodyObject.transform,paper);
+            }
+        }
+        EnvironmentToolArtworkInstaller.Apply(information, mobile);
+        foreach(var component in windowRect.GetComponentsInChildren<Component>(true))
+            if(component!=null) EditorUtility.SetDirty(component);
+        EditorUtility.SetDirty(mobile);
+        EditorSceneManager.MarkSceneDirty(mobile.gameObject.scene);
+    }
+
+    private static void ApplyPaper(RectTransform root, Sprite paper)
+    {
+        var image = root.GetComponent<UnityEngine.UI.Image>();
+        if (image == null) image = root.gameObject.AddComponent<UnityEngine.UI.Image>();
+        image.sprite = paper; image.color = Color.white;
+        image.type = UnityEngine.UI.Image.Type.Sliced; image.pixelsPerUnitMultiplier = 1.5f;
+        image.raycastTarget = true; image.preserveAspect = false;
+        EditorUtility.SetDirty(image);
+    }
+    private static void Stretch(RectTransform rect,Vector2 minimum,Vector2 maximum)
+    { rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.pivot=Vector2.up;rect.offsetMin=minimum;rect.offsetMax=maximum; }
     private static Material Material(string name,string shaderName)
     {
         string path="Assets/Resources/GameUI/Editable/"+name+".mat";

@@ -1,0 +1,52 @@
+// Evaluate in the connected Unity Editor outside Play mode. Original pixels remain unchanged.
+if(UnityEngine.Application.isPlaying)throw new System.InvalidOperationException("Exit Play mode first.");
+UnityEditor.AssetDatabase.Refresh();
+var art=EnvironmentToolArtwork.Current;
+string path="Assets/Resources/GameUI/ToolArt/PlacementBackground.png";
+var importer=(UnityEditor.TextureImporter)UnityEditor.AssetImporter.GetAtPath(path);
+importer.textureType=UnityEditor.TextureImporterType.Default;
+importer.npotScale=UnityEditor.TextureImporterNPOTScale.None;
+importer.isReadable=true;importer.mipmapEnabled=false;importer.wrapMode=UnityEngine.TextureWrapMode.Clamp;
+importer.textureCompression=UnityEditor.TextureImporterCompression.Uncompressed;importer.maxTextureSize=4096;
+importer.SaveAndReimport();
+var texture=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Texture2D>(path);
+var pixels=texture.GetPixels32();int w=texture.width,h=texture.height;
+bool Ink(int x,int y){var c=pixels[y*w+x];return c.a>128&&c.r<185&&c.g<185&&c.b<185;}
+int left=w,right=-1,bottom=h,top=-1;
+for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Ink(x,y))
+{left=System.Math.Min(left,x);right=System.Math.Max(right,x);bottom=System.Math.Min(bottom,y);top=System.Math.Max(top,y);}
+var rect=new UnityEngine.Rect(left,bottom,right-left+1,top-bottom+1);
+UnityEngine.Sprite Save(UnityEngine.Sprite sprite,string name)
+{
+    sprite.name=name;
+    string asset="Assets/Resources/GameUI/ToolArt/"+name+".asset";
+    var existing=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Sprite>(asset);
+    if(existing==null)UnityEditor.AssetDatabase.CreateAsset(sprite,asset);
+    else {UnityEditor.EditorUtility.CopySerialized(sprite,existing);UnityEngine.Object.DestroyImmediate(sprite);sprite=existing;}
+    return sprite;
+}
+art.placementBackground=Save(UnityEngine.Sprite.Create(texture,rect,new UnityEngine.Vector2(.5f,.5f),100,0,UnityEngine.SpriteMeshType.FullRect),"PlacementBackground");
+var edgeLeft=new System.Collections.Generic.List<UnityEngine.Vector2>();
+var edgeRight=new System.Collections.Generic.List<UnityEngine.Vector2>();
+for(int y=bottom;y<=top;y+=4)
+{
+    int a=right,b=left;
+    for(int x=left;x<=right;x++)if(Ink(x,y)){a=System.Math.Min(a,x);b=System.Math.Max(b,x);}
+    if(b<a)continue;
+    edgeLeft.Add((new UnityEngine.Vector2(a,y)-rect.center)/100f);
+    edgeRight.Add((new UnityEngine.Vector2(b,y)-rect.center)/100f);
+}
+edgeRight.Reverse();edgeLeft.AddRange(edgeRight);
+var clips=new System.Collections.Generic.List<EnvironmentToolArtwork.ClippedSprite>(art.clippedSprites);
+clips.RemoveAll(c=>c.sprite==art.placementBackground);
+clips.Add(new EnvironmentToolArtwork.ClippedSprite{sprite=art.placementBackground,outline=edgeLeft.ToArray()});
+art.clippedSprites=clips.ToArray();
+// Stretch only the blank paper margins. The central strip containing the five
+// circles scales equally in X and Y inside a 200 x 500 toolbar.
+var original=art.toolbar;
+float scale=500f/original.rect.height;
+float margin=(200f-scale*original.rect.width)/(2f*(1f-scale));
+art.wideToolbar=Save(UnityEngine.Sprite.Create(original.texture,original.rect,new UnityEngine.Vector2(.5f,.5f),original.pixelsPerUnit,0,UnityEngine.SpriteMeshType.FullRect,new UnityEngine.Vector4(margin,0,margin,0)),"ToolbarWide");
+importer.isReadable=false;importer.textureCompression=UnityEditor.TextureImporterCompression.CompressedHQ;importer.SaveAndReimport();
+UnityEditor.EditorUtility.SetDirty(art);UnityEditor.AssetDatabase.SaveAssets();
+return "Placement artwork "+rect+"; toolbar side borders "+margin;

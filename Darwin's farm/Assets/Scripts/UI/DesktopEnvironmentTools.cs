@@ -3,7 +3,6 @@ using UnityEngine;
 
 public sealed class DesktopEnvironmentTools : MonoBehaviour
 {
-    private static readonly string[] kindLabels = { "温度", "湿度", "存量", "增量", "海拔" };
     [SerializeField] private EnvironmentToolSession session;
     [SerializeField] private MobileGameUI mobile;
     [SerializeField] private GameObject toolbar, body;
@@ -16,8 +15,9 @@ public sealed class DesktopEnvironmentTools : MonoBehaviour
         {
             int index = i;
             kinds[i].onClick.AddListener(() => session.SelectKind(index));
-            if (i < kindLabels.Length)
-                kinds[i].GetComponentInChildren<TextMeshProUGUI>(true).text = kindLabels[i];
+            kinds[i].GetComponentInChildren<TextMeshProUGUI>(true).text =
+                DarwinFarm.Environment.EnvironmentTechnologyCatalog.ShortName(
+                    DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i]);
         }
         for (int i = 0; i < options.Length; i++)
         { int index = i; options[i].onClick.AddListener(() => session.SelectOption(index)); }
@@ -35,15 +35,15 @@ public sealed class DesktopEnvironmentTools : MonoBehaviour
             kinds[i].targetGraphic.color = session.Active &&
                 i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&
                 DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind ?
-                new Color(.58f,.83f,.64f) : Color.white;
+                new Color(.58f,.83f,.64f,.35f) : Color.clear;
         if (!session.Active) return;
         transform.SetAsLastSibling();
         for (int i = 0; i < options.Length; i++)
         {
-            options[i].gameObject.SetActive(session.OptionEnabled(i));
-            options[i].GetComponentInChildren<TextMeshProUGUI>(true).text = session.OptionLabel(i);
-            options[i].targetGraphic.color = session.OptionSelected(i) ? new Color(.58f,.83f,.64f) : Color.white;
+            EnvironmentToolArtwork.RefreshOption(options[i], session, i);
         }
+        var title = body.transform.Find("Title")?.GetComponent<TextMeshProUGUI>();
+        if (title != null) title.text = DarwinFarm.Environment.EnvironmentTechnologyCatalog.Name(session.Choice.Kind);
         preview.text = session.PreviewText;
         current.text = session.CurrentApplied;
         notice.text = session.Notice;

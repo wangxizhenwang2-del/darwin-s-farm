@@ -4,7 +4,6 @@ using UnityEngine;
 // Saved mobile view of the shared desktop/touch tool session.
 public sealed class MobileTechnologyPanel : MonoBehaviour
 {
-    private static readonly string[] kindLabels = { "温度", "湿度", "存量", "增量", "海拔" };
     [SerializeField] private EnvironmentTechnologyController controller;
     [SerializeField] private RectTransform tileContent;
     [SerializeField] private GameObject body;
@@ -24,15 +23,16 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         session = FindFirstObjectByType<EnvironmentToolSession>();
         if (session == null) return;
         bound = true;
-        foldButton.onClick.AddListener(ToggleExpanded);
+        foldButton.onClick.AddListener(session.End);
         deployButton.onClick.AddListener(session.Deploy);
         cancelButton.onClick.AddListener(session.CancelEffect);
         for (int i = 0; i < kindButtons.Length; i++)
         {
             int index = i;
             kindButtons[i].onClick.AddListener(() => SelectKind(index));
-            if (i < kindLabels.Length)
-                kindButtons[i].GetComponentInChildren<TextMeshProUGUI>(true).text = kindLabels[i];
+            kindButtons[i].GetComponentInChildren<TextMeshProUGUI>(true).text =
+                DarwinFarm.Environment.EnvironmentTechnologyCatalog.ShortName(
+                    DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i]);
         }
         for (int i = 0; i < optionButtons.Length; i++)
         { int index = i; optionButtons[i].onClick.AddListener(() => SelectOption(index)); }
@@ -45,11 +45,13 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
     [ContextMenu("Refresh technology preview layout")]
     public void ApplyFold()
     {
-        if (body != null) body.SetActive(expanded);
+        // The independent window owns visibility, including its close animation.
+        if (body != null) body.SetActive(true);
         if (tileContent != null) tileContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
             expanded ? expandedContentHeight : foldedContentHeight);
-        ((RectTransform)transform).anchoredPosition = new Vector2(12f, expanded ? -8f : -614f);
-        if (foldLabel != null) foldLabel.text = expanded ? "地块科技 · 退出操作" : "地块科技 · 开始操作";
+        // The tool scroll owns this content's position; refreshing labels must
+        // not move the information drawer or reset a user's scrolling.
+        if (foldLabel != null) foldLabel.text = "×";
     }
     public void Refresh()
     {
@@ -62,9 +64,7 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
                 selectedColor : normalColor;
         for (int i = 0; i < optionButtons.Length; i++)
         {
-            optionButtons[i].GetComponentInChildren<TextMeshProUGUI>(true).text = session.OptionLabel(i);
-            optionButtons[i].targetGraphic.color = session.OptionSelected(i) ? selectedColor : normalColor;
-            optionButtons[i].gameObject.SetActive(session.OptionEnabled(i));
+            EnvironmentToolArtwork.RefreshOption(optionButtons[i], session, i);
         }
         currentApplied.text = session.CurrentApplied;
         previewText.text = session.PreviewText;
