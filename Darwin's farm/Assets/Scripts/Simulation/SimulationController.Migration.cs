@@ -892,6 +892,11 @@ internal static class PopulationTransfer
             directedTraitUnlockDay = source.directedTraitUnlockDay,
             sameSpeciesCoexistenceDays = 0,
             lastMutationEffect = source.lastMutationEffect,
+            fertilityGuidance = source.fertilityGuidance == null
+                ? new FertilityGuidancePulse() : source.fertilityGuidance.Copy(),
+            stockGuidance = source.stockGuidance == null
+                ? new StockGuidancePulse() : source.stockGuidance.Copy(),
+            cliffMovementRecovery = new CliffMovementRecovery(),
             mutationSelectionProgress = source.mutationSelectionProgress,
             mutationSelectionCandidate = source.mutationSelectionCandidate,
             trackedEvolutionTarget = source.trackedEvolutionTarget,
@@ -906,6 +911,9 @@ internal static class PopulationTransfer
             preyNetRenewalHistory = new List<float>(source.preyNetRenewalHistory ?? new List<float>()),
             populationGrowthHistory = new List<float>(source.populationGrowthHistory ?? new List<float>())
         };
+        if (source.neighborMovementRounds != null)
+            foreach (NeighborMovementRound round in source.neighborMovementRounds)
+                if (round != null) copy.neighborMovementRounds.Add(round.Copy());
         if (source.evolutionConversions != null)
             foreach (EvolutionConversionRecord record in source.evolutionConversions)
                 if (record != null)
@@ -991,6 +999,53 @@ internal static class PopulationTransfer
             arrival.trophicLevel, arrival.trophicMutationRemainder,
             residentAmount, arrivalAmount, total);
         resident.energyReserve += arrival.energyReserve;
+        if (resident.fertilityGuidance == null)
+            resident.fertilityGuidance = new FertilityGuidancePulse();
+        if (arrival.fertilityGuidance != null &&
+            !string.IsNullOrEmpty(resident.fertilityGuidance.transactionKey) &&
+            resident.fertilityGuidance.transactionKey ==
+                arrival.fertilityGuidance.transactionKey)
+            resident.fertilityGuidance.used += arrival.fertilityGuidance.used;
+        if (resident.stockGuidance == null)
+            resident.stockGuidance = new StockGuidancePulse();
+        if (arrival.stockGuidance != null)
+        {
+            if (string.IsNullOrEmpty(resident.stockGuidance.transactionKey))
+                resident.stockGuidance = arrival.stockGuidance.Copy();
+            else if (resident.stockGuidance.transactionKey ==
+                arrival.stockGuidance.transactionKey)
+                resident.stockGuidance.used =
+                    resident.stockGuidance.claimKey == arrival.stockGuidance.claimKey
+                    ? Mathf.Max(resident.stockGuidance.used,
+                        arrival.stockGuidance.used)
+                    : resident.stockGuidance.used + arrival.stockGuidance.used;
+        }
+        if (resident.neighborMovementRounds == null)
+            resident.neighborMovementRounds = new List<NeighborMovementRound>();
+        if (arrival.neighborMovementRounds != null)
+            foreach (NeighborMovementRound incoming in arrival.neighborMovementRounds)
+            {
+                if (incoming == null) continue;
+                NeighborMovementRound existing = resident.neighborMovementRounds.Find(
+                    round => round != null && round.edgeKey == incoming.edgeKey &&
+                        round.sourceRevision == incoming.sourceRevision &&
+                        round.targetRevision == incoming.targetRevision &&
+                        round.sourceElevation == incoming.sourceElevation &&
+                        round.targetElevation == incoming.targetElevation);
+                if (existing == null)
+                    resident.neighborMovementRounds.Add(incoming.Copy());
+                else
+                {
+                    existing.startDay = Mathf.Min(existing.startDay,
+                        incoming.startDay);
+                    existing.finished |= incoming.finished;
+                    existing.guided |= incoming.guided;
+                    existing.recoveryConsumed |= incoming.recoveryConsumed;
+                }
+            }
+        // A merged resident must not inherit an off-tile recovery command.
+        if (resident.cliffMovementRecovery != null)
+            resident.cliffMovementRecovery.active = false;
         resident.bodyBiomass += arrival.bodyBiomass;
         resident.birthRemainder += arrival.birthRemainder;
         resident.deathRemainder += arrival.deathRemainder;

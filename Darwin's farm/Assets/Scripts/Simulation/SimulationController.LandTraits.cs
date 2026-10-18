@@ -346,6 +346,316 @@ public partial class SimulationController
         });
     }
 
+    private bool TryApplyRecoveryGuidance(BlockInfo block,
+        PopulationData population)
+    {
+        RecoveryGuidanceTransaction transaction = block.recoveryGuidance;
+        FertilityGuidancePulse redeemed = population.fertilityGuidance;
+        int day = currentSimulationDay;
+        if (population.trophicLevel != 0 || transaction == null ||
+            transaction.direction == 0 || day < transaction.firstDay ||
+            day > transaction.lastDay || transaction.used >= transaction.cap ||
+            redeemed == null || redeemed.transactionKey != transaction.key)
+            return false;
+        int current = population.fertility;
+        if (transaction.direction > 0 ? current >= 85 : current <= 15)
+            return false;
+        int next = current + transaction.direction;
+        float roll = ModelRandom01(day, "mutation.recovery.guidance",
+            block, population);
+        if (LeavesProtectedTarget(population, 4, next) ||
+            roll >= transaction.probability) return false;
+        transaction.used++;
+        redeemed.used++;
+        population.fertility = next;
+        population.lastMutationEffect = "4" +
+            (transaction.direction > 0 ? "↑" : "↓") +
+            " " + current + "→" + next;
+        population.mutationSelectionProgress = 0f;
+        population.mutationSelectionCandidate = -1;
+        LogV4Mutation(block, population, "recovery_guidance", 4,
+            transaction.direction, transaction.probability, roll, 0f,
+            current, next);
+        return true;
+    }
+
+    private void LogV4Mutation(BlockInfo block, PopulationData population,
+        string reason, int trait, int direction, float probability,
+        float hitRoll, float choiceRoll, int previous, int next)
+    {
+        if (OnEcologyEvent == null && !EnableEcologyConsoleLogs) return;
+        string target = population.trackedEvolutionTarget == null ? "" :
+            StableSpeciesKey(population.trackedEvolutionTarget);
+        LogEcology(currentSimulationDay, block, population,
+            "mutation_choice", "reason=" + reason + " candidate=" +
+            trait + (direction > 0 ? "+" : "-") +
+            " probability=" + probability.ToString("R",
+                System.Globalization.CultureInfo.InvariantCulture) +
+            " hitRoll=" + hitRoll.ToString("R",
+                System.Globalization.CultureInfo.InvariantCulture) +
+            " choiceRoll=" + choiceRoll.ToString("R",
+                System.Globalization.CultureInfo.InvariantCulture) +
+            " seed=" + SimulationSeed + " before=" + previous +
+            " after=" + next + " target=" + target +
+            " protected=false occupiedSlot=true");
+    }
+
+    private struct ChanceMutation
+    {
+        public int trait, direction;
+        public float probability;
+        public string source;
+        public bool bypassProtection;
+    }
+
+    private static void OfferChance(List<ChanceMutation> choices,
+        PopulationData population, int trait, int direction,
+        float probability, string source = null,
+        bool bypassProtection = false)
+    {
+        int current = TraitValue(population, trait);
+        if (probability <= 0f ||
+            TraitLimit(trait, current + direction) == current) return;
+        choices.Add(new ChanceMutation { trait = trait, direction = direction,
+            probability = Mathf.Clamp01(probability), source = source,
+            bypassProtection = bypassProtection });
+    }
+
+    private bool ChooseChanceMutation(BlockInfo block, PopulationData population,
+        List<ChanceMutation> choices, string phase)
+    {
+        if (choices.Count == 0) return false;
+        float noHit = 1f, total = 0f;
+        foreach (ChanceMutation option in choices)
+        {
+            noHit *= 1f - option.probability;
+            total += option.probability;
+        }
+        float hitRoll = ModelRandom01(currentSimulationDay,
+            phase + ".hit", block, population);
+        if (hitRoll >= 1f - noHit) return false;
+        float choiceRoll = ModelRandom01(currentSimulationDay,
+            phase + ".choose", block, population);
+        float draw = choiceRoll * total;
+        ChanceMutation selected = choices[choices.Count - 1];
+        foreach (ChanceMutation option in choices)
+        {
+            draw -= option.probability;
+            if (draw < 0f) { selected = option; break; }
+        }
+        int previous = TraitValue(population, selected.trait);
+        int next = previous + selected.direction;
+        if (!selected.bypassProtection &&
+            LeavesProtectedTarget(population, selected.trait, next))
+            return false;
+        StockGuidanceClaim stockClaim = selected.source == "stock_guidance"
+            ? StockClaim(block, population) : null;
+        if (selected.source == "stock_guidance" && stockClaim == null)
+            return false;
+        if (selected.source == "neighbor_guidance")
+            MarkNeighborMovementHit(block, population, previous);
+        if (selected.trait == 2) population.movementAbility = next;
+        else if (selected.trait == 3) population.size = next;
+        else if (selected.trait == 4) population.fertility = next;
+        else return false;
+        if (selected.source == "stock_guidance")
+        {
+            stockClaim.used++;
+            population.stockGuidance.used = stockClaim.used;
+        }
+        else if (selected.source == "recovery_guidance")
+        {
+            block.recoveryGuidance.used++;
+            population.fertilityGuidance.used++;
+        }
+        else if (selected.source == "cliff_recovery" &&
+            population.cliffMovementRecovery != null &&
+            population.movementAbility <=
+                (population.trackedEvolutionTarget != null &&
+                 !HasLivingSpecies(block, population.trackedEvolutionTarget)
+                    ? population.trackedEvolutionTarget.baseMovementAbility
+                    : population.cliffMovementRecovery.anchorMovement))
+            StopCliffRecovery(block, population, "goal_reached");
+        population.lastMutationEffect = selected.trait +
+            (selected.direction > 0 ? "↑" : "↓") +
+            " " + previous + "→" + next;
+        population.mutationSelectionProgress = 0f;
+        population.mutationSelectionCandidate = -1;
+        LogV4Mutation(block, population,
+            selected.source ?? phase, selected.trait,
+            selected.direction, selected.probability, hitRoll,
+            choiceRoll, previous, next);
+        return true;
+    }
+
+    private void OfferRecoveryGuidance(BlockInfo block,
+        PopulationData population, List<ChanceMutation> choices)
+    {
+        RecoveryGuidanceTransaction transaction = block.recoveryGuidance;
+        FertilityGuidancePulse redeemed = population.fertilityGuidance;
+        int day = currentSimulationDay;
+        if (population.trophicLevel != 0 || transaction == null ||
+            transaction.direction == 0 || day < transaction.firstDay ||
+            day > transaction.lastDay || transaction.used >= transaction.cap ||
+            redeemed == null || redeemed.transactionKey != transaction.key)
+            return;
+        if (transaction.direction > 0 ? population.fertility >= 85 :
+            population.fertility <= 15) return;
+        int next = population.fertility + transaction.direction;
+        if (LeavesProtectedTarget(population, 4, next)) return;
+        OfferChance(choices, population, 4, transaction.direction,
+            transaction.probability, "recovery_guidance");
+    }
+
+    private void OfferStockGuidance(BlockInfo block,
+        PopulationData population, List<ChanceMutation> choices)
+    {
+        float probability = StockGuidanceProbability(block, population,
+            currentSimulationDay);
+        if (probability > 0f)
+            OfferChance(choices, population, 3,
+                block.stockGuidance.direction, probability,
+                "stock_guidance", true);
+    }
+
+    private bool TryDirectedMutation(BlockInfo block,
+        PopulationData population)
+    {
+        var choices = new List<ChanceMutation>(7);
+        OfferCliffRecovery(block, population, choices);
+        OfferRecoveryGuidance(block, population, choices);
+        OfferStockGuidance(block, population, choices);
+        OfferPredatorDirected(block, population, choices);
+        OfferNeighborMovement(block, population, choices);
+        return ChooseChanceMutation(block, population, choices,
+            "mutation.directed");
+    }
+
+    private bool TryPredatorDirected(BlockInfo block,
+        PopulationData population)
+    {
+        var choices = new List<ChanceMutation>(2);
+        OfferPredatorDirected(block, population, choices);
+        return ChooseChanceMutation(block, population, choices,
+            "mutation.predator.directed");
+    }
+
+    private void OfferPredatorDirected(BlockInfo block,
+        PopulationData population, List<ChanceMutation> choices)
+    {
+        if (population.trophicLevel <= 0 ||
+            !FoodWeb.HasLandPredatorDiet(population)) return;
+        int sizeGoal = population.size;
+        bool knownPrey = false;
+        foreach (PopulationData prey in block.community)
+        {
+            if (prey == null || prey.speciesAmount <= 0 ||
+                !FoodWeb.CanEat(population, prey)) continue;
+            sizeGoal = Mathf.Max(sizeGoal, Mathf.CeilToInt(
+                Mathf.Sqrt(1.5f) * (prey.size + 10f) - 10f));
+            if (prey.preyNetRenewalHistory != null &&
+                prey.preyNetRenewalHistory.Count > 0) knownPrey = true;
+        }
+        // The supplied rules do not define s_escape numerically. Legal
+        // hunters remain observable, but no escape-size candidate is invented.
+        sizeGoal = Mathf.Clamp(sizeGoal, 1, 100);
+        float satisfaction = population.actualEnergySatisfactionToday;
+        if (sizeGoal > population.size)
+            OfferChance(choices, population, 3, 1,
+                0.25f * Mathf.Clamp01((sizeGoal - population.size) / 25f)
+                * Mathf.Clamp01((satisfaction - 0.6f) / 0.35f));
+        if (knownPrey)
+        {
+            float sustainable = LandLifeRules.AvailableSustainablePreyFood(
+                block, population, LandRules);
+            float adult = population.speciesAmount * LandLifeRules.AdultNeed(
+                population.size, population.movementAbility, LandRules);
+            float ratio = adult > 0f ? sustainable / adult : 0f;
+            float probability = 0.25f * Mathf.Clamp01(
+                (Mathf.Abs(ratio - 1f) - 0.10f) / 0.65f);
+            int direction = ratio > 1.1f ? 1 : ratio < 0.9f ? -1 : 0;
+            if (direction != 0 && !LeavesProtectedTarget(population, 4,
+                population.fertility + direction))
+                OfferChance(choices, population, 4, direction, probability);
+        }
+        else if (OnEcologyEvent != null || EnableEcologyConsoleLogs)
+            LogEcology(currentSimulationDay, block, population,
+                "mutation_supply_unknown", "prey renewal history unavailable");
+        choices.RemoveAll(option => LeavesProtectedTarget(population,
+            option.trait, TraitValue(population, option.trait) +
+                option.direction));
+        // The unified directed lottery owns the only mutation slot.
+    }
+
+    private static int TargetTraitValue(SpeciesData target, int trait) =>
+        trait == 0 ? target.baseFitTemperature :
+        trait == 1 ? target.baseFitHumidity :
+        trait == 2 ? target.baseMovementAbility :
+        trait == 3 ? target.baseSize : target.baseFertility;
+
+    private float OtherTraitDistance(PopulationData population,
+        SpeciesData target, int excluded)
+    {
+        float distance = 0f;
+        for (int trait = 0; trait < 5; trait++)
+            if (trait != excluded)
+                distance += Mathf.Abs(TraitValue(population, trait) -
+                    TargetTraitValue(target, trait));
+        return distance / 4f;
+    }
+
+    private bool TrySiblingAttraction(BlockInfo block,
+        PopulationData population)
+    {
+        if (population.trophicLevel <= 0) return false;
+        SpeciesData target = population.trackedEvolutionTarget;
+        if (target == null || HasLivingSpecies(block, target)) return false;
+        var choices = new List<ChanceMutation>(2);
+        for (int trait = 3; trait <= 4; trait++)
+        {
+            int delta = TargetTraitValue(target, trait) -
+                TraitValue(population, trait);
+            if (Mathf.Abs(delta) <= 5) continue;
+            int direction = delta > 0 ? 1 : -1;
+            if (LeavesProtectedTarget(population, trait,
+                TraitValue(population, trait) + direction)) continue;
+            float distance = OtherTraitDistance(population, target, trait);
+            OfferChance(choices, population, trait, direction,
+                0.02f + 0.08f * Mathf.Max(0f, 1f - distance / 30f));
+        }
+        return ChooseChanceMutation(block, population, choices,
+            "mutation.sibling.sizefertility");
+    }
+
+    private bool TryNaturalRecovery(BlockInfo block,
+        PopulationData population)
+    {
+        var choices = new List<ChanceMutation>(2);
+        SpeciesData target = population.trackedEvolutionTarget;
+        if (target != null && !HasLivingSpecies(block, target) &&
+            population.movementAbility > target.baseMovementAbility + 5 &&
+            !LeavesProtectedTarget(population, 2,
+                population.movementAbility - 1))
+        {
+            float distance = OtherTraitDistance(population, target, 2);
+            OfferChance(choices, population, 2, -1,
+                0.02f + (population.trophicLevel == 0 ? .53f : .38f)
+                    * Mathf.Max(0f, 1f - distance / 30f));
+        }
+        if (population.trophicLevel > 0 &&
+            FoodWeb.HasLandPredatorDiet(population) && population.size > 1 &&
+            LandLifeRules.AdultNeed(population.size - 1,
+                population.movementAbility, LandRules) <
+            LandLifeRules.AdultNeed(population.size,
+                population.movementAbility, LandRules) &&
+            !LeavesProtectedTarget(population, 3, population.size - 1))
+            OfferChance(choices, population, 3, -1,
+                0.15f * Mathf.Clamp01((0.95f -
+                    population.actualEnergySatisfactionToday) / 0.35f));
+        return ChooseChanceMutation(block, population, choices,
+            "mutation.natural.recovery");
+    }
+
     private void EvolveCommunityNewRules(BlockInfo block)
     {
         if (!mutationEnabled || mutationStep <= 0f) return;
@@ -360,12 +670,12 @@ public partial class SimulationController
             UpdateInfluences(population, currentSimulationDay);
             RefreshTrackedTarget(block, population, currentSimulationDay);
             ReleaseTargetProtectionFIFO(block, population);
+            if (TryDirectedMutation(block, population)) continue;
+            if (TrySiblingAttraction(block, population)) continue;
+            if (TryNaturalRecovery(block, population)) continue;
 
             LandTraits original = ReadLandTraits(population);
             float baseline = ForecastLandGrowth(block, population, original);
-            V62NeighborForecast v62Best = enableV62Mobility &&
-                selectionStrength > 0f ? BestV62Neighbor(block, population,
-                    original) : default;
             var choices = new List<MutationCandidate>(10);
             for (int trait = 0; trait < 2; trait++)
             {
@@ -387,8 +697,9 @@ public partial class SimulationController
                 for (int trait = 2; trait < 5; trait++)
                     for (int direction = -1; direction <= 1; direction += 2)
                     {
-                        if ((enableNeighborMovementFormula || v62Best.Valid) &&
-                            trait == 2)
+                        // V4 movement-up probability is still unspecified.
+                        // Old V2 neighbor gain is not a natural mutation source.
+                        if (trait == 2 && direction > 0)
                             continue;
                         int next = TraitLimit(trait,
                             TraitValue(population, trait) + direction);
@@ -410,101 +721,6 @@ public partial class SimulationController
                             Mathf.Clamp(perHeadGain * selectionStrength * 100f,
                                 0.05f, 5f), "sustainable");
                     }
-
-            if (v62Best.Valid)
-                AddV62MovementCandidates(choices, block, population,
-                    original, v62Best);
-            else if (!enableV62Mobility && enableNeighborMovementFormula &&
-                selectionStrength > 0f)
-            {
-                OpportunityResult opportunity = BestRealNeighborOpportunity(
-                    block, population, original, out float ecologicalMovementFloor);
-                float valueHere = SustainableSurvivalValue(block, population, original);
-                // Keep ordinary local movement selection when ecology supports it;
-                // never let it bypass the target-protection rule.
-                if (population.movementAbility < 100)
-                {
-                    int next = TraitLimit(2, population.movementAbility + 1);
-                    LandTraits plus = ChangedTrait(original, 2, next);
-                    float localGain = SustainableSurvivalValue(block, population, plus) - valueHere;
-                    if (localGain > LandRules.mutationGainThreshold &&
-                        !LeavesProtectedTarget(population, 2, next) &&
-                        InfluenceNet(population, 2, currentSimulationDay, true) >= 0f &&
-                        ModelRandom01(currentSimulationDay, "mutation.neighbor.localplus",
-                            block, population) < naturalChance)
-                        AddMutationCandidate(choices, 2, 1,
-                            Mathf.Clamp(localGain * selectionStrength * 100f,
-                                0.0001f, 5f), "sustainable");
-                }
-
-                if (opportunity.Eligible &&
-                    InfluenceNet(population, 2, currentSimulationDay, true) >= 0f &&
-                    (!LeavesProtectedTarget(population, 2,
-                        population.movementAbility + 1) ||
-                     NeighborMovementPolicyV2.MayCrossEvolutionProtection(
-                        opportunity, population.movementAbility,
-                        population.movementAbility + 1)))
-                {
-                    float probability = (float)NeighborMovementPolicyV2.NeighborGate(
-                        opportunity.MutationWeightBonus);
-                    float roll = ModelRandom01(currentSimulationDay,
-                        "mutation.neighbor.v2.qualify", block, population);
-                    if (roll < probability)
-                        // B governs qualification probability, never a second
-                        // microscopic relative weight that loses to climate.
-                        AddMutationCandidate(choices, 2, 1,
-                            selectionStrength, "neighbor_growth");
-                    if (OnEcologyEvent != null || EnableEcologyConsoleLogs)
-                        LogEcology(currentSimulationDay, block, population,
-                            "neighbor_mutation_gate", "p=" +
-                            probability.ToString("R") + " draw=" +
-                            roll.ToString("R") + " accepted=" +
-                            (roll < probability) + " target=" +
-                            opportunity.DestinationKey);
-                }
-
-                if (population.movementAbility > 0 &&
-                    InfluenceNet(population, 2, currentSimulationDay, true) <= 0f &&
-                    !LeavesProtectedTarget(population, 2,
-                        population.movementAbility - 1))
-                {
-                    LandTraits minus = ChangedTrait(original, 2,
-                        population.movementAbility - 1);
-                    float growthGain = SustainableSurvivalValue(block, population, minus) -
-                        valueHere;
-                    float maintenanceSaving = LandLifeRules.AdultNeed(original.s,
-                        original.m, LandRules) - LandLifeRules.AdultNeed(
-                            minus.s, minus.m, LandRules);
-                    float probability = (float)NeighborMovementPolicyV2.RecoveryGate(
-                        population.movementAbility, ecologicalMovementFloor,
-                        growthGain, maintenanceSaving);
-                    float roll = ModelRandom01(currentSimulationDay,
-                        "mutation.neighbor.v2.recover", block, population);
-                    if (roll < probability)
-                        AddMutationCandidate(choices, 2, -1, 0.1f, "movement_cost_recovery");
-                    else if (growthGain > LandRules.mutationGainThreshold &&
-                        ModelRandom01(currentSimulationDay,
-                            "mutation.neighbor.v2.naturalminus", block, population)
-                            < naturalChance)
-                        AddMutationCandidate(choices, 2, -1,
-                            Mathf.Clamp(growthGain * selectionStrength * 100f,
-                                0.0001f, 5f), "sustainable");
-                }
-            }
-
-            for (int trait = 2; trait < 5; trait++)
-            {
-                float net = InfluenceNet(population, trait,
-                    currentSimulationDay, false);
-                if (net == 0f) continue;
-                int direction = net > 0f ? 1 : -1;
-                int next = TraitLimit(trait,
-                    TraitValue(population, trait) + direction);
-                if (next != TraitValue(population, trait) &&
-                    !LeavesProtectedTarget(population, trait, next))
-                    AddMutationCandidate(choices, trait, direction,
-                        Mathf.Abs(net), "player");
-            }
 
             float totalWeight = 0f;
             bool emitMutationTrace = OnEcologyEvent != null ||
@@ -547,14 +763,6 @@ public partial class SimulationController
                 population.lastMutationEffect = winner.trait +
                     (winner.direction > 0 ? "↑" : "↓") +
                     " " + previous + "→" + next;
-                if (winner.sources.Contains("player") &&
-                    population.directedInfluences != null)
-                    foreach (DirectedInfluence influence in
-                        population.directedInfluences)
-                        if (influence != null &&
-                            influence.trait == winner.trait &&
-                            influence.weight * winner.direction > 0f)
-                            influence.potential *= 0.5f;
             }
             if (emitMutationTrace)
                 LogEcology(currentSimulationDay, block, population,
