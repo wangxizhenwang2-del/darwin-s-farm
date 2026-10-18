@@ -19,6 +19,8 @@ public static class CrossNicheV06SmokeChecks
             WaterMigrationIsPartialAndConservesCount();
             ThreeBarCrossEvolution();
             MutationUsesOneSlotAndSkipsWaterClimate();
+            AirCanReturnAfterThirtyDayCooldown();
+            WaterAndAirMigrationAreRejected();
             Debug.Log("CROSS_NICHE_V06_SHORT_SMOKE_PASS");
         }
         catch (Exception error)
@@ -29,6 +31,80 @@ public static class CrossNicheV06SmokeChecks
         }
         if (Application.isBatchMode) EditorApplication.Exit(failed ? 1 : 0);
         else if (failed) throw new Exception("Cross niche v0.6 short smoke failed");
+    }
+
+    // Keeps the unchanged land paths in the same short production day loop.
+    public static void RunLandBaselineBatch()
+    {
+        bool failed = false;
+        try
+        {
+            LandEvolutionAndMigrationStayLive();
+            Debug.Log("V06_LAND_BASELINE_PASS");
+        }
+        catch (Exception error)
+        { failed = true; Debug.LogException(error); }
+        if (Application.isBatchMode) EditorApplication.Exit(failed ? 1 : 0);
+        else if (failed) throw new Exception("Land baseline smoke failed");
+    }
+
+    private static void LandEvolutionAndMigrationStayLive()
+    {
+        Scene scene = EditorSceneManager.NewPreviewScene();
+        try
+        {
+            SpeciesData chicken = Load("彩鸡-b59a4a82");
+            SpeciesData target = Load("鸡-7f113739");
+            Check(chicken != null && target != null &&
+                chicken.evolutionTargets.Contains(target),
+                "ordinary land evolution edge missing");
+            BlockInfo home = Cell(scene, "landEvolution", 0, 0, false);
+            home.temperature = target.baseFitTemperature;
+            home.humidity = target.baseFitHumidity;
+            home.plantBiomass = 900000f;
+            home.habitatRecovery = 150000;
+            PopulationData parent = Population(chicken, target, 1000);
+            home.community.Add(parent);
+            SimulationController evolution = Controller(scene, home);
+            evolution.SetMutationEnabled(false);
+            evolution.SetMigrationParameters(false, 7, 100f, .8f, .5f,
+                .2f, 7);
+            evolution.SetPresetEvolutionParameters(true, 5, .1f, 10);
+            for (int day = 1; day <= 5; day++)
+            {
+                evolution.SimulateDay(day);
+                CheckLedger(evolution, "land evolution day " + day);
+            }
+            Check(Count(home, target) > 0 && parent.speciesAmount > 0,
+                "ordinary five-Bar land evolution did not complete");
+
+            SpeciesData deer = Load("鹿-fd1c574b");
+            BlockInfo from = Cell(scene, "landMigrationA", 2, 0, false);
+            BlockInfo to = Cell(scene, "landMigrationB", 3, 0, false);
+            Link(from, to, false);
+            from.temperature = to.temperature = deer.baseFitTemperature;
+            from.humidity = to.humidity = deer.baseFitHumidity;
+            from.plantBiomass = 500000f;
+            from.habitatRecovery = 25000;
+            to.plantBiomass = 900000f;
+            to.habitatRecovery = 150000;
+            from.community.Add(Population(deer, deer, 1000));
+            SimulationController migration = Controller(scene, from, to);
+            migration.SetMutationEnabled(false);
+            migration.SetPresetEvolutionParameters(false, 5, .1f, 10);
+            migration.SetMigrationParameters(true, 7, 100f, .8f, .5f,
+                .2f, 7);
+            bool moved = false;
+            for (int day = 1; day <= 70 && !moved; day++)
+            {
+                migration.SimulateDay(day);
+                moved = Count(to, deer) > 0;
+            }
+            Check(moved && Count(from, deer) > 0,
+                "ordinary land partial migration did not complete");
+            CheckLedger(migration, "land migration");
+        }
+        finally { EditorSceneManager.ClosePreviewScene(scene); }
     }
 
     private static void WaterCellsDoNotShareFood()
@@ -183,6 +259,133 @@ public static class CrossNicheV06SmokeChecks
                 "water mutation used climate or multiple trait slots");
             CheckLedger(simulation, "mutation slot");
             Debug.Log("V06_MUTATION_SINGLE_SLOT_PASS");
+        }
+        finally { EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    private static void AirCanReturnAfterThirtyDayCooldown()
+    {
+        Scene scene = EditorSceneManager.NewPreviewScene();
+        try
+        {
+            SpeciesData flyer = Load("鹿飞-a61486cd");
+            SpeciesData prey = Load("彩鸡-b59a4a82");
+            SpeciesData secondPrey = Load("孔雀-f0686f45");
+            Check(flyer != null && prey != null && secondPrey != null,
+                "missing flight or legal prey asset");
+            BlockInfo a = Cell(scene, "flightReturnA", 0, 0, false);
+            BlockInfo b = Cell(scene, "flightReturnB", 1, 0, false);
+            Link(a, b, false);
+            a.plantBiomass = b.plantBiomass = 3000000f;
+            a.maxPlantBiomass = b.maxPlantBiomass = 5000000f;
+            a.habitatRecovery = b.habitatRecovery = 1000000;
+            PopulationData aPrey = Population(prey, prey, 5000);
+            PopulationData bPrey = Population(prey, prey, 20000);
+            PopulationData parent = Population(flyer, flyer, 100);
+            a.community.Add(aPrey);
+            a.community.Add(parent);
+            b.community.Add(bPrey);
+            SimulationController simulation = Controller(scene, a, b);
+            simulation.SetAirEcologyEnabled(true);
+            simulation.SetWaterEcologyEnabled(false);
+            simulation.SetMutationEnabled(false);
+            simulation.SetPresetEvolutionParameters(false, 5, .1f, 10);
+            simulation.SetCrossHabitatDebugProbabilities(0f, 0f, 0f);
+            simulation.SetFlightCandidateParameters(.1f, 50, 1f);
+            simulation.SetMigrationParameters(true, 7, 100f,
+                .8f, .5f, .2f, 7);
+            int moves = 0;
+            simulation.OnMigrationResolved += result =>
+            {
+                if (result.Kind == PopulationTransitionKind.Migration &&
+                    result.ResultNiche == EcologicalNiche.Air) moves++;
+            };
+            int firstDay = -1;
+            for (int day = 1; day <= 15 && firstDay < 0; day++)
+            {
+                simulation.SimulateDay(day);
+                if (Count(b, flyer) > 0) firstDay = day;
+            }
+            Check(firstDay > 0 && moves == 1 && Count(a, flyer) == 0,
+                "eligible first air move was not a whole-group move: day=" +
+                firstDay + " moves=" + moves + " flyerA=" + Count(a, flyer) +
+                " flyerB=" + Count(b, flyer) + " preyA=" + Count(a, prey) +
+                " preyB=" + Count(b, prey));
+            PopulationData arrival = b.community.Find(p =>
+                p != null && p.species == flyer && p.speciesAmount > 0);
+            Check(arrival != null && arrival.lastMigrationSource == a &&
+                arrival.nextMigrationDay == firstDay + 30,
+                "air move did not establish the 30-day cooldown");
+            // Add a second legal prey group while preserving the first
+            // group's real renewal history for the return food forecast.
+            a.community.Add(Population(secondPrey, secondPrey, 500));
+            a.plantBiomass = a.maxPlantBiomass;
+            for (int day = firstDay + 1; day < firstDay + 30; day++)
+            {
+                simulation.SimulateDay(day);
+                Check(moves == 1 && Count(a, flyer) == 0,
+                    "air group migrated during cooldown on day " + day);
+            }
+            bool returned = false;
+            for (int day = firstDay + 30; day <= firstDay + 45; day++)
+            {
+                simulation.SimulateDay(day);
+                if (Count(a, flyer) <= 0) continue;
+                returned = true;
+                Check(moves == 2 && Count(b, flyer) == 0,
+                    "air return created a branch or extra migration");
+                PopulationData home = a.community.Find(p =>
+                    p != null && p.species == flyer && p.speciesAmount > 0);
+                Check(home != null && home.nextMigrationDay == day + 30,
+                    "return migration did not restart cooldown");
+                break;
+            }
+            Check(returned, "eligible previous source was never reconsidered: " +
+                "moves=" + moves + " flyerA=" + Count(a, flyer) +
+                " flyerB=" + Count(b, flyer) + " preyA=" + Count(a, prey) +
+                " preyB=" + Count(b, prey) + " secondPreyA=" +
+                Count(a, secondPrey) + " next=" +
+                (arrival == null ? -1 : arrival.nextMigrationDay));
+            CheckLedger(simulation, "air return");
+            Debug.Log("V06_AIR_RETURN_COOLDOWN_PASS first=" + firstDay);
+        }
+        finally { EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    private static void WaterAndAirMigrationAreRejected()
+    {
+        Scene scene = EditorSceneManager.NewPreviewScene();
+        try
+        {
+            SpeciesData flyer = Load("鹿飞-a61486cd");
+            SpeciesData prey = Load("彩鸡-b59a4a82");
+            SpeciesData swimmer = Load("鹿游-103a527e");
+            BlockInfo land = Cell(scene, "airBoundary", 0, 0, false);
+            BlockInfo water = Cell(scene, "waterBoundary", 1, 0, true);
+            Link(land, water, true);
+            land.community.Add(Population(prey, prey, 5000));
+            PopulationData airGroup = Population(flyer, flyer, 100);
+            PopulationData waterGroup = Population(swimmer, swimmer, 100);
+            land.community.Add(airGroup);
+            water.community.Add(waterGroup);
+            SimulationController simulation = Controller(scene, land, water);
+            simulation.SetAirEcologyEnabled(true);
+            simulation.SetWaterEcologyEnabled(true);
+            simulation.SetMutationEnabled(false);
+            simulation.SetPresetEvolutionParameters(false, 5, .1f, 10);
+            simulation.SetCrossHabitatDebugProbabilities(0f, 0f, 0f);
+            simulation.SetFlightCandidateParameters(.1f, 50, 1f);
+            simulation.SetMigrationParameters(true, 7, 100f, .8f, .5f,
+                .2f, 7);
+            simulation.SimulateDay(1);
+            Check(!simulation.CanLegalMigration(land, water, airGroup,
+                    airGroup.speciesAmount) &&
+                !simulation.CanLegalMigration(water, land, waterGroup, 10) &&
+                !simulation.TryAirMigration(land, water, airGroup, 1) &&
+                Count(water, flyer) == 0 && Count(land, swimmer) == 0,
+                "water/air migration boundary was crossed");
+            CheckLedger(simulation, "water-air prohibition");
+            Debug.Log("V06_WATER_AIR_MIGRATION_BLOCK_PASS");
         }
         finally { EditorSceneManager.ClosePreviewScene(scene); }
     }

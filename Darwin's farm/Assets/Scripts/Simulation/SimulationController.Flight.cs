@@ -203,6 +203,8 @@ public partial class SimulationController
 
     private void RunFlightHabitatMigration(int day)
     {
+        // nextMigrationDay blocks the entire 30-day interval, including a
+        // same-day return. After it expires, the previous source is eligible.
         var sources = new List<(BlockInfo block, PopulationData population)>();
         foreach (BlockInfo block in blockInfos)
             if (block != null && block.community != null)
@@ -234,8 +236,7 @@ public partial class SimulationController
                     Mathf.Abs(fromTile.Coordinate.x - toTile.Coordinate.x) +
                     Mathf.Abs(fromTile.Coordinate.y - toTile.Coordinate.y) != 1)
                     continue;
-                if (target == population.lastMigrationSource ||
-                    !AreNeighbors(source, target) ||
+                if (!AreNeighbors(source, target) ||
                     !FlightTargetCanFeed(target, population,
                         out float food, out float need)) continue;
                 float advantage = Mathf.Clamp01((food - sourceFood) /
@@ -253,7 +254,6 @@ public partial class SimulationController
     {
         moved = false;
         if (!CanDepart(source, population, EcologicalNiche.Air, day) ||
-            target == population.lastMigrationSource ||
             !AreNeighbors(source, target)) return false;
         MapTileInstance a = source.GetComponent<MapTileInstance>();
         MapTileInstance b = target.GetComponent<MapTileInstance>();
