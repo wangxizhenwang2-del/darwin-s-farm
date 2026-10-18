@@ -26,7 +26,7 @@ internal static class WaterBodyTopology
                     !grid.TryGetTile(nextPosition, out MapTileInstance next) ||
                     next.Block == null || !HabitatTopology.IsWater(next.Block) ||
                     tile.HeightLevel != next.HeightLevel ||
-                    !Open(tile, direction) || !Open(next, -direction)) continue;
+                    !HasReciprocalOpenings(tile, next)) continue;
                 visited.Add(nextPosition); queue.Enqueue(next);
             }
         }
@@ -59,6 +59,9 @@ internal static class WaterBodyTopology
             Mathf.Abs(left.HeightLevel - right.HeightLevel) > 1) return false;
         Vector2Int direction = right.Coordinate - left.Coordinate;
         if (Mathf.Abs(direction.x) + Mathf.Abs(direction.y) != 1) return false;
+        var map = left.GridOwner;
+        var water = map ? map.GetComponent<MapWaterController>() : null;
+        if (water && water.Network) return water.Connects(left, right);
         return Open(left, direction) && Open(right, -direction);
     }
 

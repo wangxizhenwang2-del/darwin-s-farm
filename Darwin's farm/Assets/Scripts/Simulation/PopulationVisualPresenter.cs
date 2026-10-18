@@ -83,13 +83,14 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
             {
                 if (data == null || data.speciesAmount <= 0 ||
                     (data.ecologicalNiche != EcologicalNiche.Land &&
-                     data.ecologicalNiche != EcologicalNiche.Air)) continue;
+                     data.ecologicalNiche != EcologicalNiche.Air && data.ecologicalNiche != EcologicalNiche.Water)) continue;
                 string id = data.PopulationId;
                 if (!living.Add(id)) continue;
 
                 if (visuals.TryGetValue(id, out WhiteboxPopulation visual) && visual != null &&
                     visual.TileId == tile.Coordinate &&
-                    visual.IsAir == (data.ecologicalNiche == EcologicalNiche.Air))
+                    visual.IsAir == (data.ecologicalNiche == EcologicalNiche.Air) &&
+                    visual.IsWater == (data.ecologicalNiche == EcologicalNiche.Water))
                 {
                     // A whole-branch evolution changes species on the same
                     // PopulationData instance and keeps the population ID.
@@ -114,7 +115,7 @@ public sealed partial class PopulationVisualPresenter : MonoBehaviour
                 bool held = transitionHolds.TryGetValue(id, out TransitionHold pending);
                 int initialCount = held && pending.CountBefore > 0 ?
                     pending.CountBefore : data.speciesAmount;
-                visual = movement.CreatePopulation(tile.Coordinate, initialCount,
+                visual = data.ecologicalNiche == EcologicalNiche.Water ? movement.CreateWaterPopulation(tile.Coordinate, initialCount) : movement.CreatePopulation(tile.Coordinate, initialCount,
                     data.ecologicalNiche == EcologicalNiche.Air);
                 if (visual == null)
                 {

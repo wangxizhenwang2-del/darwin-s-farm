@@ -38,6 +38,8 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private UnityEngine.UI.ScrollRect toolsScroll;
     [SerializeField] private GameObject buildPalette, placementControls;
     [SerializeField] private UnityEngine.UI.Button buildButton, pauseButton, speedButton;
+    [SerializeField] private UnityEngine.UI.Button speciesMapButton;
+    [SerializeField] private SpeciesMapsUI speciesMaps;
     [SerializeField] private UnityEngine.UI.Button environmentTabButton, populationTabButton, closeButton;
     [SerializeField] private UnityEngine.UI.Button rotateButton, confirmButton, cancelButton;
     [SerializeField] private UnityEngine.UI.Button[] tileButtons;
@@ -128,6 +130,7 @@ public sealed class MobileGameUI : MonoBehaviour
         toolSession = information.GetComponent<EnvironmentToolSession>();
         if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
+        if (speciesMapButton != null && speciesMaps != null) speciesMapButton.onClick.AddListener(speciesMaps.Toggle);
         speedButton.onClick.AddListener(CycleMobileSimulationSpeed);
         environmentTabButton.onClick.AddListener(() => SelectTab(InformationTab.Environment));
         populationTabButton.onClick.AddListener(() => SelectTab(InformationTab.Population));
@@ -264,13 +267,13 @@ public sealed class MobileGameUI : MonoBehaviour
         Place(gestureHelp,new Vector2(8,-statusHeight-16),
             new Vector2(Mathf.Clamp(safeArea.rect.width-drawerWidth-32,200,620),hintHeight));
         if (pauseButton != null) pauseButton.gameObject.SetActive(false);
-        Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*2+8));
-        var buttons = new[] { environmentToolsButton, buildButton };
+        Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*3+16));
+        var buttons = new[] { environmentToolsButton, buildButton, speciesMapButton };
         for (int i=0;i<buttons.Length;i++)
             if (buttons[i]!=null) Place((RectTransform)buttons[i].transform,new Vector2(0,-i*(buttonHeight+8)),new Vector2(168,buttonHeight));
         if (placementControls != null)
         {
-            float actionBottom=statusHeight+hintHeight+24+buttonHeight*2+8;
+            float actionBottom=statusHeight+hintHeight+24+buttonHeight*3+16;
             float placementLeft=actionBottom+4>safeArea.rect.height-276 ? 196 : 8;
             var controls=(RectTransform)placementControls.transform;
             controls.anchorMin=controls.anchorMax=controls.pivot=Vector2.zero;
@@ -349,10 +352,7 @@ public sealed class MobileGameUI : MonoBehaviour
     private void CycleMobileSimulationSpeed()
     {
         if (clock == null) return;
-        // One touch target cycles through running speeds and pause.
-        if (clock.IsPaused) clock.Play();
-        else if (clock.Speed >= 4f) clock.Pause();
-        else clock.CycleSpeed();
+        clock.CycleSpeed();
         RefreshRuntime();
     }
     private void RefreshRuntime()

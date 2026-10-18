@@ -1,0 +1,4 @@
+Population movement regression checks: 9/9 passed (including 32 changing-obstacle routes).
+Representative regression passed: 6000 simultaneous ticks, 164/166 completed routes, two moving representatives, pause/reset and dynamic obstacle replanning.
+Population identity regression checks: 10/10 passed.
+Ecological event regression checks: V6.1 formal evolution and legacy event compatibility passed.

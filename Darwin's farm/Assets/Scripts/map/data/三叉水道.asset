@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7722ac77dd8ea8d42846e03da83d0862, type: 3}
-  m_Name: "\u4e09\u53c9\u6c34\u9053"
+  m_Name: "\u4E09\u53C9\u6C34\u9053"
   m_EditorClassIdentifier: Assembly-CSharp::MapTileDefinition
-  displayName: "\u4e09\u53c9\u6c34\u9053"
+  displayName: "\u4E09\u53C9\u6C34\u9053"
   biome: 5
   mainColor: {r: 0.2, g: 0.55, b: 0.8, a: 1}
-  heightLevel: 0
+  heightLevel: 2
   initialTemperature: 68
   initialHumidity: 68
   initialPlantBiomass: 75000
@@ -23,3 +23,4 @@ MonoBehaviour:
   habitatRecovery: 75000
   initialWaterCoverage: 7
   riverOpenings: 11
+  waterVisualPrefab: {fileID: 0}

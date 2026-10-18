@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1161509115029909561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2025190979087203627}
+  - component: {fileID: 5348278553097698247}
+  m_Layer: 0
+  m_Name: Cross_River
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2025190979087203627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161509115029909561}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2972729057696420658}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5348278553097698247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161509115029909561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6e9fd96c393e1646949e63b4e0ce8ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Darwin.Rendering.MoebiusRiverTile
+  profile: {fileID: 11400000, guid: fb01cc41163806c439d7b06664896505, type: 2}
+  originalWater: {fileID: 331043947587797813}
+  waterLevel: 0.25
+  landSurfaceHeight: 1.1
+  foundationTop: 0
+--- !u!1001 &1394492500320166427
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2025190979087203627}
+    m_Modifications:
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.000000007450581
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590543438747961319, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+      propertyPath: m_Name
+      value: Cross_River
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+--- !u!23 &331043947587797813 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1711967354474471726, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+  m_PrefabInstance: {fileID: 1394492500320166427}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2972729057696420658 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4187075353195163945, guid: 6f067a71e089bfb4581532d2ac1562b7, type: 3}
+  m_PrefabInstance: {fileID: 1394492500320166427}
+  m_PrefabAsset: {fileID: 0}

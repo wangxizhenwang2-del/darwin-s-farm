@@ -1,0 +1,6 @@
+PASS: water drag previews and first-frame placement for all four real palette entries.
+横向水道: authored water preview, four rotations, reactivation, synchronous placement and no transient land biome passed.
+弯曲水道: authored water preview, four rotations, reactivation, synchronous placement and no transient land biome passed.
+三叉水道: authored water preview, four rotations, reactivation, synchronous placement and no transient land biome passed.
+十字水道: authored water preview, four rotations, reactivation, synchronous placement and no transient land biome passed.
+Existing land preview preserved; terrain-before-BlockInfo ordering checked 8 times.

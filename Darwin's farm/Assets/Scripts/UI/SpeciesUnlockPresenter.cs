@@ -55,15 +55,17 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
     private bool gameEntered;
     private Vector2 lastSafeSize;
     private SpeciesUnlockData current;
-    private readonly Vector2 cardRest = Vector2.zero;
-    private readonly Vector2 questionRest = new Vector2(95f, 64f);
-    private readonly Vector2 descriptionRest = new Vector2(0f, -180f);
+    private Vector2 cardRest, questionRest, descriptionRest;
+    private RectTransform descriptionRoot;
 
     private void Awake()
     {
-        // The saved scene is a fully visible sample card. Only Play Mode hides
-        // it and resets it for the first real unlock.
         if (!Application.isPlaying) return;
+        // Animate relative to the authored layout, so scene adjustments survive.
+        cardRest = cardRoot.anchoredPosition;
+        questionRest = questionMarkGroup.anchoredPosition;
+        descriptionRoot = (RectTransform)descriptionGroup.transform;
+        descriptionRest = descriptionRoot.anchoredPosition;
         journal = FindFirstObjectByType<DarwinJournalCanvas>();
         simulation = FindFirstObjectByType<SimulationController>();
         newsHud = FindFirstObjectByType<EcologyNewsHUD>(FindObjectsInactive.Include);
@@ -92,7 +94,8 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
         if (size == lastSafeSize) return;
         lastSafeSize = size;
         if (size.x <= 0f || size.y <= 0f) return;
-        cardRoot.localScale = Vector3.one * LayoutScale();
+        // Entry owns its scale animation; a resize must not interrupt it.
+        if (Phase != CardPhase.Entering) cardRoot.localScale = Vector3.one * LayoutScale();
     }
 
     private void OnRectTransformDimensionsChange()
@@ -217,8 +220,7 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
         continueButton.interactable = false;
         questionMarkGroup.anchoredPosition = questionRest;
         sparkleGroup.localScale = Vector3.one * .7f;
-        ((RectTransform)descriptionGroup.transform).anchoredPosition =
-            descriptionRest + new Vector2(0f, -18f);
+        descriptionRoot.anchoredPosition = descriptionRest + new Vector2(0f, -18f);
         cardRoot.anchoredPosition = cardRest;
         cardRoot.localRotation = Quaternion.identity;
     }
@@ -259,8 +261,7 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
         Phase = CardPhase.Description;
         yield return Tween(descriptionDuration, t => {
             descriptionGroup.alpha = t;
-            ((RectTransform)descriptionGroup.transform).anchoredPosition =
-                descriptionRest + new Vector2(0f, Mathf.Lerp(-18f, 0f, t));
+            descriptionRoot.anchoredPosition = descriptionRest + new Vector2(0f, Mathf.Lerp(-18f, 0f, t));
             continueGroup.alpha = t;
         });
         continueGroup.blocksRaycasts = true;
@@ -287,8 +288,13 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
     {
         if (safeArea == null) return 1f;
         Vector2 size = safeArea.rect.size;
-        return Mathf.Max(.05f, Mathf.Min(1f, (size.x - 32f) / 450f,
-            (size.y - 32f) / 610f));
+        const float padding = 16f;
+        Vector2 cardSize = cardRoot.rect.size;
+        // Reserve the full card, including its button and upward offset.
+        if (cardSize.x <= 0f || cardSize.y <= 0f) return 1f;
+        return Mathf.Max(.01f, Mathf.Min(1f,
+            (size.x - 2f * (padding + Mathf.Abs(cardRest.x))) / cardSize.x,
+            (size.y - 2f * (padding + Mathf.Abs(cardRest.y))) / cardSize.y));
     }
 
     public void Continue()

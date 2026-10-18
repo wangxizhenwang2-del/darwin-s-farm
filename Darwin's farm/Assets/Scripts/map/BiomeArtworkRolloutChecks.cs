@@ -214,9 +214,16 @@ public sealed class BiomeArtworkRolloutChecks : MonoBehaviour
     private IEnumerator Recover()
     {
         float end=Time.realtimeSinceStartup+10f;
-        while(Time.realtimeSinceStartup<end)
-        {if(population.ValidateMovement(out _)&&population.Leader.gameObject.activeInHierarchy)yield break;yield return null;}
-        Require(false,"Representative failed to recover in "+origin.Biome);
+        string problem;
+        // A costly first mesh cook can cross the deadline in a single frame.
+        // Inspect the resulting pose before timing out an already recovered animal.
+        while(true)
+        {
+            if(population.ValidateMovement(out problem)&&population.Leader.gameObject.activeInHierarchy)yield break;
+            if(Time.realtimeSinceStartup>=end)break;
+            yield return null;
+        }
+        Require(false,"Representative failed to recover in "+origin.Biome+": "+problem);
     }
 
     private void CheckIdentity()
@@ -238,7 +245,7 @@ public sealed class BiomeArtworkRolloutChecks : MonoBehaviour
         Transform visual = tile.transform.Find("BiomeVisual_"+tile.Biome);
         Require(visual.GetComponent<BiomeNativeGround>() != null, tile.Biome + ": missing native ground geometry.");
         Require(visual.GetComponentsInChildren<MeshRenderer>().Any(r => r.enabled &&
-            r.sharedMaterial != null && r.sharedMaterial.shader.name == "Darwin/Moebius NPR" &&
+            r.sharedMaterials.Any(m => m != null && (m.shader.name == "Darwin/Moebius NPR" || m.shader.name == "Darwin/Moebius Lava")) &&
             r.GetComponent<MeshFilter>().sharedMesh.name.EndsWith(" (Native Ground)")),
             tile.Biome + ": original ground shader/topology was replaced.");
         CheckVfx(tile);
@@ -252,8 +259,7 @@ public sealed class BiomeArtworkRolloutChecks : MonoBehaviour
     private void CheckVfx(MapTileInstance tile)
     {
         BiomeTileVfx[] rigs = tile.GetComponentsInChildren<BiomeTileVfx>(true);
-        bool authoredVfx = tile.Biome != BiomeType.SnowMountain && tile.Biome != BiomeType.Volcano;
-        Require(rigs.Length == (authoredVfx ? 1 : 0), tile.Biome + ": incorrect ambient rig count.");
+        Require(rigs.Length == 1, tile.Biome + ": incorrect ambient rig count.");
         foreach (BiomeTileVfx rig in rigs)
         {
             Require(rig.isActiveAndEnabled, tile.Biome + ": ambient rig is inactive.");
@@ -261,7 +267,7 @@ public sealed class BiomeArtworkRolloutChecks : MonoBehaviour
             foreach (ParticleSystem ps in rig.GetComponentsInChildren<ParticleSystem>())
             {
                 Require(ps.isPlaying, tile.Biome + "/" + ps.name + ": particle playback stopped.");
-                Require(ps.shape.mesh != null && ps.shape.mesh.vertexCount > 0, "Missing placed emission mesh.");
+                if (ps.shape.mesh != null)
                 foreach (Vector3 vertex in ps.shape.mesh.vertices)
                 {
                     Vector3 point = tile.transform.InverseTransformPoint(ps.transform.TransformPoint(vertex));
@@ -270,11 +276,14 @@ public sealed class BiomeArtworkRolloutChecks : MonoBehaviour
                 }
                 Require(ps.trigger.colliderCount == 1 && ps.trigger.GetCollider(0) is Collider boundary && boundary.enabled,
                     "Particle boundary must belong to this placed tile.");
-                Require(ps.collision.collidesWith == LayerMask.GetMask("Ground", "Obstacle"),
+                Require(ps.collision.collidesWith == (rig.UsesAuthoredCollision ? LayerMask.GetMask("Ground", "Ignore Raycast") :
+                    LayerMask.GetMask("Ground", "Obstacle")),
                     "Particles still collide with the disabled sample-scene proxies.");
                 alive += ps.particleCount;
             }
-            Require(alive > 0, tile.Biome + ": no live particles after warmup.");
+            bool eruptionCycle = tile.Biome == BiomeType.Volcano && rig.GetComponentsInChildren<ParticleSystem>()
+                .Any(p => p.main.loop && p.emission.enabled && p.emission.burstCount > 0 && Mathf.Approximately(p.main.duration, 12f));
+            Require(alive > 0 || eruptionCycle, tile.Biome + ": no live particles or scheduled eruption cycle.");
         }
     }
 

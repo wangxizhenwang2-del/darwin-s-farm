@@ -1,0 +1,11 @@
+Native Play Mode interaction checks
+PASS: Initial reciprocal mouths join without an explicit rebuild call
+PASS: Runtime rotation closes mismatched mouths
+PASS: Runtime displacement disconnects tiles
+PASS: Runtime elevation change creates the downhill waterfall
+PASS: Returning to equal height removes the waterfall and reconnects water
+PASS: Replacing a water neighbour with land produces capsule ends
+PASS: Replacing land with a river reopens the mouth
+PASS: Stationary topology does not rebuild during subsequent frames
+PASS: No runtime errors: 
+Errors: 0

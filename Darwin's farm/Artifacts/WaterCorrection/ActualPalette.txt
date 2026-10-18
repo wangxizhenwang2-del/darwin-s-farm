@@ -1,0 +1,9 @@
+PASS: actual palette water rendering, natural elevations, connections and untouched land.
+Actual palette defaults: straight=0, bend=1, tee=2, cross=1; no synthetic square water.
+All eight existing land types keep their original terrain; water creates zero land renderers/roofs.
+Same-level water joins; one/two-level differences render three waterfalls; two-level direct migration stays blocked.
+横向水道: 105 real water positions checked against authored bank geometry; zero buried surface samples.
+三叉水道: 146 real water positions checked against authored bank geometry; zero buried surface samples.
+弯曲水道: 87 real water positions checked against authored bank geometry; zero buried surface samples.
+十字水道: 156 real water positions checked against authored bank geometry; zero buried surface samples.
+Screenshot layout is runtime-only; no test map or tile definition is saved into WhiteBox.

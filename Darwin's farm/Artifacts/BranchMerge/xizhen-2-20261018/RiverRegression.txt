@@ -1,0 +1,132 @@
+PASS: Network builds: 
+PASS: Original equal-height join remains connected
+River L position=(0.00000, 0.00000, 0.00000) water=0.250000
+  South boundary (0): 
+  West boundary (41): (-8.50000, 0.25000, -2.50000); (-8.50000, 0.25000, -2.37500); (-8.50000, 0.25000, -2.25000); (-8.50000, 0.25000, -2.12500); (-8.50000, 0.25000, -2.00000); (-8.50000, 0.25000, -1.87500); (-8.50000, 0.25000, -1.75000); (-8.50000, 0.25000, -1.62500); (-8.50000, 0.25000, -1.50000); (-8.50000, 0.25000, -1.37500); (-8.50000, 0.25000, -1.25000); (-8.50000, 0.25000, -1.12500); (-8.50000, 0.25000, -1.00000); (-8.50000, 0.25000, -0.87500); (-8.50000, 0.25000, -0.75000); (-8.50000, 0.25000, -0.62500); (-8.50000, 0.25000, -0.50000); (-8.50000, 0.25000, -0.37500); (-8.50000, 0.25000, -0.25000); (-8.50000, 0.25000, -0.12500); (-8.50000, 0.25000, 0.00000); (-8.50000, 0.25000, 0.12500); (-8.50000, 0.25000, 0.25000); (-8.50000, 0.25000, 0.37500); (-8.50000, 0.25000, 0.50000); (-8.50000, 0.25000, 0.62500); (-8.50000, 0.25000, 0.75000); (-8.50000, 0.25000, 0.87500); (-8.50000, 0.25000, 1.00000); (-8.50000, 0.25000, 1.12500); (-8.50000, 0.25000, 1.25000); (-8.50000, 0.25000, 1.37500); (-8.50000, 0.25000, 1.50000); (-8.50000, 0.25000, 1.62500); (-8.50000, 0.25000, 1.75000); (-8.50000, 0.25000, 1.87500); (-8.50000, 0.25000, 2.00000); (-8.50000, 0.25000, 2.12500); (-8.50000, 0.25000, 2.25000); (-8.50000, 0.25000, 2.37500); (-8.50000, 0.25000, 2.50000)
+River Cross position=(-17.00000, 0.00000, 0.00000) water=0.250000
+  North boundary (0): 
+  East boundary (41): (-8.50000, 0.25000, -2.50000); (-8.50000, 0.25000, -2.37500); (-8.50000, 0.25000, -2.25000); (-8.50000, 0.25000, -2.12500); (-8.50000, 0.25000, -2.00000); (-8.50000, 0.25000, -1.87500); (-8.50000, 0.25000, -1.75000); (-8.50000, 0.25000, -1.62500); (-8.50000, 0.25000, -1.50000); (-8.50000, 0.25000, -1.37500); (-8.50000, 0.25000, -1.25000); (-8.50000, 0.25000, -1.12500); (-8.50000, 0.25000, -1.00000); (-8.50000, 0.25000, -0.87500); (-8.50000, 0.25000, -0.75000); (-8.50000, 0.25000, -0.62500); (-8.50000, 0.25000, -0.50000); (-8.50000, 0.25000, -0.37500); (-8.50000, 0.25000, -0.25000); (-8.50000, 0.25000, -0.12500); (-8.50000, 0.25000, 0.00000); (-8.50000, 0.25000, 0.12500); (-8.50000, 0.25000, 0.25000); (-8.50000, 0.25000, 0.37500); (-8.50000, 0.25000, 0.50000); (-8.50000, 0.25000, 0.62500); (-8.50000, 0.25000, 0.75000); (-8.50000, 0.25000, 0.87500); (-8.50000, 0.25000, 1.00000); (-8.50000, 0.25000, 1.12500); (-8.50000, 0.25000, 1.25000); (-8.50000, 0.25000, 1.37500); (-8.50000, 0.25000, 1.50000); (-8.50000, 0.25000, 1.62500); (-8.50000, 0.25000, 1.75000); (-8.50000, 0.25000, 1.87500); (-8.50000, 0.25000, 2.00000); (-8.50000, 0.25000, 2.12500); (-8.50000, 0.25000, 2.25000); (-8.50000, 0.25000, 2.37500); (-8.50000, 0.25000, 2.50000)
+  South boundary (0): 
+  West boundary (0): 
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 5.25189084979744
+PASS: Capsule Bank North: no degenerate triangles
+PASS: Capsule Bank North: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank North: adjacent faces have consistent outward winding
+PASS: Capsule Bank North: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank West: no degenerate triangles
+PASS: Capsule Bank West: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank West: adjacent faces have consistent outward winding
+PASS: Capsule Bank West: positive enclosed volume 4.80203764927863
+PASS: River L: foundation walls meet model perimeter; perimeter=0.1035691, wall=0.1035689
+PASS: River L: no duplicate foundation roof to reintroduce Z-fighting
+PASS: River Cross: foundation walls meet model perimeter; perimeter=-7.450581E-09, wall=0
+PASS: River Cross: no duplicate foundation roof to reintroduce Z-fighting
+PASS: Exact grid: boundary vertices found for River L
+PASS: Exact grid: shared mean height for River L
+PASS: Exact grid: GPU displacement attenuates at join for River L
+PASS: Exact grid: boundary vertices found for River Cross
+PASS: Exact grid: shared mean height for River Cross
+PASS: Exact grid: GPU displacement attenuates at join for River Cross
+PASS: Exact grid: opposing boundary vertices coincide; max error=2.384186E-07
+PASS: Sub-tolerance placement and height offsets remain connected
+PASS: Position and height tolerance: boundary vertices found for River L
+PASS: Position and height tolerance: shared mean height for River L
+PASS: Position and height tolerance: GPU displacement attenuates at join for River L
+PASS: Position and height tolerance: boundary vertices found for River Cross
+PASS: Position and height tolerance: shared mean height for River Cross
+PASS: Position and height tolerance: GPU displacement attenuates at join for River Cross
+PASS: Position and height tolerance: opposing boundary vertices coincide; max error=4.768372E-07
+PASS: Rotated network keeps the join
+PASS: 90 degree network rotation: boundary vertices found for River L
+PASS: 90 degree network rotation: shared mean height for River L
+PASS: 90 degree network rotation: GPU displacement attenuates at join for River L
+PASS: 90 degree network rotation: boundary vertices found for River Cross
+PASS: 90 degree network rotation: shared mean height for River Cross
+PASS: 90 degree network rotation: GPU displacement attenuates at join for River Cross
+PASS: 90 degree network rotation: opposing boundary vertices coincide; max error=3.844384E-06
+PASS: Independent water levels within tolerance join
+PASS: Independent water level: boundary vertices found for River L
+PASS: Independent water level: shared mean height for River L
+PASS: Independent water level: GPU displacement attenuates at join for River L
+PASS: Independent water level: boundary vertices found for River Cross
+PASS: Independent water level: shared mean height for River Cross
+PASS: Independent water level: GPU displacement attenuates at join for River Cross
+PASS: Independent water level: opposing boundary vertices coincide; max error=2.384186E-07
+PASS: Larger elevation difference still generates a waterfall
+PASS: Returning terrain restores a seamless level join
+PASS: Stationary network does not rebuild
+PASS: 02_River_To_Land_Capsule: network rebuilds
+PASS: 02_River_To_Land_Capsule: expected waterfall count
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 5.25189084979744
+PASS: Capsule Bank West: no degenerate triangles
+PASS: Capsule Bank West: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank West: adjacent faces have consistent outward winding
+PASS: Capsule Bank West: positive enclosed volume 5.25188869942213
+PASS: River L: foundation walls meet model perimeter; perimeter=0.1035691, wall=0.1035689
+PASS: River L: no duplicate foundation roof to reintroduce Z-fighting
+PASS: 03_Height_Difference_Waterfall: network rebuilds
+PASS: 03_Height_Difference_Waterfall: expected waterfall count
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 5.25189084979744
+PASS: Capsule Bank North: no degenerate triangles
+PASS: Capsule Bank North: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank North: adjacent faces have consistent outward winding
+PASS: Capsule Bank North: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank West: no degenerate triangles
+PASS: Capsule Bank West: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank West: adjacent faces have consistent outward winding
+PASS: Capsule Bank West: positive enclosed volume 4.80203764927863
+PASS: Upper River L: foundation walls meet model perimeter; perimeter=0.103569, wall=0.1035689
+PASS: Upper River L: no duplicate foundation roof to reintroduce Z-fighting
+PASS: Lower River Cross: foundation walls meet model perimeter; perimeter=0, wall=0
+PASS: Lower River Cross: no duplicate foundation roof to reintroduce Z-fighting
+PASS: 04_Multiple_Water_Heights: network rebuilds
+PASS: 04_Multiple_Water_Heights: expected waterfall count
+PASS: Capsule Bank North: no degenerate triangles
+PASS: Capsule Bank North: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank North: adjacent faces have consistent outward winding
+PASS: Capsule Bank North: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank East: no degenerate triangles
+PASS: Capsule Bank East: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank East: adjacent faces have consistent outward winding
+PASS: Capsule Bank East: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 4.80203764927863
+PASS: Capsule Bank South: no degenerate triangles
+PASS: Capsule Bank South: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank South: adjacent faces have consistent outward winding
+PASS: Capsule Bank South: positive enclosed volume 5.25189084979744
+PASS: Capsule Bank West: no degenerate triangles
+PASS: Capsule Bank West: watertight after positional welding; every edge has two incident faces
+PASS: Capsule Bank West: adjacent faces have consistent outward winding
+PASS: Capsule Bank West: positive enclosed volume 5.25188869942213
+PASS: Upper East River: foundation walls meet model perimeter; perimeter=0, wall=0
+PASS: Upper East River: no duplicate foundation roof to reintroduce Z-fighting
+PASS: Middle River: foundation walls meet model perimeter; perimeter=0, wall=0
+PASS: Middle River: no duplicate foundation roof to reintroduce Z-fighting
+PASS: Lower West River: foundation walls meet model perimeter; perimeter=0.1035691, wall=0.1035689
+PASS: Lower West River: no duplicate foundation roof to reintroduce Z-fighting
+PASS: Upper North River: foundation walls meet model perimeter; perimeter=0.103569, wall=0.1035689
+PASS: Upper North River: no duplicate foundation roof to reintroduce Z-fighting

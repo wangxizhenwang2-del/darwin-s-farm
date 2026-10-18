@@ -31,7 +31,11 @@ public partial class MapTileColorTransitionSystem
 
     private BiomeType VisibleBiome(MapTileInstance tile)
     {
-        if (tile.Block != null && tile.Block.waterCoverage != WaterCoverage.Land)
+        // TilesChanged may reach the terrain renderer before the simulation bridge
+        // creates BlockInfo. Read the construction definition during that interval.
+        WaterCoverage coverage = tile.Block != null ? tile.Block.waterCoverage :
+            tile.Definition != null ? tile.Definition.initialWaterCoverage : WaterCoverage.Land;
+        if (coverage != WaterCoverage.Land)
             return BiomeType.Rock; // Water has no matching decoration prefab.
         if (tile.Block != null && tile.Block.waterCoverage == WaterCoverage.Land &&
             liveTerrain.TryGetValue(tile.Coordinate, out TerrainKind kind))
@@ -160,8 +164,8 @@ public partial class MapTileColorTransitionSystem
                     name.StartsWith("Coral") && b.size.x > 1.2f;
             case BiomeType.Tundra:
                 return name.StartsWith("Rock_") && !name.Contains("SnowCap") || name == "Pond_ShallowWater";
-            case BiomeType.SnowMountain: return name.StartsWith("Mountain_Snow");
-            case BiomeType.Volcano: return name == "Rock";
+            case BiomeType.SnowMountain: return name.StartsWith("Mountain_Snow") || name.StartsWith("SnowPine");
+            case BiomeType.Volcano: return name == "Rock" || name.StartsWith("BasaltColumns");
             case BiomeType.Grassland:
                 return name.StartsWith("Trunk") || name.StartsWith("pCube") ||
                        name.StartsWith("pasted__tree");
@@ -259,7 +263,8 @@ public partial class MapTileColorTransitionSystem
             float depth = renderer.bounds.size.z;
             bool mountain = biome == BiomeType.Highland && renderer.name.StartsWith("Mountain") ||
                 biome == BiomeType.SnowMountain || biome == BiomeType.Volcano;
-            bool largeMountain = biome == BiomeType.SnowMountain || biome == BiomeType.Volcano;
+            bool largeMountain = biome == BiomeType.SnowMountain && renderer.name.StartsWith("Mountain_Snow") ||
+                biome == BiomeType.Volcano && renderer.name == "Rock";
             float diameter = largeMountain ? Mathf.Clamp(Mathf.Min(width, depth) * .82f, 1.2f, 5.5f) :
                 mountain ? Mathf.Clamp(Mathf.Min(width, depth) * 0.55f, 1.2f, 3f) :
                 renderer.name.StartsWith("Trunk") ? 0.55f :
@@ -269,6 +274,18 @@ public partial class MapTileColorTransitionSystem
             GameObject blocker = new GameObject("BiomeObstacle_" + obstacleCount++);
             blocker.layer = LayerMask.NameToLayer("Obstacle");
             blocker.transform.SetParent(obstacleRoot.transform, false);
+            if (largeMountain && renderer.TryGetComponent<MeshFilter>(out var mountainMesh))
+            {
+                // Follow the actual curved mountain footprint. A bounding box
+                // would close the walkable corners of the improved volcano.
+                blocker.transform.SetPositionAndRotation(renderer.transform.position, renderer.transform.rotation);
+                blocker.transform.localScale = renderer.transform.lossyScale;
+                blocker.AddComponent<MeshCollider>().sharedMesh = mountainMesh.sharedMesh;
+                var modifier = blocker.AddComponent<NavMeshModifier>();
+                modifier.overrideArea = true;
+                modifier.area = NavMesh.GetAreaFromName("Not Walkable");
+                continue;
+            }
             blocker.transform.localPosition =
                 obstacleRoot.transform.InverseTransformPoint(target.point) + Vector3.up * (height * 0.5f);
             BoxCollider box = blocker.AddComponent<BoxCollider>();

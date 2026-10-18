@@ -8,6 +8,7 @@ public sealed class EconomyOperationsView : MonoBehaviour
     private PlayerEconomyController operations;
     private BioenergyAccount account;
     private TilePaletteUI palette;
+    private SpeciesMapsUI speciesMaps;
     private readonly List<MapTileInstance> tiles = new List<MapTileInstance>();
     private readonly List<MapTileDefinition> waterShapes = new List<MapTileDefinition>();
     private Vector2 scroll;
@@ -37,13 +38,14 @@ public sealed class EconomyOperationsView : MonoBehaviour
         operations = GetComponent<PlayerEconomyController>();
         account = GetComponent<BioenergyAccount>();
         palette = FindFirstObjectByType<TilePaletteUI>();
+        speciesMaps = FindFirstObjectByType<SpeciesMapsUI>();
     }
     private void OnEnable() => active = this;
     private void OnDisable() { if (active == this) active = null; }
 
     public static bool IsPointerOverUi(Vector2 screenPosition)
     {
-        if (active == null) return false;
+        if (active == null || (active.speciesMaps != null && active.speciesMaps.IsOpen)) return false;
         Vector2 gui = new Vector2(screenPosition.x, Screen.height - screenPosition.y);
         return active.toggleRect.Contains(gui) || (active.open && active.panelRect.Contains(gui));
     }
@@ -51,6 +53,7 @@ public sealed class EconomyOperationsView : MonoBehaviour
     private void OnGUI()
     {
         if (grid == null || operations == null || account == null) return;
+        if (speciesMaps != null && speciesMaps.IsOpen) return;
         BioenergySettings settings = BioenergySettings.Current;
         toggleRect = new Rect(Screen.width - 128, 8, 120, 25);
         if (GUI.Button(toggleRect, open ? "关闭经营面板" : "经营操作")) open = !open;

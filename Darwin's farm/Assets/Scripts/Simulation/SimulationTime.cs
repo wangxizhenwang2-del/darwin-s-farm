@@ -122,7 +122,14 @@ public class SimulationTime : MonoBehaviour
     public void Play() => SetSpeed(1f);
     public void DoubleSpeed() => SetSpeed(2f);
     public void QuadrupleSpeed() => SetSpeed(4f);
-    public void CycleSpeed() => SetSpeed(RunningSpeed < 2f ? 2f : RunningSpeed < 4f ? 4f : 1f);
+    // Shared by desktop and mobile: 1x -> 2x -> 4x -> pause -> 1x.
+    public void CycleSpeed()
+    {
+        if (modalPause) return;
+        if (IsPaused) Play();
+        else if (Speed >= 4f) Pause();
+        else SetSpeed(Speed < 2f ? 2f : 4f);
+    }
     private void SetSpeed(float speed)
     {
         if (modalPause) return;

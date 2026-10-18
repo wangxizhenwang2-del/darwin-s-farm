@@ -351,7 +351,7 @@ public class MapTilePlacementController : MonoBehaviour
         {
             Renderer[] flatGround = previewObject.GetComponentsInChildren<Renderer>();
             GameObject visual = terrainVisuals.CreatePlacementVisualPreview(
-                previewObject.transform, draggingDefinition.biome, previewMaterial, out previewGroundMesh);
+                previewObject.transform, draggingDefinition, previewMaterial, out previewGroundMesh);
             if (visual != null)
                 foreach (Renderer part in flatGround) part.enabled = false;
         }

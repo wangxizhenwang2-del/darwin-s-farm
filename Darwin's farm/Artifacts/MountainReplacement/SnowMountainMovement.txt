@@ -1,0 +1,2 @@
+- SnowMountain: Real terrain movement checks: One representative / 120 simulated seconds: 212.3m, reached 32/33 targets, longest stop 0.04s, max sideways visual drift 0.000000m.
+- SnowMountain: live movement 9.49m / 5 seconds, identity/count preserved.

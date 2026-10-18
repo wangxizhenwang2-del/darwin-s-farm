@@ -19,6 +19,9 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
     private Camera viewCamera;
     private MaterialPropertyBlock properties;
     private Action completed;
+    private bool swimming;
+    private float swimOffset;
+    private float swimFraction;
 
     public void Begin(Vector3[] waypoints, float arc, float seconds,
         PopulationMovementSettings settings, Material material, Sprite fromSprite,
@@ -29,9 +32,10 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
     public void Begin(Vector3[] waypoints, float arc, float seconds,
         PopulationMovementSettings settings, Material material, Sprite fromSprite,
         Sprite toSprite, Color from, Color to, Camera camera, Action onCompleted,
-        bool airborne)
+        bool airborne, bool aquatic = false)
     {
         path = waypoints;
+        swimming = aquatic; swimFraction = settings.submergedFraction; swimOffset = settings.leaderSize * (.5f - 1.5f * settings.submergedFraction);
         arcHeight = Mathf.Max(0f, arc);
         duration = Mathf.Max(0.1f, seconds);
         sourceColor = from;
@@ -70,6 +74,11 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
             PopulationSpriteDisplay.ConfigureAir(sourceImage);
             PopulationSpriteDisplay.ConfigureAir(targetImage);
         }
+        if (swimming)
+        {
+            PopulationSpriteDisplay.ConfigureWater(sourceImage, transform.position.y - swimOffset, swimFraction);
+            PopulationSpriteDisplay.ConfigureWater(targetImage, transform.position.y - swimOffset, swimFraction);
+        }
         Camera activeCamera = viewCamera != null ? viewCamera : Camera.main;
         PopulationSpriteDisplay.FaceCamera(sourceImage, activeCamera);
         PopulationSpriteDisplay.FaceCamera(targetImage, activeCamera);
@@ -91,11 +100,16 @@ public sealed class PopulationTransitionVisual : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
         transform.position = current;
         transform.localScale = Vector3.one *
-            Mathf.Lerp(1f, 0.2f, Mathf.Clamp01((t - 0.8f) * 5f));
+            (swimming ? 1f : Mathf.Lerp(1f, 0.2f, Mathf.Clamp01((t - 0.8f) * 5f)));
         ApplyColor(Color.Lerp(sourceColor, targetColor, eased));
         Camera camera = viewCamera != null ? viewCamera : Camera.main;
         PopulationSpriteDisplay.FaceCamera(sourceImage, camera);
         PopulationSpriteDisplay.FaceCamera(targetImage, camera);
+        if (swimming)
+        {
+            PopulationSpriteDisplay.ConfigureWater(sourceImage, transform.position.y - swimOffset, swimFraction);
+            PopulationSpriteDisplay.ConfigureWater(targetImage, transform.position.y - swimOffset, swimFraction);
+        }
         if (t >= 1f) Finish();
     }
 

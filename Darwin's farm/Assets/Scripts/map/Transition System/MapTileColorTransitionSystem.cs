@@ -180,6 +180,9 @@ public partial class MapTileColorTransitionSystem : MonoBehaviour
             DisableOldParts(tile);
         }
         SyncBiomeVisuals(true);
+        foreach (var tile in gridManager.GetPlacedTiles())
+            if (tile.Block != null && HabitatTopology.IsWater(tile.Block) && surfaces.TryGetValue(tile, out var waterSurface))
+                waterSurface.renderer.forceRenderingOff = true;
     }
 
     private SurfaceData GetOrCreateSurface(MapTileInstance tile)
