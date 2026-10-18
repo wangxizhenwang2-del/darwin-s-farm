@@ -26,6 +26,32 @@ public class SimulationTime : MonoBehaviour
     private bool wasPausedBeforeModal;
     private float speedBeforeModal;
 
+    [Serializable] public sealed class SaveState
+    {
+        public int day;
+        public float fraction, secondsPerDay, runningSpeed;
+        public bool paused;
+    }
+    public SaveState CaptureSaveState() => new SaveState {
+        day=currentDay, fraction=time, secondsPerDay=basicDayLength,
+        runningSpeed=modalPause?speedBeforeModal:RunningSpeed,
+        paused=modalPause?wasPausedBeforeModal:IsPaused
+    };
+    public void RestoreSaveState(SaveState state)
+    {
+        if (state == null || state.day < 0 || state.secondsPerDay < .05f ||
+            state.fraction < 0 || state.fraction >= state.secondsPerDay ||
+            state.runningSpeed <= 0 || float.IsNaN(state.fraction))
+            throw new ArgumentException("Invalid saved game clock.");
+        currentDay=state.day; time=state.fraction;
+        basicDayLength=state.secondsPerDay;
+        lastRunningSpeed=state.runningSpeed;
+        wasPausedBeforeModal=state.paused;
+        speedBeforeModal=state.runningSpeed;
+        simulationSpeed=0f;
+        OnSpeedChanged?.Invoke(simulationSpeed);
+    }
+
     public void AcquireModalPause()
     {
         if (modalPause) return;

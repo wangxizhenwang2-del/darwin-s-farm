@@ -35,6 +35,49 @@ public sealed class EcologyNewsDetector : MonoBehaviour
     private readonly List<PopulationTransitionResult> evolutions = new List<PopulationTransitionResult>();
     private SimulationController simulation;
     private int ordinal;
+    [Serializable] public sealed class SaveState
+    {
+        public int ordinal;
+        public List<SavedSite> previous=new List<SavedSite>();
+        public List<string> everHere=new List<string>();
+        public List<SavedCrash> crashes=new List<SavedCrash>();
+        public List<SavedCrisis> crises=new List<SavedCrisis>();
+    }
+    [Serializable] public sealed class SavedSite
+    { public string key,site,species,name; public int count; public float capacity; }
+    [Serializable] public sealed class SavedCrash
+    { public string key; public int[] past; public bool armed; public int lastDay; }
+    [Serializable] public sealed class SavedCrisis
+    { public string key; public int days; public bool active; }
+    public SaveState CaptureSaveState()
+    {
+        var result=new SaveState { ordinal=ordinal };
+        foreach(var v in previous.Values)result.previous.Add(new SavedSite {
+            key=v.key,site=v.site,species=v.species,name=v.name,count=v.count,capacity=v.capacity });
+        result.everHere.AddRange(everHere);
+        foreach(var pair in crashes)result.crashes.Add(new SavedCrash {
+            key=pair.Key,past=pair.Value.past.ToArray(),armed=pair.Value.armed,lastDay=pair.Value.lastDay });
+        foreach(var pair in crises)result.crises.Add(new SavedCrisis {
+            key=pair.Key,days=pair.Value.days,active=pair.Value.active });
+        return result;
+    }
+    public void RestoreSaveState(SaveState state)
+    {
+        if(state==null||state.previous==null||state.everHere==null||
+            state.crashes==null||state.crises==null)throw new ArgumentException("Invalid ecology news history.");
+        ordinal=state.ordinal;previous.Clear();everHere.Clear();crashes.Clear();crises.Clear();
+        foreach(var v in state.previous)
+            previous.Add(v.key,new SpeciesAtSite { key=v.key,site=v.site,species=v.species,
+                name=v.name,count=v.count,capacity=v.capacity });
+        foreach(string key in state.everHere)everHere.Add(key);
+        foreach(var v in state.crashes)
+        {
+            var item=new CrashState { armed=v.armed,lastDay=v.lastDay };
+            foreach(int count in v.past)item.past.Enqueue(count);
+            crashes.Add(v.key,item);
+        }
+        foreach(var v in state.crises)crises.Add(v.key,new CrisisState { days=v.days,active=v.active });
+    }
 
     private void Start()
     {

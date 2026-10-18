@@ -11,6 +11,107 @@ namespace DarwinFarm.Environment
         public int CurrentDay { get; private set; }
         public EnvironmentWorld(int currentDay = 0) { CurrentDay = currentDay; }
 
+        [Serializable] public sealed class SaveState
+        {
+            public int day;
+            public long nextSequence;
+            public List<SavedTile> tiles = new List<SavedTile>();
+        }
+        [Serializable] public sealed class SavedTile
+        {
+            public int x, y, elevation, terrain, habitat;
+            public bool water, recoveryReturning, recoveryCancelIssued, recoveryDetached;
+            public long recoverySequence;
+            public int recoveryAge, recoveryHabitat;
+            public double recoveryBaseline;
+            public double[] values = new double[3];
+            public SavedTrack[] tracks = new SavedTrack[3];
+            public SavedLocal[] locals = new SavedLocal[2];
+        }
+        [Serializable] public sealed class SavedTrack
+        {
+            public double start, target;
+            public int age, duration, phase;
+        }
+        [Serializable] public sealed class SavedLocal
+        {
+            public int age, habitat;
+            public long sequence;
+            public double baseline;
+        }
+        public SaveState CaptureState()
+        {
+            var state = new SaveState { day = CurrentDay, nextSequence = nextCommandSequence };
+            foreach (EnvironmentTile tile in tiles.Values)
+            {
+                var saved = new SavedTile {
+                    x = tile.Position.X, y = tile.Position.Y, elevation = tile.Elevation,
+                    terrain = (int)tile.Terrain, habitat = (int)tile.Habitat, water = tile.IsWater,
+                    recoveryReturning = tile.RecoveryReturning,
+                    recoveryCancelIssued = tile.RecoveryCancelIssued,
+                    recoveryDetached = tile.RecoveryDetached,
+                    recoverySequence = tile.RecoverySequence, recoveryAge = tile.RecoveryAge,
+                    recoveryHabitat = (int)tile.RecoveryHabitatAtSubmit,
+                    recoveryBaseline = tile.RecoveryBaseline
+                };
+                for (int i = 0; i < 3; i++)
+                {
+                    saved.values[i] = tile.Values[i];
+                    Transition t = tile.Tracks[i];
+                    saved.tracks[i] = new SavedTrack { start=t.Start, target=t.Target,
+                        age=t.Age, duration=t.Duration, phase=(int)t.Phase };
+                }
+                for (int i = 0; i < 2; i++)
+                {
+                    LocalClimateEffect local = tile.Locals[i];
+                    if (local != null) saved.locals[i] = new SavedLocal {
+                        age=local.Age, sequence=local.Sequence, baseline=local.Baseline,
+                        habitat=(int)local.HabitatAtSubmit };
+                }
+                state.tiles.Add(saved);
+            }
+            state.tiles.Sort((a,b) => a.x != b.x ? a.x.CompareTo(b.x) : a.y.CompareTo(b.y));
+            return state;
+        }
+        public void RestoreState(SaveState state)
+        {
+            if (state == null || state.day < 0 || state.nextSequence < 1 ||
+                state.tiles == null || state.tiles.Count != tiles.Count)
+                throw new ArgumentException("Environment save topology is invalid.");
+            foreach (SavedTile saved in state.tiles)
+            {
+                if (!tiles.TryGetValue(new GridPosition(saved.x,saved.y), out EnvironmentTile tile) ||
+                    saved.values == null || saved.values.Length != 3 ||
+                    saved.tracks == null || saved.tracks.Length != 3 ||
+                    saved.locals == null || saved.locals.Length != 2 ||
+                    tile.Elevation != saved.elevation || tile.IsWater != saved.water)
+                    throw new ArgumentException("Environment save tile is invalid.");
+                tile.Terrain=(TerrainKind)saved.terrain; tile.Habitat=(HabitatState)saved.habitat;
+                tile.RecoveryReturning=saved.recoveryReturning;
+                tile.RecoveryCancelIssued=saved.recoveryCancelIssued;
+                tile.RecoveryDetached=saved.recoveryDetached;
+                tile.RecoverySequence=saved.recoverySequence; tile.RecoveryAge=saved.recoveryAge;
+                tile.RecoveryHabitatAtSubmit=(HabitatState)saved.recoveryHabitat;
+                tile.RecoveryBaseline=saved.recoveryBaseline;
+                for (int i=0;i<3;i++)
+                {
+                    SavedTrack t=saved.tracks[i] ?? throw new ArgumentException("Missing environment track.");
+                    tile.Values[i]=saved.values[i];
+                    tile.Tracks[i].Start=t.start;tile.Tracks[i].Target=t.target;
+                    tile.Tracks[i].Age=t.age;tile.Tracks[i].Duration=t.duration;
+                    tile.Tracks[i].Phase=(EffectPhase)t.phase;
+                }
+                for(int i=0;i<2;i++)
+                {
+                    SavedLocal local=saved.locals[i];
+                    tile.Locals[i]=local==null ? null : new LocalClimateEffect {
+                        Age=local.age, Sequence=local.sequence, Baseline=local.baseline,
+                        HabitatAtSubmit=(HabitatState)local.habitat };
+                }
+            }
+            CurrentDay=state.day; nextCommandSequence=state.nextSequence;
+        }
+
         public bool TryRead(GridPosition position, out EnvironmentSnapshot snapshot)
         {
             snapshot = tiles.TryGetValue(position, out EnvironmentTile tile) ? new EnvironmentSnapshot(tile) : null;

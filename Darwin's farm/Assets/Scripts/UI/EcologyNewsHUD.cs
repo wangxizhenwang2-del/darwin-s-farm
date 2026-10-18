@@ -16,6 +16,30 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     private int phase;
     private float timer;
     private const int Capacity=64;
+    [Serializable] public sealed class SaveState
+    {
+        public List<EcologicalEventData> pending=new List<EcologicalEventData>();
+        public List<string> seen=new List<string>();
+        public EcologicalEventData current;
+        public int phase;
+        public float timer;
+    }
+    public SaveState CaptureSaveState() => new SaveState {
+        pending=new List<EcologicalEventData>(pending),seen=new List<string>(seen),
+        current=current,phase=phase,timer=timer };
+    public void RestoreSaveState(SaveState state)
+    {
+        if(state==null||state.pending==null||state.seen==null||
+            state.pending.Count>Capacity||state.phase<0||state.phase>3)
+            throw new ArgumentException("Invalid ecology news queue.");
+        pending.Clear();pending.AddRange(state.pending);
+        seen.Clear();foreach(string id in state.seen)seen.Add(id);
+        current=state.current;phase=state.phase;timer=state.timer;
+        if(current!=null)
+        { heading.text=Title(current.type);body.text=current.message;
+          dayLabel.text="第 "+current.gameDay+" 日"; }
+        group.alpha=0;
+    }
     private void Start()
     {
         detector=FindFirstObjectByType<EcologyNewsDetector>();
