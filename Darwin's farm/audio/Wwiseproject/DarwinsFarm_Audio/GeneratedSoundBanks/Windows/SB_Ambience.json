@@ -1,0 +1,303 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "2564903409",
+    "Type": "User",
+    "GUID": "{CE213BDA-A759-4087-A4C3-A561ABF108B3}",
+    "Language": "SFX",
+    "Hash": "{7125DE90-B083-3A78-9C6F-B170A50BA50C}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SB_Ambience",
+    "ShortName": "SB_Ambience",
+    "Path": "SB_Ambience.bnk",
+    "Media": [
+     {
+      "Id": "117732597",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "雪山白噪音.final.wav",
+      "CachePath": "0C/{0C16CD46-05F3-1F7B-FC74-9EF6533D628A}.wem"
+     },
+     {
+      "Id": "270077421",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "森林白噪音.final.wav",
+      "CachePath": "54/{546F4A38-B39B-F543-C077-228B878A9F8D}.wem"
+     },
+     {
+      "Id": "324699839",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "水域.wav",
+      "CachePath": "F7/{F7228FB7-DF33-879D-F868-1FD4B682C64F}.wem"
+     },
+     {
+      "Id": "583627548",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "草原白噪音.final.wav",
+      "CachePath": "EB/{EBB10A6E-AFB0-50F1-A7CE-7E6B8FE2EAEA}.wem"
+     },
+     {
+      "Id": "587979804",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "火山白噪音_v2.0.wav",
+      "CachePath": "2F/{2F8AE6F0-871C-7D3A-8C29-C8597B922A4A}.wem"
+     },
+     {
+      "Id": "598553658",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "苔原白噪音.final.wav",
+      "CachePath": "73/{73B988C4-E6FD-A9A7-2CDF-D3512E3EC331}.wem"
+     },
+     {
+      "Id": "776589876",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "森林瀑布.wav",
+      "CachePath": "0D/{0D348DD6-392F-B0E9-5C85-F3E53D1CBB01}.wem"
+     },
+     {
+      "Id": "833473170",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "山地白噪音.final.wav",
+      "CachePath": "00/{001E165A-688D-67E3-DC16-62E3575598FE}.wem"
+     },
+     {
+      "Id": "983817063",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "荒漠白噪音.final.wav",
+      "CachePath": "DB/{DB2BF1A4-EB55-27A2-96C4-06714C4EC9D5}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "106991668",
+      "Name": "Play___amb_water",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play___amb_water",
+      "GUID": "{AAD6240B-88A4-47B7-BB35-C5EFB864FA89}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "324699839"
+       }
+      ]
+     },
+     {
+      "Id": "2031350918",
+      "Name": "Play_Amb_Desert",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_Desert",
+      "GUID": "{AD3EC4A9-FE4D-42BD-91F6-D55D31991A1E}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "983817063"
+       }
+      ]
+     },
+     {
+      "Id": "994146778",
+      "Name": "Play_Amb_Forest",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_Forest",
+      "GUID": "{207749F8-901F-4EC5-B0BC-22DBBE90A47A}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "270077421"
+       }
+      ]
+     },
+     {
+      "Id": "1444143828",
+      "Name": "Play_Amb_ForestWaterfall",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_ForestWaterfall",
+      "GUID": "{48163E4C-4863-4C0D-8071-0EA9686624E0}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "776589876"
+       }
+      ]
+     },
+     {
+      "Id": "4164364278",
+      "Name": "Play_Amb_Grassland",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_Grassland",
+      "GUID": "{5A544981-44D9-4619-8D6D-757009451A65}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "583627548"
+       }
+      ]
+     },
+     {
+      "Id": "2314718212",
+      "Name": "Play_Amb_Mountain",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_Mountain",
+      "GUID": "{E128DC14-3484-41B5-8451-5B0C16951FE1}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "833473170"
+       }
+      ]
+     },
+     {
+      "Id": "1245970001",
+      "Name": "Play_Amb_SnowMountain",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_SnowMountain",
+      "GUID": "{A237FC82-36A1-4E17-96C1-58A3B511FEAD}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "117732597"
+       }
+      ]
+     },
+     {
+      "Id": "878882169",
+      "Name": "Play_Amb_Tundra",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_Tundra",
+      "GUID": "{F8C883B5-8FE8-45CD-91AA-2FD72043D719}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "598553658"
+       }
+      ]
+     },
+     {
+      "Id": "4047723673",
+      "Name": "Play_Amb_Volcano",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Amb_Volcano",
+      "GUID": "{E7DEA007-CEA8-4029-A46B-875848A90D2D}",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "587979804"
+       }
+      ]
+     },
+     {
+      "Id": "1716339836",
+      "Name": "Stop_Amb_Desert",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_Desert",
+      "GUID": "{4FEA22D7-1E32-45A8-9733-0303A33086F6}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "3443576024",
+      "Name": "Stop_Amb_Forest",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_Forest",
+      "GUID": "{A1B1CA2D-3EC3-4094-B006-55E705D0CF5D}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "1494448482",
+      "Name": "Stop_Amb_ForestWaterfall",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_ForestWaterfall",
+      "GUID": "{08E18584-D359-44ED-AED2-91241F60B9DD}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "857611924",
+      "Name": "Stop_Amb_Grassland",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_Grassland",
+      "GUID": "{10E4A28C-F607-49C8-B400-C607F991AAFF}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "4110198574",
+      "Name": "Stop_Amb_Mountain",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_Mountain",
+      "GUID": "{FCD5CDDB-138D-4046-A56B-4D1331FDB486}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "1773750603",
+      "Name": "Stop_Amb_SnowMountain",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_SnowMountain",
+      "GUID": "{BB32338B-F6D2-4584-A496-B66DB386768F}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "72641391",
+      "Name": "Stop_Amb_Tundra",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_Tundra",
+      "GUID": "{07227EB1-A5C1-49E9-8B50-5CE6C16E139C}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "1207380743",
+      "Name": "Stop_Amb_Volcano",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_Volcano",
+      "GUID": "{2BDE5A72-C311-462B-B810-4BC5EC0851FD}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     },
+     {
+      "Id": "1150695560",
+      "Name": "Stop_Amb_Water",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Amb_Water",
+      "GUID": "{01705C25-FF7C-478F-ACEE-FBC6615368A1}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "2177779877",
+      "Name": "Tile_Gain",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\Tile_Gain",
+      "GUID": "{1F728BBF-3344-4960-927E-C09FC41C540B}"
+     }
+    ]
+   }
+  ],
+  "FileHash": "{80FEB297-AA92-B6C0-41EC-029E22E45BBE}"
+ }
+}
