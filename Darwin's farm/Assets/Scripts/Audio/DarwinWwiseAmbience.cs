@@ -25,6 +25,7 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
     [SerializeField, Min(1f)] private float maxGainFallPerSecond = 120f;
 
     private GameObject emitter;
+    private DarwinJournalCanvas journal;
     private bool bankLoaded;
     private bool warnedBank;
     private string activeEvent;
@@ -51,6 +52,7 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
 
     private void Awake()
     {
+        journal = FindFirstObjectByType<DarwinJournalCanvas>();
         if (viewCamera == null) viewCamera = GetComponent<Camera>();
         if (grid == null) grid = FindFirstObjectByType<MapGridManager>();
         if (groundListener == null)
@@ -74,6 +76,16 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
         {
             AkUnitySoundEngine.SetOutputVolume(0, MasterVolume);
             lastOutputVolume = MasterVolume;
+        }
+
+        if (journal != null && !journal.IsGameplayVisible)
+        {
+            if (activeEvent != null && bankLoaded)
+                AkUnitySoundEngine.PostEvent(StopEventFor(activeEvent), emitter);
+            activeEvent = null;
+            candidateEvent = null;
+            gain = 0f;
+            return;
         }
 
         if (!bankLoaded)
@@ -123,7 +135,7 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
                 // Fade this voice to zero before replacing it on the next frame.
                 gain = Mathf.MoveTowards(gain, 0f,
                     maxGainFallPerSecond * Time.unscaledDeltaTime);
-                AkUnitySoundEngine.SetRTPCValue(GainParameter, gain * EffectsVolume, emitter);
+                AkUnitySoundEngine.SetRTPCValue(GainParameter, gain, emitter);
                 if (gain > 0.01f) return;
                 AkUnitySoundEngine.PostEvent(StopEventFor(activeEvent), emitter);
                 activeEvent = null;
@@ -147,7 +159,7 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
         float rate = target < gain ? maxGainFallPerSecond : MaximumGain / fadeTime;
         gain = Mathf.MoveTowards(gain, target, rate * Time.unscaledDeltaTime);
         if (activeEvent != null)
-            AkUnitySoundEngine.SetRTPCValue(GainParameter, gain * EffectsVolume, emitter);
+            AkUnitySoundEngine.SetRTPCValue(GainParameter, gain, emitter);
     }
 
     private bool TryGetGround(out Vector3 point, out MapTileInstance tile)

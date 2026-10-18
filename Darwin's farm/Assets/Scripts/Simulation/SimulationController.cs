@@ -29,7 +29,7 @@ public struct SimulationTuning
 public partial class SimulationController : MonoBehaviour
 {
     public const string V61SourceGraphHash =
-        "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5";
+        "2760b257c7a46d14380e867af7db137a844e607a0cade9d3ecd51930413789a0";
     // V6.1 core-run switches. Economy reuses the existing account switch;
     // there is no random-event producer in the current project.
     [SerializeField] private bool enableRandomEvents = false;
