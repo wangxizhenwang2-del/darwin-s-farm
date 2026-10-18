@@ -14,7 +14,6 @@ public sealed class MobileGameUI : MonoBehaviour
     [Header("Existing controllers")]
     [SerializeField] private GameInformationUI information;
     [SerializeField] private MapTouchInput touchInput;
-    [SerializeField] private ScreenEdgeCamera mapCamera;
     [SerializeField] private MapBuildModeController buildMode;
     [SerializeField] private MapTilePlacementController placement;
     [SerializeField] private SimulationTime clock;
@@ -38,7 +37,7 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private RectTransform toolsDrawerRect, toolsViewport, toolsContent;
     [SerializeField] private UnityEngine.UI.ScrollRect toolsScroll;
     [SerializeField] private GameObject buildPalette, placementControls;
-    [SerializeField] private UnityEngine.UI.Button buildButton, pauseButton, speedButton, locateButton;
+    [SerializeField] private UnityEngine.UI.Button buildButton, pauseButton, speedButton;
     [SerializeField] private UnityEngine.UI.Button environmentTabButton, populationTabButton, closeButton;
     [SerializeField] private UnityEngine.UI.Button rotateButton, confirmButton, cancelButton;
     [SerializeField] private UnityEngine.UI.Button[] tileButtons;
@@ -130,7 +129,6 @@ public sealed class MobileGameUI : MonoBehaviour
         if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
         speedButton.onClick.AddListener(CycleMobileSimulationSpeed);
-        locateButton.onClick.AddListener(() => { if (mapCamera != null) mapCamera.ReturnToPlayer(); });
         environmentTabButton.onClick.AddListener(() => SelectTab(InformationTab.Environment));
         populationTabButton.onClick.AddListener(() => SelectTab(InformationTab.Population));
         closeButton.onClick.AddListener(CloseActiveInformation);
@@ -239,7 +237,7 @@ public sealed class MobileGameUI : MonoBehaviour
         if (statusBar == null || actionColumn == null || gestureHelp == null) return;
         float statusHeight = Mathf.Clamp(safeArea.rect.height * .086f, 44f, 62f);
         float hintHeight = Mathf.Clamp(safeArea.rect.height * .1f, 44f, 72f);
-        float buttonHeight = Mathf.Clamp((safeArea.rect.height - statusHeight - hintHeight - 56f) / 4f, 44f, 64f);
+        float buttonHeight = Mathf.Clamp((safeArea.rect.height - statusHeight - hintHeight - 32f) / 2f, 44f, 64f);
         void Place(RectTransform rect, Vector2 position, Vector2 size)
         {
             rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.up;
@@ -266,13 +264,13 @@ public sealed class MobileGameUI : MonoBehaviour
         Place(gestureHelp,new Vector2(8,-statusHeight-16),
             new Vector2(Mathf.Clamp(safeArea.rect.width-drawerWidth-32,200,620),hintHeight));
         if (pauseButton != null) pauseButton.gameObject.SetActive(false);
-        Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*3+16));
-        var buttons = new[] { environmentToolsButton, locateButton, buildButton };
+        Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*2+8));
+        var buttons = new[] { environmentToolsButton, buildButton };
         for (int i=0;i<buttons.Length;i++)
             if (buttons[i]!=null) Place((RectTransform)buttons[i].transform,new Vector2(0,-i*(buttonHeight+8)),new Vector2(168,buttonHeight));
         if (placementControls != null)
         {
-            float actionBottom=statusHeight+hintHeight+24+buttonHeight*3+16;
+            float actionBottom=statusHeight+hintHeight+24+buttonHeight*2+8;
             float placementLeft=actionBottom+4>safeArea.rect.height-276 ? 196 : 8;
             var controls=(RectTransform)placementControls.transform;
             controls.anchorMin=controls.anchorMax=controls.pivot=Vector2.zero;

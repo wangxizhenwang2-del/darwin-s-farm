@@ -236,10 +236,6 @@ public sealed class PopulationTileSpace
     {
         if (collider == null || !collider.enabled || collider.isTrigger) return false;
         if (collider.GetComponentInParent<WhiteboxPopulation>() != null) return false;
-        // Players are moving discs handled bidirectionally by the controller.
-        // They must not invalidate a stationary member's terrain pose/hide it.
-        if (collider.GetComponentInParent<PopulationPlayerBarrier>() != null ||
-            collider.GetComponentInParent<ClickToMove>() != null) return false;
         // Other terrain is handled by the owning boundary and NavMesh.
         MapTileInstance owner = collider.GetComponentInParent<MapTileInstance>();
         return owner == null || (collider.name != "ColorSurface" && collider.name != "Core" &&

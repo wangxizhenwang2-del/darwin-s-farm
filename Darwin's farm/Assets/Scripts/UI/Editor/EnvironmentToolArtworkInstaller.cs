@@ -48,10 +48,10 @@ public static class EnvironmentToolArtworkInstaller
             actions=new GameObject("MobileActions",typeof(RectTransform)).GetComponent<RectTransform>();
             actions.gameObject.layer=LayerMask.NameToLayer("UI");actions.SetParent(safe,false);
         }
-        Position(actions,Vector2.up,new Vector2(8,-158),new Vector2(168,208));
+        Position(actions,Vector2.up,new Vector2(8,-158),new Vector2(168,136));
         var legacyPause=(UnityEngine.UI.Button)mobileSaved.FindProperty("pauseButton").objectReferenceValue;
         if(legacyPause!=null)legacyPause.gameObject.SetActive(false);
-        string[] fields={"environmentToolsButton","locateButton","buildButton"};
+        string[] fields={"environmentToolsButton","buildButton"};
         for(int i=0;i<fields.Length;i++)
         {
             var button=(UnityEngine.UI.Button)mobileSaved.FindProperty(fields[i]).objectReferenceValue;

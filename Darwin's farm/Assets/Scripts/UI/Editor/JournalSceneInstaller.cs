@@ -152,6 +152,7 @@ public static class JournalSceneInstaller
         Set(serialized,"tutorialBody",tutorialBody); Set(serialized,"tutorialScroll",tutorialScroll);
         Set(serialized,"infoScroll",infoScroll);
         serialized.ApplyModifiedPropertiesWithoutUndo();
+        ConfigureMenuLayout(controller);
         menu.gameObject.SetActive(false); pauseView.gameObject.SetActive(false);settingsView.gameObject.SetActive(false);
         tutorialView.gameObject.SetActive(false);infoView.gameObject.SetActive(false);
         savesView.gameObject.SetActive(false);confirmView.gameObject.SetActive(false);
@@ -166,6 +167,37 @@ public static class JournalSceneInstaller
         Debug.Log("JournalCanvas authored in WhiteBox and saved.");
     }
     public static void InstallBatch(){Install();}
+
+    public static void ConfigureMenuLayout(DarwinJournalCanvas journal)
+    {
+        var saved = new SerializedObject(journal);
+        var menu = (GameObject)saved.FindProperty("gameMenuButton").objectReferenceValue;
+        var information = UnityEngine.Object.FindFirstObjectByType<GameInformationUI>();
+        var mobile = UnityEngine.Object.FindFirstObjectByType<MobileGameUI>();
+        if (menu == null || information == null || mobile == null)
+            throw new InvalidOperationException("Menu and both HUDs must be authored before layout binding.");
+        var desktopData = new SerializedObject(information);
+        var mobileData = new SerializedObject(mobile);
+        var desktopLabel = (UnityEngine.UI.Text)desktopData.FindProperty("speedText").objectReferenceValue;
+        var mobileButton = (UnityEngine.UI.Button)mobileData.FindProperty("speedButton").objectReferenceValue;
+        var layout = journal.GetComponent<HudMenuLayout>();
+        if (layout == null) layout = journal.gameObject.AddComponent<HudMenuLayout>();
+        var layoutData = new SerializedObject(layout);
+        Set(layoutData, "menu", menu.transform);
+        Set(layoutData, "desktopSpeed", desktopLabel.transform.parent);
+        Set(layoutData, "mobileSpeed", mobileButton.transform);
+        Set(layoutData, "mobileUI", mobile);
+        layoutData.ApplyModifiedPropertiesWithoutUndo();
+        var label = menu.GetComponentInChildren<TMP_Text>(true);
+        var rect = label.rectTransform;
+        rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+        rect.offsetMin = new Vector2(8, 4); rect.offsetMax = new Vector2(-8, -4);
+        label.enableAutoSizing = true; label.fontSizeMin = 18; label.fontSizeMax = 26;
+        label.alignment = TextAlignmentOptions.Center;
+        layout.RefreshLayout();
+        EditorUtility.SetDirty(layout);
+        EditorUtility.SetDirty(label);
+    }
     public static void PolishScrollBatch()
     {
         var scene=EditorSceneManager.OpenScene(ScenePath);

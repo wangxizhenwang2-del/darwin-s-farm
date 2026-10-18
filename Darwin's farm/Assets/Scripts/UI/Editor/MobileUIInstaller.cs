@@ -36,7 +36,6 @@ public static class MobileUIInstaller
         Set(saved, "desktopCanvas", information.GetComponent<Canvas>());
         Set(saved, "desktopHud", information.transform.Find("InformationHUD").gameObject);
         Set(saved, "touchInput", Object.FindFirstObjectByType<MapTouchInput>());
-        Set(saved, "mapCamera", Object.FindFirstObjectByType<ScreenEdgeCamera>());
         Set(saved, "buildMode", build); Set(saved, "placement", placement);
         Set(saved, "clock", Object.FindFirstObjectByType<SimulationTime>());
         Set(saved, "history", information.GetComponent<TileTrendHistory>());
@@ -61,7 +60,6 @@ public static class MobileUIInstaller
         ConfigureSpeedLabel(speed.GetComponentInChildren<TextMeshProUGUI>());
         BindButton(saved, "speedButton", "speedLabel", speed, 145f, false);
         BindButton(saved, "pauseButton", "pauseLabel", Button("Pause", hud, "暂停模拟", new Vector2(120, 68)), 120f, false);
-        BindButton(saved, "locateButton", null, Button("LocatePlayer", hud, "定位玩家", new Vector2(120, 68)), 120f, false);
         BindButton(saved, "buildButton", "buildLabel", Button("BuildMode", hud, "建造地块", new Vector2(130, 68)), 130f, false);
         var help = Panel("GestureHelp", safe, new Vector2(620, 48)); help.anchoredPosition = new Vector2(8, -84);
         Label("FunctionLabel", help, "长按地块查看环境 · 点击种群查看生物 · 拖动地图 · 双指缩放", 18,

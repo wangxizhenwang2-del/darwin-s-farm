@@ -45,7 +45,6 @@ public sealed class EnvironmentToolsInputChecks : MonoBehaviour
         Touch(61,UnityEngine.InputSystem.TouchPhase.Ended,point);
         yield return new WaitForSecondsRealtime(.15f);
         Require(information.SelectedTile==tile,"Touch tap did not select the tool target");
-        Require(!FindFirstObjectByType<ClickToMove>().TryMoveToScreenPosition(point),"Tool tap allowed player movement");
         Require(information.GetComponent<SelectionOutlinePresenter>().HighlightedTileCount==1,"Selected tile outline missing");
         var env=FindFirstObjectByType<SimulationEnvironmentController>();
         env.TryRead(tile.Coordinate,out var before);
