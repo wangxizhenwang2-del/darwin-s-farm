@@ -15,7 +15,8 @@ MonoBehaviour:
   controller: {fileID: 9100000, guid: 0df5085d3fbd4c242829830d64f4aa5f, type: 2}
   idleSprite: {fileID: 21300000, guid: d306ce7782bcb5643a52ce7a5dde5a86, type: 3}
   referenceMoveSpeed: 1.8
-  artworkFacesLeft: 1
+  artworkFacesLeft: 0
+  mode: 0
   walkFrames:
   - {fileID: 21300000, guid: e1db6f4b54fc64240b7a21340cca906d, type: 3}
   - {fileID: 21300000, guid: 4fd4e663f5601e84ab7b42c6762dc201, type: 3}
@@ -70,13 +71,24 @@ MonoBehaviour:
   - {fileID: 21300000, guid: fd48447651f38d6459c287ff200c6840, type: 3}
   - {fileID: 21300000, guid: 49c21c92da2bb4342a16c6c8aaa7a854, type: 3}
   - {fileID: 21300000, guid: 70be2ebc31538844eb90cebc2703bd71, type: 3}
+  commonFrames: []
+  transitionFrames: []
+  transitionStartFrame: 1
+  transitionEndFrame: 2
+  transitionFps: 8
+  commonStartFrame: 1
+  commonEndFrame: 1
+  commonStopFrame: 1
+  commonFps: 8
+  commonHoldMin: 1
+  commonHoldMax: 3
   walkStartFrame: 1
   walkEndFrame: 30
   idleStartFrame: 1
   idleEndFrame: 22
   stopFrame: 1
-  walkFps: 6
-  idleFps: 6
+  walkFps: 15
+  idleFps: 15
   idleDelayMin: 2
   idleDelayMax: 5
   movementHoldMin: 4
