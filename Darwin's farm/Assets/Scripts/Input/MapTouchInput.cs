@@ -12,7 +12,6 @@ public sealed class MapTouchInput : MonoBehaviour
 {
     [Header("Existing scene controllers")]
     [SerializeField] private ScreenEdgeCamera mapCamera;
-    [SerializeField] private ClickToMove playerMovement;
     [SerializeField] private GameInformationUI information;
     [SerializeField] private MapBuildModeController buildMode;
     [SerializeField] private MapTilePlacementController placement;
@@ -71,7 +70,6 @@ public sealed class MapTouchInput : MonoBehaviour
     {
         viewCamera = GetComponent<Camera>();
         if (mapCamera == null) mapCamera = GetComponent<ScreenEdgeCamera>();
-        if (playerMovement == null) playerMovement = FindFirstObjectByType<ClickToMove>();
         if (information == null) information = FindFirstObjectByType<GameInformationUI>();
         if (buildMode == null) buildMode = FindFirstObjectByType<MapBuildModeController>();
         if (placement == null) placement = FindFirstObjectByType<MapTilePlacementController>();
@@ -114,7 +112,6 @@ public sealed class MapTouchInput : MonoBehaviour
                 { information.TrySelectTileAt(action.Position); break; }
                 if (information != null && information.TrySelectPopulationAt(action.Position,
                     populationPickPaddingPixels * ResolutionScale)) break;
-                if (playerMovement != null) playerMovement.TryMoveToScreenPosition(action.Position);
                 break;
             case MapTouchGesture.Action.LongPress:
                 if (!building && !placing && information != null)

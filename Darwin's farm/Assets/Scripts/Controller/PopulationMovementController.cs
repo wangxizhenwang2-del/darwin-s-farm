@@ -6,7 +6,6 @@ using Unity.AI.Navigation;
 [DisallowMultipleComponent]
 public sealed class PopulationMovementController : MonoBehaviour
 {
-    private static readonly List<PopulationMovementController> controllers = new List<PopulationMovementController>();
     [SerializeField] private MapGridManager gridManager;
     [SerializeField] private Camera viewCamera;
     [SerializeField] private Sprite fallbackSprite;
@@ -39,43 +38,11 @@ public sealed class PopulationMovementController : MonoBehaviour
     private void Awake() { if (gridManager == null) gridManager = GetComponent<MapGridManager>(); }
     private void OnEnable()
     {
-        if (!controllers.Contains(this)) controllers.Add(this);
         if (gridManager != null) gridManager.TilesChanged += OnTilesChanged;
     }
     private void OnDisable()
     {
         if (gridManager != null) gridManager.TilesChanged -= OnTilesChanged;
-    }
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetControllers() => controllers.Clear();
-    internal static bool HasActivePopulations
-    {
-        get
-        {
-            foreach (PopulationMovementController controller in controllers)
-                if (controller != null)
-                    foreach (WhiteboxPopulation population in controller.populations)
-                        if (population != null && !population.IsAir && population.gameObject.activeInHierarchy && population.leader != null) return true;
-            return false;
-        }
-    }
-
-    internal static bool AllowsPlayerMove(Vector3 from, Vector3 to, float radius)
-    {
-        foreach (PopulationMovementController controller in controllers)
-        {
-            if (controller == null) continue;
-            foreach (WhiteboxPopulation population in controller.populations)
-            {
-                if (population == null || population.IsAir || population.leader == null) continue;
-                var leader = population.leader;
-                if (!leader.visual.gameObject.activeInHierarchy) continue;
-                float required = radius + PopulationTileSpace.Clearance(leader.size) + Mathf.Max(0f, controller.settings.playerGap);
-                if (!PopulationCollisionMath.AllowsMove(PopulationCollisionMath.Flat(from), PopulationCollisionMath.Flat(to),
-                    PopulationCollisionMath.Flat(leader.groundPosition), required)) return false;
-            }
-        }
-        return true;
     }
     internal bool NavigationReady => gridManager != null && gridManager.Navigation != null && !gridManager.Navigation.IsUpdating;
 
@@ -116,7 +83,6 @@ public sealed class PopulationMovementController : MonoBehaviour
             Color color = Color.HSVToRGB(Mathf.Repeat(populations.Count * 0.381966f + 0.05f, 1f), 0.7f, 1f);
             population.Initialize(this, tile, space, initialCount, leader, color);
             populations.Add(population);
-            PopulationPlayerBarrier.ActivateAll();
             return population;
         }
         Debug.LogWarning($"No safe space for a population representative on tile {tileId}; creation skipped.", this);
@@ -127,10 +93,6 @@ public sealed class PopulationMovementController : MonoBehaviour
     { a.y = 0f; b.y = 0f; return Vector3.Distance(a, b); }
     private bool SpawnSeparated(Vector3 point, float size, WhiteboxPopulation ignore = null)
     {
-        foreach (PopulationPlayerBarrier player in PopulationPlayerBarrier.Players)
-            if (player != null && player.isActiveAndEnabled &&
-                HorizontalDistance(point, player.transform.position) <
-                PopulationTileSpace.Clearance(size) + player.Radius + Mathf.Max(0f, settings.playerGap)) return false;
         foreach (WhiteboxPopulation population in populations)
         {
             if (population == null || population.IsAir || population == ignore || population.leader == null) continue;
@@ -191,13 +153,6 @@ public sealed class PopulationMovementController : MonoBehaviour
             if (!PopulationCollisionMath.AllowsMove(from, to, PopulationCollisionMath.Flat(other.groundPosition), required))
                 return false;
         }
-        foreach (PopulationPlayerBarrier player in PopulationPlayerBarrier.Players)
-        {
-            if (player == null || !player.isActiveAndEnabled) continue;
-            float required = clearance + player.Radius + Mathf.Max(0f, settings.playerGap);
-            if (!PopulationCollisionMath.AllowsMove(from, to, PopulationCollisionMath.Flat(player.transform.position), required))
-                return false;
-        }
         return true;
     }
 
@@ -242,7 +197,6 @@ public sealed class PopulationMovementController : MonoBehaviour
     { populations.Remove(population); debugPopulations.Remove(population); }
     private void OnDestroy()
     {
-        controllers.Remove(this);
         foreach (WhiteboxPopulation population in populations.ToArray())
             if (population != null) { population.gameObject.SetActive(false); Destroy(population.gameObject); }
         populations.Clear(); debugPopulations.Clear();

@@ -16,8 +16,7 @@ public class MapBuildModeController : MonoBehaviour
     [Header("建造UI")]
     [SerializeField] private GameObject buildPanel;
 
-    [Header("玩家和相机")]
-    [SerializeField] private ClickToMove clickToMove;
+    [Header("相机")]
     [SerializeField] private ScreenEdgeCamera screenEdgeCamera;
 
     [Header("线框设置")]
@@ -101,10 +100,6 @@ public class MapBuildModeController : MonoBehaviour
 
         if (previewRoot != null)
             previewRoot.gameObject.SetActive(value);
-
-        // 建造模式中，不接受新的点击移动指令。
-        if (clickToMove != null)
-            clickToMove.SetMovementInputEnabled(!value);
 
         // 切换浏览输入，当前视角保持不变。
         if (screenEdgeCamera != null)

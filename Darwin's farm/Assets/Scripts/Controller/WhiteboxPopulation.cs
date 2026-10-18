@@ -13,7 +13,6 @@ public sealed class PopulationMovementSettings
     [Min(0.1f)] public float turnSpeed = 8f;
     [Min(0.1f)] public float labelHeight = 0.6f;
     [Min(0.1f)] public float populationGap = 0.3f;
-    [Min(0f)] public float playerGap = 0.1f;
     [Min(0f)] public float wanderEdgeMargin = 0.8f;
     [Min(0.1f)] public float replanSeconds = 0.5f;
     [Min(0.2f)] public float blockedRetargetSeconds = 1.5f;
@@ -254,7 +253,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             !space.CanTraverse(leader.groundPosition, leader.groundPosition, leader.size))
         { problem = "Representative is hidden or outside valid terrain."; return false; }
         if (!controller.HasSeparation(this, leader.groundPosition))
-        { problem = "Representative overlaps another population or the player."; return false; }
+        { problem = "Representative overlaps another population."; return false; }
         return true;
     }
 

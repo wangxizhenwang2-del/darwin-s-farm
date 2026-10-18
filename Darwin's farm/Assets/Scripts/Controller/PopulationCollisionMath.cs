@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Shared by player movement and each population representative. Sweeping a disc
+// Used by population representatives. Sweeping a disc
 // includes rotation clearance, so even a complete reversal cannot cut through it.
 public static class PopulationCollisionMath
 {

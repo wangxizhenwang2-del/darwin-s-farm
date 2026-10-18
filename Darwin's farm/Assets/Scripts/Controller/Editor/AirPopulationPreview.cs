@@ -4,7 +4,7 @@ using UnityEngine;
 
 // A convenient viewing setup, independent of the destructive regression fixture.
 // Population changes live only in the current Play session. Keep the normal
-// game camera, projection, zoom and player-follow behavior untouched.
+// game camera, projection and zoom untouched.
 public static class AirPopulationPreview
 {
     private const string Menu = "Tools/Darwin's Farm/Population/Preview air population (Play Mode)";

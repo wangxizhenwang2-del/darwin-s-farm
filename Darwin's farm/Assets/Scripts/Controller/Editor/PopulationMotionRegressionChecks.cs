@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class PopulationMotionRegressionChecks
 {
-    [MenuItem("Tools/Population/Run representative and player regression checks")]
+    [MenuItem("Tools/Population/Run representative regression checks")]
     private static void RunFromMenu() => Debug.Log(RunChecks());
 
     public static string RunChecks()
@@ -83,26 +83,7 @@ public static class PopulationMotionRegressionChecks
             Distance(recovery.Goal, body.groundPosition) < 0.0001f,
             "A terrain revision retained a stale route or target.");
 
-        // A player-sized disc must stop before crossing the single visible animal.
-        Vector3 center = simulation.bodies[0].groundPosition;
-        const float playerRadius = 0.9f;
-        Vector3 start = center - Vector3.right * 4f, targetPlayer = center + Vector3.right;
-        Require(simulation.PlayerMove(start, start, playerRadius), "Invalid player approach fixture.");
-        Require(!simulation.PlayerMove(start, targetPlayer, playerRadius), "Player passed through the representative.");
-        for (int trial = 0; trial < 100; trial++)
-        {
-            float lower = 0f, upper = 1f;
-            for (int iteration = 0; iteration < 16; iteration++)
-            {
-                float middle = (lower + upper) * 0.5f;
-                if (simulation.PlayerMove(start, Vector3.Lerp(start, targetPlayer, middle), playerRadius)) lower = middle;
-                else upper = middle;
-            }
-            Vector3 safe = Vector3.Lerp(start, targetPlayer, lower);
-            Require(simulation.PlayerMove(start, safe, playerRadius) && Distance(safe, targetPlayer) > 0.5f,
-                "Player clipping accepted an overlap.");
-        }
-        return $"Representative regression passed: 6000 simultaneous ticks, {finished}/{routes} completed routes, two moving representatives, pause/reset, dynamic obstacle replanning and 100 player crossing attempts.";
+        return $"Representative regression passed: 6000 simultaneous ticks, {finished}/{routes} completed routes, two moving representatives, pause/reset and dynamic obstacle replanning.";
     }
 
     private static Vector3 V(float x, float z) => new Vector3(x, 0f, z);
@@ -149,14 +130,6 @@ public static class PopulationMotionRegressionChecks
                 PopulationTileSpace.Clearance(bodies[other].size) + settings.populationGap;
             return PopulationCollisionMath.AllowsMove(PopulationCollisionMath.Flat(from),
                 PopulationCollisionMath.Flat(to), PopulationCollisionMath.Flat(bodies[other].groundPosition), required);
-        }
-        public bool PlayerMove(Vector3 from, Vector3 to, float radius)
-        {
-            foreach (PopulationMotion.Body body in bodies)
-                if (!PopulationCollisionMath.AllowsMove(PopulationCollisionMath.Flat(from), PopulationCollisionMath.Flat(to),
-                    PopulationCollisionMath.Flat(body.groundPosition),
-                    radius + PopulationTileSpace.Clearance(body.size) + settings.playerGap)) return false;
-            return true;
         }
         public void AssertMovement()
         {

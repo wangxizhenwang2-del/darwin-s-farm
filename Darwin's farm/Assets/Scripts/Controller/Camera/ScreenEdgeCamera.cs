@@ -11,21 +11,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Camera))]
 public class ScreenEdgeCamera : MonoBehaviour
 {
-    [Header("跟随目标")]
-    [SerializeField] private Transform player;
-
-    [Header("玩家跟随")]
-    [SerializeField, Range(0.01f, 0.45f)]
-    private float edgeMargin = 0.25f;
-
-    [Tooltip("玩家跟随时，相机每秒移动的距离。")]
-    [SerializeField, Min(0.1f)]
-    private float moveSpeed = 25f;
-
-    [SerializeField, Min(0.01f)]
-    private float stopDistance = 0.15f;
-
-    [Header("地图平移")]
+    [Header("Map panning")]
     [SerializeField, Min(0.1f)]
     private float buildMoveSpeed = 30f;
 
@@ -48,17 +34,9 @@ public class ScreenEdgeCamera : MonoBehaviour
     [SerializeField, Range(1f, 179f)]
     private float maxFieldOfView = 75f;
 
-    [Header("退出建造模式返回")]
-    [SerializeField, Min(0.1f)]
-    private float returnResponsiveness = 6f;
-
-    private bool returningToPlayer;
-
     private Camera viewCamera;
     private MapTouchInput touchInput;
 
-    private bool moving;
-    private bool followEnabled = true;
     private bool buildModeEnabled;
 
     private bool mapDragging;
@@ -70,30 +48,6 @@ public class ScreenEdgeCamera : MonoBehaviour
 
     public bool IsMapDragging => mapDragging;
 
-    // ClickToMove runs in Update, before the camera's LateUpdate.
-    public bool IsMapBrowsingInputActive
-    {
-        get
-        {
-            if (touchInput != null && touchInput.SuppressesMouseInput) return false;
-            Mouse mouse = Mouse.current;
-            if (!Application.isFocused || tileDragging || mouse == null ||
-                !CanBrowseMap())
-                return false;
-
-            if (mapDragging && mouse.middleButton.isPressed)
-                return true;
-
-            Vector2 position = mouse.position.ReadValue();
-            Keyboard keyboard = Keyboard.current;
-            bool alt = keyboard != null &&
-                (keyboard.leftAltKey.isPressed || keyboard.rightAltKey.isPressed);
-            return IsOverMap(position) &&
-                   (mouse.middleButton.isPressed ||
-                    (alt && mouse.leftButton.isPressed && !buildModeEnabled) ||
-                    !Mathf.Approximately(mouse.scroll.ReadValue().y, 0f));
-        }
-    }
     private readonly List<RaycastResult> uiResults =
         new List<RaycastResult>();
 
@@ -111,16 +65,7 @@ public class ScreenEdgeCamera : MonoBehaviour
             return;
         }
 
-        Keyboard keyboard = Keyboard.current;
-        if (keyboard != null && keyboard.tabKey.wasPressedThisFrame &&
-            !IsTextInputFocused())
-            ReturnToPlayer();
-
         UpdateMapBrowsing();
-
-        if ((touchInput == null || !touchInput.HasWorldGesture) &&
-            (returningToPlayer || (!buildModeEnabled && followEnabled)))
-            UpdatePlayerFollow();
     }
 
     private bool CanBrowseMap()
@@ -205,7 +150,6 @@ public class ScreenEdgeCamera : MonoBehaviour
         movement *= buildMoveSpeed / 30f;
         if (movement.sqrMagnitude <= 0.000001f) return false;
         transform.position += movement;
-        PauseFollow();
         return true;
     }
 
@@ -229,7 +173,6 @@ public class ScreenEdgeCamera : MonoBehaviour
             if (!Mathf.Approximately(size, viewCamera.orthographicSize))
             {
                 viewCamera.orthographicSize = size;
-                PauseFollow();
                 return true;
             }
         }
@@ -240,7 +183,6 @@ public class ScreenEdgeCamera : MonoBehaviour
             if (!Mathf.Approximately(fieldOfView, viewCamera.fieldOfView))
             {
                 viewCamera.fieldOfView = fieldOfView;
-                PauseFollow();
                 return true;
             }
         }
@@ -249,8 +191,7 @@ public class ScreenEdgeCamera : MonoBehaviour
 
     private bool TryGetMapPoint(Vector2 position, out Vector3 point)
     {
-        float height = player != null ? player.position.y : 0f;
-        Plane mapPlane = new Plane(Vector3.up, new Vector3(0f, height, 0f));
+        Plane mapPlane = new Plane(Vector3.up, Vector3.zero);
         Ray ray = viewCamera.ScreenPointToRay(position);
         if (mapPlane.Raycast(ray, out float distance))
         {
@@ -300,77 +241,6 @@ public class ScreenEdgeCamera : MonoBehaviour
                 selected.GetComponent("TMP_InputField") != null);
     }
 
-    private void UpdatePlayerFollow()
-    {
-        if ((!followEnabled && !returningToPlayer) || player == null)
-            return;
-
-        Vector3 viewport =
-            viewCamera.WorldToViewportPoint(player.position);
-
-        // 主动回到玩家时，即使玩家在画面外也继续移动。
-        if (viewport.z <= 0f && !moving)
-            return;
-
-        bool nearEdge =
-            viewport.x <= edgeMargin ||
-            viewport.x >= 1f - edgeMargin ||
-            viewport.y <= edgeMargin ||
-            viewport.y >= 1f - edgeMargin;
-
-        if (viewport.z > 0f && nearEdge)
-            moving = true;
-
-        if (!moving)
-            return;
-
-        Plane playerPlane =
-            new Plane(Vector3.up, player.position);
-
-        Ray centerRay = viewCamera.ViewportPointToRay(
-            new Vector3(0.5f, 0.5f, 0f));
-
-        if (!playerPlane.Raycast(centerRay, out float distance))
-        {
-            moving = false;
-            return;
-        }
-
-        Vector3 centerOnPlane = centerRay.GetPoint(distance);
-
-        Vector3 correction = player.position - centerOnPlane;
-        correction.y = 0f;
-
-        if (correction.sqrMagnitude <= stopDistance * stopDistance)
-        {
-            // 返回结束时补齐最后一点距离。
-            if (returningToPlayer)
-                transform.position += correction;
-
-            moving = false;
-            returningToPlayer = false;
-            return;
-        }
-
-        if (returningToPlayer)
-        {
-            // 距离远时快速返回，接近目标时逐渐减速。
-            float blend =
-                1f - Mathf.Exp(-returnResponsiveness * Time.deltaTime);
-
-            transform.position += correction * blend;
-        }
-        else
-        {
-            Vector3 targetPosition = transform.position + correction;
-
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                targetPosition,
-                moveSpeed * Time.deltaTime);
-        }
-    }
-
     public void SetBuildMode(bool value)
     {
         if (buildModeEnabled == value)
@@ -380,7 +250,6 @@ public class ScreenEdgeCamera : MonoBehaviour
         mapDragging = false;
         draggingWithLeft = false;
         pendingAltLeftDrag = false;
-        PauseFollow();
     }
 
     public void SetTileDragActive(bool value)
@@ -392,31 +261,6 @@ public class ScreenEdgeCamera : MonoBehaviour
             draggingWithLeft = false;
             pendingAltLeftDrag = false;
         }
-    }
-
-    private void PauseFollow()
-    {
-        followEnabled = false;
-        moving = false;
-        returningToPlayer = false;
-    }
-
-    public void ReturnToPlayer()
-    {
-        if (player == null)
-            return;
-
-        returningToPlayer = true;
-        moving = true;
-        followEnabled = !buildModeEnabled;
-    }
-
-    // 保留原接口，供其他系统控制自动跟随。
-    public void SetFollowEnabled(bool value)
-    {
-        returningToPlayer = false;
-        followEnabled = value;
-        moving = false;
     }
 
     private void OnApplicationFocus(bool hasFocus)
@@ -431,6 +275,5 @@ public class ScreenEdgeCamera : MonoBehaviour
         draggingWithLeft = false;
         pendingAltLeftDrag = false;
         tileDragging = false;
-        returningToPlayer = false;
     }
 }
