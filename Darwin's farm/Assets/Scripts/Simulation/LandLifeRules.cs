@@ -76,11 +76,16 @@ internal static class LandLifeRules
             * YoungNeed(size, rules) / Mathf.Max(1f, size);
     }
 
+    // Real newborns cost biomass, plus a bounded nonzero physiological stress.
+    internal const float MaxPaidBirthStressPerNewborn = 0.85f;
+
     internal static float PaidBirthStressDeaths(int paidBirths, float size,
         float fertility, LandRuleTuning rules) =>
-        Mathf.Max(0, paidBirths) * rules.reproductionStressPerBirth *
-        Mathf.Clamp01(fertility / 100f) * YoungNeed(size, rules) /
-        Mathf.Max(1f, size);
+        Mathf.Max(0, paidBirths) * Mathf.Min(
+            MaxPaidBirthStressPerNewborn,
+            rules.reproductionStressPerBirth *
+            Mathf.Clamp01(fertility / 100f) * YoungNeed(size, rules) /
+            Mathf.Max(1f, size));
 
     internal static float Fitness(BlockInfo block, float temperature, float humidity) =>
         Mathf.Clamp01(1f - (Mathf.Abs(block.temperature - temperature)
@@ -655,9 +660,10 @@ internal static class LandLifeRules
             rules.climateMismatchDeathRate * proposedCount * (1f - fitness) +
             NaturalAdultDeaths(proposedCount, prey.size, rules);
         if (rules.enablePaidBirthStress)
-            deaths += births * rules.reproductionStressPerBirth *
+            deaths += births * Mathf.Min(MaxPaidBirthStressPerNewborn,
+                rules.reproductionStressPerBirth *
                 Mathf.Clamp01(prey.fertility / 100f) *
-                YoungNeed(prey.size, rules) / Mathf.Max(1f, prey.size);
+                YoungNeed(prey.size, rules) / Mathf.Max(1f, prey.size));
         else
             deaths += ReproductionStressDeaths(proposedCount, prey.size,
                 prey.fertility, rules, satisfaction: covered,
@@ -909,7 +915,14 @@ internal static class LandLifeRules
             for (int j = 0; j < q; j++)
             {
                 if (!FoodWeb.CanEat(hunter, prey[j])) continue;
-                score[i, j] = HuntPreference(hunter, prey[j], rules);
+                float preference = HuntPreference(hunter, prey[j], rules);
+                // L1 herbivores: spend hunting effort in proportion to today's
+                // legally sustainable catch, not on prey with zero quota.
+                // Outside this optional L1 quota mode, preserve old behavior.
+                if (level == 1 && preyQuotaLeft != null &&
+                    preyQuotaLeft.TryGetValue(prey[j], out int quotaForChoice))
+                    preference *= Mathf.Max(0, quotaForChoice);
+                score[i, j] = preference;
                 totalScore += score[i, j];
             }
             if (totalScore <= 0f) continue;
@@ -1108,7 +1121,8 @@ internal static class LandLifeRules
                 availableResources - adultDemand);
             int born = Mathf.Min(possibleBirths,
                 Mathf.FloorToInt(availableForBirth / newbornCost));
-            p.birthStressDeathsToday = rules.enablePaidBirthStress
+            p.birthStressDeathsToday = rules.enablePaidBirthStress ||
+                FoodWeb.HasLandPredatorDiet(p)
                 ? PaidBirthStressDeaths(born, p.size, p.fertility, rules)
                 : ReproductionStressDeaths(count, p.size, p.fertility, rules,
                     satisfaction: satisfaction, fitness: fitness);

@@ -22268,11 +22268,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SimulationController
   landRules:
     ruleVersion: 5
+    enablePreyDensityFeedback: 0
+    enablePaidBirthStress: 1
+    enableDynamicPreyRenewalQuota: 1
+    dynamicPreyRefugeFraction: 0.15
     birthRate: 0.1
     starvationDeathRate: 0.6
     coldDeathRate: 0.005
     climateMismatchDeathRate: 0.01
-    reproductionStressPerBirth: 1.2
+    reproductionStressPerBirth: 0.6
     baselineAdultDeathRate: 0.008
     smallBodyFrailtyRate: 0.5
     adultSizeMortalityScale: 20
@@ -22293,7 +22297,7 @@ MonoBehaviour:
     minimumPlantReserveFraction: 0.1
     dailyPlantStockDrawFraction: 0.1
     densityBirthDampingStart: 0.85
-    baseCaptureChance: 0.5
+    baseCaptureChance: 0.85
     chaseScale: 40
     preyEnergyPerSize: 30
     reserveHuntFraction: 0.1
