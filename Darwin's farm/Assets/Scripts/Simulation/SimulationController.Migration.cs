@@ -968,7 +968,9 @@ internal static class PopulationTransfer
         branch.mutationSelectionCandidate = -1;
         // 2026-10-09 13:47 +08:00: a newly split migration branch starts with
         // zero target progress; its inherited evolution cooldown still applies.
-        if (origin.speciesAmount > 0) branch.evolutionConversions.Clear();
+        if (origin.speciesAmount > 0 ||
+            branch.ecologicalNiche == EcologicalNiche.Water)
+            branch.evolutionConversions.Clear();
         return branch;
     }
 

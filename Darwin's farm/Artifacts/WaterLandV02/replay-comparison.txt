@@ -1,0 +1,12 @@
+scene=Assets/Scenes/V05FiveSpeciesSandbox.unity
+seed=240 days=0..100 actions=[]
+modified_snapshot_count=101
+baseline_snapshot_count=101
+first_hash_divergence=NONE
+modified_trace_sha256=8bb62f29175ee23b09bd820a34aecb574d70c74366e4d6dba8336cdeacef4b7d
+baseline_trace_sha256=e97cfa7bf229412542a0ef8423b543fe0d62c7a96a653ce4ee13bd4f8afa90f1
+day100_model_hash=8ede2ae409ad88969e2b341cf79edc0f37b4f1b7b5a5704f557a1fc847dfd5ae
+day100_environment_hash=5da3fdb00d485113272b7a7ae81457229ad6a1e7471a5d404da7497480a3dea3
+note=trace headers differ because bindingSha256 includes source code; daily model/environment hashes match
+
+\n

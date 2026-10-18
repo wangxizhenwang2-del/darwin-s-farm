@@ -1,0 +1,1 @@
+Ecological event regression checks: V6.1 formal evolution and legacy event compatibility passed.

@@ -1,0 +1,16 @@
+PASS T01 w3 cannot evolve to w1 shore A
+PASS T02 w1 can reach A after relocation
+PASS T03 w3 directly reaches B
+PASS T14 A reaches w1
+PASS T14 A cannot reach w3
+PASS T04 diagonal rejected despite listed neighbors
+PASS T04 missing reciprocal neighbor rejected
+PASS T04 height two rejected
+PASS T04 height one accepted
+PASS missing map position rejected
+PASS T05 reciprocal channel shares region
+PASS T05 unilateral channel splits region
+PASS T05 topology split conserves per-cell stock
+PASS T06 height one is a cross-region channel
+PASS T07 height two blocks channel
+WATER_LAND_BOUNDARY_PASS checks=15 seed=20261018

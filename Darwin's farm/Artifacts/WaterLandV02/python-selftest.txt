@@ -1,0 +1,39 @@
+test_cap_bounds_growth (test_model.EcologyBoundaryTests.test_cap_bounds_growth) ... ok
+test_cross_evolve_count_and_conservation (test_model.EcologyBoundaryTests.test_cross_evolve_count_and_conservation) ... ok
+test_day_regrowth_once_per_cell (test_model.EcologyBoundaryTests.test_day_regrowth_once_per_cell) ... ok
+test_downsize_body_surplus_to_detritus (test_model.EcologyBoundaryTests.test_downsize_body_surplus_to_detritus) ... ok
+test_failed_gate_is_atomic (test_model.EcologyBoundaryTests.test_failed_gate_is_atomic) ... ok
+test_food_support_limits_count (test_model.EcologyBoundaryTests.test_food_support_limits_count) ... ok
+test_land_to_water_body_payment (test_model.EcologyBoundaryTests.test_land_to_water_body_payment) ... ok
+test_low_stock_reduces_split_not_negative (test_model.EcologyBoundaryTests.test_low_stock_reduces_split_not_negative) ... ok
+test_no_affordable_head_no_mutation (test_model.EcologyBoundaryTests.test_no_affordable_head_no_mutation) ... ok
+test_no_new_birth_on_location_shift (test_model.EcologyBoundaryTests.test_no_new_birth_on_location_shift) ... ok
+test_one_shared_algae_budget (test_model.EcologyBoundaryTests.test_one_shared_algae_budget) ... ok
+test_split_stock_is_not_duplicated (test_model.EcologyBoundaryTests.test_split_stock_is_not_duplicated) ... ok
+test_target_template_not_parent_identity (test_model.EcologyBoundaryTests.test_target_template_not_parent_identity) ... ok
+test_deterministic_repeat_fixed_actions (test_model.PropertyTests.test_deterministic_repeat_fixed_actions) ... ok
+test_random_2500_water_topology_all_invariants (test_model.PropertyTests.test_random_2500_water_topology_all_invariants) ... ok
+test_random_5000_cross_evolution_atomic_mass (test_model.PropertyTests.test_random_5000_cross_evolution_atomic_mass) ... ok
+test_cross_habitat_height_one_allowed_two_rejected (test_model.TopologyTests.test_cross_habitat_height_one_allowed_two_rejected) ... ok
+test_diagonal_disallowed_even_if_neighbor_list_broken (test_model.TopologyTests.test_diagonal_disallowed_even_if_neighbor_list_broken) ... ok
+test_invalid_cross_habitat_same_kind (test_model.TopologyTests.test_invalid_cross_habitat_same_kind) ... ok
+test_land_to_water_local_not_teleport (test_model.TopologyTests.test_land_to_water_local_not_teleport) ... ok
+test_no_port_no_cross_water_pass (test_model.TopologyTests.test_no_port_no_cross_water_pass) ... ok
+test_position_not_basin_shortcut (test_model.TopologyTests.test_position_not_basin_shortcut) ... ok
+test_position_shift_changes_eligibility_not_resources (test_model.TopologyTests.test_position_shift_changes_eligibility_not_resources) ... ok
+test_real_neighbor_list_required (test_model.TopologyTests.test_real_neighbor_list_required) ... ok
+test_relocate_into_same_species_site_rejected_until_merge (test_model.TopologyTests.test_relocate_into_same_species_site_rejected_until_merge) ... ok
+test_rotate_does_not_move_pop_or_change_total_stock (test_model.TopologyTests.test_rotate_does_not_move_pop_or_change_total_stock) ... ok
+test_same_basin_reposition_allows_new_shore (test_model.TopologyTests.test_same_basin_reposition_allows_new_shore) ... ok
+test_same_cell_target_exists_blocks (test_model.TopologyTests.test_same_cell_target_exists_blocks) ... ok
+test_shared_water_single_basin (test_model.TopologyTests.test_shared_water_single_basin) ... ok
+test_water_height_one_cross_basin_edge (test_model.TopologyTests.test_water_height_one_cross_basin_edge) ... ok
+test_water_height_two_blocks (test_model.TopologyTests.test_water_height_two_blocks) ... ok
+test_water_opening_is_not_bank_opening (test_model.TopologyTests.test_water_opening_is_not_bank_opening) ... ok
+test_water_openings_mutual (test_model.TopologyTests.test_water_openings_mutual) ... ok
+test_water_same_species_other_cell_not_global_uniqueness (test_model.TopologyTests.test_water_same_species_other_cell_not_global_uniqueness) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.881s
+
+OK

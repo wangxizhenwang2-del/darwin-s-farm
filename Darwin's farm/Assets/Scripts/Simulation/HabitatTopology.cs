@@ -74,12 +74,19 @@ public static class HabitatTopology
 
     public static bool ChannelsConnect(BlockInfo left, BlockInfo right)
     {
-        if (!IsWater(left) || !IsWater(right) || !AreAdjacent(left, right))
+        if (!IsWater(left) || !IsWater(right) ||
+            !HasNeighbor(left.Neighbors, right) ||
+            !HasNeighbor(right.Neighbors, left))
             return false;
         if (Mathf.Abs(left.elevation - right.elevation) > 1) return false;
-        if (IsPureWater(left) && IsPureWater(right)) return true;
-        // 河流地块可能肩并肩却互不相通，至少一端须声明这条水路。
-        return HasNeighbor(left.WaterLinks, right) ||
+        MapTileInstance from = left.GetComponent<MapTileInstance>();
+        MapTileInstance to = right.GetComponent<MapTileInstance>();
+        if (from == null || to == null ||
+            Mathf.Abs(from.Coordinate.x - to.Coordinate.x) +
+            Mathf.Abs(from.Coordinate.y - to.Coordinate.y) != 1) return false;
+        // MapSimulationBridge records a link only when both openings face
+        // each other. A unilateral or stale link must never join two basins.
+        return HasNeighbor(left.WaterLinks, right) &&
             HasNeighbor(right.WaterLinks, left);
     }
 
