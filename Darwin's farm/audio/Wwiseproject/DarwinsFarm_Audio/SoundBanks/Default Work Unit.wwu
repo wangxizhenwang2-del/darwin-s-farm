@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{4D4BC6BA-4CB6-4D5B-87D0-4B33F02CD015}" SchemaVersion="133">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{4D4BC6BA-4CB6-4D5B-87D0-4B33F02CD015}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="SB_Amb_Test" ID="{CE213BDA-A759-4087-A4C3-A561ABF108B3}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Stop___amb_water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play___amb_water" ID="{AAD6240B-88A4-47B7-BB35-C5EFB864FA89}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>
