@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{2C1CD560-95A6-4B89-8FA8-B26C88867893}" SchemaVersion="133">
+	<GameParameters>
+		<WorkUnit Name="Default Work Unit" ID="{2C1CD560-95A6-4B89-8FA8-B26C88867893}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="Tile_Gain" ID="{1F728BBF-3344-4960-927E-C09FC41C540B}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+					</PropertyList>
+				</GameParameter>
+			</ChildrenList>
+		</WorkUnit>
+	</GameParameters>
+</WwiseDocument>

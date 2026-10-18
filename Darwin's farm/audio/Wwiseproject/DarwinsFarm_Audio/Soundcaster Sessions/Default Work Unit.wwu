@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{A8FBB7A1-58B4-4421-8AA5-068F7CE0C33E}" SchemaVersion="133">
+	<SoundcasterSessions>
+		<WorkUnit Name="Default Work Unit" ID="{A8FBB7A1-58B4-4421-8AA5-068F7CE0C33E}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundcasterSession Name="test_amb_water" ID="{D1C0ADFB-864A-4CEB-B6E0-184336CA9876}">
+					<ModuleList>
+						<Module>
+							<ObjectRef Name="Play___amb_water" ID="{AAD6240B-88A4-47B7-BB35-C5EFB864FA89}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="0" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Stop___amb_water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="2" Y="0"/>
+						</Module>
+					</ModuleList>
+				</SoundcasterSession>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundcasterSessions>
+</WwiseDocument>
