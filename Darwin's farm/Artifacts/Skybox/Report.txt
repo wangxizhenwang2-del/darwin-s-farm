@@ -1,0 +1,13 @@
+PASS: Skybox shader imported
+PASS: Representative camera exists
+Scene bounds: Center: (12.610, -1.646, -14.102), Extents: (5.333, 3.913, 19.655)
+PASS: Assigning sky preserves scene ambient, reflections and fog
+PASS: Sky is independent of camera translation; mean RGB error=1.22549019607843E-08
+PASS: 360 degree rotation returns to the same sky
+PASS: Clouds move continuously: frame difference=2.45938375350139E-06, 20-second difference=0.00144658636788051
+PASS: Scene main Directional Light available
+PASS: Sun follows main Directional Light rotation
+PASS: Manual and light-synchronized sun directions agree
+PASS: Sun can be disabled independently
+PASS: Skybox is supported by the current GPU
+PASS: Skybox uses one rendering pass

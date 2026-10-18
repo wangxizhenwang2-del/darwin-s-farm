@@ -28,7 +28,17 @@ The original painted land, material assets, river prefabs and waterfall prefab r
 
 Only topology, transforms, water-level changes or an explicit rebuild regenerate geometry. Flow lines, foam, ripples and splash motion continue in the existing GPU shaders. Waterfall bodies reuse the existing material / HLSL, adapt their curved overhang to the height difference, and reuse all four splash silhouettes. Independent cutout impact layers use the receiving water mesh so several incoming falls can coexist without drawing foam over land.
 
-The water shader has two hidden river-lip parameters. Their default widths are zero; the original water output was compared against the pre-change shader and had zero mean pixel difference. A connected upstream surface flattens its waves at the curved lip, while its flow lines keep animating.
+The water shader has two hidden river-edge parameters. Their default widths are zero; ordinary water remains unaffected. Connected surfaces flatten their waves at the shared seam or curved waterfall lip, while their flow lines keep animating.
+
+## Closed banks and seam repair
+
+Capsule banks now include both end walls, the curved underwater wall and a bottom face. They form a closed volume with consistent outward winding and retain the existing grass / earth material slots.
+
+`Foundation Top` applies to river wrappers as well as land. The L_New wrapper uses its measured outer ledge height (0.103569m), closing the exposed band above the old zero-height foundation. River foundations still have no roof, avoiding the former duplicate-surface Z-fighting. The offline wrapper builder derives this height from perimeter vertices.
+
+Equal-height river joins now use a common mouth center, width and mean water height. Accepted small placement / water-level errors blend into that shared boundary over 0.65m. Shader displacement fades to zero at the boundary, preserving animated flow lines. Height differences beyond the existing tolerance still produce waterfalls. This adjustment does not move authored terrain models or merge their land geometry.
+
+Before / after closeups, four-scene regression results and Play Mode checks for this correction are in `Artifacts/RiverConnections/SeamFix/`. Existing networks rebuild automatically after scripts reload; no shoreline rebake is needed. The guarded offline checks are in `Tools/MoebiusValidation/Editor/MoebiusRiverSeamValidation.cs`.
 
 ## Scope and validation
 

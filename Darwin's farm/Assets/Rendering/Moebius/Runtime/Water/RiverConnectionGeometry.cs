@@ -12,10 +12,13 @@ namespace Darwin.Rendering
         public RiverPort port;
         public RiverEndKind kind;
         public float lipRadius, capInset, bankHeight;
+        public Vector3 joinCenter;
+        public float joinWidth;
     }
 
     internal static class RiverConnectionGeometry
     {
+        internal const float JoinBlendWidth = .65f;
         static float S(Vector3 point, RiverEnd end) => Vector3.Dot(point - end.port.Center, end.port.Normal);
         static Vector3 Tangent(RiverEnd end) => Vector3.Cross(Vector3.up, end.port.Normal);
 
@@ -64,7 +67,22 @@ namespace Darwin.Rendering
                 {
                     if (Vector3.Cross(a[j] - a[0], a[j + 1] - a[0]).sqrMagnitude < 1e-12f) continue;
                     int first = vertices.Count;
-                    foreach (var p in new[] { a[0], a[j], a[j + 1] }) vertices.Add(new Vector3(p.x, level, p.z));
+                    foreach (var p in new[] { a[0], a[j], a[j + 1] })
+                    {
+                        var point = new Vector3(p.x, level, p.z);
+                        foreach (var end in ends)
+                        {
+                            if (end.kind != RiverEndKind.Joined) continue;
+                            float s = S(p, end), weight = 1 - Mathf.SmoothStep(0, 1, -s / JoinBlendWidth);
+                            if (weight <= 0) continue;
+                            var tangent = Tangent(end);
+                            float t = Vector3.Dot(p - end.port.Center, tangent);
+                            var target = end.joinCenter + end.port.Normal * (Mathf.Abs(s) < .005f ? 0 : s)
+                                + tangent * (t * end.joinWidth / end.port.width);
+                            point = Vector3.Lerp(point, target, weight);
+                        }
+                        vertices.Add(point);
+                    }
                     triangles.Add(first); triangles.Add(first + 1); triangles.Add(first + 2);
                 }
             }
@@ -93,18 +111,39 @@ namespace Darwin.Rendering
                 AddUp(vertices, triangles, i, i + columns + 1, i + 1);
                 AddUp(vertices, triangles, i + 1, i + columns + 1, i + columns + 2);
             }
-            // Close the exposed outside face when this river ends at the edge of a map.
+            // Extrude the entire perimeter, including both formerly open end faces
+            // and the underwater curved edge. Separate wall vertices retain hard normals.
+            float bottom = Mathf.Min(0, Mathf.Min(waterLevel, end.bankHeight) - .01f);
             for (int x = 0; x < columns; x++)
             {
-                var p = vertices[rows * (columns + 1) + x]; var q = vertices[rows * (columns + 1) + x + 1];
-                int i = vertices.Count; vertices.Add(p); vertices.Add(q);
-                vertices.Add(new Vector3(p.x, 0, p.z)); vertices.Add(new Vector3(q.x, 0, q.z));
-                sides.AddRange(new[] { i, i + 2, i + 1, i + 1, i + 2, i + 3 });
+                AddWall(vertices, sides, vertices[rows * (columns + 1) + x], vertices[rows * (columns + 1) + x + 1], bottom, end.port.Normal);
+                float angle = Mathf.Lerp(-Mathf.PI * .5f, Mathf.PI * .5f, (x + .5f) / columns);
+                var inward = -end.port.Normal * Mathf.Cos(angle) - Tangent(end) * Mathf.Sin(angle);
+                AddWall(vertices, sides, vertices[x], vertices[x + 1], bottom, inward);
             }
+            for (int z = 0; z < rows; z++)
+            {
+                AddWall(vertices, sides, vertices[z * (columns + 1)], vertices[(z + 1) * (columns + 1)], bottom, -Tangent(end));
+                AddWall(vertices, sides, vertices[z * (columns + 1) + columns], vertices[(z + 1) * (columns + 1) + columns], bottom, Tangent(end));
+            }
+            int underside = vertices.Count;
+            for (int i = 0; i < (rows + 1) * (columns + 1); i++)
+                vertices.Add(new Vector3(vertices[i].x, bottom, vertices[i].z));
+            for (int i = 0; i < triangles.Count; i += 3)
+                sides.AddRange(new[] { underside + triangles[i], underside + triangles[i + 2], underside + triangles[i + 1] });
             var mesh = NewMesh("Rounded River Bank"); mesh.SetVertices(vertices); mesh.subMeshCount = 2;
             mesh.SetTriangles(triangles, 0); mesh.SetTriangles(sides, 1); mesh.RecalculateNormals();
             var normals = mesh.normals; for (int x = 0; x <= columns; x++) normals[x] = Vector3.up; mesh.normals = normals;
             mesh.RecalculateBounds(); return mesh;
+        }
+        static void AddWall(List<Vector3> vertices, List<int> indices, Vector3 p, Vector3 q, float bottom, Vector3 outward)
+        {
+            int i = vertices.Count;
+            var lowerP = new Vector3(p.x, bottom, p.z); var lowerQ = new Vector3(q.x, bottom, q.z);
+            vertices.AddRange(new[] { p, lowerP, q, lowerQ });
+            bool reverse = Vector3.Dot(Vector3.Cross(lowerP - p, q - p), outward) < 0;
+            if (reverse) indices.AddRange(new[] { i, i + 2, i + 1, i + 2, i + 3, i + 1 });
+            else indices.AddRange(new[] { i, i + 1, i + 2, i + 2, i + 1, i + 3 });
         }
         static void AddUp(List<Vector3> vertices, List<int> indices, int a, int b, int c)
         {

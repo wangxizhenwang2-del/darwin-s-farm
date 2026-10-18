@@ -1,0 +1,8 @@
+PASS: 7 shared-water and speed-control groups.
+Real straight rivers share a roaming area; waterfalls and mismatched mouths are excluded from ordinary swimming; 0-1-2 migration path remains legal.
+Autonomous target selection and normal movement cross the seam; swept-body checks pass; presenter keeps the same visual, identity, home ledger and 80 animals.
+Day-7 migration dispatch does not relocate equal-height residents or emit migration events; zero waterfall chances are respected.
+Rotation, height change and deletion invalidate area/path caches immediately; stranded display safely returns to its home area without losing count; two-level drop remains impassable.
+A one-level migration can depart through the remote end of the shared area; it retains the upstream probability, conserves 80 animals and animates from the swimmer's actual position.
+Real PC button cycles 1x -> 2x -> 4x -> pause -> 1x with matching labels; Space and modal pause preserve the prior speed.
+Existing mobile speed callback retains 1x -> 2x -> 4x -> pause -> 1x.

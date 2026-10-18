@@ -14,7 +14,7 @@ namespace Darwin.Rendering
         public float waterLevel = .25f;
         [Tooltip("Land surface height above the tile origin, used when closing a neighbouring river mouth.")]
         public float landSurfaceHeight = 1.1f;
-        [Tooltip("Height of the underside of a land model above this wrapper, for the supporting terrain foundation.")]
+        [Tooltip("Height of the model's outer perimeter above this wrapper. Foundation side walls meet this ledge; river foundations have no overlapping roof.")]
         public float foundationTop;
         MoebiusRiverNetwork previousNetwork;
 

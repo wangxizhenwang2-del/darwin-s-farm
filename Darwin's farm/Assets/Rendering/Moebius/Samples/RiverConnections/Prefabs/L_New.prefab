@@ -49,7 +49,7 @@ MonoBehaviour:
   originalWater: {fileID: 1610550461950208470}
   waterLevel: 0.25
   landSurfaceHeight: 1.1
-  foundationTop: 0
+  foundationTop: 0.10356895
 --- !u!1001 &4138563107325004724
 PrefabInstance:
   m_ObjectHideFlags: 0

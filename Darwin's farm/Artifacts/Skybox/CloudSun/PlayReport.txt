@@ -1,0 +1,2 @@
+PASS: Play Mode time advances
+PASS: Sky material persists in Play Mode

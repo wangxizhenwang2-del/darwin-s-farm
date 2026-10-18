@@ -129,7 +129,17 @@ namespace Darwin.Rendering.Validation
             var model = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(B + "Prefabs/" + (profile ? name : "Grassland_Moebius") + ".prefab"));
             model.transform.SetParent(wrapper.transform, false);
             var tile = wrapper.AddComponent<MoebiusRiverTile>(); tile.profile = profile; tile.waterLevel = .25f;
-            if (profile) tile.originalWater = model.transform.Find("Flowing Water").GetComponent<MeshRenderer>();
+            if (profile)
+            {
+                tile.originalWater = model.transform.Find("Flowing Water").GetComponent<MeshRenderer>();
+                // L_New's outer ledge is ~10cm above its lowest channel point.
+                // Meet the real perimeter, rather than using bounds.min.y as a wall top.
+                var bank = model.GetComponent<MeshFilter>();
+                float half = profile.tileSize * .5f;
+                var perimeter = Positions(bank.sharedMesh).Select(p => wrapper.transform.InverseTransformPoint(bank.transform.TransformPoint(p)))
+                    .Where(p => Mathf.Abs(Mathf.Abs(p.x) - half) < .005f || Mathf.Abs(Mathf.Abs(p.z) - half) < .005f);
+                tile.foundationTop = Mathf.Max(0, perimeter.Max(p => p.y));
+            }
             else
             {
                 var ground = model.GetComponentsInChildren<MeshRenderer>().Where(r => r.enabled && !r.forceRenderingOff)

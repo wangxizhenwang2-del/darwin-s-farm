@@ -191,7 +191,7 @@ namespace Darwin.Rendering
                     foreach (var end in ends) if (end.kind == RiverEndKind.Falling) inset[(int)end.port.side] = .09f;
                     if (tile.IsRiver || generateLandFoundations)
                         OwnMesh("Terrain Foundation", tile, RiverConnectionGeometry.Foundation((tile.IsRiver ? tile.profile.tileSize : 17) * .5f,
-                            floor - foundationDepth - tile.transform.position.y, tile.IsRiver ? (tile.profile.fullTileWater ? tile.waterLevel : 0) : tile.foundationTop, inset,
+                            floor - foundationDepth - tile.transform.position.y, tile.IsRiver && tile.profile.fullTileWater ? tile.waterLevel : tile.foundationTop, inset,
                             includeTop: !tile.IsRiver), foundationMaterial);
                     if (!tile.IsRiver) continue;
                     var material = Own(new Material(tile.profile.waterMaterial) { name = tile.name + " Connected Water", hideFlags = HideFlags.DontSave });
@@ -200,9 +200,18 @@ namespace Darwin.Rendering
                     material.SetFloat("_EnableShoreMask", 1); material.SetFloat("_ShoreObjectSpace", 1);
                     material.SetTexture("_ShorelineMask", Own(RiverConnectionGeometry.Shore(tile.profile, ends)));
                     float half = tile.profile.tileSize * .5f; var rectangle = new Vector4(-half, -half, half, half); var fade = Vector4.zero;
-                    foreach (var end in ends) if (end.kind == RiverEndKind.Falling)
+                    foreach (var end in ends)
                     {
-                        int side = (int)end.port.side; fade[side] = .65f;
+                        int side = (int)end.port.side;
+                        if (end.kind == RiverEndKind.Falling) fade[side] = .65f;
+                        if (end.kind != RiverEndKind.Joined) continue;
+                        // Both meshes end at the same plane/height, including small accepted
+                        // placement errors. Flatten displacement there without stopping flow.
+                        fade[side] = RiverConnectionGeometry.JoinBlendWidth;
+                        if (end.port.side == RiverSide.North) rectangle.w = end.joinCenter.z;
+                        else if (end.port.side == RiverSide.East) rectangle.z = end.joinCenter.x;
+                        else if (end.port.side == RiverSide.South) rectangle.y = end.joinCenter.z;
+                        else rectangle.x = end.joinCenter.x;
                     }
                     material.SetVector("_RiverWaveFadeRect", rectangle); material.SetVector("_RiverWaveFadeWidths", fade);
                     var renderer = OwnMesh("Connected Water", tile, RiverConnectionGeometry.Water(tile.profile, tile.waterLevel, ends), material);
@@ -254,6 +263,22 @@ namespace Darwin.Rendering
                 }
                 float drop = tile.WorldWaterHeight - neighbour.WorldWaterHeight;
                 result.kind = Mathf.Abs(drop) <= heightTolerance ? RiverEndKind.Joined : drop > 0 ? RiverEndKind.Falling : RiverEndKind.Receiving;
+                if (result.kind == RiverEndKind.Joined)
+                {
+                    var position = tile.transform.TransformPoint(port.Center);
+                    var common = (position + neighbour.transform.TransformPoint(other.Center)) * .5f;
+                    common.y = (tile.WorldWaterHeight + neighbour.WorldWaterHeight) * .5f;
+                    result.joinCenter = tile.transform.InverseTransformPoint(common);
+                    result.joinWidth = (port.width + other.width) * .5f;
+                    if (tile.profile.fullTileWater || neighbour.profile.fullTileWater)
+                    {
+                        common = position + normal * (Vector3.Dot(neighbour.transform.TransformPoint(other.Center) - position, normal) * .5f);
+                        common.y = (tile.WorldWaterHeight + neighbour.WorldWaterHeight) * .5f;
+                        result.joinCenter = tile.transform.InverseTransformPoint(common);
+                        result.joinWidth = port.width;
+                        result.port = port;
+                    }
+                }
                 result.lipRadius = Mathf.Min(lipRadius, Mathf.Abs(drop) * .4f); return result;
             }
             return result;
