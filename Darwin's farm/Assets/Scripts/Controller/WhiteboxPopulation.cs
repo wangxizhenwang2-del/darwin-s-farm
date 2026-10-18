@@ -76,6 +76,17 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     {
         EcologicalPopulation = data;
         if (data == null || leader == null) return;
+        if (data.species != null && !string.IsNullOrEmpty(data.species.AnimalPlayEvent))
+        {
+            var animalAudio = leader.visual.GetComponent<DarwinWwiseAnimalEmitter>();
+            if (animalAudio == null) animalAudio = leader.visual.gameObject.AddComponent<DarwinWwiseAnimalEmitter>();
+            animalAudio.Bind(data.species.AnimalSoundBank, data.species.AnimalPlayEvent);
+        }
+        else
+        {
+            var animalAudio = leader.visual.GetComponent<DarwinWwiseAnimalEmitter>();
+            if (animalAudio != null) Destroy(animalAudio);
+        }
         Sprite selected = sprite != null ? sprite : controller.FallbackSprite;
         flight?.SetSprite(selected);
         boundSprite = selected;

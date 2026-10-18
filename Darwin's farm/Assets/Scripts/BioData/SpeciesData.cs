@@ -13,6 +13,11 @@ public class SpeciesData: ScriptableObject
     [SerializeField] private string speciesId;
     [SerializeField] private Sprite portrait;
     [SerializeField] private PopulationAnimationSet populationAnimation;
+    [Header("Wwise animal audio (leave empty until SB_Animals is delivered)")]
+    [SerializeField] private string animalPlayEvent;
+    [SerializeField] private string animalSoundBank = "SB_Animals";
+    public string AnimalPlayEvent => animalPlayEvent;
+    public string AnimalSoundBank => animalSoundBank;
     [SerializeField, TextArea(4, 12)] private string description;
     [SerializeField] private string[] traitClueAnchors = new string[5];
     public string SpeciesId => speciesId;

@@ -374,7 +374,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         masterSlider.SetValueWithoutNotify(settings.master);
         musicSlider.SetValueWithoutNotify(settings.music);
         effectsSlider.SetValueWithoutNotify(settings.effects);
-        masterSlider.onValueChanged.AddListener(v => { settings.master=v; AudioListener.volume=v; SaveSettings(); });
+        masterSlider.onValueChanged.AddListener(v => { settings.master=v; AudioListener.volume=v; DarwinWwiseAmbience.SetMasterVolume(v); SaveSettings(); });
         musicSlider.onValueChanged.AddListener(v => { settings.music=v; ApplyCategorizedAudio(); SaveSettings(); });
         effectsSlider.onValueChanged.AddListener(v => { settings.effects=v; ApplyCategorizedAudio(); SaveSettings(); });
         qualityDropdown.ClearOptions();
@@ -415,6 +415,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         settings.music=Mathf.Clamp01(settings.music);
         settings.effects=Mathf.Clamp01(settings.effects);
         AudioListener.volume=settings.master;
+        DarwinWwiseAmbience.SetMasterVolume(settings.master);
         if(settings.quality>=0 && settings.quality<QualitySettings.names.Length)
             QualitySettings.SetQualityLevel(settings.quality,true);
         if(!Application.isMobilePlatform)
@@ -447,6 +448,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     }
     private void ApplyCategorizedAudio()
     {
+        DarwinWwiseAmbience.SetEffectsVolume(settings.effects);
         foreach(var source in FindObjectsByType<DarwinAudioCategory>(FindObjectsSortMode.None))
             source.Apply(settings.music,settings.effects);
     }

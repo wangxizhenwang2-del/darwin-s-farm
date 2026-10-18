@@ -15,6 +15,26 @@
 **/[Uu]ser[Ss]ettings/
 *.log
 
+# Wwise integration: keep the Windows 64-bit runtime, omit local installer
+# output and platform binaries unused by this Windows project.
+**/WwiseUnityIntegration_*_Src.zip
+**/logRunSetup.txt
+**/Assets/Wwise/LauncherInfo.json*
+**/Assets/Wwise/Documentation/
+**/Assets/Wwise/Documentation.meta
+**/Assets/Wwise/API/Runtime/Plugins/Android/
+**/Assets/Wwise/API/Runtime/Plugins/Android.meta
+**/Assets/Wwise/API/Runtime/Plugins/Mac/
+**/Assets/Wwise/API/Runtime/Plugins/Mac.meta
+**/Assets/Wwise/API/Runtime/Plugins/Windows/x86/
+**/Assets/Wwise/API/Runtime/Plugins/Windows/x86.meta
+**/Assets/Wwise/ProjectDatabase/Runtime/Plugins/Mac/
+**/Assets/Wwise/ProjectDatabase/Runtime/Plugins/Mac.meta
+**/*.dSYM/
+**/*.dSYM.meta
+**/Assets/StreamingAssets/
+**/Assets/StreamingAssets.meta
+
 # By default unity supports Blender asset imports, *.blend1 blender files do not need to be commited to version control.
 *.blend1
 *.blend1.meta
