@@ -120,6 +120,10 @@ InitTestScene*.unity*
 /output/MigrationOpportunityUnityIsolated_20261017/
 /output/MigrationV2Patched_20261018/
 
+# Local migration research bundles and rollback snapshots.
+/Darwin's farm/Artifacts/20261017_migration_opportunity/
+/Darwin's farm/Artifacts/20261018_movement_v2/
+
 # Unity's local scene recovery files are not project scenes.
 /Darwin's farm/Assets/_Recovery/
 /Darwin's farm/Assets/_Recovery.meta
