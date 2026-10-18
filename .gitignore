@@ -124,6 +124,13 @@ InitTestScene*.unity*
 /Darwin's farm/Artifacts/20261017_migration_opportunity/
 /Darwin's farm/Artifacts/20261018_movement_v2/
 
+# One-off journal staging and port scripts; keep the image generator tracked.
+/Darwin's farm/Tools/DarwinUI/IMPLEMENTATION_REPORT.md
+/Darwin's farm/Tools/DarwinUI/merge_scene.py
+/Darwin's farm/Tools/DarwinUI/port_to_worktree.py
+/Darwin's farm/Tools/DarwinUI/restore_stage_scene.py
+/Darwin's farm/Tools/DarwinUI/split_scripts.py
+
 # Unity's local scene recovery files are not project scenes.
 /Darwin's farm/Assets/_Recovery/
 /Darwin's farm/Assets/_Recovery.meta
