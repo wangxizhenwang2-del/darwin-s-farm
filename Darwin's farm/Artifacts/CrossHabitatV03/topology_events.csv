@@ -1,3 +1,0 @@
-day,eventType,tile,oldBasin,newBasin,beforeSumStock,afterSumStock,topologyHash
-2,split,w3,w1+w2+w3,w1+w2|w3,447322.5,447322.5,not_exported_by_editor_fixture
-3,reconnect,w3,w1+w2|w3,w1+w2+w3,453864.1,453864.1,not_exported_by_editor_fixture
