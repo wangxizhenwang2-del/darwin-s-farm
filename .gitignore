@@ -112,6 +112,14 @@ InitTestScene*.unity*
 /Task9_Baseline_20261016/
 /Task12_Worktree_20261017/
 
+# Local full-project validation copies and the UI staging checkout.
+# These are separate Unity projects, not assets of the canonical game.
+/DarwinUIStage/
+/output/MigrationOpportunityUnityBaseline_20261017/
+/output/MigrationOpportunityUnityExact_20261017/
+/output/MigrationOpportunityUnityIsolated_20261017/
+/output/MigrationV2Patched_20261018/
+
 # Unity's local scene recovery files are not project scenes.
 /Darwin's farm/Assets/_Recovery/
 /Darwin's farm/Assets/_Recovery.meta
