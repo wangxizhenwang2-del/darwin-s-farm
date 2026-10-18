@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a63e38b9679164194a54caac8b1f4d, type: 3}
+  m_Name: "\u96EA\u72FCAnimation"
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
+  controller: {fileID: 9100000, guid: 809db2dfef7644343a90686728be62e6, type: 2}
+  idleSprite: {fileID: 21300000, guid: 8e8982ec4289130478ac586745d842ff, type: 3}
+  referenceMoveSpeed: 1.8
+  artworkFacesLeft: 1
+  walkFrames:
+  - {fileID: 21300000, guid: 71270cbf462f26a4abf05e201c26bf2a, type: 3}
+  - {fileID: 21300000, guid: 467a9c04b7c2d854eb9b0cbac2c47c78, type: 3}
+  - {fileID: 21300000, guid: c4ee4b22673cfeb4ba6a19e24edeb5b0, type: 3}
+  - {fileID: 21300000, guid: 73aa8022f86c1124f9674525fbb0244c, type: 3}
+  - {fileID: 21300000, guid: 31af70dd3dca78c4dbbf657851584817, type: 3}
+  - {fileID: 21300000, guid: e1dde5e301ec71b4a923ea0ca9c0fab6, type: 3}
+  idleFrames:
+  - {fileID: 21300000, guid: 8e8982ec4289130478ac586745d842ff, type: 3}
+  - {fileID: 21300000, guid: d6b887a035d2bf74ba82725bd1196563, type: 3}
+  - {fileID: 21300000, guid: 31125dca92179ca44b864dfc545a5dec, type: 3}
+  - {fileID: 21300000, guid: 64a4b711d1d6a59449260ae424ad9540, type: 3}
+  - {fileID: 21300000, guid: 68a8e5568d47640418061958c499be1c, type: 3}
+  - {fileID: 21300000, guid: 06965bbd6d853d04e87096d2b4653427, type: 3}
+  - {fileID: 21300000, guid: abc0d6589e346e64ca77298d8953838f, type: 3}
+  - {fileID: 21300000, guid: 043113a49b2b2c245a9deb532807f78a, type: 3}
+  - {fileID: 21300000, guid: b3399fbaa935f514089d6cd4171cba34, type: 3}
+  - {fileID: 21300000, guid: 81e538d4e2cca8e4cb09005b3db7985b, type: 3}
+  - {fileID: 21300000, guid: ead8f92252f7bda46b382ef5bc4627fb, type: 3}
+  - {fileID: 21300000, guid: d3b21d60c5b922f459bffa75e86f8c20, type: 3}
+  - {fileID: 21300000, guid: c56498fed1dc1a340b3b43cd4d98a084, type: 3}
+  - {fileID: 21300000, guid: 88811b26e9345dd4ea973df1e3be33bb, type: 3}
+  - {fileID: 21300000, guid: 0c52ec92d2a705444a19161f2356bbf3, type: 3}
+  - {fileID: 21300000, guid: f1043e35ead09e047bd47f4f8260d56d, type: 3}
+  - {fileID: 21300000, guid: 68bf53c6606a4be488b6f77a351b2ed1, type: 3}
+  walkStartFrame: 1
+  walkEndFrame: 6
+  idleStartFrame: 1
+  idleEndFrame: 17
+  stopFrame: 1
+  walkFps: 6
+  idleFps: 6
+  idleDelayMin: 2
+  idleDelayMax: 5
+  movementHoldMin: 4
+  movementHoldMax: 8

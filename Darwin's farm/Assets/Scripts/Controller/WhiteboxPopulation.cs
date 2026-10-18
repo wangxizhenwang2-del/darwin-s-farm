@@ -62,6 +62,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private bool terrainRecoveryPending;
     private float terrainRecoveryAt;
     private PopulationAnimationDriver animationDriver;
+    private PopulationFrameAnimationController frameAnimation;
     private Sprite boundSprite;
     private Color boundTint;
     private PopulationAnimationSet boundAnimation;
@@ -94,7 +95,12 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         boundAnimation = animations;
         if (animationDriver == null)
             animationDriver = leader.sprite.gameObject.AddComponent<PopulationAnimationDriver>();
-        animationDriver.Bind(leader.sprite, IsAir ? null : animations, selected, tint, leader.groundPosition);
+        bool hasFrames = animations != null && animations.HasFrameSequences;
+        animationDriver.Bind(leader.sprite, hasFrames || IsAir ? null : animations,
+            selected, tint, leader.groundPosition);
+        if (hasFrames && frameAnimation == null)
+            frameAnimation = leader.sprite.gameObject.AddComponent<PopulationFrameAnimationController>();
+        frameAnimation?.Bind(leader.sprite, hasFrames ? animations : null, tint);
         if (IsAir) PopulationSpriteDisplay.ConfigureAir(leader.sprite);
         leader.visual.GetComponent<MeshRenderer>().enabled = leader.sprite.sprite == null;
     }
@@ -164,7 +170,8 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         label.transform.position = Leader.position + Vector3.up *
             (leader.size * 0.5f + controller.Settings.labelHeight);
         Camera camera = controller.ViewCamera != null ? controller.ViewCamera : Camera.main;
-        animationDriver?.SampleMotion(leader.groundPosition, camera, Mathf.Min(Time.deltaTime, 0.2f));
+        if (frameAnimation == null || frameAnimation.AnimationSet == null)
+            animationDriver?.SampleMotion(leader.groundPosition, camera, Mathf.Min(Time.deltaTime, 0.2f));
         if (camera == null) return;
         label.transform.rotation = camera.transform.rotation;
         PopulationSpriteDisplay.FaceCamera(leader.sprite, camera);
@@ -176,10 +183,34 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         {
             if (leader == null || tile == null) return;
             Vector3 before = leader.groundPosition;
-            flight.Tick(deltaTime, wanderingPaused);
+            bool common = frameAnimation != null && frameAnimation.IsCommonLoop;
+            bool animated = frameAnimation != null && frameAnimation.AnimationSet != null && !common;
+            if (animated && !wanderingPaused &&
+                frameAnimation.Phase != PopulationFramePhase.Walk && Time.time >= chooseAt)
+            {
+                frameAnimation.RequestStart();
+                if (frameAnimation.CanBeginWalk)
+                    frameAnimation.BeginWalk(controller.Settings.flightSpeed *
+                        frameAnimation.WalkCycleSeconds * UnityEngine.Random.Range(2, 5),
+                        controller.Settings.flightSpeed);
+            }
+            PopulationFramePhase airPhaseBefore = animated ? frameAnimation.Phase : PopulationFramePhase.Hold;
+            float flightDistance = animated ? frameAnimation.Tick(deltaTime, Time.time) : 0f;
+            if (common) frameAnimation.Tick(deltaTime, Time.time);
+            flight.Tick(deltaTime, animated ? flightDistance <= 0f : wanderingPaused);
             Place(flight.Position, flight.Position - before);
+            if (animated || common)
+            {
+                frameAnimation.FaceTravel(leader.groundPosition - before, controller.ViewCamera);
+                if (animated && airPhaseBefore == PopulationFramePhase.Walk &&
+                    frameAnimation.Phase == PopulationFramePhase.Hold)
+                    chooseAt = Time.time + UnityEngine.Random.Range(
+                        frameAnimation.AnimationSet.MovementHoldMin,
+                        frameAnimation.AnimationSet.MovementHoldMax);
+            }
             targetPosition = flight.Position;
-            movementState = wanderingPaused ? PopulationMovementState.Waiting : PopulationMovementState.Moving;
+            movementState = wanderingPaused || animated && flightDistance <= 0f ?
+                PopulationMovementState.Waiting : PopulationMovementState.Moving;
             return;
         }
         if (leader == null || tile == null || motion == null) return;
@@ -200,10 +231,40 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         leader.visual.gameObject.SetActive(placed);
         if (label != null) label.gameObject.SetActive(placed);
         if (!placed) { terrainRecoveryPending = true; terrainRecoveryAt = Time.time + .5f; Wait(true); return; }
-        if (!wanderingPaused && !motion.HasRoute && Time.time >= chooseAt) ChooseTarget();
+        bool commonLoop = frameAnimation != null && frameAnimation.IsCommonLoop;
+        bool frameDriven = frameAnimation != null && frameAnimation.AnimationSet != null && !commonLoop;
+        if (!wanderingPaused && !motion.HasRoute && Time.time >= chooseAt)
+        {
+            if (frameDriven) frameAnimation.RequestStart();
+            if (!frameDriven || frameAnimation.CanBeginWalk) ChooseTarget();
+        }
         bool hadRoute = motion.HasRoute;
-        motion.Tick(deltaTime, Time.time);
-        if (hadRoute && !motion.HasRoute) Wait(false);
+        bool blockedInterrupted = false;
+        Vector3 beforeMove = leader.groundPosition;
+        if (frameDriven)
+        {
+            float requested = frameAnimation.Tick(deltaTime, Time.time);
+            if (requested > 0f && motion.HasRoute)
+            {
+                motion.Tick(requested / Mathf.Max(0.0001f, frameAnimation.WalkSpeed),
+                    Time.time, frameAnimation.WalkSpeed);
+                if (motion.LastMovedDistance + 0.002f < requested)
+                { frameAnimation.InterruptBlocked(Time.time); Wait(true); blockedInterrupted = true; }
+                else frameAnimation.FaceTravel(leader.groundPosition - beforeMove, controller.ViewCamera);
+            }
+            if (frameAnimation.Phase != PopulationFramePhase.Walk && motion.HasRoute)
+                Wait(false);
+        }
+        else
+        {
+            motion.Tick(deltaTime, Time.time);
+            if (commonLoop)
+            {
+                frameAnimation.Tick(deltaTime, Time.time);
+                frameAnimation.FaceTravel(leader.groundPosition - beforeMove, controller.ViewCamera);
+            }
+        }
+        if (hadRoute && !motion.HasRoute && !blockedInterrupted) Wait(false);
         else if (motion.HasRoute)
         {
             movementState = PopulationMovementState.Moving;
@@ -225,6 +286,9 @@ public sealed class WhiteboxPopulation : MonoBehaviour
                 if (Vector2.Distance(PopulationCollisionMath.Flat(candidate), PopulationCollisionMath.Flat(leader.groundPosition)) < 1f ||
                     !space.CanWanderAt(candidate, leader.size, pass == 0 ? controller.Settings.wanderEdgeMargin : 0f)) continue;
                 if (!motion.SetTarget(candidate, Time.time)) continue;
+                if (frameAnimation != null && frameAnimation.AnimationSet != null && !frameAnimation.IsCommonLoop &&
+                    !frameAnimation.BeginWalk(motion.RouteLength, controller.Settings.speed))
+                { motion.CancelRoute(); continue; }
                 targetPosition = motion.Goal; movementState = PopulationMovementState.Moving;
                 return;
             }
@@ -234,14 +298,28 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private void Wait(bool blocked)
     {
         motion?.CancelRoute();
+        if (blocked && frameAnimation != null && frameAnimation.AnimationSet != null && !frameAnimation.IsCommonLoop)
+            frameAnimation.InterruptBlocked(Time.time);
         movementState = blocked ? PopulationMovementState.Blocked : PopulationMovementState.Waiting;
-        chooseAt = Time.time + Mathf.Max(0.1f, blocked ? controller.Settings.retrySeconds : controller.Settings.pauseSeconds);
+        if (!blocked && frameAnimation != null && frameAnimation.AnimationSet != null && !frameAnimation.IsCommonLoop)
+            chooseAt = Time.time + UnityEngine.Random.Range(
+                frameAnimation.AnimationSet.MovementHoldMin,
+                frameAnimation.AnimationSet.MovementHoldMax);
+        else
+            chooseAt = Time.time + Mathf.Max(0.1f,
+                blocked ? controller.Settings.retrySeconds : controller.Settings.pauseSeconds);
     }
 
     internal void PauseWandering(bool paused)
     {
         wanderingPaused = paused;
-        if (paused) Wait(false);
+        if (paused && frameAnimation != null && frameAnimation.AnimationSet != null && !frameAnimation.IsCommonLoop)
+        {
+            if (motion != null && motion.HasRoute)
+                targetPosition = motion.PositionAfter(frameAnimation.DistanceUntilWalkBoundary);
+            frameAnimation.RequestStop();
+        }
+        else if (paused) Wait(false);
         else chooseAt = Time.time;
     }
 
