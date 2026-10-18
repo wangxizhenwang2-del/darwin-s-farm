@@ -70,7 +70,7 @@ public static class JournalSceneInstaller
         Center(fullscreenRow,new Vector2(590,52),new Vector2(0,-130));
         Label("Name",fullscreenRow,"全屏",22,new Vector2(-196,0),new Vector2(170,44),TextAlignmentOptions.Left);
         var fullscreen=Toggle("FullscreenToggle",fullscreenRow,new Vector2(90,42),new Vector2(38,0));
-        Label("AudioNote",settingsPaper,"分类音量仅作用于已标记的音频源；主音量控制全局。",16,
+        Label("AudioNote",settingsPaper,"主音量控制全部声音；音效控制环境声和动物叫声。",16,
             new Vector2(0,-246),new Vector2(580,34));
 
         var tutorialView=Layer("TutorialPanel",safe);

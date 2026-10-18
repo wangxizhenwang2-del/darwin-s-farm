@@ -70,6 +70,12 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
         if (!AkUnitySoundEngine.IsInitialized() || viewCamera == null || grid == null)
             return;
 
+        if (!Mathf.Approximately(lastOutputVolume, MasterVolume))
+        {
+            AkUnitySoundEngine.SetOutputVolume(0, MasterVolume);
+            lastOutputVolume = MasterVolume;
+        }
+
         if (!bankLoaded)
         {
             uint bankId;
@@ -82,12 +88,6 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
             }
             if (!bankLoaded) return;
             Debug.Log("Wwise ambience bank loaded: " + BankName, this);
-        }
-
-        if (!Mathf.Approximately(lastOutputVolume, MasterVolume))
-        {
-            AkUnitySoundEngine.SetOutputVolume(0, MasterVolume);
-            lastOutputVolume = MasterVolume;
         }
 
         bool hasGround = TryGetGround(out Vector3 point, out MapTileInstance tile);
@@ -123,7 +123,7 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
                 // Fade this voice to zero before replacing it on the next frame.
                 gain = Mathf.MoveTowards(gain, 0f,
                     maxGainFallPerSecond * Time.unscaledDeltaTime);
-                AkUnitySoundEngine.SetRTPCValue(GainParameter, gain, emitter);
+                AkUnitySoundEngine.SetRTPCValue(GainParameter, gain * EffectsVolume, emitter);
                 if (gain > 0.01f) return;
                 AkUnitySoundEngine.PostEvent(StopEventFor(activeEvent), emitter);
                 activeEvent = null;
@@ -147,7 +147,7 @@ public sealed class DarwinWwiseAmbience : MonoBehaviour
         float rate = target < gain ? maxGainFallPerSecond : MaximumGain / fadeTime;
         gain = Mathf.MoveTowards(gain, target, rate * Time.unscaledDeltaTime);
         if (activeEvent != null)
-            AkUnitySoundEngine.SetRTPCValue(GainParameter, gain, emitter);
+            AkUnitySoundEngine.SetRTPCValue(GainParameter, gain * EffectsVolume, emitter);
     }
 
     private bool TryGetGround(out Vector3 point, out MapTileInstance tile)

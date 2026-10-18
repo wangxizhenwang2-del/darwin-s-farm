@@ -22996,7 +22996,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5206\u7C7B\u97F3\u91CF\u4EC5\u4F5C\u7528\u4E8E\u5DF2\u6807\u8BB0\u7684\u97F3\u9891\u6E90\uFF1B\u4E3B\u97F3\u91CF\u63A7\u5236\u5168\u5C40\u3002"
+  m_text: "\u4e3b\u97f3\u91cf\u63a7\u5236\u5168\u90e8\u58f0\u97f3\uff1b\u97f3\u6548\u63a7\u5236\u73af\u5883\u58f0\u548c\u52a8\u7269\u53eb\u58f0\u3002"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7515b639f5c24524b98142d41d28cfb4, type: 2}
   m_sharedMaterial: {fileID: 5051654029719933668, guid: 7515b639f5c24524b98142d41d28cfb4, type: 2}
