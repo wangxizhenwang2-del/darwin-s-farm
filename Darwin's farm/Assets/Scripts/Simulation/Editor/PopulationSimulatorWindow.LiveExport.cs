@@ -252,7 +252,6 @@ public partial class PopulationSimulatorWindow
             exportSimulation.OnMigrationResolved += OnExportTransition;
             exportSimulation.OnNicheConversionResolved += OnExportTransition;
             exportSimulation.OnPresetEvolutionResolved += OnExportTransition;
-            exportSimulation.OnLocalSplitResolved += OnExportTransition;
             exportSimulation.OnEcologyEvent += OnExportEcology;
             exportInterventions.OperationCommitted += OnExportIntervention;
             exportTime.OnSpeedChanged += OnExportSpeedChanged;
@@ -290,7 +289,6 @@ public partial class PopulationSimulatorWindow
             exportSimulation.OnMigrationResolved -= OnExportTransition;
             exportSimulation.OnNicheConversionResolved -= OnExportTransition;
             exportSimulation.OnPresetEvolutionResolved -= OnExportTransition;
-            exportSimulation.OnLocalSplitResolved -= OnExportTransition;
             exportSimulation.OnEcologyEvent -= OnExportEcology;
         }
         if (exportInterventions != null)

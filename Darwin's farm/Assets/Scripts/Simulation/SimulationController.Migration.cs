@@ -501,7 +501,6 @@ public partial class SimulationController
     public event Action<BlockInfo, BlockInfo, PopulationData, PopulationData, int>
         OnNicheConverted;
     public event Action<PopulationTransitionResult> OnNicheConversionResolved;
-    public event Action<PopulationData, BlockInfo, RiverBankSide?> OnLandPositionChanged;
 
     // Preserve the existing combined API for scene and editor integrations.
     public void SetEcologicalNichesEnabled(bool enabled)
