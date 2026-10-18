@@ -31,7 +31,11 @@ public partial class MapTileColorTransitionSystem
 
     private BiomeType VisibleBiome(MapTileInstance tile)
     {
-        if (tile.Block != null && tile.Block.waterCoverage != WaterCoverage.Land)
+        // TilesChanged may reach the terrain renderer before the simulation bridge
+        // creates BlockInfo. Read the construction definition during that interval.
+        WaterCoverage coverage = tile.Block != null ? tile.Block.waterCoverage :
+            tile.Definition != null ? tile.Definition.initialWaterCoverage : WaterCoverage.Land;
+        if (coverage != WaterCoverage.Land)
             return BiomeType.Rock; // Water has no matching decoration prefab.
         if (tile.Block != null && tile.Block.waterCoverage == WaterCoverage.Land &&
             liveTerrain.TryGetValue(tile.Coordinate, out TerrainKind kind))

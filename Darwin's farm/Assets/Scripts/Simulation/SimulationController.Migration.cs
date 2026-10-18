@@ -228,6 +228,36 @@ public partial class SimulationController
             }
         }
         ApplyMovePlans(plans, day);
+        if (EnableWaterEcology) RunWaterMigration(day);
+    }
+
+    private void RunWaterMigration(int day)
+    {
+        var candidates = new List<(BlockInfo block, PopulationData population)>();
+        foreach (var block in blockInfos)
+            if (block != null && block.community != null)
+                foreach (var p in block.community)
+                    if (p != null && p.ecologicalNiche == EcologicalNiche.Water && p.speciesAmount > 0) candidates.Add((block, p));
+        var regions = BuildWaterRegions();
+        foreach (var item in candidates)
+        {
+            if (!item.block.community.Contains(item.population) || item.block.Neighbors == null) continue;
+            // Equal-height connected tiles already form one resource/roaming
+            // area. Only its boundaries to other elevations are migration.
+            var region = regions.GetRegion(item.block);
+            if (region == null) continue;
+            var destinations = new HashSet<BlockInfo>();
+            foreach (var member in region.Members)
+                if (member.Neighbors != null)
+                    foreach (var neighbor in member.Neighbors)
+                        if (neighbor != null && regions.GetRegion(neighbor) != region &&
+                            HabitatTopology.ChannelsConnect(member, neighbor)) destinations.Add(neighbor);
+            var targets = new List<BlockInfo>(destinations);
+            targets.Sort((a, b) => ModelRandom01(day, "migration.water.destination", item.block, item.population, a)
+                .CompareTo(ModelRandom01(day, "migration.water.destination", item.block, item.population, b)));
+            foreach (var target in targets)
+                if (TryWaterMigration(item.block, target, item.population, regions, day)) break;
+        }
     }
 
     private bool TryPlanMove(BlockInfo source, PopulationData population,
@@ -658,7 +688,8 @@ public partial class SimulationController
         if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
             source == target || regions == null ||
             regions.GetRegion(source) == null ||
-            regions.GetRegion(source) != regions.GetRegion(target)) return false;
+            regions.GetRegion(source) != regions.GetRegion(target) ||
+            !PopulationWaterTravel.CanTravel(source, target, population)) return false;
         ApplyNicheMigration(source, target, population, population.speciesAmount, day);
         return true;
     }
@@ -675,7 +706,7 @@ public partial class SimulationController
             !WaterRegionsTouch(from, target) || target == population.lastMigrationSource)
             return false;
         int difference = to.Elevation - from.Elevation;
-        if (Mathf.Abs(difference) != 1 || to.AvailableFood <= 0f ||
+        if (!PopulationWaterTravel.CanTravel(source, target, population) || Mathf.Abs(difference) != 1 || to.AvailableFood <= 0f ||
             WaterFoodPressure(to) >= 1f) return false;
         int amount = LimitMigrationAmount(population.speciesAmount,
             overloadMigrationFraction);

@@ -330,6 +330,9 @@ public sealed class PlayerEconomyController : MonoBehaviour
         if ((population.ecologicalNiche == EcologicalNiche.Water && !water) ||
             (population.ecologicalNiche == EcologicalNiche.Land && water))
         { error = "目标地块与生态位不匹配"; return false; }
+        if (population.ecologicalNiche == EcologicalNiche.Water && source != null &&
+            !PopulationWaterTravel.CanTravel(source, target, population))
+        { error = "目标水域没有可通行的水路"; return false; }
         if (population.ecologicalNiche == EcologicalNiche.Air &&
             !SimulationController.CanAcceptAirSpecies(target, population))
         { error = "目标天空槽位已被其他物种占用"; return false; }
@@ -363,18 +366,18 @@ public sealed class PlayerEconomyController : MonoBehaviour
             arrival.landPositionBank = default(RiverBankSide);
             int movedAmount = population.speciesAmount;
             int airCountBefore = 0;
-            if (arrival.ecologicalNiche == EcologicalNiche.Air)
+            if (arrival.ecologicalNiche == EcologicalNiche.Air || arrival.ecologicalNiche == EcologicalNiche.Water)
                 foreach (PopulationData resident in target.community)
-                    if (resident != null && resident.ecologicalNiche == EcologicalNiche.Air &&
+                    if (resident != null && resident.ecologicalNiche == arrival.ecologicalNiche &&
                         PopulationTransfer.IsSameSpecies(resident, arrival))
                         airCountBefore += Mathf.Max(0, resident.speciesAmount);
             source.community.Remove(population);
             AddOrMerge(target, arrival);
-            if (arrival.ecologicalNiche == EcologicalNiche.Air)
+            if (arrival.ecologicalNiche == EcologicalNiche.Air || arrival.ecologicalNiche == EcologicalNiche.Water)
             {
                 population.speciesAmount = 0;
                 PopulationData result = target.community.Find(resident => resident != null &&
-                    resident.ecologicalNiche == EcologicalNiche.Air &&
+                    resident.ecologicalNiche == arrival.ecologicalNiche &&
                     PopulationTransfer.IsSameSpecies(resident, arrival));
                 simulation.NotifyPlayerAirMigration(source, target, population,
                     result, movedAmount, airCountBefore);

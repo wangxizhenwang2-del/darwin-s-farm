@@ -349,10 +349,7 @@ public sealed class MobileGameUI : MonoBehaviour
     private void CycleMobileSimulationSpeed()
     {
         if (clock == null) return;
-        // One touch target cycles through running speeds and pause.
-        if (clock.IsPaused) clock.Play();
-        else if (clock.Speed >= 4f) clock.Pause();
-        else clock.CycleSpeed();
+        clock.CycleSpeed();
         RefreshRuntime();
     }
     private void RefreshRuntime()

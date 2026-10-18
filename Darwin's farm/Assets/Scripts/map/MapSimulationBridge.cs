@@ -99,6 +99,7 @@ public sealed class MapSimulationBridge : MonoBehaviour
             blocks.Add(block);
         }
 
+        MapWaterController.GetOrCreate(gridManager).Refresh();
         foreach (MapTileInstance tile in tiles)
         {
             List<BlockInfo> neighbors = new List<BlockInfo>(4);

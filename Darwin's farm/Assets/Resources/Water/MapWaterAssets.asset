@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f27c60ccba384e34380a16f85b836985, type: 3}
+  m_Name: MapWaterAssets
+  m_EditorClassIdentifier: Assembly-CSharp::MapWaterAssets
+  shapes:
+  - openings: 12
+    prefab: {fileID: 1122477859040655039, guid: ab36bbf0f2b67224297d74035e0bfd2c, type: 3}
+  - openings: 15
+    prefab: {fileID: 1161509115029909561, guid: 2ae4c601c76dc5d4d83118bc44982ddf, type: 3}
+  - openings: 10
+    prefab: {fileID: 8611963367959750760, guid: 823adc4eb72fdf541929cb3d4c57020a, type: 3}
+  - openings: 11
+    prefab: {fileID: 7727628591457152032, guid: 6fba9aa5dfeeaf6428fb9f265dcea0d2, type: 3}
+  fullWaterPrefab: {fileID: 1161509115029909561, guid: 2ae4c601c76dc5d4d83118bc44982ddf, type: 3}
+  bankMaterial: {fileID: 2100000, guid: 093c56f6b2811c84192383e7374f13fe, type: 2}
+  foundationMaterial: {fileID: 2100000, guid: 6bb4e3be116c43f4980877796231382c, type: 2}
+  impactMaterial: {fileID: 2100000, guid: 3d252270b743750458c448a4d8de1762, type: 2}
+  waterfallPrefab: {fileID: 7952224933503272, guid: 8bc721520ae5a4848a1dbc00dcebd64e, type: 3}

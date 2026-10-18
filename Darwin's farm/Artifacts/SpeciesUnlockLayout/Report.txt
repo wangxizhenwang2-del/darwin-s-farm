@@ -1,0 +1,20 @@
+PASS: Species discovery card layout verified in Unity 6000.2.9f1 Play Mode.
+
+Changes:
+- Move the full card upward; fit its complete bounds, button and offset inside the safe area with padding.
+- Align discovery title and species name with the two decorative plaques.
+- Separate portrait, description and continue button; constrain text wrapping and auto-size locally.
+- Read animation rest positions from authored RectTransforms instead of overriding them with old coordinates.
+
+Runtime checks:
+- 1920x1080 desktop: title/name correctly placed, description and complete button visible (Desktop.png).
+- 1366x768 desktop: all four corners of the complete card inside the screen (WXGA.png).
+- 480x800 portrait: full continue-button rectangle inside safe area (Mobile480x800.png).
+- 1080x2400 portrait: full continue-button rectangle inside safe area (Mobile1080x2400.png).
+- All 20 current SpeciesData descriptions fit without overflow/truncation; minimum fitted font size 15.2 (TextFit.json).
+- Longest description, 106 characters, displayed fully (LongestDescription.png).
+- Mystery name stays hidden until reveal; two queued discoveries reveal and continue in order, ending with an empty queue and hidden card.
+- No new Unity compile errors or runtime exceptions during verification.
+
+Mobile sizes were tested in the Unity Game View, not on physical phones.
+Original Game View preset restored; Play Mode exited; runtime fixtures were not saved.

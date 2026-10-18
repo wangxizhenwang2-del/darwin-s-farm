@@ -79,7 +79,7 @@ public static class HabitatTopology
         if (Mathf.Abs(left.elevation - right.elevation) > 1) return false;
         if (IsPureWater(left) && IsPureWater(right)) return true;
         // 河流地块可能肩并肩却互不相通，至少一端须声明这条水路。
-        return HasNeighbor(left.WaterLinks, right) ||
+        return HasNeighbor(left.WaterLinks, right) &&
             HasNeighbor(right.WaterLinks, left);
     }
 

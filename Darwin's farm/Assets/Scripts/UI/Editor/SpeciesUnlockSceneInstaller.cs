@@ -13,6 +13,51 @@ public static class SpeciesUnlockSceneInstaller
     private const string Art = "Assets/Resources/DarwinJournal/SpeciesUnlock/";
     private static TMP_FontAsset font;
 
+    [MenuItem("Tools/Darwin's Farm/UI/Repair species unlock layout")]
+    public static void RepairLayout()
+    {
+        if (EditorApplication.isPlaying) throw new InvalidOperationException("Exit Play Mode first.");
+        var presenter = UnityEngine.Object.FindFirstObjectByType<SpeciesUnlockPresenter>(FindObjectsInactive.Include);
+        if (presenter == null) throw new InvalidOperationException("Open the existing WhiteBox scene first.");
+        Undo.RegisterFullObjectHierarchyUndo(presenter.gameObject, "Repair species discovery card layout");
+        ConfigureLayout(presenter.transform);
+        EditorSceneManager.MarkSceneDirty(presenter.gameObject.scene);
+    }
+
+    private static void ConfigureLayout(Transform root)
+    {
+        RectTransform At(string path) => (RectTransform)root.Find("CardRoot" + path);
+        Center(At(""), new Vector2(430, 700), new Vector2(0, 12));
+        Center(At("/CardPaperBackground"), new Vector2(402, 650), new Vector2(0, 14));
+        Center(At("/CardFrame"), new Vector2(330, 440), new Vector2(0, 85));
+        Center(At("/TitleText"), new Vector2(144, 34), new Vector2(0, 257));
+        Center(At("/CreatureArea"), new Vector2(250, 220), new Vector2(0, 110));
+        Center(At("/CreatureArea/SilhouetteImage"), new Vector2(210, 210), Vector2.zero);
+        Center(At("/CreatureArea/CreatureImage"), new Vector2(210, 210), Vector2.zero);
+        Center(At("/CreatureArea/QuestionMarkGroup"), new Vector2(205, 150), new Vector2(88, 60));
+        Center(At("/NameText"), new Vector2(220, 34), new Vector2(0, -17));
+        Center(At("/DescriptionGroup"), new Vector2(332, 142), new Vector2(0, -187));
+        Center(At("/DescriptionGroup/DescriptionText"), new Vector2(304, 126), Vector2.zero);
+        Center(At("/ContinueButton"), new Vector2(190, 44), new Vector2(0, -285));
+        Center(At("/ContinueButton/Label"), new Vector2(170, 36), Vector2.zero);
+        void Text(string path, float maximum, float minimum, TextAlignmentOptions alignment, bool wrap)
+        {
+            var label = At(path).GetComponent<TMP_Text>();
+            label.fontSize = label.fontSizeMax = maximum; label.fontSizeMin = minimum;
+            label.enableAutoSizing = true;
+            label.alignment = alignment;
+            label.textWrappingMode = wrap ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
+            label.overflowMode = TextOverflowModes.Ellipsis;
+            label.margin = Vector4.zero;
+            label.characterSpacing = 0; label.lineSpacing = 0; label.paragraphSpacing = wrap ? 4 : 0;
+            EditorUtility.SetDirty(label);
+        }
+        Text("/TitleText", 20, 18, TextAlignmentOptions.Center, false);
+        Text("/NameText", 24, 18, TextAlignmentOptions.Center, false);
+        Text("/DescriptionGroup/DescriptionText", 17, 14, TextAlignmentOptions.TopLeft, true);
+        Text("/ContinueButton/Label", 21, 19, TextAlignmentOptions.Center, false);
+    }
+
     [MenuItem("Tools/Darwin's Farm/UI/Play sample species unlock")]
     public static void PlaySample()
     {
@@ -40,7 +85,8 @@ public static class SpeciesUnlockSceneInstaller
         if (safe == null) throw new InvalidOperationException("JournalCanvas/SafeArea missing.");
         if (safe.Find("SpeciesUnlockUI") != null)
         {
-            Debug.Log("SpeciesUnlockUI already authored; keeping existing scene objects.");
+            RepairLayout();
+            EditorSceneManager.SaveScene(scene);
             return;
         }
         font = GameUITheme.TMPFont;
@@ -133,6 +179,7 @@ public static class SpeciesUnlockSceneInstaller
         Set(data, "descriptionText", descriptionRoot.Find("DescriptionText").GetComponent<TMP_Text>());
         Set(data, "continueButton", button);
         data.ApplyModifiedPropertiesWithoutUndo();
+        ConfigureLayout(root);
         root.SetAsLastSibling();
         var hud = safe.Find("EcologyNewsToast");
         if (hud != null) hud.SetAsLastSibling();

@@ -43,7 +43,7 @@ namespace Darwin.Rendering
                 foreach (var end in ends)
                 {
                     if (a.Count == 0) break;
-                    if (end.kind == RiverEndKind.Closed)
+                    if (end.kind == RiverEndKind.Closed && !profile.fullTileWater)
                     {
                         float radius = end.port.width * .5f, center = -radius - end.capInset;
                         float maximum = float.NegativeInfinity; foreach (var point in a) maximum = Mathf.Max(maximum, S(point, end));
@@ -124,7 +124,7 @@ namespace Darwin.Rendering
                 var p = new Vector3(profile.shoreRect.x + (x + .5f) * dx, 0, profile.shoreRect.y + (z + .5f) * dz);
                 foreach (var end in ends)
                 {
-                    if (end.kind != RiverEndKind.Closed) continue;
+                    if (end.kind != RiverEndKind.Closed || profile.fullTileWater) continue;
                     float radius = end.port.width * .5f;
                     float s = S(p, end) + radius + end.capInset;
                     float t = Vector3.Dot(p - end.port.Center, Tangent(end));

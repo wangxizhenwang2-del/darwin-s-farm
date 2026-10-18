@@ -209,6 +209,7 @@ public class MapGridManager : MonoBehaviour
      definition.heightLevel,
      rotationSteps);
 
+        instance.GridOwner = this;
         tiles.Add(coordinate, instance);
 
         // 先生成新的可见网格和碰撞体。

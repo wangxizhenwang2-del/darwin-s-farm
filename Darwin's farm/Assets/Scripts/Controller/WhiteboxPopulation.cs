@@ -17,6 +17,9 @@ public sealed class PopulationMovementSettings
     [Min(0.1f)] public float replanSeconds = 0.5f;
     [Min(0.2f)] public float blockedRetargetSeconds = 1.5f;
     [Range(1, 64)] public int targetAttempts = 24;
+    [Header("Water populations")]
+    [Range(0f, .6f)] public float submergedFraction = .25f;
+    [Min(.1f)] public float swimClearanceMultiplier = .8f;
     [Header("Air populations")]
     [Min(0.1f)] public float flightSpeed = 3f;
     [Min(0.75f)] public float flightHeight = 1.7f;
@@ -50,6 +53,11 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     public Sprite DisplaySprite => leader?.sprite != null ? leader.sprite.sprite : null;
     public PopulationData EcologicalPopulation { get; private set; }
     public bool IsAir => flight != null;
+    public bool IsWater { get; private set; }
+    private MapWaterController water;
+    internal float SwimRadius => PopulationSpriteDisplay.WaterRadius(leader.size, controller.Settings.swimClearanceMultiplier,
+        leader.sprite ? leader.sprite.sprite : null, controller.ViewCamera ? controller.ViewCamera : Camera.main, controller.Settings.submergedFraction);
+    private bool WaterPose(Vector3 position) => water && water.TrySwimmingPose(tileId, position, SwimRadius, out _);
 
     internal Representative leader;
     internal PopulationTileSpace space;
@@ -85,14 +93,16 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             animationDriver = leader.sprite.gameObject.AddComponent<PopulationAnimationDriver>();
         animationDriver.Bind(leader.sprite, IsAir ? null : animations, selected, tint, leader.groundPosition);
         if (IsAir) PopulationSpriteDisplay.ConfigureAir(leader.sprite);
+        if (IsWater) PopulationSpriteDisplay.ConfigureWater(leader.sprite, water.TrySpace(tileId, out var ws) ? ws.Height : leader.groundPosition.y, controller.Settings.submergedFraction);
         leader.visual.GetComponent<MeshRenderer>().enabled = leader.sprite.sprite == null;
     }
 
     internal void Initialize(PopulationMovementController owner, MapTileInstance ownedTile,
         PopulationTileSpace ownedSpace, int count, Vector3 position, Color color,
-        bool airborne = false)
+        bool airborne = false, bool aquatic = false, MapWaterController waterController = null)
     {
         controller = owner; tile = ownedTile; space = ownedSpace;
+        IsWater = aquatic; water = waterController;
         uniqueId = Guid.NewGuid().ToString("N"); tileId = tile.Coordinate;
         populationCount = Mathf.Max(0, count);
         if (airborne)
@@ -132,7 +142,8 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         targetPosition = position; movementState = PopulationMovementState.Waiting;
         chooseAt = Time.time + UnityEngine.Random.Range(0f, Mathf.Max(0.1f, controller.Settings.pauseSeconds));
         if (!IsAir) motion = new PopulationMotion(leader, controller.Settings,
-            (from, to) => space.CanTraverse(from, to, leader.size) && controller.HasSeparation(this, from, to),
+            (from, to) => (IsWater ? water.SwimmingSegment(tileId, from, to, SwimRadius) :
+                space.CanTraverse(from, to, leader.size)) && controller.HasSeparation(this, from, to),
             PlanRoute, Place);
         RefreshLabel();
     }
@@ -157,6 +168,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         if (camera == null) return;
         label.transform.rotation = camera.transform.rotation;
         PopulationSpriteDisplay.FaceCamera(leader.sprite, camera);
+        if (IsWater) PopulationSpriteDisplay.ConfigureWater(leader.sprite, leader.groundPosition.y, controller.Settings.submergedFraction);
     }
 
     internal void Tick(float deltaTime)
@@ -175,10 +187,17 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         if (terrainRecoveryPending)
         {
             if (Time.time < terrainRecoveryAt) return;
-            if (!space.CanTraverse(leader.groundPosition, leader.groundPosition, leader.size))
+            if (!(IsWater ? WaterPose(leader.groundPosition) : space.CanTraverse(leader.groundPosition, leader.groundPosition, leader.size)))
             {
                 if (!controller.TryRecoverPosition(this, out Vector3 position) || !Place(position, leader.heading))
-                { terrainRecoveryAt = Time.time + .5f; Wait(true); return; }
+                {
+                    if (IsWater)
+                    {
+                        leader.visual.gameObject.SetActive(false);
+                        if (label) label.gameObject.SetActive(false);
+                    }
+                    terrainRecoveryAt = Time.time + .5f; Wait(true); return;
+                }
             }
             motion.ResetNavigation();
             terrainRecoveryPending = false;
@@ -201,18 +220,28 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     }
 
     private bool PlanRoute(Vector3 from, Vector3 target, out Vector3[] path) =>
+        IsWater ? water.TrySwimmingPath(tileId, from, target, SwimRadius, out path) :
         space.TryPath(from, target, leader.size, out path, (a, b) => controller.HasSeparation(this, a, b));
 
     private void ChooseTarget()
     {
-        Bounds bounds = space.Bounds;
+        System.Collections.Generic.IReadOnlyList<MapTileInstance> area = null;
+        if (IsWater && !water.TrySwimmingArea(tileId, out area)) { Wait(true); return; }
         for (int pass = 0; pass < 2; pass++)
             for (int attempt = 0; attempt < Mathf.Clamp(controller.Settings.targetAttempts, 1, 64); attempt++)
             {
+                Bounds bounds;
+                if (IsWater)
+                {
+                    var destination = area[UnityEngine.Random.Range(0, area.Count)];
+                    if (!water.TrySpace(destination.Coordinate, out var ws)) continue;
+                    bounds = ws.Bounds;
+                }
+                else bounds = space.Bounds;
                 Vector3 candidate = new Vector3(UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
                     leader.groundPosition.y, UnityEngine.Random.Range(bounds.min.z, bounds.max.z));
                 if (Vector2.Distance(PopulationCollisionMath.Flat(candidate), PopulationCollisionMath.Flat(leader.groundPosition)) < 1f ||
-                    !space.CanWanderAt(candidate, leader.size, pass == 0 ? controller.Settings.wanderEdgeMargin : 0f)) continue;
+                    !(IsWater ? WaterPose(candidate) : space.CanWanderAt(candidate, leader.size, pass == 0 ? controller.Settings.wanderEdgeMargin : 0f))) continue;
                 if (!motion.SetTarget(candidate, Time.time)) continue;
                 targetPosition = motion.Goal; movementState = PopulationMovementState.Moving;
                 return;
@@ -250,7 +279,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         if (label == null || !label.gameObject.activeInHierarchy || label.text != Count.ToString())
         { problem = "Count label is hidden or out of sync."; return false; }
         if (!leader.visual.gameObject.activeInHierarchy ||
-            !space.CanTraverse(leader.groundPosition, leader.groundPosition, leader.size))
+            !(IsWater ? WaterPose(leader.groundPosition) : space.CanTraverse(leader.groundPosition, leader.groundPosition, leader.size)))
         { problem = "Representative is hidden or outside valid terrain."; return false; }
         if (!controller.HasSeparation(this, leader.groundPosition))
         { problem = "Representative overlaps another population."; return false; }
@@ -284,6 +313,14 @@ public sealed class WhiteboxPopulation : MonoBehaviour
             leader.visual.SetPositionAndRotation(position, Quaternion.LookRotation(leader.heading, Vector3.up));
             return true;
         }
+        if (IsWater)
+        {
+            if (!water.TrySwimmingPose(tileId, position, SwimRadius, out position)) return false;
+            leader.groundPosition = position; leader.heading = nextHeading;
+            float offset = leader.size * (.5f - 1.5f * controller.Settings.submergedFraction);
+            leader.visual.SetPositionAndRotation(position + Vector3.up * offset, Quaternion.LookRotation(nextHeading, Vector3.up));
+            return true;
+        }
         if (!space.TryRepresentativePose(position, nextHeading, leader.size,
             out Vector3 ground, out Vector3 center, out Quaternion rotation)) return false;
         leader.groundPosition = ground; leader.heading = nextHeading;
@@ -294,6 +331,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     internal void NavigationChanged()
     {
         if (IsAir) { flight.RefreshCeiling(); return; }
+        if (IsWater) { terrainRecoveryPending = true; terrainRecoveryAt = Time.time; motion?.ResetNavigation(); Wait(true); return; }
         if (space == null || motion == null) return;
         space.Rebuild();
         terrainRecoveryPending = true;

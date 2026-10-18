@@ -89,6 +89,18 @@ public sealed class PopulationMovementController : MonoBehaviour
         return null;
     }
 
+    public WhiteboxPopulation CreateWaterPopulation(Vector2Int tileId, int count)
+    {
+        var water = GetComponent<MapWaterController>();
+        if (!Application.isPlaying || !water || !gridManager.TryGetTile(tileId, out var tile) ||
+            !water.TrySpace(tileId, out var space) || !space.TrySpawn(settings.leaderSize * settings.swimClearanceMultiplier,
+                out var point, null, p => SpawnSeparated(p, settings.leaderSize))) return null;
+        var root = new GameObject("WaterPopulation"); root.transform.SetParent(transform, false);
+        var population = root.AddComponent<WhiteboxPopulation>();
+        population.Initialize(this, tile, null, count, point, Color.white, false, true, water);
+        populations.Add(population); return population;
+    }
+
     private static float HorizontalDistance(Vector3 a, Vector3 b)
     { a.y = 0f; b.y = 0f; return Vector3.Distance(a, b); }
     private bool SpawnSeparated(Vector3 point, float size, WhiteboxPopulation ignore = null)
@@ -109,7 +121,21 @@ public sealed class PopulationMovementController : MonoBehaviour
     internal bool TryRecoverPosition(WhiteboxPopulation owner, out Vector3 position)
     {
         position = default;
-        if (owner == null || owner.leader == null || !owner.space.IsReady) return false;
+        if (owner == null || owner.leader == null) return false;
+        if (owner.IsWater)
+        {
+            var water = GetComponent<MapWaterController>();
+            if (!water || !water.TrySwimmingArea(owner.TileId, out var area)) return false;
+            var waterCandidates = new List<MapTileInstance>(area);
+            waterCandidates.Sort((a, b) => HorizontalDistance(a.transform.position, owner.leader.groundPosition)
+                .CompareTo(HorizontalDistance(b.transform.position, owner.leader.groundPosition)));
+            foreach (var candidate in waterCandidates)
+                if (water.TrySpace(candidate.Coordinate, out var waterSpace) &&
+                    waterSpace.TrySpawn(owner.SwimRadius, out position, owner.leader.groundPosition,
+                        p => SpawnSeparated(p, owner.leader.size, owner))) return true;
+            return false;
+        }
+        if (owner.space == null || !owner.space.IsReady) return false;
         var space = owner.space;
         Vector3 hint = owner.leader.groundPosition;
         var candidates = new List<Vector3> { hint };
@@ -173,7 +199,7 @@ public sealed class PopulationMovementController : MonoBehaviour
             if (population == null) { populations.RemoveAt(i); continue; }
             if (!gridManager.TryGetTile(population.TileId, out MapTileInstance tile) || tile != population.tile)
             { DestroyPopulation(population); continue; }
-            if (!population.gameObject.activeInHierarchy || (!population.IsAir && !navigationReady)) continue;
+            if (!population.gameObject.activeInHierarchy || (!population.IsAir && !population.IsWater && !navigationReady)) continue;
             float remaining = Mathf.Min(Time.deltaTime, 0.2f);
             while (remaining > 0f)
             {
@@ -184,6 +210,8 @@ public sealed class PopulationMovementController : MonoBehaviour
     }
     private void OnTilesChanged()
     {
+        GetComponent<MapWaterController>()?.Refresh();
+        foreach (var population in populations) if (population && population.IsWater) population.NavigationChanged();
         // TilesChanged precedes the bake. Rebuild local caches only after the
         // completed navigation revision, never against the previous mesh.
         navigationWasUpdating = true;

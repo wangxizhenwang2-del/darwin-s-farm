@@ -39,4 +39,6 @@ public class MapTileDefinition : ScriptableObject
     public WaterCoverage initialWaterCoverage = WaterCoverage.Land;
     // Optional river opening override: north, east, south, west bits; 0 derives from shape.
     [Range(0, 15)] public int riverOpenings;
+    [Tooltip("Optional authored MoebiusRiverTile prefab matching the local mouths.")]
+    public GameObject waterVisualPrefab;
 }

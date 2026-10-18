@@ -1,0 +1,17 @@
+PASS: 16 water integration groups.
+Same-level authored mouths join; simulation and mesh route agree.
+Wrong-facing mouths block; rotation reconnects geometry and simulation.
+0-1-2 waterfall chain is traversable both ways; three resource regions remain separate.
+Two-level drop still renders a waterfall but blocks direct migration.
+A legal 2-1-0 detour remains available around a blocked direct edge.
+Bend route validates every swept-body segment against the real capped mesh.
+All four rotations of straight, bend and three-way authored river assets have valid in-water routes (12 combinations).
+700 swimming steps stay in water with species sprite, visible label, depth-tested immersion and unchanged model count.
+Manual water migration conserves 80 individuals; land is rejected; height edits cancel the old route and safely reveal arrival.
+Removal clears water; unchanged frames do not regenerate connections.
+A remote height edit preserves unaffected water meshes and query caches.
+Legacy water definitions use the authored cross and preserve real land banks.
+Three body sizes (.4, .8, 1.2) keep safe shoreline clearance, water-relative poses and spawn separation.
+Disconnected pools remain separate; body clearance rejects bank-overlapping poses.
+Existing downstream and upstream probabilities gate migration separately; split/merge conserves individuals.
+Equal-height water roaming does not emit migration; zero waterfall probabilities preserve the total count.
