@@ -14,186 +14,255 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialDatabase
   categories:
   - id: chapter1
-    title: "初识农场"
+    title: "\u521D\u8BC6\u519C\u573A"
     sortOrder: 0
     pages:
     - id: 1_1
-      title: "你是谁？"
-      content: "<size=112%><b>欢迎来到达尔文农场！</b></size>\n\n在一颗遥远的星球上，一场关于生命的实验即将开始。\n\n你是一名星际生态培育者，负责照料这片年轻的生命实验场。\n\n在这里，你不需要指挥每一只生物。它们会自行觅食、繁殖、竞争，也可能迁徙到新的土地。\n\n你真正能够掌控的，是它们生活的环境。\n\n改变气候、调整食物供给、开辟新的栖息地，然后静静观察——生命将如何回应你的选择？"
-      mobileContent: "<size=112%><b>欢迎来到达尔文农场！</b></size>\n\n在一颗遥远的星球上，一场关于生命的实验即将开始。\n\n你是一名星际生态培育者，负责照料这片年轻的生命实验场。\n\n在这里，你不需要指挥每一只生物。它们会自行觅食、繁殖、竞争，也可能迁徙到新的土地。\n\n你真正能够掌控的，是它们生活的环境。\n\n改变气候、调整食物供给、开辟新的栖息地，然后静静观察——生命将如何回应你的选择？"
+      title: "\u4F60\u662F\u8C01\uFF1F"
+      content: "<color=#2F6148><b>\u6B22\u8FCE\u6765\u5230\u8FBE\u5C14\u6587\u519C\u573A\uFF01</b></color>\n\u5728\u4E00\u9897\u9065\u8FDC\u7684\u661F\u7403\u4E0A\uFF0C\u4E00\u573A\u5173\u4E8E\u751F\u547D\u7684\u5B9E\u9A8C\u5373\u5C06\u5F00\u59CB\u3002\n\u4F60\u662F\u4E00\u540D<color=#2F6148><b>\u661F\u9645\u751F\u6001\u57F9\u80B2\u8005</b></color>\uFF0C\u8D1F\u8D23\u7167\u6599\u8FD9\u7247\u5E74\u8F7B\u7684\u751F\u547D\u5B9E\u9A8C\u573A\u3002\n\u5728\u8FD9\u91CC\uFF0C\u4F60\u4E0D\u9700\u8981\u6307\u6325\u6BCF\u4E00\u53EA\u751F\u7269\u3002\u5B83\u4EEC\u4F1A\u81EA\u884C\u89C5\u98DF\u3001\u7E41\u6B96\u3001\u7ADE\u4E89\uFF0C\u4E5F\u53EF\u80FD\u8FC1\u5F99\u5230\u65B0\u7684\u571F\u5730\u3002\n\u4F60\u771F\u6B63\u80FD\u591F\u638C\u63A7\u7684\uFF0C\u662F<color=#2F6148><b>\u5B83\u4EEC\u751F\u6D3B\u7684\u73AF\u5883</b></color>\u3002\n\u6539\u53D8\u6C14\u5019\u3001\u8C03\u6574\u98DF\u7269\u4F9B\u7ED9\u3001\u5F00\u8F9F\u65B0\u7684\u6816\u606F\u5730\uFF0C\u7136\u540E\u9759\u9759\u89C2\u5BDF\u2014\u2014\u751F\u547D\u5C06\u5982\u4F55\u56DE\u5E94\u4F60\u7684\u9009\u62E9\uFF1F"
+      mobileContent: "<color=#2F6148><b>\u6B22\u8FCE\u6765\u5230\u8FBE\u5C14\u6587\u519C\u573A\uFF01</b></color>\n\u5728\u4E00\u9897\u9065\u8FDC\u7684\u661F\u7403\u4E0A\uFF0C\u4E00\u573A\u5173\u4E8E\u751F\u547D\u7684\u5B9E\u9A8C\u5373\u5C06\u5F00\u59CB\u3002\n\u4F60\u662F\u4E00\u540D<color=#2F6148><b>\u661F\u9645\u751F\u6001\u57F9\u80B2\u8005</b></color>\uFF0C\u8D1F\u8D23\u7167\u6599\u8FD9\u7247\u5E74\u8F7B\u7684\u751F\u547D\u5B9E\u9A8C\u573A\u3002\n\u5728\u8FD9\u91CC\uFF0C\u4F60\u4E0D\u9700\u8981\u6307\u6325\u6BCF\u4E00\u53EA\u751F\u7269\u3002\u5B83\u4EEC\u4F1A\u81EA\u884C\u89C5\u98DF\u3001\u7E41\u6B96\u3001\u7ADE\u4E89\uFF0C\u4E5F\u53EF\u80FD\u8FC1\u5F99\u5230\u65B0\u7684\u571F\u5730\u3002\n\u4F60\u771F\u6B63\u80FD\u591F\u638C\u63A7\u7684\uFF0C\u662F<color=#2F6148><b>\u5B83\u4EEC\u751F\u6D3B\u7684\u73AF\u5883</b></color>\u3002\n\u6539\u53D8\u6C14\u5019\u3001\u8C03\u6574\u98DF\u7269\u4F9B\u7ED9\u3001\u5F00\u8F9F\u65B0\u7684\u6816\u606F\u5730\uFF0C\u7136\u540E\u9759\u9759\u89C2\u5BDF\u2014\u2014\u751F\u547D\u5C06\u5982\u4F55\u56DE\u5E94\u4F60\u7684\u9009\u62E9\uFF1F"
       illustration: {fileID: 0}
       sortOrder: 0
     - id: 1_2
-      title: "生命如何涌现？"
-      content: "<size=112%><b>生命会找到自己的道路</b></size>\n\n每一种生物都有自己的生存方式。\n\n有的适应炎热，有的喜欢潮湿；有的擅长奔跑，有的依靠旺盛的繁殖能力延续种群。\n\n当环境发生变化，原本适合生存的性状可能变成负担，而不起眼的特征也可能成为新的优势。\n\n随着一代代生命更替，种群会逐渐发生变化。\n\n当这些变化积累到一定程度，一个全新的物种便可能诞生。\n\n<b>你无法直接命令生命进化，却可以改变它们进化的方向。</b>"
-      mobileContent: "<size=112%><b>生命会找到自己的道路</b></size>\n\n每一种生物都有自己的生存方式。\n\n有的适应炎热，有的喜欢潮湿；有的擅长奔跑，有的依靠旺盛的繁殖能力延续种群。\n\n当环境发生变化，原本适合生存的性状可能变成负担，而不起眼的特征也可能成为新的优势。\n\n随着一代代生命更替，种群会逐渐发生变化。\n\n当这些变化积累到一定程度，一个全新的物种便可能诞生。\n\n<b>你无法直接命令生命进化，却可以改变它们进化的方向。</b>"
+      title: "\u751F\u547D\u5982\u4F55\u6D8C\u73B0\uFF1F"
+      content: "<color=#2F6148><b>\u751F\u547D\u4F1A\u627E\u5230\u81EA\u5DF1\u7684\u9053\u8DEF</b></color>\n\u6BCF\u4E00\u79CD\u751F\u7269\u90FD\u6709\u81EA\u5DF1\u7684\u751F\u5B58\u65B9\u5F0F\u3002\n\u6709\u7684\u9002\u5E94\u708E\u70ED\uFF0C\u6709\u7684\u559C\u6B22\u6F6E\u6E7F\uFF1B\u6709\u7684\u64C5\u957F\u5954\u8DD1\uFF0C\u6709\u7684\u4F9D\u9760\u65FA\u76DB\u7684\u7E41\u6B96\u80FD\u529B\u5EF6\u7EED\u79CD\u7FA4\u3002\n\u5F53\u73AF\u5883\u53D1\u751F\u53D8\u5316\uFF0C\u539F\u672C\u9002\u5408\u751F\u5B58\u7684\u6027\u72B6\u53EF\u80FD\u53D8\u6210\u8D1F\u62C5\uFF0C\u800C\u4E0D\u8D77\u773C\u7684\u7279\u5F81\u4E5F\u53EF\u80FD\u6210\u4E3A\u65B0\u7684\u4F18\u52BF\u3002\n\u968F\u7740\u4E00\u4EE3\u4EE3\u751F\u547D\u66F4\u66FF\uFF0C\u79CD\u7FA4\u4F1A\u9010\u6E10\u53D1\u751F\u53D8\u5316\u3002\n\u5F53\u8FD9\u4E9B\u53D8\u5316\u79EF\u7D2F\u5230\u4E00\u5B9A\u7A0B\u5EA6\uFF0C\u4E00\u4E2A\u5168\u65B0\u7684\u7269\u79CD\u4FBF\u53EF\u80FD\u8BDE\u751F\u3002\n\u4F60\u65E0\u6CD5\u76F4\u63A5\u547D\u4EE4\u751F\u547D\u8FDB\u5316\uFF0C\u5374\u53EF\u4EE5<color=#2F6148><b>\u6539\u53D8\u5B83\u4EEC\u8FDB\u5316\u7684\u65B9\u5411</b></color>\u3002"
+      mobileContent: "<color=#2F6148><b>\u751F\u547D\u4F1A\u627E\u5230\u81EA\u5DF1\u7684\u9053\u8DEF</b></color>\n\u6BCF\u4E00\u79CD\u751F\u7269\u90FD\u6709\u81EA\u5DF1\u7684\u751F\u5B58\u65B9\u5F0F\u3002\n\u6709\u7684\u9002\u5E94\u708E\u70ED\uFF0C\u6709\u7684\u559C\u6B22\u6F6E\u6E7F\uFF1B\u6709\u7684\u64C5\u957F\u5954\u8DD1\uFF0C\u6709\u7684\u4F9D\u9760\u65FA\u76DB\u7684\u7E41\u6B96\u80FD\u529B\u5EF6\u7EED\u79CD\u7FA4\u3002\n\u5F53\u73AF\u5883\u53D1\u751F\u53D8\u5316\uFF0C\u539F\u672C\u9002\u5408\u751F\u5B58\u7684\u6027\u72B6\u53EF\u80FD\u53D8\u6210\u8D1F\u62C5\uFF0C\u800C\u4E0D\u8D77\u773C\u7684\u7279\u5F81\u4E5F\u53EF\u80FD\u6210\u4E3A\u65B0\u7684\u4F18\u52BF\u3002\n\u968F\u7740\u4E00\u4EE3\u4EE3\u751F\u547D\u66F4\u66FF\uFF0C\u79CD\u7FA4\u4F1A\u9010\u6E10\u53D1\u751F\u53D8\u5316\u3002\n\u5F53\u8FD9\u4E9B\u53D8\u5316\u79EF\u7D2F\u5230\u4E00\u5B9A\u7A0B\u5EA6\uFF0C\u4E00\u4E2A\u5168\u65B0\u7684\u7269\u79CD\u4FBF\u53EF\u80FD\u8BDE\u751F\u3002\n\u4F60\u65E0\u6CD5\u76F4\u63A5\u547D\u4EE4\u751F\u547D\u8FDB\u5316\uFF0C\u5374\u53EF\u4EE5<color=#2F6148><b>\u6539\u53D8\u5B83\u4EEC\u8FDB\u5316\u7684\u65B9\u5411</b></color>\u3002"
       illustration: {fileID: 0}
       sortOrder: 1
     - id: 1_3
-      title: "你的目标"
-      content: "<size=112%><b>培育属于你的生命世界</b></size>\n\n你的旅程将从最初的鸡种群开始。\n\n通过调整环境，引导它们沿着不同的演化道路前进，逐渐发现彩鸡、孔雀、灵感菇狸与鹿。\n\n但发现新物种只是第一步。\n\n每一种生命都需要食物与合适的栖息地，它们可能相互竞争，也可能因为环境变化而消失。\n\n你的最终目标，是让<b>鸡、彩鸡、孔雀、灵感菇狸和鹿五种生命在同一个生态世界中共存</b>。\n\n<color=#557653>✎ <b>观察笔记</b>：进化成功不代表培育结束。让新生命在生态系统中延续下去，同样重要。</color>"
-      mobileContent: "<size=112%><b>培育属于你的生命世界</b></size>\n\n你的旅程将从最初的鸡种群开始。\n\n通过调整环境，引导它们沿着不同的演化道路前进，逐渐发现彩鸡、孔雀、灵感菇狸与鹿。\n\n但发现新物种只是第一步。\n\n每一种生命都需要食物与合适的栖息地，它们可能相互竞争，也可能因为环境变化而消失。\n\n你的最终目标，是让<b>鸡、彩鸡、孔雀、灵感菇狸和鹿五种生命在同一个生态世界中共存</b>。\n\n<color=#557653>✎ <b>观察笔记</b>：进化成功不代表培育结束。让新生命在生态系统中延续下去，同样重要。</color>"
+      title: "\u4F60\u7684\u76EE\u6807"
+      content: "\u57F9\u80B2\u5C5E\u4E8E\u4F60\u7684\u751F\u547D\u4E16\u754C\n\u4F60\u7684\u65C5\u7A0B\u5C06\u4ECE\u6700\u521D\u7684\u9E21\u79CD\u7FA4\u5F00\u59CB\u3002\n\u901A\u8FC7\u8C03\u6574\u73AF\u5883\uFF0C\u5F15\u5BFC\u5B83\u4EEC\u6CBF\u7740\u4E0D\u540C\u7684\u6F14\u5316\u9053\u8DEF\u524D\u8FDB\uFF0C\u9010\u6E10\u53D1\u73B0\u5F69\u9E21\u3001\u5B54\u96C0\u3001\u7075\u611F\u83C7\u72F8\u4E0E\u9E7F\u3002\n\u4F46\u53D1\u73B0\u65B0\u7269\u79CD\u53EA\u662F\u7B2C\u4E00\u6B65\u3002\n\u6BCF\u4E00\u79CD\u751F\u547D\u90FD\u9700\u8981\u98DF\u7269\u4E0E\u5408\u9002\u7684\u6816\u606F\u5730\uFF0C\u5B83\u4EEC\u53EF\u80FD\u76F8\u4E92\u7ADE\u4E89\uFF0C\u4E5F\u53EF\u80FD\u56E0\u4E3A\u73AF\u5883\u53D8\u5316\u800C\u6D88\u5931\u3002\n\u4F60\u7684<color=#2F6148><b>\u6700\u7EC8\u76EE\u6807</b></color>\uFF0C\u662F\u8BA9<color=#2F6148><b>\u9E21\u3001\u5F69\u9E21\u3001\u5B54\u96C0\u3001\u7075\u611F\u83C7\u72F8\u548C\u9E7F\u4E94\u79CD\u751F\u547D\u5728\u540C\u4E00\u4E2A\u751F\u6001\u4E16\u754C\u4E2D\u5171\u5B58</b></color>\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u8FDB\u5316\u6210\u529F\u4E0D\u4EE3\u8868\u57F9\u80B2\u7ED3\u675F\u3002\u8BA9\u65B0\u751F\u547D\u5728<color=#2F6148><b>\u751F\u6001\u7CFB\u7EDF\u4E2D\u5EF6\u7EED</b></color>\u4E0B\u53BB\uFF0C\u540C\u6837\u91CD\u8981\u3002"
+      mobileContent: "\u57F9\u80B2\u5C5E\u4E8E\u4F60\u7684\u751F\u547D\u4E16\u754C\n\u4F60\u7684\u65C5\u7A0B\u5C06\u4ECE\u6700\u521D\u7684\u9E21\u79CD\u7FA4\u5F00\u59CB\u3002\n\u901A\u8FC7\u8C03\u6574\u73AF\u5883\uFF0C\u5F15\u5BFC\u5B83\u4EEC\u6CBF\u7740\u4E0D\u540C\u7684\u6F14\u5316\u9053\u8DEF\u524D\u8FDB\uFF0C\u9010\u6E10\u53D1\u73B0\u5F69\u9E21\u3001\u5B54\u96C0\u3001\u7075\u611F\u83C7\u72F8\u4E0E\u9E7F\u3002\n\u4F46\u53D1\u73B0\u65B0\u7269\u79CD\u53EA\u662F\u7B2C\u4E00\u6B65\u3002\n\u6BCF\u4E00\u79CD\u751F\u547D\u90FD\u9700\u8981\u98DF\u7269\u4E0E\u5408\u9002\u7684\u6816\u606F\u5730\uFF0C\u5B83\u4EEC\u53EF\u80FD\u76F8\u4E92\u7ADE\u4E89\uFF0C\u4E5F\u53EF\u80FD\u56E0\u4E3A\u73AF\u5883\u53D8\u5316\u800C\u6D88\u5931\u3002\n\u4F60\u7684<color=#2F6148><b>\u6700\u7EC8\u76EE\u6807</b></color>\uFF0C\u662F\u8BA9<color=#2F6148><b>\u9E21\u3001\u5F69\u9E21\u3001\u5B54\u96C0\u3001\u7075\u611F\u83C7\u72F8\u548C\u9E7F\u4E94\u79CD\u751F\u547D\u5728\u540C\u4E00\u4E2A\u751F\u6001\u4E16\u754C\u4E2D\u5171\u5B58</b></color>\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u8FDB\u5316\u6210\u529F\u4E0D\u4EE3\u8868\u57F9\u80B2\u7ED3\u675F\u3002\u8BA9\u65B0\u751F\u547D\u5728<color=#2F6148><b>\u751F\u6001\u7CFB\u7EDF\u4E2D\u5EF6\u7EED</b></color>\u4E0B\u53BB\uFF0C\u540C\u6837\u91CD\u8981\u3002"
       illustration: {fileID: 21300000, guid: 319627fbbda5a0f4da896fc53af25105, type: 3}
       sortOrder: 2
   - id: chapter2
-    title: "认识地块"
+    title: "\u8BA4\u8BC6\u5730\u5757"
     sortOrder: 1
     pages:
     - id: 2_1
-      title: "一块土地"
-      content: "<size=112%><b>从一块土地开始</b></size>\n\n你的农场由一块块独立的土地组成，我们称它们为<b>地块</b>。\n\n每块地块都有自己的温度、湿度、海拔和植物资源，也生活着不同的生物种群。\n\n按住 <b>Alt 并单击鼠标左键</b> 点击地块，即可查看它的环境和生物信息。\n\n你还可以调整地块的环境，改变生物所面临的生存条件。\n\n<b>同一种生物，在不同地块上，也可能走向不同的演化道路。</b>\n\n<color=#557653>✎ <b>操作提示</b>：按住鼠标中键拖动以平移镜头，滚动鼠标滚轮放大或缩小画面。</color>"
-      mobileContent: "<size=112%><b>从一块土地开始</b></size>\n\n你的农场由一块块独立的土地组成，我们称它们为<b>地块</b>。\n\n每块地块都有自己的温度、湿度、海拔和植物资源，也生活着不同的生物种群。\n\n在触屏上长按地块，即可查看它的环境和生物信息。\n\n你还可以调整地块的环境，改变生物所面临的生存条件。\n\n<b>同一种生物，在不同地块上，也可能走向不同的演化道路。</b>\n\n<color=#557653>✎ <b>操作提示</b>：单指拖动平移视角，双指捏合缩放画面。</color>"
+      title: "\u4E00\u5757\u571F\u5730"
+      content: "<color=#2F6148><b>\u4ECE\u4E00\u5757\u571F\u5730\u5F00\u59CB</b></color>\n\u4F60\u7684\u519C\u573A\u7531\u4E00\u5757\u5757\u72EC\u7ACB\u7684\u571F\u5730\u7EC4\u6210\uFF0C\u6211\u4EEC\u79F0\u5B83\u4EEC\u4E3A<color=#2F6148><b>\u5730\u5757</b></color>\u3002\n\u6BCF\u5757<color=#2F6148><b>\u5730\u5757</b></color>\u90FD\u6709\u81EA\u5DF1\u7684<color=#2F6148><b>\u6E29\u5EA6\u3001\u6E7F\u5EA6\u3001\u6D77\u62D4\u548C\u690D\u7269\u8D44\u6E90</b></color>\uFF0C\u4E5F\u751F\u6D3B\u7740\u4E0D\u540C\u7684\u751F\u7269\u79CD\u7FA4\u3002\n\u6309\u4F4F
+        <color=#914B2D><b>Alt \u5E76\u5355\u51FB\u9F20\u6807\u5DE6\u952E</b></color>
+        \u70B9\u51FB<color=#2F6148><b>\u5730\u5757</b></color>\uFF0C\u5373\u53EF\u67E5\u770B\u5B83\u7684\u73AF\u5883\u548C\u751F\u7269\u4FE1\u606F\u3002\n\u4F60\u8FD8\u53EF\u4EE5\u8C03\u6574<color=#2F6148><b>\u5730\u5757</b></color>\u7684\u73AF\u5883\uFF0C\u6539\u53D8\u751F\u7269\u6240\u9762\u4E34\u7684\u751F\u5B58\u6761\u4EF6\u3002\n\u540C\u4E00\u79CD\u751F\u7269\uFF0C\u5728\u4E0D\u540C<color=#2F6148><b>\u5730\u5757</b></color>\u4E0A\uFF0C\u4E5F\u53EF\u80FD\u8D70\u5411<color=#2F6148><b>\u4E0D\u540C\u7684\u6F14\u5316\u9053\u8DEF</b></color>\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u63D0\u793A</b></color>\uFF1A\u6309\u4F4F<color=#914B2D><b>\u9F20\u6807\u4E2D\u952E</b></color>\u62D6\u52A8\u4EE5\u5E73\u79FB\u955C\u5934\uFF0C\u6EDA\u52A8<color=#914B2D><b>\u9F20\u6807\u6EDA\u8F6E</b></color>\u653E\u5927\u6216\u7F29\u5C0F\u753B\u9762\u3002"
+      mobileContent: "<color=#2F6148><b>\u4ECE\u4E00\u5757\u571F\u5730\u5F00\u59CB</b></color>\n\u4F60\u7684\u519C\u573A\u7531\u4E00\u5757\u5757\u72EC\u7ACB\u7684\u571F\u5730\u7EC4\u6210\uFF0C\u6211\u4EEC\u79F0\u5B83\u4EEC\u4E3A<color=#2F6148><b>\u5730\u5757</b></color>\u3002\n\u6BCF\u5757<color=#2F6148><b>\u5730\u5757</b></color>\u90FD\u6709\u81EA\u5DF1\u7684<color=#2F6148><b>\u6E29\u5EA6\u3001\u6E7F\u5EA6\u3001\u6D77\u62D4\u548C\u690D\u7269\u8D44\u6E90</b></color>\uFF0C\u4E5F\u751F\u6D3B\u7740\u4E0D\u540C\u7684\u751F\u7269\u79CD\u7FA4\u3002\n\u5728\u89E6\u5C4F\u4E0A<color=#914B2D><b>\u957F\u6309\u5730\u5757</b></color>\uFF0C\u5373\u53EF\u67E5\u770B\u5B83\u7684\u73AF\u5883\u548C\u751F\u7269\u4FE1\u606F\u3002\n\u4F60\u8FD8\u53EF\u4EE5\u8C03\u6574<color=#2F6148><b>\u5730\u5757</b></color>\u7684\u73AF\u5883\uFF0C\u6539\u53D8\u751F\u7269\u6240\u9762\u4E34\u7684\u751F\u5B58\u6761\u4EF6\u3002\n\u540C\u4E00\u79CD\u751F\u7269\uFF0C\u5728\u4E0D\u540C<color=#2F6148><b>\u5730\u5757</b></color>\u4E0A\uFF0C\u4E5F\u53EF\u80FD\u8D70\u5411<color=#2F6148><b>\u4E0D\u540C\u7684\u6F14\u5316\u9053\u8DEF</b></color>\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u63D0\u793A</b></color>\uFF1A<color=#914B2D><b>\u5355\u6307\u62D6\u52A8</b></color>\u5E73\u79FB\u89C6\u89D2\uFF0C<color=#914B2D><b>\u53CC\u6307\u634F\u5408</b></color>\u7F29\u653E\u753B\u9762\u3002"
       illustration: {fileID: 0}
       sortOrder: 0
     - id: 2_2
-      title: "不同的地貌"
-      content: "<size=112%><b>气候塑造土地</b></size>\n\n你可能遇见干燥的荒漠、湿润的雨林、寒冷的雪山，或炽热的火山。\n\n一块土地的地貌由<b>温度、湿度和海拔</b>共同决定。不同地貌也拥有不同的植物资源条件。\n\n改变地块环境，可能让它逐渐呈现出另一种地貌。\n\n<color=#557653>✎ <b>操作提示</b>：查看物种适宜的温度与湿度，并与地块环境进行比较。</color>"
-      mobileContent: "<size=112%><b>气候塑造土地</b></size>\n\n你可能遇见干燥的荒漠、湿润的雨林、寒冷的雪山，或炽热的火山。\n\n一块土地的地貌由<b>温度、湿度和海拔</b>共同决定。不同地貌也拥有不同的植物资源条件。\n\n改变地块环境，可能让它逐渐呈现出另一种地貌。\n\n<color=#557653>✎ <b>操作提示</b>：查看物种适宜的温度与湿度，并与地块环境进行比较。</color>"
+      title: "\u4E0D\u540C\u7684\u5730\u8C8C"
+      content: "<color=#2F6148><b>\u6C14\u5019\u5851\u9020\u571F\u5730</b></color>\n\u4F60\u53EF\u80FD\u9047\u89C1\u5E72\u71E5\u7684\u8352\u6F20\u3001\u6E7F\u6DA6\u7684\u96E8\u6797\u3001\u5BD2\u51B7\u7684\u96EA\u5C71\uFF0C\u6216\u70BD\u70ED\u7684\u706B\u5C71\u3002\n\u4E00\u5757\u571F\u5730\u7684\u5730\u8C8C\u7531<color=#2F6148><b>\u6E29\u5EA6\u3001\u6E7F\u5EA6\u548C\u6D77\u62D4</b></color>\u5171\u540C\u51B3\u5B9A\u3002\u4E0D\u540C\u5730\u8C8C\u4E5F\u62E5\u6709\u4E0D\u540C\u7684\u690D\u7269\u8D44\u6E90\u6761\u4EF6\u3002\n\u6539\u53D8\u5730\u5757\u73AF\u5883\uFF0C\u53EF\u80FD\u8BA9\u5B83\u9010\u6E10\u5448\u73B0\u51FA\u53E6\u4E00\u79CD\u5730\u8C8C\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u63D0\u793A</b></color>\uFF1A\u67E5\u770B\u7269\u79CD<color=#2F6148><b>\u9002\u5B9C\u7684\u6E29\u5EA6\u4E0E\u6E7F\u5EA6</b></color>\uFF0C\u5E76\u4E0E\u5730\u5757\u73AF\u5883\u8FDB\u884C\u6BD4\u8F83\u3002"
+      mobileContent: "<color=#2F6148><b>\u6C14\u5019\u5851\u9020\u571F\u5730</b></color>\n\u4F60\u53EF\u80FD\u9047\u89C1\u5E72\u71E5\u7684\u8352\u6F20\u3001\u6E7F\u6DA6\u7684\u96E8\u6797\u3001\u5BD2\u51B7\u7684\u96EA\u5C71\uFF0C\u6216\u70BD\u70ED\u7684\u706B\u5C71\u3002\n\u4E00\u5757\u571F\u5730\u7684\u5730\u8C8C\u7531<color=#2F6148><b>\u6E29\u5EA6\u3001\u6E7F\u5EA6\u548C\u6D77\u62D4</b></color>\u5171\u540C\u51B3\u5B9A\u3002\u4E0D\u540C\u5730\u8C8C\u4E5F\u62E5\u6709\u4E0D\u540C\u7684\u690D\u7269\u8D44\u6E90\u6761\u4EF6\u3002\n\u6539\u53D8\u5730\u5757\u73AF\u5883\uFF0C\u53EF\u80FD\u8BA9\u5B83\u9010\u6E10\u5448\u73B0\u51FA\u53E6\u4E00\u79CD\u5730\u8C8C\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u63D0\u793A</b></color>\uFF1A\u67E5\u770B\u7269\u79CD<color=#2F6148><b>\u9002\u5B9C\u7684\u6E29\u5EA6\u4E0E\u6E7F\u5EA6</b></color>\uFF0C\u5E76\u4E0E\u5730\u5757\u73AF\u5883\u8FDB\u884C\u6BD4\u8F83\u3002"
       illustration: {fileID: 21300000, guid: 1a70cce2566d4eacafe1d891d79ee7f9, type: 3}
       sortOrder: 1
     - id: 2_3
-      title: "相邻地块"
-      content: "<size=112%><b>让农场向外延伸</b></size>\n\n除了最初的土地，你还可以向周围扩展地块。\n\n相邻地块可以拥有不同环境，为不同种群提供栖息地。地块之间能够通行时，生物还有机会自行迁徙。\n\n海拔差会影响通行；高差越大，迁徙越困难。\n\n<b>扩展地块，也是在创造新的演化机会。</b>\n\n<color=#557653>✎ <b>操作提示</b>：按 <b>N</b> 打开土地建造栏，从下方栏拖动土地到目标格子进行建造。</color>"
-      mobileContent: "<size=112%><b>让农场向外延伸</b></size>\n\n除了最初的土地，你还可以向周围扩展地块。\n\n相邻地块可以拥有不同环境，为不同种群提供栖息地。地块之间能够通行时，生物还有机会自行迁徙。\n\n海拔差会影响通行；高差越大，迁徙越困难。\n\n<b>扩展地块，也是在创造新的演化机会。</b>\n\n<color=#557653>✎ <b>操作提示</b>：点击「建造地块」，选择土地，再在目标格子确认建造。</color>"
+      title: "\u76F8\u90BB\u5730\u5757"
+      content: "<color=#2F6148><b>\u8BA9\u519C\u573A\u5411\u5916\u5EF6\u4F38</b></color>\n\u9664\u4E86\u6700\u521D\u7684\u571F\u5730\uFF0C\u4F60\u8FD8\u53EF\u4EE5\u5411\u5468\u56F4\u6269\u5C55\u5730\u5757\u3002\n<color=#2F6148><b>\u76F8\u90BB\u5730\u5757</b></color>\u53EF\u4EE5\u62E5\u6709\u4E0D\u540C\u73AF\u5883\uFF0C\u4E3A\u4E0D\u540C\u79CD\u7FA4\u63D0\u4F9B\u6816\u606F\u5730\u3002\u5730\u5757\u4E4B\u95F4\u80FD\u591F\u901A\u884C\u65F6\uFF0C\u751F\u7269\u8FD8\u6709\u673A\u4F1A\u81EA\u884C\u8FC1\u5F99\u3002\n<color=#2F6148><b>\u6D77\u62D4\u5DEE</b></color>\u4F1A\u5F71\u54CD\u901A\u884C\uFF1B\u9AD8\u5DEE\u8D8A\u5927\uFF0C\u8FC1\u5F99\u8D8A\u56F0\u96BE\u3002\n\u6269\u5C55\u5730\u5757\uFF0C\u4E5F\u662F\u5728\u521B\u9020<color=#2F6148><b>\u65B0\u7684\u6F14\u5316\u673A\u4F1A</b></color>\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u63D0\u793A</b></color>\uFF1A\u6309
+        <color=#914B2D><b>N</b></color> \u6253\u5F00\u571F\u5730\u5EFA\u9020\u680F\uFF0C\u4ECE\u4E0B\u65B9\u680F\u62D6\u52A8\u571F\u5730\u5230\u76EE\u6807\u683C\u5B50\u8FDB\u884C\u5EFA\u9020\u3002"
+      mobileContent: "<color=#2F6148><b>\u8BA9\u519C\u573A\u5411\u5916\u5EF6\u4F38</b></color>\n\u9664\u4E86\u6700\u521D\u7684\u571F\u5730\uFF0C\u4F60\u8FD8\u53EF\u4EE5\u5411\u5468\u56F4\u6269\u5C55\u5730\u5757\u3002\n<color=#2F6148><b>\u76F8\u90BB\u5730\u5757</b></color>\u53EF\u4EE5\u62E5\u6709\u4E0D\u540C\u73AF\u5883\uFF0C\u4E3A\u4E0D\u540C\u79CD\u7FA4\u63D0\u4F9B\u6816\u606F\u5730\u3002\u5730\u5757\u4E4B\u95F4\u80FD\u591F\u901A\u884C\u65F6\uFF0C\u751F\u7269\u8FD8\u6709\u673A\u4F1A\u81EA\u884C\u8FC1\u5F99\u3002\n<color=#2F6148><b>\u6D77\u62D4\u5DEE</b></color>\u4F1A\u5F71\u54CD\u901A\u884C\uFF1B\u9AD8\u5DEE\u8D8A\u5927\uFF0C\u8FC1\u5F99\u8D8A\u56F0\u96BE\u3002\n\u6269\u5C55\u5730\u5757\uFF0C\u4E5F\u662F\u5728\u521B\u9020<color=#2F6148><b>\u65B0\u7684\u6F14\u5316\u673A\u4F1A</b></color>\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u63D0\u793A</b></color>\uFF1A\u70B9\u51FB\u300C<color=#914B2D><b>\u5EFA\u9020\u5730\u5757</b></color>\u300D\uFF0C\u9009\u62E9\u571F\u5730\uFF0C\u518D\u5728\u76EE\u6807\u683C\u5B50<color=#914B2D><b>\u786E\u8BA4\u5EFA\u9020</b></color>\u3002"
       illustration: {fileID: 21300000, guid: 1a70cce2566d4eacafe1d891d79ee7f9, type: 3}
       sortOrder: 2
   - id: chapter3
-    title: "环境与资源"
+    title: "\u73AF\u5883\u4E0E\u8D44\u6E90"
     sortOrder: 2
     pages:
     - id: 3_1
-      title: "使用环境工具"
-      content: "画面左侧有五种环境工具：<b>植物增量、植物存量、温度、湿度、海拔</b>。\n\n每种工具都有不同档位，用来调整变化方向和强度。\n\n<b>操作步骤</b>：选择左侧工具 → 选择档位 → 点击地块 → 点击「应用」。\n\n要取消已有干预，重新选中对应工具与地块，点击「撤销」。"
-      mobileContent: "点击「环境工具」可选择五种工具：<b>植物增量、植物存量、温度、湿度、海拔</b>。\n\n每种工具都有不同档位，用来调整变化方向和强度。\n\n<b>操作步骤</b>：选择左侧工具 → 选择档位 → 点击地块 → 点击「应用」。\n\n要取消已有干预，重新选中对应工具与地块，点击「撤销」。"
+      title: "\u4F7F\u7528\u73AF\u5883\u5DE5\u5177"
+      content: "\u753B\u9762\u5DE6\u4FA7\u6709\u4E94\u79CD<color=#914B2D><b>\u73AF\u5883\u5DE5\u5177</b></color>\uFF1A<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>\u3001<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>\u3001<color=#2F6148><b>\u6E29\u5EA6</b></color>\u3001<color=#2F6148><b>\u6E7F\u5EA6</b></color>\u3001<color=#2F6148><b>\u6D77\u62D4</b></color>\u3002\n\u6BCF\u79CD\u5DE5\u5177\u90FD\u6709\u4E0D\u540C\u6863\u4F4D\uFF0C\u7528\u6765\u8C03\u6574<color=#2F6148><b>\u53D8\u5316\u65B9\u5411\u548C\u5F3A\u5EA6</b></color>\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u6B65\u9AA4</b></color>\uFF1A\u9009\u62E9\u5DE6\u4FA7\u5DE5\u5177\uFF0C\u518D<color=#914B2D><b>\u9009\u62E9\u6863\u4F4D</b></color>\uFF0C\u518D\u70B9\u51FB\u5730\u5757\uFF0C\u518D\u70B9\u51FB\u300C<color=#914B2D><b>\u5E94\u7528</b></color>\u300D\u3002\n\u8981\u53D6\u6D88\u5DF2\u6709\u5E72\u9884\uFF0C\u91CD\u65B0\u9009\u4E2D\u5BF9\u5E94\u5DE5\u5177\u4E0E\u5730\u5757\uFF0C\u70B9\u51FB\u300C<color=#914B2D><b>\u64A4\u9500</b></color>\u300D\u3002"
+      mobileContent: "\u70B9\u51FB\u300C<color=#914B2D><b>\u73AF\u5883\u5DE5\u5177</b></color>\u300D\u53EF\u9009\u62E9\u4E94\u79CD\u5DE5\u5177\uFF1A<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>\u3001<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>\u3001<color=#2F6148><b>\u6E29\u5EA6</b></color>\u3001<color=#2F6148><b>\u6E7F\u5EA6</b></color>\u3001<color=#2F6148><b>\u6D77\u62D4</b></color>\u3002\n\u6BCF\u79CD\u5DE5\u5177\u90FD\u6709\u4E0D\u540C\u6863\u4F4D\uFF0C\u7528\u6765\u8C03\u6574<color=#2F6148><b>\u53D8\u5316\u65B9\u5411\u548C\u5F3A\u5EA6</b></color>\u3002\n<color=#2F6148><b>\u64CD\u4F5C\u6B65\u9AA4</b></color>\uFF1A\u9009\u62E9\u5DE6\u4FA7\u5DE5\u5177\uFF0C\u518D<color=#914B2D><b>\u9009\u62E9\u6863\u4F4D</b></color>\uFF0C\u518D\u70B9\u51FB\u5730\u5757\uFF0C\u518D\u70B9\u51FB\u300C<color=#914B2D><b>\u5E94\u7528</b></color>\u300D\u3002\n\u8981\u53D6\u6D88\u5DF2\u6709\u5E72\u9884\uFF0C\u91CD\u65B0\u9009\u4E2D\u5BF9\u5E94\u5DE5\u5177\u4E0E\u5730\u5757\uFF0C\u70B9\u51FB\u300C<color=#914B2D><b>\u64A4\u9500</b></color>\u300D\u3002"
       illustration: {fileID: 0}
       sortOrder: 0
     - id: 3_2
-      title: "认识五种工具"
-      content: "工具 · 用途\n植物增量 · 调整植物每天恢复的数量，影响长期食物供应\n植物存量 · 立即增加或减少已有植物资源\n温度 · 让地块逐渐升温或降温\n湿度 · 让地块逐渐变湿或变干\n海拔 · 改变地块高度，影响地貌与迁徙通道"
-      mobileContent: "工具 · 用途\n植物增量 · 调整植物每天恢复的数量，影响长期食物供应\n植物存量 · 立即增加或减少已有植物资源\n温度 · 让地块逐渐升温或降温\n湿度 · 让地块逐渐变湿或变干\n海拔 · 改变地块高度，影响地貌与迁徙通道"
+      title: "\u8BA4\u8BC6\u4E94\u79CD\u5DE5\u5177"
+      content: "\u5DE5\u5177 \xB7 \u7528\u9014\n<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>
+        \xB7 \u8C03\u6574\u690D\u7269\u6BCF\u5929\u6062\u590D\u7684\u6570\u91CF\uFF0C\u5F71\u54CD<color=#2F6148><b>\u957F\u671F\u98DF\u7269\u4F9B\u5E94</b></color>\n<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>
+        \xB7 <color=#2F6148><b>\u7ACB\u5373\u589E\u52A0\u6216\u51CF\u5C11</b></color>\u5DF2\u6709\u690D\u7269\u8D44\u6E90\n<color=#2F6148><b>\u6E29\u5EA6</b></color>
+        \xB7 \u8BA9\u5730\u5757\u9010\u6E10\u5347\u6E29\u6216\u964D\u6E29\n<color=#2F6148><b>\u6E7F\u5EA6</b></color>
+        \xB7 \u8BA9\u5730\u5757\u9010\u6E10\u53D8\u6E7F\u6216\u53D8\u5E72\n<color=#2F6148><b>\u6D77\u62D4</b></color>
+        \xB7 \u6539\u53D8\u5730\u5757\u9AD8\u5EA6\uFF0C\u5F71\u54CD\u5730\u8C8C\u4E0E<color=#2F6148><b>\u8FC1\u5F99\u901A\u9053</b></color>"
+      mobileContent: "\u5DE5\u5177 \xB7 \u7528\u9014\n<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>
+        \xB7 \u8C03\u6574\u690D\u7269\u6BCF\u5929\u6062\u590D\u7684\u6570\u91CF\uFF0C\u5F71\u54CD<color=#2F6148><b>\u957F\u671F\u98DF\u7269\u4F9B\u5E94</b></color>\n<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>
+        \xB7 <color=#2F6148><b>\u7ACB\u5373\u589E\u52A0\u6216\u51CF\u5C11</b></color>\u5DF2\u6709\u690D\u7269\u8D44\u6E90\n<color=#2F6148><b>\u6E29\u5EA6</b></color>
+        \xB7 \u8BA9\u5730\u5757\u9010\u6E10\u5347\u6E29\u6216\u964D\u6E29\n<color=#2F6148><b>\u6E7F\u5EA6</b></color>
+        \xB7 \u8BA9\u5730\u5757\u9010\u6E10\u53D8\u6E7F\u6216\u53D8\u5E72\n<color=#2F6148><b>\u6D77\u62D4</b></color>
+        \xB7 \u6539\u53D8\u5730\u5757\u9AD8\u5EA6\uFF0C\u5F71\u54CD\u5730\u8C8C\u4E0E<color=#2F6148><b>\u8FC1\u5F99\u901A\u9053</b></color>"
       illustration: {fileID: 21300000, guid: e7c37cbe940642d2a4ad8ed0653f3bb6, type: 3}
       sortOrder: 1
     - id: 3_3
-      title: "工具档位"
-      content: "工具 · 小幅调整 · 大幅调整\n植物增量 · ±25,000 / 游戏日 · ±50,000 / 游戏日\n植物存量 · ±25% · ±50%\n温度 · ±25 · ±50\n湿度 · ±25 · ±50\n海拔 · +1 或 −1 · 无第二档\n\n<color=#557653>✎ 档位数值已按当前游戏配置核对。</color>"
-      mobileContent: "工具 · 小幅调整 · 大幅调整\n植物增量 · ±25,000 / 游戏日 · ±50,000 / 游戏日\n植物存量 · ±25% · ±50%\n温度 · ±25 · ±50\n湿度 · ±25 · ±50\n海拔 · +1 或 −1 · 无第二档\n\n<color=#557653>✎ 档位数值已按当前游戏配置核对。</color>"
+      title: "\u5DE5\u5177\u6863\u4F4D"
+      content: "\u5DE5\u5177 \xB7 <color=#2F6148><b>\u5C0F\u5E45\u8C03\u6574</b></color>
+        \xB7 <color=#2F6148><b>\u5927\u5E45\u8C03\u6574</b></color>\n<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>
+        \xB7 <color=#914B2D><b>\xB125,000</b></color> / \u6E38\u620F\u65E5 \xB7 <color=#914B2D><b>\xB150,000</b></color>
+        / \u6E38\u620F\u65E5\n<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>
+        \xB7 <color=#914B2D><b>\xB125%</b></color> \xB7 <color=#914B2D><b>\xB150%</b></color>\n<color=#2F6148><b>\u6E29\u5EA6</b></color>
+        \xB7 <color=#914B2D><b>\xB125</b></color> \xB7 <color=#914B2D><b>\xB150</b></color>\n<color=#2F6148><b>\u6E7F\u5EA6</b></color>
+        \xB7 <color=#914B2D><b>\xB125</b></color> \xB7 <color=#914B2D><b>\xB150</b></color>\n<color=#2F6148><b>\u6D77\u62D4</b></color>
+        \xB7 <color=#914B2D><b>+1</b></color> \u6216 <color=#914B2D><b>-1</b></color>
+        \xB7 <color=#2F6148><b>\u65E0\u7B2C\u4E8C\u6863</b></color>\n\u6863\u4F4D\u6570\u503C\u5DF2\u6309\u5F53\u524D\u6E38\u620F\u914D\u7F6E\u6838\u5BF9\u3002"
+      mobileContent: "\u5DE5\u5177 \xB7 <color=#2F6148><b>\u5C0F\u5E45\u8C03\u6574</b></color>
+        \xB7 <color=#2F6148><b>\u5927\u5E45\u8C03\u6574</b></color>\n<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>
+        \xB7 <color=#914B2D><b>\xB125,000</b></color> / \u6E38\u620F\u65E5 \xB7 <color=#914B2D><b>\xB150,000</b></color>
+        / \u6E38\u620F\u65E5\n<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>
+        \xB7 <color=#914B2D><b>\xB125%</b></color> \xB7 <color=#914B2D><b>\xB150%</b></color>\n<color=#2F6148><b>\u6E29\u5EA6</b></color>
+        \xB7 <color=#914B2D><b>\xB125</b></color> \xB7 <color=#914B2D><b>\xB150</b></color>\n<color=#2F6148><b>\u6E7F\u5EA6</b></color>
+        \xB7 <color=#914B2D><b>\xB125</b></color> \xB7 <color=#914B2D><b>\xB150</b></color>\n<color=#2F6148><b>\u6D77\u62D4</b></color>
+        \xB7 <color=#914B2D><b>+1</b></color> \u6216 <color=#914B2D><b>-1</b></color>
+        \xB7 <color=#2F6148><b>\u65E0\u7B2C\u4E8C\u6863</b></color>\n\u6863\u4F4D\u6570\u503C\u5DF2\u6309\u5F53\u524D\u6E38\u620F\u914D\u7F6E\u6838\u5BF9\u3002"
       illustration: {fileID: 21300000, guid: e7c37cbe940642d2a4ad8ed0653f3bb6, type: 3}
       sortOrder: 2
     - id: 3_4
-      title: "环境与生命"
-      content: "环境变化既会影响生物的生存，也可能引导性状变化。\n\n例如，食物充足可能有利于更大的体型；长期稳定的食物供应可能有利于繁殖；寒冷则可能让种群逐渐适应低温。\n\n<b>你改变的是环境，而不是直接修改生物。</b>"
-      mobileContent: "环境变化既会影响生物的生存，也可能引导性状变化。\n\n例如，食物充足可能有利于更大的体型；长期稳定的食物供应可能有利于繁殖；寒冷则可能让种群逐渐适应低温。\n\n<b>你改变的是环境，而不是直接修改生物。</b>"
+      title: "\u73AF\u5883\u4E0E\u751F\u547D"
+      content: "\u73AF\u5883\u53D8\u5316\u65E2\u4F1A\u5F71\u54CD\u751F\u7269\u7684\u751F\u5B58\uFF0C\u4E5F\u53EF\u80FD<color=#2F6148><b>\u5F15\u5BFC\u6027\u72B6\u53D8\u5316</b></color>\u3002\n\u4F8B\u5982\uFF0C\u98DF\u7269\u5145\u8DB3\u53EF\u80FD\u6709\u5229\u4E8E\u66F4\u5927\u7684\u4F53\u578B\uFF1B<color=#2F6148><b>\u957F\u671F\u7A33\u5B9A\u7684\u98DF\u7269\u4F9B\u5E94</b></color>\u53EF\u80FD\u6709\u5229\u4E8E\u7E41\u6B96\uFF1B\u5BD2\u51B7\u5219\u53EF\u80FD\u8BA9\u79CD\u7FA4\u9010\u6E10\u9002\u5E94\u4F4E\u6E29\u3002\n<color=#2F6148><b>\u4F60\u6539\u53D8\u7684\u662F\u73AF\u5883\uFF0C\u800C\u4E0D\u662F\u76F4\u63A5\u4FEE\u6539\u751F\u7269\u3002</b></color>"
+      mobileContent: "\u73AF\u5883\u53D8\u5316\u65E2\u4F1A\u5F71\u54CD\u751F\u7269\u7684\u751F\u5B58\uFF0C\u4E5F\u53EF\u80FD<color=#2F6148><b>\u5F15\u5BFC\u6027\u72B6\u53D8\u5316</b></color>\u3002\n\u4F8B\u5982\uFF0C\u98DF\u7269\u5145\u8DB3\u53EF\u80FD\u6709\u5229\u4E8E\u66F4\u5927\u7684\u4F53\u578B\uFF1B<color=#2F6148><b>\u957F\u671F\u7A33\u5B9A\u7684\u98DF\u7269\u4F9B\u5E94</b></color>\u53EF\u80FD\u6709\u5229\u4E8E\u7E41\u6B96\uFF1B\u5BD2\u51B7\u5219\u53EF\u80FD\u8BA9\u79CD\u7FA4\u9010\u6E10\u9002\u5E94\u4F4E\u6E29\u3002\n<color=#2F6148><b>\u4F60\u6539\u53D8\u7684\u662F\u73AF\u5883\uFF0C\u800C\u4E0D\u662F\u76F4\u63A5\u4FEE\u6539\u751F\u7269\u3002</b></color>"
       illustration: {fileID: 0}
       sortOrder: 3
   - id: chapter4
-    title: "认识生命"
+    title: "\u8BA4\u8BC6\u751F\u547D"
     sortOrder: 3
     pages:
     - id: 4_1
-      title: "认识生物"
-      content: "农场中生活着各种生物，每种生物都有自己的习性和生存需求。\n\n按住 <b>Alt + 鼠标左键</b> 点击地块上的生物，可以查看详细信息，包括种群数量、性状和生存状态。\n\n游戏主要模拟<b>种群</b>，而非逐只模拟动物。"
-      mobileContent: "农场中生活着各种生物，每种生物都有自己的习性和生存需求。\n\n轻点地块上的生物，可以查看详细信息，包括种群数量、性状和生存状态。\n\n游戏主要模拟<b>种群</b>，而非逐只模拟动物。"
+      title: "\u8BA4\u8BC6\u751F\u7269"
+      content: "\u519C\u573A\u4E2D\u751F\u6D3B\u7740\u5404\u79CD\u751F\u7269\uFF0C\u6BCF\u79CD\u751F\u7269\u90FD\u6709\u81EA\u5DF1\u7684\u4E60\u6027\u548C\u751F\u5B58\u9700\u6C42\u3002\n\u6309\u4F4F
+        <color=#914B2D><b>Alt + \u9F20\u6807\u5DE6\u952E</b></color> \u70B9\u51FB\u5730\u5757\u4E0A\u7684\u751F\u7269\uFF0C\u53EF\u4EE5\u67E5\u770B\u8BE6\u7EC6\u4FE1\u606F\uFF0C\u5305\u62EC<color=#2F6148><b>\u79CD\u7FA4\u6570\u91CF</b></color>\u3001<color=#2F6148><b>\u6027\u72B6</b></color>\u548C<color=#2F6148><b>\u751F\u5B58\u72B6\u6001</b></color>\u3002\n\u6E38\u620F\u4E3B\u8981\u6A21\u62DF<color=#2F6148><b>\u79CD\u7FA4</b></color>\uFF0C<color=#2F6148><b>\u800C\u975E\u9010\u53EA\u6A21\u62DF\u52A8\u7269</b></color>\u3002"
+      mobileContent: "\u519C\u573A\u4E2D\u751F\u6D3B\u7740\u5404\u79CD\u751F\u7269\uFF0C\u6BCF\u79CD\u751F\u7269\u90FD\u6709\u81EA\u5DF1\u7684\u4E60\u6027\u548C\u751F\u5B58\u9700\u6C42\u3002\n<color=#914B2D><b>\u8F7B\u70B9\u5730\u5757\u4E0A\u7684\u751F\u7269</b></color>\uFF0C\u53EF\u4EE5\u67E5\u770B\u8BE6\u7EC6\u4FE1\u606F\uFF0C\u5305\u62EC<color=#2F6148><b>\u79CD\u7FA4\u6570\u91CF</b></color>\u3001<color=#2F6148><b>\u6027\u72B6</b></color>\u548C<color=#2F6148><b>\u751F\u5B58\u72B6\u6001</b></color>\u3002\n\u6E38\u620F\u4E3B\u8981\u6A21\u62DF<color=#2F6148><b>\u79CD\u7FA4</b></color>\uFF0C<color=#2F6148><b>\u800C\u975E\u9010\u53EA\u6A21\u62DF\u52A8\u7269</b></color>\u3002"
       illustration: {fileID: 0}
       sortOrder: 0
     - id: 4_2
-      title: "五项性状"
-      content: "性状 · 作用\n适温 · 最适应的温度\n适湿 · 最适应的湿度\n运动 · 活动与迁徙能力\n体型 · 影响食物消耗和生存方式\n繁殖 · 影响种群产生后代的能力\n\n性状可能随环境和时间变化。"
-      mobileContent: "性状 · 作用\n适温 · 最适应的温度\n适湿 · 最适应的湿度\n运动 · 活动与迁徙能力\n体型 · 影响食物消耗和生存方式\n繁殖 · 影响种群产生后代的能力\n\n性状可能随环境和时间变化。"
+      title: "\u4E94\u9879\u6027\u72B6"
+      content: "\u6027\u72B6 \xB7 \u4F5C\u7528\n<color=#2F6148><b>\u9002\u6E29</b></color>
+        \xB7 \u6700\u9002\u5E94\u7684\u6E29\u5EA6\n<color=#2F6148><b>\u9002\u6E7F</b></color>
+        \xB7 \u6700\u9002\u5E94\u7684\u6E7F\u5EA6\n<color=#2F6148><b>\u8FD0\u52A8</b></color>
+        \xB7 \u6D3B\u52A8\u4E0E\u8FC1\u5F99\u80FD\u529B\n<color=#2F6148><b>\u4F53\u578B</b></color>
+        \xB7 \u5F71\u54CD\u98DF\u7269\u6D88\u8017\u548C\u751F\u5B58\u65B9\u5F0F\n<color=#2F6148><b>\u7E41\u6B96</b></color>
+        \xB7 \u5F71\u54CD\u79CD\u7FA4\u4EA7\u751F\u540E\u4EE3\u7684\u80FD\u529B\n\u6027\u72B6\u53EF\u80FD<color=#2F6148><b>\u968F\u73AF\u5883\u548C\u65F6\u95F4\u53D8\u5316</b></color>\u3002"
+      mobileContent: "\u6027\u72B6 \xB7 \u4F5C\u7528\n<color=#2F6148><b>\u9002\u6E29</b></color>
+        \xB7 \u6700\u9002\u5E94\u7684\u6E29\u5EA6\n<color=#2F6148><b>\u9002\u6E7F</b></color>
+        \xB7 \u6700\u9002\u5E94\u7684\u6E7F\u5EA6\n<color=#2F6148><b>\u8FD0\u52A8</b></color>
+        \xB7 \u6D3B\u52A8\u4E0E\u8FC1\u5F99\u80FD\u529B\n<color=#2F6148><b>\u4F53\u578B</b></color>
+        \xB7 \u5F71\u54CD\u98DF\u7269\u6D88\u8017\u548C\u751F\u5B58\u65B9\u5F0F\n<color=#2F6148><b>\u7E41\u6B96</b></color>
+        \xB7 \u5F71\u54CD\u79CD\u7FA4\u4EA7\u751F\u540E\u4EE3\u7684\u80FD\u529B\n\u6027\u72B6\u53EF\u80FD<color=#2F6148><b>\u968F\u73AF\u5883\u548C\u65F6\u95F4\u53D8\u5316</b></color>\u3002"
       illustration: {fileID: 21300000, guid: 0d6ff5c370fa4b1c81d47e16b7d4cfb5, type: 3}
       sortOrder: 1
     - id: 4_3
-      title: "生物网与进化网"
-      content: "按 <b>M</b> 打开生物网与进化网。\n\n- <b>生物网</b>：查看不同生物之间的生态关系。\n- <b>进化网</b>：查看可能的进化路线。\n\n在生物网中<b>左键点击某种生物</b>，可以查看它的信息与进化需求。例如，需求提示可能出现：温度 `++`、湿度 `−` 等。\n\n`+` 表示提高，`−` 表示降低，`≈` 表示接近目标；重复符号表示需要更大幅度调整。"
-      mobileContent: "触控版可在生物信息面板观察种群；生物网与进化网当前需在桌面版按 M 查看。\n\n- <b>生物网</b>：查看不同生物之间的生态关系。\n- <b>进化网</b>：查看可能的进化路线。\n\n在桌面版生物网中点击某种生物，可以查看它的信息与进化需求。例如，需求提示可能出现：温度 `++`、湿度 `−` 等。\n\n`+` 表示提高，`−` 表示降低，`≈` 表示接近目标；重复符号表示需要更大幅度调整。"
+      title: "\u751F\u7269\u7F51\u4E0E\u8FDB\u5316\u7F51"
+      content: "\u6309 <color=#914B2D><b>M</b></color> \u6253\u5F00<color=#2F6148><b>\u751F\u7269\u7F51</b></color>\u4E0E<color=#2F6148><b>\u8FDB\u5316\u7F51</b></color>\u3002\n-
+        <color=#2F6148><b>\u751F\u7269\u7F51</b></color>\uFF1A\u67E5\u770B\u4E0D\u540C\u751F\u7269\u4E4B\u95F4\u7684<color=#2F6148><b>\u751F\u6001\u5173\u7CFB</b></color>\u3002\n-
+        <color=#2F6148><b>\u8FDB\u5316\u7F51</b></color>\uFF1A\u67E5\u770B\u53EF\u80FD\u7684<color=#2F6148><b>\u8FDB\u5316\u8DEF\u7EBF</b></color>\u3002\n\u5728<color=#2F6148><b>\u751F\u7269\u7F51</b></color>\u4E2D<color=#914B2D><b>\u5DE6\u952E\u70B9\u51FB\u67D0\u79CD\u751F\u7269</b></color>\uFF0C\u53EF\u4EE5\u67E5\u770B\u5B83\u7684\u4FE1\u606F\u4E0E<color=#2F6148><b>\u8FDB\u5316\u9700\u6C42</b></color>\u3002\u4F8B\u5982\uFF0C\u9700\u6C42\u63D0\u793A\u53EF\u80FD\u51FA\u73B0\uFF1A\u6E29\u5EA6
+        ++\u3001\u6E7F\u5EA6 - \u7B49\u3002\n+ \u8868\u793A<color=#2F6148><b>\u63D0\u9AD8</b></color>\uFF0C-
+        \u8868\u793A<color=#2F6148><b>\u964D\u4F4E</b></color>\uFF0C\u7EA6\u7B49\u4E8E
+        \u8868\u793A<color=#2F6148><b>\u63A5\u8FD1\u76EE\u6807</b></color>\uFF1B\u91CD\u590D\u7B26\u53F7\u8868\u793A\u9700\u8981<color=#2F6148><b>\u66F4\u5927\u5E45\u5EA6\u8C03\u6574</b></color>\u3002"
+      mobileContent: "\u89E6\u63A7\u7248\u53EF\u5728\u751F\u7269\u4FE1\u606F\u9762\u677F\u89C2\u5BDF\u79CD\u7FA4\uFF1B<color=#2F6148><b>\u751F\u7269\u7F51</b></color>\u4E0E<color=#2F6148><b>\u8FDB\u5316\u7F51</b></color>\u5F53\u524D\u9700\u5728\u684C\u9762\u7248\u6309
+        <color=#914B2D><b>M</b></color> \u67E5\u770B\u3002\n- <color=#2F6148><b>\u751F\u7269\u7F51</b></color>\uFF1A\u67E5\u770B\u4E0D\u540C\u751F\u7269\u4E4B\u95F4\u7684<color=#2F6148><b>\u751F\u6001\u5173\u7CFB</b></color>\u3002\n-
+        <color=#2F6148><b>\u8FDB\u5316\u7F51</b></color>\uFF1A\u67E5\u770B\u53EF\u80FD\u7684<color=#2F6148><b>\u8FDB\u5316\u8DEF\u7EBF</b></color>\u3002\n\u5728\u684C\u9762\u7248<color=#2F6148><b>\u751F\u7269\u7F51</b></color>\u4E2D\u70B9\u51FB\u67D0\u79CD\u751F\u7269\uFF0C\u53EF\u4EE5\u67E5\u770B\u5B83\u7684\u4FE1\u606F\u4E0E<color=#2F6148><b>\u8FDB\u5316\u9700\u6C42</b></color>\u3002\u4F8B\u5982\uFF0C\u9700\u6C42\u63D0\u793A\u53EF\u80FD\u51FA\u73B0\uFF1A\u6E29\u5EA6
+        ++\u3001\u6E7F\u5EA6 - \u7B49\u3002\n+ \u8868\u793A<color=#2F6148><b>\u63D0\u9AD8</b></color>\uFF0C-
+        \u8868\u793A<color=#2F6148><b>\u964D\u4F4E</b></color>\uFF0C\u7EA6\u7B49\u4E8E
+        \u8868\u793A<color=#2F6148><b>\u63A5\u8FD1\u76EE\u6807</b></color>\uFF1B\u91CD\u590D\u7B26\u53F7\u8868\u793A\u9700\u8981<color=#2F6148><b>\u66F4\u5927\u5E45\u5EA6\u8C03\u6574</b></color>\u3002"
       illustration: {fileID: 21300000, guid: 667578e34c2c4cda97e547673bc1ff96, type: 3}
       sortOrder: 2
     - id: 4_4
-      title: "观察生物的变化"
-      content: "生物不会因为一次环境操作就立刻进化。\n\n观察五项性状、种群数量和进化需求，判断调整是否有效。\n\n<color=#557653>✎ <b>观察笔记</b>：想培育新物种？先在进化网中找到目标，再尝试创造它需要的环境。</color>"
-      mobileContent: "生物不会因为一次环境操作就立刻进化。\n\n观察五项性状、种群数量和进化需求，判断调整是否有效。\n\n<color=#557653>✎ <b>观察笔记</b>：想培育新物种？先在进化网中找到目标，再尝试创造它需要的环境。</color>"
+      title: "\u89C2\u5BDF\u751F\u7269\u7684\u53D8\u5316"
+      content: "\u751F\u7269<color=#2F6148><b>\u4E0D\u4F1A\u56E0\u4E3A\u4E00\u6B21\u73AF\u5883\u64CD\u4F5C\u5C31\u7ACB\u523B\u8FDB\u5316</b></color>\u3002\n\u89C2\u5BDF<color=#2F6148><b>\u4E94\u9879\u6027\u72B6</b></color>\u3001<color=#2F6148><b>\u79CD\u7FA4\u6570\u91CF</b></color>\u548C<color=#2F6148><b>\u8FDB\u5316\u9700\u6C42</b></color>\uFF0C\u5224\u65AD\u8C03\u6574\u662F\u5426\u6709\u6548\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u60F3\u57F9\u80B2\u65B0\u7269\u79CD\uFF1F\u5148\u5728\u8FDB\u5316\u7F51\u4E2D<color=#2F6148><b>\u627E\u5230\u76EE\u6807</b></color>\uFF0C\u518D\u5C1D\u8BD5\u521B\u9020\u5B83\u9700\u8981\u7684\u73AF\u5883\u3002"
+      mobileContent: "\u751F\u7269<color=#2F6148><b>\u4E0D\u4F1A\u56E0\u4E3A\u4E00\u6B21\u73AF\u5883\u64CD\u4F5C\u5C31\u7ACB\u523B\u8FDB\u5316</b></color>\u3002\n\u89C2\u5BDF<color=#2F6148><b>\u4E94\u9879\u6027\u72B6</b></color>\u3001<color=#2F6148><b>\u79CD\u7FA4\u6570\u91CF</b></color>\u548C<color=#2F6148><b>\u8FDB\u5316\u9700\u6C42</b></color>\uFF0C\u5224\u65AD\u8C03\u6574\u662F\u5426\u6709\u6548\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u60F3\u57F9\u80B2\u65B0\u7269\u79CD\uFF1F\u5148\u5728\u8FDB\u5316\u7F51\u4E2D<color=#2F6148><b>\u627E\u5230\u76EE\u6807</b></color>\uFF0C\u518D\u5C1D\u8BD5\u521B\u9020\u5B83\u9700\u8981\u7684\u73AF\u5883\u3002"
       illustration: {fileID: 0}
       sortOrder: 3
   - id: chapter5
-    title: "生态与演化"
+    title: "\u751F\u6001\u4E0E\u6F14\u5316"
     sortOrder: 4
     pages:
     - id: 5_1
-      title: "食物与生存"
-      content: "每一种生物都需要食物才能生存和繁殖。\n\n食草生物依靠植物资源，食肉生物则需要捕食其他动物。\n\n食物充足时种群可能壮大；食物不足时，种群可能下降甚至灭绝。"
-      mobileContent: "每一种生物都需要食物才能生存和繁殖。\n\n食草生物依靠植物资源，食肉生物则需要捕食其他动物。\n\n食物充足时种群可能壮大；食物不足时，种群可能下降甚至灭绝。"
+      title: "\u98DF\u7269\u4E0E\u751F\u5B58"
+      content: "\u6BCF\u4E00\u79CD\u751F\u7269\u90FD\u9700\u8981\u98DF\u7269\u624D\u80FD\u751F\u5B58\u548C\u7E41\u6B96\u3002\n\u98DF\u8349\u751F\u7269\u4F9D\u9760<color=#2F6148><b>\u690D\u7269\u8D44\u6E90</b></color>\uFF0C\u98DF\u8089\u751F\u7269\u5219\u9700\u8981<color=#2F6148><b>\u6355\u98DF\u5176\u4ED6\u52A8\u7269</b></color>\u3002\n<color=#2F6148><b>\u98DF\u7269\u5145\u8DB3</b></color>\u65F6\u79CD\u7FA4\u53EF\u80FD\u58EE\u5927\uFF1B<color=#2F6148><b>\u98DF\u7269\u4E0D\u8DB3</b></color>\u65F6\uFF0C\u79CD\u7FA4\u53EF\u80FD\u4E0B\u964D\u751A\u81F3<color=#2F6148><b>\u706D\u7EDD</b></color>\u3002"
+      mobileContent: "\u6BCF\u4E00\u79CD\u751F\u7269\u90FD\u9700\u8981\u98DF\u7269\u624D\u80FD\u751F\u5B58\u548C\u7E41\u6B96\u3002\n\u98DF\u8349\u751F\u7269\u4F9D\u9760<color=#2F6148><b>\u690D\u7269\u8D44\u6E90</b></color>\uFF0C\u98DF\u8089\u751F\u7269\u5219\u9700\u8981<color=#2F6148><b>\u6355\u98DF\u5176\u4ED6\u52A8\u7269</b></color>\u3002\n<color=#2F6148><b>\u98DF\u7269\u5145\u8DB3</b></color>\u65F6\u79CD\u7FA4\u53EF\u80FD\u58EE\u5927\uFF1B<color=#2F6148><b>\u98DF\u7269\u4E0D\u8DB3</b></color>\u65F6\uFF0C\u79CD\u7FA4\u53EF\u80FD\u4E0B\u964D\u751A\u81F3<color=#2F6148><b>\u706D\u7EDD</b></color>\u3002"
       illustration: {fileID: 21300000, guid: 667578e34c2c4cda97e547673bc1ff96, type: 3}
       sortOrder: 0
     - id: 5_2
-      title: "竞争与捕食"
-      content: "同一块土地上的生物会相互影响。\n\n多个种群可能争夺同一份食物，捕食者也会影响猎物数量。\n\n<b>一个种群的变化，可能影响整块土地的生态平衡。</b>"
-      mobileContent: "同一块土地上的生物会相互影响。\n\n多个种群可能争夺同一份食物，捕食者也会影响猎物数量。\n\n<b>一个种群的变化，可能影响整块土地的生态平衡。</b>"
+      title: "\u7ADE\u4E89\u4E0E\u6355\u98DF"
+      content: "\u540C\u4E00\u5757\u571F\u5730\u4E0A\u7684\u751F\u7269\u4F1A\u76F8\u4E92\u5F71\u54CD\u3002\n\u591A\u4E2A\u79CD\u7FA4\u53EF\u80FD<color=#2F6148><b>\u4E89\u593A\u540C\u4E00\u4EFD\u98DF\u7269</b></color>\uFF0C<color=#2F6148><b>\u6355\u98DF\u8005</b></color>\u4E5F\u4F1A\u5F71\u54CD<color=#2F6148><b>\u730E\u7269\u6570\u91CF</b></color>\u3002\n\u4E00\u4E2A\u79CD\u7FA4\u7684\u53D8\u5316\uFF0C\u53EF\u80FD\u5F71\u54CD\u6574\u5757\u571F\u5730\u7684<color=#2F6148><b>\u751F\u6001\u5E73\u8861</b></color>\u3002"
+      mobileContent: "\u540C\u4E00\u5757\u571F\u5730\u4E0A\u7684\u751F\u7269\u4F1A\u76F8\u4E92\u5F71\u54CD\u3002\n\u591A\u4E2A\u79CD\u7FA4\u53EF\u80FD<color=#2F6148><b>\u4E89\u593A\u540C\u4E00\u4EFD\u98DF\u7269</b></color>\uFF0C<color=#2F6148><b>\u6355\u98DF\u8005</b></color>\u4E5F\u4F1A\u5F71\u54CD<color=#2F6148><b>\u730E\u7269\u6570\u91CF</b></color>\u3002\n\u4E00\u4E2A\u79CD\u7FA4\u7684\u53D8\u5316\uFF0C\u53EF\u80FD\u5F71\u54CD\u6574\u5757\u571F\u5730\u7684<color=#2F6148><b>\u751F\u6001\u5E73\u8861</b></color>\u3002"
       illustration: {fileID: 21300000, guid: 667578e34c2c4cda97e547673bc1ff96, type: 3}
       sortOrder: 1
     - id: 5_3
-      title: "迁徙与扩散"
-      content: "当相邻地块出现更适宜的生存环境时，生物可能迁徙过去。\n\n迁徙受到运动能力、地块环境与海拔连通性的影响，并不保证成功。\n\n<color=#557653>✎ <b>观察笔记</b>：建造环境不同的邻地，也许能为生物创造新的生存机会。</color>"
-      mobileContent: "当相邻地块出现更适宜的生存环境时，生物可能迁徙过去。\n\n迁徙受到运动能力、地块环境与海拔连通性的影响，并不保证成功。\n\n<color=#557653>✎ <b>观察笔记</b>：建造环境不同的邻地，也许能为生物创造新的生存机会。</color>"
+      title: "\u8FC1\u5F99\u4E0E\u6269\u6563"
+      content: "\u5F53<color=#2F6148><b>\u76F8\u90BB\u5730\u5757</b></color>\u51FA\u73B0\u66F4\u9002\u5B9C\u7684\u751F\u5B58\u73AF\u5883\u65F6\uFF0C\u751F\u7269\u53EF\u80FD\u8FC1\u5F99\u8FC7\u53BB\u3002\n\u8FC1\u5F99\u53D7\u5230<color=#2F6148><b>\u8FD0\u52A8\u80FD\u529B</b></color>\u3001<color=#2F6148><b>\u5730\u5757\u73AF\u5883</b></color>\u4E0E<color=#2F6148><b>\u6D77\u62D4\u8FDE\u901A\u6027</b></color>\u7684\u5F71\u54CD\uFF0C<color=#2F6148><b>\u5E76\u4E0D\u4FDD\u8BC1\u6210\u529F</b></color>\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u5EFA\u9020\u73AF\u5883\u4E0D\u540C\u7684\u90BB\u5730\uFF0C\u4E5F\u8BB8\u80FD\u4E3A\u751F\u7269\u521B\u9020\u65B0\u7684\u751F\u5B58\u673A\u4F1A\u3002"
+      mobileContent: "\u5F53<color=#2F6148><b>\u76F8\u90BB\u5730\u5757</b></color>\u51FA\u73B0\u66F4\u9002\u5B9C\u7684\u751F\u5B58\u73AF\u5883\u65F6\uFF0C\u751F\u7269\u53EF\u80FD\u8FC1\u5F99\u8FC7\u53BB\u3002\n\u8FC1\u5F99\u53D7\u5230<color=#2F6148><b>\u8FD0\u52A8\u80FD\u529B</b></color>\u3001<color=#2F6148><b>\u5730\u5757\u73AF\u5883</b></color>\u4E0E<color=#2F6148><b>\u6D77\u62D4\u8FDE\u901A\u6027</b></color>\u7684\u5F71\u54CD\uFF0C<color=#2F6148><b>\u5E76\u4E0D\u4FDD\u8BC1\u6210\u529F</b></color>\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u5EFA\u9020\u73AF\u5883\u4E0D\u540C\u7684\u90BB\u5730\uFF0C\u4E5F\u8BB8\u80FD\u4E3A\u751F\u7269\u521B\u9020\u65B0\u7684\u751F\u5B58\u673A\u4F1A\u3002"
       illustration: {fileID: 0}
       sortOrder: 2
     - id: 5_4
-      title: "适应与变异"
-      content: "环境变化时，生物也可能逐渐改变自身的性状，以适应新的生存条件。\n\n例如，寒冷可能促使种群适应更低温度；食物供给变化可能影响体型和繁殖。\n\n这些微小的性状变化称为<b>变异</b>，但变化未必都符合你的预期。"
-      mobileContent: "环境变化时，生物也可能逐渐改变自身的性状，以适应新的生存条件。\n\n例如，寒冷可能促使种群适应更低温度；食物供给变化可能影响体型和繁殖。\n\n这些微小的性状变化称为<b>变异</b>，但变化未必都符合你的预期。"
+      title: "\u9002\u5E94\u4E0E\u53D8\u5F02"
+      content: "\u73AF\u5883\u53D8\u5316\u65F6\uFF0C\u751F\u7269\u4E5F\u53EF\u80FD\u9010\u6E10\u6539\u53D8\u81EA\u8EAB\u7684<color=#2F6148><b>\u6027\u72B6</b></color>\uFF0C\u4EE5<color=#2F6148><b>\u9002\u5E94</b></color>\u65B0\u7684\u751F\u5B58\u6761\u4EF6\u3002\n\u4F8B\u5982\uFF0C\u5BD2\u51B7\u53EF\u80FD\u4FC3\u4F7F\u79CD\u7FA4<color=#2F6148><b>\u9002\u5E94</b></color>\u66F4\u4F4E\u6E29\u5EA6\uFF1B\u98DF\u7269\u4F9B\u7ED9\u53D8\u5316\u53EF\u80FD\u5F71\u54CD\u4F53\u578B\u548C\u7E41\u6B96\u3002\n\u8FD9\u4E9B\u5FAE\u5C0F\u7684<color=#2F6148><b>\u6027\u72B6</b></color>\u53D8\u5316\u79F0\u4E3A<color=#2F6148><b>\u53D8\u5F02</b></color>\uFF0C\u4F46\u53D8\u5316<color=#2F6148><b>\u672A\u5FC5\u90FD\u7B26\u5408\u4F60\u7684\u9884\u671F</b></color>\u3002"
+      mobileContent: "\u73AF\u5883\u53D8\u5316\u65F6\uFF0C\u751F\u7269\u4E5F\u53EF\u80FD\u9010\u6E10\u6539\u53D8\u81EA\u8EAB\u7684<color=#2F6148><b>\u6027\u72B6</b></color>\uFF0C\u4EE5<color=#2F6148><b>\u9002\u5E94</b></color>\u65B0\u7684\u751F\u5B58\u6761\u4EF6\u3002\n\u4F8B\u5982\uFF0C\u5BD2\u51B7\u53EF\u80FD\u4FC3\u4F7F\u79CD\u7FA4<color=#2F6148><b>\u9002\u5E94</b></color>\u66F4\u4F4E\u6E29\u5EA6\uFF1B\u98DF\u7269\u4F9B\u7ED9\u53D8\u5316\u53EF\u80FD\u5F71\u54CD\u4F53\u578B\u548C\u7E41\u6B96\u3002\n\u8FD9\u4E9B\u5FAE\u5C0F\u7684<color=#2F6148><b>\u6027\u72B6</b></color>\u53D8\u5316\u79F0\u4E3A<color=#2F6148><b>\u53D8\u5F02</b></color>\uFF0C\u4F46\u53D8\u5316<color=#2F6148><b>\u672A\u5FC5\u90FD\u7B26\u5408\u4F60\u7684\u9884\u671F</b></color>\u3002"
       illustration: {fileID: 0}
       sortOrder: 3
     - id: 5_5
-      title: "变异与进化"
-      content: "一次变异通常只带来微小变化。\n\n当变异不断积累，使种群五项性状接近目标，并持续满足数量与时间条件时，一部分原有种群便可能<b>分化成新的物种</b>。\n\n新物种仍需要食物与生存空间，也会面对竞争和捕食。\n\n<color=#557653>✎ <b>观察笔记</b>：进化来自变化的积累；新生命诞生后，也需要生态环境支持它继续生存。</color>"
-      mobileContent: "一次变异通常只带来微小变化。\n\n当变异不断积累，使种群五项性状接近目标，并持续满足数量与时间条件时，一部分原有种群便可能<b>分化成新的物种</b>。\n\n新物种仍需要食物与生存空间，也会面对竞争和捕食。\n\n<color=#557653>✎ <b>观察笔记</b>：进化来自变化的积累；新生命诞生后，也需要生态环境支持它继续生存。</color>"
+      title: "\u53D8\u5F02\u4E0E\u8FDB\u5316"
+      content: "\u4E00\u6B21\u53D8\u5F02\u901A\u5E38\u53EA\u5E26\u6765\u5FAE\u5C0F\u53D8\u5316\u3002\n\u5F53\u53D8\u5F02\u4E0D\u65AD\u79EF\u7D2F\uFF0C\u4F7F\u79CD\u7FA4<color=#2F6148><b>\u4E94\u9879\u6027\u72B6\u63A5\u8FD1\u76EE\u6807</b></color>\uFF0C\u5E76\u6301\u7EED\u6EE1\u8DB3<color=#2F6148><b>\u6570\u91CF\u4E0E\u65F6\u95F4\u6761\u4EF6</b></color>\u65F6\uFF0C\u4E00\u90E8\u5206\u539F\u6709\u79CD\u7FA4\u4FBF\u53EF\u80FD<color=#2F6148><b>\u5206\u5316\u6210\u65B0\u7684\u7269\u79CD</b></color>\u3002\n\u65B0\u7269\u79CD\u4ECD\u9700\u8981<color=#2F6148><b>\u98DF\u7269\u4E0E\u751F\u5B58\u7A7A\u95F4</b></color>\uFF0C\u4E5F\u4F1A\u9762\u5BF9\u7ADE\u4E89\u548C\u6355\u98DF\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u8FDB\u5316\u6765\u81EA\u53D8\u5316\u7684\u79EF\u7D2F\uFF1B\u65B0\u751F\u547D\u8BDE\u751F\u540E\uFF0C\u4E5F\u9700\u8981<color=#2F6148><b>\u751F\u6001\u73AF\u5883\u652F\u6301</b></color>\u5B83\u7EE7\u7EED\u751F\u5B58\u3002"
+      mobileContent: "\u4E00\u6B21\u53D8\u5F02\u901A\u5E38\u53EA\u5E26\u6765\u5FAE\u5C0F\u53D8\u5316\u3002\n\u5F53\u53D8\u5F02\u4E0D\u65AD\u79EF\u7D2F\uFF0C\u4F7F\u79CD\u7FA4<color=#2F6148><b>\u4E94\u9879\u6027\u72B6\u63A5\u8FD1\u76EE\u6807</b></color>\uFF0C\u5E76\u6301\u7EED\u6EE1\u8DB3<color=#2F6148><b>\u6570\u91CF\u4E0E\u65F6\u95F4\u6761\u4EF6</b></color>\u65F6\uFF0C\u4E00\u90E8\u5206\u539F\u6709\u79CD\u7FA4\u4FBF\u53EF\u80FD<color=#2F6148><b>\u5206\u5316\u6210\u65B0\u7684\u7269\u79CD</b></color>\u3002\n\u65B0\u7269\u79CD\u4ECD\u9700\u8981<color=#2F6148><b>\u98DF\u7269\u4E0E\u751F\u5B58\u7A7A\u95F4</b></color>\uFF0C\u4E5F\u4F1A\u9762\u5BF9\u7ADE\u4E89\u548C\u6355\u98DF\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u8FDB\u5316\u6765\u81EA\u53D8\u5316\u7684\u79EF\u7D2F\uFF1B\u65B0\u751F\u547D\u8BDE\u751F\u540E\uFF0C\u4E5F\u9700\u8981<color=#2F6148><b>\u751F\u6001\u73AF\u5883\u652F\u6301</b></color>\u5B83\u7EE7\u7EED\u751F\u5B58\u3002"
       illustration: {fileID: 0}
       sortOrder: 4
   - id: chapter6
-    title: "引导进化"
+    title: "\u5F15\u5BFC\u8FDB\u5316"
     sortOrder: 5
     pages:
     - id: 6_1
-      title: "选择进化目标"
-      content: "按 <b>M</b> 打开进化网，选择想培育的物种，查看五项性状需求。\n\n`+` 代表需要提高，`−` 代表需要降低，`≈` 代表已经接近目标。符号越多，所需调整幅度越大。"
-      mobileContent: "在生物信息中观察性状；桌面版可按 M 打开进化网，选择想培育的物种，查看五项性状需求。\n\n`+` 代表需要提高，`−` 代表需要降低，`≈` 代表已经接近目标。符号越多，所需调整幅度越大。"
+      title: "\u9009\u62E9\u8FDB\u5316\u76EE\u6807"
+      content: "\u6309 <color=#914B2D><b>M</b></color> \u6253\u5F00\u8FDB\u5316\u7F51\uFF0C\u9009\u62E9\u60F3\u57F9\u80B2\u7684\u7269\u79CD\uFF0C\u67E5\u770B<color=#2F6148><b>\u4E94\u9879\u6027\u72B6\u9700\u6C42</b></color>\u3002\n+
+        \u4EE3\u8868\u9700\u8981<color=#2F6148><b>\u63D0\u9AD8</b></color>\uFF0C-
+        \u4EE3\u8868\u9700\u8981<color=#2F6148><b>\u964D\u4F4E</b></color>\uFF0C\u7EA6\u7B49\u4E8E
+        \u4EE3\u8868\u5DF2\u7ECF<color=#2F6148><b>\u63A5\u8FD1\u76EE\u6807</b></color>\u3002\u7B26\u53F7\u8D8A\u591A\uFF0C\u6240\u9700<color=#2F6148><b>\u8C03\u6574\u5E45\u5EA6\u8D8A\u5927</b></color>\u3002"
+      mobileContent: "\u5728\u751F\u7269\u4FE1\u606F\u4E2D\u89C2\u5BDF\u6027\u72B6\uFF1B\u684C\u9762\u7248\u53EF\u6309
+        <color=#914B2D><b>M</b></color> \u6253\u5F00\u8FDB\u5316\u7F51\uFF0C\u9009\u62E9\u60F3\u57F9\u80B2\u7684\u7269\u79CD\uFF0C\u67E5\u770B<color=#2F6148><b>\u4E94\u9879\u6027\u72B6\u9700\u6C42</b></color>\u3002\n+
+        \u4EE3\u8868\u9700\u8981<color=#2F6148><b>\u63D0\u9AD8</b></color>\uFF0C-
+        \u4EE3\u8868\u9700\u8981<color=#2F6148><b>\u964D\u4F4E</b></color>\uFF0C\u7EA6\u7B49\u4E8E
+        \u4EE3\u8868\u5DF2\u7ECF<color=#2F6148><b>\u63A5\u8FD1\u76EE\u6807</b></color>\u3002\u7B26\u53F7\u8D8A\u591A\uFF0C\u6240\u9700<color=#2F6148><b>\u8C03\u6574\u5E45\u5EA6\u8D8A\u5927</b></color>\u3002"
       illustration: {fileID: 0}
       sortOrder: 0
     - id: 6_2
-      title: "用环境引导性状"
-      content: "想要的变化 · 可以尝试的操作\n适温 ↑ / ↓ · 升高 / 降低温度\n适湿 ↑ / ↓ · 增加 / 降低湿度\n运动 ↑ · 创造更有吸引力的邻地，鼓励迁徙\n运动 ↓ · 制造地形隔离，或降低邻地吸引力\n体型 ↑ / ↓ · 增加 / 减少植物存量\n繁殖 ↑ / ↓ · 增加 / 减少植物增量\n\n操作只能<b>引导方向</b>，不能保证每次都产生相应变异。"
-      mobileContent: "想要的变化 · 可以尝试的操作\n适温 ↑ / ↓ · 升高 / 降低温度\n适湿 ↑ / ↓ · 增加 / 降低湿度\n运动 ↑ · 创造更有吸引力的邻地，鼓励迁徙\n运动 ↓ · 制造地形隔离，或降低邻地吸引力\n体型 ↑ / ↓ · 增加 / 减少植物存量\n繁殖 ↑ / ↓ · 增加 / 减少植物增量\n\n操作只能<b>引导方向</b>，不能保证每次都产生相应变异。"
+      title: "\u7528\u73AF\u5883\u5F15\u5BFC\u6027\u72B6"
+      content: "\u60F3\u8981\u7684\u53D8\u5316 \xB7 \u53EF\u4EE5\u5C1D\u8BD5\u7684\u64CD\u4F5C\n<color=#2F6148><b>\u9002\u6E29</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u5347\u9AD8 / \u964D\u4F4E\u6E29\u5EA6\n<color=#2F6148><b>\u9002\u6E7F</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u589E\u52A0 / \u964D\u4F4E\u6E7F\u5EA6\n<color=#2F6148><b>\u8FD0\u52A8</b></color>
+        \u63D0\u9AD8 \xB7 \u521B\u9020\u66F4\u6709\u5438\u5F15\u529B\u7684\u90BB\u5730\uFF0C\u9F13\u52B1\u8FC1\u5F99\n<color=#2F6148><b>\u8FD0\u52A8</b></color>
+        \u964D\u4F4E \xB7 \u5236\u9020\u5730\u5F62\u9694\u79BB\uFF0C\u6216\u964D\u4F4E\u90BB\u5730\u5438\u5F15\u529B\n<color=#2F6148><b>\u4F53\u578B</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u589E\u52A0 / \u51CF\u5C11<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>\n<color=#2F6148><b>\u7E41\u6B96</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u589E\u52A0 / \u51CF\u5C11<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>\n\u64CD\u4F5C\u53EA\u80FD<color=#2F6148><b>\u5F15\u5BFC\u65B9\u5411</b></color>\uFF0C<color=#2F6148><b>\u4E0D\u80FD\u4FDD\u8BC1</b></color>\u6BCF\u6B21\u90FD\u4EA7\u751F\u76F8\u5E94\u53D8\u5F02\u3002"
+      mobileContent: "\u60F3\u8981\u7684\u53D8\u5316 \xB7 \u53EF\u4EE5\u5C1D\u8BD5\u7684\u64CD\u4F5C\n<color=#2F6148><b>\u9002\u6E29</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u5347\u9AD8 / \u964D\u4F4E\u6E29\u5EA6\n<color=#2F6148><b>\u9002\u6E7F</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u589E\u52A0 / \u964D\u4F4E\u6E7F\u5EA6\n<color=#2F6148><b>\u8FD0\u52A8</b></color>
+        \u63D0\u9AD8 \xB7 \u521B\u9020\u66F4\u6709\u5438\u5F15\u529B\u7684\u90BB\u5730\uFF0C\u9F13\u52B1\u8FC1\u5F99\n<color=#2F6148><b>\u8FD0\u52A8</b></color>
+        \u964D\u4F4E \xB7 \u5236\u9020\u5730\u5F62\u9694\u79BB\uFF0C\u6216\u964D\u4F4E\u90BB\u5730\u5438\u5F15\u529B\n<color=#2F6148><b>\u4F53\u578B</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u589E\u52A0 / \u51CF\u5C11<color=#2F6148><b>\u690D\u7269\u5B58\u91CF</b></color>\n<color=#2F6148><b>\u7E41\u6B96</b></color>
+        \u63D0\u9AD8 / \u964D\u4F4E \xB7 \u589E\u52A0 / \u51CF\u5C11<color=#2F6148><b>\u690D\u7269\u589E\u91CF</b></color>\n\u64CD\u4F5C\u53EA\u80FD<color=#2F6148><b>\u5F15\u5BFC\u65B9\u5411</b></color>\uFF0C<color=#2F6148><b>\u4E0D\u80FD\u4FDD\u8BC1</b></color>\u6BCF\u6B21\u90FD\u4EA7\u751F\u76F8\u5E94\u53D8\u5F02\u3002"
       illustration: {fileID: 0}
       sortOrder: 1
     - id: 6_3
-      title: "抓住进化时机"
-      content: "可以先集中引导一项性状，再根据进化需求调整策略。\n\n当某项性状接近目标时，可以考虑撤销当前干预，转而关注其他性状。\n\n<color=#557653>✎ <b>观察笔记</b>：留意进化需求的变化；环境干预结束后，种群仍会继续自然演化。</color>"
-      mobileContent: "可以先集中引导一项性状，再根据进化需求调整策略。\n\n当某项性状接近目标时，可以考虑撤销当前干预，转而关注其他性状。\n\n<color=#557653>✎ <b>观察笔记</b>：留意进化需求的变化；环境干预结束后，种群仍会继续自然演化。</color>"
+      title: "\u6293\u4F4F\u8FDB\u5316\u65F6\u673A"
+      content: "\u53EF\u4EE5\u5148\u96C6\u4E2D\u5F15\u5BFC\u4E00\u9879\u6027\u72B6\uFF0C\u518D\u6839\u636E\u8FDB\u5316\u9700\u6C42\u8C03\u6574\u7B56\u7565\u3002\n\u5F53\u67D0\u9879\u6027\u72B6<color=#2F6148><b>\u63A5\u8FD1\u76EE\u6807</b></color>\u65F6\uFF0C\u53EF\u4EE5\u8003\u8651<color=#2F6148><b>\u64A4\u9500\u5F53\u524D\u5E72\u9884</b></color>\uFF0C\u8F6C\u800C\u5173\u6CE8\u5176\u4ED6\u6027\u72B6\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u7559\u610F\u8FDB\u5316\u9700\u6C42\u7684\u53D8\u5316\uFF1B\u73AF\u5883\u5E72\u9884\u7ED3\u675F\u540E\uFF0C\u79CD\u7FA4\u4ECD\u4F1A\u7EE7\u7EED<color=#2F6148><b>\u81EA\u7136\u6F14\u5316</b></color>\u3002"
+      mobileContent: "\u53EF\u4EE5\u5148\u96C6\u4E2D\u5F15\u5BFC\u4E00\u9879\u6027\u72B6\uFF0C\u518D\u6839\u636E\u8FDB\u5316\u9700\u6C42\u8C03\u6574\u7B56\u7565\u3002\n\u5F53\u67D0\u9879\u6027\u72B6<color=#2F6148><b>\u63A5\u8FD1\u76EE\u6807</b></color>\u65F6\uFF0C\u53EF\u4EE5\u8003\u8651<color=#2F6148><b>\u64A4\u9500\u5F53\u524D\u5E72\u9884</b></color>\uFF0C\u8F6C\u800C\u5173\u6CE8\u5176\u4ED6\u6027\u72B6\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u7559\u610F\u8FDB\u5316\u9700\u6C42\u7684\u53D8\u5316\uFF1B\u73AF\u5883\u5E72\u9884\u7ED3\u675F\u540E\uFF0C\u79CD\u7FA4\u4ECD\u4F1A\u7EE7\u7EED<color=#2F6148><b>\u81EA\u7136\u6F14\u5316</b></color>\u3002"
       illustration: {fileID: 0}
       sortOrder: 2
     - id: 6_4
-      title: "迎接新物种"
-      content: "当五项性状接近目标，并持续满足进化条件时，种群便有机会正式分化。\n\n一部分原有种群成为新物种，母种群仍然保留。\n\n<b>进化成功只是开始，让新物种存活下来同样重要。</b>"
-      mobileContent: "当五项性状接近目标，并持续满足进化条件时，种群便有机会正式分化。\n\n一部分原有种群成为新物种，母种群仍然保留。\n\n<b>进化成功只是开始，让新物种存活下来同样重要。</b>"
+      title: "\u8FCE\u63A5\u65B0\u7269\u79CD"
+      content: "\u5F53<color=#2F6148><b>\u4E94\u9879\u6027\u72B6\u63A5\u8FD1\u76EE\u6807</b></color>\uFF0C\u5E76<color=#2F6148><b>\u6301\u7EED\u6EE1\u8DB3\u8FDB\u5316\u6761\u4EF6</b></color>\u65F6\uFF0C\u79CD\u7FA4\u4FBF\u6709\u673A\u4F1A\u6B63\u5F0F\u5206\u5316\u3002\n\u4E00\u90E8\u5206\u539F\u6709\u79CD\u7FA4\u6210\u4E3A\u65B0\u7269\u79CD\uFF0C<color=#2F6148><b>\u6BCD\u79CD\u7FA4\u4ECD\u7136\u4FDD\u7559</b></color>\u3002\n\u8FDB\u5316\u6210\u529F\u53EA\u662F\u5F00\u59CB\uFF0C<color=#2F6148><b>\u8BA9\u65B0\u7269\u79CD\u5B58\u6D3B\u4E0B\u6765</b></color>\u540C\u6837\u91CD\u8981\u3002"
+      mobileContent: "\u5F53<color=#2F6148><b>\u4E94\u9879\u6027\u72B6\u63A5\u8FD1\u76EE\u6807</b></color>\uFF0C\u5E76<color=#2F6148><b>\u6301\u7EED\u6EE1\u8DB3\u8FDB\u5316\u6761\u4EF6</b></color>\u65F6\uFF0C\u79CD\u7FA4\u4FBF\u6709\u673A\u4F1A\u6B63\u5F0F\u5206\u5316\u3002\n\u4E00\u90E8\u5206\u539F\u6709\u79CD\u7FA4\u6210\u4E3A\u65B0\u7269\u79CD\uFF0C<color=#2F6148><b>\u6BCD\u79CD\u7FA4\u4ECD\u7136\u4FDD\u7559</b></color>\u3002\n\u8FDB\u5316\u6210\u529F\u53EA\u662F\u5F00\u59CB\uFF0C<color=#2F6148><b>\u8BA9\u65B0\u7269\u79CD\u5B58\u6D3B\u4E0B\u6765</b></color>\u540C\u6837\u91CD\u8981\u3002"
       illustration: {fileID: 21300000, guid: 319627fbbda5a0f4da896fc53af25105, type: 3}
       sortOrder: 3
   - id: chapter7
-    title: "生命的价值"
+    title: "\u751F\u547D\u7684\u4EF7\u503C"
     sortOrder: 6
     pages:
     - id: 7_1
-      title: "生物能"
-      content: "<color=#9A694A>规划玩法：当前测试版可能关闭经济系统。</color>\n\n生命不仅会消耗资源，也会为农场带来珍贵的<b>生物能</b>。\n\n每一种生物都会随着时间自然产生生物能。种群越繁盛，积累的生物能也可能越多。\n\n生物能是你培育这颗星球的重要资源。"
-      mobileContent: "<color=#9A694A>规划玩法：当前测试版可能关闭经济系统。</color>\n\n生命不仅会消耗资源，也会为农场带来珍贵的<b>生物能</b>。\n\n每一种生物都会随着时间自然产生生物能。种群越繁盛，积累的生物能也可能越多。\n\n生物能是你培育这颗星球的重要资源。"
+      title: "\u751F\u7269\u80FD"
+      content: "<color=#914B2D><b>\u89C4\u5212\u73A9\u6CD5\uFF1A\u5F53\u524D\u6D4B\u8BD5\u7248\u53EF\u80FD\u5173\u95ED\u7ECF\u6D4E\u7CFB\u7EDF\u3002</b></color>\n\u751F\u547D\u4E0D\u4EC5\u4F1A\u6D88\u8017\u8D44\u6E90\uFF0C\u4E5F\u4F1A\u4E3A\u519C\u573A\u5E26\u6765\u73CD\u8D35\u7684<color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u3002\n\u6BCF\u4E00\u79CD\u751F\u7269\u90FD\u4F1A<color=#2F6148><b>\u968F\u7740\u65F6\u95F4\u81EA\u7136\u4EA7\u751F</b></color><color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u3002\u79CD\u7FA4\u8D8A\u7E41\u76DB\uFF0C\u79EF\u7D2F\u7684<color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u4E5F\u53EF\u80FD\u8D8A\u591A\u3002\n<color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u662F\u4F60\u57F9\u80B2\u8FD9\u9897\u661F\u7403\u7684\u91CD\u8981\u8D44\u6E90\u3002"
+      mobileContent: "<color=#914B2D><b>\u89C4\u5212\u73A9\u6CD5\uFF1A\u5F53\u524D\u6D4B\u8BD5\u7248\u53EF\u80FD\u5173\u95ED\u7ECF\u6D4E\u7CFB\u7EDF\u3002</b></color>\n\u751F\u547D\u4E0D\u4EC5\u4F1A\u6D88\u8017\u8D44\u6E90\uFF0C\u4E5F\u4F1A\u4E3A\u519C\u573A\u5E26\u6765\u73CD\u8D35\u7684<color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u3002\n\u6BCF\u4E00\u79CD\u751F\u7269\u90FD\u4F1A<color=#2F6148><b>\u968F\u7740\u65F6\u95F4\u81EA\u7136\u4EA7\u751F</b></color><color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u3002\u79CD\u7FA4\u8D8A\u7E41\u76DB\uFF0C\u79EF\u7D2F\u7684<color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u4E5F\u53EF\u80FD\u8D8A\u591A\u3002\n<color=#2F6148><b>\u751F\u7269\u80FD</b></color>\u662F\u4F60\u57F9\u80B2\u8FD9\u9897\u661F\u7403\u7684\u91CD\u8981\u8D44\u6E90\u3002"
       illustration: {fileID: 0}
       sortOrder: 0
     - id: 7_2
-      title: "培育的代价"
-      content: "<color=#9A694A>规划玩法：当前测试版可能关闭经济系统。</color>\n\n改造环境、建造土地，都需要消耗生物能。\n\n不同操作有着不同的消耗。合理分配生物能，才能持续开展生态实验。\n\n<color=#557653>✎ <b>观察笔记</b>：不必急着改变所有土地，先让已有的生命繁衍壮大，也是一种策略。</color>"
-      mobileContent: "<color=#9A694A>规划玩法：当前测试版可能关闭经济系统。</color>\n\n改造环境、建造土地，都需要消耗生物能。\n\n不同操作有着不同的消耗。合理分配生物能，才能持续开展生态实验。\n\n<color=#557653>✎ <b>观察笔记</b>：不必急着改变所有土地，先让已有的生命繁衍壮大，也是一种策略。</color>"
+      title: "\u57F9\u80B2\u7684\u4EE3\u4EF7"
+      content: "<color=#914B2D><b>\u89C4\u5212\u73A9\u6CD5\uFF1A\u5F53\u524D\u6D4B\u8BD5\u7248\u53EF\u80FD\u5173\u95ED\u7ECF\u6D4E\u7CFB\u7EDF\u3002</b></color>\n<color=#2F6148><b>\u6539\u9020\u73AF\u5883</b></color>\u3001<color=#2F6148><b>\u5EFA\u9020\u571F\u5730</b></color>\uFF0C\u90FD\u9700\u8981<color=#2F6148><b>\u6D88\u8017\u751F\u7269\u80FD</b></color>\u3002\n\u4E0D\u540C\u64CD\u4F5C\u6709\u7740\u4E0D\u540C\u7684\u6D88\u8017\u3002<color=#2F6148><b>\u5408\u7406\u5206\u914D\u751F\u7269\u80FD</b></color>\uFF0C\u624D\u80FD\u6301\u7EED\u5F00\u5C55\u751F\u6001\u5B9E\u9A8C\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u4E0D\u5FC5\u6025\u7740\u6539\u53D8\u6240\u6709\u571F\u5730\uFF0C\u5148\u8BA9\u5DF2\u6709\u7684\u751F\u547D\u7E41\u884D\u58EE\u5927\uFF0C\u4E5F\u662F\u4E00\u79CD\u7B56\u7565\u3002"
+      mobileContent: "<color=#914B2D><b>\u89C4\u5212\u73A9\u6CD5\uFF1A\u5F53\u524D\u6D4B\u8BD5\u7248\u53EF\u80FD\u5173\u95ED\u7ECF\u6D4E\u7CFB\u7EDF\u3002</b></color>\n<color=#2F6148><b>\u6539\u9020\u73AF\u5883</b></color>\u3001<color=#2F6148><b>\u5EFA\u9020\u571F\u5730</b></color>\uFF0C\u90FD\u9700\u8981<color=#2F6148><b>\u6D88\u8017\u751F\u7269\u80FD</b></color>\u3002\n\u4E0D\u540C\u64CD\u4F5C\u6709\u7740\u4E0D\u540C\u7684\u6D88\u8017\u3002<color=#2F6148><b>\u5408\u7406\u5206\u914D\u751F\u7269\u80FD</b></color>\uFF0C\u624D\u80FD\u6301\u7EED\u5F00\u5C55\u751F\u6001\u5B9E\u9A8C\u3002\n<color=#2F6148><b>\u89C2\u5BDF\u7B14\u8BB0</b></color>\uFF1A\u4E0D\u5FC5\u6025\u7740\u6539\u53D8\u6240\u6709\u571F\u5730\uFF0C\u5148\u8BA9\u5DF2\u6709\u7684\u751F\u547D\u7E41\u884D\u58EE\u5927\uFF0C\u4E5F\u662F\u4E00\u79CD\u7B56\u7565\u3002"
       illustration: {fileID: 0}
       sortOrder: 1
     - id: 7_3
-      title: "丰富的生命，更大的价值"
-      content: "<color=#9A694A>规划玩法：当前测试版可能关闭经济系统。</color>\n\n每一种生命都有独特的生态价值。\n\n从食草生物到捕食者，从原始物种到新生物种，它们共同构成一张复杂的生命网络。\n\n<b>培育更多样的物种，建立更丰富的生物网，便能获得更高的生态价值与生物能收益。</b>\n\n这也是达尔文农场的经营之道：让生命繁荣，再利用生命带来的能量，创造新的生存机会。"
-      mobileContent: "<color=#9A694A>规划玩法：当前测试版可能关闭经济系统。</color>\n\n每一种生命都有独特的生态价值。\n\n从食草生物到捕食者，从原始物种到新生物种，它们共同构成一张复杂的生命网络。\n\n<b>培育更多样的物种，建立更丰富的生物网，便能获得更高的生态价值与生物能收益。</b>\n\n这也是达尔文农场的经营之道：让生命繁荣，再利用生命带来的能量，创造新的生存机会。"
+      title: "\u4E30\u5BCC\u7684\u751F\u547D\uFF0C\u66F4\u5927\u7684\u4EF7\u503C"
+      content: "<color=#914B2D><b>\u89C4\u5212\u73A9\u6CD5\uFF1A\u5F53\u524D\u6D4B\u8BD5\u7248\u53EF\u80FD\u5173\u95ED\u7ECF\u6D4E\u7CFB\u7EDF\u3002</b></color>\n\u6BCF\u4E00\u79CD\u751F\u547D\u90FD\u6709\u72EC\u7279\u7684<color=#2F6148><b>\u751F\u6001\u4EF7\u503C</b></color>\u3002\n\u4ECE\u98DF\u8349\u751F\u7269\u5230\u6355\u98DF\u8005\uFF0C\u4ECE\u539F\u59CB\u7269\u79CD\u5230\u65B0\u751F\u7269\u79CD\uFF0C\u5B83\u4EEC\u5171\u540C\u6784\u6210\u4E00\u5F20\u590D\u6742\u7684\u751F\u547D\u7F51\u7EDC\u3002\n<color=#2F6148><b>\u57F9\u80B2\u66F4\u591A\u6837\u7684\u7269\u79CD</b></color>\uFF0C<color=#2F6148><b>\u5EFA\u7ACB\u66F4\u4E30\u5BCC\u7684\u751F\u7269\u7F51</b></color>\uFF0C\u4FBF\u80FD\u83B7\u5F97\u66F4\u9AD8\u7684<color=#2F6148><b>\u751F\u6001\u4EF7\u503C</b></color>\u4E0E<color=#2F6148><b>\u751F\u7269\u80FD\u6536\u76CA</b></color>\u3002\n\u8FD9\u4E5F\u662F\u8FBE\u5C14\u6587\u519C\u573A\u7684\u7ECF\u8425\u4E4B\u9053\uFF1A\u8BA9\u751F\u547D\u7E41\u8363\uFF0C\u518D\u5229\u7528\u751F\u547D\u5E26\u6765\u7684\u80FD\u91CF\uFF0C\u521B\u9020\u65B0\u7684\u751F\u5B58\u673A\u4F1A\u3002"
+      mobileContent: "<color=#914B2D><b>\u89C4\u5212\u73A9\u6CD5\uFF1A\u5F53\u524D\u6D4B\u8BD5\u7248\u53EF\u80FD\u5173\u95ED\u7ECF\u6D4E\u7CFB\u7EDF\u3002</b></color>\n\u6BCF\u4E00\u79CD\u751F\u547D\u90FD\u6709\u72EC\u7279\u7684<color=#2F6148><b>\u751F\u6001\u4EF7\u503C</b></color>\u3002\n\u4ECE\u98DF\u8349\u751F\u7269\u5230\u6355\u98DF\u8005\uFF0C\u4ECE\u539F\u59CB\u7269\u79CD\u5230\u65B0\u751F\u7269\u79CD\uFF0C\u5B83\u4EEC\u5171\u540C\u6784\u6210\u4E00\u5F20\u590D\u6742\u7684\u751F\u547D\u7F51\u7EDC\u3002\n<color=#2F6148><b>\u57F9\u80B2\u66F4\u591A\u6837\u7684\u7269\u79CD</b></color>\uFF0C<color=#2F6148><b>\u5EFA\u7ACB\u66F4\u4E30\u5BCC\u7684\u751F\u7269\u7F51</b></color>\uFF0C\u4FBF\u80FD\u83B7\u5F97\u66F4\u9AD8\u7684<color=#2F6148><b>\u751F\u6001\u4EF7\u503C</b></color>\u4E0E<color=#2F6148><b>\u751F\u7269\u80FD\u6536\u76CA</b></color>\u3002\n\u8FD9\u4E5F\u662F\u8FBE\u5C14\u6587\u519C\u573A\u7684\u7ECF\u8425\u4E4B\u9053\uFF1A\u8BA9\u751F\u547D\u7E41\u8363\uFF0C\u518D\u5229\u7528\u751F\u547D\u5E26\u6765\u7684\u80FD\u91CF\uFF0C\u521B\u9020\u65B0\u7684\u751F\u5B58\u673A\u4F1A\u3002"
       illustration: {fileID: 0}
       sortOrder: 2

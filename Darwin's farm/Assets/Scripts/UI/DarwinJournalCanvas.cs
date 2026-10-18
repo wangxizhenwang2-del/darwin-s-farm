@@ -43,6 +43,10 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     [SerializeField] private TMP_Text tutorialBody;
     [SerializeField] private ScrollRect tutorialScroll, infoScroll;
     [SerializeField] private Image tutorialIllustration;
+    [Header("Tutorial typography")]
+    [SerializeField, Min(12f)] private float tutorialFontSize = 23f;
+    [SerializeField, Min(1.2f)] private float tutorialLineHeight = 1.45f;
+    [SerializeField, Min(0f)] private float tutorialParagraphSpacing = 18f;
     [SerializeField] private Button[] slotLoadButtons, slotSaveButtons, slotDeleteButtons;
     [SerializeField] private TMP_Text[] slotLabels;
 
@@ -346,7 +350,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
                 string shortTitle=pages[i].title;
                 int limit=portrait?5:6;
                 if(shortTitle.Length>limit)shortTitle=shortTitle.Substring(0,limit)+"…";
-                pageLabels[i].text=(i==currentPage?"◆":"")+shortTitle;
+                pageLabels[i].text=shortTitle;
+                StyleTutorialButton(pageButtons[i],pageLabels[i],i==currentPage);
             }
         }
         bool art=tutorialIllustration!=null&&tutorialIllustration.gameObject.activeSelf;
@@ -451,7 +456,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         {
             bool exists=i<tutorial.categories.Length;
             categoryButtons[i].gameObject.SetActive(exists);
-            if(exists)categoryLabels[i].text=(i==index?"◆ ":"▸ ")+tutorial.categories[i].title;
+            if(exists)
+            {
+                categoryLabels[i].text=tutorial.categories[i].title;
+                StyleTutorialButton(categoryButtons[i],categoryLabels[i],i==index);
+            }
         }
         var pages=tutorial.categories[index].pages;
         for(int i=0;i<pageButtons.Length;i++)
@@ -468,10 +477,20 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if(index<0 || index>=pages.Length)return;
         currentPage=index;
         for(int i=0;i<pageButtons.Length;i++)
-            if(i<pages.Length)pageLabels[i].text=(i==index?"◆ ":"  ")+pages[i].title;
+            if(i<pages.Length)
+            {
+                pageLabels[i].text=pages[i].title;
+                StyleTutorialButton(pageButtons[i],pageLabels[i],i==index);
+            }
         string content=Application.isMobilePlatform&&!string.IsNullOrEmpty(pages[index].mobileContent)
             ?pages[index].mobileContent:pages[index].content;
-        tutorialBody.text="<size=130%>"+pages[index].title+"</size>\n\n"+content;
+        tutorialBody.enableAutoSizing=false;
+        tutorialBody.fontSize=tutorialFontSize;
+        tutorialBody.lineSpacing=0f;
+        tutorialBody.paragraphSpacing=tutorialParagraphSpacing;
+        string lineHeight=tutorialLineHeight.ToString("0.##",System.Globalization.CultureInfo.InvariantCulture);
+        tutorialBody.text="<line-height="+lineHeight+"em><size=115%><color=#2E4A3A><b>"+
+            pages[index].title+"</b></color></size>\n"+content+"</line-height>";
         if(tutorialIllustration!=null)
         {
             tutorialIllustration.sprite=pages[index].illustration;
@@ -479,5 +498,19 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             LayoutTutorial(safeArea.rect.height>safeArea.rect.width*1.18f);
         }
         if(tutorialScroll!=null)tutorialScroll.verticalNormalizedPosition=1;
+    }
+
+    private static void StyleTutorialButton(Button button,TMP_Text label,bool selected)
+    {
+        label.fontStyle=(label.fontStyle&~FontStyles.Bold)|(selected?FontStyles.Bold:FontStyles.Normal);
+        label.color=selected?new Color32(40,74,58,255):new Color32(61,72,55,255);
+        var colors=button.colors;
+        Color normal=selected?new Color(.84f,.91f,.77f,1f):Color.white;
+        colors.normalColor=normal;
+        colors.selectedColor=normal;
+        colors.highlightedColor=new Color(.91f,.95f,.84f,1f);
+        colors.pressedColor=new Color(.75f,.84f,.66f,1f);
+        button.transition=Selectable.Transition.ColorTint;
+        button.colors=colors;
     }
 }
