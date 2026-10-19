@@ -115,16 +115,13 @@ public static class MobileUIInstaller
         var technology = BuildTechnology(tile, drawer, Object.FindFirstObjectByType<EnvironmentTechnologyController>());
         Set(saved, "technologyPanel", technology);
 
-        RectTransform population = Rect("PopulationContent", viewport, Vector2.up, Vector2.up, new Vector2(500, 690), Vector2.zero);
+        RectTransform population = Rect("PopulationContent", viewport, Vector2.up, Vector2.up,
+            new Vector2(PopulationInfoPanel.BoardWidth, PopulationInfoPanel.BoardHeight), Vector2.zero);
+        var boardImage = population.gameObject.AddComponent<UnityEngine.UI.Image>();
+        boardImage.sprite = Resources.Load<Sprite>("GameUI/SpeciesJournal/JournalBoard");
+        boardImage.preserveAspect = true;
         var panel = population.gameObject.AddComponent<PopulationInfoPanel>(); panel.Initialize(drawer);
-        RectTransform content = (RectTransform)population.Find("Content");
-        content.anchoredPosition = new Vector2(12, -8); content.localScale = Vector3.one;
         panel.ShowUnavailable("点击种群查看生物信息");
-        content.Find("SpeciesHeader/SpeciesName").GetComponent<TextMeshProUGUI>().text = "物种名称";
-        content.Find("SpeciesHeader/PopulationCount").GetComponent<TextMeshProUGUI>().text = "数量：--";
-        content.Find("SpeciesHeader/SpeciesDescription/Viewport/Content").GetComponent<TextMeshProUGUI>().text = "物种介绍（运行时读取物种资料）";
-        string[] attributes = { "适温 --", "适湿 --", "运动 --", "繁殖 --", "体型 --" };
-        for (int i = 0; i < 5; i++) content.Find("RadarChartSection/Attribute" + i).GetComponent<TextMeshProUGUI>().text = attributes[i];
         Set(saved, "populationPanel", panel); Set(saved, "populationContent", population);
         population.gameObject.SetActive(false); scroll.content = tile;
 
@@ -147,7 +144,8 @@ public static class MobileUIInstaller
         background.SetAsFirstSibling();
         Stretch(background, Vector2.zero, new Vector2(0, -56));
         var image = background.GetComponent<UnityEngine.UI.Image>();
-        image.color = Color.white; image.raycastTarget = false; image.preserveAspect = false;
+        image.color = Color.white; image.raycastTarget = false;
+        image.preserveAspect = saved.FindProperty("informationTab").enumValueIndex == 1;
         var source = new SerializedObject(information);
         Sprite Picture(string key) => ((Component)source.FindProperty(key).objectReferenceValue).GetComponent<UnityEngine.UI.Image>().sprite;
         Sprite environment = Picture("tileWindow"), population = Picture("populationWindow");

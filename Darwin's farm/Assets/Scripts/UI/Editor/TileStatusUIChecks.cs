@@ -69,7 +69,24 @@ public static class TileStatusUIChecks
         legacy.tiles[0].locals[1].tier = 0;
         restored = World(false); restored.RestoreState(legacy);
         Require(Read(restored).Humidity.ToolTier == 0, "Legacy saves must remain readable.");
-        Debug.Log("TILE_STATUS_TIMELINES_PASS: entry, hold, half-time, recovery, expiry, cancellation, land/water durations and save/load.");
+        // A legacy out-of-range track must recover from the clipped value, not 120.
+        world = World(false);
+        Require(world.TrySetClimate(position, EnvironmentAttribute.Temperature, 50, out error), error);
+        var overflow = world.CaptureState();
+        overflow.tiles[0].values[0] = 120;
+        overflow.tiles[0].tracks[0].start = 120;
+        overflow.tiles[0].tracks[0].target = 120;
+        overflow.tiles[0].locals[0].baseline = 50;
+        restored = World(false); restored.RestoreState(overflow);
+        Require(Read(restored).Temperature.Value == 100, "Legacy temperature must clip to 100 on load.");
+        restored.AdvanceToDay(EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays);
+        state = Read(restored);
+        Require(state.Temperature.Value == 100 && state.Temperature.Target == 50,
+            "Recovery must begin at 100 and head toward the captured baseline.");
+        restored.AdvanceToDay(EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays + 1);
+        Require(Read(restored).Temperature.Value < 100,
+            "The first recovery day must descend from 100, not an unseen 120.");
+        Debug.Log("TILE_STATUS_TIMELINES_PASS: entry, hold, recovery, cancellation, save/load and 0–100 clipping.");
     }
 
     private static EnvironmentWorld World(bool water)

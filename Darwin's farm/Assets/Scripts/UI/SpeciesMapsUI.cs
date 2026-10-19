@@ -42,6 +42,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private Canvas clueCanvas;
     private TextMeshProUGUI clueTitle;
     private TextMeshProUGUI clueText;
+    private TextMeshProUGUI targetButtonText;
     private int touchId = -1;
     private float pinchDistance;
     private float suppressNodeClicksUntil;
@@ -346,7 +347,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         textRect.SetParent(cluePopup, false);
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = new Vector2(76f, 64f);
+        textRect.offsetMin = new Vector2(76f, 104f);
         textRect.offsetMax = new Vector2(-76f, -130f);
         clueText = textObject.GetComponent<TextMeshProUGUI>();
         clueText.font = GameUITheme.HandwrittenTMPFont;
@@ -360,7 +361,43 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         clueText.alignment = TextAlignmentOptions.MidlineLeft;
         clueText.richText = true;
         clueText.raycastTarget = false;
+        var targetObject = new GameObject("TrackSpeciesButton", typeof(RectTransform), typeof(Image), typeof(Button));
+        RectTransform targetRect = (RectTransform)targetObject.transform;
+        targetRect.SetParent(cluePopup, false);
+        targetRect.anchorMin = targetRect.anchorMax = targetRect.pivot = new Vector2(.5f, 0f);
+        targetRect.anchoredPosition = new Vector2(0f, 52f);
+        targetRect.sizeDelta = new Vector2(176f, 43f);
+        Image targetBackground = targetObject.GetComponent<Image>();
+        targetBackground.color = new Color(.88f, .78f, .58f, .95f);
+        Button targetButton = targetObject.GetComponent<Button>();
+        targetButton.targetGraphic = targetBackground;
+        targetButton.onClick.AddListener(ToggleTarget);
+        var targetLabel = new GameObject("Caption", typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform labelRect = (RectTransform)targetLabel.transform;
+        labelRect.SetParent(targetRect, false);
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = labelRect.offsetMax = Vector2.zero;
+        targetButtonText = targetLabel.GetComponent<TextMeshProUGUI>();
+        targetButtonText.font = GameUITheme.HandwrittenTMPFont;
+        targetButtonText.fontSize = 24f;
+        targetButtonText.color = new Color(.18f, .2f, .14f);
+        targetButtonText.alignment = TextAlignmentOptions.Center;
+        targetButtonText.raycastTarget = false;
         clueWindow.Initialize((RectTransform)transform, Vector2.zero);
+    }
+
+    private void ToggleTarget()
+    {
+        if (clueNode == null || clueNode.Species == null) return;
+        SpeciesTrackingState.Toggle(clueNode.Species);
+        RefreshTargetButton();
+    }
+
+    private void RefreshTargetButton()
+    {
+        if (targetButtonText != null && clueNode != null)
+            targetButtonText.text = SpeciesTrackingState.Target == clueNode.Species ? "取消目标" : "设为目标";
     }
 
     private static string ClueTitle(SpeciesData species) =>
@@ -373,6 +410,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             (!force && Time.unscaledTime < nextClueRefresh)) return;
         nextClueRefresh = Time.unscaledTime + .5f;
         SpeciesData species = clueNode.Species;
+        RefreshTargetButton();
         int traitMask = species.RevealedTraitMask;
         bool nameVisible = species.HasEverUnlocked || TutorialFlowController.RevealsSpeciesName(species);
         if (force || traitMask != displayedTraitMask)
@@ -401,7 +439,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         float width = Mathf.Min(720f, bounds.width - 32f);
         float textHeight = clueText.GetPreferredValues(clueText.text, width - 152f, 0f).y;
         cluePopup.sizeDelta = new Vector2(width,
-            Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 194f), bounds.height - 32f));
+            Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 234f), bounds.height - 32f));
         Vector2 local = (Vector2)parentRect.InverseTransformPoint(node.transform.position) - anchorOrigin;
         Vector2 half = cluePopup.sizeDelta * .5f;
         float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);

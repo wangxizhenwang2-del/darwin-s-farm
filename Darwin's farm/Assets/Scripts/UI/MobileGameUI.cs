@@ -233,17 +233,30 @@ public sealed class MobileGameUI : MonoBehaviour
         titleLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width - 24f);
         if (!Application.isPlaying || !drawer.IsOpen) drawerRect.anchoredPosition = drawerDefaultPosition;
         if (Application.isPlaying && bound) drawer.SetDragBounds(safeArea, drawerDefaultPosition);
-        float scale = Mathf.Min(1f, viewport.rect.width / 500f);
-        tileContent.localScale = populationContent.localScale = Vector3.one * scale;
+        tileContent.localScale = Vector3.one * Mathf.Min(1f, viewport.rect.width / 500f);
+        // The complete journal scrolls vertically on narrow screens; its artwork
+        // and every child share one uniform scale.
+        populationContent.localScale = Vector3.one *
+            Mathf.Min(1f, viewport.rect.width / PopulationInfoPanel.BoardWidth);
         if (toolsDrawerRect != null)
         {
-            toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            float requestedToolWidth = safeArea.rect.width >= 900f ?
+                Mathf.Clamp(safeArea.rect.width * drawerWidthFraction, 570f, 620f) :
+                Mathf.Clamp(safeArea.rect.width * drawerWidthFraction, 370f, maximumDrawerWidth);
+            float toolWidth = Mathf.Min(safeArea.rect.width - 16f, requestedToolWidth);
+            toolWidth = Mathf.Max(280f, toolWidth);
+            toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, toolWidth);
             toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
                 Mathf.Clamp(safeArea.rect.height + drawerDefaultPosition.y - 20f, 180f, 612f));
             if (!Application.isPlaying || !toolsDrawer.IsOpen) toolsDrawerRect.anchoredPosition = ToolsDrawerHome;
             if (Application.isPlaying && bound) toolsDrawer.SetDragBounds(safeArea, ToolsDrawerHome);
             if (toolsContent != null && toolsViewport != null)
-                toolsContent.localScale = Vector3.one * Mathf.Min(1f, Mathf.Max(1f, width - 40f) / 500f);
+            {
+                float available = Mathf.Max(1f, toolWidth - 20f);
+                var responsive = toolsContent.GetComponent<EnvironmentToolResponsiveLayout>();
+                if (responsive != null) responsive.Apply(available);
+                else toolsContent.localScale = Vector3.one * Mathf.Min(1f, available / 500f);
+            }
         }
     }
     private void LayoutMobileControls()
@@ -322,11 +335,17 @@ public sealed class MobileGameUI : MonoBehaviour
     private void ShowTab()
     {
         if (informationBackground != null)
-            informationBackground.sprite = informationTab == InformationTab.Environment ? environmentBackground : populationBackground;
+        {
+            informationBackground.enabled = informationTab == InformationTab.Environment;
+            informationBackground.sprite = environmentBackground;
+        }
         informationScroll.StopMovement();
         tileContent.gameObject.SetActive(informationTab == InformationTab.Environment);
         populationContent.gameObject.SetActive(informationTab == InformationTab.Population);
         informationScroll.content = informationTab == InformationTab.Environment ? tileContent : populationContent;
+        if (informationScroll.verticalScrollbar != null)
+            informationScroll.verticalScrollbarVisibility =
+                UnityEngine.UI.ScrollRect.ScrollbarVisibility.AutoHide;
         Canvas.ForceUpdateCanvases();
         informationScroll.verticalNormalizedPosition = scrollPositions[(int)informationTab];
         lastTab = informationTab;

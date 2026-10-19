@@ -149,10 +149,11 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
         Vector3 upper = parent.InverseTransformPoint(canvasRect.TransformPoint(canvasRect.rect.max));
         Rect bounds = Rect.MinMaxRect(lower.x, lower.y, upper.x, upper.y);
         Rect window = rect.rect;
-        float xMin = bounds.xMin - window.xMin + 8f;
-        float xMax = bounds.xMax - window.xMax - 8f;
-        float yMin = bounds.yMin - window.yMin + 8f;
-        float yMax = bounds.yMax - window.yMax - 8f;
+        Vector3 scale = rect.localScale;
+        float xMin = bounds.xMin - window.xMin * scale.x + 8f;
+        float xMax = bounds.xMax - window.xMax * scale.x - 8f;
+        float yMin = bounds.yMin - window.yMin * scale.y + 8f;
+        float yMax = bounds.yMax - window.yMax * scale.y - 8f;
         rect.localPosition = new Vector3(
             xMin <= xMax ? Mathf.Clamp(wanted.x, xMin, xMax) : (xMin + xMax) * 0.5f,
             yMin <= yMax ? Mathf.Clamp(wanted.y, yMin, yMax) : (yMin + yMax) * 0.5f,

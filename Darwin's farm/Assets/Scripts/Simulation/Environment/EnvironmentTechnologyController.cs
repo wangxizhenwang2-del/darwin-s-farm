@@ -13,6 +13,8 @@ public sealed class EnvironmentTechnologyPreview
     public string Timing { get; internal set; }
     public IReadOnlyList<Vector2Int> Area { get; internal set; } = Array.Empty<Vector2Int>();
     public int Cost { get; internal set; }
+    public double? TargetValue { get; internal set; }
+    public HabitatState? EstimatedHabitat { get; internal set; }
 }
 
 // 2026-10-09 14:46 +08:00: player Controller validates the immutable V4.3
@@ -106,6 +108,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
                     climate.Target.ToString("F0") + "；预计生境 " +
                     EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
+                result.TargetValue = climate.Target;
+                result.EstimatedHabitat = climate.EstimatedHabitat;
                 result.Timing = "25天进入 · 150天维持 · 100天恢复";
                 break;
             case EnvironmentTechnologyKind.PlantStockChange:
@@ -153,6 +157,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                         out EnvironmentOperationPreview height, out validationError))
                     { result.Error = validationError; return result; }
                     result.After += "；预计生境 " + EnvironmentRules.Profile(height.EstimatedHabitat).Title;
+                    result.EstimatedHabitat = height.EstimatedHabitat;
                 }
                 result.Timing = "立即生效 · 不回滚";
                 break;

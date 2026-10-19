@@ -1,6 +1,9 @@
 using DarwinFarm.Environment;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 // Shared interaction state for desktop and touch. Only the existing controller writes ecology.
 [DisallowMultipleComponent]
@@ -13,14 +16,20 @@ public sealed class EnvironmentToolSession : MonoBehaviour
     private SimulationEnvironmentController environment;
     private MapTileInstance lastTarget;
     private float nextRefresh;
+    private bool pendingOption, cancelPreview;
+    private float suppressCancelUntil = -1f;
+    private readonly List<RectTransform> protectedControls = new List<RectTransform>();
+    private readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
     public bool Active { get; private set; }
+    public bool HasPendingOption => pendingOption;
+    public bool CancelPreviewActive => cancelPreview && CanCancel;
     public EnvironmentTechnologyChoice Choice { get; private set; } =
         new EnvironmentTechnologyChoice(EnvironmentTechnologyKind.TemperatureChange);
     public EnvironmentTechnologyPreview Preview { get; private set; }
     public string Notice { get; private set; } = "";
     public string CurrentApplied { get; private set; } = "";
     public bool CanCancel { get; private set; }
-    public bool CanDeploy => Active && TutorialFlowController.AllowsDeployment(Target, Choice) &&
+    public bool CanDeploy => Active && pendingOption && TutorialFlowController.AllowsDeployment(Target, Choice) &&
         Preview != null && Preview.IsValid && Target != null &&
         (account == null || account.Balance >= Preview.Cost);
     public string SlotNotice { get; private set; } = "";
@@ -40,6 +49,9 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         if (buildMode == null) buildMode = FindFirstObjectByType<MapBuildModeController>();
         if (Active && ((buildMode != null && buildMode.IsBuildMode) ||
             (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame))) End();
+        if (Active && pendingOption && Pointer.current != null &&
+            Pointer.current.press.wasPressedThisFrame &&
+            !IsProtectedClick(Pointer.current.position.ReadValue())) ClearOption();
         if (Target != lastTarget) { lastTarget = Target; Notice = ""; Refresh(); }
         else if (Active && Time.unscaledTime >= nextRefresh) Refresh();
     }
@@ -50,7 +62,8 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         if (buildMode != null && buildMode.IsBuildMode) buildMode.SetBuildMode(false);
         Active = true; Refresh();
     }
-    public void End() { Active = false; Preview = null; Notice = ""; Changed?.Invoke(); }
+    public void End()
+    { Active = false; pendingOption = cancelPreview = false; Preview = null; Notice = ""; Changed?.Invoke(); }
     public void Toggle() { if (Active) End(); else Begin(); }
     public void SelectKind(int index)
     {
@@ -61,28 +74,63 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         int tier = kind == EnvironmentTechnologyKind.ElevationChange ?
             (Choice.Tier > 0 ? 1 : -1) : Choice.Tier;
         Choice = new EnvironmentTechnologyChoice(kind, tier);
+        pendingOption = cancelPreview = false;
         Notice = ""; Begin();
     }
     public void SelectOption(int index)
     {
         if (index < 0 || index > 3 || !OptionEnabled(index)) return;
         Choice = new EnvironmentTechnologyChoice(Choice.Kind, Tier(index));
+        pendingOption = true; cancelPreview = false;
         Notice = ""; Begin();
     }
+    public void RegisterPreviewControls(Button[] options, Button apply)
+    {
+        if (options != null) foreach (var button in options)
+            if (button != null && !protectedControls.Contains((RectTransform)button.transform))
+                protectedControls.Add((RectTransform)button.transform);
+        if (apply != null && !protectedControls.Contains((RectTransform)apply.transform))
+            protectedControls.Add((RectTransform)apply.transform);
+    }
+    private bool IsProtectedClick(Vector2 position)
+    {
+        if (EventSystem.current == null) return false;
+        pointerHits.Clear();
+        EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = position }, pointerHits);
+        if (pointerHits.Count == 0) return false;
+        var hit = pointerHits[0];
+        foreach (var control in protectedControls)
+            if (control != null && hit.gameObject.transform.IsChildOf(control)) return true;
+        return false;
+    }
+    public void ClearOption()
+    {
+        if (!pendingOption) return;
+        pendingOption = false; Notice = ""; Refresh();
+    }
+    public void SetCancelPreview(bool active)
+    {
+        active = active && CanCancel;
+        if (cancelPreview == active) return;
+        cancelPreview = active; Changed?.Invoke();
+    }
+    public void SuppressCancelClick() => suppressCancelUntil = Time.unscaledTime + .25f;
+    public void BeginCancelPress() => suppressCancelUntil = -1f;
     private static int Tier(int index) => index == 0 ? 2 : index == 1 ? 1 : index == 2 ? -1 : -2;
     public bool OptionEnabled(int index) => index >= 0 && index <= 3 &&
         (Choice.Kind != EnvironmentTechnologyKind.ElevationChange || index == 1 || index == 2) &&
         TutorialFlowController.AllowsChoice(new EnvironmentTechnologyChoice(Choice.Kind, Tier(index)));
     public string OptionLabel(int index) => Choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
         (Tier(index) > 0 ? "升一级" : "降一级") : (Tier(index) > 0 ? "提高" : "降低") + (Mathf.Abs(Tier(index)) == 1 ? "小档" : "大档");
-    public bool OptionSelected(int index) => Choice.Tier == Tier(index);
+    public bool OptionSelected(int index) => pendingOption && Choice.Tier == Tier(index);
     public void Refresh()
     {
         nextRefresh = Time.unscaledTime + .2f;
         if (controller == null) controller = FindFirstObjectByType<EnvironmentTechnologyController>();
         if (account == null) account = FindFirstObjectByType<BioenergyAccount>();
         if (environment == null) environment = FindFirstObjectByType<SimulationEnvironmentController>();
-        Preview = Active && Target != null && controller != null ? controller.Preview(Target.Coordinate, Choice) : null;
+        Preview = Active && pendingOption && Target != null && controller != null ?
+            controller.Preview(Target.Coordinate, Choice) : null;
         CurrentApplied = Target != null && controller != null ? controller.CurrentApplied(Target.Coordinate) : "请选择地块";
         CanCancel = TutorialFlowController.Allows(TutorialFlowController.Feature.CancelTool) &&
             Target != null && controller != null && controller.CanCancel(Target.Coordinate, Choice.Kind);
@@ -213,19 +261,24 @@ public sealed class EnvironmentToolSession : MonoBehaviour
     }
     public void Deploy()
     {
-        if (!Active || Target == null || controller == null) return;
-        Notice = controller.TryDeploy(Target.Coordinate, Choice, out var result) ? "已应用" : result.Error;
+        if (!CanDeploy || controller == null) return;
+        bool success = controller.TryDeploy(Target.Coordinate, Choice, out var result);
+        Notice = success ? "已应用" : result.Error;
+        if (success) pendingOption = false;
         Refresh();
     }
     public void CancelEffect()
     {
+        if (suppressCancelUntil >= 0f && Time.unscaledTime <= suppressCancelUntil)
+        { suppressCancelUntil = -1f; return; }
         if (!Active || Target == null || controller == null) return;
+        cancelPreview = false;
         Notice = controller.TryCancel(Target.Coordinate, Choice.Kind, out var error) ? "已撤销效果" : error;
         Refresh();
     }
     private void OnDisable()
     {
         if (information != null) information.SelectionChanged -= SelectionChanged;
-        Active = false; Preview = null;
+        Active = pendingOption = cancelPreview = false; Preview = null;
     }
 }

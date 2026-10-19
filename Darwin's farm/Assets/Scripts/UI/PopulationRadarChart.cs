@@ -5,6 +5,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasRenderer))]
 public sealed class PopulationRadarChart : MaskableGraphic
 {
+    private static readonly int[] TraitBitsByAxis = { 4, 2, 1, 0, 3 };
     [SerializeField] private Color gridColor = new Color(.12f, .17f, .13f, .55f);
     [SerializeField] private Color fillColor = new Color(.25f, .85f, .50f, .65f);
     [SerializeField, Min(1f)] private float maximumValue = 100f;
@@ -16,12 +17,15 @@ public sealed class PopulationRadarChart : MaskableGraphic
     [SerializeField, Min(1f)] private float dashGap = 3f;
     private readonly float[] values = new float[5];
     private readonly float[] baselineValues = new float[5];
+    private readonly float[] trackedValues = new float[5];
     private bool hasBaseline;
+    private int trackedTraitMask;
 
     public void SetValues(float temperature, float humidity, float movement, float fertility, float size)
     {
-        bool changed = Set(values, 0, temperature) | Set(values, 1, humidity) |
-            Set(values, 2, movement) | Set(values, 3, fertility) | Set(values, 4, size);
+        // Clockwise from twelve o'clock: fertility, movement, humidity, temperature, size.
+        bool changed = Set(values, 0, fertility) | Set(values, 1, movement) |
+            Set(values, 2, humidity) | Set(values, 3, temperature) | Set(values, 4, size);
         if (changed) SetVerticesDirty();
     }
 
@@ -31,13 +35,37 @@ public sealed class PopulationRadarChart : MaskableGraphic
         bool changed = hasBaseline != enabled;
         hasBaseline = enabled;
         if (enabled)
-            changed |= Set(baselineValues, 0, species.baseFitTemperature) |
-                Set(baselineValues, 1, species.baseFitHumidity) |
-                Set(baselineValues, 2, species.baseMovementAbility) |
-                Set(baselineValues, 3, species.baseFertility) |
+            changed |= Set(baselineValues, 0, species.baseFertility) |
+                Set(baselineValues, 1, species.baseMovementAbility) |
+                Set(baselineValues, 2, species.baseFitHumidity) |
+                Set(baselineValues, 3, species.baseFitTemperature) |
                 Set(baselineValues, 4, species.baseSize);
         if (changed) SetVerticesDirty();
     }
+
+    public void SetTrackedTarget(SpeciesData target)
+    {
+        // Radar order: fertility, movement, humidity, temperature, size.
+        // SpeciesData clue bits: temperature, humidity, movement, size, fertility.
+        int mask = target != null ? target.RevealedTraitMask : 0;
+        bool changed = trackedTraitMask != mask;
+        trackedTraitMask = mask;
+        if (target != null)
+            changed |= Set(trackedValues, 0, target.baseFertility) |
+                Set(trackedValues, 1, target.baseMovementAbility) |
+                Set(trackedValues, 2, target.baseFitHumidity) |
+                Set(trackedValues, 3, target.baseFitTemperature) |
+                Set(trackedValues, 4, target.baseSize);
+        if (changed) SetVerticesDirty();
+    }
+
+    private bool IsTrackedAxis(int index)
+    {
+        return (trackedTraitMask & (1 << TraitBitsByAxis[index])) != 0;
+    }
+
+    private Vector2 BaselinePoint(int index) => Point(index,
+        Mathf.Clamp01((IsTrackedAxis(index) ? trackedValues[index] : baselineValues[index]) / maximumValue));
 
     private static bool Set(float[] target, int index, float value)
     {
@@ -75,8 +103,22 @@ public sealed class PopulationRadarChart : MaskableGraphic
         // Draw last so the initial outline stays visible above the current fill.
         if (hasBaseline)
             for (int i = 0; i < 5; i++)
-                DashedLine(mesh, Point(i, Mathf.Clamp01(baselineValues[i] / maximumValue)),
-                    Point((i + 1) % 5, Mathf.Clamp01(baselineValues[(i + 1) % 5] / maximumValue)));
+            {
+                int next = (i + 1) % 5;
+                Vector2 from = BaselinePoint(i), to = BaselinePoint(next);
+                bool firstSolid = IsTrackedAxis(i), secondSolid = IsTrackedAxis(next);
+                if (firstSolid == secondSolid)
+                {
+                    if (firstSolid) Line(mesh, from, to, baselineColor, baselineLineWidth);
+                    else DashedLine(mesh, from, to);
+                    continue;
+                }
+                Vector2 midpoint = (from + to) * .5f;
+                if (firstSolid) Line(mesh, from, midpoint, baselineColor, baselineLineWidth);
+                else DashedLine(mesh, from, midpoint);
+                if (secondSolid) Line(mesh, midpoint, to, baselineColor, baselineLineWidth);
+                else DashedLine(mesh, midpoint, to);
+            }
     }
 
     private void DashedLine(VertexHelper mesh, Vector2 from, Vector2 to)

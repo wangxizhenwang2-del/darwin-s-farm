@@ -85,8 +85,8 @@ public sealed class EnvironmentToolsInputChecks : MonoBehaviour
         yield return new WaitForSecondsRealtime(.15f);
         Require(information.SelectedTile==tile,"PC click did not select tool target");
         Require(!information.TileIsOpen,"PC tool targeting opened the information window");
-        Require(session.Target==tile && session.Preview!=null && session.Preview.IsValid,
-            "Hidden information window lost the tool target or preview");
+        Require(session.Target==tile && !session.HasPendingOption && session.Preview==null,
+            "A map click should clear an unapplied tier preview but retain the target");
         Require(information.GetComponent<SelectionOutlinePresenter>().HighlightedTileCount==1,
             "PC tool target lost its outline");
         session.End();
