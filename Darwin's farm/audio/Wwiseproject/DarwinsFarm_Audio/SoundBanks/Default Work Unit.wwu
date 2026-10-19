@@ -3,10 +3,26 @@
 	<SoundBanks>
 		<WorkUnit Name="Default Work Unit" ID="{4D4BC6BA-4CB6-4D5B-87D0-4B33F02CD015}" PersistMode="Standalone">
 			<ChildrenList>
-				<SoundBank Name="SB_Amb_Test" ID="{CE213BDA-A759-4087-A4C3-A561ABF108B3}">
+				<SoundBank Name="SB_Ambience" ID="{CE213BDA-A759-4087-A4C3-A561ABF108B3}">
 					<ObjectInclusionList>
-						<ObjectRef Name="Stop___amb_water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_Volcano" ID="{E7DEA007-CEA8-4029-A46B-875848A90D2D}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_Mountain" ID="{FCD5CDDB-138D-4046-A56B-4D1331FDB486}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_Forest" ID="{A1B1CA2D-3EC3-4094-B006-55E705D0CF5D}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_Mountain" ID="{E128DC14-3484-41B5-8451-5B0C16951FE1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_Desert" ID="{AD3EC4A9-FE4D-42BD-91F6-D55D31991A1E}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_ForestWaterfall" ID="{08E18584-D359-44ED-AED2-91241F60B9DD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_SnowMountain" ID="{BB32338B-F6D2-4584-A496-B66DB386768F}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_Desert" ID="{4FEA22D7-1E32-45A8-9733-0303A33086F6}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_Tundra" ID="{F8C883B5-8FE8-45CD-91AA-2FD72043D719}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_Grassland" ID="{5A544981-44D9-4619-8D6D-757009451A65}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_Volcano" ID="{2BDE5A72-C311-462B-B810-4BC5EC0851FD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_Water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play___amb_water" ID="{AAD6240B-88A4-47B7-BB35-C5EFB864FA89}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_Grassland" ID="{10E4A28C-F607-49C8-B400-C607F991AAFF}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Amb_Tundra" ID="{07227EB1-A5C1-49E9-8B50-5CE6C16E139C}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_ForestWaterfall" ID="{48163E4C-4863-4C0D-8071-0EA9686624E0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_SnowMountain" ID="{A237FC82-36A1-4E17-96C1-58A3B511FEAD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Amb_Forest" ID="{207749F8-901F-4EC5-B0BC-22DBBE90A47A}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>

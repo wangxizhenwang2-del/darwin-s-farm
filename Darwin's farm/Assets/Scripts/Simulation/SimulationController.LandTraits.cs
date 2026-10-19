@@ -95,7 +95,8 @@ public partial class SimulationController
 
     private float ForecastLandGrowth(BlockInfo block, PopulationData p, LandTraits v)
     {
-        float fitness = LandLifeRules.Fitness(block, v.t, v.h);
+        float fitness = p.ecologicalNiche == EcologicalNiche.Water ? 1f :
+            LandLifeRules.Fitness(block, v.t, v.h);
         // Compare the whole group's candidate adults against the current
         // community. Young are not allowed to relax their own birth pressure;
         // adult body size and movement do change the real maintenance load.
@@ -117,8 +118,9 @@ public partial class SimulationController
         float births = p.speciesAmount * LandRules.birthRate
             * v.f / 100f * fitness * ratio * birthFactor;
         float deaths = p.speciesAmount * LandRules.starvationDeathRate
-            * (1f - ratio) + LandLifeRules.ColdDeaths(p.speciesAmount,
-                block.temperature, LandRules)
+            * (1f - ratio) + (p.ecologicalNiche == EcologicalNiche.Water
+                ? 0f : LandLifeRules.ColdDeaths(p.speciesAmount,
+                    block.temperature, LandRules))
             + LandRules.climateMismatchDeathRate * p.speciesAmount
                 * (1f - fitness)
             + LandLifeRules.NaturalAdultDeaths(p.speciesAmount, v.s,
@@ -174,7 +176,8 @@ public partial class SimulationController
         if (block == null || block.community == null || p == null ||
             p.speciesAmount <= 0) return 0f;
         int count = p.speciesAmount;
-        float fitness = LandLifeRules.Fitness(block, traits.t, traits.h);
+        float fitness = p.ecologicalNiche == EcologicalNiche.Water ? 1f :
+            LandLifeRules.Fitness(block, traits.t, traits.h);
         float adult = count * LandLifeRules.AdultNeed(traits.s, traits.m,
             LandRules);
         float food = p.trophicLevel == 0
@@ -190,7 +193,8 @@ public partial class SimulationController
         float paidBirths = Mathf.Min(opportunity, Mathf.Max(0f, food - adult) /
             Mathf.Max(0.0001f, newbornCost));
         float deaths = LandRules.starvationDeathRate * count * (1f - sat)
-            + LandLifeRules.ColdDeaths(count, block.temperature, LandRules)
+            + (p.ecologicalNiche == EcologicalNiche.Water ? 0f :
+                LandLifeRules.ColdDeaths(count, block.temperature, LandRules))
             + LandRules.climateMismatchDeathRate * count * (1f - fitness)
             + LandLifeRules.NaturalAdultDeaths(count, traits.s, LandRules)
             + LandLifeRules.PaidBirthStressDeaths(Mathf.FloorToInt(paidBirths),
@@ -287,11 +291,11 @@ public partial class SimulationController
             if (resident != null && resident.speciesAmount > 0 &&
                 resident.trophicLevel == 0)
                 food -= LandLifeRules.Demand(resident, resident.speciesAmount,
-                    LandLifeRules.Fitness(neighbor, resident.fitTemperature,
-                        resident.fitHumidity), LandRules);
+                    LandLifeRules.Fitness(neighbor, resident), LandRules);
         return Mathf.Max(0f, food);
     }
 
+    // Retained for the optional V62 neighbor candidate adapter.
     private struct MutationCandidate
     {
         public int trait, direction;
@@ -403,7 +407,7 @@ public partial class SimulationController
     private struct ChanceMutation
     {
         public int trait, direction;
-        public float probability;
+        public float probability, weight;
         public string source;
         public bool bypassProtection;
     }
@@ -411,14 +415,15 @@ public partial class SimulationController
     private static void OfferChance(List<ChanceMutation> choices,
         PopulationData population, int trait, int direction,
         float probability, string source = null,
-        bool bypassProtection = false)
+        bool bypassProtection = false, float weight = 1f)
     {
         int current = TraitValue(population, trait);
         if (probability <= 0f ||
             TraitLimit(trait, current + direction) == current) return;
         choices.Add(new ChanceMutation { trait = trait, direction = direction,
             probability = Mathf.Clamp01(probability), source = source,
-            bypassProtection = bypassProtection });
+            bypassProtection = bypassProtection,
+            weight = Mathf.Max(0.001f, weight) });
     }
 
     private bool ChooseChanceMutation(BlockInfo block, PopulationData population,
@@ -429,7 +434,7 @@ public partial class SimulationController
         foreach (ChanceMutation option in choices)
         {
             noHit *= 1f - option.probability;
-            total += option.probability;
+            total += option.probability * option.weight;
         }
         float hitRoll = ModelRandom01(currentSimulationDay,
             phase + ".hit", block, population);
@@ -440,7 +445,7 @@ public partial class SimulationController
         ChanceMutation selected = choices[choices.Count - 1];
         foreach (ChanceMutation option in choices)
         {
-            draw -= option.probability;
+            draw -= option.probability * option.weight;
             if (draw < 0f) { selected = option; break; }
         }
         int previous = TraitValue(population, selected.trait);
@@ -454,7 +459,9 @@ public partial class SimulationController
             return false;
         if (selected.source == "neighbor_guidance")
             MarkNeighborMovementHit(block, population, previous);
-        if (selected.trait == 2) population.movementAbility = next;
+        if (selected.trait == 0) population.fitTemperature = next;
+        else if (selected.trait == 1) population.fitHumidity = next;
+        else if (selected.trait == 2) population.movementAbility = next;
         else if (selected.trait == 3) population.size = next;
         else if (selected.trait == 4) population.fertility = next;
         else return false;
@@ -518,19 +525,6 @@ public partial class SimulationController
                 "stock_guidance", true);
     }
 
-    private bool TryDirectedMutation(BlockInfo block,
-        PopulationData population)
-    {
-        var choices = new List<ChanceMutation>(7);
-        OfferCliffRecovery(block, population, choices);
-        OfferRecoveryGuidance(block, population, choices);
-        OfferStockGuidance(block, population, choices);
-        OfferPredatorDirected(block, population, choices);
-        OfferNeighborMovement(block, population, choices);
-        return ChooseChanceMutation(block, population, choices,
-            "mutation.directed");
-    }
-
     private bool TryPredatorDirected(BlockInfo block,
         PopulationData population)
     {
@@ -581,10 +575,11 @@ public partial class SimulationController
         else if (OnEcologyEvent != null || EnableEcologyConsoleLogs)
             LogEcology(currentSimulationDay, block, population,
                 "mutation_supply_unknown", "prey renewal history unavailable");
-        choices.RemoveAll(option => LeavesProtectedTarget(population,
+        choices.RemoveAll(option => !option.bypassProtection &&
+            LeavesProtectedTarget(population,
             option.trait, TraitValue(population, option.trait) +
                 option.direction));
-        // The unified directed lottery owns the only mutation slot.
+        // Every source joins the one daily mutation draw below.
     }
 
     private static int TargetTraitValue(SpeciesData target, int trait) =>
@@ -596,21 +591,29 @@ public partial class SimulationController
     private float OtherTraitDistance(PopulationData population,
         SpeciesData target, int excluded)
     {
-        float distance = 0f;
+        float closeness = 0f;
+        int count = 0;
         for (int trait = 0; trait < 5; trait++)
-            if (trait != excluded)
-                distance += Mathf.Abs(TraitValue(population, trait) -
-                    TargetTraitValue(target, trait));
-        return distance / 4f;
+        {
+            if (trait == excluded ||
+                trait < 2 && (population.ecologicalNiche == EcologicalNiche.Water ||
+                    target.baseEcologicalNiche == EcologicalNiche.Water) ||
+                trait == 2 && target.baseEcologicalNiche == EcologicalNiche.Air)
+                continue;
+            closeness += Mathf.Clamp01(1f -
+                Mathf.Abs(TraitValue(population, trait) -
+                    TargetTraitValue(target, trait)) / 100f);
+            count++;
+        }
+        return count > 0 ? closeness / count : 0f;
     }
 
-    private bool TrySiblingAttraction(BlockInfo block,
-        PopulationData population)
+    private void OfferSiblingAttraction(BlockInfo block,
+        PopulationData population, List<ChanceMutation> choices)
     {
-        if (population.trophicLevel <= 0) return false;
         SpeciesData target = population.trackedEvolutionTarget;
-        if (target == null || HasLivingSpecies(block, target)) return false;
-        var choices = new List<ChanceMutation>(2);
+        if (target == null || !CanTrackEvolutionTarget(block, population,
+            target)) return;
         for (int trait = 3; trait <= 4; trait++)
         {
             int delta = TargetTraitValue(target, trait) -
@@ -619,28 +622,34 @@ public partial class SimulationController
             int direction = delta > 0 ? 1 : -1;
             if (LeavesProtectedTarget(population, trait,
                 TraitValue(population, trait) + direction)) continue;
-            float distance = OtherTraitDistance(population, target, trait);
+            float closeness = OtherTraitDistance(population, target, trait);
             OfferChance(choices, population, trait, direction,
-                0.02f + 0.08f * Mathf.Max(0f, 1f - distance / 30f));
+                0.05f + 0.07f * closeness, "sibling");
         }
-        return ChooseChanceMutation(block, population, choices,
-            "mutation.sibling.sizefertility");
     }
 
-    private bool TryNaturalRecovery(BlockInfo block,
-        PopulationData population)
+    private void OfferNaturalRecovery(BlockInfo block,
+        PopulationData population, List<ChanceMutation> choices)
     {
-        var choices = new List<ChanceMutation>(2);
         SpeciesData target = population.trackedEvolutionTarget;
-        if (target != null && !HasLivingSpecies(block, target) &&
+        if (target != null && CanTrackEvolutionTarget(block, population,
+                target) &&
             population.movementAbility > target.baseMovementAbility + 5 &&
+            MovementGuidanceProbability(block, population,
+                currentSimulationDay) <= 0f &&
+            ForecastLandGrowth(block, population, ChangedTrait(
+                ReadLandTraits(population), 2,
+                population.movementAbility - 1)) >
+                ForecastLandGrowth(block, population,
+                    ReadLandTraits(population)) &&
             !LeavesProtectedTarget(population, 2,
                 population.movementAbility - 1))
         {
-            float distance = OtherTraitDistance(population, target, 2);
+            float excess = population.movementAbility -
+                target.baseMovementAbility - 5;
             OfferChance(choices, population, 2, -1,
-                0.02f + (population.trophicLevel == 0 ? .53f : .38f)
-                    * Mathf.Max(0f, 1f - distance / 30f));
+                0.04f + 0.06f * Mathf.Clamp01(excess / 40f),
+                "movement_recovery");
         }
         if (population.trophicLevel > 0 &&
             FoodWeb.HasLandPredatorDiet(population) && population.size > 1 &&
@@ -652,8 +661,6 @@ public partial class SimulationController
             OfferChance(choices, population, 3, -1,
                 0.15f * Mathf.Clamp01((0.95f -
                     population.actualEnergySatisfactionToday) / 0.35f));
-        return ChooseChanceMutation(block, population, choices,
-            "mutation.natural.recovery");
     }
 
     private void EvolveCommunityNewRules(BlockInfo block)
@@ -662,7 +669,8 @@ public partial class SimulationController
         foreach (PopulationData population in block.community)
         {
             if (population == null || population.speciesAmount <= 0 ||
-                population.ecologicalNiche != EcologicalNiche.Land) continue;
+                (population.ecologicalNiche != EcologicalNiche.Land &&
+                 population.ecologicalNiche != EcologicalNiche.Water)) continue;
             population.mutationDaysElapsed++;
             if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval))
                 continue;
@@ -670,21 +678,27 @@ public partial class SimulationController
             UpdateInfluences(population, currentSimulationDay);
             RefreshTrackedTarget(block, population, currentSimulationDay);
             ReleaseTargetProtectionFIFO(block, population);
-            if (TryDirectedMutation(block, population)) continue;
-            if (TrySiblingAttraction(block, population)) continue;
-            if (TryNaturalRecovery(block, population)) continue;
+            var choices = new List<ChanceMutation>(16);
+            OfferCliffRecovery(block, population, choices);
+            OfferRecoveryGuidance(block, population, choices);
+            OfferStockGuidance(block, population, choices);
+            OfferPredatorDirected(block, population, choices);
+            OfferNeighborMovement(block, population, choices);
+            OfferSiblingAttraction(block, population, choices);
+            OfferNaturalRecovery(block, population, choices);
 
             LandTraits original = ReadLandTraits(population);
             float baseline = ForecastLandGrowth(block, population, original);
-            var choices = new List<MutationCandidate>(10);
-            for (int trait = 0; trait < 2; trait++)
+            for (int trait = 0; trait < (population.ecologicalNiche ==
+                EcologicalNiche.Water ? 0 : 2); trait++)
             {
                 int current = TraitValue(population, trait);
                 int climate = trait == 0 ? block.temperature : block.humidity;
                 if (current == climate) continue;
                 int direction = climate > current ? 1 : -1;
-                AddMutationCandidate(choices, trait, direction,
-                    1f + Mathf.Abs(climate - current) / 20f, "climate");
+                OfferChance(choices, population, trait, direction, 1f,
+                    "climate", weight: 1f +
+                        Mathf.Abs(climate - current) / 20f);
             }
 
             float capacity = LandLifeRules.EnvironmentalCarryingCapacity(
@@ -712,68 +726,16 @@ public partial class SimulationController
                         float perHeadGain = (ForecastLandGrowth(block,
                             population, changed) - baseline) /
                             Mathf.Max(1, population.speciesAmount);
-                        if (perHeadGain <= LandRules.mutationGainThreshold ||
-                            ModelRandom01(currentSimulationDay,
-                                "mutation.natural", block, population,
-                                null, trait * 2 + (direction > 0 ? 1 : 0))
-                                >= naturalChance) continue;
-                        AddMutationCandidate(choices, trait, direction,
-                            Mathf.Clamp(perHeadGain * selectionStrength * 100f,
-                                0.05f, 5f), "sustainable");
+                        if (perHeadGain <= LandRules.mutationGainThreshold)
+                            continue;
+                        OfferChance(choices, population, trait, direction,
+                            naturalChance, "sustainable", weight:
+                                Mathf.Clamp(perHeadGain * selectionStrength *
+                                    100f, 0.05f, 5f));
                     }
 
-            float totalWeight = 0f;
-            bool emitMutationTrace = OnEcologyEvent != null ||
-                EnableEcologyConsoleLogs;
-            var details = emitMutationTrace ?
-                new System.Text.StringBuilder() : null;
-            foreach (MutationCandidate candidate in choices)
-            {
-                totalWeight += candidate.weight;
-                if (emitMutationTrace)
-                {
-                    if (details.Length > 0) details.Append(',');
-                    details.Append(candidate.trait).Append(':')
-                        .Append(candidate.direction > 0 ? '+' : '-')
-                        .Append(':').Append(candidate.sources)
-                        .Append(':').Append(candidate.weight.ToString("F3"));
-                }
-            }
-            float draw = ModelRandom01(currentSimulationDay,
-                "mutation.choose", block, population) * totalWeight;
-            int selected = -1;
-            for (int i = 0; i < choices.Count; i++)
-            {
-                draw -= choices[i].weight;
-                if (draw < 0f) { selected = i; break; }
-            }
-            if (selected < 0 && choices.Count > 0) selected = choices.Count - 1;
-            population.mutationSelectionProgress = 0f;
-            population.mutationSelectionCandidate = -1;
-            if (selected >= 0)
-            {
-                MutationCandidate winner = choices[selected];
-                int previous = TraitValue(population, winner.trait);
-                int next = previous + winner.direction;
-                if (winner.trait == 0) population.fitTemperature = next;
-                else if (winner.trait == 1) population.fitHumidity = next;
-                else if (winner.trait == 2) population.movementAbility = next;
-                else if (winner.trait == 3) population.size = next;
-                else population.fertility = next;
-                population.lastMutationEffect = winner.trait +
-                    (winner.direction > 0 ? "↑" : "↓") +
-                    " " + previous + "→" + next;
-            }
-            if (emitMutationTrace)
-                LogEcology(currentSimulationDay, block, population,
-                    "mutation_choice", "candidates=[" + details +
-                    "] totalWeight=" + totalWeight.ToString("R",
-                        System.Globalization.CultureInfo.InvariantCulture) +
-                    " draw=" + ModelRandom01(currentSimulationDay,
-                        "mutation.choose", block, population).ToString("F6") +
-                    " selected=" + (selected >= 0
-                        ? population.lastMutationEffect : "none") +
-                    " occupiedSlot=" + (selected >= 0));
+            ChooseChanceMutation(block, population, choices,
+                "mutation.shared");
         }
     }
 }

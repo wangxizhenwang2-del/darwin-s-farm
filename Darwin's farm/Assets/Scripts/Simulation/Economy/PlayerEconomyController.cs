@@ -56,6 +56,7 @@ public sealed class PlayerEconomyController : MonoBehaviour
     private SimulationController simulation;
     private SimulationTime clock;
     private BioenergyAccount account;
+    private SimulationEnvironmentController terrainUnlocks;
     private bool hasSeenWildPopulation;
     private int nextStorageSerial;
     public IReadOnlyList<StoredPopulation> Storage => storage.AsReadOnly();
@@ -130,6 +131,7 @@ public sealed class PlayerEconomyController : MonoBehaviour
         simulation = GetComponent<SimulationController>();
         clock = GetComponent<SimulationTime>();
         account = GetComponent<BioenergyAccount>();
+        terrainUnlocks = GetComponent<SimulationEnvironmentController>();
     }
 
     private void OnEnable()
@@ -148,6 +150,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         error = null;
         if (account == null || grid == null || definition == null || !grid.CanPlaceAt(coordinate))
         { error = "目标地块不可建造"; return false; }
+        if (terrainUnlocks == null || !terrainUnlocks.IsUnlocked(definition))
+        { error = "地形未解锁"; return false; }
         bool placed = account.TryExecute(BioenergySettings.Current.expandTileCost,
             "地块扩张", (_, __) => grid.TryPlaceTile(coordinate, definition, rotation), out error);
         if (placed) OperationCommitted?.Invoke(coordinate,
@@ -204,6 +208,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         int rotation, out WaterShapePreview preview, out string error)
     {
         preview = null; error = null;
+        if (shape != null && (terrainUnlocks == null || !terrainUnlocks.IsUnlocked(shape)))
+        { error = "水域未解锁"; return false; }
         if (grid == null || account == null || shape == null ||
             shape.initialWaterCoverage == WaterCoverage.Land ||
             !grid.TryGetTile(coordinate, out MapTileInstance tile) ||
@@ -291,10 +297,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
                         BioenergyAccount.SpeciesKey(resident) == key)
                         globalCount += resident.speciesAmount;
         long after = globalCount - harvested;
-        long beforeIncome = globalCount > 1 ? (long)Math.Floor(
-            settings.dailyIncomeMultiplier * (double)value * Math.Log(globalCount)) : 0;
-        long afterIncome = after > 1 ? (long)Math.Floor(
-            settings.dailyIncomeMultiplier * (double)value * Math.Log(after)) : 0;
+        long beforeIncome = globalCount * value;
+        long afterIncome = after * value;
         long nextDaily = (account != null ? account.PreviewDailyIncome() : 0) -
             beforeIncome + afterIncome;
         preview = new HarvestPreview { Harvested = harvested, Remaining = count - harvested,
@@ -330,13 +334,17 @@ public sealed class PlayerEconomyController : MonoBehaviour
         if ((population.ecologicalNiche == EcologicalNiche.Water && !water) ||
             (population.ecologicalNiche == EcologicalNiche.Land && water))
         { error = "目标地块与生态位不匹配"; return false; }
+        if (source != null && !simulation.CanLegalMigration(source, target,
+            population, population.speciesAmount))
+        { error = "迁徙需要合法邻边、空位和足够的真实食物，目标不可已有同种"; return false; }
         if (population.ecologicalNiche == EcologicalNiche.Water && source != null &&
             !PopulationWaterTravel.CanTravel(source, target, population))
         { error = "目标水域没有可通行的水路"; return false; }
         if (population.ecologicalNiche == EcologicalNiche.Air &&
             !SimulationController.CanAcceptAirSpecies(target, population))
         { error = "目标天空槽位已被其他物种占用"; return false; }
-        if (SimulationController.LivingPopulationCount(target) >= 5 && !target.community.Exists(resident =>
+        if (population.ecologicalNiche != EcologicalNiche.Air &&
+            SimulationController.LivingPopulationCount(target) >= 5 && !target.community.Exists(resident =>
             resident != null &&
             resident.ecologicalNiche == population.ecologicalNiche &&
             PopulationTransfer.IsSameSpecies(resident, population)))
@@ -362,6 +370,9 @@ public sealed class PlayerEconomyController : MonoBehaviour
             arrival.birthRemainder = population.birthRemainder;
             arrival.deathRemainder = population.deathRemainder;
             arrival.lastMigrationSource = source;
+            if (arrival.ecologicalNiche == EcologicalNiche.Air)
+                arrival.nextMigrationDay = Mathf.Max(arrival.nextMigrationDay,
+                    (clock != null ? clock.currentDay : 0) + 30);
             arrival.landPositionBlock = null;
             arrival.landPositionBank = default(RiverBankSide);
             int movedAmount = population.speciesAmount;

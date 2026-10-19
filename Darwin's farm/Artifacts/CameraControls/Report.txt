@@ -1,0 +1,9 @@
+Test position is on map
+Middle drag pans without Alt
+Alt-left drag does not pan
+Plain left drag does not pan
+Wheel zooms without Alt
+Alt-left click opens tile information
+Placement suppresses camera drag
+
+Runtime tutorial displays middle-button pan, wheel zoom, and Alt-left inspection.

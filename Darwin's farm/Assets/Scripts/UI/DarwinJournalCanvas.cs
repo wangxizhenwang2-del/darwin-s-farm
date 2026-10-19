@@ -15,6 +15,7 @@ using UnityEngine.InputSystem;
 public sealed class DarwinJournalCanvas : MonoBehaviour
 {
     public event Action<bool> GameEntered;
+    public bool IsGameplayVisible => inGame && page == Page.Game;
     [Serializable] private sealed class SettingsData
     {
         public int schemaVersion = 1;
@@ -103,6 +104,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
 #endif
         if (back)
         {
+            var maps = FindFirstObjectByType<SpeciesMapsUI>();
+            if (maps != null && maps.IsOpen) return;
             var unlock = FindFirstObjectByType<SpeciesUnlockPresenter>();
             if (unlock == null || !unlock.IsPresenting) Back();
         }
@@ -189,7 +192,20 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (page == Page.Confirm) { Show(confirmReturn); return; }
         Show(parent);
     }
-    private void NewGame() => EnterGame(false);
+    private void NewGame()
+    {
+        // Species assets survive scene reloads; begin each new run with fresh
+        // discovery flags so the first deer unlock can open the water palette.
+        var catalog = Resources.Load<SaveAssetCatalog>("DarwinJournal/SaveAssetCatalog");
+        if (catalog != null)
+        {
+            foreach (var entry in catalog.species)
+                if (entry.asset != null) entry.asset.RestoreProgress(false, false, 0);
+            var simulation = FindFirstObjectByType<SimulationController>();
+            if (simulation != null) simulation.RefreshSpeciesStatuses();
+        }
+        EnterGame(false);
+    }
     private void EnterGame(bool loadedSave)
     {
         inGame = true;
@@ -379,7 +395,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         masterSlider.SetValueWithoutNotify(settings.master);
         musicSlider.SetValueWithoutNotify(settings.music);
         effectsSlider.SetValueWithoutNotify(settings.effects);
-        masterSlider.onValueChanged.AddListener(v => { settings.master=v; AudioListener.volume=v; SaveSettings(); });
+        masterSlider.onValueChanged.AddListener(v => { settings.master=v; AudioListener.volume=v; DarwinWwiseAmbience.SetMasterVolume(v); SaveSettings(); });
         musicSlider.onValueChanged.AddListener(v => { settings.music=v; ApplyCategorizedAudio(); SaveSettings(); });
         effectsSlider.onValueChanged.AddListener(v => { settings.effects=v; ApplyCategorizedAudio(); SaveSettings(); });
         qualityDropdown.ClearOptions();
@@ -389,30 +405,50 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         bool desktop=!Application.isMobilePlatform;
         resolutionRow.SetActive(desktop); fullscreenRow.SetActive(desktop);
         if (!desktop) return;
-        resolutions=Screen.resolutions.Select(r=>new Vector2Int(r.width,r.height)).Distinct()
-            .OrderBy(r=>r.x*r.y).ToArray();
-        if (resolutions.Length==0) resolutions=new[] {new Vector2Int(Screen.width,Screen.height)};
+        var available = Screen.resolutions.Select(r => new Vector2Int(r.width, r.height)).ToList();
+        available.Add(new Vector2Int(Screen.width, Screen.height));
+        if (settings.width > 0 && settings.height > 0)
+            available.Add(new Vector2Int(settings.width, settings.height));
+        resolutions = available.Where(r => r.x > 0 && r.y > 0).Distinct()
+            .OrderBy(r => (long)r.x * r.y).ThenBy(r => r.x).ToArray();
         resolutionDropdown.ClearOptions();
         resolutionDropdown.AddOptions(resolutions.Select(r=>r.x+" × "+r.y).ToList());
-        int current=Array.FindIndex(resolutions,r=>r.x==Screen.width && r.y==Screen.height);
+        int current=Array.FindIndex(resolutions,r=>r.x==settings.width && r.y==settings.height);
         resolutionDropdown.SetValueWithoutNotify(Mathf.Max(0,current));
         resolutionDropdown.onValueChanged.AddListener(i => {
             if(i<0 || i>=resolutions.Length)return;
             settings.width=resolutions[i].x; settings.height=resolutions[i].y;
-            Screen.SetResolution(settings.width,settings.height,Screen.fullScreenMode); SaveSettings();
+            ApplyDisplaySettings(); SaveSettings();
         });
-        fullscreenToggle.SetIsOnWithoutNotify(Screen.fullScreen);
-        fullscreenToggle.onValueChanged.AddListener(v => { Screen.fullScreen=v; settings.fullscreen=v; SaveSettings(); });
+        fullscreenToggle.SetIsOnWithoutNotify(settings.fullscreen);
+        fullscreenToggle.onValueChanged.AddListener(v => { settings.fullscreen=v; ApplyDisplaySettings(); SaveSettings(); });
+    }
+    private void ApplyDisplaySettings()
+    {
+        if (Application.isMobilePlatform || settings.width <= 0 || settings.height <= 0) return;
+        Screen.SetResolution(settings.width, settings.height,
+            settings.fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed);
     }
     private string SettingsPath => Path.Combine(Application.persistentDataPath,"Config","settings.json");
     private void LoadSettings()
     {
+        settings = new SettingsData {
+            quality = QualitySettings.GetQualityLevel(),
+            width = Screen.width,
+            height = Screen.height,
+            fullscreen = Screen.fullScreen
+        };
+        bool hasSavedSettings = false;
         try
         {
             if(File.Exists(SettingsPath))
             {
                 string json=File.ReadAllText(SettingsPath);
-                if(json.Length<16384)settings=JsonUtility.FromJson<SettingsData>(json)??new SettingsData();
+                if(json.Length<16384)
+                {
+                    settings=JsonUtility.FromJson<SettingsData>(json)??settings;
+                    hasSavedSettings=true;
+                }
             }
         }
         catch(Exception e){Debug.LogWarning("Journal settings load failed: "+e.Message);}
@@ -420,14 +456,15 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         settings.music=Mathf.Clamp01(settings.music);
         settings.effects=Mathf.Clamp01(settings.effects);
         AudioListener.volume=settings.master;
+        DarwinWwiseAmbience.SetMasterVolume(settings.master);
         if(settings.quality>=0 && settings.quality<QualitySettings.names.Length)
             QualitySettings.SetQualityLevel(settings.quality,true);
-        if(!Application.isMobilePlatform)
+        if (settings.width <= 0 || settings.height <= 0)
         {
-            Screen.fullScreen=settings.fullscreen;
-            if(settings.width>0 && Screen.resolutions.Any(r=>r.width==settings.width&&r.height==settings.height))
-                Screen.SetResolution(settings.width,settings.height,Screen.fullScreenMode);
+            settings.width = Screen.width;
+            settings.height = Screen.height;
         }
+        if (hasSavedSettings) ApplyDisplaySettings();
         ApplyCategorizedAudio();
     }
     private void SaveSettings()
@@ -452,8 +489,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     }
     private void ApplyCategorizedAudio()
     {
-        foreach(var source in FindObjectsByType<DarwinAudioCategory>(FindObjectsSortMode.None))
-            source.Apply(settings.music,settings.effects);
+        DarwinWwiseAmbience.SetEffectsVolume(settings.effects);
+        DarwinAudioCategory.SetCategoryVolumes(settings.music, settings.effects);
     }
     private void SelectCategory(int index)
     {

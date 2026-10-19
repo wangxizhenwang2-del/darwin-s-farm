@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a63e38b9679164194a54caac8b1f4d, type: 3}
+  m_Name: "\u9E7FAnimation"
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
+  controller: {fileID: 9100000, guid: 5cfcc5cd32f0f5a42a958d1aa210ea47, type: 2}
+  idleSprite: {fileID: 21300000, guid: c20cc6e8129dff147b4c248c5a0c3a82, type: 3}
+  referenceMoveSpeed: 1.8
+  artworkFacesLeft: 1
+  walkFrames:
+  - {fileID: 21300000, guid: 44e2afe8ee8b8ac4aa160ee1c5b7ff9c, type: 3}
+  - {fileID: 21300000, guid: b44a96390c626ff47925c2fce46e1571, type: 3}
+  - {fileID: 21300000, guid: b9f37cb3662d94647bf18011634b4404, type: 3}
+  - {fileID: 21300000, guid: 51d601cbc1c318048876ab520e526a88, type: 3}
+  - {fileID: 21300000, guid: 56d4aa2d5b8cb6c48b803b817264ebc4, type: 3}
+  - {fileID: 21300000, guid: 267a01d1e1a9b054a9b945688722e555, type: 3}
+  - {fileID: 21300000, guid: c2eac6713c4907b4db4936c1b38fa07d, type: 3}
+  - {fileID: 21300000, guid: 74e0324eeac79754f82d582913185391, type: 3}
+  - {fileID: 21300000, guid: 5927783e4526c3d448a05047d82cb530, type: 3}
+  - {fileID: 21300000, guid: 41a9c491ec514fe42acecd02d85bcee7, type: 3}
+  - {fileID: 21300000, guid: 1f41b951cf38015428ff0b2af536f122, type: 3}
+  - {fileID: 21300000, guid: c3e970bf83e0c7c44b82f05a7c318829, type: 3}
+  - {fileID: 21300000, guid: 92377ffbfdd1cc54cb01ddd19333ee67, type: 3}
+  - {fileID: 21300000, guid: 45b111fa66999b240a7a09ea94f3578a, type: 3}
+  - {fileID: 21300000, guid: b499c6eaa98397d45adbf0dfda044a4e, type: 3}
+  - {fileID: 21300000, guid: ba33720272eb0d84c84fe8b493ef89db, type: 3}
+  - {fileID: 21300000, guid: 8207402682121ef4d8ad2ec0c598c563, type: 3}
+  idleFrames:
+  - {fileID: 21300000, guid: c20cc6e8129dff147b4c248c5a0c3a82, type: 3}
+  - {fileID: 21300000, guid: d14aa66ac8251fe499487a2e4a0c9353, type: 3}
+  - {fileID: 21300000, guid: 9f0c7277c8d73284287117556989ce18, type: 3}
+  - {fileID: 21300000, guid: d9d839a712a7d6f44a85720b9dfa19e1, type: 3}
+  - {fileID: 21300000, guid: 92086bf12dd168a4caeefebcfa5f31be, type: 3}
+  - {fileID: 21300000, guid: 8d164d70bdc7d534c8512ac228269d2a, type: 3}
+  - {fileID: 21300000, guid: 0763322bb39fc0e45843c917f6cc2ee6, type: 3}
+  - {fileID: 21300000, guid: 7226ab46a2706cc45bdabe3cf017bd54, type: 3}
+  - {fileID: 21300000, guid: 4d1d5e6adf1cd0543ab387aa0994ba44, type: 3}
+  - {fileID: 21300000, guid: 4a5dded9d3434e5438f22079a98fcb3d, type: 3}
+  - {fileID: 21300000, guid: 224ffa34a9195854bafdae27961a8355, type: 3}
+  - {fileID: 21300000, guid: c5d7aace258f2ef469b0b60bfdf37fbd, type: 3}
+  - {fileID: 21300000, guid: 785467463a2d1f843bd98bf4c5d53a99, type: 3}
+  - {fileID: 21300000, guid: 04e66b87d5fa1124b9a86b3b3710d853, type: 3}
+  - {fileID: 21300000, guid: 56e98508ea8e29048bf30ec4aafcebc3, type: 3}
+  - {fileID: 21300000, guid: 04480fa3340ca3d4ab1fea8bdc860ac7, type: 3}
+  - {fileID: 21300000, guid: c71e39a7b5c76454f9a1de15d8874b5c, type: 3}
+  walkStartFrame: 1
+  walkEndFrame: 17
+  idleStartFrame: 1
+  idleEndFrame: 17
+  stopFrame: 1
+  walkFps: 8
+  idleFps: 8
+  idleDelayMin: 2
+  idleDelayMax: 5
+  movementHoldMin: 4
+  movementHoldMax: 8

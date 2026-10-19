@@ -16,6 +16,7 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     private SpeciesUnlockPresenter unlockPresenter;
     private int phase;
     private float timer;
+    private Vector2 shownPosition;
     private const int Capacity=64;
     [Serializable] public sealed class SaveState
     {
@@ -28,6 +29,12 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     public SaveState CaptureSaveState() => new SaveState {
         pending=new List<EcologicalEventData>(pending),seen=new List<string>(seen),
         current=current,phase=phase,timer=timer };
+    private void Awake()
+    {
+        shownPosition=card.anchoredPosition;
+    }
+    private Vector2 HiddenPosition => new Vector2(shownPosition.x,
+        card.rect.height*card.pivot.y+36f);
     public void RestoreSaveState(SaveState state)
     {
         if(state==null||state.pending==null||state.seen==null||
@@ -112,12 +119,12 @@ public sealed class EcologyNewsHUD : MonoBehaviour
         if(phase==0)
         {
             float t=Mathf.Clamp01(timer/.35f);group.alpha=t;
-            card.anchoredPosition=new Vector2(0,Mathf.Lerp(92,-72,1-(1-t)*(1-t)));
+            card.anchoredPosition=Vector2.Lerp(HiddenPosition,shownPosition,1-(1-t)*(1-t));
             if(t>=1){phase=1;timer=0;}
         }
         else if(phase==1)
         {
-            group.alpha=1;card.anchoredPosition=new Vector2(0,-72);
+            group.alpha=1;card.anchoredPosition=shownPosition;
             if(timer>=3){phase=2;timer=0;}
         }
         else if(phase==2)
@@ -128,7 +135,7 @@ public sealed class EcologyNewsHUD : MonoBehaviour
         else
         {
             float t=Mathf.Clamp01(timer/.30f);group.alpha=1-t;
-            card.anchoredPosition=new Vector2(0,Mathf.Lerp(-72,92,t*t));
+            card.anchoredPosition=Vector2.Lerp(shownPosition,HiddenPosition,t*t);
             if(t>=1){current=null;phase=0;timer=0;}
         }
     }
@@ -137,6 +144,8 @@ public sealed class EcologyNewsHUD : MonoBehaviour
         switch(type)
         {
             case EcologicalEventType.NewSpecies:return "✿ 新物种诞生";
+            case EcologicalEventType.TerrainUnlocked:return "✦ 新地形解锁";
+            case EcologicalEventType.WatersUnlocked:return "✦ 水域解锁";
             case EcologicalEventType.LocalExtinction:return "○ 本地灭绝";
             case EcologicalEventType.GlobalExtinction:return "◆ 全局灭绝";
             case EcologicalEventType.SpeciesReappeared:return "↻ 物种重新出现";

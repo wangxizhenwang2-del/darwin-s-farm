@@ -195,12 +195,15 @@ public partial class SimulationController
                 block.waterCoverage != WaterCoverage.Land) continue;
             foreach (PopulationData ancestor in new List<PopulationData>(block.community))
             {
-                if (ancestor == null || ancestor.species == null) continue;
+                if (ancestor == null || ancestor.species == null ||
+                    ancestor.ecologicalNiche != EcologicalNiche.Land) continue;
                 SpeciesData selected = null;
                 List<SpeciesData> targets = ConnectedTargets(ancestor.species);
                 targets.Sort(CompareSpeciesOrder);
                 foreach (SpeciesData target in targets)
                 {
+                    if (target == null || target.baseEcologicalNiche !=
+                        EcologicalNiche.Land) continue;
                     ReportEvolutionTraitRange(block, ancestor, target, day);
                     EvolutionConversionRecord record = GetEvolutionRecord(ancestor,
                         target, true);
@@ -382,8 +385,7 @@ public partial class SimulationController
             if (candidate.trophicLevel > 0)
             {
                 float demand = LandLifeRules.Demand(candidate, trace.founders,
-                    LandLifeRules.Fitness(trace.block, candidate.fitTemperature,
-                        candidate.fitHumidity), LandRules);
+                    LandLifeRules.Fitness(trace.block, candidate), LandRules);
                 StockFoodForecast stock = ForecastStockPredatorFood(
                     trace.block, source, candidate, trace.founders);
                 detail += " stockFood=" + stock.energy.ToString("R",
@@ -568,10 +570,8 @@ public partial class SimulationController
                 LandRules.minimumPlantReserveFraction);
             spendable = Mathf.Max(0f, spendable - floor);
         }
-        int affordable = extraPerHead > 0f
-            ? Mathf.FloorToInt(spendable / extraPerHead)
-            : requested;
-        amount = Mathf.Min(requested, affordable);
+        amount = requested;
+        if (spendable + .01f < amount * extraPerHead) return false;
         if (amount < 1 || target.trophicLevel == 2 && amount < 10)
         {
             if (target.trophicLevel == 2 &&
@@ -601,8 +601,7 @@ public partial class SimulationController
     {
         var result = new StockFoodForecast();
         result.demand = LandLifeRules.Demand(candidate, founders,
-            LandLifeRules.Fitness(block, candidate.fitTemperature,
-                candidate.fitHumidity), LandRules);
+            LandLifeRules.Fitness(block, candidate), LandRules);
         var hunters = new List<PopulationData>();
         var counts = new List<int>();
         foreach (PopulationData resident in block.community)
@@ -808,8 +807,7 @@ public partial class SimulationController
         }
 
         float dailyFood = 0.85f * sustainableFood;
-        float fitness = LandLifeRules.Fitness(block, candidate.fitTemperature,
-            candidate.fitHumidity);
+        float fitness = LandLifeRules.Fitness(block, candidate);
         float newbornCost = LandLifeRules.YoungNeed(candidate.size, LandRules)
             + LandLifeRules.BodyMass(candidate.size, LandRules);
         int count = amount, paidBirths = 0, endangeredDays = 0;
@@ -829,7 +827,8 @@ public partial class SimulationController
             int born = Mathf.Min(possible, affordable);
             float deaths = LandRules.starvationDeathRate * count *
                 (1f - satisfaction)
-                + LandLifeRules.ColdDeaths(count, block.temperature, LandRules)
+                + (candidate.ecologicalNiche == EcologicalNiche.Water ? 0f :
+                    LandLifeRules.ColdDeaths(count, block.temperature, LandRules))
                 + LandRules.climateMismatchDeathRate * count *
                     (1f - fitness)
                 + LandLifeRules.NaturalAdultDeaths(count, candidate.size,
@@ -1044,8 +1043,7 @@ public partial class SimulationController
         float adult = count * LandLifeRules.AdultNeed(hunter.size,
             hunter.movementAbility, LandRules);
         float births = count * LandRules.birthRate * hunter.fertility / 100f *
-            LandLifeRules.Fitness(block, hunter.fitTemperature,
-                hunter.fitHumidity);
+            LandLifeRules.Fitness(block, hunter);
         return Mathf.Max(0f, adult + births *
             (LandLifeRules.YoungNeed(hunter.size, LandRules) +
              LandLifeRules.BodyMass(hunter.size, LandRules)) +
@@ -1076,8 +1074,7 @@ public partial class SimulationController
             population.movementAbility, LandRules);
         float satisfaction = adult > 0f ?
             Mathf.Clamp01(realFood / adult) : 1f;
-        float fitness = LandLifeRules.Fitness(block,
-            population.fitTemperature, population.fitHumidity);
+        float fitness = LandLifeRules.Fitness(block, population);
         float opportunity = count * LandRules.birthRate *
             population.fertility / 100f * fitness * satisfaction;
         float newbornCost = LandLifeRules.YoungNeed(population.size,
@@ -1088,7 +1085,8 @@ public partial class SimulationController
                 Mathf.Max(0.0001f, newbornCost)));
         float baseDeaths = LandRules.starvationDeathRate * count *
             (1f - satisfaction) +
-            LandLifeRules.ColdDeaths(count, block.temperature, LandRules) +
+            (population.ecologicalNiche == EcologicalNiche.Water ? 0f :
+                LandLifeRules.ColdDeaths(count, block.temperature, LandRules)) +
             LandRules.climateMismatchDeathRate * count * (1f - fitness) +
             LandLifeRules.NaturalAdultDeaths(count, population.size,
                 LandRules);
@@ -1119,8 +1117,7 @@ public partial class SimulationController
             if (totalPreference <= 0f) continue;
             float demand = LandLifeRules.Demand(hunter,
                 hunter.speciesAmount,
-                LandLifeRules.Fitness(block, hunter.fitTemperature,
-                    hunter.fitHumidity), LandRules);
+                LandLifeRules.Fitness(block, hunter), LandRules);
             float intent = hunter.speciesAmount * preference /
                 totalPreference *
                 Mathf.Min(1f, 10f / Mathf.Max(1f, candidate.size)) *
@@ -1146,7 +1143,7 @@ public partial class SimulationController
         new PopulationData(false)
         {
             species = target, speciesAmount = count,
-            ecologicalNiche = EcologicalNiche.Land,
+            ecologicalNiche = target.baseEcologicalNiche,
             trophicLevel = target.trophicLevel, trophicLevelInitialized = true,
             fitTemperature = target.baseFitTemperature,
             fitHumidity = target.baseFitHumidity,
@@ -1154,12 +1151,25 @@ public partial class SimulationController
             size = target.baseSize, fertility = target.baseFertility
         };
 
-    private bool EachTraitWithinTolerance(PopulationData source, SpeciesData target) =>
-        Mathf.Abs(source.movementAbility - target.baseMovementAbility) <= LandRules.evolutionTraitTolerance &&
-        Mathf.Abs(source.fitTemperature - target.baseFitTemperature) <= LandRules.evolutionTraitTolerance &&
-        Mathf.Abs(source.fitHumidity - target.baseFitHumidity) <= LandRules.evolutionTraitTolerance &&
-        Mathf.Abs(source.size - target.baseSize) <= LandRules.evolutionTraitTolerance &&
-        Mathf.Abs(source.fertility - target.baseFertility) <= LandRules.evolutionTraitTolerance;
+    private bool EachTraitWithinTolerance(PopulationData source, SpeciesData target)
+    {
+        if (source == null || target == null) return false;
+        int tolerance = LandRules.evolutionTraitTolerance;
+        if (Mathf.Abs(source.size - target.baseSize) > tolerance ||
+            Mathf.Abs(source.fertility - target.baseFertility) > tolerance)
+            return false;
+        if (target.baseEcologicalNiche == EcologicalNiche.Air)
+            return source.ecologicalNiche == EcologicalNiche.Land &&
+                source.movementAbility > 50 &&
+                Mathf.Abs(source.fitTemperature - target.baseFitTemperature) <= tolerance &&
+                Mathf.Abs(source.fitHumidity - target.baseFitHumidity) <= tolerance;
+        if (Mathf.Abs(source.movementAbility - target.baseMovementAbility) > tolerance)
+            return false;
+        return (source.ecologicalNiche == EcologicalNiche.Water ||
+                target.baseEcologicalNiche == EcologicalNiche.Water) ||
+            Mathf.Abs(source.fitTemperature - target.baseFitTemperature) <= tolerance &&
+            Mathf.Abs(source.fitHumidity - target.baseFitHumidity) <= tolerance;
+    }
 
     private static bool HasLivingSpecies(BlockInfo block, SpeciesData species)
     {
@@ -1172,9 +1182,12 @@ public partial class SimulationController
     internal static int LivingPopulationCount(BlockInfo block)
     {
         if (block == null || block.community == null) return 0;
+        EcologicalNiche surface = HabitatTopology.IsWater(block)
+            ? EcologicalNiche.Water : EcologicalNiche.Land;
         int count = 0;
         foreach (PopulationData population in block.community)
-            if (population != null && population.speciesAmount > 0) count++;
+            if (population != null && population.speciesAmount > 0 &&
+                population.ecologicalNiche == surface) count++;
         return count;
     }
 
@@ -1185,12 +1198,31 @@ public partial class SimulationController
             !TryPlanFormalEvolution(block, ancestor, target,
             out int amount, out float plantPayment, out float excessBody) ||
             !HasEvolutionFoodSupport(block, ancestor, target, amount)) return;
+        CommitPresetSpecies(block, block, ancestor, target, day, amount,
+            plantPayment, excessBody);
+    }
+
+    private void CommitPresetSpecies(BlockInfo sourceBlock, BlockInfo targetBlock,
+        PopulationData ancestor, SpeciesData target, int day, int amount,
+        float plantPayment, float excessBody)
+    {
+        if (sourceBlock == null || targetBlock == null ||
+            sourceBlock.community == null || targetBlock.community == null ||
+            !sourceBlock.community.Contains(ancestor) || amount < 1 ||
+            ancestor.speciesAmount <= amount || HasLivingSpecies(targetBlock,
+                target)) return;
+        // Air has no plant account; reverse evolution pays from the landing cell.
+        BlockInfo payer = ancestor.ecologicalNiche == EcologicalNiche.Air
+            ? targetBlock : sourceBlock;
+        float available = Mathf.Max(0f, payer.plantBiomass);
+        if (available + .01f < plantPayment) return;
         int sourceCountBefore = ancestor.speciesAmount;
         LandLifeRules.EnsureBodyMass(ancestor, LandRules);
         PopulationData descendant = PopulationTransfer.Split(ancestor, amount,
-            block, day, migrationCooldownDays);
-        block.plantBiomass -= plantPayment;
-        block.detritusBiomass += excessBody;
+            sourceBlock, day, migrationCooldownDays);
+        payer.plantBiomass = Mathf.Max(0f,
+            payer.plantBiomass - plantPayment);
+        sourceBlock.detritusBiomass += excessBody;
         descendant.bodyBiomass = amount * LandLifeRules.BodyMass(
             target.baseSize, LandRules);
         descendant.bodyBiomassInitialized = true;
@@ -1212,7 +1244,7 @@ public partial class SimulationController
         descendant.energyReserve = Mathf.Min(descendant.energyReserve,
             amount * LandLifeRules.AdultNeed(descendant.size,
                 descendant.movementAbility, LandRules) * LandRules.reserveDays);
-        block.accountedBiomassSinkToday += reserveBeforeCap - descendant.energyReserve;
+        sourceBlock.accountedBiomassSinkToday += reserveBeforeCap - descendant.energyReserve;
         descendant.nextEvolutionDay = day + LandRules.evolutionCooldownDays;
 
         descendant.localSplitBranch = false;
@@ -1249,15 +1281,15 @@ public partial class SimulationController
         ancestor.trackedEvolutionTarget = null;
         ancestor.manualEvolutionTarget = null;
         ResetTargetProtection(ancestor);
-        block.community.Add(descendant);
-        LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+        targetBlock.community.Add(descendant);
+        LandLifeRules.RefreshEnvironmentMetrics(targetBlock, LandRules);
         RegisterSpecies(target);
         OnPresetEvolutionResolved?.Invoke(new PopulationTransitionResult(
-            PopulationTransitionKind.PresetEvolution, day, block, block,
+            PopulationTransitionKind.PresetEvolution, day, sourceBlock, targetBlock,
             ancestor, descendant, amount, sourceCountBefore,
             0, PopulationArrivalOutcome.Created, target));
-        OnSpeciesEvolved?.Invoke(block, ancestor, descendant, target, amount);
-        LogEcology(day, block, descendant, "preset_evolution",
+        OnSpeciesEvolved?.Invoke(targetBlock, ancestor, descendant, target, amount);
+        LogEcology(day, targetBlock, descendant, "preset_evolution",
             "target=" + target.SpeciesName + " amount=" + amount
             + " plantPayment=" + plantPayment.ToString("F2")
             + " excessBody=" + excessBody.ToString("F2")

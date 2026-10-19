@@ -23,6 +23,8 @@ public sealed class PopulationMotion
     public bool HasRoute => path != null;
     public Vector3 Goal { get; private set; }
     public float BlockedSeconds { get; private set; }
+    public float RouteLength { get; private set; }
+    public float LastMovedDistance { get; private set; }
 
     public PopulationMotion(Body representative, PopulationMovementSettings parameters,
         Func<Vector3, Vector3, bool> canMove, Route plan,
@@ -42,6 +44,14 @@ public sealed class PopulationMotion
             next == null || next.Length < 2) return false;
         path = next;
         corner = 1;
+        RouteLength = 0f;
+        Vector3 previous = body.groundPosition;
+        for (int i = 1; i < next.Length; i++)
+        {
+            RouteLength += Vector2.Distance(PopulationCollisionMath.Flat(previous),
+                PopulationCollisionMath.Flat(next[i]));
+            previous = next[i];
+        }
         Goal = next[next.Length - 1];
         replanAt = now;
         BlockedSeconds = 0f;
@@ -52,6 +62,7 @@ public sealed class PopulationMotion
     {
         path = null;
         BlockedSeconds = 0f;
+        RouteLength = 0f;
     }
 
     public void ResetNavigation()
@@ -61,34 +72,59 @@ public sealed class PopulationMotion
         replanAt = 0f;
     }
 
-    public void Tick(float dt, float now)
+    public Vector3 PositionAfter(float distance)
     {
-        if (path == null || dt <= 0f) return;
-        while (corner < path.Length && Vector2.Distance(
-            PopulationCollisionMath.Flat(body.groundPosition),
-            PopulationCollisionMath.Flat(path[corner])) < 0.015f) corner++;
-        if (corner >= path.Length) { CancelRoute(); return; }
-
-        Vector3 delta = path[corner] - body.groundPosition;
-        delta.y = 0f;
-        Vector3 next = body.groundPosition + delta.normalized *
-            Mathf.Min(delta.magnitude, Mathf.Max(0f, settings.speed) * dt);
-        if (!clear(body.groundPosition, next))
+        Vector3 position = body.groundPosition;
+        if (path == null) return position;
+        for (int i = corner; i < path.Length && distance > 0f; i++)
         {
-            BlockedSeconds += dt;
-            if (now >= replanAt)
-            {
-                replanAt = now + Mathf.Max(0.1f, settings.replanSeconds);
-                if (route(body.groundPosition, Goal, out Vector3[] replacement) &&
-                    replacement != null && replacement.Length >= 2)
-                { path = replacement; corner = 1; }
-            }
-            return;
+            Vector3 delta = path[i] - position;
+            delta.y = 0f;
+            float length = delta.magnitude;
+            if (length >= distance) return position + delta.normalized * distance;
+            position += delta;
+            distance -= length;
         }
+        return position;
+    }
 
-        Vector3 heading = PopulationCollisionMath.SmoothHeading(body.heading, delta.normalized,
-            1f - Mathf.Exp(-Mathf.Max(0.1f, settings.turnSpeed) * dt));
-        if (apply(next, heading)) BlockedSeconds = 0f;
-        else BlockedSeconds += dt;
+    public void Tick(float dt, float now) => Tick(dt, now, settings.speed);
+
+    public void Tick(float dt, float now, float speed)
+    {
+        LastMovedDistance = 0f;
+        if (path == null || dt <= 0f) return;
+        float distanceLeft = Mathf.Max(0f, speed) * dt;
+        while (distanceLeft > 0f && path != null)
+        {
+            while (corner < path.Length && Vector2.Distance(
+                PopulationCollisionMath.Flat(body.groundPosition),
+                PopulationCollisionMath.Flat(path[corner])) < 0.0001f) corner++;
+            if (corner >= path.Length) { CancelRoute(); return; }
+            Vector3 delta = path[corner] - body.groundPosition;
+            delta.y = 0f;
+            float step = Mathf.Min(delta.magnitude, distanceLeft);
+            Vector3 next = body.groundPosition + delta.normalized * step;
+            if (!clear(body.groundPosition, next))
+            {
+                BlockedSeconds += dt;
+                if (now >= replanAt)
+                {
+                    replanAt = now + Mathf.Max(0.1f, settings.replanSeconds);
+                    if (route(body.groundPosition, Goal, out Vector3[] replacement) &&
+                        replacement != null && replacement.Length >= 2)
+                    { path = replacement; corner = 1; }
+                }
+                return;
+            }
+            Vector3 heading = PopulationCollisionMath.SmoothHeading(body.heading, delta.normalized,
+                1f - Mathf.Exp(-Mathf.Max(0.1f, settings.turnSpeed) * dt));
+            if (!apply(next, heading)) { BlockedSeconds += dt; return; }
+            BlockedSeconds = 0f;
+            LastMovedDistance += step;
+            distanceLeft -= step;
+            if (step >= delta.magnitude - 0.0001f) corner++;
+            if (corner >= path.Length) CancelRoute();
+        }
     }
 }

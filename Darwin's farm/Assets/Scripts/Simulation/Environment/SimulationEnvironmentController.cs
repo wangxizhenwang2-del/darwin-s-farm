@@ -46,8 +46,42 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         Publish();
     }
     private readonly Dictionary<GridPosition, BlockInfo> blocks = new Dictionary<GridPosition, BlockInfo>();
-    private readonly Dictionary<GridPosition, string> waterGroups = new Dictionary<GridPosition, string>();
     public event Action<IReadOnlyList<EnvironmentReadSnapshot>> Changed;
+    public event Action<TerrainKind, Vector2Int> TerrainUnlocked;
+    public event Action WaterUnlocked;
+    public event Action UnlocksRestored;
+    private readonly HashSet<TerrainKind> unlockedTerrain = new HashSet<TerrainKind> { TerrainKind.Desert };
+    private bool waterUnlocked;
+    private bool discoveryReady;
+    private bool restoringSave;
+    private const string DeerId = "fd1c574bfd1247b2933cdfbc54758cf8";
+    private const string TameDeerId = "b2afc73aa25c41b18fd8f5ed4f3bc62a";
+    public bool WaterIsUnlocked => waterUnlocked;
+    public bool IsUnlocked(MapTileDefinition definition) => definition != null &&
+        (definition.initialWaterCoverage != WaterCoverage.Land ? waterUnlocked :
+            unlockedTerrain.Contains(TerrainFromPreset(definition.biome)));
+    public List<TerrainKind> CaptureTerrainUnlocks() => new List<TerrainKind>(unlockedTerrain);
+    public void BeginSaveRestore() => restoringSave = true;
+    public void RestoreUnlocks(List<TerrainKind> terrain, bool water, bool legacy)
+    {
+        unlockedTerrain.Clear();
+        unlockedTerrain.Add(TerrainKind.Desert);
+        if (terrain != null) foreach (TerrainKind kind in terrain)
+            if (Enum.IsDefined(typeof(TerrainKind), kind)) unlockedTerrain.Add(kind);
+        if (legacy && grid != null) foreach (MapTileInstance tile in grid.GetPlacedTiles())
+            if (tile.Block != null && !HabitatTopology.IsWater(tile.Block))
+                unlockedTerrain.Add(TerrainFromPreset(tile.Biome));
+        waterUnlocked = water;
+        restoringSave = false;
+        UnlocksRestored?.Invoke();
+    }
+    private void OnSpeciesUnlocked(SpeciesData species)
+    {
+        if (restoringSave || waterUnlocked || species == null ||
+            (species.SpeciesId != DeerId && species.SpeciesId != TameDeerId)) return;
+        waterUnlocked = true;
+        WaterUnlocked?.Invoke();
+    }
 
     private void Awake()
     {
@@ -61,14 +95,16 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         if (simulation != null) simulation.OnBeforeDaySimulated += Advance;
         if (simulation != null) simulation.OnDaySimulated += NotifyReaders;
         if (clock != null) clock.OnDayReset += RebaseClock;
+        if (simulation != null) simulation.OnSpeciesUnlocked += OnSpeciesUnlocked;
     }
-    private void Start() => Synchronize();
+    private void Start() { Synchronize(); discoveryReady = true; }
     private void OnDisable()
     {
         if (bridge != null) bridge.BlockGraphSynchronized -= Synchronize;
         if (simulation != null) simulation.OnBeforeDaySimulated -= Advance;
         if (simulation != null) simulation.OnDaySimulated -= NotifyReaders;
         if (clock != null) clock.OnDayReset -= RebaseClock;
+        if (simulation != null) simulation.OnSpeciesUnlocked -= OnSpeciesUnlocked;
     }
 
     public static TerrainKind TerrainFromPreset(BiomeType type)
@@ -141,38 +177,6 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 ? EnvironmentRules.WaterPlantCapacity : EnvironmentRules.PlantCapacity;
             block.plantBiomass = Mathf.Clamp(block.plantBiomass, 0, block.maxPlantBiomass);
         }
-        // 2026-10-09 14:34 +08:00: regroup shared water stock by physical
-        // openings and equal height. A changed membership detaches the old R
-        // timeline while retaining its actual per-cell value.
-        var nextGroups = new Dictionary<GridPosition, string>();
-        foreach (List<MapTileInstance> area in WaterBodyTopology.AllAreas(grid))
-        {
-            string identity = string.Join(";", area.ConvertAll(tile =>
-                tile.Coordinate.x + "," + tile.Coordinate.y));
-            double stock = 0;
-            bool changed = false;
-            foreach (MapTileInstance tile in area)
-            {
-                GridPosition position = Position(tile.Coordinate);
-                stock += tile.Block.plantBiomass;
-                changed |= waterGroups.TryGetValue(position, out string previous) && previous != identity;
-                nextGroups[position] = identity;
-            }
-            float average = Mathf.Clamp((float)(stock / area.Count), 0f,
-                EnvironmentRules.WaterPlantCapacity);
-            if (changed)
-            {
-                var positions = new List<GridPosition>(area.Count);
-                foreach (MapTileInstance tile in area) positions.Add(Position(tile.Coordinate));
-                world.ReconcileWaterRecovery(positions);
-            }
-            foreach (MapTileInstance tile in area)
-            {
-                tile.Block.plantBiomass = average;
-            }
-        }
-        waterGroups.Clear();
-        foreach (var pair in nextGroups) waterGroups.Add(pair.Key, pair.Value);
         Publish();
     }
     private static readonly GridPosition[] Directions =
@@ -187,23 +191,18 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     private void GrowWaterPlants()
     {
         if (grid == null) return;
-        foreach (List<MapTileInstance> area in WaterBodyTopology.AllAreas(grid))
+        foreach (MapTileInstance tile in grid.GetPlacedTiles())
         {
-            double totalStock = 0, dailyGrowth = 0;
-            foreach (MapTileInstance tile in area)
-            {
-                totalStock += tile.Block.plantBiomass;
-                if (world.TryRead(Position(tile.Coordinate), out EnvironmentSnapshot state))
-                    dailyGrowth += state.Recovery.Value;
-            }
-            double capacity = (double)EnvironmentRules.WaterPlantCapacity * area.Count;
-            double grown = Math.Min(dailyGrowth, Math.Max(0, capacity - totalStock));
-            float perCell = (float)((totalStock + grown) / area.Count);
-            foreach (MapTileInstance tile in area)
-            {
-                tile.Block.plantGrowthToday = (float)(grown / area.Count);
-                tile.Block.plantBiomass = perCell;
-            }
+            if (!HabitatTopology.IsWater(tile.Block)) continue;
+            float before = tile.Block.plantBiomass;
+            double recovery = 0;
+            if (world.TryRead(Position(tile.Coordinate), out EnvironmentSnapshot state))
+                recovery = state.Recovery.Value;
+            float capacity = tile.Block.maxPlantBiomass;
+            float growth = (float)Math.Min(Math.Max(0, recovery),
+                Math.Max(0, capacity - before));
+            tile.Block.plantGrowthToday = growth;
+            tile.Block.plantBiomass = before + growth;
         }
     }
     private void RebaseClock(int day) => world.RebaseClock(day);
@@ -218,7 +217,13 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 EnvironmentRules.Round(state.Humidity.Value), EnvironmentRules.Round(state.Recovery.Value));
             if (!state.IsWater && grid != null && grid.TryGetTile(
                     new Vector2Int(state.Position.X, state.Position.Y), out MapTileInstance tile))
-                tile.SetRuntimeBiome(BiomeFromTerrain(state.Terrain));
+            {
+                BiomeType next = BiomeFromTerrain(state.Terrain);
+                bool transformed = tile.Biome != next;
+                tile.SetRuntimeBiome(next);
+                if (transformed && discoveryReady && !restoringSave && unlockedTerrain.Add(state.Terrain))
+                    TerrainUnlocked?.Invoke(state.Terrain, tile.Coordinate);
+            }
             snapshots.Add(new EnvironmentReadSnapshot(state, block.plantBiomass));
         }
         if (notifyReaders) Changed?.Invoke(snapshots.AsReadOnly());
@@ -311,11 +316,10 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         members = Array.Empty<Vector2Int>(); error = null;
         if (!isActiveAndEnabled || grid == null || world == null)
         { error = "环境控制器未就绪"; return false; }
-        List<MapTileInstance> area = WaterBodyTopology.Area(grid, coordinate);
-        if (area.Count == 0) { error = "目标不是已建水格"; return false; }
-        var coordinates = new List<Vector2Int>(area.Count);
-        foreach (MapTileInstance tile in area) coordinates.Add(tile.Coordinate);
-        members = coordinates.AsReadOnly();
+        if (!grid.TryGetTile(coordinate, out MapTileInstance tile) ||
+            !HabitatTopology.IsWater(tile.Block))
+        { error = "目标不是已建水格"; return false; }
+        members = new[] { coordinate };
         return true;
     }
 

@@ -79,13 +79,11 @@ public partial class SimulationController
         if (source == null || target == null || source == target || population == null ||
             source.community == null || !source.community.Contains(population) ||
             population.speciesAmount <= 0 || day < population.nextMigrationDay) return;
-        // 生态位开启后，旧的陆地迁徙不能把陆生种群塞进河道地块。
-        if ((EnableAirEcology || EnableWaterEcology) &&
-            (source.waterCoverage != WaterCoverage.Land ||
-             target.waterCoverage != WaterCoverage.Land ||
-             population.ecologicalNiche != EcologicalNiche.Land)) return;
-        int amount = LimitMigrationAmount(population.speciesAmount, 1f);
-        if (amount == 0) return;
+        int amount = population.ecologicalNiche == EcologicalNiche.Air
+            ? population.speciesAmount
+            : StandardMigrationAmount(population.speciesAmount);
+        if (amount == 0 || !CanLegalMigration(source, target,
+            population, amount)) return;
         ApplyMovePlans(new List<MovePlan>
         {
             new MovePlan
@@ -94,6 +92,41 @@ public partial class SimulationController
                 amount = amount
             }
         }, day);
+    }
+
+    // Common physical and food boundary for manual and diagnostic movement.
+    public bool CanLegalMigration(BlockInfo source, BlockInfo target,
+        PopulationData population, int amount)
+    {
+        if (source == null || target == null || population == null ||
+            amount <= 0 || target.community == null ||
+            source.community == null || !source.community.Contains(population) ||
+            !AreNeighbors(source, target) || !AreNeighbors(target, source) ||
+            HasSameSpeciesResident(target, population)) return false;
+        MapTileInstance from = source.GetComponent<MapTileInstance>();
+        MapTileInstance to = target.GetComponent<MapTileInstance>();
+        if (from == null || to == null ||
+            Mathf.Abs(from.Coordinate.x - to.Coordinate.x) +
+            Mathf.Abs(from.Coordinate.y - to.Coordinate.y) != 1) return false;
+        if (population.ecologicalNiche == EcologicalNiche.Air)
+        {
+            if (amount != population.speciesAmount ||
+                !FlightTargetCanFeed(target, population,
+                    out float food, out float need)) return false;
+            float sourceFood = LandLifeRules.AvailableSustainablePreyFood(
+                source, population, LandRules);
+            return food > sourceFood && food >= need;
+        }
+        if (Mathf.Abs(source.elevation - target.elevation) > 1 ||
+            LivingPopulationCount(target) >= 5) return false;
+        if (population.ecologicalNiche == EcologicalNiche.Water)
+        {
+            if (!HabitatTopology.ChannelsConnect(source, target)) return false;
+        }
+        else if (population.ecologicalNiche != EcologicalNiche.Land ||
+            HabitatTopology.IsWater(source) || HabitatTopology.IsWater(target))
+            return false;
+        return MovementFoodForMigrants(target, population, amount);
     }
 
     public float EstimateTargetCapacity(BlockInfo target, PopulationData migrant)
@@ -198,26 +231,8 @@ public partial class SimulationController
                     day < population.nextMigrationDay) continue;
                 if (population.ecologicalNiche == EcologicalNiche.Air && EnableAirEcology)
                 {
-                    var destinations = new List<BlockInfo>(source.Neighbors);
-                    destinations.Sort((left, right) =>
-                    {
-                        float leftDraw = ModelRandom01(day, "migration.air.destination",
-                            source, population, left);
-                        float rightDraw = ModelRandom01(day, "migration.air.destination",
-                            source, population, right);
-                        int order = leftDraw.CompareTo(rightDraw);
-                        return order != 0 ? order : string.CompareOrdinal(
-                            StableTileKey(left), StableTileKey(right));
-                    });
-                    foreach (BlockInfo destination in destinations)
-                    {
-                        if (plans.Exists(move => move.target == destination &&
-                            move.population.ecologicalNiche == EcologicalNiche.Air &&
-                            !SameSpecies(move.population, population))) continue;
-                        if (!TryPlanAirMove(source, destination, population, day, out MovePlan airPlan)) continue;
-                        plans.Add(airPlan);
-                        break;
-                    }
+                    // The daily flight pass owns air moves; do not retry at the
+                    // land migration interval.
                     continue;
                 }
                 if (source.waterCoverage != WaterCoverage.Land) continue;
@@ -300,7 +315,8 @@ public partial class SimulationController
                 if (move.target == neighbor &&
                     !neighbor.community.Exists(existing => existing != null &&
                         SameSpecies(existing, move.population))) reserved++;
-            if (!LandMovementOpportunity.CanOfferNeighborSlot(
+            if (HasSameSpeciesResident(neighbor, population) ||
+                !LandMovementOpportunity.CanOfferNeighborSlot(
                 LivingPopulationCount(neighbor) + reserved,
                 HasSameSpeciesResident(neighbor, population)))
             { TraceLandMigration(day, source, neighbor, population, amount, "DestinationFull"); continue; }
@@ -405,7 +421,8 @@ public partial class SimulationController
             PopulationData origin = plan.population;
             sourceCountsBefore.Add(origin.speciesAmount);
             PopulationData arrival = PopulationTransfer.Split(origin, plan.amount,
-                plan.source, day, migrationCooldownDays, true);
+                plan.source, day, origin.ecologicalNiche == EcologicalNiche.Air
+                    ? 29 : migrationCooldownDays, true);
             if (origin.speciesAmount == 0)
             {
                 plan.source.community.Remove(origin);
@@ -421,8 +438,11 @@ public partial class SimulationController
             PopulationData resident = target.community.Find(population =>
                 population != null && population.ecologicalNiche == arrival.ecologicalNiche &&
                 SameSpecies(population, arrival));
-            if ((arrival.ecologicalNiche == EcologicalNiche.Air && !CanAcceptAirSpecies(target, arrival)) ||
-                (resident == null && LivingPopulationCount(target) >= 5))
+            if (resident != null ||
+                (arrival.ecologicalNiche == EcologicalNiche.Air &&
+                    !CanAcceptAirSpecies(target, arrival)) ||
+                (arrival.ecologicalNiche != EcologicalNiche.Air &&
+                    LivingPopulationCount(target) >= 5))
             {
                 PopulationData origin = plans[i].population;
                 if (!plans[i].source.community.Contains(origin))
@@ -511,7 +531,6 @@ public partial class SimulationController
     public event Action<BlockInfo, BlockInfo, PopulationData, PopulationData, int>
         OnNicheConverted;
     public event Action<PopulationTransitionResult> OnNicheConversionResolved;
-    public event Action<PopulationData, BlockInfo, RiverBankSide?> OnLandPositionChanged;
 
     // Preserve the existing combined API for scene and editor integrations.
     public void SetEcologicalNichesEnabled(bool enabled)
@@ -533,89 +552,28 @@ public partial class SimulationController
 
     public WaterRegionMap BuildWaterRegions() => WaterRegionMap.Build(blockInfos);
 
-    // Take a snapshot so a newly split population cannot convert again on
-    // the same day, and adding an air population cannot invalidate enumeration.
-    private void RunNicheConversions(int day)
-    {
-        var candidates = new List<(BlockInfo block, PopulationData population)>();
-        foreach (BlockInfo block in blockInfos)
-            if (block != null && block.community != null)
-                foreach (PopulationData population in block.community)
-                    if (population != null && population.speciesAmount > 0)
-                        candidates.Add((block, population));
-
-        WaterRegionMap regions = BuildWaterRegions();
-        foreach (var candidate in candidates)
-        {
-            BlockInfo source = candidate.block;
-            PopulationData population = candidate.population;
-            if (source.community == null || !source.community.Contains(population) ||
-                population.speciesAmount <= 0) continue;
-            if (population.ecologicalNiche == EcologicalNiche.Land)
-            {
-                TryLandDepartureConversion(source, population, day, out _);
-                continue;
-            }
-            if (population.ecologicalNiche != EcologicalNiche.Water) continue;
-            WaterRegion region = regions.GetRegion(source);
-            if (region == null || WaterFoodPressure(region) < 1f) continue;
-            // One destination and one probability draw per population per day.
-            BlockInfo target = null;
-            foreach (BlockInfo block in blockInfos)
-                if (block != null && block.community != null &&
-                    !WaterRegionMap.IsWater(block) && WaterRegionTouchesLand(region, block))
-                {
-                    target = block;
-                    break;
-                }
-            if (target != null)
-                TryWaterToLandConversion(source, target, population, regions, day, out _);
-        }
-    }
-
     // 河岸是陆地栖息地的一个位置，不拥有独立种群或食物库存。
     public bool CanMoveToRiverBank(BlockInfo home, BlockInfo river,
         RiverBankSide side, PopulationData population)
     {
-        if (!EnableWaterEcology || home == null || home.community == null ||
-            population == null || population.speciesAmount <= 0 ||
-            population.ecologicalNiche != EcologicalNiche.Land ||
-            !home.community.Contains(population)) return false;
-        return HabitatTopology.TryGetBankOwner(river, side, out BlockInfo owner) &&
-            owner == home;
+        return false; // Retired riverbank stroll is not a population route.
     }
 
     public bool TryMoveToRiverBank(BlockInfo home, BlockInfo river,
         RiverBankSide side, PopulationData population)
     {
-        if (!CanMoveToRiverBank(home, river, side, population)) return false;
-        if (population.landPositionBlock == river &&
-            population.landPositionBank == side) return false;
-        population.landPositionBlock = river;
-        population.landPositionBank = side;
-        OnLandPositionChanged?.Invoke(population, river, side);
-        return true;
+        return false;
     }
 
     public bool TryReturnFromRiverBank(BlockInfo home, PopulationData population)
     {
-        if (!EnableWaterEcology || home == null || home.community == null ||
-            population == null || population.ecologicalNiche != EcologicalNiche.Land ||
-            population.speciesAmount <= 0 ||
-            !home.community.Contains(population) ||
-            population.landPositionBlock == null) return false;
-        population.landPositionBlock = null;
-        population.landPositionBank = default(RiverBankSide);
-        OnLandPositionChanged?.Invoke(population, home, null);
-        return true;
+        return false;
     }
 
     public static float CalculateWaterFitness(WaterRegion region, PopulationData population)
     {
         if (region == null || population == null) return 0f;
-        // 水生适应度只看水域平均温度；平均湿度可用于展示，不参与适应度。
-        return Mathf.Clamp01(1f - Mathf.Abs(region.AverageTemperature -
-            population.fitTemperature) / FitnessTolerance);
+        return 1f; // Water has no temperature or humidity trait.
     }
 
     public static bool HasAirPopulation(BlockInfo block)
@@ -627,92 +585,47 @@ public partial class SimulationController
         return false;
     }
 
-    public static float WaterFoodPressure(WaterRegion region)
-    {
-        if (region == null) return 0f;
-        float demand = 0f;
-        foreach (BlockInfo block in region.Members)
-        {
-            if (block.community == null) continue;
-            foreach (PopulationData population in block.community)
-            {
-                if (population == null || population.speciesAmount <= 0 ||
-                    (population.ecologicalNiche != EcologicalNiche.Water &&
-                     population.ecologicalNiche != EcologicalNiche.Air)) continue;
-                demand += population.speciesAmount * EnergyNeedForNiche(population);
-            }
-        }
-        if (demand <= 0f) return 0f;
-        return region.AvailableFood <= 0f ? 1f :
-            Mathf.Clamp01(demand / region.AvailableFood);
-    }
-
-    // Called once per eligible land population during the daily niche phase.
+    // Compatibility API: the retired random niche conversion is disabled.
     public bool TryLandDepartureConversion(BlockInfo source, PopulationData population,
         int day, out PopulationData descendant)
     {
         descendant = null;
-        if (!CanDepart(source, population, EcologicalNiche.Land, day) ||
-            WaterRegionMap.IsWater(source) ||
-            NicheSplitAmount(population.speciesAmount) == 0) return false;
-
-        BlockInfo waterTarget = null;
-        foreach (BlockInfo neighbor in blockInfos)
-            if (HabitatTopology.CanLandEnterWater(source, neighbor) &&
-                (population.landPositionBlock == null ||
-                 population.landPositionBlock == neighbor) &&
-                (waterTarget == null || neighbor.algaeBiomass > waterTarget.algaeBiomass))
-                waterTarget = neighbor;
-        if (EnableWaterEcology && waterTarget != null)
-        {
-            if (ModelRandom01(day, "niche.land-water", source, population,
-                    waterTarget) < landToWaterProbability)
-                return ConvertNiche(source, waterTarget, population, EcologicalNiche.Water,
-                    day, out descendant);
-            return false;
-        }
-
-        if (EnableAirEcology && !HasAirPopulation(source) &&
-            population.speciesAmount >= population.carryingCapacity &&
-            ModelRandom01(day, "niche.land-air", source, population)
-                < landToAirProbability)
-            return ConvertNiche(source, source, population, EcologicalNiche.Air,
-                day, out descendant);
-        return false;
+        return false; // Formal graph evolution owns all land departures.
     }
 
-    // 同一 WaterRegion 内的位置调整是整个种群搬迁，不进行随机迁徙判定。
+    // Compatibility entry: all water movement follows partial migration.
     public bool MoveWithinWaterRegion(BlockInfo source, BlockInfo target,
         PopulationData population, WaterRegionMap regions, int day)
     {
-        if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
-            source == target || regions == null ||
-            regions.GetRegion(source) == null ||
-            regions.GetRegion(source) != regions.GetRegion(target) ||
-            !PopulationWaterTravel.CanTravel(source, target, population)) return false;
-        ApplyNicheMigration(source, target, population, population.speciesAmount, day);
-        return true;
+        return TryWaterMigration(source, target, population, regions, day);
     }
 
-    // 不同水域只允许相邻、海拔差为 1 的迁徙，且只分出一部分，不改变物种。
+    // Water uses the land interval, amount and transfer transaction; only
+    // passage and food checks differ.
     public bool TryWaterMigration(BlockInfo source, BlockInfo target,
         PopulationData population, WaterRegionMap regions, int day)
     {
         if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
-            regions == null) return false;
-        WaterRegion from = regions.GetRegion(source);
-        WaterRegion to = regions.GetRegion(target);
-        if (from == null || to == null || from == to ||
-            !WaterRegionsTouch(from, target) || target == population.lastMigrationSource)
+            day <= 0 || day % Mathf.Max(1, migrationInterval) != 0 ||
+            target == null || target.community == null ||
+            !HabitatTopology.ChannelsConnect(source, target) ||
+            Mathf.Abs(target.elevation - source.elevation) > 1 ||
+            LivingPopulationCount(target) >= 5 ||
+            HasSameSpeciesResident(target, population) ||
+            target == population.lastMigrationSource)
             return false;
-        int difference = to.Elevation - from.Elevation;
-        if (!PopulationWaterTravel.CanTravel(source, target, population) || Mathf.Abs(difference) != 1 || to.AvailableFood <= 0f ||
-            WaterFoodPressure(to) >= 1f) return false;
-        int amount = LimitMigrationAmount(population.speciesAmount,
-            overloadMigrationFraction);
-        float chance = (difference < 0 ? waterDownProbability : waterUpProbability)
-            * WaterFoodPressure(from);
-        if (amount == 0 || ModelRandom01(day, "migration.water", source,
+        int amount = StandardMigrationAmount(population.speciesAmount);
+        if (amount == 0 || !MovementFoodForMigrants(target,
+            population, amount) ||
+            !MovementFoodScore(source, population, out float sourceScore) ||
+            !MovementFoodScore(target, population, out float targetScore))
+            return false;
+        float attraction = Mathf.Clamp01(targetScore - sourceScore);
+        if (attraction <= 0f) return false;
+        float chance = Mathf.Max(waterMigrationDebugChance,
+            attraction * population.movementAbility / 100f *
+            (source.elevation == target.elevation ? 1f : TerrainStepProbability));
+        if (ModelRandom01(day, "migration.water", source,
                 population, target) >= chance) return false;
         ApplyNicheMigration(source, target, population, amount, day);
         return true;
@@ -723,52 +636,15 @@ public partial class SimulationController
         out PopulationData descendant)
     {
         descendant = null;
-        if (!CanDepart(source, population, EcologicalNiche.Water, day) ||
-            regions == null || target == null || WaterRegionMap.IsWater(target) ||
-            NicheSplitAmount(population.speciesAmount) == 0) return false;
-        WaterRegion region = regions.GetRegion(source);
-        if (region == null || !WaterRegionTouchesLand(region, target) ||
-            WaterFoodPressure(region) < 1f ||
-            ModelRandom01(day, "niche.water-land", source, population,
-                target) >= waterToLandProbability) return false;
-        return ConvertNiche(source, target, population, EcologicalNiche.Land,
-            day, out descendant);
+        return false; // Formal graph evolution owns all water departures.
     }
 
     // 空中使用陆地的适应度、食物空间和部分迁徙规则，但忽略海拔。
     public bool TryAirMigration(BlockInfo source, BlockInfo target,
         PopulationData population, int day)
     {
-        if (!TryPlanAirMove(source, target, population, day, out MovePlan plan)) return false;
-        ApplyMovePlans(new List<MovePlan> { plan }, day);
-        return true;
-    }
-
-    private bool TryPlanAirMove(BlockInfo source, BlockInfo target,
-        PopulationData population, int day, out MovePlan plan)
-    {
-        plan = default;
-        if (!CanDepart(source, population, EcologicalNiche.Air, day) ||
-            !AreNeighbors(source, target) || target == population.lastMigrationSource ||
-            !CanAcceptAirSpecies(target, population) ||
-            target.community == null) return false;
-        if (LivingPopulationCount(target) >= 5 && !HasSameSpeciesResident(target, population)) return false;
-        float capacity = AirTargetCapacityCorrection(target, population);
-        if (capacity <= 0f) return false;
-        float gain = CalculateFitness(target, population) -
-            CalculateFitness(source, population);
-        float baseChance = population.speciesAmount /
-            (population.speciesAmount + migrationPopulationScale);
-        float pressure = CalculateOverloadPressure(population);
-        float chance = gain > 0f ? gain * baseChance * capacity :
-            pressure * baseOverloadProbability * capacity;
-        float fraction = gain > 0f ? gain :
-            pressure * overloadMigrationFraction;
-        int amount = LimitMigrationAmount(population.speciesAmount, fraction);
-        if (amount == 0 || ModelRandom01(day, "migration.air", source,
-                population, target) >= chance) return false;
-        plan = new MovePlan { source = source, target = target, population = population, amount = amount };
-        return true;
+        return TryFlightMigrationOnce(source, target, population, day,
+            out bool moved) && moved;
     }
 
     private bool CanDepart(BlockInfo source, PopulationData population,
@@ -815,8 +691,8 @@ public partial class SimulationController
         if (!WaterRegionMap.IsWater(target) || migrant.trophicLevel != 0)
             return TargetCapacityCorrection(target, migrant);
         // 空中种群在水面地块取用该 Block 的藻类，并与当地水生生产者消费者竞争。
-        float food = Mathf.Min(Mathf.Max(0f, target.maxAlgaeBiomass),
-            Mathf.Max(0f, target.algaeBiomass) + Mathf.Max(0, target.algaeRecovery));
+        float food = Mathf.Min(Mathf.Max(0f, target.maxPlantBiomass),
+            Mathf.Max(0f, target.plantBiomass) + Mathf.Max(0, target.habitatRecovery));
         if (food <= 0f || target.community == null) return 0f;
         float demand = EnergyNeedForNiche(migrant) * migrant.speciesAmount;
         foreach (PopulationData competitor in target.community)
@@ -999,7 +875,9 @@ internal static class PopulationTransfer
         branch.mutationSelectionCandidate = -1;
         // 2026-10-09 13:47 +08:00: a newly split migration branch starts with
         // zero target progress; its inherited evolution cooldown still applies.
-        if (origin.speciesAmount > 0) branch.evolutionConversions.Clear();
+        if (origin.speciesAmount > 0 ||
+            branch.ecologicalNiche == EcologicalNiche.Water)
+            branch.evolutionConversions.Clear();
         return branch;
     }
 

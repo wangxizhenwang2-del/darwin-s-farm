@@ -38,6 +38,8 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private UnityEngine.UI.ScrollRect toolsScroll;
     [SerializeField] private GameObject buildPalette, placementControls;
     [SerializeField] private UnityEngine.UI.Button buildButton, pauseButton, speedButton;
+    [SerializeField] private UnityEngine.UI.Button speciesMapButton;
+    [SerializeField] private SpeciesMapsUI speciesMaps;
     [SerializeField] private UnityEngine.UI.Button environmentTabButton, populationTabButton, closeButton;
     [SerializeField] private UnityEngine.UI.Button rotateButton, confirmButton, cancelButton;
     [SerializeField] private UnityEngine.UI.Button[] tileButtons;
@@ -63,6 +65,7 @@ public sealed class MobileGameUI : MonoBehaviour
     private readonly float[] scrollPositions = { 1f, 1f };
     [SerializeField] private UnityEngine.UI.Button environmentToolsButton;
     private EnvironmentToolSession toolSession;
+    private SimulationEnvironmentController terrainUnlocks;
     private bool previousToolMode;
 
     public bool IsMobileActive => isActiveAndEnabled && mobile;
@@ -126,8 +129,10 @@ public sealed class MobileGameUI : MonoBehaviour
             handle.Initialize(toolsDrawer != null && handle.transform.IsChildOf(toolsDrawer.transform) ? toolsDrawer : drawer);
         technologyPanel.Initialize();
         toolSession = information.GetComponent<EnvironmentToolSession>();
+        terrainUnlocks = FindFirstObjectByType<SimulationEnvironmentController>();
         if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
+        if (speciesMapButton != null && speciesMaps != null) speciesMapButton.onClick.AddListener(speciesMaps.Toggle);
         speedButton.onClick.AddListener(CycleMobileSimulationSpeed);
         environmentTabButton.onClick.AddListener(() => SelectTab(InformationTab.Environment));
         populationTabButton.onClick.AddListener(() => SelectTab(InformationTab.Population));
@@ -264,13 +269,13 @@ public sealed class MobileGameUI : MonoBehaviour
         Place(gestureHelp,new Vector2(8,-statusHeight-16),
             new Vector2(Mathf.Clamp(safeArea.rect.width-drawerWidth-32,200,620),hintHeight));
         if (pauseButton != null) pauseButton.gameObject.SetActive(false);
-        Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*2+8));
-        var buttons = new[] { environmentToolsButton, buildButton };
+        Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*3+16));
+        var buttons = new[] { environmentToolsButton, buildButton, speciesMapButton };
         for (int i=0;i<buttons.Length;i++)
             if (buttons[i]!=null) Place((RectTransform)buttons[i].transform,new Vector2(0,-i*(buttonHeight+8)),new Vector2(168,buttonHeight));
         if (placementControls != null)
         {
-            float actionBottom=statusHeight+hintHeight+24+buttonHeight*2+8;
+            float actionBottom=statusHeight+hintHeight+24+buttonHeight*3+16;
             float placementLeft=actionBottom+4>safeArea.rect.height-276 ? 196 : 8;
             var controls=(RectTransform)placementControls.transform;
             controls.anchorMin=controls.anchorMax=controls.pivot=Vector2.zero;
@@ -384,6 +389,16 @@ public sealed class MobileGameUI : MonoBehaviour
         bool building = buildMode != null && buildMode.IsBuildMode;
         buildLabel.text = building ? "退出建造" : "建造地块";
         buildPalette.SetActive(building);
+        if (building && terrainUnlocks != null)
+            for (int i = 0; i < tileButtons.Length && i < tileDefinitions.Length; i++)
+            {
+                bool unlocked = terrainUnlocks.IsUnlocked(tileDefinitions[i]);
+                tileButtons[i].interactable = unlocked;
+                var label = tileButtons[i].GetComponentInChildren<TextMeshProUGUI>(true);
+                if (label != null && tileDefinitions[i] != null)
+                    label.text = unlocked ? tileDefinitions[i].displayName :
+                        tileDefinitions[i].displayName + "\n未解锁";
+            }
         bool placing = placement != null && placement.IsTouchPlacement;
         placementControls.SetActive(placing);
         confirmButton.interactable = placing && placement.CanConfirmTouchPlacement;

@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4dba79df3cdc97a43a021e65f117e9a0, type: 3}
-  m_Name: "\u9ca8\u9e7f"
+  m_Name: "\u9ca8\u9e7f-080b0789"
   m_EditorClassIdentifier: Assembly-CSharp::SpeciesData
   speciesName: "\u9ca8\u9e7f"
   sprite: {fileID: 21300000, guid: fffba38fa96e530abd4a479253c6eadc, type: 3}
   speciesId: 080b078945054b8fb51a69d9ffe16af8
-  portrait: {fileID: 21300000, guid: fffba38fa96e530abd4a479253c6eadc, type: 3}
+  portrait: {fileID: 21300000, guid: 3708141f593929540ad496446cb41078, type: 3}
+  populationAnimation: {fileID: 11400000, guid: 7a3ee5513fc67e24f9bd5badead14585, type: 2}
   description: "\u9ca8\u9e7f\u6355\u730e\u65f6\u51b2\u5f97\u98de\u5feb\uff0c\u5934\u4e0a\u7684\u9e7f\u89d2\u5374\u5e38\u5e38\u6302\u4f4f\u6f02\u6d6e\u7684\u6d77\u8349\u3002\u5b83\u53ea\u597d\u9876\u7740\u4e00\u5934\u7eff\u8272\u201c\u5047\u53d1\u201d\uff0c\u7ee7\u7eed\u88c5\u4f5c\u82e5\u65e0\u5176\u4e8b\u3002\n\n\u5b83\u4f53\u578b\u5e9e\u5927\uff0c\u6e38\u52a8\u901f\u5ea6\u5374\u5f02\u5e38\u60ca\u4eba\u3002\u8fd9\u6837\u7684\u8eab\u4f53\u9700\u8981\u6e90\u6e90\u4e0d\u65ad\u7684\u730e\u7269\uff0c\u800c\u7a00\u5c11\u7684\u540e\u4ee3\u8ba9\u6bcf\u4e00\u6b21\u7e41\u884d\u90fd\u683c\u5916\u73cd\u8d35\u3002"
   traitClueAnchors:
   - ""
@@ -32,7 +33,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae62c1ccc7cb5cda83283e79e8dafe17, type: 2}
   - {fileID: 11400000, guid: db2228498752598ba128f9c3256bc974, type: 2}
   trophicLevel: 2
-  bioenergyValue: 25
+  bioenergyValue: 5
   economyId: 080b078945054b8fb51a69d9ffe16af8
   baseMovementAbility: 80
   baseHabitatNiche: 0

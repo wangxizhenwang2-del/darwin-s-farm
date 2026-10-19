@@ -53,7 +53,6 @@ public sealed partial class PopulationVisualPresenter
         simulation.OnMigrationResolved += OnTransitionResolved;
         simulation.OnNicheConversionResolved += OnTransitionResolved;
         simulation.OnPresetEvolutionResolved += OnTransitionResolved;
-        simulation.OnLocalSplitResolved += OnTransitionResolved;
     }
 
     private void UnsubscribeTransitions()
@@ -62,7 +61,6 @@ public sealed partial class PopulationVisualPresenter
         simulation.OnMigrationResolved -= OnTransitionResolved;
         simulation.OnNicheConversionResolved -= OnTransitionResolved;
         simulation.OnPresetEvolutionResolved -= OnTransitionResolved;
-        simulation.OnLocalSplitResolved -= OnTransitionResolved;
     }
 
     private void OnTransitionResolved(PopulationTransitionResult result)

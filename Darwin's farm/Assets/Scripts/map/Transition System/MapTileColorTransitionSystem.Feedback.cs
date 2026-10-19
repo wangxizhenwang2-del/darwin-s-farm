@@ -165,6 +165,12 @@ public partial class MapTileColorTransitionSystem
             if (ground.Raycast(new Ray(position + Vector3.up * 80f, Vector3.down), out RaycastHit hit, 160f))
                 box.transform.position = new Vector3(position.x, hit.point.y + box.size.y * 0.5f, position.z);
         }
+        foreach (MeshCollider mountain in obstacles.GetComponentsInChildren<MeshCollider>())
+        {
+            Vector3 position = mountain.bounds.center;
+            if (ground.Raycast(new Ray(position + Vector3.up * 80f, Vector3.down), out RaycastHit hit, 160f))
+                mountain.transform.position += Vector3.up * (hit.point.y - mountain.bounds.min.y);
+        }
     }
 
     private void GrowDecorations(BiomeVisualData data)

@@ -8,12 +8,12 @@ PlayerSettings:
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 3
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: Darwin's farm
+  companyName: "\u65F7\u5DE5\u4F5C\u5BA4"
+  productName: "\u8FBE\u5C14\u6587\u519C\u573A"
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -143,7 +143,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.1.0
+  bundleVersion: 0.1.1
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -166,7 +166,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.4
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: com.UnityTechnologies.com.unity.template.urpblank
+    Android: com.AbandonWorkshop.darwinsfarm
     Standalone: com.Unity-Technologies.com.unity.template.urp-blank
     iPhone: com.Unity-Technologies.com.unity.template.urp-blank
   buildNumber:
@@ -294,7 +294,14 @@ PlayerSettings:
   AndroidAppBundleSizeToValidate: 150
   AndroidReportGooglePlayAppDependencies: 1
   androidSymbolsSizeThreshold: 800
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 7006ac49e0a8e07499e0a9deed168275, type: 3}
+      m_Width: 128
+      m_Height: 128
+      m_Kind: 0
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: iPhone
     m_Icons:
@@ -522,7 +529,13 @@ PlayerSettings:
       m_Height: 720
       m_Kind: 1
       m_SubKind: 
-  m_BuildTargetBatching: []
+  m_BuildTargetBatching:
+  - m_BuildTarget: Standalone
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
+  - m_BuildTarget: Android
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs: []
   m_BuildTargetGraphicsJobMode: []
@@ -823,7 +836,23 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    EmbeddedLinux: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    GameCoreScarlett: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    GameCoreXboxOne: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    Kepler: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    LinuxHeadlessSimulation: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    Nintendo Switch: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    PS4: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    PS5: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    QNX: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    ReservedCFE: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    Standalone: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    VisionOS: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    WebGL: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    XboxOne: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
+    tvOS: WWISE_ADDRESSABLES_23_1_OR_LATER;WWISE_ADDRESSABLES_24_1_OR_LATER;ADDRESSABLES_API_BREAK_AK_UTILITIES_WWISE_LOGGER;WWISE_2024_OR_LATER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

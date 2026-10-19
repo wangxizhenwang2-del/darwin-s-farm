@@ -119,18 +119,19 @@ public partial class SimulationController
         List<SpeciesData> targets = ConnectedTargets(population.species);
         SpeciesData manual = population.manualEvolutionTarget;
         if (manual != null && (!targets.Contains(manual) ||
-            HasLivingSpecies(block, manual)))
+            !CanTrackEvolutionTarget(block, population, manual)))
             population.manualEvolutionTarget = manual = null;
         SpeciesData current = population.trackedEvolutionTarget;
         if (current != null && (!targets.Contains(current) ||
-            HasLivingSpecies(block, current))) current = null;
+            !CanTrackEvolutionTarget(block, population, current))) current = null;
         SpeciesData best = manual;
         int bestDistance = manual == null ? int.MaxValue :
             TraitDistance(population, manual);
         if (manual == null)
             foreach (SpeciesData target in targets)
             {
-                if (target == null || HasLivingSpecies(block, target)) continue;
+                if (target == null ||
+                    !CanTrackEvolutionTarget(block, population, target)) continue;
                 int distance = TraitDistance(population, target);
                 if (best == null || distance < bestDistance ||
                     distance == bestDistance && CompareSpeciesOrder(target, best) < 0)
@@ -148,12 +149,45 @@ public partial class SimulationController
         UpdateTargetProtection(population, day);
     }
 
-    private static int TraitDistance(PopulationData population, SpeciesData target) =>
-        Mathf.Abs(population.fitTemperature - target.baseFitTemperature) +
-        Mathf.Abs(population.fitHumidity - target.baseFitHumidity) +
-        Mathf.Abs(population.movementAbility - target.baseMovementAbility) +
-        Mathf.Abs(population.size - target.baseSize) +
-        Mathf.Abs(population.fertility - target.baseFertility);
+    private bool CanTrackEvolutionTarget(BlockInfo block,
+        PopulationData population, SpeciesData target)
+    {
+        if (block == null || population == null || target == null ||
+            population.species == null || target == population.species ||
+            !ConnectedTargets(population.species).Contains(target)) return false;
+        EcologicalNiche from = population.ecologicalNiche;
+        EcologicalNiche to = target.baseEcologicalNiche;
+        if (from == EcologicalNiche.Water && to == EcologicalNiche.Air ||
+            from == EcologicalNiche.Air && to == EcologicalNiche.Water ||
+            from == EcologicalNiche.Air && to == EcologicalNiche.Air)
+            return false;
+        if (from == to || to == EcologicalNiche.Air ||
+            from == EcologicalNiche.Air)
+            return !HasLivingSpecies(block, target) &&
+                (to != EcologicalNiche.Air ||
+                 EnableAirEcology && !HasAirPopulation(block));
+        if (block.Neighbors == null) return false;
+        foreach (BlockInfo neighbor in block.Neighbors)
+            if (InspectCrossHabitatEvolutionRoute(block, population,
+                neighbor, target) == "ROUTE_OK") return true;
+        return false;
+    }
+
+    private static int TraitDistance(PopulationData population, SpeciesData target)
+    {
+        int distance = Mathf.Abs(population.size - target.baseSize) +
+            Mathf.Abs(population.fertility - target.baseFertility);
+        if (target.baseEcologicalNiche == EcologicalNiche.Air)
+            distance += Mathf.Max(0, 51 - population.movementAbility);
+        else distance += Mathf.Abs(population.movementAbility -
+            target.baseMovementAbility);
+        if (population.ecologicalNiche != EcologicalNiche.Water &&
+            target.baseEcologicalNiche != EcologicalNiche.Water)
+            distance += Mathf.Abs(population.fitTemperature -
+                target.baseFitTemperature) +
+                Mathf.Abs(population.fitHumidity - target.baseFitHumidity);
+        return distance;
+    }
 
     private static void ResetTargetProtection(PopulationData population)
     {
@@ -218,6 +252,9 @@ public partial class SimulationController
             population.populationGrowthHistory.Count < 10 ||
             LandLifeRules.Average(population.populationGrowthHistory) >= -0.01f ||
             population.trackedEvolutionTarget == null) return;
+        for (int i = population.populationGrowthHistory.Count - 10;
+             i < population.populationGrowthHistory.Count; i++)
+            if (population.populationGrowthHistory[i] >= -0.01f) return;
         int oldest = -1;
         for (int i = 0; i < 3; i++)
             if (!population.targetProtectionReleased[i] &&

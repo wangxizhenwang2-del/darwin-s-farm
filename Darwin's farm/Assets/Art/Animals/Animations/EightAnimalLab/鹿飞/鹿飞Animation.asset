@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a63e38b9679164194a54caac8b1f4d, type: 3}
+  m_Name: "\u9E7F\u98DEAnimation"
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
+  controller: {fileID: 9100000, guid: 3169b03095f02b0478d5300af0cf1673, type: 2}
+  idleSprite: {fileID: 21300000, guid: a1baa36849769cb45816bdd05c02f856, type: 3}
+  referenceMoveSpeed: 1.8
+  artworkFacesLeft: 1
+  walkFrames:
+  - {fileID: 21300000, guid: f777c30baca24b946b378dd210841c01, type: 3}
+  - {fileID: 21300000, guid: c3d306050df4e414baf68893c6c719ca, type: 3}
+  - {fileID: 21300000, guid: eed40ada93d00194999ef11c2e98be7e, type: 3}
+  - {fileID: 21300000, guid: d66f97b8ec0449c41820f3b9472b0a25, type: 3}
+  - {fileID: 21300000, guid: d23f5527490b84447964fea9ed382544, type: 3}
+  - {fileID: 21300000, guid: 9d7548d6a79de944bbfca5dbfe77886e, type: 3}
+  - {fileID: 21300000, guid: 6ff94ff34e00e2f4c84faec36dce0c3b, type: 3}
+  - {fileID: 21300000, guid: f99dfda4949bf214886a6f7860d1bc0f, type: 3}
+  idleFrames:
+  - {fileID: 21300000, guid: a1baa36849769cb45816bdd05c02f856, type: 3}
+  - {fileID: 21300000, guid: 1edb57e4f808d7c4593c19915fc2dcf4, type: 3}
+  - {fileID: 21300000, guid: fce8dab15839d0f40b50eaff8d5767f7, type: 3}
+  - {fileID: 21300000, guid: b76f2ae180dc0c7418632e88325ede62, type: 3}
+  - {fileID: 21300000, guid: fc52db7ef250f34449f2615d1032cd72, type: 3}
+  - {fileID: 21300000, guid: dbce95f529806a640b8490b3e4a40942, type: 3}
+  - {fileID: 21300000, guid: c8953581c418f5643b83c4eb84fb8988, type: 3}
+  - {fileID: 21300000, guid: 2f88db0363f9066449821cd42c999331, type: 3}
+  walkStartFrame: 1
+  walkEndFrame: 8
+  idleStartFrame: 1
+  idleEndFrame: 8
+  stopFrame: 1
+  walkFps: 8
+  idleFps: 8
+  idleDelayMin: 2
+  idleDelayMax: 5
+  movementHoldMin: 4
+  movementHoldMax: 8

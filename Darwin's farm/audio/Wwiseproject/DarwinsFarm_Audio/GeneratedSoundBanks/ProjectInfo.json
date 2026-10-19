@@ -8,6 +8,13 @@
   "CacheRoot": "../.cache",
   "Platforms": [
    {
+    "Name": "Android",
+    "GUID": "{6D541AC4-F351-43F2-A95E-AD566A0DCC9E}",
+    "BasePlatform": "Android",
+    "BasePlatformGUID": "{A2D401DE-B8B6-4FEB-8142-137C34D507CA}",
+    "Path": "Android"
+   },
+   {
     "Name": "Windows",
     "GUID": "{7BB2B9FE-DBE6-44D4-8BAA-BD4F9EE0D1B7}",
     "BasePlatform": "Windows",
@@ -24,6 +31,6 @@
     "UseAsStandIn": "true"
    }
   ],
-  "FileHash": "{8E5460F9-FF9F-AD10-F8D5-A149455E1300}"
+  "FileHash": "{AE466C83-54E2-4AC1-158B-8FE44B7D2AAE}"
  }
 }

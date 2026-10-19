@@ -1,0 +1,16 @@
+{
+  "water_days": 101,
+  "water_first_day": 0,
+  "water_last_day": 100,
+  "water_max_stock_residual": 0.0625,
+  "water_first_stock_failure_day": null,
+  "water_max_world_material_residual": 0.0625,
+  "water_first_world_material_failure_day": null,
+  "competition_high_deer_food_day1": 8392.7578125,
+  "competition_reduced_deer_food_day1": 61459.8046875,
+  "water_repeat_days": 101,
+  "water_repeat_first_model_hash_difference_day": null,
+  "land_days": 101,
+  "baseline_days": 101,
+  "land_first_model_hash_difference_day": null
+}

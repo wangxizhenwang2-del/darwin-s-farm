@@ -52,6 +52,8 @@ public static class GameSaveService
         public List<EnvironmentTechnologyController.SavedChoice> technologies;
         public EcologyNewsDetector.SaveState news;
         public EcologyNewsHUD.SaveState newsHud;
+        public List<TerrainKind> terrainUnlocks;
+        public bool waterUnlocked;
         public string bioenergy, storage;
         public List<TileData> tiles;
         public List<SpeciesProgress> species;
@@ -160,6 +162,7 @@ public static class GameSaveService
             modelVersion=SimulationController.ModelRandomVersion,
             clock=clock.CaptureSaveState(), simulation=simulation.CaptureSaveState(),
             environment=environment.CaptureSaveState(), technologies=technology.CaptureSaveState(),
+            terrainUnlocks=environment.CaptureTerrainUnlocks(), waterUnlocked=environment.WaterIsUnlocked,
             news=news.CaptureSaveState(), newsHud=hud.CaptureSaveState(),
             bioenergy=account.CaptureState(), storage=economy.CaptureStorageState(),
             tiles=new List<TileData>(), species=new List<SpeciesProgress>()
@@ -197,8 +200,12 @@ public static class GameSaveService
         var hud=UnityEngine.Object.FindFirstObjectByType<EcologyNewsHUD>(FindObjectsInactive.Include);
         if(grid==null||clock==null||simulation==null||environment==null||technology==null||
             account==null||economy==null||news==null||hud==null)throw new InvalidOperationException("场景缺少存档组件。");
+        environment.BeginSaveRestore();
         SaveAssetCatalog catalog=Catalog;
         var remaining=new List<TileData>(data.tiles.Where(t=>t.x!=0||t.y!=0));
+        MapTileDefinition savedOrigin=catalog.Tile(data.tiles.First(t=>t.x==0&&t.y==0).definition);
+        if(!grid.TryRestoreInitialTile(savedOrigin))
+            throw new InvalidOperationException("无法恢复初始地块。");
         if(!grid.TryGetTile(Vector2Int.zero,out MapTileInstance origin) ||
             catalog.TileId(origin.Definition)!=data.tiles.First(t=>t.x==0&&t.y==0).definition)
             throw new InvalidOperationException("初始地块与存档不一致。");
@@ -243,6 +250,11 @@ public static class GameSaveService
         technology.RestoreSaveState(data.technologies);
         foreach(SpeciesProgress progress in data.species)
             catalog.Species(progress.id).RestoreProgress(progress.unlocked,progress.extinct,progress.revealedTraits);
+        bool legacy=data.terrainUnlocks==null;
+        bool legacyWater=legacy && data.species.Any(progress=>progress.unlocked &&
+            (catalog.Species(progress.id).SpeciesId=="fd1c574bfd1247b2933cdfbc54758cf8" ||
+             catalog.Species(progress.id).SpeciesId=="b2afc73aa25c41b18fd8f5ed4f3bc62a"));
+        environment.RestoreUnlocks(data.terrainUnlocks,data.waterUnlocked||legacyWater,legacy);
         if(!account.TryRestoreState(data.bioenergy)||!economy.TryRestoreStorageState(data.storage))
             throw new InvalidOperationException("经济数据无法恢复。");
         news.RestoreSaveState(data.news);
@@ -283,6 +295,7 @@ public static class GameSaveService
             data.tiles.Select(t=>Key(t.x,t.y)).Distinct().Count()!=data.tiles.Count||
             data.tiles.Any(t=>t.height<0||t.height>2||t.rotation<0||t.rotation>3||
                 string.IsNullOrEmpty(t.definition)||t.block==null||t.populations==null)||
+            (data.terrainUnlocks!=null && data.terrainUnlocks.Any(t=>!Enum.IsDefined(typeof(TerrainKind),t)))||
             data.bioenergy==null||data.storage==null||
             data.modelVersion!=SimulationController.ModelRandomVersion)
             throw new InvalidDataException("存档结构与当前游戏版本不匹配。");

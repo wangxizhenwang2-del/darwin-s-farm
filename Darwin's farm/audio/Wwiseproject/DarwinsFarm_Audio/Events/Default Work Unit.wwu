@@ -14,7 +14,7 @@
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="Stop___amb_water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}">
+				<Event Name="Stop_Amb_Water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}">
 					<ChildrenList>
 						<Action Name="" ID="{9E201CA7-06A6-4DAB-8BD0-0972F64D3605}" ShortID="508843159">
 							<PropertyList>
@@ -23,6 +23,206 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="水域" ID="{FFBF77AA-ECAC-4EE3-A353-EE922DD4E15B}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_Grassland" ID="{5A544981-44D9-4619-8D6D-757009451A65}">
+					<ChildrenList>
+						<Action Name="" ID="{98AE6F72-30E8-4FE1-83F4-5CC7B66FC858}" ShortID="474882782">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="草原白噪音_final" ID="{DADFCAE8-425A-42DD-AB56-9BA319BCCBD4}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_Grassland" ID="{10E4A28C-F607-49C8-B400-C607F991AAFF}">
+					<ChildrenList>
+						<Action Name="" ID="{3B064DAD-D359-4010-9A07-20252C0AEF2E}" ShortID="945328577">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="草原白噪音_final" ID="{DADFCAE8-425A-42DD-AB56-9BA319BCCBD4}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_Mountain" ID="{E128DC14-3484-41B5-8451-5B0C16951FE1}">
+					<ChildrenList>
+						<Action Name="" ID="{064EC4E1-544A-4918-823B-46D435059B2E}" ShortID="295639919">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="山地白噪音_final" ID="{AE691C75-9FA4-4460-BD64-1BF023FABF10}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_ForestWaterfall" ID="{48163E4C-4863-4C0D-8071-0EA9686624E0}">
+					<ChildrenList>
+						<Action Name="" ID="{7F7A61E8-E38B-4BA6-AB62-17260F3CB755}" ShortID="356149468">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="森林瀑布" ID="{15D7C619-959F-4B0F-A462-4BE54612AD76}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_Forest" ID="{207749F8-901F-4EC5-B0BC-22DBBE90A47A}">
+					<ChildrenList>
+						<Action Name="" ID="{A6E4E8D9-8588-40E6-A258-5A327561F05A}" ShortID="780425675">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="森林白噪音_final" ID="{8207621F-69E0-4547-B36E-F2867F48077C}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_Volcano" ID="{E7DEA007-CEA8-4029-A46B-875848A90D2D}">
+					<ChildrenList>
+						<Action Name="" ID="{2A110093-286C-4F4B-B527-3FFC20480F51}" ShortID="811897866">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="火山白噪音_v2_0" ID="{960656AA-CDFC-49A4-918F-E60FE15924EE}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_Tundra" ID="{F8C883B5-8FE8-45CD-91AA-2FD72043D719}">
+					<ChildrenList>
+						<Action Name="" ID="{95B27D8B-D347-4DF2-B44F-95189B948F78}" ShortID="456678896">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="苔原白噪音_final" ID="{00992E8E-7BF2-4E06-9D19-CE24C408472F}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_Desert" ID="{AD3EC4A9-FE4D-42BD-91F6-D55D31991A1E}">
+					<ChildrenList>
+						<Action Name="" ID="{CED1D6E9-D4E6-4378-899C-7A758A20BE7D}" ShortID="549151178">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="荒漠白噪音_final" ID="{579D3B9A-E6D2-458E-B70C-7746A3A82AC5}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Amb_SnowMountain" ID="{A237FC82-36A1-4E17-96C1-58A3B511FEAD}">
+					<ChildrenList>
+						<Action Name="" ID="{75C22F8A-EACA-4D1B-AF9B-8706AC9FCF52}" ShortID="618584509">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="雪山白噪音_final" ID="{949EF071-C448-4231-B99E-DFD2680852C1}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_Mountain" ID="{FCD5CDDB-138D-4046-A56B-4D1331FDB486}">
+					<ChildrenList>
+						<Action Name="" ID="{FA3E730D-1424-49A9-8E0D-B96C915B7514}" ShortID="961299505">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="山地白噪音_final" ID="{AE691C75-9FA4-4460-BD64-1BF023FABF10}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_ForestWaterfall" ID="{08E18584-D359-44ED-AED2-91241F60B9DD}">
+					<ChildrenList>
+						<Action Name="" ID="{ABBE0CF9-B2B0-47EF-859A-E6F3CB9C9D7C}" ShortID="158549557">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="森林瀑布" ID="{15D7C619-959F-4B0F-A462-4BE54612AD76}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_Forest" ID="{A1B1CA2D-3EC3-4094-B006-55E705D0CF5D}">
+					<ChildrenList>
+						<Action Name="" ID="{BB18B559-3A05-4BEE-AB1E-BDCD5F813865}" ShortID="410169914">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="森林白噪音_final" ID="{8207621F-69E0-4547-B36E-F2867F48077C}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_Volcano" ID="{2BDE5A72-C311-462B-B810-4BC5EC0851FD}">
+					<ChildrenList>
+						<Action Name="" ID="{6E34AF60-17CE-4BC9-9E7C-ACC2D8D8D0E4}" ShortID="546058473">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="火山白噪音_v2_0" ID="{960656AA-CDFC-49A4-918F-E60FE15924EE}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_Tundra" ID="{07227EB1-A5C1-49E9-8B50-5CE6C16E139C}">
+					<ChildrenList>
+						<Action Name="" ID="{FF4210E9-F4B9-4148-A7C5-1C01EF94897C}" ShortID="754145442">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="苔原白噪音_final" ID="{00992E8E-7BF2-4E06-9D19-CE24C408472F}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_Desert" ID="{4FEA22D7-1E32-45A8-9733-0303A33086F6}">
+					<ChildrenList>
+						<Action Name="" ID="{EDC88E68-FBDA-4A55-B70C-2BF2A4B76665}" ShortID="946268604">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="荒漠白噪音_final" ID="{579D3B9A-E6D2-458E-B70C-7746A3A82AC5}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Amb_SnowMountain" ID="{BB32338B-F6D2-4584-A496-B66DB386768F}">
+					<ChildrenList>
+						<Action Name="" ID="{46FE0FD0-766A-4357-93F4-B51FC0D2721D}" ShortID="173801561">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="雪山白噪音_final" ID="{949EF071-C448-4231-B99E-DFD2680852C1}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

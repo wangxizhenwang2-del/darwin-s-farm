@@ -15,7 +15,9 @@ internal static class FoodWeb
     internal static bool CanEat(PopulationData predator, PopulationData prey)
     {
         if (predator == null || prey == null || predator == prey ||
-            predator.ecologicalNiche != prey.ecologicalNiche) return false;
+            predator.ecologicalNiche != prey.ecologicalNiche &&
+            !(predator.ecologicalNiche == EcologicalNiche.Air &&
+              prey.ecologicalNiche == EcologicalNiche.Land)) return false;
         bool allowedLevels = predator.trophicLevel == 1 && prey.trophicLevel == 0 ||
             predator.trophicLevel == 2 &&
             (prey.trophicLevel == 0 || prey.trophicLevel == 1);
@@ -28,12 +30,18 @@ internal static class FoodWeb
     // Diet identity survives a day with no live local prey. Birth stress must
     // still use paid newborns if a hunter lives on stored prey energy.
     internal static bool HasLandPredatorDiet(PopulationData population)
+        => HasPredatorDiet(population, EcologicalNiche.Land);
+
+    internal static bool HasPredatorDiet(PopulationData population,
+        EcologicalNiche niche)
     {
-        if (population == null || population.ecologicalNiche != EcologicalNiche.Land ||
+        if (population == null || population.ecologicalNiche != niche ||
             population.trophicLevel <= 0 || population.species == null ||
             population.species.preySpecies == null) return false;
         foreach (SpeciesData prey in population.species.preySpecies)
-            if (prey != null && prey.baseEcologicalNiche == EcologicalNiche.Land &&
+            if (prey != null && (prey.baseEcologicalNiche == niche ||
+                niche == EcologicalNiche.Air &&
+                prey.baseEcologicalNiche == EcologicalNiche.Land) &&
                 (population.trophicLevel == 1 && prey.trophicLevel == 0 ||
                  population.trophicLevel == 2 && prey.trophicLevel <= 1))
                 return true;

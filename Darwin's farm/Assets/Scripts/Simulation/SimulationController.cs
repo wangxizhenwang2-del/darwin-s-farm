@@ -29,7 +29,7 @@ public struct SimulationTuning
 public partial class SimulationController : MonoBehaviour
 {
     public const string V61SourceGraphHash =
-        "763fdd910f882df696688cf96a794155daa468cc34543a6077cd120df65c3dd5";
+        "2760b257c7a46d14380e867af7db137a844e607a0cade9d3ecd51930413789a0";
     // V6.1 core-run switches. Economy reuses the existing account switch;
     // there is no random-event producer in the current project.
     [SerializeField] private bool enableRandomEvents = false;
@@ -183,7 +183,8 @@ public partial class SimulationController : MonoBehaviour
         EnsurePopulationIds();
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
-            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+            if (!EnableWaterEcology || !HabitatTopology.IsWater(block))
+                LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
     }
 
     // Model identity is repaired at the same boundary that registers blocks.
@@ -487,16 +488,23 @@ public partial class SimulationController : MonoBehaviour
         {
             SimulateBlock(block);
         }
+        if (EnableWaterEcology) SimulateWaterCells(day);
+        if (EnableAirEcology) SimulateAirHabitats();
         CaptureLifeFlows();
         RemoveEndangered(day);
+        if (EnableAirEcology) RunFlightEvolution(day);
         RunPresetEvolution(day);
+        if (EnableWaterEcology) RunCrossHabitatEvolution(day);
+        if (migrationEnabled && EnableWaterEcology) RunWaterHabitatMigration(day);
+        if (migrationEnabled && EnableAirEcology) RunFlightHabitatMigration(day);
         if (migrationEnabled && day > 0 && day % Mathf.Max(1, migrationInterval) == 0)
         {
             RunMigration(day);
         }
         UpdateSpeciesStatuses();
         foreach (BlockInfo block in blockInfos)
-            LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
+            if (!EnableWaterEcology || !HabitatTopology.IsWater(block))
+                LandLifeRules.RefreshEnvironmentMetrics(block, LandRules);
         FinishEcologyLedger(day);
         OnDaySimulated?.Invoke(day);
     }
@@ -506,7 +514,7 @@ public partial class SimulationController : MonoBehaviour
     public void SimulateBlock(BlockInfo block)
     {
         if (block == null || block.community == null) return;
-        // Aquatic ecology is not connected yet; never run the land food loop on water.
+        // Each water cell is settled in its own pass.
         if (HabitatTopology.IsWater(block)) return;
 
         block.community.RemoveAll(population => population == null);

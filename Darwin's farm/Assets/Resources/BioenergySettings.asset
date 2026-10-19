@@ -13,16 +13,15 @@ MonoBehaviour:
   m_Name: BioenergySettings
   m_EditorClassIdentifier: Assembly-CSharp::BioenergySettings
   initialBalance: 2000
-  dailyIncomeMultiplier: 1
   harvestIncomeMultiplier: 10
   harvestPercent: 50
   minimumHarvestCount: 50
   herbivoreUnlockReward: 200
   levelOneUnlockReward: 500
   levelTwoUnlockReward: 1000
-  fallbackHerbivoreValue: 10
-  fallbackLevelOneValue: 20
-  fallbackLevelTwoValue: 40
+  fallbackHerbivoreValue: 1
+  fallbackLevelOneValue: 3
+  fallbackLevelTwoValue: 5
   expandTileCost: 600
   reshapeWaterCost: 500
   demolishTileCost: 200

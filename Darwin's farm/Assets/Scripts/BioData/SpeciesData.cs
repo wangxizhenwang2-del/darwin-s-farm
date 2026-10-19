@@ -13,6 +13,11 @@ public class SpeciesData: ScriptableObject
     [SerializeField] private string speciesId;
     [SerializeField] private Sprite portrait;
     [SerializeField] private PopulationAnimationSet populationAnimation;
+    [Header("Wwise animal audio (leave empty until SB_Animals is delivered)")]
+    [SerializeField] private string animalPlayEvent;
+    [SerializeField] private string animalSoundBank = "SB_Animals";
+    public string AnimalPlayEvent => animalPlayEvent;
+    public string AnimalSoundBank => animalSoundBank;
     [SerializeField, TextArea(4, 12)] private string description;
     [SerializeField] private string[] traitClueAnchors = new string[5];
     public string SpeciesId => speciesId;
@@ -79,7 +84,7 @@ public class SpeciesData: ScriptableObject
     public List<SpeciesData> preySpecies = new List<SpeciesData>();
 
     [Range(0, 2)] public int trophicLevel; //0 食草，1、2 分别捕食低一级，最多三级食物链
-    [Range(1, 100)] public int bioenergyValue = 10;
+    [Range(1, 100)] public int bioenergyValue = 1;
     [SerializeField] private string economyId;
     public string EconomyId => string.IsNullOrWhiteSpace(economyId) ? speciesName : economyId;
     [Range(0, 100)] public int baseMovementAbility;

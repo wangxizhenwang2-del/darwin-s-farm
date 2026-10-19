@@ -3,9 +3,6 @@ using UnityEngine;
 
 public partial class SimulationController
 {
-    // Kept for existing observers; formal species evolution now uses
-    // OnPresetEvolutionResolved. No local same-species split is produced.
-    public event Action<PopulationTransitionResult> OnLocalSplitResolved;
     public event Action<int, BlockInfo, PopulationData, string, string> OnEcologyEvent;
     [SerializeField] private bool enableEcologyConsoleLogs = false;
     public bool EnableEcologyConsoleLogs

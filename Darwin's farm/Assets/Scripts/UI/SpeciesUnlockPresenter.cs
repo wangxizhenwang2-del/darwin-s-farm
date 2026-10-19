@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 // The visuals are authored in WhiteBox/JournalCanvas. This component only
 // binds the existing views and plays one card at a time.
-[DefaultExecutionOrder(-800)]
+[ExecuteAlways, DefaultExecutionOrder(-800)]
 public sealed class SpeciesUnlockPresenter : MonoBehaviour
 {
     public enum CardPhase { Hidden, Entering, Mystery, Revealing, Description, Ready }
@@ -60,6 +60,7 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
 
     private void Awake()
     {
+        if (!Application.isPlaying) return;
         // Animate relative to the authored layout, so scene adjustments survive.
         cardRest = cardRoot.anchoredPosition;
         questionRest = questionMarkGroup.anchoredPosition;
@@ -92,8 +93,16 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
         Vector2 size = safeArea.rect.size;
         if (size == lastSafeSize) return;
         lastSafeSize = size;
+        if (size.x <= 0f || size.y <= 0f) return;
         // Entry owns its scale animation; a resize must not interrupt it.
         if (Phase != CardPhase.Entering) cardRoot.localScale = Vector3.one * LayoutScale();
+    }
+
+    private void OnRectTransformDimensionsChange()
+    {
+        if (Application.isPlaying || safeArea == null || cardRoot == null ||
+            safeArea.rect.width <= 0f || safeArea.rect.height <= 0f) return;
+        cardRoot.localScale = Vector3.one * LayoutScale();
     }
 
     private void EnterGame(bool loadedSave)
@@ -282,6 +291,7 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
         const float padding = 16f;
         Vector2 cardSize = cardRoot.rect.size;
         // Reserve the full card, including its button and upward offset.
+        if (cardSize.x <= 0f || cardSize.y <= 0f) return 1f;
         return Mathf.Max(.01f, Mathf.Min(1f,
             (size.x - 2f * (padding + Mathf.Abs(cardRest.x))) / cardSize.x,
             (size.y - 2f * (padding + Mathf.Abs(cardRest.y))) / cardSize.y));

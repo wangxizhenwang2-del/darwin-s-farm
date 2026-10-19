@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a63e38b9679164194a54caac8b1f4d, type: 3}
+  m_Name: "\u9CA8\u9E7FAnimation"
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
+  controller: {fileID: 9100000, guid: 9ce8a21a87e738d47a3f0339c53c0068, type: 2}
+  idleSprite: {fileID: 21300000, guid: f9a56ba642aebfd4b9c21c561fe16422, type: 3}
+  referenceMoveSpeed: 1.8
+  artworkFacesLeft: 0
+  mode: 1
+  walkFrames: []
+  idleFrames: []
+  commonFrames:
+  - {fileID: 21300000, guid: f9a56ba642aebfd4b9c21c561fe16422, type: 3}
+  - {fileID: 21300000, guid: 702eab8281fddb746b7e329bd6055e15, type: 3}
+  - {fileID: 21300000, guid: 6576e451e900c6643be7d0540b950c6d, type: 3}
+  - {fileID: 21300000, guid: 860ce0eabcab90845a61ab6b0535dc31, type: 3}
+  - {fileID: 21300000, guid: 392d305df1cd3de43809ec187c87aff3, type: 3}
+  - {fileID: 21300000, guid: e6abeb29d8b29254888f9cbe441bb9b1, type: 3}
+  - {fileID: 21300000, guid: db438f03e70f71a488b3a17153a39c0b, type: 3}
+  - {fileID: 21300000, guid: 69a65b8319c7d8b46bc1995d8e1650fc, type: 3}
+  - {fileID: 21300000, guid: 2a3507e0b1b7d574c877065581b4ecd7, type: 3}
+  - {fileID: 21300000, guid: 470b4d844693cf04697a1349cb77455e, type: 3}
+  - {fileID: 21300000, guid: ac25afd9688c46345a176a958523004d, type: 3}
+  - {fileID: 21300000, guid: cea8db30750f06547bf0fc6eb612c9e6, type: 3}
+  - {fileID: 21300000, guid: c47b2fdc6b16e0e408c5858d2cc88eb4, type: 3}
+  - {fileID: 21300000, guid: 1a7dbab91402f1049b1d8915eec29c02, type: 3}
+  - {fileID: 21300000, guid: 1734fa0e724e71746985c728f2e41e81, type: 3}
+  - {fileID: 21300000, guid: 4062b8fcfa6896b468bcb63fab042703, type: 3}
+  - {fileID: 21300000, guid: c8d5158a15f7b5047a19d66295140184, type: 3}
+  - {fileID: 21300000, guid: e4b5d70fd05005c4e95c374a13f9b325, type: 3}
+  - {fileID: 21300000, guid: 12fb874985f13b64a8a1dfd8e472fd09, type: 3}
+  - {fileID: 21300000, guid: 54322b11373b4cd4ca752ba0e0fb5a76, type: 3}
+  - {fileID: 21300000, guid: e8c118eb9a47699429241692f28827ad, type: 3}
+  - {fileID: 21300000, guid: 27d65741e95b7b34ab95463a5eeeb0b8, type: 3}
+  - {fileID: 21300000, guid: 8d7028c58874972499b00cee0b563543, type: 3}
+  transitionFrames: []
+  transitionStartFrame: 1
+  transitionEndFrame: 2
+  transitionFps: 8
+  commonStartFrame: 1
+  commonEndFrame: 23
+  commonStopFrame: 1
+  commonFps: 7
+  commonHoldMin: 1
+  commonHoldMax: 3
+  walkStartFrame: 1
+  walkEndFrame: 1
+  idleStartFrame: 1
+  idleEndFrame: 1
+  stopFrame: 1
+  walkFps: 8
+  idleFps: 8
+  idleDelayMin: 2
+  idleDelayMax: 5
+  movementHoldMin: 4
+  movementHoldMax: 8

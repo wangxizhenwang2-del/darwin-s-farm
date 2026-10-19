@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a63e38b9679164194a54caac8b1f4d, type: 3}
+  m_Name: "\u9E7F\u9A6FAnimation"
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
+  controller: {fileID: 9100000, guid: 6de5e7ddd6f135d4db7dc346c263500a, type: 2}
+  idleSprite: {fileID: 21300000, guid: d37f9e8a4c0b7a940b40272d6d7087ce, type: 3}
+  referenceMoveSpeed: 1.8
+  artworkFacesLeft: 0
+  mode: 0
+  walkFrames:
+  - {fileID: 21300000, guid: 60bf0b8bc827efa4392ea20e2a565836, type: 3}
+  - {fileID: 21300000, guid: a38259093b21f72438b8547ddf6b794c, type: 3}
+  - {fileID: 21300000, guid: 1fdfa40507d57364f8144c8641d9e042, type: 3}
+  - {fileID: 21300000, guid: 4d097c88b19f50645a2d0eefb16e0e52, type: 3}
+  - {fileID: 21300000, guid: 81e0359514901bd4aa9854bcb2d0634f, type: 3}
+  - {fileID: 21300000, guid: a51cc3360e207ab4f99b310ee16240c9, type: 3}
+  - {fileID: 21300000, guid: 92f3bbd7e4a491f458a626a2d8ba75a4, type: 3}
+  - {fileID: 21300000, guid: 11c14f50fb1ed0344822a9d906eb5022, type: 3}
+  - {fileID: 21300000, guid: 8c8d2a320401bd1458f9f14b4144da75, type: 3}
+  - {fileID: 21300000, guid: 5ffd8d62b40a32243bde07c35f2a9fd4, type: 3}
+  - {fileID: 21300000, guid: 01c54e6096867b54bbf92cd2fbad0003, type: 3}
+  - {fileID: 21300000, guid: 62f9cca56892e0e49b826252954fb3b3, type: 3}
+  - {fileID: 21300000, guid: 07f664100eebc514b84728b22e343a5a, type: 3}
+  - {fileID: 21300000, guid: f3a8085eb1529ee4196ca00da9f7a337, type: 3}
+  - {fileID: 21300000, guid: 7a7853e26e7b7d449a61116c39c16290, type: 3}
+  - {fileID: 21300000, guid: 25700d8c34f903e409a3e203baca8f86, type: 3}
+  - {fileID: 21300000, guid: e8a248f223d65cd43ad2da3d271566fd, type: 3}
+  - {fileID: 21300000, guid: 409e8c807b364cd4f91fcd6289cc0947, type: 3}
+  - {fileID: 21300000, guid: 0de8520e413996a47b3fe953b101c9cb, type: 3}
+  - {fileID: 21300000, guid: 0cb63102197c1144798296c7fcd6bdae, type: 3}
+  - {fileID: 21300000, guid: 5283f2c4b3effff41beb4c328460e066, type: 3}
+  - {fileID: 21300000, guid: 6fe29adfd7be08542a24579aeca4d4e2, type: 3}
+  - {fileID: 21300000, guid: 5575cf9ab2b03894eaca0af68fd1d14b, type: 3}
+  - {fileID: 21300000, guid: 89f976ea8a71d4744ad74b11735b7a4f, type: 3}
+  - {fileID: 21300000, guid: 71917e87adcc2df40b6c29b249652edb, type: 3}
+  idleFrames:
+  - {fileID: 21300000, guid: d37f9e8a4c0b7a940b40272d6d7087ce, type: 3}
+  - {fileID: 21300000, guid: b42f76086e6f4074c875140f6d8a8603, type: 3}
+  - {fileID: 21300000, guid: ae997bd2e1f9bd748a57c371f866104e, type: 3}
+  - {fileID: 21300000, guid: c9540cbec18623b40a27f5ef61a19ca6, type: 3}
+  - {fileID: 21300000, guid: 4e3178024239d564d80f7518a7784eac, type: 3}
+  - {fileID: 21300000, guid: e76124afdfcef72449927c1f343d2164, type: 3}
+  - {fileID: 21300000, guid: cd954db6b4850924b874aed5ca53546c, type: 3}
+  - {fileID: 21300000, guid: af923cb239f18c344a1fd34883f44c7c, type: 3}
+  - {fileID: 21300000, guid: b2b1e020d5fca8748bdd863051553513, type: 3}
+  - {fileID: 21300000, guid: 093b2384aedee4d40b07f808fa755709, type: 3}
+  - {fileID: 21300000, guid: a60425245ebed6b40ac539054318c75b, type: 3}
+  - {fileID: 21300000, guid: c32adf24f8481694d905338c31c7efad, type: 3}
+  - {fileID: 21300000, guid: 4fbe771f25178fe44b6a7158e4bfab4a, type: 3}
+  - {fileID: 21300000, guid: 0835d7f0288277f49a278db25517012c, type: 3}
+  - {fileID: 21300000, guid: f39855e992f91a8468a0aa743d87effc, type: 3}
+  - {fileID: 21300000, guid: c97f505abd5be014fa03247f55c565e6, type: 3}
+  - {fileID: 21300000, guid: ebf31832db3842a448585ceeb9083c6f, type: 3}
+  - {fileID: 21300000, guid: 919e614833bc19c4f93f9f2703cb7fed, type: 3}
+  - {fileID: 21300000, guid: 83663068ce0c92240a06bccb7c2685be, type: 3}
+  - {fileID: 21300000, guid: c5ca65233a81d3647afd87eb76f53094, type: 3}
+  - {fileID: 21300000, guid: 541251e506e89d1459e5d14a0f4184b1, type: 3}
+  - {fileID: 21300000, guid: 1fff2dba1164cc547b12f7b9235f8df2, type: 3}
+  - {fileID: 21300000, guid: aab76778e57f65344839e20facdfe504, type: 3}
+  - {fileID: 21300000, guid: a3542b35aaba66e46a1e36ffa53d8182, type: 3}
+  - {fileID: 21300000, guid: 04c3031f7a87eb14eae70f29512aa79d, type: 3}
+  commonFrames: []
+  transitionFrames: []
+  transitionStartFrame: 1
+  transitionEndFrame: 2
+  transitionFps: 8
+  commonStartFrame: 1
+  commonEndFrame: 1
+  commonStopFrame: 1
+  commonFps: 8
+  commonHoldMin: 1
+  commonHoldMax: 3
+  walkStartFrame: 1
+  walkEndFrame: 25
+  idleStartFrame: 1
+  idleEndFrame: 25
+  stopFrame: 1
+  walkFps: 7
+  idleFps: 7
+  idleDelayMin: 2
+  idleDelayMax: 5
+  movementHoldMin: 4
+  movementHoldMax: 8

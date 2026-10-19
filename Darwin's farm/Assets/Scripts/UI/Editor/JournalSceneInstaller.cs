@@ -70,7 +70,7 @@ public static class JournalSceneInstaller
         Center(fullscreenRow,new Vector2(590,52),new Vector2(0,-130));
         Label("Name",fullscreenRow,"全屏",22,new Vector2(-196,0),new Vector2(170,44),TextAlignmentOptions.Left);
         var fullscreen=Toggle("FullscreenToggle",fullscreenRow,new Vector2(90,42),new Vector2(38,0));
-        Label("AudioNote",settingsPaper,"分类音量仅作用于已标记的音频源；主音量控制全局。",16,
+        Label("AudioNote",settingsPaper,"主音量控制全部声音；音效控制环境声和动物叫声。",16,
             new Vector2(0,-246),new Vector2(580,34));
 
         var tutorialView=Layer("TutorialPanel",safe);
@@ -92,7 +92,15 @@ public static class JournalSceneInstaller
         var infoPaper=Panel("Paper",infoView,new Vector2(780,580));
         Header(infoPaper,"关于达尔文农场"); var infoClose=Close(infoPaper);
         var infoScroll=ScrollArea("InfoScroll",infoPaper,new Vector2(0,-13),new Vector2(680,405),out var infoText);
-        infoText.text="达尔文农场\n\n一款以生态演化与观察为主题的游戏原型。\n\n版本：0.1.0\n\n开发团队：待项目维护者补充。\n\n字体及第三方资源授权：待核对后补充。";
+        infoText.text="Staff 旷工作室\n\n" +
+            "策划：叶青城\n" +
+            "程序：王熙振,叶青城,余炜杰\n" +
+            "技术美术：余炜杰\n" +
+            "2D美术：刘炫邑,柚子溪皮耶罗,猫川,肖芷希\n" +
+            "3D美术：余炜杰, [马来西亚]Ho Hui San, [马来西亚]Gan Yi Lin\n" +
+            "音效：大鲵\n" +
+            "联系方式：1779981587@qq.com\n\n" +
+            "感谢 杭州乐米科技有限公司 的字体授权";
 
         var savesView=Layer("SaveLoadPanel",safe);
         var savesPaper=Panel("Paper",savesView,new Vector2(680,565));

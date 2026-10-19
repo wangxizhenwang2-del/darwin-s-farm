@@ -74,11 +74,18 @@ public static class HabitatTopology
 
     public static bool ChannelsConnect(BlockInfo left, BlockInfo right)
     {
-        if (!IsWater(left) || !IsWater(right) || !AreAdjacent(left, right))
+        if (!IsWater(left) || !IsWater(right) ||
+            !HasNeighbor(left.Neighbors, right) ||
+            !HasNeighbor(right.Neighbors, left))
             return false;
         if (Mathf.Abs(left.elevation - right.elevation) > 1) return false;
-        if (IsPureWater(left) && IsPureWater(right)) return true;
-        // 河流地块可能肩并肩却互不相通，至少一端须声明这条水路。
+        MapTileInstance from = left.GetComponent<MapTileInstance>();
+        MapTileInstance to = right.GetComponent<MapTileInstance>();
+        if (from == null || to == null ||
+            Mathf.Abs(from.Coordinate.x - to.Coordinate.x) +
+            Mathf.Abs(from.Coordinate.y - to.Coordinate.y) != 1) return false;
+        // MapSimulationBridge records a link only when both openings face
+        // each other. A unilateral or stale link must never join two basins.
         return HasNeighbor(left.WaterLinks, right) &&
             HasNeighbor(right.WaterLinks, left);
     }
@@ -131,7 +138,7 @@ public sealed class WaterRegion
         get
         {
             float sum = 0f;
-            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.algaeBiomass);
+            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.plantBiomass);
             return sum;
         }
     }
@@ -141,7 +148,7 @@ public sealed class WaterRegion
         get
         {
             float sum = 0f;
-            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.maxAlgaeBiomass);
+            foreach (BlockInfo block in members) sum += Mathf.Max(0f, block.maxPlantBiomass);
             return sum;
         }
     }
@@ -151,7 +158,7 @@ public sealed class WaterRegion
         get
         {
             float sum = 0f;
-            foreach (BlockInfo block in members) sum += Mathf.Max(0, block.algaeRecovery);
+            foreach (BlockInfo block in members) sum += Mathf.Max(0, block.habitatRecovery);
             return sum;
         }
     }
@@ -163,8 +170,8 @@ public sealed class WaterRegion
         {
             float sum = 0f;
             foreach (BlockInfo block in members)
-                sum += Mathf.Min(Mathf.Max(0f, block.maxAlgaeBiomass),
-                    Mathf.Max(0f, block.algaeBiomass) + Mathf.Max(0, block.algaeRecovery));
+                sum += Mathf.Min(Mathf.Max(0f, block.maxPlantBiomass),
+                    Mathf.Max(0f, block.plantBiomass) + Mathf.Max(0, block.habitatRecovery));
             return sum;
         }
     }

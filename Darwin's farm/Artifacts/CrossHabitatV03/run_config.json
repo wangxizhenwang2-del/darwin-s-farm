@@ -1,0 +1,26 @@
+{
+  "branch": "codex/cross-habitat-v03",
+  "baseCommit": "99ca32f4",
+  "unityVersion": "6000.2.9f1",
+  "unityScenarioMethod": "V048ScenarioReplay.Run",
+  "editorMethods": [
+    "WaterLandUnityBoundaryChecks.RunBatch",
+    "CrossHabitatV03WaterDayChecks.RunBatch"
+  ],
+  "scene": "V048ScenarioReplay configured WhiteBox scene; editor checks use a preview scene",
+  "waterScenario": "water-100.json",
+  "waterSeed": 20261018,
+  "waterActions": [],
+  "waterDays": [0, 100],
+  "waterEcologyEnabledOnlyInFixture": true,
+  "economyDisabledInFixture": true,
+  "randomEventsDisabledInFixture": true,
+  "crossNicheEvolutionEnabled": false,
+  "flightEnabled": false,
+  "landScenario": "../WaterLandV02/five-species-100.json",
+  "landSeed": 240,
+  "landDays": [0, 100],
+  "landActions": [],
+  "referenceTests": "python -m unittest discover -v",
+  "referenceResearch": "python research_driver.py"
+}

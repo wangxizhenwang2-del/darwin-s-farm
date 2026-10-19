@@ -1,0 +1,50 @@
+{
+  "scenarioId": "crosshabitat-v03-water-competition-reduced",
+  "seed": 20261018,
+  "endDay": 5,
+  "disableCosts": true,
+  "mechanismFixture": true,
+  "fixtureFreezeTraits": true,
+  "fixtureDisableEvolution": true,
+  "fixtureDisableMigration": true,
+  "enableWaterEcology": true,
+  "tiles": [
+    {
+      "x": 1,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/湖泊.asset",
+      "initialStock": 1000,
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/鹿游-103a527e.asset",
+          "count": 1000
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "preset": "Assets/Scripts/map/data/湖泊.asset",
+      "initialStock": 1000,
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/鲨母-6b5c947b.asset",
+          "count": 20
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "preset": "Assets/Scripts/map/data/湖泊.asset",
+      "initialStock": 1000,
+      "populations": [
+        {
+          "species": "Assets/BiowebV46/Species/虾兔-c60ed314.asset",
+          "count": 1000
+        }
+      ]
+    }
+  ],
+  "actions": []
+}

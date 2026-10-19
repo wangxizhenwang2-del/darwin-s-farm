@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a63e38b9679164194a54caac8b1f4d, type: 3}
+  m_Name: "\u867E\u5154Animation"
+  m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
+  controller: {fileID: 9100000, guid: 3cab6149e6f17184eb03a2f7f52169f1, type: 2}
+  idleSprite: {fileID: 21300000, guid: 911c1e71efc286b4181470be3a709d06, type: 3}
+  referenceMoveSpeed: 1.8
+  artworkFacesLeft: 1
+  mode: 1
+  walkFrames: []
+  idleFrames: []
+  commonFrames:
+  - {fileID: 21300000, guid: 911c1e71efc286b4181470be3a709d06, type: 3}
+  - {fileID: 21300000, guid: 5e964852001385d418c74e67c7b27343, type: 3}
+  - {fileID: 21300000, guid: 9c28aef93759053409810ef55aa4dfc1, type: 3}
+  - {fileID: 21300000, guid: de9dc03825765d14ba7bb50f76dcad5f, type: 3}
+  - {fileID: 21300000, guid: b6e41a359e04a674b8b5e738340363a8, type: 3}
+  - {fileID: 21300000, guid: 97c5535c0ed314f4ea7fb35aa2b60642, type: 3}
+  - {fileID: 21300000, guid: ba905b095f4197b4d93a8496d53de554, type: 3}
+  - {fileID: 21300000, guid: cd1f817e6edce9f4e846ae15695d3107, type: 3}
+  - {fileID: 21300000, guid: 5c44e979596f19843a301af5b6a08229, type: 3}
+  - {fileID: 21300000, guid: e3d8113833cb1244990f8c9b7b564bab, type: 3}
+  - {fileID: 21300000, guid: a8f43173d5e2e3047bf127b1a86e55fe, type: 3}
+  - {fileID: 21300000, guid: efca495fb1fd54e499e16e4ab0896a11, type: 3}
+  - {fileID: 21300000, guid: 2d64139c1937c124fa456ad93c84ac75, type: 3}
+  - {fileID: 21300000, guid: 05ead114952186a4581be58d27e043d4, type: 3}
+  - {fileID: 21300000, guid: a388888478a3721469fdc2fbd041cd22, type: 3}
+  - {fileID: 21300000, guid: 5ccdc03417f9bc04e877f9fdce450069, type: 3}
+  - {fileID: 21300000, guid: cbd7a66931dcd264392e944fc7375bb4, type: 3}
+  - {fileID: 21300000, guid: 57b40e4ed7e934345b44610038d39bee, type: 3}
+  transitionFrames: []
+  transitionFps: 8
+  commonStartFrame: 1
+  commonEndFrame: 18
+  commonStopFrame: 1
+  commonFps: 10
+  commonHoldMin: 1
+  commonHoldMax: 3
+  walkStartFrame: 1
+  walkEndFrame: 1
+  idleStartFrame: 1
+  idleEndFrame: 1
+  stopFrame: 1
+  walkFps: 8
+  idleFps: 8
+  idleDelayMin: 2
+  idleDelayMax: 5
+  movementHoldMin: 4
+  movementHoldMax: 8
