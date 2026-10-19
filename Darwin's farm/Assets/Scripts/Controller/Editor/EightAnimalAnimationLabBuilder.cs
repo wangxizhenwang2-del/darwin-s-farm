@@ -51,8 +51,8 @@ public static class EightAnimalAnimationLabBuilder
             "Assets/BiowebV46/Species/雪狼-fb2d8345.asset"),
         new Entry("鲨母", "鲨母 待机 fps12", "鲨母 移动 fps12", 12, 12,
             "Assets/BiowebV46/Species/鲨母-6b5c947b.asset", artworkFacesLeft: false),
-        new Entry("哈激鲤", "哈激鲤 待机 fps12", "哈激鲤 移动 fps12", 12, 12,
-            null, artworkFacesLeft: false),
+        new Entry("哈激麟", "哈激麟 待机 fps12", "哈激麟 移动 fps12", 12, 12,
+            "Assets/BiowebV46/Species/哈激麟-b2e8cdba.asset", artworkFacesLeft: false),
     };
 
     private sealed class CommonEntry
@@ -449,6 +449,7 @@ public static class EightAnimalAnimationLabBuilder
             string name = i < Animals.Length ? Animals[i].name : CommonAnimals[i - Animals.Length].name;
             GameObject animal = new GameObject(name);
             animal.transform.SetParent(root.transform);
+            SetPreviewPosition(animal.transform, name);
             SpriteRenderer sprite = animal.AddComponent<SpriteRenderer>();
             PopulationSpriteDisplay.Configure(sprite, sets[i].StopSprite, Color.white);
             animal.AddComponent<Animator>().runtimeAnimatorController = sets[i].Controller;
@@ -489,6 +490,7 @@ public static class EightAnimalAnimationLabBuilder
                 {
                     GameObject created = new GameObject(name);
                     created.transform.SetParent(labObject.transform, false);
+                    SetPreviewPosition(created.transform, name);
                     SpriteRenderer sprite = created.AddComponent<SpriteRenderer>();
                     PopulationSpriteDisplay.Configure(sprite, sets[i].StopSprite, Color.white);
                     Animator animator = created.AddComponent<Animator>();
@@ -523,5 +525,11 @@ public static class EightAnimalAnimationLabBuilder
     {
         string path = parent + "/" + child;
         if (!AssetDatabase.IsValidFolder(path)) AssetDatabase.CreateFolder(parent, child);
+    }
+
+    private static void SetPreviewPosition(Transform animal, string name)
+    {
+        if (name == "鲨母") animal.localPosition = new Vector3(-2.3f, 0f, 0f);
+        else if (name == "哈激麟") animal.localPosition = new Vector3(2.3f, 0f, 0f);
     }
 }

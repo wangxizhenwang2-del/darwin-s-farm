@@ -1601,7 +1601,7 @@ MonoBehaviour:
     root: {fileID: 2100000000}
     sprite: {fileID: 2100000002}
     player: {fileID: 2100000001}
-  - displayName: "\u54C8\u6FC0\u9CA4"
+  - displayName: "\u54C8\u6FC0\u9E9F"
     animations: {fileID: 11400000, guid: a70a309bf5f64b829acc433b5c9268c0, type: 2}
     root: {fileID: 2100000010}
     sprite: {fileID: 2100000012}
@@ -1621,6 +1621,7 @@ MonoBehaviour:
     root: {fileID: 644357507}
     sprite: {fileID: 644357509}
     player: {fileID: 644357508}
+  initialAnimalName: "\u9CA8\u6BCD"
   travelSpeed: 1.8
   leftEdge: -3
   rightEdge: 3
@@ -2222,7 +2223,7 @@ Transform:
   m_GameObject: {fileID: 2100000000}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2.3, y: 0, z: 0}
   m_LocalScale: {x: 0.7111111, y: 0.7111111, z: 0.7111111}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2241,7 +2242,7 @@ GameObject:
   - component: {fileID: 2100000013}
   - component: {fileID: 2100000011}
   m_Layer: 0
-  m_Name: "\u54C8\u6FC0\u9CA4"
+  m_Name: "\u54C8\u6FC0\u9E9F"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2344,7 +2345,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c997db599d400574ebcb4f572550bcac, type: 3}
+  m_Sprite: {fileID: 21300000, guid: abdc89c1cbd284948b93f70340fc7e50, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2386,7 +2387,7 @@ Transform:
   m_GameObject: {fileID: 2100000010}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.3, y: 0, z: 0}
   m_LocalScale: {x: 0.7111111, y: 0.7111111, z: 0.7111111}
   m_ConstrainProportionsScale: 0
   m_Children: []
