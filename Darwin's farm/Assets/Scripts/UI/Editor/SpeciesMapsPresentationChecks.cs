@@ -49,7 +49,8 @@ public static class SpeciesMapsPresentationChecks
             if(canShow)
             {
                 if (firstEligible == null) firstEligible = node;
-                Require(title.text == (node.Species.HasEverUnlocked ? node.Species.SpeciesName : "？？？") +
+                Require(title.text == (node.Species.HasEverUnlocked ||
+                    TutorialFlowController.RevealsSpeciesName(node.Species) ? node.Species.SpeciesName : "？？？") +
                     "的培育线索", "Clue title: " + node.name);
                 Require(!text.isTextOverflowing,"Clue overflow: "+node.name);
                 string narrative=text.text.Split(new[]{"\n\n"},StringSplitOptions.None)[0];

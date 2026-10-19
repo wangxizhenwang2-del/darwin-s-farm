@@ -624,7 +624,8 @@ public partial class SimulationController
                 TraitValue(population, trait) + direction)) continue;
             float closeness = OtherTraitDistance(population, target, trait);
             OfferChance(choices, population, trait, direction,
-                0.05f + 0.07f * closeness, "sibling");
+                (0.05f + 0.07f * closeness) *
+                LandRules.siblingAttractionScale, "sibling");
         }
     }
 

@@ -48,7 +48,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private SpeciesMapNodeView clueNode;
     private float nextClueRefresh;
     private int displayedTraitMask = -1;
-    private bool displayedSpeciesUnlocked;
+    private bool displayedNameVisible;
     private Vector2 lastCanvasSize;
     public bool IsOpen => open;
     public bool SuppressNodeClicks => Time.unscaledTime < suppressNodeClicksUntil;
@@ -364,7 +364,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     }
 
     private static string ClueTitle(SpeciesData species) =>
-        (species != null && species.HasEverUnlocked ? species.SpeciesName : "？？？") + "的培育线索";
+        (species != null && (species.HasEverUnlocked || TutorialFlowController.RevealsSpeciesName(species))
+            ? species.SpeciesName : "？？？") + "的培育线索";
 
     private void RefreshOpenClue(bool force)
     {
@@ -373,16 +374,16 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         nextClueRefresh = Time.unscaledTime + .5f;
         SpeciesData species = clueNode.Species;
         int traitMask = species.RevealedTraitMask;
-        bool unlocked = species.HasEverUnlocked;
+        bool nameVisible = species.HasEverUnlocked || TutorialFlowController.RevealsSpeciesName(species);
         if (force || traitMask != displayedTraitMask)
         {
             clueText.text = species.FormattedBreedingClue;
             displayedTraitMask = traitMask;
         }
-        if (force || unlocked != displayedSpeciesUnlocked)
+        if (force || nameVisible != displayedNameVisible)
         {
             clueTitle.text = ClueTitle(species);
-            displayedSpeciesUnlocked = unlocked;
+            displayedNameVisible = nameVisible;
         }
     }
 

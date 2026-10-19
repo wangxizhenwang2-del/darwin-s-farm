@@ -166,6 +166,11 @@ public sealed class TestSessionRecorder : MonoBehaviour
     private void OnIntervention(Vector2Int point, string detail) => Action("intervention", point, detail);
     private void OnTechnology(Vector2Int point, string detail) => Action("technology", point, detail);
     private void OnEconomy(Vector2Int point, string detail) => Action("economy", point, detail);
+    public void RecordTestDifficulty(float value) => Add(new Entry {
+        kind = "action", day = clock.currentDay, source = "settings",
+        operation = "test_difficulty",
+        detail = value.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+    });
     private void Action(string source, Vector2Int point, string detail) => Add(new Entry {
         kind = "action", day = clock.currentDay, source = source,
         operation = detail != null && detail.StartsWith("rejected:", StringComparison.Ordinal) ? "rejected" : "commit",

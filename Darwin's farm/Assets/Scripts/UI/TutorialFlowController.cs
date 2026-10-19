@@ -39,6 +39,11 @@ public sealed class TutorialFlowController : MonoBehaviour
 
     public static TutorialFlowController Current { get; private set; }
     public static bool Allows(Feature feature) => Current == null || Current.AllowsHere(feature);
+    public static bool RevealsSpeciesName(SpeciesData species) =>
+        species != null && Current != null &&
+        Current.HasReachedUnlock(Feature.SpeciesMap) &&
+        !string.IsNullOrEmpty(species.SpeciesId) &&
+        species.SpeciesId.Replace("-", "") == ColorChickenId;
     public static bool TryGetBubbleScreenRect(out Rect rect)
     {
         rect = default;
@@ -367,7 +372,11 @@ public sealed class TutorialFlowController : MonoBehaviour
 
     private bool AllowsHere(Feature feature)
     {
-        if (!active) return true;
+        return !active || HasReachedUnlock(feature);
+    }
+
+    private bool HasReachedUnlock(Feature feature)
+    {
         string key = feature.ToString();
         for (int i = 0; i <= stepIndex; i++)
         {

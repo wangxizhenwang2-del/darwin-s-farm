@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 #endif
 
 // Main views and graphics are authored beneath this scene Canvas. The two
-// optional settings rows and export button clone its existing visual controls.
+// extra test controls and export button clone its existing visual controls.
 [DefaultExecutionOrder(-900)]
 public sealed class DarwinJournalCanvas : MonoBehaviour
 {
@@ -24,6 +24,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         public bool fullscreen = true;
         public bool testMode;
         public bool tutorialOnNewGame = true;
+        public float testDifficulty;
     }
     private enum Page { Title, Game, Pause, Settings, Tutorial, Info, Saves, Confirm }
 
@@ -41,6 +42,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private GameObject resolutionRow, fullscreenRow;
     private Toggle testModeToggle, newGameTutorialToggle;
+    private Slider testDifficultySlider;
+    private LandRuleTuning testDifficultyBaseline;
     private Button exportTestButton;
     private TMP_Text exportTestStatus;
     private TestSessionRecorder testRecorder;
@@ -78,12 +81,15 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         clock = FindFirstObjectByType<SimulationTime>();
         if (clock == null) { Debug.LogError("Journal Canvas needs SimulationTime in this scene.", this); enabled=false; return; }
         audioSimulation = FindFirstObjectByType<SimulationController>();
+        if (audioSimulation != null)
+            testDifficultyBaseline = audioSimulation.ReadLandRules();
         audioSpeciesCatalog = Resources.Load<SaveAssetCatalog>("DarwinJournal/SaveAssetCatalog");
         if (audioSimulation != null) audioSimulation.OnSpeciesUnlocked += OnAudioSpeciesUnlocked;
         worldScale = Time.timeScale > 0 ? Time.timeScale : 1f;
         Time.timeScale = 0f;
         clock.AcquireModalPause();
         LoadSettings();
+        ApplyTestDifficulty();
         testRecorder = GetComponent<TestSessionRecorder>();
         if (testRecorder == null) testRecorder = gameObject.AddComponent<TestSessionRecorder>();
         CreateExtraSettingsControls();
@@ -106,7 +112,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if(!GameSaveService.HasPending)yield break;
         yield return null; // Map and simulation bridge finish Start before restoration.
         yield return null; // WhiteboxBiowebTestSetup seeds its initial population one frame later.
-        if(GameSaveService.TryRestorePending(out _))EnterGame(true);
+        if(GameSaveService.TryRestorePending(out _))
+        {
+            ApplyTestDifficulty();
+            EnterGame(true);
+        }
         else ReloadForSave(); // Discard any world that was only partly restored.
     }
 
@@ -172,10 +182,20 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         testModeToggle.SetIsOnWithoutNotify(settings.testMode);
         testModeToggle.onValueChanged.AddListener(value => {
             settings.testMode = value;
+            ApplyTestDifficulty();
             SaveSettings();
             if (!value) testRecorder.Stop();
             else if (inGame) StartTestRecording();
             RefreshTestExport();
+        });
+        testDifficultySlider.SetValueWithoutNotify(settings.testDifficulty);
+        testDifficultySlider.interactable = settings.testMode;
+        testDifficultySlider.onValueChanged.AddListener(value => {
+            settings.testDifficulty = value;
+            ApplyTestDifficulty();
+            if (testRecorder != null && testRecorder.IsRecording)
+                testRecorder.RecordTestDifficulty(value);
+            SaveSettings();
         });
         exportTestButton.onClick.AddListener(ExportTestCode);
         RefreshTestExport();
@@ -471,20 +491,50 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         var paper = settingsPanel.transform.Find("Paper") as RectTransform;
         if (paper == null || fullscreenRow == null || pauseResume == null)
             throw new InvalidOperationException("设置面板缺少排版模板。");
-        paper.sizeDelta = new Vector2(680, 770);
+        paper.sizeDelta = new Vector2(680, 700);
         foreach (Transform child in paper)
         {
             var rect = child as RectTransform;
             if (rect == null) continue;
             if (child.name == "Heading" || child.name == "Close")
-                rect.anchoredPosition += new Vector2(0, 87);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 310);
             else if (child.name == "AudioNote")
-                rect.anchoredPosition = new Vector2(0, -338);
-            else rect.anchoredPosition += new Vector2(0, 65);
+                rect.anchoredPosition = new Vector2(0, -320);
+            else if (child.name == "主音量" || child.name == "主音量Track")
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 250);
+            else if (child.name == "背景音乐" || child.name == "背景音乐Track")
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 200);
+            else if (child.name == "音效" || child.name == "音效Track")
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 150);
+            else if (child.name == "画质" || child.name == "画质Dropdown")
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 100);
+            else if (child.name == "ResolutionRow")
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 48);
+            else if (child.name == "FullscreenRow")
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, -7);
         }
         newGameTutorialToggle = CloneSettingsToggle(paper, "NewGameTutorialRow",
-            "新游戏进入教程", -130);
-        testModeToggle = CloneSettingsToggle(paper, "TestModeRow", "测试模式", -195);
+            "新游戏进入教程", -64);
+        testModeToggle = CloneSettingsToggle(paper, "TestModeRow", "测试模式", -121);
+        var difficultyLabel = Instantiate(paper.Find("主音量"), paper);
+        difficultyLabel.name = "TestDifficultyLabel";
+        ((RectTransform)difficultyLabel).anchoredPosition = new Vector2(-185, -173);
+        difficultyLabel.GetComponent<TMP_Text>().text = "进化/抗逆难度";
+        difficultyLabel.GetComponent<TMP_Text>().fontSize = 20;
+        testDifficultySlider = Instantiate(masterSlider, paper);
+        testDifficultySlider.name = "TestDifficultySlider";
+        ((RectTransform)testDifficultySlider.transform).anchoredPosition =
+            new Vector2(105, -173);
+        testDifficultySlider.onValueChanged.RemoveAllListeners();
+        testDifficultySlider.minValue = -1f;
+        testDifficultySlider.maxValue = 1f;
+        testDifficultySlider.wholeNumbers = false;
+        var difficultyNote = Instantiate(paper.Find("AudioNote"), paper);
+        difficultyNote.name = "TestDifficultyNote";
+        ((RectTransform)difficultyNote).anchoredPosition = new Vector2(0, -216);
+        difficultyNote.GetComponent<TMP_Text>().fontSize = 16;
+        difficultyNote.GetComponent<TMP_Text>().text =
+            "左：易进化、更抗逆     中：当前     右：难进化、更脆弱";
         exportTestButton = Instantiate(pauseResume, paper);
         exportTestButton.name = "ExportTestCode";
         exportTestButton.onClick.RemoveAllListeners();
@@ -508,6 +558,59 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (toggle == null) throw new InvalidOperationException("设置面板缺少 Toggle 模板。");
         toggle.onValueChanged.RemoveAllListeners();
         return toggle;
+    }
+    private void ApplyTestDifficulty()
+    {
+        if (testDifficultySlider != null)
+            testDifficultySlider.interactable = settings.testMode;
+        if (audioSimulation == null || testDifficultyBaseline == null) return;
+        float difficulty = settings.testMode ?
+            Mathf.Clamp(settings.testDifficulty, -1f, 1f) : 0f;
+        LandRuleTuning rules = testDifficultyBaseline.Copy();
+        if (!Mathf.Approximately(difficulty, 0f))
+        {
+            // Formal evolution: all five traits must fit, then the food gates
+            // must remain satisfied for consecutive simulation days.
+            rules.evolutionTraitTolerance = difficulty < 0f
+                ? Mathf.RoundToInt(Mathf.Lerp(
+                    testDifficultyBaseline.evolutionTraitTolerance, 10f,
+                    -difficulty))
+                : Mathf.Max(0, Mathf.RoundToInt(Mathf.Lerp(
+                    testDifficultyBaseline.evolutionTraitTolerance, 2f,
+                    difficulty)));
+            rules.siblingAttractionScale =
+                testDifficultyBaseline.siblingAttractionScale *
+                (1f - 0.5f * difficulty);
+            float daysScale = 1f + 0.6f * difficulty;
+            rules.evolutionRequiredDays = Mathf.Max(1, Mathf.RoundToInt(
+                testDifficultyBaseline.evolutionRequiredDays * daysScale));
+            rules.evolutionRequiredDaysAtFour = Mathf.Max(1, Mathf.RoundToInt(
+                testDifficultyBaseline.evolutionRequiredDaysAtFour * daysScale));
+            rules.evolutionTodaySatisfaction = Mathf.Clamp01(
+                testDifficultyBaseline.evolutionTodaySatisfaction +
+                0.08f * difficulty);
+            rules.evolutionRenewalSatisfaction = Mathf.Clamp01(
+                testDifficultyBaseline.evolutionRenewalSatisfaction +
+                0.08f * difficulty);
+            // These terms directly control food demand and daily mortality.
+            float mortalityScale = 1f + 0.5f * difficulty;
+            rules.adultMaintenanceScale =
+                testDifficultyBaseline.adultMaintenanceScale *
+                (1f + 0.25f * difficulty);
+            rules.starvationDeathRate = Mathf.Clamp01(
+                testDifficultyBaseline.starvationDeathRate * mortalityScale);
+            rules.coldDeathRate =
+                testDifficultyBaseline.coldDeathRate * mortalityScale;
+            rules.climateMismatchDeathRate =
+                testDifficultyBaseline.climateMismatchDeathRate * mortalityScale;
+            rules.baselineAdultDeathRate =
+                testDifficultyBaseline.baselineAdultDeathRate * mortalityScale;
+            rules.smallBodyFrailtyRate =
+                testDifficultyBaseline.smallBodyFrailtyRate * mortalityScale;
+            rules.reproductionStressPerBirth =
+                testDifficultyBaseline.reproductionStressPerBirth * mortalityScale;
+        }
+        audioSimulation.ApplyLandRules(rules);
     }
     private void StartTestRecording()
     {
@@ -582,6 +685,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         settings.master=Mathf.Clamp01(settings.master);
         settings.music=Mathf.Clamp01(settings.music);
         settings.effects=Mathf.Clamp01(settings.effects);
+        settings.testDifficulty=Mathf.Clamp(settings.testDifficulty,-1f,1f);
         AudioListener.volume=settings.master;
         DarwinWwiseAmbience.SetMasterVolume(settings.master);
         if(settings.quality>=0 && settings.quality<QualitySettings.names.Length)

@@ -27,8 +27,9 @@ public sealed class SpeciesMapNodeView : MonoBehaviour, IPointerEnterHandler, IP
         portrait.color = species.HasEverUnlocked ? Color.white : Color.black;
         string niche = species.baseEcologicalNiche == EcologicalNiche.Water ? "水生" :
             species.baseEcologicalNiche == EcologicalNiche.Air ? "空中" : "陆生";
-        label.text = !species.HasEverUnlocked ? "？？？" :
-            species.SpeciesName + " | L" + species.trophicLevel + " " + niche;
+        label.text = species.HasEverUnlocked
+            ? species.SpeciesName + " | L" + species.trophicLevel + " " + niche
+            : TutorialFlowController.RevealsSpeciesName(species) ? species.SpeciesName : "？？？";
     }
 
     public void OnPointerEnter(PointerEventData eventData) { hovered?.Invoke(species); }
