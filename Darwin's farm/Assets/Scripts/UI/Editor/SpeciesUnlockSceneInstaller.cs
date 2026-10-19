@@ -16,6 +16,32 @@ public static class SpeciesUnlockSceneInstaller
     [MenuItem("Tools/Darwin's Farm/UI/Preview species unlock card")]
     public static void PreviewCard() => SetPreview(true);
 
+    // Scene Visibility is editor-local and does not change GameObject.activeSelf.
+    // A hidden bubble also hides its child text while both still look enabled in the Inspector.
+    [InitializeOnLoadMethod]
+    private static void RevealCardLabelsAfterReload()
+    {
+        EditorApplication.delayCall += () =>
+        {
+            var card = GameObject.Find("JournalCanvas")?.transform.Find("SafeArea/SpeciesUnlockUI/CardRoot");
+            if (card != null) RevealCardLabels(card);
+        };
+    }
+
+    private static void RevealCardLabels(Transform cardRoot)
+    {
+        var visibility = SceneVisibilityManager.instance;
+        foreach (var path in new[] {
+            "CardFrame/CardTitleBubble", "CardFrame/CardTitleBubble/TitleText",
+            "CardFrame/CardNameBubble", "CardFrame/CardNameBubble/NameText"
+        })
+        {
+            var bubble = cardRoot.Find(path);
+            if (bubble != null && visibility.IsHidden(bubble.gameObject))
+                visibility.Show(bubble.gameObject, true);
+        }
+    }
+
     [MenuItem("Tools/Darwin's Farm/UI/Preview ecology event toast")]
     public static void PreviewEcologyToast() => SetPreview(false);
 
@@ -34,6 +60,7 @@ public static class SpeciesUnlockSceneInstaller
             "Switch UI scene preview");
         cardGroup.alpha = showCard ? 1f : 0f;
         toastGroup.alpha = showCard ? 0f : 1f;
+        if (showCard) RevealCardLabels(card.Find("CardRoot"));
         EditorSceneManager.MarkSceneDirty(card.gameObject.scene);
         Selection.activeTransform = showCard ? card.Find("CardRoot") : toast;
         var view = SceneView.lastActiveSceneView;

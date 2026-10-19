@@ -976,9 +976,9 @@ MonoBehaviour:
   walkFps: 8
   overrideIdleTiming: 0
   idleStartFrame: 1
-  idleEndFrame: 1
+  idleEndFrame: 19
   idleFps: 8
-  stopFrame: 1
+  stopFrame: 19
   overrideCommonTiming: 0
   commonStartFrame: 1
   commonEndFrame: 1
@@ -1037,7 +1037,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: da4b29d53a4f4e944acc009b6aeb7d25, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 74fe1f44a2ad7f9438a01a22b5b5ad44, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

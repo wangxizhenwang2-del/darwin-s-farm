@@ -19,12 +19,15 @@ public static class EightAnimalAnimationLabBuilder
         public readonly string name, idleFolder, walkFolder, speciesPath, transitionFolder;
         public readonly int idleFps, walkFps;
         public readonly bool artworkFacesLeft;
+        public readonly bool stopAtLastIdleFrame;
         public Entry(string name, string idleFolder, string walkFolder, int idleFps, int walkFps,
-            string speciesPath, string transitionFolder = null, bool artworkFacesLeft = true)
+            string speciesPath, string transitionFolder = null, bool artworkFacesLeft = true,
+            bool stopAtLastIdleFrame = false)
         {
             this.name = name; this.idleFolder = idleFolder; this.walkFolder = walkFolder;
             this.idleFps = idleFps; this.walkFps = walkFps; this.speciesPath = speciesPath;
             this.transitionFolder = transitionFolder; this.artworkFacesLeft = artworkFacesLeft;
+            this.stopAtLastIdleFrame = stopAtLastIdleFrame;
         }
     }
 
@@ -43,7 +46,7 @@ public static class EightAnimalAnimationLabBuilder
         new Entry("鹿驯", "鹿驯 待机 fps7", "鹿驯 移动 fps7", 7, 7,
             "Assets/BiowebV46/Species/鹿驯-b2afc73a.asset"),
         new Entry("雀狮", "雀狮 待机 fps8", "雀狮 移动 fps8", 8, 8,
-            "Assets/BiowebV46/Species/雀狮-ad3c3d0f.asset", "雀狮 过渡 fps8"),
+            "Assets/BiowebV46/Species/雀狮-ad3c3d0f.asset", stopAtLastIdleFrame: true),
         new Entry("雪狼", "雪狼 待机 fps6", "雪狼 移动 fps6", 6, 6,
             "Assets/BiowebV46/Species/雪狼-fb2d8345.asset"),
         new Entry("鲨母", "鲨母 待机 fps12", "鲨母 移动 fps12", 12, 12,
@@ -175,6 +178,8 @@ public static class EightAnimalAnimationLabBuilder
                 throw new InvalidOperationException("Common action did not resume after hold.");
             scheduler.Bind(sprite, AssetDatabase.LoadAssetAtPath<PopulationAnimationSet>(
                 Output + "/雀狮/雀狮Animation.asset"), Color.white);
+            if (scheduler.HasTransition || scheduler.AnimationSet.StopFrame != scheduler.AnimationSet.IdleFrames.Length)
+                throw new InvalidOperationException("Sparrow lion should use the last idle frame without a transition.");
             scheduler.RequestStart();
             float walkCycle = scheduler.WalkCycleSeconds;
             if (!scheduler.BeginWalk(10f, 2f))
@@ -182,24 +187,9 @@ public static class EightAnimalAnimationLabBuilder
             scheduler.Tick(walkCycle * 0.5f, 0f);
             scheduler.RequestStop();
             scheduler.Tick(walkCycle * 0.5f, 0f);
-            if (scheduler.Phase != PopulationFramePhase.TransitionToIdle)
-                throw new InvalidOperationException("Sparrow lion skipped forward transition.");
-            float transition = (scheduler.AnimationSet.TransitionEnd - scheduler.AnimationSet.TransitionStart + 1) /
-                (float)scheduler.AnimationSet.TransitionFps;
-            if (scheduler.Tick(transition, 1f) != 0f || scheduler.Phase != PopulationFramePhase.IdleAction)
-                throw new InvalidOperationException("Sparrow lion did not enter idle after transition.");
-            scheduler.Tick(scheduler.AnimationSet.IdleCycleSeconds, 10f);
             if (scheduler.Phase != PopulationFramePhase.Hold ||
                 sprite.sprite != scheduler.AnimationSet.IdleFrames[scheduler.AnimationSet.IdleEnd])
-                throw new InvalidOperationException("Sparrow lion did not hold the last idle frame.");
-            scheduler.Tick(0.1f, 11f);
-            if (scheduler.Phase != PopulationFramePhase.Hold)
-                throw new InvalidOperationException("Sparrow lion hold ended early.");
-            scheduler.Tick(0.1f, 20f);
-            if (scheduler.Phase != PopulationFramePhase.TransitionToWalk)
-                throw new InvalidOperationException("Sparrow lion skipped reverse transition.");
-            if (scheduler.Tick(transition, 21f) != 0f || !scheduler.CanBeginWalk)
-                throw new InvalidOperationException("Sparrow lion was not ready to walk after reverse transition.");
+                throw new InvalidOperationException("Sparrow lion did not stop on the last idle frame.");
         }
         finally { UnityEngine.Object.DestroyImmediate(fixture); }
     }
@@ -235,19 +225,29 @@ public static class EightAnimalAnimationLabBuilder
                 serialized.FindProperty("transitionFps").intValue = animal.walkFps;
             }
         }
+        else
+        {
+            serialized.FindProperty("transitionFrames").arraySize = 0;
+            string obsoleteTransition = folder + "/Transition.anim";
+            if (AssetDatabase.LoadAssetAtPath<AnimationClip>(obsoleteTransition) != null)
+                AssetDatabase.DeleteAsset(obsoleteTransition);
+        }
         if (created)
         {
             serialized.FindProperty("idleStartFrame").intValue = 1;
             serialized.FindProperty("idleEndFrame").intValue = idle.Length;
             serialized.FindProperty("walkStartFrame").intValue = 1;
             serialized.FindProperty("walkEndFrame").intValue = walk.Length;
-            serialized.FindProperty("stopFrame").intValue = 1;
+            serialized.FindProperty("stopFrame").intValue = animal.stopAtLastIdleFrame ? idle.Length : 1;
             serialized.FindProperty("idleFps").intValue = animal.idleFps;
             serialized.FindProperty("walkFps").intValue = animal.walkFps;
             serialized.FindProperty("referenceMoveSpeed").floatValue = 1.8f;
             serialized.FindProperty("artworkFacesLeft").boolValue = animal.artworkFacesLeft;
         }
-        serialized.FindProperty("idleSprite").objectReferenceValue = idle[0];
+        if (animal.stopAtLastIdleFrame)
+            serialized.FindProperty("stopFrame").intValue = idle.Length;
+        serialized.FindProperty("idleSprite").objectReferenceValue =
+            animal.stopAtLastIdleFrame ? idle[idle.Length - 1] : idle[0];
         serialized.ApplyModifiedPropertiesWithoutUndo();
 
         AnimationClip hold = SpriteClip(folder + "/Hold.anim", new[] { set.StopSprite }, 1, false);
