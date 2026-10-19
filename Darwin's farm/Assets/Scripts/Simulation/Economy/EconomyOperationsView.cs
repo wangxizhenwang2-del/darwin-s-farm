@@ -69,7 +69,7 @@ public sealed class EconomyOperationsView : MonoBehaviour
         GUILayout.BeginArea(panelRect, GUI.skin.box);
         scroll = GUILayout.BeginScrollView(scroll);
         GUILayout.Label("生物能 " + account.Balance + "；日收预估 " + account.PreviewDailyIncome());
-        account.CostsEnabled = GUILayout.Toggle(account.CostsEnabled, "启用经济限制（扣费）");
+        GUILayout.Label("当前所有玩家操作免费");
         GUILayout.Label("选择来源和目标地块");
         tiles.Clear();
         foreach (MapTileInstance tile in grid.GetPlacedTiles()) tiles.Add(tile);

@@ -40,6 +40,7 @@ public class TilePaletteUI : MonoBehaviour
                     Instantiate(itemPrefab, content);
 
                 item.Bind(definition, placementController);
+                item.gameObject.AddComponent<TerrainPaletteLockView>().Bind(definition);
             }
         }
 

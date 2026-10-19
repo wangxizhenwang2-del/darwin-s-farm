@@ -18,12 +18,13 @@ public static class EightAnimalAnimationLabBuilder
     {
         public readonly string name, idleFolder, walkFolder, speciesPath, transitionFolder;
         public readonly int idleFps, walkFps;
+        public readonly bool artworkFacesLeft;
         public Entry(string name, string idleFolder, string walkFolder, int idleFps, int walkFps,
-            string speciesPath, string transitionFolder = null)
+            string speciesPath, string transitionFolder = null, bool artworkFacesLeft = true)
         {
             this.name = name; this.idleFolder = idleFolder; this.walkFolder = walkFolder;
             this.idleFps = idleFps; this.walkFps = walkFps; this.speciesPath = speciesPath;
-            this.transitionFolder = transitionFolder;
+            this.transitionFolder = transitionFolder; this.artworkFacesLeft = artworkFacesLeft;
         }
     }
 
@@ -45,6 +46,10 @@ public static class EightAnimalAnimationLabBuilder
             "Assets/BiowebV46/Species/雀狮-ad3c3d0f.asset", "雀狮 过渡 fps8"),
         new Entry("雪狼", "雪狼 待机 fps6", "雪狼 移动 fps6", 6, 6,
             "Assets/BiowebV46/Species/雪狼-fb2d8345.asset"),
+        new Entry("鲨母", "鲨母 待机 fps12", "鲨母 移动 fps12", 12, 12,
+            "Assets/BiowebV46/Species/鲨母-6b5c947b.asset", artworkFacesLeft: false),
+        new Entry("哈激鲤", "哈激鲤 待机 fps12", "哈激鲤 移动 fps12", 12, 12,
+            null, artworkFacesLeft: false),
     };
 
     private sealed class CommonEntry
@@ -77,7 +82,7 @@ public static class EightAnimalAnimationLabBuilder
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Verify();
-        Debug.Log("AnimationLab: built 8 walk/idle and 3 common animation sets with scene.");
+        Debug.Log($"AnimationLab: built {Animals.Length} walk/idle and {CommonAnimals.Length} common animation sets with scene.");
     }
 
     public static void Verify()
@@ -240,6 +245,7 @@ public static class EightAnimalAnimationLabBuilder
             serialized.FindProperty("idleFps").intValue = animal.idleFps;
             serialized.FindProperty("walkFps").intValue = animal.walkFps;
             serialized.FindProperty("referenceMoveSpeed").floatValue = 1.8f;
+            serialized.FindProperty("artworkFacesLeft").boolValue = animal.artworkFacesLeft;
         }
         serialized.FindProperty("idleSprite").objectReferenceValue = idle[0];
         serialized.ApplyModifiedPropertiesWithoutUndo();

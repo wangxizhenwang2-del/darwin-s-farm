@@ -48,7 +48,7 @@
       "baseMovementAbility": 30,
       "baseSize": 10,
       "baseFertility": 45,
-      "value": 7,
+      "value": 3,
       "baseEcologicalNiche": "Water"
     },
     {
@@ -84,7 +84,7 @@
       "baseFitHumidity": 80,
       "baseSize": 20,
       "baseFertility": 65,
-      "value": 10,
+      "value": 3,
       "baseEcologicalNiche": "Land"
     },
     {
@@ -100,7 +100,7 @@
       "baseMovementAbility": 45,
       "baseSize": 30,
       "baseFertility": 55,
-      "value": 5,
+      "value": 2,
       "baseEcologicalNiche": "Water"
     },
     {
@@ -118,7 +118,7 @@
       "baseFitHumidity": 58,
       "baseSize": 40,
       "baseFertility": 60,
-      "value": 10,
+      "value": 3,
       "baseEcologicalNiche": "Land"
     },
     {
@@ -136,7 +136,7 @@
       "baseFitHumidity": 20,
       "baseSize": 45,
       "baseFertility": 50,
-      "value": 30,
+      "value": 5,
       "baseEcologicalNiche": "Land"
     },
     {
@@ -154,7 +154,7 @@
       "baseFitHumidity": 70,
       "baseSize": 50,
       "baseFertility": 35,
-      "value": 5,
+      "value": 2,
       "baseEcologicalNiche": "Land"
     },
     {
@@ -172,7 +172,7 @@
       "baseFitHumidity": 45,
       "baseSize": 55,
       "baseFertility": 40,
-      "value": 30,
+      "value": 4,
       "baseEcologicalNiche": "Air"
     },
     {
@@ -188,7 +188,7 @@
       "baseMovementAbility": 40,
       "baseSize": 60,
       "baseFertility": 30,
-      "value": 10,
+      "value": 3,
       "baseEcologicalNiche": "Water"
     },
     {
@@ -204,7 +204,7 @@
       "baseMovementAbility": 80,
       "baseSize": 66,
       "baseFertility": 15,
-      "value": 25,
+      "value": 5,
       "baseEcologicalNiche": "Water"
     },
     {
@@ -222,7 +222,7 @@
       "baseFitHumidity": 28,
       "baseSize": 70,
       "baseFertility": 25,
-      "value": 30,
+      "value": 5,
       "baseEcologicalNiche": "Land"
     },
     {
@@ -240,7 +240,7 @@
       "baseFitHumidity": 20,
       "baseSize": 75,
       "baseFertility": 20,
-      "value": 15,
+      "value": 4,
       "baseEcologicalNiche": "Land"
     },
     {
@@ -258,7 +258,7 @@
       "baseFitHumidity": 66,
       "baseSize": 80,
       "baseFertility": 15,
-      "value": 30,
+      "value": 5,
       "baseEcologicalNiche": "Land"
     }
   ],

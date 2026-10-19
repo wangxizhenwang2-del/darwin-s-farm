@@ -31,7 +31,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a0ef66e9614a5275aa886a78ae635a33, type: 2}
   preySpecies: []
   trophicLevel: 0
-  bioenergyValue: 5
+  bioenergyValue: 2
   economyId: 103a527e0b484228ba810718e8ef39f7
   baseMovementAbility: 45
   baseHabitatNiche: 0

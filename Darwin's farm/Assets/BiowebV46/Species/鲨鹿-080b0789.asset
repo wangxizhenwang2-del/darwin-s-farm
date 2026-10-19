@@ -33,7 +33,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae62c1ccc7cb5cda83283e79e8dafe17, type: 2}
   - {fileID: 11400000, guid: db2228498752598ba128f9c3256bc974, type: 2}
   trophicLevel: 2
-  bioenergyValue: 25
+  bioenergyValue: 5
   economyId: 080b078945054b8fb51a69d9ffe16af8
   baseMovementAbility: 80
   baseHabitatNiche: 0

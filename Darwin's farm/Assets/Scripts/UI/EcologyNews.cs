@@ -7,7 +7,8 @@ using UnityEngine;
 public enum EcologicalEventType
 {
     NewSpecies, LocalExtinction, GlobalExtinction, SpeciesReappeared,
-    SuccessfulMigration, PopulationCrash, CapacityCrisis
+    SuccessfulMigration, PopulationCrash, CapacityCrisis,
+    TerrainUnlocked, WatersUnlocked
 }
 
 [Serializable]
@@ -17,7 +18,8 @@ public sealed class EcologicalEventData
     public int gameDay, sequence, populationCount;
     public EcologicalEventType type;
     public string message;
-    public int Priority => type == EcologicalEventType.NewSpecies || type == EcologicalEventType.GlobalExtinction ? 3 :
+    public int Priority => type == EcologicalEventType.NewSpecies || type == EcologicalEventType.GlobalExtinction ||
+        type == EcologicalEventType.TerrainUnlocked || type == EcologicalEventType.WatersUnlocked ? 3 :
         type == EcologicalEventType.LocalExtinction || type == EcologicalEventType.SpeciesReappeared ? 2 : 1;
 }
 

@@ -192,7 +192,20 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (page == Page.Confirm) { Show(confirmReturn); return; }
         Show(parent);
     }
-    private void NewGame() => EnterGame(false);
+    private void NewGame()
+    {
+        // Species assets survive scene reloads; begin each new run with fresh
+        // discovery flags so the first deer unlock can open the water palette.
+        var catalog = Resources.Load<SaveAssetCatalog>("DarwinJournal/SaveAssetCatalog");
+        if (catalog != null)
+        {
+            foreach (var entry in catalog.species)
+                if (entry.asset != null) entry.asset.RestoreProgress(false, false, 0);
+            var simulation = FindFirstObjectByType<SimulationController>();
+            if (simulation != null) simulation.RefreshSpeciesStatuses();
+        }
+        EnterGame(false);
+    }
     private void EnterGame(bool loadedSave)
     {
         inGame = true;

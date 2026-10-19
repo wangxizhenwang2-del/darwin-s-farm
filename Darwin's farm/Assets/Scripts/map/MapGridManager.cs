@@ -221,6 +221,18 @@ public class MapGridManager : MonoBehaviour
         return true;
     }
 
+    // Save loading may start from an older version's initial terrain preset.
+    internal bool TryRestoreInitialTile(MapTileDefinition definition)
+    {
+        if (!initialized || definition == null || tiles.Count != 1 ||
+            !tiles.TryGetValue(Vector2Int.zero, out MapTileInstance origin)) return false;
+        if (origin.Definition == definition) return true;
+        tiles.Remove(Vector2Int.zero);
+        origin.gameObject.SetActive(false);
+        Destroy(origin.gameObject);
+        return TryPlaceTile(Vector2Int.zero, definition);
+    }
+
     // Low-level map mutations are invoked by the paid player operation controller.
     public bool TryRemoveTile(Vector2Int coordinate)
     {

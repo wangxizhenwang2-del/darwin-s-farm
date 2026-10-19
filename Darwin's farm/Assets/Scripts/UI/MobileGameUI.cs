@@ -65,6 +65,7 @@ public sealed class MobileGameUI : MonoBehaviour
     private readonly float[] scrollPositions = { 1f, 1f };
     [SerializeField] private UnityEngine.UI.Button environmentToolsButton;
     private EnvironmentToolSession toolSession;
+    private SimulationEnvironmentController terrainUnlocks;
     private bool previousToolMode;
 
     public bool IsMobileActive => isActiveAndEnabled && mobile;
@@ -128,6 +129,7 @@ public sealed class MobileGameUI : MonoBehaviour
             handle.Initialize(toolsDrawer != null && handle.transform.IsChildOf(toolsDrawer.transform) ? toolsDrawer : drawer);
         technologyPanel.Initialize();
         toolSession = information.GetComponent<EnvironmentToolSession>();
+        terrainUnlocks = FindFirstObjectByType<SimulationEnvironmentController>();
         if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
         if (speciesMapButton != null && speciesMaps != null) speciesMapButton.onClick.AddListener(speciesMaps.Toggle);
@@ -387,6 +389,16 @@ public sealed class MobileGameUI : MonoBehaviour
         bool building = buildMode != null && buildMode.IsBuildMode;
         buildLabel.text = building ? "退出建造" : "建造地块";
         buildPalette.SetActive(building);
+        if (building && terrainUnlocks != null)
+            for (int i = 0; i < tileButtons.Length && i < tileDefinitions.Length; i++)
+            {
+                bool unlocked = terrainUnlocks.IsUnlocked(tileDefinitions[i]);
+                tileButtons[i].interactable = unlocked;
+                var label = tileButtons[i].GetComponentInChildren<TextMeshProUGUI>(true);
+                if (label != null && tileDefinitions[i] != null)
+                    label.text = unlocked ? tileDefinitions[i].displayName :
+                        tileDefinitions[i].displayName + "\n未解锁";
+            }
         bool placing = placement != null && placement.IsTouchPlacement;
         placementControls.SetActive(placing);
         confirmButton.interactable = placing && placement.CanConfirmTouchPlacement;

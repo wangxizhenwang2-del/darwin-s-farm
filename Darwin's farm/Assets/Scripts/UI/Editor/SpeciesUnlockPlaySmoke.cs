@@ -144,7 +144,7 @@ public static class SpeciesUnlockPlaySmoke
             if (stage == 7)
             {
                 if (presenter.Phase != SpeciesUnlockPresenter.CardPhase.Ready) return;
-                Require(card.Find("CardRoot/NameText").GetComponent<TMP_Text>().text == "第二种",
+                Require(card.Find("CardRoot/CardFrame/CardNameBubble/NameText").GetComponent<TMP_Text>().text == "第二种",
                     "queue order or card reset wrong");
                 Continue();
                 manualClosed++;
@@ -154,7 +154,7 @@ public static class SpeciesUnlockPlaySmoke
             if (stage == 8)
             {
                 if (presenter.Phase != SpeciesUnlockPresenter.CardPhase.Ready) return;
-                Require(card.Find("CardRoot/NameText").GetComponent<TMP_Text>().text == "第三种",
+                Require(card.Find("CardRoot/CardFrame/CardNameBubble/NameText").GetComponent<TMP_Text>().text == "第三种",
                     "third card missing");
                 Continue();
                 manualClosed++;
@@ -178,7 +178,7 @@ public static class SpeciesUnlockPlaySmoke
 
     private static void AssertMystery()
     {
-        Require(card.Find("CardRoot/NameText").GetComponent<TMP_Text>().text == "我是谁？？？",
+        Require(card.Find("CardRoot/CardFrame/CardNameBubble/NameText").GetComponent<TMP_Text>().text == "我是谁？？？",
             "real name leaked in silhouette phase");
         Require(card.Find("CardRoot/CreatureArea/CreatureImage").GetComponent<Image>().color.a < .01f,
             "color portrait appeared before reveal");
