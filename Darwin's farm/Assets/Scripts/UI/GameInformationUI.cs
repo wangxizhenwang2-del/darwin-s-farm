@@ -113,6 +113,9 @@ public sealed class GameInformationUI : MonoBehaviour
     {
         canvasRect = (RectTransform)transform;
         font = GameUITheme.Font;
+        var tileStatus = GetComponent<TileStatusPresenter>();
+        if (tileStatus == null) tileStatus = gameObject.AddComponent<TileStatusPresenter>();
+        tileStatus.EnsureLayout();
         if (dayText == null && speedText == null) BuildHud();
         BindSpeedControl();
         if (tileWindow == null && populationWindow == null) BuildWindows();

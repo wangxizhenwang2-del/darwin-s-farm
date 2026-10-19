@@ -29,8 +29,11 @@ namespace DarwinFarm.Environment
         public EffectPhase Phase { get; }
         public int RemainingDays { get; }
         public double Progress { get; }
-        internal AttributeSnapshot(double value, double target, EffectPhase phase, int remaining, double progress)
-        { Value = value; Target = target; Phase = phase; RemainingDays = remaining; Progress = progress; }
+        // Presentation metadata stays with the applied effect, including its return phase.
+        public int ToolTier { get; }
+        internal AttributeSnapshot(double value, double target, EffectPhase phase, int remaining, double progress,
+            int toolTier = 0)
+        { Value = value; Target = target; Phase = phase; RemainingDays = remaining; Progress = progress; ToolTier = toolTier; }
     }
 
     public sealed class EnvironmentSnapshot
@@ -84,6 +87,7 @@ namespace DarwinFarm.Environment
     internal sealed class LocalClimateEffect
     {
         internal int Age;
+        internal int Tier;
         internal long Sequence;
         internal double Baseline;
         internal HabitatState HabitatAtSubmit;
@@ -104,6 +108,7 @@ namespace DarwinFarm.Environment
         internal readonly LocalClimateEffect[] Locals = new LocalClimateEffect[2];
         internal long RecoverySequence;
         internal int RecoveryAge;
+        internal int RecoveryTier;
         internal bool RecoveryReturning;
         internal bool RecoveryCancelIssued;
         internal bool RecoveryDetached;
@@ -149,7 +154,8 @@ namespace DarwinFarm.Environment
                 RecoveryAge < RecoveryHoldThreshold ? Values[2] : track.Target;
             return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index]),
                 EnvironmentRules.Clamp((EnvironmentAttribute)index, target),
-                phase, remaining, track.Progress);
+                phase, remaining, track.Progress, local != null ? local.Tier :
+                    index == 2 && RecoveryReturning ? RecoveryTier : 0);
         }
     }
 
