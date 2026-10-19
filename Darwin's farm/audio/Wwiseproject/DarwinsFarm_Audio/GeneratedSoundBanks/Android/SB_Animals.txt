@@ -1,0 +1,14 @@
+Event	ID	Name			Wwise Object Path	Notes
+	2421564587	Play_Rc_lu			\Default Work Unit\Play_Rc_lu	
+	2455119981	Play_Rc_ji			\Default Work Unit\Play_Rc_ji	
+	3530488080	Play_Rc_caiji			\Default Work Unit\Play_Rc_caiji	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	190628329	ui_缩混_双声道修正版	.cache\7A\{7A56B905-DED0-30CE-71A4-24052E327BF5}.wem		\Containers\Default Work Unit\Animals\P1\Rc_caiji\ui_缩混_双声道修正版		130252
+	276585787	Deer_2	.cache\C1\{C1188BA4-86D2-2677-646C-13549FED28D6}.wem		\Containers\Default Work Unit\Animals\P1\Rc_lu\Deer_2		334152
+	467202852	Chicken	.cache\70\{703253B6-6F68-4BED-4433-C15AA90555A4}.wem		\Containers\Default Work Unit\Animals\P1\Rc_ji\Chicken		284772
+	524140263	Deer_1	.cache\BC\{BC79D326-DBB8-6AC6-7895-230E182AC43F}.wem		\Containers\Default Work Unit\Animals\P1\Rc_lu\Deer_1		186004
+	949631507	Chicken_2	.cache\22\{225771AF-A300-C3F4-E50B-EDB4AA1A08E4}.wem		\Containers\Default Work Unit\Animals\P1\Rc_ji\Chicken_2		322532
+	965911601	Chicken_3	.cache\88\{88BE3443-A118-93A8-3DF9-E199B411C81C}.wem		\Containers\Default Work Unit\Animals\P1\Rc_ji\Chicken_3		308008
+	1014486077	Deer_3	.cache\7E\{7E02C8DF-3776-B082-9256-AC71EB465BA6}.wem		\Containers\Default Work Unit\Animals\P1\Rc_lu\Deer_3		194720
+

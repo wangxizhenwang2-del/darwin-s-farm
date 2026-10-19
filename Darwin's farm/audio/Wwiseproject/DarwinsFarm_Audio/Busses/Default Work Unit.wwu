@@ -9,6 +9,148 @@
 							<ObjectRef Name="System" ID="{CB52DDFC-A978-4F90-B9EF-5C0F556287EA}" WorkUnitID="{BDDFCFA8-C465-4D7E-A61A-D117C4BA8800}"/>
 						</Reference>
 					</ReferenceList>
+					<ChildrenList>
+						<Bus Name="Bus_Ambience" ID="{51C4CE72-FBC4-41D6-BCDD-F5C862924B1D}">
+							<StateInfo>
+								<StateGroupList>
+									<StateGroupInfo>
+										<StateGroupRef Name="UI_Mix" ID="{A1AB08EB-A93C-4EDD-BD33-3400EA76D0DE}"/>
+										<StateGroupInfo Name="" ID="{0CE47420-9D0D-4A07-A854-D8C23122B7A9}" ShortID="44582196"/>
+									</StateGroupInfo>
+								</StateGroupList>
+								<CustomStateList>
+									<CustomState>
+										<StateRef Name="Menu" ID="{BC76C44E-1D8E-4243-8EB1-A9BA8FB1243A}"/>
+										<CustomState Name="" ID="{4196767A-2A20-4F84-8F36-2BD70DD85218}" ShortID="674304590">
+											<PropertyList>
+												<Property Name="BusVolume" Type="Real64" Value="-8"/>
+											</PropertyList>
+										</CustomState>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="None" ID="{76631ED5-BF0E-4950-810D-3FD7D2B76C92}"/>
+										<CustomState Name="" ID="{CF3491B9-88DB-40E9-9460-B8D62A9E6041}" ShortID="655427423"/>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="Gameplay" ID="{AB15FF98-60CF-4CFE-8ABD-4F1A89580588}"/>
+										<CustomState Name="" ID="{536CC1EF-A67D-4204-BB31-414190D79BEC}" ShortID="702827984"/>
+									</CustomState>
+								</CustomStateList>
+							</StateInfo>
+						</Bus>
+						<Bus Name="Bus_Animals" ID="{724AF606-B67E-415A-B08D-3BF4F4DA7A0B}">
+							<StateInfo>
+								<StateGroupList>
+									<StateGroupInfo>
+										<StateGroupRef Name="UI_Mix" ID="{A1AB08EB-A93C-4EDD-BD33-3400EA76D0DE}"/>
+										<StateGroupInfo Name="" ID="{EBF43929-2F35-4C08-B1F1-DB65604D675E}" ShortID="1055005891"/>
+									</StateGroupInfo>
+								</StateGroupList>
+								<CustomStateList>
+									<CustomState>
+										<StateRef Name="Menu" ID="{BC76C44E-1D8E-4243-8EB1-A9BA8FB1243A}"/>
+										<CustomState Name="" ID="{D75A5BA4-B62C-4CB2-B16E-54F4C0D3994A}" ShortID="379556318">
+											<PropertyList>
+												<Property Name="BusVolume" Type="Real64" Value="-8"/>
+											</PropertyList>
+										</CustomState>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="None" ID="{76631ED5-BF0E-4950-810D-3FD7D2B76C92}"/>
+										<CustomState Name="" ID="{6510001C-0E47-4614-B139-CFADB9295157}" ShortID="168515015"/>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="Gameplay" ID="{AB15FF98-60CF-4CFE-8ABD-4F1A89580588}"/>
+										<CustomState Name="" ID="{F95F2CA1-8377-41D3-A35B-69BBC6064FCF}" ShortID="628516809"/>
+									</CustomState>
+								</CustomStateList>
+							</StateInfo>
+						</Bus>
+						<Bus Name="Bus_UI" ID="{161030CA-A3C2-43E2-9956-8F215196B51D}"/>
+						<Bus Name="Bus_Music" ID="{1690B21D-7D9F-466D-AAD5-EA0573FC0C53}">
+							<StateInfo>
+								<StateGroupList>
+									<StateGroupInfo>
+										<StateGroupRef Name="UI_Mix" ID="{A1AB08EB-A93C-4EDD-BD33-3400EA76D0DE}"/>
+										<StateGroupInfo Name="" ID="{39B7B3B3-7196-49B8-86EB-F4613F73F7DE}" ShortID="974286547"/>
+									</StateGroupInfo>
+								</StateGroupList>
+								<CustomStateList>
+									<CustomState>
+										<StateRef Name="Menu" ID="{BC76C44E-1D8E-4243-8EB1-A9BA8FB1243A}"/>
+										<CustomState Name="" ID="{97FF60C1-2D0F-4F66-BC33-659D89E37FEA}" ShortID="1001193948">
+											<PropertyList>
+												<Property Name="BusVolume" Type="Real64" Value="-8"/>
+											</PropertyList>
+										</CustomState>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="None" ID="{76631ED5-BF0E-4950-810D-3FD7D2B76C92}"/>
+										<CustomState Name="" ID="{B4B6A99D-E2B3-453B-A725-E683543B9574}" ShortID="414623527"/>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="Gameplay" ID="{AB15FF98-60CF-4CFE-8ABD-4F1A89580588}"/>
+										<CustomState Name="" ID="{ABD32309-5DF7-483E-A40A-B8E6908BBF94}" ShortID="755521239"/>
+									</CustomState>
+								</CustomStateList>
+							</StateInfo>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<RTPC Name="" ID="{9A3F6860-2FB9-4ECA-BEE8-FF48E9271C57}" ShortID="715094797">
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="BusVolume"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="Music_Volume" ID="{129F999F-A70F-4942-A5AF-DFDFAD4BB839}" WorkUnitID="{2C1CD560-95A6-4B89-8FA8-B26C88867893}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{FC3869C9-AAC5-4EA2-A690-7817DC022E49}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="3"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>-96</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>0.1</XPos>
+																<YPos>-20</YPos>
+																<Flags>0</Flags>
+															</Point>
+															<Point>
+																<XPos>0.25</XPos>
+																<YPos>-12</YPos>
+																<Flags>0</Flags>
+															</Point>
+															<Point>
+																<XPos>0.505836575875486</XPos>
+																<YPos>-5.90635759751248</YPos>
+																<Flags>0</Flags>
+															</Point>
+															<Point>
+																<XPos>0.77043</XPos>
+																<YPos>-2.7101</YPos>
+																<Flags>0</Flags>
+															</Point>
+															<Point>
+																<XPos>1</XPos>
+																<YPos>0</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
+								</ObjectList>
+							</ObjectLists>
+						</Bus>
+					</ChildrenList>
 				</Bus>
 			</ChildrenList>
 		</WorkUnit>

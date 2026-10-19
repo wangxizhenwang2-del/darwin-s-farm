@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{05EC0367-5DE6-4063-A137-7F69D5D10D6F}" SchemaVersion="133">
 	<States>
-		<WorkUnit Name="Default Work Unit" ID="{05EC0367-5DE6-4063-A137-7F69D5D10D6F}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{05EC0367-5DE6-4063-A137-7F69D5D10D6F}" PersistMode="Standalone">
+			<ChildrenList>
+				<StateGroup Name="BGM_Phase" ID="{D9227AF0-A232-4511-8094-88113F913B75}">
+					<ChildrenList>
+						<State Name="None" ID="{219E9AB0-9745-4272-9BB8-5F1E21845E99}"/>
+						<State Name="First" ID="{D4D74822-5B02-4AE9-ACCD-55BE6426DCEB}"/>
+						<State Name="Second" ID="{8113A589-EA11-47DA-AF2B-5F0940E7D9D2}"/>
+					</ChildrenList>
+				</StateGroup>
+				<StateGroup Name="UI_Mix" ID="{A1AB08EB-A93C-4EDD-BD33-3400EA76D0DE}">
+					<ChildrenList>
+						<State Name="None" ID="{76631ED5-BF0E-4950-810D-3FD7D2B76C92}"/>
+						<State Name="Gameplay" ID="{AB15FF98-60CF-4CFE-8ABD-4F1A89580588}"/>
+						<State Name="Menu" ID="{BC76C44E-1D8E-4243-8EB1-A9BA8FB1243A}"/>
+					</ChildrenList>
+				</StateGroup>
+			</ChildrenList>
+		</WorkUnit>
 	</States>
 </WwiseDocument>

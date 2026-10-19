@@ -1,5 +1,24 @@
+State Group	ID	Name			Wwise Object Path	Notes
+	2597075221	BGM_Phase			\Default Work Unit\BGM_Phase	
+	3044360696	UI_Mix			\Default Work Unit\UI_Mix	
+
+State	ID	Name	State Group			Notes
+	748895195	None	BGM_Phase			
+	998496889	First	BGM_Phase			
+	3476314365	Second	BGM_Phase			
+	89505537	Gameplay	UI_Mix			
+	748895195	None	UI_Mix			
+	2607556080	Menu	UI_Mix			
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	1006694123	Music_Volume			\Default Work Unit\Music_Volume	
+
 Audio Bus	ID	Name			Wwise Object Path	Notes
+	1162281553	Bus_Music			\Default Work Unit\Main Audio Bus\Bus_Music	
+	1649465235	Bus_Animals			\Default Work Unit\Main Audio Bus\Bus_Animals	
+	1746463750	Bus_UI			\Default Work Unit\Main Audio Bus\Bus_UI	
 	2246998526	Main Audio Bus			\Default Work Unit\Main Audio Bus	
+	3501367136	Bus_Ambience			\Default Work Unit\Main Audio Bus\Bus_Ambience	
 
 Audio Devices	ID	Name	Type				Notes
 	2317455096	No_Output	No Output			
