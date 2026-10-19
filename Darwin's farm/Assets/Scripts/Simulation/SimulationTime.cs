@@ -93,14 +93,14 @@ public class SimulationTime : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard != null && !modalPause)
         {
-            if (keyboard.spaceKey.wasPressedThisFrame) CycleSpeed();
+            if (keyboard.spaceKey.wasPressedThisFrame) ToggleSpacePause();
             if (keyboard.digit2Key.wasPressedThisFrame ||
                 keyboard.numpad2Key.wasPressedThisFrame) DoubleSpeed();
             if (keyboard.digit4Key.wasPressedThisFrame ||
                 keyboard.numpad4Key.wasPressedThisFrame) QuadrupleSpeed();
         }
 #else
-        if (!modalPause && Input.GetKeyDown(KeyCode.Space)) CycleSpeed();
+        if (!modalPause && Input.GetKeyDown(KeyCode.Space)) ToggleSpacePause();
         if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))) DoubleSpeed();
         if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))) QuadrupleSpeed();
 #endif
@@ -131,6 +131,13 @@ public class SimulationTime : MonoBehaviour
         else if (Speed >= 4f) Pause();
         else SetSpeed(Speed < 2f ? 2f : 4f);
         if (IsPaused) TutorialFlowController.Report("pause");
+    }
+    // Space always returns to normal speed after a pause, regardless of the previous speed.
+    public void ToggleSpacePause()
+    {
+        if (modalPause || !TutorialFlowController.Allows(TutorialFlowController.Feature.Clock)) return;
+        if (IsPaused) { Play(); TutorialFlowController.Report("pauseResume"); }
+        else { Pause(); TutorialFlowController.Report("pause"); }
     }
     private void SetSpeed(float speed)
     {

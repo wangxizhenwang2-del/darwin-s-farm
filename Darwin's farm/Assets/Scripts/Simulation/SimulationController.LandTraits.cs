@@ -373,8 +373,8 @@ public partial class SimulationController
         redeemed.used++;
         population.fertility = next;
         population.lastMutationEffect = "4" +
-            (transaction.direction > 0 ? "↑" : "↓") +
-            " " + current + "→" + next;
+            (transaction.direction > 0 ? "上升" : "下降") +
+            " " + current + " 到 " + next;
         population.mutationSelectionProgress = 0f;
         population.mutationSelectionCandidate = -1;
         LogV4Mutation(block, population, "recovery_guidance", 4,
@@ -484,8 +484,8 @@ public partial class SimulationController
                     : population.cliffMovementRecovery.anchorMovement))
             StopCliffRecovery(block, population, "goal_reached");
         population.lastMutationEffect = selected.trait +
-            (selected.direction > 0 ? "↑" : "↓") +
-            " " + previous + "→" + next;
+            (selected.direction > 0 ? "上升" : "下降") +
+            " " + previous + " 到 " + next;
         population.mutationSelectionProgress = 0f;
         population.mutationSelectionCandidate = -1;
         LogV4Mutation(block, population,

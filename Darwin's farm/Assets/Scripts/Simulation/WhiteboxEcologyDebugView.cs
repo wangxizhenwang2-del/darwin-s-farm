@@ -140,16 +140,16 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         int tier = tiers.TryGetValue(coordinate, out int rememberedTier) ? rememberedTier : 1;
         if (kind == EnvironmentTechnologyKind.ElevationChange && (tier == 2 || tier == -2)) tier = 1;
         Rect menuButton = new Rect(x + 5f, y + 78f, width - 10f, 23f);
-        if (GUI.Button(menuButton, EnvironmentTechnologyCatalog.Name(kind) + "  ▾"))
+        if (GUI.Button(menuButton, EnvironmentTechnologyCatalog.Name(kind) + "  选择"))
         {
             openTechnologyMenu = openTechnologyMenu == coordinate ? (Vector2Int?)null : coordinate;
             openMenuRect = menuButton;
         }
         if (kind == EnvironmentTechnologyKind.ElevationChange)
         {
-            if (GUI.Button(new Rect(x + 5f, y + 105f, 157f, 22f), "高1档" + (tier == 1 ? " ✓" : "")))
+            if (GUI.Button(new Rect(x + 5f, y + 105f, 157f, 22f), "高1档" + (tier == 1 ? " (已选)" : "")))
                 tiers[coordinate] = tier = 1;
-            if (GUI.Button(new Rect(x + 168f, y + 105f, 157f, 22f), "低1档" + (tier == -1 ? " ✓" : "")))
+            if (GUI.Button(new Rect(x + 168f, y + 105f, 157f, 22f), "低1档" + (tier == -1 ? " (已选)" : "")))
                 tiers[coordinate] = tier = -1;
         }
         else
@@ -160,7 +160,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
                 float buttonX = x + (i % 2 == 0 ? 5f : 168f);
                 float buttonY = y + (i < 2 ? 105f : 130f);
                 if (GUI.Button(new Rect(buttonX, buttonY, 157f, 22f),
-                    TierLabel(value) + (tier == value ? " ✓" : "")))
+                    TierLabel(value) + (tier == value ? " (已选)" : "")))
                     tiers[coordinate] = tier = value;
             }
         }

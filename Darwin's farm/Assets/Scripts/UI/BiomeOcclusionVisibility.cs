@@ -203,7 +203,7 @@ public sealed class BiomeOcclusionVisibility : MonoBehaviour
             show &= screen.z > 0f && viewCamera.pixelRect.Contains(screen);
             marker.rect.gameObject.SetActive(show);
             if (!show) continue;
-            marker.text.text = "◆ " + population.Count;
+            marker.text.text = "数量 " + population.Count;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screen,
                 null, out Vector2 local);
             Rect rect = canvasRect.rect;

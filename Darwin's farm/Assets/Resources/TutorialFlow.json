@@ -137,16 +137,17 @@
       "lockSkip": false
     },
     {
-      "day": 76,
+      "day": 50,
+      "temperatureAtLeast": 70,
       "lesson": "控制温度",
-      "text": "留意地块温度，不要升得过高。如果已经达到理想温度，可以在温度工具中选择<color=#C33A32>撤销</color>，让它开始恢复。",
+      "text": "地块温度已达到 <color=#C33A32>70 度</color>，时间已暂停。不要升得过高，可以在温度工具中选择撤销，让它开始恢复。",
       "unlocks": "CancelTool",
       "completion": "continue",
       "pause": true,
       "lockSkip": false
     },
     {
-      "day": 76,
+      "day": 50,
       "lesson": "再看进化网",
       "text": "再<color=#C33A32>按 M 打开进化网</color>，查看鸽鸽与彩鸡的性状差距。",
       "unlocks": "",
@@ -155,7 +156,7 @@
       "lockSkip": true
     },
     {
-      "day": 76,
+      "day": 50,
       "lesson": "彩鸡目标",
       "text": "点击<color=#C33A32>彩鸡头像</color>查看线索：体型约 14、繁殖能力约 75、适湿约 49。具体进化条件还要结合生态环境观察。",
       "unlocks": "",
@@ -164,7 +165,7 @@
       "lockSkip": true
     },
     {
-      "day": 76,
+      "day": 50,
       "lesson": "回到星球",
       "text": "<color=#C33A32>关闭进化网</color>，继续改造鸽鸽生活的环境。",
       "unlocks": "",
@@ -173,7 +174,7 @@
       "lockSkip": true
     },
     {
-      "day": 76,
+      "day": 50,
       "lesson": "自主培育",
       "text": "湿度、植物日增量和植物存量工具也已开放。注意<color=#C33A32>释放与撤销的时机</color>；善用进化网、种群和地块信息，引导彩鸡进化。",
       "unlocks": "Humidity,PlantRecovery,PlantStock,AllToolTiers",
@@ -182,7 +183,7 @@
       "lockSkip": false
     },
     {
-      "day": 76,
+      "day": 50,
       "lesson": "等待彩鸡诞生",
       "text": "现在你已掌握主要操作。继续改造环境并观察鸽鸽的性状，直到<color=#C33A32>彩鸡真正出现</color>。地图上已有地块时，可以按 N 在旁边建造；相邻地块可能影响迁徙和运动能力。",
       "unlocks": "",
@@ -191,7 +192,7 @@
       "lockSkip": false
     },
     {
-      "day": 76,
+      "day": 50,
       "lesson": "彩鸡诞生",
       "text": "<color=#C33A32>彩鸡诞生了</color>！你完成了从观察种群、改善环境到物种演化的一次完整循环。继续培育更多物种吧！",
       "unlocks": "Advanced",

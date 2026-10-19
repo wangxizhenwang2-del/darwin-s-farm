@@ -13,6 +13,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     [Serializable] private sealed class Step
     {
         public int day;
+        public int temperatureAtLeast;
         public string lesson, text, unlocks, completion;
         public bool pause, lockSkip;
     }
@@ -29,6 +30,10 @@ public sealed class TutorialFlowController : MonoBehaviour
         public bool active, satisfied, sawPause, colorUnlocked, startupCardClosed;
         public bool tutorialPaused, resumePending;
         public bool tutorialSeedApplied;
+        public bool temperatureTargetSet;
+        public int temperatureTargetX, temperatureTargetY;
+        public bool firstTerrainHintSeen, firstTerrainHintPending;
+        public string firstTerrainName;
         public int stepIndex;
     }
 
@@ -40,6 +45,18 @@ public sealed class TutorialFlowController : MonoBehaviour
         return Current != null && Current.bubble != null && Current.bubble.TryGetScreenRect(out rect);
     }
     public static void Report(string action) { if (Current != null) Current.Complete(action); }
+    public static bool HandlesFirstTerrainNews(TerrainKind kind) =>
+        Current != null && Current.active &&
+        (!Current.firstTerrainHintSeen ||
+         (Current.firstTerrainHintPending || Current.showingTerrainHint) &&
+         Current.firstTerrainName == EcologyNewsDetector.TerrainName(kind));
+    public static void ReportTemperatureApplied(Vector2Int coordinate)
+    {
+        if (Current == null || !Current.active || Current.CurrentStep.completion != "temperature") return;
+        Current.temperatureTarget = coordinate;
+        Current.temperatureTargetSet = true;
+        Current.Complete("temperature");
+    }
     public static void ReportColorClue(SpeciesData species)
     {
         if (species != null && !string.IsNullOrEmpty(species.SpeciesId) &&
@@ -58,6 +75,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     private DarwinJournalCanvas journal;
     private SimulationTime clock;
     private SimulationController simulation;
+    private SimulationEnvironmentController environment;
     private GameInformationUI information;
     private EnvironmentToolSession tools;
     private SpeciesUnlockPresenter discovery;
@@ -68,6 +86,10 @@ public sealed class TutorialFlowController : MonoBehaviour
     private bool active, satisfied, sawPause, colorUnlocked, startupCardClosed, restored;
     private bool ownedPause, resumePending;
     private bool tutorialSeedApplied, pendingTutorialSeed;
+    private bool temperatureTargetSet;
+    private Vector2Int temperatureTarget;
+    private bool firstTerrainHintSeen, firstTerrainHintPending, showingTerrainHint;
+    private string firstTerrainName;
     private const string ColorChickenId = "b59a4a829b4949c5813cf76caa760b47";
     private const string StarterChickenId = "7f1137399e3946cf95ad1054096acacb";
 
@@ -87,15 +109,18 @@ public sealed class TutorialFlowController : MonoBehaviour
         journal = FindFirstObjectByType<DarwinJournalCanvas>();
         clock = FindFirstObjectByType<SimulationTime>();
         simulation = FindFirstObjectByType<SimulationController>();
+        environment = FindFirstObjectByType<SimulationEnvironmentController>();
         information = FindFirstObjectByType<GameInformationUI>();
         tools = FindFirstObjectByType<EnvironmentToolSession>();
         discovery = FindFirstObjectByType<SpeciesUnlockPresenter>();
         maps = FindFirstObjectByType<SpeciesMapsUI>();
         if (journal != null) journal.GameEntered += Begin;
         if (clock != null) clock.OnDayChanged += DayChanged;
+        if (environment != null) environment.Changed += EnvironmentChanged;
+        if (environment != null) environment.TerrainUnlocked += TerrainUnlocked;
         if (simulation != null) simulation.OnSpeciesUnlocked += SpeciesUnlocked;
         if (information != null) information.SelectionChanged += SelectionChanged;
-        bubble = TutorialBubbleView.Create(transform, () => Complete("continue"), Skip);
+        bubble = TutorialBubbleView.Create(transform, Continue, Skip);
     }
 
     private void OnDestroy()
@@ -103,6 +128,8 @@ public sealed class TutorialFlowController : MonoBehaviour
         if (Current == this) Current = null;
         if (journal != null) journal.GameEntered -= Begin;
         if (clock != null) clock.OnDayChanged -= DayChanged;
+        if (environment != null) environment.Changed -= EnvironmentChanged;
+        if (environment != null) environment.TerrainUnlocked -= TerrainUnlocked;
         if (simulation != null) simulation.OnSpeciesUnlocked -= SpeciesUnlocked;
         if (information != null) information.SelectionChanged -= SelectionChanged;
     }
@@ -115,6 +142,9 @@ public sealed class TutorialFlowController : MonoBehaviour
         stepIndex = 0;
         satisfied = sawPause = colorUnlocked = startupCardClosed = false;
         tutorialSeedApplied = false;
+        temperatureTargetSet = false;
+        firstTerrainHintSeen = firstTerrainHintPending = showingTerrainHint = false;
+        firstTerrainName = null;
         pendingTutorialSeed = active;
         if (active)
         {
@@ -129,7 +159,12 @@ public sealed class TutorialFlowController : MonoBehaviour
         sawPause = sawPause, colorUnlocked = colorUnlocked,
         startupCardClosed = startupCardClosed,
         tutorialPaused = ownedPause, resumePending = resumePending,
-        tutorialSeedApplied = tutorialSeedApplied
+        tutorialSeedApplied = tutorialSeedApplied,
+        temperatureTargetSet = temperatureTargetSet,
+        temperatureTargetX = temperatureTarget.x, temperatureTargetY = temperatureTarget.y,
+        firstTerrainHintSeen = firstTerrainHintSeen,
+        firstTerrainHintPending = firstTerrainHintPending || showingTerrainHint,
+        firstTerrainName = firstTerrainName
     };
 
 #if UNITY_EDITOR
@@ -150,6 +185,12 @@ public sealed class TutorialFlowController : MonoBehaviour
         ownedPause = state.tutorialPaused;
         resumePending = state.resumePending;
         tutorialSeedApplied = state.tutorialSeedApplied;
+        temperatureTargetSet = state.temperatureTargetSet;
+        temperatureTarget = new Vector2Int(state.temperatureTargetX, state.temperatureTargetY);
+        firstTerrainHintSeen = state.firstTerrainHintSeen;
+        firstTerrainHintPending = state.firstTerrainHintPending;
+        firstTerrainName = state.firstTerrainName;
+        showingTerrainHint = false;
         pendingTutorialSeed = active && !tutorialSeedApplied && clock != null && clock.currentDay == 0;
         restored = true;
         Refresh();
@@ -165,6 +206,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     {
         if (!active) return;
         active = false;
+        firstTerrainHintPending = showingTerrainHint = false;
         satisfied = false;
         pendingTutorialSeed = false;
         if (ownedPause) { resumePending = true; ownedPause = false; }
@@ -185,7 +227,7 @@ public sealed class TutorialFlowController : MonoBehaviour
         // A restored save can already be on the target day without firing a new
         // OnDayChanged event. Reconcile day gates from the current clock as well.
         if (stepIndex + 1 < flow.steps.Length && clock != null &&
-            clock.currentDay >= flow.steps[stepIndex + 1].day)
+            NextStepReady())
         {
             if (satisfied) Advance();
             else if (CurrentStep.completion == "day") Complete("day");
@@ -230,6 +272,41 @@ public sealed class TutorialFlowController : MonoBehaviour
         Advance();
     }
 
+    private void EnvironmentChanged(System.Collections.Generic.IReadOnlyList<EnvironmentReadSnapshot> _)
+    {
+        if (active && satisfied) Advance();
+    }
+
+    private void TerrainUnlocked(TerrainKind kind, Vector2Int _)
+    {
+        if (!active || firstTerrainHintSeen) return;
+        firstTerrainHintSeen = firstTerrainHintPending = true;
+        firstTerrainName = EcologyNewsDetector.TerrainName(kind);
+        Refresh();
+    }
+
+    private void Continue()
+    {
+        if (showingTerrainHint)
+        {
+            showingTerrainHint = false;
+            Refresh();
+            return;
+        }
+        Complete("continue");
+    }
+
+    private bool NextStepReady()
+    {
+        if (clock == null || stepIndex + 1 >= flow.steps.Length) return false;
+        Step next = flow.steps[stepIndex + 1];
+        if (clock.currentDay < next.day) return false;
+        if (next.temperatureAtLeast <= 0) return true;
+        Vector2Int coordinate = temperatureTargetSet ? temperatureTarget : Vector2Int.zero;
+        return environment != null && environment.TryRead(coordinate, out EnvironmentReadSnapshot read) &&
+            read.Environment.Temperature.Value >= next.temperatureAtLeast;
+    }
+
     private void SelectionChanged(bool population)
     {
         if (information == null) return;
@@ -256,8 +333,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     private void Advance()
     {
         if (!active || clock == null) return;
-        while (satisfied && stepIndex + 1 < flow.steps.Length &&
-               clock.currentDay >= flow.steps[stepIndex + 1].day)
+        while (satisfied && NextStepReady())
         {
             stepIndex++;
             satisfied = false;
@@ -267,7 +343,7 @@ public sealed class TutorialFlowController : MonoBehaviour
         }
         // A paused narrative row may hand off to a later day. Let the clock reach it.
         if (satisfied && stepIndex + 1 < flow.steps.Length && ownedPause &&
-            clock.currentDay < flow.steps[stepIndex + 1].day)
+            !NextStepReady())
         { ownedPause = false; resumePending = true; }
         if (satisfied && stepIndex == flow.steps.Length - 1) FinishTutorial();
         Refresh();
@@ -347,9 +423,25 @@ public sealed class TutorialFlowController : MonoBehaviour
         bubble.SetVisible(active && journal != null && journal.IsGameplayVisible &&
             (discovery == null || !discovery.IsPresenting));
         if (!active) return;
+        if (firstTerrainHintPending && (!CurrentStep.lockSkip || satisfied))
+        {
+            firstTerrainHintPending = false;
+            showingTerrainHint = true;
+        }
+        if (showingTerrainHint)
+        {
+            bubble.SetLesson("新地形", "新地形【" + firstTerrainName + "】解锁了！",
+                true, !CurrentStep.lockSkip || satisfied);
+            return;
+        }
         string message = CurrentStep.text;
         if (satisfied && stepIndex + 1 < flow.steps.Length)
-            message += "\n等待第 " + flow.steps[stepIndex + 1].day + " 天…";
+        {
+            Step next = flow.steps[stepIndex + 1];
+            message += next.temperatureAtLeast > 0 ?
+                "\n等待地块温度达到 " + next.temperatureAtLeast + " 度…" :
+                "\n等待第 " + next.day + " 天…";
+        }
         bool allowSkip = !CurrentStep.lockSkip || satisfied;
         if (!allowSkip) message += "\n完成当前操作后可跳过教程。";
         bubble.SetLesson("引导 " + (stepIndex + 1) + "/" + flow.steps.Length + " · " +

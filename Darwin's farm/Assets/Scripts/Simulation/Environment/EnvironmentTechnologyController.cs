@@ -278,7 +278,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
             if (choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange)
                 TutorialFlowController.Report("plantRecovery");
             else if (choice.Kind == EnvironmentTechnologyKind.TemperatureChange && choice.Tier == 1)
-                TutorialFlowController.Report("temperature");
+                TutorialFlowController.ReportTemperatureApplied(coordinate);
             else if (choice.Kind == EnvironmentTechnologyKind.HumidityChange)
                 TutorialFlowController.Report("humidity");
         }

@@ -215,7 +215,7 @@ public static class MobileUIInstaller
         palette.anchorMin = Vector2.zero; palette.anchorMax = Vector2.right; palette.pivot = Vector2.zero;
         palette.offsetMin = new Vector2(8, 8); palette.offsetMax = new Vector2(-8, 140);
         Set(saved, "buildPalette", palette.gameObject);
-        Label("Function", palette, "左右滑动选地块 → 点击地图定位预览 → 旋转 → 确认", 19, new Vector2(12, -8), new Vector2(1080, 32), false);
+        Label("Function", palette, "左右滑动选地块，点击地图定位预览，旋转后确认", 19, new Vector2(12, -8), new Vector2(1080, 32), false);
         var scrollRoot = Rect("TileList", palette, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         Stretch(scrollRoot, new Vector2(12, 8), new Vector2(-12, -42));
         var scroll = scrollRoot.gameObject.AddComponent<UnityEngine.UI.ScrollRect>(); scroll.horizontal = true; scroll.vertical = false;
@@ -242,7 +242,7 @@ public static class MobileUIInstaller
         Set(saved, "placementControls", controls.gameObject);
         Set(saved, "placementLabel", Label("PreviewStatus", controls, "选地块后，点击地图定位预览", 18, new Vector2(12, -6), new Vector2(576, 28), false));
         var actions = Rect("Actions", controls, Vector2.up, Vector2.up, new Vector2(576, 54), new Vector2(12, -38)); Row(actions, 8);
-        BindButton(saved, "rotateButton", null, Button("RotatePreview", actions, "旋转 90°", new Vector2(180, 54)), 180);
+        BindButton(saved, "rotateButton", null, Button("RotatePreview", actions, "旋转 90 度", new Vector2(180, 54)), 180);
         BindButton(saved, "confirmButton", null, Button("ConfirmPlacement", actions, "确认放置", new Vector2(180, 54)), 180);
         BindButton(saved, "cancelButton", null, Button("CancelPlacement", actions, "取消预览", new Vector2(180, 54)), 180);
     }
