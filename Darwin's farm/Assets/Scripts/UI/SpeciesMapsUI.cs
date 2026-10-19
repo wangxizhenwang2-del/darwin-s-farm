@@ -29,6 +29,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     [SerializeField] private float keyboardPanSpeed = 650f;
 
     private readonly Dictionary<SpeciesData, int> indices = new Dictionary<SpeciesData, int>();
+    private readonly Dictionary<SpeciesData, HashSet<SpeciesData>> evolutionNeighbors =
+        new Dictionary<SpeciesData, HashSet<SpeciesData>>();
     private readonly List<RaycastResult> hits = new List<RaycastResult>();
     private SimulationTime clock;
     private Canvas canvas;
@@ -66,6 +68,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         var speciesById = new Dictionary<string, SpeciesData>();
         foreach (SpeciesData item in setup.MapSpecies)
             if (item != null) speciesById[item.SpeciesId.Replace("-", "")] = item;
+        BuildEvolutionNeighbors(topology?.evolutionLinks, speciesById);
 
         Canvas.ForceUpdateCanvases();
         for (int map = 0; map < 2; map++)
@@ -303,8 +306,10 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void ShowClue(SpeciesMapNodeView node)
     {
         if (!open || node == null || node.Species == null || cluePopup == null) return;
+        if (!CanShowClue(node.Species)) { HideClue(); return; }
+        if (clueNode != node || !cluePopup.gameObject.activeSelf)
+            clueText.text = node.Species.FormattedBreedingClue;
         clueNode = node;
-        clueText.text = node.Species.FormattedBreedingClue;
         RectTransform overlayRect = (RectTransform)overlay.transform;
         Rect bounds = overlayRect.rect;
         float width = Mathf.Min(720f, bounds.width - 32f);
@@ -324,6 +329,35 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void HideClue()
     {
         if (cluePopup != null) cluePopup.gameObject.SetActive(false);
+        clueNode = null;
+    }
+
+    private void BuildEvolutionNeighbors(MapLink[] links, Dictionary<string, SpeciesData> speciesById)
+    {
+        evolutionNeighbors.Clear();
+        if (links == null) return;
+        foreach (MapLink link in links)
+        {
+            if (link == null || string.IsNullOrEmpty(link.from) || string.IsNullOrEmpty(link.to) ||
+                !speciesById.TryGetValue(link.from.Replace("-", ""), out SpeciesData source) ||
+                !speciesById.TryGetValue(link.to.Replace("-", ""), out SpeciesData target) ||
+                source == target) continue;
+            if (!evolutionNeighbors.TryGetValue(source, out HashSet<SpeciesData> from))
+                evolutionNeighbors[source] = from = new HashSet<SpeciesData>();
+            if (!evolutionNeighbors.TryGetValue(target, out HashSet<SpeciesData> to))
+                evolutionNeighbors[target] = to = new HashSet<SpeciesData>();
+            from.Add(target);
+            to.Add(source);
+        }
+    }
+
+    private bool CanShowClue(SpeciesData species)
+    {
+        if (species == null || !evolutionNeighbors.TryGetValue(species, out HashSet<SpeciesData> neighbors))
+            return false;
+        foreach (SpeciesData neighbor in neighbors)
+            if (neighbor != null && neighbor.HasEverUnlocked) return true;
+        return false;
     }
 
     private bool PointerHitsClueOrNode(Vector2 pointer)

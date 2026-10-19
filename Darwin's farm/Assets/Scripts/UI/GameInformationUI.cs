@@ -30,6 +30,7 @@ public sealed class GameInformationUI : MonoBehaviour
     [SerializeField] private PopulationInfoPanel populationPanel;
     [SerializeField] private Text dayText;
     [SerializeField] private Text speedText;
+    [SerializeField] private Text bioenergyText;
     [SerializeField] private UnityEngine.UI.Button tileCloseButton;
     [SerializeField] private UnityEngine.UI.Button populationCloseButton;
     [SerializeField] private TileTrendHistory tileHistory;
@@ -44,6 +45,7 @@ public sealed class GameInformationUI : MonoBehaviour
     private BiomeOcclusionVisibility biomeVisibility;
     private MapTouchInput touchInput;
     private EnvironmentToolSession tools;
+    private BioenergyAccount bioenergy;
     private bool mobilePresentation;
     public bool ToolModeActive => tools != null && tools.Active;
     public WhiteboxPopulation SelectedPopulation
@@ -90,6 +92,16 @@ public sealed class GameInformationUI : MonoBehaviour
     {
         Canvas.ForceUpdateCanvases();
         EnsureLayout();
+        if (bioenergyText == null)
+        {
+            Transform label = transform.Find("InformationHUD/EconomyHUD/BioenergyBalance");
+            if (label == null) label = transform.Find("InformationHUD/EconomyHUD/FundsPlaceholder");
+            if (label != null) bioenergyText = label.GetComponent<Text>();
+        }
+        if (grid != null) bioenergy = grid.GetComponent<BioenergyAccount>();
+        if (bioenergy == null) bioenergy = FindFirstObjectByType<BioenergyAccount>();
+        if (bioenergy != null) bioenergy.BalanceChanged += RefreshBioenergy;
+        RefreshBioenergy(bioenergy != null ? bioenergy.Balance : 0);
         BindWindows();
         tileHistory.Initialize(grid, simulation, clock);
         biomeVisibility = gameObject.GetComponent<BiomeOcclusionVisibility>();
@@ -172,6 +184,7 @@ public sealed class GameInformationUI : MonoBehaviour
             simulation.OnBlockCommunityChanged += RefreshCommunity;
         }
         if (environment != null) environment.Changed += RefreshEnvironment;
+        if (bioenergy != null) bioenergy.BalanceChanged += RefreshBioenergy;
     }
 
     private void OnDisable()
@@ -183,6 +196,7 @@ public sealed class GameInformationUI : MonoBehaviour
             simulation.OnBlockCommunityChanged -= RefreshCommunity;
         }
         if (environment != null) environment.Changed -= RefreshEnvironment;
+        if (bioenergy != null) bioenergy.BalanceChanged -= RefreshBioenergy;
         awaitingRelease = false;
     }
 
@@ -387,12 +401,9 @@ public sealed class GameInformationUI : MonoBehaviour
             new Vector2(300f, 98f), "GameUI/经济ui", new Rect(155f, 482f, 1453f, 473f), root);
         funds.anchoredPosition = new Vector2(24f, -14f);
         funds.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
-        Text money = NewText("FundsPlaceholder", funds, "生物能\n未接入", 22, Ink(),
+        bioenergyText = NewText("BioenergyBalance", funds, "0", 22, Ink(),
             new Vector2(116f, -22f), new Vector2(168f, 62f), false);
-        money.alignment = TextAnchor.MiddleCenter;
-        Text news = NewText("NewsPlaceholder", root, "生态新闻：未接入", 22, Ink(),
-            new Vector2(350f, -25f), new Vector2(450f, 42f), false);
-        news.alignment = TextAnchor.MiddleCenter;
+        bioenergyText.alignment = TextAnchor.MiddleCenter;
         RectTransform time = NewPanel("TimeHUD", Vector2.one, Vector2.one,
             new Vector2(230f, 92f), "GameUI/时间ui", new Rect(320f, 1315f, 1317f, 528f), root);
         time.anchoredPosition = new Vector2(-138f, -14f);
@@ -509,11 +520,17 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void RefreshVisible()
     {
+        if (bioenergy != null) RefreshBioenergy(bioenergy.Balance);
         if (dayText != null) dayText.text = "Day " + (clock == null ? "--" : clock.currentDay.ToString());
         if (speedText != null) speedText.text = clock == null ? "--" :
             clock.IsPaused ? "暂停" : clock.Speed.ToString("0.#") + "X";
         if (tileWindow != null && tileWindow.IsOpen) RefreshTile();
         if (populationWindow != null && populationWindow.IsOpen) RefreshPopulation();
+    }
+
+    private void RefreshBioenergy(long balance)
+    {
+        if (bioenergyText != null) bioenergyText.text = balance.ToString("N0");
     }
 
     private void RefreshTile()

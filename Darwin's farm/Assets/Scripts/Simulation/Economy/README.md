@@ -19,4 +19,4 @@
 
 `BioenergyAccount.CaptureState/TryRestoreState` 保存余额、结算日、首次奖励标记和交易收据；旧存档中的扣费开关不恢复。`PlayerEconomyController.CaptureStorageState/TryRestoreStorageState` 保存生态仓备份。加载顺序：先恢复地图、物种图与模拟日，再恢复账户和生态仓，最后恢复环境时间线；在下一模拟日前完成。仓库当前没有完整世界存档系统，这两个接口用于与其后续对接，不能单独作为完整游戏存档。
 
-正式玩家的地图放置入口已改由 `PlayerEconomyController.TryExpand` 提交。WhiteBox 地块面板增加横向、弯曲、三叉与湖泊四种水格预设，初次放置的旋转免费。场景中的科技面板会显示余额、预估日收和当前费用；经营面板提供收割、仓库、迁移、进化、拆除与水道改造操作。编辑器审计以及旧的 `SimulationInterventionController` 仍是开发测试入口，可直接调用底层环境模型，不属于正式玩家付费通道。
+正式玩家的地图放置入口已改由 `PlayerEconomyController.TryExpand` 提交。WhiteBox 地块面板增加横向、弯曲、三叉与湖泊四种水格预设，初次放置的旋转免费。HUD 的生物能数字读取 `BioenergyAccount.Balance`，科技面板显示余额、预估日收和当前费用。旧的“经营操作”面板已移除，`EconomyOperationsView` 仅保留游戏结束时的重新开局提示；收割、仓库、迁移、进化、拆除与水道改造仍有控制器接口。编辑器审计以及旧的 `SimulationInterventionController` 仍是开发测试入口，可直接调用底层环境模型，不属于正式玩家付费通道。

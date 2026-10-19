@@ -152,7 +152,7 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
             CreatureSprite = species.Portrait,
             SpeciesId = string.IsNullOrWhiteSpace(species.SpeciesId) ? species.SpeciesName : species.SpeciesId,
             SpeciesName = species.SpeciesName,
-            Description = species.Description,
+            Description = species.EcologicalTrivia,
             IsStartupSpecies = startup
         });
     }
@@ -210,7 +210,7 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
         silhouetteImage.rectTransform.localScale = Vector3.one;
         creatureImage.rectTransform.localScale = Vector3.one;
         nameText.text = "我是谁？？？";
-        descriptionText.text = current?.Description ?? string.Empty;
+        descriptionText.text = SpeciesData.ExtractEcologicalTrivia(current?.Description);
         questionGroup.alpha = 1f;
         sparkleCanvasGroup.alpha = 0f;
         descriptionGroup.alpha = 0f;

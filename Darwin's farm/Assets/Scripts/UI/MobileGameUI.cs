@@ -45,6 +45,7 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button[] tileButtons;
     [SerializeField] private MapTileDefinition[] tileDefinitions;
     [SerializeField] private TextMeshProUGUI dayLabel, pauseLabel, speedLabel, buildLabel, titleLabel, placementLabel;
+    [SerializeField] private TextMeshProUGUI bioenergyLabel;
     [Header("Mobile layout (Canvas units)")]
     [SerializeField] private RectTransform statusBar, actionColumn, gestureHelp;
     [SerializeField, Min(320f)] private float maximumDrawerWidth = 520f;
@@ -66,6 +67,7 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button environmentToolsButton;
     private EnvironmentToolSession toolSession;
     private SimulationEnvironmentController terrainUnlocks;
+    private BioenergyAccount bioenergy;
     private bool previousToolMode;
 
     public bool IsMobileActive => isActiveAndEnabled && mobile;
@@ -130,6 +132,12 @@ public sealed class MobileGameUI : MonoBehaviour
         technologyPanel.Initialize();
         toolSession = information.GetComponent<EnvironmentToolSession>();
         terrainUnlocks = FindFirstObjectByType<SimulationEnvironmentController>();
+        bioenergy = FindFirstObjectByType<BioenergyAccount>();
+        if (bioenergyLabel == null)
+        {
+            Transform label = statusBar != null ? statusBar.Find("Economy/Function") : null;
+            if (label != null) bioenergyLabel = label.GetComponent<TextMeshProUGUI>();
+        }
         if (environmentToolsButton != null) environmentToolsButton.onClick.AddListener(() => toolSession.Toggle());
         buildButton.onClick.AddListener(ToggleBuild);
         if (speciesMapButton != null && speciesMaps != null) speciesMapButton.onClick.AddListener(speciesMaps.Toggle);
@@ -384,6 +392,8 @@ public sealed class MobileGameUI : MonoBehaviour
         else if (information.PopulationIsOpen) information.RefreshPopulationView(populationPanel);
         else populationPanel.ShowUnavailable("点击种群查看生物信息");
         technologyPanel.Refresh();
+        if (bioenergyLabel != null)
+            bioenergyLabel.text = bioenergy != null ? bioenergy.Balance.ToString("N0") : "0";
         dayLabel.text = clock == null ? "时间未接入" : "Day " + clock.currentDay;
         speedLabel.text = clock == null ? "倍速未接入" : clock.IsPaused ? "倍速：暂停" : "倍速 " + clock.Speed.ToString("0.#") + "X";
         bool building = buildMode != null && buildMode.IsBuildMode;

@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Darwin's Farm/Species")]
 public class SpeciesData: ScriptableObject
 {
+    private static readonly System.Random ClueHighlightRandom = new System.Random();
     [SerializeField] private string speciesName;
     [SerializeField] private Sprite sprite;
     public Sprite Sprite => sprite;
@@ -24,6 +25,14 @@ public class SpeciesData: ScriptableObject
     public Sprite Portrait => portrait != null ? portrait : sprite;
     public PopulationAnimationSet PopulationAnimation => populationAnimation;
     public string Description => string.IsNullOrWhiteSpace(description) ? "暂无物种介绍" : description;
+    public string EcologicalTrivia => ExtractEcologicalTrivia(Description);
+    public static string ExtractEcologicalTrivia(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return "暂无物种介绍";
+        string normalized = value.Replace("\r\n", "\n").Trim();
+        int separator = normalized.IndexOf("\n\n", StringComparison.Ordinal);
+        return separator < 0 ? normalized : normalized.Substring(0, separator);
+    }
     public string BreedingClue
     {
         get
@@ -33,26 +42,58 @@ public class SpeciesData: ScriptableObject
             return separator < 0 ? value : value.Substring(separator + 2);
         }
     }
-    public string FormattedDescription => Description.Replace(BreedingClue, FormattedBreedingClue);
+    public string FormattedDescription => Description.Replace(BreedingClue, FormattedClueNarrative);
 
-    public string FormattedBreedingClue
+    private string FormattedClueNarrative
     {
         get
         {
             string clue = BreedingClue;
             if (traitClueAnchors == null) return clue;
+            var candidates = new List<int>();
             for (int trait = 0; trait < Mathf.Min(5, traitClueAnchors.Length); trait++)
             {
                 string anchor = traitClueAnchors[trait];
-                if (!HasRevealedTrait(trait) || string.IsNullOrEmpty(anchor)) continue;
+                if (HasRevealedTrait(trait) || string.IsNullOrEmpty(anchor)) continue;
+                if (clue.IndexOf(anchor, StringComparison.Ordinal) >= 0) candidates.Add(trait);
+            }
+            int count = Mathf.Min(2, candidates.Count);
+            for (int i = 0; i < count; i++)
+            {
+                int pick = ClueHighlightRandom.Next(i, candidates.Count);
+                int selected = candidates[pick];
+                candidates[pick] = candidates[i];
+                candidates[i] = selected;
+            }
+            for (int i = 0; i < count; i++)
+            {
+                string anchor = traitClueAnchors[candidates[i]];
                 int position = clue.IndexOf(anchor, StringComparison.Ordinal);
-                if (position < 0) continue;
-                string[] names = { "适温", "适湿", "运动", "体型", "繁殖" };
-                int[] values = { baseFitTemperature, baseFitHumidity, baseMovementAbility, baseSize, baseFertility };
-                string reveal = "<color=#C3342D>（" + names[trait] + " " + values[trait] + "）</color>";
-                clue = clue.Insert(position + anchor.Length, reveal);
+                clue = clue.Insert(position + anchor.Length, "</color>")
+                    .Insert(position, "<color=#C3342D>");
             }
             return clue;
+        }
+    }
+
+    public string FormattedBreedingClue
+    {
+        get
+        {
+            string[] names = { "运动", "繁殖", "体型", "适温", "适湿" };
+            int[] traits = { 2, 4, 3, 0, 1 };
+            int[] values = { baseMovementAbility, baseFertility, baseSize,
+                baseFitTemperature, baseFitHumidity };
+            var stats = new System.Text.StringBuilder();
+            for (int i = 0; i < traits.Length; i++)
+            {
+                if (i > 0) stats.Append("   ");
+                stats.Append(names[i]).Append('：');
+                if (HasRevealedTrait(traits[i]))
+                    stats.Append("<color=#C3342D>").Append(values[i]).Append("</color>");
+                else stats.Append("？？？");
+            }
+            return FormattedClueNarrative + "\n\n" + stats;
         }
     }
 
