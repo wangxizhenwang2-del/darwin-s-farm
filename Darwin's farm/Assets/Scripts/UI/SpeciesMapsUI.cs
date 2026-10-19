@@ -84,7 +84,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             page.zoom = MinimumZoom(page) * defaultZoomMultiplier;
             page.content.localScale = Vector3.one * page.zoom;
             foreach (SpeciesMapNodeView node in page.nodes)
-                if (node != null) node.Bind(Hovered, ShowClue, map == 0);
+                if (node != null) node.Bind(Hovered, ShowClue);
             page.switchButton.onClick.AddListener(Switch);
             page.closeButton.onClick.AddListener(Close);
             ConfigureGraph(page, map == 1 ? topology?.foodLinks : topology?.evolutionLinks, speciesById);
@@ -95,6 +95,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         if (open && clock != null) clock.ReleaseModalPause();
     }
 
@@ -102,6 +103,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (!open) return;
         open = dragging = false;
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         HideClue();
         if (overlay != null) overlay.SetActive(false);
         if (clock != null) clock.ReleaseModalPause();
@@ -180,6 +182,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (placement != null && placement.IsDragging) placement.CancelDrag();
         FindFirstObjectByType<MapTouchInput>()?.CancelGesture();
         open = true;
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", true);
         activePage = 0;
         overlay.SetActive(true);
         // Unity initializes an inactive nested Canvas on first activation.
@@ -199,6 +202,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (!open) return;
         open = dragging = false;
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         touchId = -1;
         pinchDistance = 0f;
         HideClue();
@@ -281,15 +285,31 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         paper.color = paper.sprite != null ? Color.white : new Color(.96f, .93f, .82f);
         paper.raycastTarget = true;
 
+        var titleObject = new GameObject("ClueTitle", typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform titleRect = (RectTransform)titleObject.transform;
+        titleRect.SetParent(cluePopup, false);
+        titleRect.anchorMin = new Vector2(0f, 1f);
+        titleRect.anchorMax = Vector2.one;
+        titleRect.pivot = new Vector2(.5f, 1f);
+        titleRect.offsetMin = new Vector2(76f, -112f);
+        titleRect.offsetMax = new Vector2(-76f, -58f);
+        var titleText = titleObject.GetComponent<TextMeshProUGUI>();
+        titleText.font = GameUITheme.HandwrittenTMPFont;
+        titleText.fontSize = 34f;
+        titleText.color = new Color(.12f, .17f, .13f);
+        titleText.alignment = TextAlignmentOptions.Center;
+        titleText.text = "培育线索";
+        titleText.raycastTarget = false;
+
         var textObject = new GameObject("BreedingClue", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform textRect = (RectTransform)textObject.transform;
         textRect.SetParent(cluePopup, false);
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
         textRect.offsetMin = new Vector2(76f, 64f);
-        textRect.offsetMax = new Vector2(-76f, -64f);
+        textRect.offsetMax = new Vector2(-76f, -130f);
         clueText = textObject.GetComponent<TextMeshProUGUI>();
-        clueText.font = GameUITheme.TMPFont;
+        clueText.font = GameUITheme.HandwrittenTMPFont;
         clueText.fontSize = GameUITheme.ReadableFontSize(22);
         clueText.enableAutoSizing = true;
         clueText.fontSizeMin = 22f;
@@ -315,7 +335,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         float width = Mathf.Min(720f, bounds.width - 32f);
         float textHeight = clueText.GetPreferredValues(clueText.text, width - 152f, 0f).y;
         cluePopup.sizeDelta = new Vector2(width,
-            Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 128f), bounds.height - 32f));
+            Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 194f), bounds.height - 32f));
         Vector2 local = overlayRect.InverseTransformPoint(node.transform.position);
         Vector2 half = cluePopup.sizeDelta * .5f;
         float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);

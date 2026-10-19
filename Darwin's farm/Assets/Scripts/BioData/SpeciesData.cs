@@ -80,14 +80,15 @@ public class SpeciesData: ScriptableObject
     {
         get
         {
-            string[] names = { "运动", "繁殖", "体型", "适温", "适湿" };
-            int[] traits = { 2, 4, 3, 0, 1 };
-            int[] values = { baseMovementAbility, baseFertility, baseSize,
-                baseFitTemperature, baseFitHumidity };
+            string[] names = { "温度", "湿度", "运动", "繁殖", "体型" };
+            int[] traits = { 0, 1, 2, 4, 3 };
+            int[] values = { baseFitTemperature, baseFitHumidity, baseMovementAbility,
+                baseFertility, baseSize };
             var stats = new System.Text.StringBuilder();
             for (int i = 0; i < traits.Length; i++)
             {
-                if (i > 0) stats.Append("   ");
+                if (i == 2) stats.Append('\n');
+                else if (i > 0) stats.Append("   ");
                 stats.Append(names[i]).Append('：');
                 if (HasRevealedTrait(traits[i]))
                     stats.Append("<color=#C3342D>").Append(values[i]).Append("</color>");
