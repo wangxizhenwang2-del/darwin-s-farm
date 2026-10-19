@@ -32,12 +32,16 @@ public sealed class TileStatusView : MonoBehaviour
     private float toolIconOpacity = 1f;
     [SerializeField, Range(0f, 12f), Tooltip("操作图标边缘的柔化范围")]
     private float toolIconFeather = 3f;
+    [Header("Borders")]
+    [SerializeField, Tooltip("是否显示操作卡片和植物量条的深色边框")]
+    private bool showDarkBorders;
     private static Sprite circleMaskSprite;
     private Sprite plantBarSprite, toolCardSprite;
     private float appliedPlantBarFeather = -1f, appliedToolCardFeather = -1f;
     private float appliedPlantBarWidth = -1f, appliedPlantBarOpacity = -1f;
     private float appliedToolCardOpacity = -1f, appliedToolIconOpacity = -1f,
         appliedToolIconFeather = -1f;
+    private bool appliedShowDarkBorders;
     public float PlantFraction { get; private set; }
     public int VisibleToolCount { get; private set; }
     public bool IsVisible => visibility != null && visibility.alpha > 0f;
@@ -100,6 +104,7 @@ public sealed class TileStatusView : MonoBehaviour
     {
         ConfigurePlantBar();
         ConfigureToolCards();
+        SetBorderVisibility();
     }
 
     private void ConfigureToolCards()
@@ -168,6 +173,24 @@ public sealed class TileStatusView : MonoBehaviour
              !Mathf.Approximately(appliedToolIconOpacity, toolIconOpacity) ||
              !Mathf.Approximately(appliedToolIconFeather, toolIconFeather)))
             ConfigureToolCards();
+        if (showDarkBorders != appliedShowDarkBorders) SetBorderVisibility();
+    }
+
+    private void SetBorderVisibility()
+    {
+        if (plantText != null)
+        {
+            Transform border = plantText.transform.parent.Find("Border");
+            if (border != null) border.gameObject.SetActive(showDarkBorders);
+        }
+        if (slots != null)
+            foreach (ToolSlot slot in slots)
+            {
+                if (slot == null || slot.root == null) continue;
+                Transform border = slot.root.Find("Border");
+                if (border != null) border.gameObject.SetActive(showDarkBorders);
+            }
+        appliedShowDarkBorders = showDarkBorders;
     }
 
     private static void EnsureBorder(RectTransform parent)

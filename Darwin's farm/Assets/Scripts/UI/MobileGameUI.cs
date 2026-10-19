@@ -67,7 +67,7 @@ public sealed class MobileGameUI : MonoBehaviour
     private readonly float[] scrollPositions = { 1f, 1f };
     [SerializeField] private UnityEngine.UI.Button environmentToolsButton;
     private EnvironmentToolSession toolSession;
-    private SimulationEnvironmentController terrainUnlocks;
+    private MapGridManager grid;
     private BioenergyAccount bioenergy;
     private bool previousToolMode;
 
@@ -132,7 +132,7 @@ public sealed class MobileGameUI : MonoBehaviour
             handle.Initialize(toolsDrawer != null && handle.transform.IsChildOf(toolsDrawer.transform) ? toolsDrawer : drawer);
         technologyPanel.Initialize();
         toolSession = information.GetComponent<EnvironmentToolSession>();
-        terrainUnlocks = FindFirstObjectByType<SimulationEnvironmentController>();
+        grid = FindFirstObjectByType<MapGridManager>();
         bioenergy = FindFirstObjectByType<BioenergyAccount>();
         if (bioenergyLabel == null)
         {
@@ -394,7 +394,7 @@ public sealed class MobileGameUI : MonoBehaviour
         else populationPanel.ShowUnavailable("点击种群查看生物信息");
         technologyPanel.Refresh();
         if (buildButton != null)
-            buildButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.Build));
+            buildButton.gameObject.SetActive(grid != null && grid.HasPlacedTile);
         if (environmentToolsButton != null)
             environmentToolsButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.EnvironmentPreview));
         if (speciesMapButton != null)
@@ -408,10 +408,10 @@ public sealed class MobileGameUI : MonoBehaviour
         bool building = buildMode != null && buildMode.IsBuildMode;
         buildLabel.text = building ? "退出建造" : "建造地块";
         buildPalette.SetActive(building);
-        if (building && terrainUnlocks != null)
+        if (building && grid != null)
             for (int i = 0; i < tileButtons.Length && i < tileDefinitions.Length; i++)
             {
-                bool unlocked = terrainUnlocks.IsUnlocked(tileDefinitions[i]);
+                bool unlocked = grid.HasPlacedTile && tileDefinitions[i] != null;
                 tileButtons[i].interactable = unlocked;
                 var label = tileButtons[i].GetComponentInChildren<TextMeshProUGUI>(true);
                 if (label != null && tileDefinitions[i] != null)

@@ -49,7 +49,7 @@
     {
       "day": 6,
       "lesson": "查看环境",
-      "text": "<color=#C33A32>点击地块</color>，查看环境信息。",
+      "text": "<color=#C33A32>按住 Alt 并左键点击地形</color>，查看环境信息。触屏设备可以直接点击地块。",
       "unlocks": "TileInfo",
       "completion": "selectTile",
       "pause": true,
@@ -176,7 +176,7 @@
       "day": 76,
       "lesson": "自主培育",
       "text": "湿度、植物日增量和植物存量工具也已开放。注意<color=#C33A32>释放与撤销的时机</color>；善用进化网、种群和地块信息，引导彩鸡进化。",
-      "unlocks": "Humidity,PlantRecovery,PlantStock,Build,AllToolTiers",
+      "unlocks": "Humidity,PlantRecovery,PlantStock,AllToolTiers",
       "completion": "continue",
       "pause": true,
       "lockSkip": false
@@ -184,7 +184,7 @@
     {
       "day": 76,
       "lesson": "等待彩鸡诞生",
-      "text": "现在你已掌握主要操作。继续改造环境并观察鸽鸽的性状，直到<color=#C33A32>彩鸡真正出现</color>。森林地形解锁后，可以按 N 在鸽鸽旁边建造；相邻地块可能影响迁徙和运动能力。",
+      "text": "现在你已掌握主要操作。继续改造环境并观察鸽鸽的性状，直到<color=#C33A32>彩鸡真正出现</color>。地图上已有地块时，可以按 N 在旁边建造；相邻地块可能影响迁徙和运动能力。",
       "unlocks": "",
       "completion": "colorUnlocked",
       "pause": false,

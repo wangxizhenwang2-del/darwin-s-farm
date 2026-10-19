@@ -93,7 +93,7 @@ public class MapBuildModeController : MonoBehaviour
 
     public void SetBuildMode(bool value)
     {
-        if (value && !TutorialFlowController.Allows(TutorialFlowController.Feature.Build)) return;
+        if (value && (gridManager == null || !gridManager.HasPlacedTile)) return;
         IsBuildMode = value;
 
         if (buildPanel != null)

@@ -148,12 +148,9 @@ public sealed class PlayerEconomyController : MonoBehaviour
         int rotation, out string error)
     {
         error = null;
-        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Advanced))
-        { error = "建造将在彩鸡引导完成后解锁"; return false; }
-        if (account == null || grid == null || definition == null || !grid.CanPlaceAt(coordinate))
+        if (account == null || grid == null || !grid.HasPlacedTile ||
+            definition == null || !grid.CanPlaceAt(coordinate))
         { error = "目标地块不可建造"; return false; }
-        if (terrainUnlocks == null || !terrainUnlocks.IsUnlocked(definition))
-        { error = "地形未解锁"; return false; }
         bool placed = account.TryExecute(BioenergySettings.Current.expandTileCost,
             "地块扩张", (_, __) => grid.TryPlaceTile(coordinate, definition, rotation), out error);
         if (placed) OperationCommitted?.Invoke(coordinate,
