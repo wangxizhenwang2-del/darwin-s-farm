@@ -20,7 +20,7 @@ public sealed class EnvironmentToolSession : MonoBehaviour
     public string Notice { get; private set; } = "";
     public string CurrentApplied { get; private set; } = "";
     public bool CanCancel { get; private set; }
-    public bool CanDeploy => Active && TutorialFlowController.AllowsTool(Choice.Kind) &&
+    public bool CanDeploy => Active && TutorialFlowController.AllowsDeployment(Target, Choice) &&
         Preview != null && Preview.IsValid && Target != null &&
         (account == null || account.Balance >= Preview.Cost);
     public string SlotNotice { get; private set; } = "";
@@ -48,11 +48,6 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         if (!TutorialFlowController.Allows(TutorialFlowController.Feature.EnvironmentPreview)) return;
         if (buildMode == null) buildMode = FindFirstObjectByType<MapBuildModeController>();
         if (buildMode != null && buildMode.IsBuildMode) buildMode.SetBuildMode(false);
-        if (information != null)
-        {
-            if (information.TileIsOpen) information.CloseTile();
-            if (information.PopulationIsOpen) information.ClosePopulation();
-        }
         Active = true; Refresh();
     }
     public void End() { Active = false; Preview = null; Notice = ""; Changed?.Invoke(); }
@@ -75,7 +70,9 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         Notice = ""; Begin();
     }
     private static int Tier(int index) => index == 0 ? 2 : index == 1 ? 1 : index == 2 ? -1 : -2;
-    public bool OptionEnabled(int index) => Choice.Kind != EnvironmentTechnologyKind.ElevationChange || index == 1 || index == 2;
+    public bool OptionEnabled(int index) => index >= 0 && index <= 3 &&
+        (Choice.Kind != EnvironmentTechnologyKind.ElevationChange || index == 1 || index == 2) &&
+        TutorialFlowController.AllowsChoice(new EnvironmentTechnologyChoice(Choice.Kind, Tier(index)));
     public string OptionLabel(int index) => Choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
         (Tier(index) > 0 ? "升一级" : "降一级") : (Tier(index) > 0 ? "提高" : "降低") + (Mathf.Abs(Tier(index)) == 1 ? "小档" : "大档");
     public bool OptionSelected(int index) => Choice.Tier == Tier(index);
@@ -124,7 +121,7 @@ public sealed class EnvironmentToolSession : MonoBehaviour
             return title + " · 地块 " + Target.Coordinate + "\n" +
                 "状态：" + StatusText(state) + "\n" +
                 "预计：" + Preview.After + "\n" +
-                "性状：" + TraitForecast(state) + "\n" +
+                "用途：" + TraitForecast(state) + "\n" +
                 "费用：" + Preview.Cost + " 生物能" +
                 (account != null && account.Balance < Preview.Cost ? "（余额不足）" : "") +
                 (string.IsNullOrEmpty(SlotNotice) ? "" : "\n" + SlotNotice);
@@ -141,7 +138,7 @@ public sealed class EnvironmentToolSession : MonoBehaviour
             foreach (PopulationData population in community)
                 if (population != null && population.speciesAmount > 0 &&
                     population.ecologicalNiche == EcologicalNiche.Land)
-                    return "生境会变化，性状方向因种群而异";
+                    return "<color=#C9362B>可能改变生物的性状（因种群而异）</color>";
             return "暂无陆生动物";
         }
         int upward = 0, downward = 0, residents = 0;
@@ -175,9 +172,10 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         string trait = temperature ? "适温" :
             Choice.Kind == EnvironmentTechnologyKind.HumidityChange ? "适湿" :
             Choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange ? "生育" : "体型";
-        if (upward > 0 && downward > 0) return trait + "可能↑/↓（依种群而异）";
-        if (upward > 0) return trait + "可能↑";
-        if (downward > 0) return trait + "可能↓";
+        if (upward > 0 && downward > 0)
+            return "<color=#C9362B>可能提高或降低生物的" + trait + "（因种群而异）</color>";
+        if (upward > 0) return "<color=#C9362B>可能提高生物的" + trait + "</color>";
+        if (downward > 0) return "<color=#C9362B>可能降低生物的" + trait + "</color>";
         return trait + "接近预计目标";
     }
     private string StatusText(EnvironmentSnapshot state)

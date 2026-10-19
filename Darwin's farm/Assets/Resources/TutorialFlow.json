@@ -176,7 +176,7 @@
       "day": 76,
       "lesson": "自主培育",
       "text": "湿度、植物日增量和植物存量工具也已开放。注意<color=#C33A32>释放与撤销的时机</color>；善用进化网、种群和地块信息，引导彩鸡进化。",
-      "unlocks": "Humidity,PlantRecovery,PlantStock,Build",
+      "unlocks": "Humidity,PlantRecovery,PlantStock,Build,AllToolTiers",
       "completion": "continue",
       "pause": true,
       "lockSkip": false

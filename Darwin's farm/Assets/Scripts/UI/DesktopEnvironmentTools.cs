@@ -11,6 +11,7 @@ public sealed class DesktopEnvironmentTools : MonoBehaviour
     [SerializeField] private TextMeshProUGUI preview, current, notice;
     private void Start()
     {
+        preview.richText = true;
         for (int i = 0; i < kinds.Length; i++)
         {
             int index = i;
@@ -40,7 +41,6 @@ public sealed class DesktopEnvironmentTools : MonoBehaviour
                 DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind ?
                 new Color(.58f,.83f,.64f,.35f) : Color.clear;
         if (!session.Active) return;
-        transform.SetAsLastSibling();
         for (int i = 0; i < options.Length; i++)
         {
             EnvironmentToolArtwork.RefreshOption(options[i], session, i);

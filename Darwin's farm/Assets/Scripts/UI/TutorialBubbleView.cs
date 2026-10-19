@@ -95,7 +95,7 @@ public sealed class TutorialBubbleView : MonoBehaviour
         FontStyles style, Color color)
     {
         var text = NewRect(name, parent).gameObject.AddComponent<TextMeshProUGUI>();
-        text.font = GameUITheme.HandwrittenTMPFont;
+        text.font = GameUITheme.TMPFont;
         text.fontSize = size;
         text.fontStyle = style;
         text.color = color;

@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -91,15 +92,24 @@ public sealed class EnvironmentToolsInputChecks : MonoBehaviour
         session.End();
         Require(information.TrySelectTileAt(point) && information.TileIsOpen,
             "Normal information viewing did not open the window");
-        Require(!information.TrySelectTileAt(point) && information.TileIsOpen,
-            "An open information window accepted another map selection");
+        Require(information.TrySelectTileAt(point) && information.TileIsOpen,
+            "An open information window blocked a new map selection");
+        var populationWindow = (InformationWindow)new SerializedObject(information)
+            .FindProperty("populationWindow").objectReferenceValue;
+        populationWindow.Open();
+        Require(information.TileIsOpen && information.PopulationIsOpen,
+            "Tile and population information could not stay open together");
         session.Begin();
-        Require(!information.TileIsOpen && !information.PopulationIsOpen,
-            "Starting the tool session left an information window open");
-        // An existing window must also close when its tile becomes a tool target.
+        Require(information.TileIsOpen && information.PopulationIsOpen,
+            "Starting the tool session closed an information window");
+        information.CloseTile();
+        Require(information.TrySelectSceneAt(point, 0f, true) && information.TileIsOpen &&
+            information.PopulationIsOpen, "Inspection during tool mode did not open tile information");
+        // Tool targeting updates the selected tile without closing either information window.
         information.TrySelectTileAt(point);
-        Require(!information.TileIsOpen,"Existing information window remained open during targeting");
-        session.End(); information.CloseTile();
+        Require(information.TileIsOpen && information.PopulationIsOpen,
+            "Tool targeting closed an existing information window");
+        session.End(); information.CloseTile(); information.ClosePopulation();
         yield return new WaitForSecondsRealtime(.2f);
         Require(information.GetComponent<SelectionOutlinePresenter>().HighlightedTileCount==0,"Closed tile left an outline");
         Result="PASS: mobile tap on release, input ownership, tile outline, read-only preview, one paid plant deployment, cancel, pan suppression, PC selection and close cleanup.";

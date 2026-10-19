@@ -169,6 +169,19 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
             result = new EnvironmentTechnologyPreview { Error = "该工具将在教程后续阶段解锁" };
             return false;
         }
+        if (!TutorialFlowController.AllowsChoice(choice))
+        {
+            result = new EnvironmentTechnologyPreview { Error = "教程当前只允许温度提高一档" };
+            return false;
+        }
+        if (grid == null) grid = GetComponent<MapGridManager>();
+        if (!TutorialFlowController.AllowsDeployment(
+                grid != null && grid.TryGetTile(coordinate, out MapTileInstance tile) ? tile : null,
+                choice))
+        {
+            result = new EnvironmentTechnologyPreview { Error = "请在有鸽鸽的地块应用温度提高一档" };
+            return false;
+        }
         result = Preview(coordinate, choice);
         if (!result.IsValid)
         {
@@ -264,7 +277,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         {
             if (choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange)
                 TutorialFlowController.Report("plantRecovery");
-            else if (choice.Kind == EnvironmentTechnologyKind.TemperatureChange)
+            else if (choice.Kind == EnvironmentTechnologyKind.TemperatureChange && choice.Tier == 1)
                 TutorialFlowController.Report("temperature");
             else if (choice.Kind == EnvironmentTechnologyKind.HumidityChange)
                 TutorialFlowController.Report("humidity");

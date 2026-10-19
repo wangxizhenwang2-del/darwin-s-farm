@@ -38,12 +38,15 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private int activePage;
     private Vector2 lastPointer;
     private RectTransform cluePopup;
+    private InformationWindow clueWindow;
+    private Canvas clueCanvas;
+    private TextMeshProUGUI clueTitle;
     private TextMeshProUGUI clueText;
     private int touchId = -1;
     private float pinchDistance;
     private float suppressNodeClicksUntil;
     private SpeciesMapNodeView clueNode;
-    private Vector2 lastOverlaySize;
+    private Vector2 lastCanvasSize;
     public bool IsOpen => open;
     public bool SuppressNodeClicks => Time.unscaledTime < suppressNodeClicksUntil;
 
@@ -101,10 +104,10 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void OnDisable()
     {
+        HideClue();
         if (!open) return;
         open = dragging = false;
         DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
-        HideClue();
         if (overlay != null) overlay.SetActive(false);
         if (clock != null) clock.ReleaseModalPause();
     }
@@ -124,8 +127,6 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (mouse != null && !touching)
         {
             Vector2 pointer = mouse.position.ReadValue();
-            if (mouse.leftButton.wasPressedThisFrame && cluePopup != null && cluePopup.gameObject.activeSelf &&
-                !PointerHitsClueOrNode(pointer)) HideClue();
             if (RectTransformUtility.RectangleContainsScreenPoint(page.viewport, pointer, canvas.worldCamera))
             {
                 float scroll = mouse.scroll.ReadValue().y;
@@ -157,13 +158,21 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!open) return;
-        Vector2 overlaySize = ((RectTransform)overlay.transform).rect.size;
-        if (overlaySize != lastOverlaySize)
+        if (clueWindow != null && clueWindow.IsOpen)
         {
-            lastOverlaySize = overlaySize;
-            if (clueNode != null && cluePopup.gameObject.activeSelf) ShowClue(clueNode);
+            RectTransform bounds = (RectTransform)transform;
+            if (bounds.rect.size != lastCanvasSize)
+            {
+                lastCanvasSize = bounds.rect.size;
+                clueWindow.SetDragBounds(bounds, cluePopup.anchoredPosition);
+            }
+            if (clueNode != null)
+            {
+                string title = ClueTitle(clueNode.Species);
+                if (clueTitle.text != title) clueTitle.text = title;
+            }
         }
+        if (!open) return;
         MapPage page = pages[activePage];
         float minimum = MinimumZoom(page);
         if (page.zoom < minimum || page.zoom > minimum * Mathf.Max(1f, maxZoomMultiplier))
@@ -190,7 +199,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         // Unity initializes an inactive nested Canvas on first activation.
         Canvas modalCanvas = overlay.GetComponent<Canvas>();
         if (modalCanvas != null) { modalCanvas.overrideSorting = true; modalCanvas.sortingOrder = 300; }
-        HideClue();
+        if (clueCanvas != null) clueCanvas.sortingOrder = 310;
         pages[0].panel.SetActive(true);
         pages[1].panel.SetActive(false);
         foreach (MapPage page in pages)
@@ -208,8 +217,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         touchId = -1;
         pinchDistance = 0f;
-        HideClue();
         overlay.SetActive(false);
+        if (clueCanvas != null) clueCanvas.sortingOrder = 210;
         if (clock != null) clock.ReleaseModalPause();
     }
 
@@ -248,7 +257,6 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             touchId = id; lastPointer = position;
             dragging = first.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began &&
                 RectTransformUtility.RectangleContainsScreenPoint(page.viewport, position, canvas.worldCamera) && IsBlank(position);
-            if (first.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began && !PointerHitsClueOrNode(position)) HideClue();
         }
         if (dragging)
         {
@@ -261,7 +269,6 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void Switch()
     {
-        HideClue();
         pages[activePage].graph.SetHovered(-1);
         pages[activePage].panel.SetActive(false);
         activePage = 1 - activePage;
@@ -277,11 +284,16 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void CreateCluePopup()
     {
-        var root = new GameObject("SpeciesCluePopup", typeof(RectTransform), typeof(Image));
+        var root = new GameObject("SpeciesCluePopup", typeof(RectTransform), typeof(Canvas),
+            typeof(GraphicRaycaster), typeof(Image), typeof(InformationWindow));
         cluePopup = (RectTransform)root.transform;
-        cluePopup.SetParent(overlay.transform, false);
+        cluePopup.SetParent(transform, false);
         cluePopup.anchorMin = cluePopup.anchorMax = new Vector2(.5f, .5f);
         cluePopup.sizeDelta = new Vector2(720f, 480f);
+        clueCanvas = root.GetComponent<Canvas>();
+        clueCanvas.overrideSorting = true;
+        clueCanvas.sortingOrder = open ? 310 : 210;
+        clueWindow = root.GetComponent<InformationWindow>();
         Image paper = root.GetComponent<Image>();
         paper.sprite = Resources.Load<Sprite>("GameUI/SpeciesCluePaper");
         paper.type = Image.Type.Simple;
@@ -296,13 +308,38 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         titleRect.pivot = new Vector2(.5f, 1f);
         titleRect.offsetMin = new Vector2(76f, -112f);
         titleRect.offsetMax = new Vector2(-76f, -58f);
-        var titleText = titleObject.GetComponent<TextMeshProUGUI>();
-        titleText.font = GameUITheme.HandwrittenTMPFont;
-        titleText.fontSize = 34f;
-        titleText.color = new Color(.12f, .17f, .13f);
-        titleText.alignment = TextAlignmentOptions.Center;
-        titleText.text = "培育线索";
-        titleText.raycastTarget = false;
+        clueTitle = titleObject.GetComponent<TextMeshProUGUI>();
+        clueTitle.font = GameUITheme.HandwrittenTMPFont;
+        clueTitle.fontSize = 34f;
+        clueTitle.color = new Color(.12f, .17f, .13f);
+        clueTitle.alignment = TextAlignmentOptions.Center;
+        clueTitle.text = "？？？的培育线索";
+        clueTitle.raycastTarget = false;
+
+        var closeObject = new GameObject("CloseClue", typeof(RectTransform), typeof(Image), typeof(Button));
+        RectTransform closeRect = (RectTransform)closeObject.transform;
+        closeRect.SetParent(cluePopup, false);
+        closeRect.anchorMin = closeRect.anchorMax = closeRect.pivot = Vector2.one;
+        closeRect.anchoredPosition = new Vector2(-35f, -29f);
+        closeRect.sizeDelta = new Vector2(52f, 52f);
+        Image closeBackground = closeObject.GetComponent<Image>();
+        closeBackground.color = new Color(.96f, .92f, .78f, .9f);
+        Button closeButton = closeObject.GetComponent<Button>();
+        closeButton.targetGraphic = closeBackground;
+        closeButton.onClick.AddListener(HideClue);
+        var closeGlyph = new GameObject("Cross", typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform crossRect = (RectTransform)closeGlyph.transform;
+        crossRect.SetParent(closeRect, false);
+        crossRect.anchorMin = Vector2.zero;
+        crossRect.anchorMax = Vector2.one;
+        crossRect.offsetMin = crossRect.offsetMax = Vector2.zero;
+        TextMeshProUGUI crossText = closeGlyph.GetComponent<TextMeshProUGUI>();
+        crossText.font = GameUITheme.TMPFont;
+        crossText.fontSize = 38f;
+        crossText.alignment = TextAlignmentOptions.Center;
+        crossText.color = new Color(.22f, .28f, .18f);
+        crossText.text = "×";
+        crossText.raycastTarget = false;
 
         var textObject = new GameObject("BreedingClue", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform textRect = (RectTransform)textObject.transform;
@@ -323,24 +360,29 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         clueText.alignment = TextAlignmentOptions.MidlineLeft;
         clueText.richText = true;
         clueText.raycastTarget = false;
-        root.SetActive(false);
+        clueWindow.Initialize((RectTransform)transform, Vector2.zero);
     }
+
+    private static string ClueTitle(SpeciesData species) =>
+        (species != null && species.HasEverUnlocked ? species.SpeciesName : "？？？") + "的培育线索";
 
     private void ShowClue(SpeciesMapNodeView node)
     {
         if (!open || node == null || node.Species == null || cluePopup == null) return;
         if (!CanShowClue(node.Species)) { HideClue(); return; }
         TutorialFlowController.ReportColorClue(node.Species);
-        if (clueNode != node || !cluePopup.gameObject.activeSelf)
+        bool newNode = clueNode != node || !clueWindow.IsOpen;
+        if (newNode)
             clueText.text = node.Species.FormattedBreedingClue;
-        clueNode = node;
-        RectTransform overlayRect = (RectTransform)overlay.transform;
-        Rect bounds = overlayRect.rect;
+        clueTitle.text = ClueTitle(node.Species);
+        RectTransform parentRect = (RectTransform)transform;
+        Vector2 anchorOrigin = parentRect.rect.center;
+        Rect bounds = new Rect(-parentRect.rect.size * .5f, parentRect.rect.size);
         float width = Mathf.Min(720f, bounds.width - 32f);
         float textHeight = clueText.GetPreferredValues(clueText.text, width - 152f, 0f).y;
         cluePopup.sizeDelta = new Vector2(width,
             Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 194f), bounds.height - 32f));
-        Vector2 local = overlayRect.InverseTransformPoint(node.transform.position);
+        Vector2 local = (Vector2)parentRect.InverseTransformPoint(node.transform.position) - anchorOrigin;
         Vector2 half = cluePopup.sizeDelta * .5f;
         float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);
         Vector2 position = new Vector2(
@@ -349,10 +391,12 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (TutorialFlowController.TryGetBubbleScreenRect(out Rect bubbleScreen))
         {
             Camera uiCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(overlayRect,
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect,
                 bubbleScreen.min, uiCamera, out Vector2 bubbleMin);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(overlayRect,
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect,
                 bubbleScreen.max, uiCamera, out Vector2 bubbleMax);
+            bubbleMin -= anchorOrigin;
+            bubbleMax -= anchorOrigin;
             Rect bubble = Rect.MinMaxRect(bubbleMin.x, bubbleMin.y, bubbleMax.x, bubbleMax.y);
             Rect proposed = Rect.MinMaxRect(position.x - half.x, position.y - half.y,
                 position.x + half.x, position.y + half.y);
@@ -367,14 +411,20 @@ public sealed class SpeciesMapsUI : MonoBehaviour
                 position.y = top - cluePopup.sizeDelta.y * .5f;
             }
         }
-        cluePopup.anchoredPosition = position;
-        cluePopup.gameObject.SetActive(true);
+        if (newNode)
+        {
+            clueWindow.HideImmediately();
+            clueWindow.Initialize(parentRect, position);
+            lastCanvasSize = parentRect.rect.size;
+            clueWindow.Open();
+        }
+        clueNode = node;
         cluePopup.SetAsLastSibling();
     }
 
     private void HideClue()
     {
-        if (cluePopup != null) cluePopup.gameObject.SetActive(false);
+        if (clueWindow != null) clueWindow.HideImmediately();
         clueNode = null;
     }
 
@@ -403,20 +453,6 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             return false;
         foreach (SpeciesData neighbor in neighbors)
             if (neighbor != null && neighbor.HasEverUnlocked) return true;
-        return false;
-    }
-
-    private bool PointerHitsClueOrNode(Vector2 pointer)
-    {
-        if (EventSystem.current == null) return false;
-        hits.Clear();
-        EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = pointer }, hits);
-        foreach (RaycastResult hit in hits)
-        {
-            if (hit.gameObject.transform.IsChildOf(cluePopup)) return true;
-            SpeciesMapNodeView node = hit.gameObject.GetComponentInParent<SpeciesMapNodeView>();
-            if (node != null && node.ContainsPortrait(pointer, canvas.worldCamera)) return true;
-        }
         return false;
     }
 

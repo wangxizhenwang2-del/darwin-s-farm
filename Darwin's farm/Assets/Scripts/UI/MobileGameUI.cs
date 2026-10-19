@@ -51,6 +51,7 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField, Min(320f)] private float maximumDrawerWidth = 520f;
     [SerializeField, Range(.3f, .6f)] private float drawerWidthFraction = .43f;
     [SerializeField] private Vector2 drawerDefaultPosition = new Vector2(-8f, -92f);
+    private Vector2 ToolsDrawerHome => drawerDefaultPosition + new Vector2(-48f, -48f);
     [SerializeField, Min(100f)] private float drawerBottomClearance = 152f;
     [SerializeField, Min(.05f)] private float refreshSeconds = .25f;
     [Tooltip("Editor preview only: left, top, right, bottom in 720-height Canvas units")]
@@ -125,7 +126,7 @@ public sealed class MobileGameUI : MonoBehaviour
         bound = true;
         Canvas.ForceUpdateCanvases();
         drawer.Initialize(safeArea, drawerDefaultPosition);
-        if (toolsDrawer != null) toolsDrawer.Initialize(safeArea, drawerDefaultPosition);
+        if (toolsDrawer != null) toolsDrawer.Initialize(safeArea, ToolsDrawerHome);
         populationPanel.Initialize(drawer);
         foreach (InformationTextDragHandle handle in GetComponentsInChildren<InformationTextDragHandle>(true))
             handle.Initialize(toolsDrawer != null && handle.transform.IsChildOf(toolsDrawer.transform) ? toolsDrawer : drawer);
@@ -239,8 +240,8 @@ public sealed class MobileGameUI : MonoBehaviour
             toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
             toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
                 Mathf.Clamp(safeArea.rect.height + drawerDefaultPosition.y - 20f, 180f, 612f));
-            if (!Application.isPlaying || !toolsDrawer.IsOpen) toolsDrawerRect.anchoredPosition = drawerDefaultPosition;
-            if (Application.isPlaying && bound) toolsDrawer.SetDragBounds(safeArea, drawerDefaultPosition);
+            if (!Application.isPlaying || !toolsDrawer.IsOpen) toolsDrawerRect.anchoredPosition = ToolsDrawerHome;
+            if (Application.isPlaying && bound) toolsDrawer.SetDragBounds(safeArea, ToolsDrawerHome);
             if (toolsContent != null && toolsViewport != null)
                 toolsContent.localScale = Vector3.one * Mathf.Min(1f, Mathf.Max(1f, width - 40f) / 500f);
         }
@@ -371,7 +372,7 @@ public sealed class MobileGameUI : MonoBehaviour
         if (lastTab != informationTab) ShowTab();
         bool operating = toolSession != null && toolSession.Active;
         bool any = information.TileIsOpen || information.PopulationIsOpen;
-        drawer.SetPresentationVisible(!operating);
+        drawer.SetPresentationVisible(true);
         if (any && !drawer.IsOpen) { ShowTab(); drawer.Open(); }
         else if (!any && drawer.IsOpen) drawer.Close();
         if (toolsDrawer != null)

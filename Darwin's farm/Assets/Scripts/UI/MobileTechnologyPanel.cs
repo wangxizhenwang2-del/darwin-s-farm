@@ -23,6 +23,7 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         session = FindFirstObjectByType<EnvironmentToolSession>();
         if (session == null) return;
         bound = true;
+        previewText.richText = true;
         foldButton.onClick.AddListener(session.End);
         deployButton.onClick.AddListener(session.Deploy);
         cancelButton.onClick.AddListener(session.CancelEffect);

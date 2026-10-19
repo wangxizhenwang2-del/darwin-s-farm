@@ -21,7 +21,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     {
         Clock, FastClock, PopulationInfo, TileInfo, SpeciesMap,
         EnvironmentPreview, PlantRecovery, Temperature, Humidity, PlantStock,
-        CancelTool, Build, Advanced
+        CancelTool, Build, AllToolTiers, Advanced
     }
 
     [Serializable] public sealed class SaveState
@@ -69,6 +69,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     private bool ownedPause, resumePending;
     private bool tutorialSeedApplied, pendingTutorialSeed;
     private const string ColorChickenId = "b59a4a829b4949c5813cf76caa760b47";
+    private const string StarterChickenId = "7f1137399e3946cf95ad1054096acacb";
 
     private void Awake()
     {
@@ -311,6 +312,32 @@ public sealed class TutorialFlowController : MonoBehaviour
             case EnvironmentTechnologyKind.PlantStockChange: return Allows(Feature.PlantStock);
             default: return Allows(Feature.Advanced);
         }
+    }
+
+    public static bool AllowsChoice(EnvironmentTechnologyChoice choice) =>
+        Current == null || Current.AllowsChoiceHere(choice);
+
+    public static bool AllowsDeployment(MapTileInstance tile, EnvironmentTechnologyChoice choice) =>
+        Current == null || Current.AllowsDeploymentHere(tile, choice);
+
+    private bool AllowsChoiceHere(EnvironmentTechnologyChoice choice)
+    {
+        if (!AllowsTool(choice.Kind)) return false;
+        return !active || AllowsHere(Feature.AllToolTiers) ||
+            choice.Kind == EnvironmentTechnologyKind.TemperatureChange && choice.Tier == 1;
+    }
+
+    private bool AllowsDeploymentHere(MapTileInstance tile, EnvironmentTechnologyChoice choice)
+    {
+        if (!AllowsChoiceHere(choice)) return false;
+        if (!active || CurrentStep.completion != "temperature") return true;
+        if (tile == null || tile.Block == null || tile.Block.community == null) return false;
+        foreach (PopulationData population in tile.Block.community)
+            if (population != null && population.speciesAmount > 0 &&
+                population.species != null &&
+                string.Equals(population.species.SpeciesId?.Replace("-", ""),
+                    StarterChickenId, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
     }
 
     private void Refresh()
