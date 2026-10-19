@@ -22,7 +22,7 @@ namespace DarwinFarm.Environment
             public int x, y, elevation, terrain, habitat;
             public bool water, recoveryReturning, recoveryCancelIssued, recoveryDetached;
             public long recoverySequence;
-            public int recoveryAge, recoveryHabitat;
+            public int recoveryAge, recoveryHabitat, recoveryTier;
             public double recoveryBaseline;
             public double[] values = new double[3];
             public SavedTrack[] tracks = new SavedTrack[3];
@@ -35,7 +35,7 @@ namespace DarwinFarm.Environment
         }
         [Serializable] public sealed class SavedLocal
         {
-            public int age, habitat;
+            public int age, habitat, tier;
             public long sequence;
             public double baseline;
         }
@@ -51,6 +51,7 @@ namespace DarwinFarm.Environment
                     recoveryCancelIssued = tile.RecoveryCancelIssued,
                     recoveryDetached = tile.RecoveryDetached,
                     recoverySequence = tile.RecoverySequence, recoveryAge = tile.RecoveryAge,
+                    recoveryTier = tile.RecoveryTier,
                     recoveryHabitat = (int)tile.RecoveryHabitatAtSubmit,
                     recoveryBaseline = tile.RecoveryBaseline
                 };
@@ -65,7 +66,7 @@ namespace DarwinFarm.Environment
                 {
                     LocalClimateEffect local = tile.Locals[i];
                     if (local != null) saved.locals[i] = new SavedLocal {
-                        age=local.Age, sequence=local.Sequence, baseline=local.Baseline,
+                        age=local.Age, tier=local.Tier, sequence=local.Sequence, baseline=local.Baseline,
                         habitat=(int)local.HabitatAtSubmit };
                 }
                 state.tiles.Add(saved);
@@ -91,6 +92,7 @@ namespace DarwinFarm.Environment
                 tile.RecoveryCancelIssued=saved.recoveryCancelIssued;
                 tile.RecoveryDetached=saved.recoveryDetached;
                 tile.RecoverySequence=saved.recoverySequence; tile.RecoveryAge=saved.recoveryAge;
+                tile.RecoveryTier=saved.recoveryTier;
                 tile.RecoveryHabitatAtSubmit=(HabitatState)saved.recoveryHabitat;
                 tile.RecoveryBaseline=saved.recoveryBaseline;
                 for (int i=0;i<3;i++)
@@ -105,7 +107,7 @@ namespace DarwinFarm.Environment
                 {
                     SavedLocal local=saved.locals[i];
                     tile.Locals[i]=local==null ? null : new LocalClimateEffect {
-                        Age=local.age, Sequence=local.sequence, Baseline=local.baseline,
+                        Age=local.age, Tier=local.tier, Sequence=local.sequence, Baseline=local.baseline,
                         HabitatAtSubmit=(HabitatState)local.habitat };
                 }
             }
@@ -169,6 +171,7 @@ namespace DarwinFarm.Environment
             if (Math.Abs(target - tile.Values[index]) < .000001)
             { error = "环境数值未发生有效变化"; return false; }
             tile.Locals[index] = new LocalClimateEffect {
+                Tier = (int)(amount / 25),
                 Sequence = nextCommandSequence++, Baseline = tile.Values[index],
                 HabitatAtSubmit = tile.Habitat };
             tile.Tracks[index].Begin(tile.Values[index], target, 25, EffectPhase.Entering);
@@ -222,6 +225,7 @@ namespace DarwinFarm.Environment
                 double next = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
                     tile.Values[2] + (suppress ? -amount * 100000 : amount));
                 tile.RecoveryBaseline = tile.Values[2];
+                tile.RecoveryTier = suppress ? -(int)Math.Round(amount * 4) : (int)(amount / 25000);
                 tile.RecoveryHabitatAtSubmit = tile.Habitat;
                 if (tile.IsWater)
                 {
