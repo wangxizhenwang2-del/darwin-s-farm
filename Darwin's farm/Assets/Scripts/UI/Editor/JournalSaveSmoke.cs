@@ -40,6 +40,7 @@ public static class JournalSaveSmoke
                 Require(canvas!=null,"Canvas not loaded");
                 var safe=canvas.transform.Find("SafeArea");
                 Click(safe.Find("TitlePanel/NewGame"));
+                UnityEngine.Object.FindFirstObjectByType<TutorialFlowController>()?.CompleteForAutomation();
                 Click(safe.Find("GameMenuButton"));
                 var clock=UnityEngine.Object.FindFirstObjectByType<SimulationTime>();
                 var model=UnityEngine.Object.FindFirstObjectByType<SimulationController>();

@@ -20,7 +20,8 @@ public sealed class EnvironmentToolSession : MonoBehaviour
     public string Notice { get; private set; } = "";
     public string CurrentApplied { get; private set; } = "";
     public bool CanCancel { get; private set; }
-    public bool CanDeploy => Active && Preview != null && Preview.IsValid && Target != null &&
+    public bool CanDeploy => Active && TutorialFlowController.AllowsTool(Choice.Kind) &&
+        Preview != null && Preview.IsValid && Target != null &&
         (account == null || account.Balance >= Preview.Cost);
     public string SlotNotice { get; private set; } = "";
     public MapTileInstance Target => information != null ? information.SelectedTile : null;
@@ -44,8 +45,14 @@ public sealed class EnvironmentToolSession : MonoBehaviour
     }
     public void Begin()
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.EnvironmentPreview)) return;
         if (buildMode == null) buildMode = FindFirstObjectByType<MapBuildModeController>();
         if (buildMode != null && buildMode.IsBuildMode) buildMode.SetBuildMode(false);
+        if (information != null)
+        {
+            if (information.TileIsOpen) information.CloseTile();
+            if (information.PopulationIsOpen) information.ClosePopulation();
+        }
         Active = true; Refresh();
     }
     public void End() { Active = false; Preview = null; Notice = ""; Changed?.Invoke(); }
@@ -54,6 +61,8 @@ public sealed class EnvironmentToolSession : MonoBehaviour
     {
         if (index < 0 || index >= EnvironmentTechnologyCatalog.All.Length) return;
         var kind = EnvironmentTechnologyCatalog.All[index];
+        if (!TutorialFlowController.AllowsTool(kind))
+        { Notice = "这个工具尚未解锁"; Changed?.Invoke(); return; }
         int tier = kind == EnvironmentTechnologyKind.ElevationChange ?
             (Choice.Tier > 0 ? 1 : -1) : Choice.Tier;
         Choice = new EnvironmentTechnologyChoice(kind, tier);
@@ -78,7 +87,8 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         if (environment == null) environment = FindFirstObjectByType<SimulationEnvironmentController>();
         Preview = Active && Target != null && controller != null ? controller.Preview(Target.Coordinate, Choice) : null;
         CurrentApplied = Target != null && controller != null ? controller.CurrentApplied(Target.Coordinate) : "请选择地块";
-        CanCancel = Target != null && controller != null && controller.CanCancel(Target.Coordinate, Choice.Kind);
+        CanCancel = TutorialFlowController.Allows(TutorialFlowController.Feature.CancelTool) &&
+            Target != null && controller != null && controller.CanCancel(Target.Coordinate, Choice.Kind);
         SlotNotice = "";
         if (Target != null && environment != null && environment.TryRead(Target.Coordinate, out var read))
         {

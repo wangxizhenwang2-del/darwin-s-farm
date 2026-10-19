@@ -9,8 +9,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 #endif
 
-// All views and graphics are authored beneath this scene Canvas. Runtime code
-// only binds controls, changes their state, and updates the safe-area anchors.
+// Main views and graphics are authored beneath this scene Canvas. The two
+// optional settings rows and export button clone its existing visual controls.
 [DefaultExecutionOrder(-900)]
 public sealed class DarwinJournalCanvas : MonoBehaviour
 {
@@ -18,10 +18,12 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     public bool IsGameplayVisible => inGame && page == Page.Game;
     [Serializable] private sealed class SettingsData
     {
-        public int schemaVersion = 1;
+        public int schemaVersion = 2;
         public float master = 1, music = 1, effects = 1;
         public int quality = -1, width, height;
         public bool fullscreen = true;
+        public bool testMode;
+        public bool tutorialOnNewGame = true;
     }
     private enum Page { Title, Game, Pause, Settings, Tutorial, Info, Saves, Confirm }
 
@@ -38,6 +40,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     [SerializeField] private TMP_Dropdown qualityDropdown, resolutionDropdown;
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private GameObject resolutionRow, fullscreenRow;
+    private Toggle testModeToggle, newGameTutorialToggle;
+    private Button exportTestButton;
+    private TMP_Text exportTestStatus;
+    private TestSessionRecorder testRecorder;
+    public bool NewGameTutorialEnabled => settings.tutorialOnNewGame;
     [Header("Tutorial")]
     [SerializeField] private TutorialDatabase tutorial;
     [SerializeField] private Button[] categoryButtons, pageButtons;
@@ -77,6 +84,9 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         Time.timeScale = 0f;
         clock.AcquireModalPause();
         LoadSettings();
+        testRecorder = GetComponent<TestSessionRecorder>();
+        if (testRecorder == null) testRecorder = gameObject.AddComponent<TestSessionRecorder>();
+        CreateExtraSettingsControls();
         Bind();
         UpdateSafeArea();
         Show(saveMessage.text.StartsWith("读档失败：",StringComparison.Ordinal)?Page.Saves:Page.Title);
@@ -155,6 +165,20 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             slotDeleteButtons[i].onClick.AddListener(() => RequestDelete(slot));
         }
         BindSettings();
+        newGameTutorialToggle.SetIsOnWithoutNotify(settings.tutorialOnNewGame);
+        newGameTutorialToggle.onValueChanged.AddListener(value => {
+            settings.tutorialOnNewGame = value; SaveSettings();
+        });
+        testModeToggle.SetIsOnWithoutNotify(settings.testMode);
+        testModeToggle.onValueChanged.AddListener(value => {
+            settings.testMode = value;
+            SaveSettings();
+            if (!value) testRecorder.Stop();
+            else if (inGame) StartTestRecording();
+            RefreshTestExport();
+        });
+        exportTestButton.onClick.AddListener(ExportTestCode);
+        RefreshTestExport();
         if (tutorial != null)
         {
             for (int i=0; i<categoryButtons.Length; i++)
@@ -178,6 +202,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         titlePanel.SetActive(target == Page.Title);
         pausePanel.SetActive(target == Page.Pause);
         settingsPanel.SetActive(target == Page.Settings);
+        if (target == Page.Settings) RefreshTestExport();
         tutorialPanel.SetActive(target == Page.Tutorial);
         infoPanel.SetActive(target == Page.Info);
         saveLoadPanel.SetActive(target == Page.Saves);
@@ -224,6 +249,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         Show(Page.Game);
         DarwinAudioDispatch.SetGameplayActive(true);
         GameEntered?.Invoke(loadedSave);
+        if (settings.testMode) StartTestRecording();
+        else RefreshTestExport();
     }
 
     private void OnAudioSpeciesUnlocked(SpeciesData species)
@@ -439,6 +466,85 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         fullscreenToggle.SetIsOnWithoutNotify(settings.fullscreen);
         fullscreenToggle.onValueChanged.AddListener(v => { settings.fullscreen=v; ApplyDisplaySettings(); SaveSettings(); });
     }
+    private void CreateExtraSettingsControls()
+    {
+        var paper = settingsPanel.transform.Find("Paper") as RectTransform;
+        if (paper == null || fullscreenRow == null || pauseResume == null)
+            throw new InvalidOperationException("设置面板缺少排版模板。");
+        paper.sizeDelta = new Vector2(680, 770);
+        foreach (Transform child in paper)
+        {
+            var rect = child as RectTransform;
+            if (rect == null) continue;
+            if (child.name == "Heading" || child.name == "Close")
+                rect.anchoredPosition += new Vector2(0, 87);
+            else if (child.name == "AudioNote")
+                rect.anchoredPosition = new Vector2(0, -338);
+            else rect.anchoredPosition += new Vector2(0, 65);
+        }
+        newGameTutorialToggle = CloneSettingsToggle(paper, "NewGameTutorialRow",
+            "新游戏进入教程", -130);
+        testModeToggle = CloneSettingsToggle(paper, "TestModeRow", "测试模式", -195);
+        exportTestButton = Instantiate(pauseResume, paper);
+        exportTestButton.name = "ExportTestCode";
+        exportTestButton.onClick.RemoveAllListeners();
+        var buttonRect = (RectTransform)exportTestButton.transform;
+        buttonRect.anchorMin = buttonRect.anchorMax = new Vector2(.5f, .5f);
+        buttonRect.sizeDelta = new Vector2(255, 52);
+        buttonRect.anchoredPosition = new Vector2(0, -265);
+        exportTestButton.GetComponentInChildren<TMP_Text>(true).text = "复制测试分享码";
+        exportTestStatus = paper.Find("AudioNote")?.GetComponent<TMP_Text>();
+        if (exportTestStatus != null) exportTestStatus.text = "开启测试模式并进入游戏后，可复制本局记录。";
+    }
+    private Toggle CloneSettingsToggle(RectTransform paper, string name, string label, float y)
+    {
+        var row = Instantiate(fullscreenRow, paper);
+        row.name = name;
+        var rect = (RectTransform)row.transform;
+        rect.anchoredPosition = new Vector2(0, y);
+        var caption = row.transform.Find("Name")?.GetComponent<TMP_Text>();
+        if (caption != null) caption.text = label;
+        var toggle = row.GetComponentInChildren<Toggle>(true);
+        if (toggle == null) throw new InvalidOperationException("设置面板缺少 Toggle 模板。");
+        toggle.onValueChanged.RemoveAllListeners();
+        return toggle;
+    }
+    private void StartTestRecording()
+    {
+        if (!inGame || testRecorder == null) return;
+        if (!testRecorder.Begin(out string error))
+        {
+            if (exportTestStatus != null) exportTestStatus.text = "无法记录：" + error;
+            Debug.LogWarning("Test recording failed: " + error);
+        }
+        else if (exportTestStatus != null) exportTestStatus.text = "正在记录本局；导出后会复制到剪贴板。";
+        RefreshTestExport();
+    }
+    private void RefreshTestExport()
+    {
+        if (exportTestButton != null)
+            exportTestButton.interactable = settings.testMode && inGame && testRecorder != null && testRecorder.IsRecording;
+    }
+    private async void ExportTestCode()
+    {
+        if (testRecorder == null || !testRecorder.IsRecording) return;
+        exportTestButton.interactable = false;
+        if (exportTestStatus != null) exportTestStatus.text = "正在生成分享码…";
+        try
+        {
+            string code = await testRecorder.CreateCodeAsync();
+            if (this == null) return;
+            GUIUtility.systemCopyBuffer = code;
+            if (exportTestStatus != null)
+                exportTestStatus.text = "已复制分享码（" + code.Length + " 字符）" +
+                    (testRecorder.IsTruncated ? "；记录达到容量上限。" : "。");
+        }
+        catch (Exception e)
+        {
+            if (this != null && exportTestStatus != null) exportTestStatus.text = "导出失败：" + e.Message;
+        }
+        finally { if (this != null) RefreshTestExport(); }
+    }
     private void ApplyDisplaySettings()
     {
         if (Application.isMobilePlatform || settings.width <= 0 || settings.height <= 0) return;
@@ -463,6 +569,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
                 if(json.Length<16384)
                 {
                     settings=JsonUtility.FromJson<SettingsData>(json)??settings;
+                    if (settings.schemaVersion < 2)
+                    {
+                        settings.tutorialOnNewGame = true;
+                        settings.schemaVersion = 2;
+                    }
                     hasSavedSettings=true;
                 }
             }

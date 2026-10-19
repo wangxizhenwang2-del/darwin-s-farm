@@ -261,9 +261,11 @@ public sealed class GameInformationUI : MonoBehaviour
         (buildMode == null || !buildMode.IsBuildMode) && viewCamera.pixelRect.Contains(position) &&
         !PointerOverUi(position);
 
-    // Selection replaces the corresponding window's target on both platforms.
+    // Information windows are exclusive; tool mode only selects a tile target.
     public bool TrySelectPopulationAt(Vector2 position, float paddingPixels = 0f)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.PopulationInfo)) return false;
+        if (ToolModeActive || TileIsOpen || PopulationIsOpen) return false;
         if (!CanSelectAt(position)) return false;
         // The existing population cubes intentionally have no colliders. Pick their
         // visible sprite rectangles before querying the terrain colliders below.
@@ -280,6 +282,8 @@ public sealed class GameInformationUI : MonoBehaviour
 
     public bool TrySelectTileAt(Vector2 position)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.TileInfo)) return false;
+        if (!ToolModeActive && (TileIsOpen || PopulationIsOpen)) return false;
         if (!CanSelectAt(position)) return false;
         Ray ray = viewCamera.ScreenPointToRay(position);
         int count = Physics.RaycastNonAlloc(ray, groundHits, 1000f,
@@ -524,8 +528,19 @@ public sealed class GameInformationUI : MonoBehaviour
         if (dayText != null) dayText.text = "Day " + (clock == null ? "--" : clock.currentDay.ToString());
         if (speedText != null) speedText.text = clock == null ? "--" :
             clock.IsPaused ? "暂停" : clock.Speed.ToString("0.#") + "X";
+        RefreshTutorialLocks();
         if (tileWindow != null && tileWindow.IsOpen) RefreshTile();
         if (populationWindow != null && populationWindow.IsOpen) RefreshPopulation();
+    }
+
+    public void RefreshTutorialLocks()
+    {
+        if (speedText == null) return;
+        // The tutorial hides this Button before it is unlocked. Include inactive
+        // parents so a later lesson can find and show it again.
+        var speedButton = speedText.GetComponentInParent<UnityEngine.UI.Button>(true);
+        if (speedButton != null)
+            speedButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.Clock));
     }
 
     private void RefreshBioenergy(long balance)

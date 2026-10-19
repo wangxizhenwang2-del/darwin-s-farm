@@ -392,6 +392,14 @@ public sealed class MobileGameUI : MonoBehaviour
         else if (information.PopulationIsOpen) information.RefreshPopulationView(populationPanel);
         else populationPanel.ShowUnavailable("点击种群查看生物信息");
         technologyPanel.Refresh();
+        if (buildButton != null)
+            buildButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.Build));
+        if (environmentToolsButton != null)
+            environmentToolsButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.EnvironmentPreview));
+        if (speciesMapButton != null)
+            speciesMapButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.SpeciesMap));
+        if (speedButton != null)
+            speedButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.Clock));
         if (bioenergyLabel != null)
             bioenergyLabel.text = bioenergy != null ? bioenergy.Balance.ToString("N0") : "0";
         dayLabel.text = clock == null ? "时间未接入" : "Day " + clock.currentDay;

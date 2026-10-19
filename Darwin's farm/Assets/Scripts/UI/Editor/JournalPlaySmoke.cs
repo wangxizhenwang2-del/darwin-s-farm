@@ -32,6 +32,14 @@ public static class JournalPlaySmoke
             var settings = safe.Find("SettingsPanel");
             var menu = safe.Find("GameMenuButton");
             Require(title.gameObject.activeSelf && Time.timeScale == 0f, "Title did not pause world");
+            Click(title.Find("Settings"));
+            Require(settings.Find("Paper/NewGameTutorialRow")?.GetComponentInChildren<Toggle>() != null,
+                "New-game tutorial setting missing");
+            Require(settings.Find("Paper/TestModeRow")?.GetComponentInChildren<Toggle>() != null,
+                "Test mode setting missing");
+            var export = settings.Find("Paper/ExportTestCode")?.GetComponent<Button>();
+            Require(export != null && !export.interactable, "Export should be disabled before a game starts");
+            Click(settings.Find("Paper/Close"));
             Click(title.Find("NewGame"));
             Require(menu.gameObject.activeSelf && Time.timeScale > 0f, "New game did not resume world");
             Click(menu);

@@ -175,6 +175,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     public void Open()
     {
         if (overlay == null || open || !enabled) return;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.SpeciesMap)) return;
         var journal = FindFirstObjectByType<DarwinJournalCanvas>();
         var discovery = FindFirstObjectByType<SpeciesUnlockPresenter>();
         if ((journal != null && !journal.IsGameplayVisible) || (discovery != null && discovery.IsPresenting)) return;
@@ -182,6 +183,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (placement != null && placement.IsDragging) placement.CancelDrag();
         FindFirstObjectByType<MapTouchInput>()?.CancelGesture();
         open = true;
+        TutorialFlowController.Report("openMap");
         DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", true);
         activePage = 0;
         overlay.SetActive(true);
@@ -202,6 +204,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (!open) return;
         open = dragging = false;
+        TutorialFlowController.Report("closeMap");
         DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         touchId = -1;
         pinchDistance = 0f;
@@ -327,6 +330,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (!open || node == null || node.Species == null || cluePopup == null) return;
         if (!CanShowClue(node.Species)) { HideClue(); return; }
+        TutorialFlowController.ReportColorClue(node.Species);
         if (clueNode != node || !cluePopup.gameObject.activeSelf)
             clueText.text = node.Species.FormattedBreedingClue;
         clueNode = node;
@@ -339,9 +343,31 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         Vector2 local = overlayRect.InverseTransformPoint(node.transform.position);
         Vector2 half = cluePopup.sizeDelta * .5f;
         float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);
-        cluePopup.anchoredPosition = new Vector2(
+        Vector2 position = new Vector2(
             Mathf.Clamp(x, bounds.xMin + half.x, bounds.xMax - half.x),
             Mathf.Clamp(local.y, bounds.yMin + half.y, bounds.yMax - half.y));
+        if (TutorialFlowController.TryGetBubbleScreenRect(out Rect bubbleScreen))
+        {
+            Camera uiCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(overlayRect,
+                bubbleScreen.min, uiCamera, out Vector2 bubbleMin);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(overlayRect,
+                bubbleScreen.max, uiCamera, out Vector2 bubbleMax);
+            Rect bubble = Rect.MinMaxRect(bubbleMin.x, bubbleMin.y, bubbleMax.x, bubbleMax.y);
+            Rect proposed = Rect.MinMaxRect(position.x - half.x, position.y - half.y,
+                position.x + half.x, position.y + half.y);
+            if (proposed.Overlaps(bubble))
+            {
+                // The tutorial uses a separate, higher Canvas. Keep the clue above it.
+                const float gap = 16f;
+                float top = bounds.yMax - gap;
+                float bottom = Mathf.Max(bounds.yMin + gap, bubble.yMax + gap);
+                float availableHeight = Mathf.Max(0f, top - bottom);
+                cluePopup.sizeDelta = new Vector2(width, Mathf.Min(cluePopup.sizeDelta.y, availableHeight));
+                position.y = top - cluePopup.sizeDelta.y * .5f;
+            }
+        }
+        cluePopup.anchoredPosition = position;
         cluePopup.gameObject.SetActive(true);
         cluePopup.SetAsLastSibling();
     }

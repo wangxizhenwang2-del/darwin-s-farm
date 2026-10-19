@@ -58,10 +58,15 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         if (session == null) return;
         expanded = session.Active; ApplyFold();
         for (int i = 0; i < kindButtons.Length; i++)
+        {
+            if (i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length)
+                kindButtons[i].gameObject.SetActive(TutorialFlowController.AllowsTool(
+                    DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i]));
             kindButtons[i].targetGraphic.color =
                 i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&
                 DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind ?
                 selectedColor : normalColor;
+        }
         for (int i = 0; i < optionButtons.Length; i++)
         {
             EnvironmentToolArtwork.RefreshOption(optionButtons[i], session, i);

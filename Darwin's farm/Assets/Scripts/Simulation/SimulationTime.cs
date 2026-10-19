@@ -93,14 +93,14 @@ public class SimulationTime : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard != null && !modalPause)
         {
-            if (keyboard.spaceKey.wasPressedThisFrame) TogglePause();
+            if (keyboard.spaceKey.wasPressedThisFrame) CycleSpeed();
             if (keyboard.digit2Key.wasPressedThisFrame ||
                 keyboard.numpad2Key.wasPressedThisFrame) DoubleSpeed();
             if (keyboard.digit4Key.wasPressedThisFrame ||
                 keyboard.numpad4Key.wasPressedThisFrame) QuadrupleSpeed();
         }
 #else
-        if (!modalPause && Input.GetKeyDown(KeyCode.Space)) TogglePause();
+        if (!modalPause && Input.GetKeyDown(KeyCode.Space)) CycleSpeed();
         if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))) DoubleSpeed();
         if (!modalPause && (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))) QuadrupleSpeed();
 #endif
@@ -120,15 +120,17 @@ public class SimulationTime : MonoBehaviour
         OnSpeedChanged?.Invoke(simulationSpeed);
     }
     public void Play() => SetSpeed(1f);
-    public void DoubleSpeed() => SetSpeed(2f);
-    public void QuadrupleSpeed() => SetSpeed(4f);
+    public void DoubleSpeed() { if (TutorialFlowController.Allows(TutorialFlowController.Feature.FastClock)) SetSpeed(2f); }
+    public void QuadrupleSpeed() { if (TutorialFlowController.Allows(TutorialFlowController.Feature.FastClock)) SetSpeed(4f); }
     // Shared by desktop and mobile: 1x -> 2x -> 4x -> pause -> 1x.
     public void CycleSpeed()
     {
         if (modalPause) return;
-        if (IsPaused) Play();
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Clock)) return;
+        if (IsPaused) { Play(); TutorialFlowController.Report("pauseResume"); }
         else if (Speed >= 4f) Pause();
         else SetSpeed(Speed < 2f ? 2f : 4f);
+        if (IsPaused) TutorialFlowController.Report("pause");
     }
     private void SetSpeed(float speed)
     {
@@ -140,9 +142,11 @@ public class SimulationTime : MonoBehaviour
     public void TogglePause()
     {
         if (modalPause) return;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Clock)) return;
         if (IsPaused) simulationSpeed = lastRunningSpeed > 0f ? lastRunningSpeed : 1f;
         else Pause();
         if (!IsPaused) OnSpeedChanged?.Invoke(simulationSpeed);
+        TutorialFlowController.Report(IsPaused ? "pause" : "pauseResume");
     }
     public void ResetDay()  
     {

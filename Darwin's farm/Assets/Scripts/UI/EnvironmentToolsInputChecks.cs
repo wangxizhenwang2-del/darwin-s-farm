@@ -91,7 +91,11 @@ public sealed class EnvironmentToolsInputChecks : MonoBehaviour
         session.End();
         Require(information.TrySelectTileAt(point) && information.TileIsOpen,
             "Normal information viewing did not open the window");
+        Require(!information.TrySelectTileAt(point) && information.TileIsOpen,
+            "An open information window accepted another map selection");
         session.Begin();
+        Require(!information.TileIsOpen && !information.PopulationIsOpen,
+            "Starting the tool session left an information window open");
         // An existing window must also close when its tile becomes a tool target.
         information.TrySelectTileAt(point);
         Require(!information.TileIsOpen,"Existing information window remained open during targeting");

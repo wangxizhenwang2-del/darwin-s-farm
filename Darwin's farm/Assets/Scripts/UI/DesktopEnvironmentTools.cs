@@ -28,9 +28,12 @@ public sealed class DesktopEnvironmentTools : MonoBehaviour
     private void LateUpdate()
     {
         bool visible = mobile == null || !mobile.IsMobileActive;
-        toolbar.SetActive(visible);
+        toolbar.SetActive(visible && TutorialFlowController.Allows(TutorialFlowController.Feature.EnvironmentPreview));
         body.SetActive(visible && session.Active);
         if (!visible) return;
+        for (int i = 0; i < kinds.Length && i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length; i++)
+            kinds[i].gameObject.SetActive(TutorialFlowController.AllowsTool(
+                DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i]));
         for (int i = 0; i < kinds.Length; i++)
             kinds[i].targetGraphic.color = session.Active &&
                 i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&

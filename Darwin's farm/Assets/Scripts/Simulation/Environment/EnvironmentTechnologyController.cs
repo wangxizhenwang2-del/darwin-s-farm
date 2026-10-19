@@ -164,6 +164,11 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     public bool TryDeploy(Vector2Int coordinate, EnvironmentTechnologyChoice choice,
         out EnvironmentTechnologyPreview result)
     {
+        if (!TutorialFlowController.AllowsTool(choice.Kind))
+        {
+            result = new EnvironmentTechnologyPreview { Error = "该工具将在教程后续阶段解锁" };
+            return false;
+        }
         result = Preview(coordinate, choice);
         if (!result.IsValid)
         {
@@ -255,6 +260,15 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 }
         OperationCommitted?.Invoke(coordinate, "technology_deploy:" + choice.Kind +
             ";tier=" + choice.Tier + ";affectedTiles=" + result.Area.Count);
+        if (choice.Tier > 0)
+        {
+            if (choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange)
+                TutorialFlowController.Report("plantRecovery");
+            else if (choice.Kind == EnvironmentTechnologyKind.TemperatureChange)
+                TutorialFlowController.Report("temperature");
+            else if (choice.Kind == EnvironmentTechnologyKind.HumidityChange)
+                TutorialFlowController.Report("humidity");
+        }
         return true;
     }
 
@@ -304,6 +318,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         out string error)
     {
         error = null;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.CancelTool))
+        { error = "撤销工具尚未解锁"; return false; }
         if (!CanCancel(coordinate, kind))
         {
             error = "这里没有可撤销的对应科技";

@@ -300,6 +300,8 @@ public sealed class SpeciesUnlockPresenter : MonoBehaviour
     public void Continue()
     {
         if (Phase != CardPhase.Ready) return;
+        if (current != null && current.IsStartupSpecies)
+            TutorialFlowController.Report("startupCard");
         PlayNext();
     }
 }
