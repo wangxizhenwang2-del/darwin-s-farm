@@ -228,6 +228,131 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Play_Rc_ji" ID="{F60FFE9A-8175-4B31-9DC5-E1D1BFDAEFC0}">
+					<ChildrenList>
+						<Action Name="" ID="{36B71104-6FAD-4917-AA35-32C9121E2261}" ShortID="248544470">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Rc_ji" ID="{16393ABB-8031-45CB-995B-18D80C8D4B6F}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Rc_caiji" ID="{88A2C2BA-AE11-4DA4-93FA-FE97BAF376E0}">
+					<ChildrenList>
+						<Action Name="" ID="{2E274E58-ECCF-4817-AAA8-B8EDB06622DD}" ShortID="407729433">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Rc_caiji" ID="{B87BC1C2-59DD-4ABD-83D9-B8024E77D5C1}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Rc_lu" ID="{6CC25176-B45C-4547-944D-27F26D692F95}">
+					<ChildrenList>
+						<Action Name="" ID="{C6D51B41-5B69-4BE9-8226-099BC438C390}" ShortID="743797856">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Rc_lu" ID="{215CE276-7427-4680-904F-77A9526DCC1B}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_UI_News_Bad" ID="{95AEB729-F8EA-44B5-AB7D-06EB04E3F75C}">
+					<ChildrenList>
+						<Action Name="" ID="{CB46E8C3-A41F-4E2D-97CF-97E993AB0E05}" ShortID="398387938">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="UI_News_Bad" ID="{93394069-8E4E-4BF0-A4BA-D7DB40A306E7}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_UI_News_good" ID="{1C700386-9CA0-4B9F-986C-12941331AE80}">
+					<ChildrenList>
+						<Action Name="" ID="{F8C03DB8-1D06-40B4-842F-27A069BB29E8}" ShortID="39052956">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="UI_News_good" ID="{1CDA33BE-0F96-462B-A188-268C66B060C3}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_UI_News_Mid" ID="{6890589B-C437-49B2-B981-87CA308D3F57}">
+					<ChildrenList>
+						<Action Name="" ID="{94619F76-934A-49FE-B57E-2FBDBC928B57}" ShortID="786291203">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="UI_News_Mid" ID="{B846541C-4871-4D54-A48E-070C93EA44EE}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_UI_Click" ID="{53571117-0A79-4B30-B6EE-FD0F05660C10}">
+					<ChildrenList>
+						<Action Name="" ID="{6F932789-9B47-40A3-8223-4D8025D763B3}" ShortID="1053581365">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="UI_按钮" ID="{40DF4D1C-E369-4CE6-BF61-24181B6CBC6A}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_UI_Handbook_Open" ID="{77F815F1-321B-41D5-A391-201FCF79E474}">
+					<ChildrenList>
+						<Action Name="" ID="{3D032D5D-D251-467B-A9CA-8F63BAE81676}" ShortID="517409529">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="UI_生物书" ID="{692761E4-BA5E-4F38-A454-2C718C48909F}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_UI_Species_Reveal" ID="{0A348A85-3370-4848-9E67-B930A4DE59C7}">
+					<ChildrenList>
+						<Action Name="" ID="{8D0103AE-032F-489A-9D3F-B7F0162905C5}" ShortID="389549739">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="UI_翻卡" ID="{4D43F93A-7A5C-4858-8A3F-08E2EEB26B0F}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_MSC_BGM" ID="{F0224911-DCA0-4563-8709-B784C25DDD25}">
+					<ChildrenList>
+						<Action Name="" ID="{D2C3BD26-B4B9-4178-9B80-61345AF4A97A}" ShortID="225971386">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="MSC_BGM" ID="{87813FB2-0A38-45B6-A5B2-DDC839E49C84}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_MSC_BGM" ID="{F0A9294F-FE62-4395-887D-4156700F03CE}">
+					<ChildrenList>
+						<Action Name="" ID="{1AEA4074-23AC-446B-8F34-26CFE425E86B}" ShortID="962137334">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+								<Property Name="FadeTime" Type="Real64" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="MSC_BGM" ID="{87813FB2-0A38-45B6-A5B2-DDC839E49C84}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

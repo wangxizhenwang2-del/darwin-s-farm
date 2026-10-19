@@ -11,7 +11,7 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+									<ObjectRef Name="Bus_Ambience" ID="{51C4CE72-FBC4-41D6-BCDD-F5C862924B1D}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -323,7 +323,874 @@
 						</PropertyContainer>
 					</ChildrenList>
 				</Folder>
-				<Folder Name="animals（true）" ID="{BA2ACBB0-4A3E-4C50-8B41-87DD50E13F14}" ShortID="759672576"/>
+				<Folder Name="BGM" ID="{78E39E66-ED66-4F55-AD90-CFEC6A0E1264}" ShortID="337706605">
+					<ChildrenList>
+						<Sound Name="Part1" ID="{A79C45E3-C7CC-4415-92C2-5E2F3CB691EC}" ShortID="459581854">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_Music" ID="{1690B21D-7D9F-466D-AAD5-EA0573FC0C53}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="bossa nova" ID="{16B21677-2A45-42B7-8B58-A23E7E51CB1B}">
+									<Language>SFX</Language>
+									<AudioFile>bossa nova.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="767792914"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="bossa nova" ID="{16B21677-2A45-42B7-8B58-A23E7E51CB1B}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Part2" ID="{5F6CAB5F-7D8D-450C-9F78-5C119F8125C0}" ShortID="482710129">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-4.5</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_Music" ID="{1690B21D-7D9F-466D-AAD5-EA0573FC0C53}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="bossa nova (1)(1)" ID="{122CCCC2-0B7C-40D8-9A76-4307E3301E80}">
+									<Language>SFX</Language>
+									<AudioFile>bossa nova (1)(1).wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="142957103"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="bossa nova (1)(1)" ID="{122CCCC2-0B7C-40D8-9A76-4307E3301E80}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Animals" ID="{53D3E6EE-B1F3-4471-8D2E-521E26F311E9}" ShortID="415465853">
+					<ChildrenList>
+						<Folder Name="P1" ID="{0CF3F608-462D-409B-BE74-FCBC8EBE6A64}" ShortID="236608728">
+							<ChildrenList>
+								<RandomSequenceContainer Name="Rc_ji" ID="{16393ABB-8031-45CB-995B-18D80C8D4B6F}" ShortID="112949972">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="GlobalOrPerObject" Type="int16" Value="0"/>
+										<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Bus_Animals" ID="{724AF606-B67E-415A-B08D-3BF4F4DA7A0B}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Chicken" ID="{A4AB0103-087F-4FB8-A9CA-E8E64BCD3BDF}" ShortID="815311265">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Chicken" ID="{549C84C4-2272-48FC-BA48-716D0D9258C0}">
+													<Language>SFX</Language>
+													<AudioFile>Chicken.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="467202852"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Chicken" ID="{549C84C4-2272-48FC-BA48-716D0D9258C0}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Chicken_2" ID="{4F9A0A53-E660-48EB-9D03-E1439C7F4D85}" ShortID="341640278">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Chicken_2" ID="{31734D8D-7E9C-443A-B332-5BD753826A77}">
+													<Language>SFX</Language>
+													<AudioFile>Chicken_2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="949631507"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Chicken_2" ID="{31734D8D-7E9C-443A-B332-5BD753826A77}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Chicken_3" ID="{3872DF22-BAFF-4351-9957-315828135F42}" ShortID="662782072">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Chicken_3" ID="{C90930DD-B486-43EE-8046-DA7D9B73E477}">
+													<Language>SFX</Language>
+													<AudioFile>Chicken_3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="965911601"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Chicken_3" ID="{C90930DD-B486-43EE-8046-DA7D9B73E477}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Rc_lu" ID="{215CE276-7427-4680-904F-77A9526DCC1B}" ShortID="874487598">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="GlobalOrPerObject" Type="int16" Value="0"/>
+										<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Bus_Animals" ID="{724AF606-B67E-415A-B08D-3BF4F4DA7A0B}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Deer_1" ID="{60E86B67-724D-4C59-BA58-0684BFDBDE26}" ShortID="824123664">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Deer_1" ID="{A428F5C1-C59D-4B45-B261-FF171CD4DBC1}">
+													<Language>SFX</Language>
+													<AudioFile>Deer_1.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="524140263"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Deer_1" ID="{A428F5C1-C59D-4B45-B261-FF171CD4DBC1}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Deer_2" ID="{31D8C93B-8547-4D50-8E25-12C9E7F15DA1}" ShortID="704011690">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Deer_2" ID="{D2AB1A43-5803-480B-A043-EEFFBD7F91CE}">
+													<Language>SFX</Language>
+													<AudioFile>Deer_2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="276585787"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Deer_2" ID="{D2AB1A43-5803-480B-A043-EEFFBD7F91CE}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Deer_3" ID="{330C7386-B065-4448-AEB8-5D782174D536}" ShortID="141698193">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Deer_3" ID="{D9822809-3F79-437B-988A-E4888CEA28B0}">
+													<Language>SFX</Language>
+													<AudioFile>Deer_3.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="1014486077"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Deer_3" ID="{D9822809-3F79-437B-988A-E4888CEA28B0}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Rc_caiji" ID="{B87BC1C2-59DD-4ABD-83D9-B8024E77D5C1}" ShortID="734492741">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="GlobalOrPerObject" Type="int16" Value="0"/>
+										<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Bus_Animals" ID="{724AF606-B67E-415A-B08D-3BF4F4DA7A0B}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="ui_缩混_双声道修正版" ID="{B84C3222-F93D-49E1-A3F4-9A5C1D2AE81E}" ShortID="616096448">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="ui_缩混_双声道修正版" ID="{DADADAA9-CF87-40DF-A1C5-45B4BD9EE9F1}">
+													<Language>SFX</Language>
+													<AudioFile>ui_缩混_双声道修正版.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="190628329"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="ui_缩混_双声道修正版" ID="{DADADAA9-CF87-40DF-A1C5-45B4BD9EE9F1}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+							</ChildrenList>
+						</Folder>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="UI" ID="{882141A1-5FA4-457A-B3DD-2A2ED3D81725}" ShortID="285999403">
+					<ChildrenList>
+						<Sound Name="UI_News_Mid" ID="{B846541C-4871-4D54-A48E-070C93EA44EE}" ShortID="243759312">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>3</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_UI" ID="{161030CA-A3C2-43E2-9956-8F215196B51D}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_News_Notification_V1" ID="{496C849D-D3DE-447E-A1E9-00E458FDC4E2}">
+									<Language>SFX</Language>
+									<AudioFile>UI_News_Notification_V1.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="652789747"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_News_Notification_V1" ID="{496C849D-D3DE-447E-A1E9-00E458FDC4E2}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_翻卡" ID="{4D43F93A-7A5C-4858-8A3F-08E2EEB26B0F}" ShortID="739725213">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-4</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_UI" ID="{161030CA-A3C2-43E2-9956-8F215196B51D}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_NewSpecies_Unlock_Full" ID="{D2DD8FD9-057D-4B50-9D5D-B2AA9C10B8C8}">
+									<Language>SFX</Language>
+									<AudioFile>UI_NewSpecies_Unlock_Full.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="1054074646"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_NewSpecies_Unlock_Full" ID="{D2DD8FD9-057D-4B50-9D5D-B2AA9C10B8C8}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_生物书" ID="{692761E4-BA5E-4F38-A454-2C718C48909F}" ShortID="937539206">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>3</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_UI" ID="{161030CA-A3C2-43E2-9956-8F215196B51D}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_Map" ID="{98DBDBD2-7387-492D-BEBF-C6F5444F51D6}">
+									<Language>SFX</Language>
+									<AudioFile>UI_Handbook_PageTurn_Game_V3.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="619935095"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_Map" ID="{98DBDBD2-7387-492D-BEBF-C6F5444F51D6}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_按钮" ID="{40DF4D1C-E369-4CE6-BF61-24181B6CBC6A}" ShortID="750051023">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>2</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_UI" ID="{161030CA-A3C2-43E2-9956-8F215196B51D}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="ui_水滴" ID="{AFE63D24-6BB2-4D3C-8956-AC24B52BFC72}">
+									<PropertyList>
+										<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+										<Property Name="TrimBegin" Type="Real64" Value="0.28463"/>
+										<Property Name="TrimEnd" Type="Real64" Value="0.56765"/>
+									</PropertyList>
+									<Language>SFX</Language>
+									<AudioFile>ui_水滴.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="152037826"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="ui_水滴" ID="{AFE63D24-6BB2-4D3C-8956-AC24B52BFC72}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_News_good" ID="{1CDA33BE-0F96-462B-A188-268C66B060C3}" ShortID="701014010">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>2</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_UI" ID="{161030CA-A3C2-43E2-9956-8F215196B51D}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_News_Evolution_Celebrate_V1" ID="{2ED734D3-14B8-4C67-8BE5-05CA20848977}">
+									<Language>SFX</Language>
+									<AudioFile>UI_News_Evolution_Celebrate_V1.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="614188399"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_News_Evolution_Celebrate_V1" ID="{2ED734D3-14B8-4C67-8BE5-05CA20848977}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="UI_News_Bad" ID="{93394069-8E4E-4BF0-A4BA-D7DB40A306E7}" ShortID="248214906">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>3</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Bus_UI" ID="{161030CA-A3C2-43E2-9956-8F215196B51D}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="UI_News_Extinction_Regret_V1" ID="{AD9F1218-B6AD-45DE-B93E-201B3271A314}">
+									<Language>SFX</Language>
+									<AudioFile>UI_News_Extinction_Regret_V1.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="936948770"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="UI_News_Extinction_Regret_V1" ID="{AD9F1218-B6AD-45DE-B93E-201B3271A314}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
+				<MusicSwitchContainer Name="MSC_BGM" ID="{87813FB2-0A38-45B6-A5B2-DDC839E49C84}" ShortID="190270409">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Bus_Music" ID="{1690B21D-7D9F-466D-AAD5-EA0573FC0C53}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+						</Reference>
+						<Reference Name="TransitionRoot">
+							<Custom>
+								<MusicTransition Name="Root" ID="{F236BA03-B1B5-4140-8FC0-6C2CFA361F0F}">
+									<PropertyList>
+										<Property Name="IsFolder" Type="bool" Value="True"/>
+									</PropertyList>
+									<ChildrenList>
+										<MusicTransition Name="Transition" ID="{121EDFF8-968D-4838-938E-0FF86F5B0C09}">
+											<TransitionInfo/>
+										</MusicTransition>
+										<MusicTransition Name="Transition" ID="{D95F5B9F-80A8-4DA3-AE05-4782C6A5497D}">
+											<PropertyList>
+												<Property Name="DestinationContextType" Type="int16" Value="2"/>
+												<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
+												<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+												<Property Name="ExitSourceAt" Type="int16" Value="0"/>
+												<Property Name="PlayDestinationPreEntry" Type="bool" Value="False"/>
+												<Property Name="PlaySourcePostExit" Type="bool" Value="False"/>
+												<Property Name="SourceContextType" Type="int16" Value="2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="DestinationContextObject">
+													<ObjectRef Name="MPL_Second" ID="{FEF0D33C-1392-4F96-9044-4B6860A0C9DD}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+												</Reference>
+												<Reference Name="SourceContextObject">
+													<ObjectRef Name="MPL_First" ID="{5E7689BD-2750-4CE6-B782-FD35FD3315F2}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+												</Reference>
+											</ReferenceList>
+											<TransitionInfo>
+												<SourceFadeOut>
+													<MusicFade Name="Source Fade-out" ID="{6DA751FF-0B57-4B7F-9815-9CF979B5FB9F}">
+														<PropertyList>
+															<Property Name="FadeOffset" Type="Real64" Value="1"/>
+															<Property Name="FadeTime" Type="Real64" Value="2"/>
+															<Property Name="FadeType" Type="int16" Value="1"/>
+														</PropertyList>
+													</MusicFade>
+												</SourceFadeOut>
+												<DestinationFadeIn>
+													<MusicFade Name="Destination Fade-in" ID="{E22978A1-6869-4CD9-9888-C9EB6E724B6A}">
+														<PropertyList>
+															<Property Name="FadeTime" Type="Real64" Value="1"/>
+														</PropertyList>
+													</MusicFade>
+												</DestinationFadeIn>
+											</TransitionInfo>
+										</MusicTransition>
+									</ChildrenList>
+									<TransitionInfo/>
+								</MusicTransition>
+							</Custom>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<MusicPlaylistContainer Name="MPL_First" ID="{5E7689BD-2750-4CE6-B782-FD35FD3315F2}" ShortID="552713546">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+								<Reference Name="PlaylistRoot">
+									<Custom>
+										<MusicPlaylistItem Name="" ID="{4060A139-8549-4808-B8A7-30AFCE660F78}" ShortID="178171808">
+											<PropertyList>
+												<Property Name="LoopCount" Type="int16" Value="0"/>
+											</PropertyList>
+											<ChildrenList>
+												<MusicPlaylistItem Name="" ID="{2FF31441-9BA8-4381-BD75-B696853784B1}" ShortID="836652517">
+													<PropertyList>
+														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Segment">
+															<ObjectRef Name="MUS_First" ID="{98DBD3A3-D301-438C-9EB0-9F50EC761322}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+														</Reference>
+													</ReferenceList>
+												</MusicPlaylistItem>
+											</ChildrenList>
+										</MusicPlaylistItem>
+									</Custom>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{01BA0249-2A55-4C5C-B3B9-5E873DC2FD38}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<ChildrenList>
+												<MusicTransition Name="Transition" ID="{0E0192CA-CFA1-4A47-9C89-107F6D609120}">
+													<TransitionInfo/>
+												</MusicTransition>
+											</ChildrenList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicSegment Name="MUS_First" ID="{98DBD3A3-D301-438C-9EB0-9F50EC761322}" ShortID="935788533">
+									<PropertyList>
+										<Property Name="EndPosition" Type="Real64" Value="179140.427218611"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Bus_Music" ID="{1690B21D-7D9F-466D-AAD5-EA0573FC0C53}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<MusicTrack Name="bossa nova" ID="{F3196C49-B21B-4F28-BDB6-DB090A79166A}" ShortID="348506505">
+											<ReferenceList>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+												<Reference Name="TransitionRoot">
+													<Custom>
+														<MusicTransition Name="Root" ID="{53BE081D-278C-494C-B2E8-C67C92340F7E}">
+															<PropertyList>
+																<Property Name="IsFolder" Type="bool" Value="True"/>
+															</PropertyList>
+															<TransitionInfo/>
+														</MusicTransition>
+													</Custom>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="bossa nova" ID="{5CB535E4-B023-420D-814E-017D79B1F5A9}">
+													<Language>SFX</Language>
+													<AudioFile>bossa nova.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="767792914"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="Sequences">
+													<MusicTrackSequence Name="" ID="{ED7D77E7-CC7B-49B7-B115-0D6B2F843D63}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<MusicClip Name="bossa nova" ID="{8BE69C76-38E2-4F04-B095-24E8F44490BC}">
+																	<PropertyList>
+																		<Property Name="BeginTrimOffset" Type="Real64" Value="354.604881363587"/>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="164680"/>
+																		<Property Name="FadeInMode" Type="int16" Value="0"/>
+																		<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																	</PropertyList>
+																	<AudioSourceRef Name="bossa nova" ID="{5CB535E4-B023-420D-814E-017D79B1F5A9}"/>
+																	<PropertyCurveList>
+																		<PropertyCurve PropertyName="Highpass">
+																			<Curve Name="" ID="{94C3C21B-C128-496D-987D-568D5B9B06B0}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="1"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0.3546</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>164.68</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</PropertyCurve>
+																		<PropertyCurve PropertyName="Lowpass">
+																			<Curve Name="" ID="{95A6ADDD-2379-42FF-AAE8-19919CA12E8A}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="1"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0.3546</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>164.68</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</PropertyCurve>
+																		<PropertyCurve PropertyName="Volume">
+																			<Curve Name="" ID="{1B35039B-2349-4868-9787-D6D7B7E56686}">
+																				<PropertyList>
+																					<Property Name="Flags" Type="int32" Value="3"/>
+																				</PropertyList>
+																				<PointList>
+																					<Point>
+																						<XPos>0.3546</XPos>
+																						<YPos>0</YPos>
+																						<Flags>5</Flags>
+																					</Point>
+																					<Point>
+																						<XPos>164.68</XPos>
+																						<YPos>0</YPos>
+																						<Flags>37</Flags>
+																					</Point>
+																				</PointList>
+																			</Curve>
+																		</PropertyCurve>
+																	</PropertyCurveList>
+																</MusicClip>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</ObjectList>
+											</ObjectLists>
+										</MusicTrack>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Cues">
+											<MusicCue Name="Entry Cue" ID="{32F4DC3E-617E-4F94-BE51-A9029CD9448C}"/>
+											<MusicCue Name="Exit Cue" ID="{492999E6-E2A0-4321-8EC0-6F8BBFD3535E}">
+												<PropertyList>
+													<Property Name="CueType" Type="int16" Value="1"/>
+													<Property Name="TimeMs" Type="Real64" Value="164089.911516496"/>
+												</PropertyList>
+											</MusicCue>
+										</ObjectList>
+									</ObjectLists>
+								</MusicSegment>
+							</ChildrenList>
+						</MusicPlaylistContainer>
+						<MusicPlaylistContainer Name="MPL_Second" ID="{FEF0D33C-1392-4F96-9044-4B6860A0C9DD}" ShortID="457388887">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+								</Reference>
+								<Reference Name="PlaylistRoot">
+									<Custom>
+										<MusicPlaylistItem Name="" ID="{7DC34456-238F-4EBA-88BC-B800B0958D94}" ShortID="492174202">
+											<PropertyList>
+												<Property Name="LoopCount" Type="int16" Value="0"/>
+											</PropertyList>
+											<ChildrenList>
+												<MusicPlaylistItem Name="" ID="{2905CA9C-7842-40C7-AC12-CC8C0DC40D6A}" ShortID="858828039">
+													<PropertyList>
+														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Segment">
+															<ObjectRef Name="MUS_Second" ID="{0B0218CB-11B9-494C-81C5-5C77CC09AD3A}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+														</Reference>
+													</ReferenceList>
+												</MusicPlaylistItem>
+											</ChildrenList>
+										</MusicPlaylistItem>
+									</Custom>
+								</Reference>
+								<Reference Name="TransitionRoot">
+									<Custom>
+										<MusicTransition Name="Root" ID="{89AED57C-5F58-401F-BDA2-B7DE16838FB2}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<ChildrenList>
+												<MusicTransition Name="Transition" ID="{B15850BD-010C-4FFD-A5C4-B50AEE5A42BF}">
+													<TransitionInfo/>
+												</MusicTransition>
+											</ChildrenList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</Custom>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicSegment Name="MUS_Second" ID="{0B0218CB-11B9-494C-81C5-5C77CC09AD3A}" ShortID="353481295">
+									<PropertyList>
+										<Property Name="EndPosition" Type="Real64" Value="203838.916023965"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4.5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{21076149-AFBB-4DEB-9619-FA8C8C6BE3BC}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Bus_Music" ID="{1690B21D-7D9F-466D-AAD5-EA0573FC0C53}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<MusicTrack Name="bossa nova (1)(1)" ID="{D7FDB6B2-819F-4A99-8E5D-6340C531B01C}" ShortID="1060295986">
+											<ReferenceList>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{525258F5-8C1A-4968-9801-DD9CC0E21145}"/>
+												</Reference>
+												<Reference Name="TransitionRoot">
+													<Custom>
+														<MusicTransition Name="Root" ID="{B2AAEB47-25E8-433A-88B7-259CBEAB1714}">
+															<PropertyList>
+																<Property Name="IsFolder" Type="bool" Value="True"/>
+															</PropertyList>
+															<TransitionInfo/>
+														</MusicTransition>
+													</Custom>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="bossa nova (1)(1)" ID="{29CA8218-C623-4D1D-84B7-51043C06D392}">
+													<Language>SFX</Language>
+													<AudioFile>bossa nova (1)(1).wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="610726031"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="Sequences">
+													<MusicTrackSequence Name="" ID="{FC6B05F6-F221-4DF8-9B50-EF0BBA53D008}">
+														<ObjectLists>
+															<ObjectList Name="Clips">
+																<MusicClip Name="bossa nova (1)(1)" ID="{D789C37E-2767-44C2-A78C-61E1A60E7ABA}">
+																	<PropertyList>
+																		<Property Name="EndTrimOffset" Type="Real64" Value="197093.5"/>
+																		<Property Name="FadeInMode" Type="int16" Value="0"/>
+																		<Property Name="FadeOutMode" Type="int16" Value="0"/>
+																	</PropertyList>
+																	<AudioSourceRef Name="bossa nova (1)(1)" ID="{29CA8218-C623-4D1D-84B7-51043C06D392}"/>
+																</MusicClip>
+															</ObjectList>
+														</ObjectLists>
+													</MusicTrackSequence>
+												</ObjectList>
+											</ObjectLists>
+										</MusicTrack>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="Cues">
+											<MusicCue Name="Entry Cue" ID="{67A43010-271D-4890-ABA6-9D8FD60269DF}"/>
+											<MusicCue Name="Exit Cue" ID="{A3531B3B-F670-4416-A779-D09F9D0AB561}">
+												<PropertyList>
+													<Property Name="CueType" Type="int16" Value="1"/>
+													<Property Name="TimeMs" Type="Real64" Value="197020.965489241"/>
+												</PropertyList>
+											</MusicCue>
+										</ObjectList>
+									</ObjectLists>
+								</MusicSegment>
+							</ChildrenList>
+						</MusicPlaylistContainer>
+					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="Arguments">
+							<PluginInnerObject Name="" ID="{CBA8EF47-38B7-483B-A5A2-BA22AC442675}" PluginName="MusicArgumentsSlot" CompanyID="0" PluginID="89">
+								<ReferenceList>
+									<Reference Name="Argument">
+										<ObjectRef Name="BGM_Phase" ID="{D9227AF0-A232-4511-8094-88113F913B75}" WorkUnitID="{05EC0367-5DE6-4063-A137-7F69D5D10D6F}"/>
+									</Reference>
+								</ReferenceList>
+							</PluginInnerObject>
+						</ObjectList>
+						<ObjectList Name="Entries">
+							<MultiSwitchEntry Name="" ID="{8E49C043-D6CA-41A9-9914-E08793ABD219}">
+								<ReferenceList>
+									<Reference Name="AudioNode">
+										<ObjectRef Name="MPL_First" ID="{5E7689BD-2750-4CE6-B782-FD35FD3315F2}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+									</Reference>
+								</ReferenceList>
+								<ObjectLists>
+									<ObjectList Name="EntryPath">
+										<PluginInnerObject Name="" ID="{1981D7A6-E60A-455A-A9C4-7D3B88E782BD}" PluginName="EntryPathSlot" CompanyID="0" PluginID="88">
+											<ReferenceList>
+												<Reference Name="EntryPathObject">
+													<ObjectRef Name="First" ID="{D4D74822-5B02-4AE9-ACCD-55BE6426DCEB}" WorkUnitID="{05EC0367-5DE6-4063-A137-7F69D5D10D6F}"/>
+												</Reference>
+											</ReferenceList>
+										</PluginInnerObject>
+									</ObjectList>
+								</ObjectLists>
+							</MultiSwitchEntry>
+							<MultiSwitchEntry Name="" ID="{AA75E31F-E484-4578-9662-0EE771D7F9DA}">
+								<ReferenceList>
+									<Reference Name="AudioNode">
+										<ObjectRef Name="MPL_Second" ID="{FEF0D33C-1392-4F96-9044-4B6860A0C9DD}" WorkUnitID="{8EBAC414-F079-40F6-BE6C-36D6BAA9391F}"/>
+									</Reference>
+								</ReferenceList>
+								<ObjectLists>
+									<ObjectList Name="EntryPath">
+										<PluginInnerObject Name="" ID="{E7980E90-698D-46F9-B19F-A574F8E5DCF6}" PluginName="EntryPathSlot" CompanyID="0" PluginID="88">
+											<ReferenceList>
+												<Reference Name="EntryPathObject">
+													<ObjectRef Name="Second" ID="{8113A589-EA11-47DA-AF2B-5F0940E7D9D2}" WorkUnitID="{05EC0367-5DE6-4063-A137-7F69D5D10D6F}"/>
+												</Reference>
+											</ReferenceList>
+										</PluginInnerObject>
+									</ObjectList>
+								</ObjectLists>
+							</MultiSwitchEntry>
+						</ObjectList>
+					</ObjectLists>
+				</MusicSwitchContainer>
 			</ChildrenList>
 		</WorkUnit>
 	</Containers>

@@ -42,6 +42,26 @@
 							<Position X="0" Y="8"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Play_Rc_ji" ID="{F60FFE9A-8175-4B31-9DC5-E1D1BFDAEFC0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="0" Y="9"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Rc_caiji" ID="{88A2C2BA-AE11-4DA4-93FA-FE97BAF376E0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="0" Y="10"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Rc_lu" ID="{6CC25176-B45C-4547-944D-27F26D692F95}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="0" Y="11"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_News_good" ID="{1C700386-9CA0-4B9F-986C-12941331AE80}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="0" Y="12"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_MSC_BGM" ID="{F0224911-DCA0-4563-8709-B784C25DDD25}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="0" Y="13"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="Stop_Amb_Water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="0"/>
 						</Module>
@@ -76,6 +96,26 @@
 						<Module>
 							<ObjectRef Name="Stop_Amb_SnowMountain" ID="{BB32338B-F6D2-4584-A496-B66DB386768F}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="8"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_Handbook_Open" ID="{77F815F1-321B-41D5-A391-201FCF79E474}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="1" Y="9"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_Species_Reveal" ID="{0A348A85-3370-4848-9E67-B930A4DE59C7}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="1" Y="10"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_News_Bad" ID="{95AEB729-F8EA-44B5-AB7D-06EB04E3F75C}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="1" Y="11"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_News_Mid" ID="{6890589B-C437-49B2-B981-87CA308D3F57}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="1" Y="12"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Stop_MSC_BGM" ID="{F0A9294F-FE62-4395-887D-4156700F03CE}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="1" Y="13"/>
 						</Module>
 					</ModuleList>
 				</SoundcasterSession>

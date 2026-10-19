@@ -1,0 +1,135 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Android",
+  "BasePlatform": "Android",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "76806032",
+    "Type": "User",
+    "GUID": "{3B7C7971-F448-4C1B-9CBF-06C7659FBF92}",
+    "Language": "SFX",
+    "Hash": "{0D04D6AB-E5EE-569D-1977-E5017DC0E285}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SB_Animals",
+    "ShortName": "SB_Animals",
+    "Path": "SB_Animals.bnk",
+    "Media": [
+     {
+      "Id": "190628329",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "ui_缩混_双声道修正版.wav",
+      "CachePath": "7A/{7A56B905-DED0-30CE-71A4-24052E327BF5}.wem"
+     },
+     {
+      "Id": "276585787",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Deer_2.wav",
+      "CachePath": "C1/{C1188BA4-86D2-2677-646C-13549FED28D6}.wem"
+     },
+     {
+      "Id": "467202852",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Chicken.wav",
+      "CachePath": "70/{703253B6-6F68-4BED-4433-C15AA90555A4}.wem"
+     },
+     {
+      "Id": "524140263",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Deer_1.wav",
+      "CachePath": "BC/{BC79D326-DBB8-6AC6-7895-230E182AC43F}.wem"
+     },
+     {
+      "Id": "949631507",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Chicken_2.wav",
+      "CachePath": "22/{225771AF-A300-C3F4-E50B-EDB4AA1A08E4}.wem"
+     },
+     {
+      "Id": "965911601",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Chicken_3.wav",
+      "CachePath": "88/{88BE3443-A118-93A8-3DF9-E199B411C81C}.wem"
+     },
+     {
+      "Id": "1014486077",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Deer_3.wav",
+      "CachePath": "7E/{7E02C8DF-3776-B082-9256-AC71EB465BA6}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3530488080",
+      "Name": "Play_Rc_caiji",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Rc_caiji",
+      "GUID": "{88A2C2BA-AE11-4DA4-93FA-FE97BAF376E0}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.67789584",
+      "DurationMax": "0.67789584",
+      "MediaRefs": [
+       {
+        "Id": "190628329"
+       }
+      ]
+     },
+     {
+      "Id": "2455119981",
+      "Name": "Play_Rc_ji",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Rc_ji",
+      "GUID": "{F60FFE9A-8175-4B31-9DC5-E1D1BFDAEFC0}",
+      "DurationType": "OneShot",
+      "DurationMin": "1.4826875",
+      "DurationMax": "1.6793542",
+      "MediaRefs": [
+       {
+        "Id": "467202852"
+       },
+       {
+        "Id": "949631507"
+       },
+       {
+        "Id": "965911601"
+       }
+      ]
+     },
+     {
+      "Id": "2421564587",
+      "Name": "Play_Rc_lu",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Rc_lu",
+      "GUID": "{6CC25176-B45C-4547-944D-27F26D692F95}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.96827084",
+      "DurationMax": "1.739875",
+      "MediaRefs": [
+       {
+        "Id": "276585787"
+       },
+       {
+        "Id": "524140263"
+       },
+       {
+        "Id": "1014486077"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{272897BD-5F96-672D-C3B1-C1D8A250A31D}"
+ }
+}
