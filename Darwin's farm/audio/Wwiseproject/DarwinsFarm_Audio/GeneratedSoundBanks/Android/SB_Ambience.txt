@@ -1,0 +1,34 @@
+Event	ID	Name			Wwise Object Path	Notes
+	72641391	Stop_Amb_Tundra			\Default Work Unit\Stop_Amb_Tundra	
+	106991668	Play___amb_water			\Default Work Unit\Play___amb_water	
+	857611924	Stop_Amb_Grassland			\Default Work Unit\Stop_Amb_Grassland	
+	878882169	Play_Amb_Tundra			\Default Work Unit\Play_Amb_Tundra	
+	994146778	Play_Amb_Forest			\Default Work Unit\Play_Amb_Forest	
+	1150695560	Stop_Amb_Water			\Default Work Unit\Stop_Amb_Water	
+	1207380743	Stop_Amb_Volcano			\Default Work Unit\Stop_Amb_Volcano	
+	1245970001	Play_Amb_SnowMountain			\Default Work Unit\Play_Amb_SnowMountain	
+	1444143828	Play_Amb_ForestWaterfall			\Default Work Unit\Play_Amb_ForestWaterfall	
+	1494448482	Stop_Amb_ForestWaterfall			\Default Work Unit\Stop_Amb_ForestWaterfall	
+	1716339836	Stop_Amb_Desert			\Default Work Unit\Stop_Amb_Desert	
+	1773750603	Stop_Amb_SnowMountain			\Default Work Unit\Stop_Amb_SnowMountain	
+	2031350918	Play_Amb_Desert			\Default Work Unit\Play_Amb_Desert	
+	2314718212	Play_Amb_Mountain			\Default Work Unit\Play_Amb_Mountain	
+	3443576024	Stop_Amb_Forest			\Default Work Unit\Stop_Amb_Forest	
+	4047723673	Play_Amb_Volcano			\Default Work Unit\Play_Amb_Volcano	
+	4110198574	Stop_Amb_Mountain			\Default Work Unit\Stop_Amb_Mountain	
+	4164364278	Play_Amb_Grassland			\Default Work Unit\Play_Amb_Grassland	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	2177779877	Tile_Gain			\Default Work Unit\Tile_Gain	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	117732597	雪山白噪音_final	.cache\0C\{0C16CD46-05F3-1F7B-FC74-9EF6533D628A}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\雪山白噪音_final		9280096
+	270077421	森林白噪音_final	.cache\54\{546F4A38-B39B-F543-C077-228B878A9F8D}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\森林白噪音_final		9280096
+	324699839	水域	.cache\F7\{F7228FB7-DF33-879D-F868-1FD4B682C64F}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\水域		9280096
+	583627548	草原白噪音_final	.cache\EB\{EBB10A6E-AFB0-50F1-A7CE-7E6B8FE2EAEA}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\草原白噪音_final		9280096
+	587979804	火山白噪音_v2_0	.cache\2F\{2F8AE6F0-871C-7D3A-8C29-C8597B922A4A}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\火山白噪音_v2_0		9280096
+	598553658	苔原白噪音_final	.cache\73\{73B988C4-E6FD-A9A7-2CDF-D3512E3EC331}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\苔原白噪音_final		9280096
+	776589876	森林瀑布	.cache\0D\{0D348DD6-392F-B0E9-5C85-F3E53D1CBB01}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\森林瀑布		8646924
+	833473170	山地白噪音_final	.cache\00\{001E165A-688D-67E3-DC16-62E3575598FE}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\山地白噪音_final		9280096
+	983817063	荒漠白噪音_final	.cache\DB\{DB2BF1A4-EB55-27A2-96C4-06714C4EC9D5}.wem		\Containers\Default Work Unit\ambience\PC_TileAmbience\荒漠白噪音_final		9280096
+

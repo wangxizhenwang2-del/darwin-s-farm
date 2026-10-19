@@ -13,6 +13,65 @@ public static class SpeciesUnlockSceneInstaller
     private const string Art = "Assets/Resources/DarwinJournal/SpeciesUnlock/";
     private static TMP_FontAsset font;
 
+    [MenuItem("Tools/Darwin's Farm/UI/Preview species unlock card")]
+    public static void PreviewCard() => SetPreview(true);
+
+    // Scene Visibility is editor-local and does not change GameObject.activeSelf.
+    // A hidden bubble also hides its child text while both still look enabled in the Inspector.
+    [InitializeOnLoadMethod]
+    private static void RevealCardLabelsAfterReload()
+    {
+        EditorApplication.delayCall += () =>
+        {
+            var card = GameObject.Find("JournalCanvas")?.transform.Find("SafeArea/SpeciesUnlockUI/CardRoot");
+            if (card != null) RevealCardLabels(card);
+        };
+    }
+
+    private static void RevealCardLabels(Transform cardRoot)
+    {
+        var visibility = SceneVisibilityManager.instance;
+        foreach (var path in new[] {
+            "CardFrame/CardTitleBubble", "CardFrame/CardTitleBubble/TitleText",
+            "CardFrame/CardNameBubble", "CardFrame/CardNameBubble/NameText"
+        })
+        {
+            var bubble = cardRoot.Find(path);
+            if (bubble != null && visibility.IsHidden(bubble.gameObject))
+                visibility.Show(bubble.gameObject, true);
+        }
+    }
+
+    [MenuItem("Tools/Darwin's Farm/UI/Preview ecology event toast")]
+    public static void PreviewEcologyToast() => SetPreview(false);
+
+    private static void SetPreview(bool showCard)
+    {
+        if (EditorApplication.isPlaying) throw new InvalidOperationException("Exit Play Mode first.");
+        var safe = GameObject.Find("JournalCanvas")?.transform.Find("SafeArea");
+        var card = safe?.Find("SpeciesUnlockUI");
+        var toast = safe?.Find("EcologyNewsToast");
+        if (card == null || toast == null)
+            throw new InvalidOperationException("Open the WhiteBox scene first.");
+
+        var cardGroup = card.GetComponent<CanvasGroup>();
+        var toastGroup = toast.GetComponent<CanvasGroup>();
+        Undo.RecordObjects(new UnityEngine.Object[] { cardGroup, toastGroup },
+            "Switch UI scene preview");
+        cardGroup.alpha = showCard ? 1f : 0f;
+        toastGroup.alpha = showCard ? 0f : 1f;
+        if (showCard) RevealCardLabels(card.Find("CardRoot"));
+        EditorSceneManager.MarkSceneDirty(card.gameObject.scene);
+        Selection.activeTransform = showCard ? card.Find("CardRoot") : toast;
+        var view = SceneView.lastActiveSceneView;
+        if (view != null)
+        {
+            view.in2DMode = true;
+            view.FrameSelected();
+            view.Repaint();
+        }
+    }
+
     [MenuItem("Tools/Darwin's Farm/UI/Repair species unlock layout")]
     public static void RepairLayout()
     {
@@ -30,12 +89,14 @@ public static class SpeciesUnlockSceneInstaller
         Center(At(""), new Vector2(430, 700), new Vector2(0, 12));
         Center(At("/CardPaperBackground"), new Vector2(402, 650), new Vector2(0, 14));
         Center(At("/CardFrame"), new Vector2(330, 440), new Vector2(0, 85));
-        Center(At("/TitleText"), new Vector2(144, 34), new Vector2(0, 257));
+        Center(At("/CardFrame/CardTitleBubble"), new Vector2(164, 55), new Vector2(0, 172));
+        Center(At("/CardFrame/CardNameBubble"), new Vector2(230, 77), new Vector2(0, -102));
+        Center(At("/CardFrame/CardTitleBubble/TitleText"), new Vector2(144, 34), Vector2.zero);
         Center(At("/CreatureArea"), new Vector2(250, 220), new Vector2(0, 110));
         Center(At("/CreatureArea/SilhouetteImage"), new Vector2(210, 210), Vector2.zero);
         Center(At("/CreatureArea/CreatureImage"), new Vector2(210, 210), Vector2.zero);
         Center(At("/CreatureArea/QuestionMarkGroup"), new Vector2(205, 150), new Vector2(88, 60));
-        Center(At("/NameText"), new Vector2(220, 34), new Vector2(0, -17));
+        Center(At("/CardFrame/CardNameBubble/NameText"), new Vector2(220, 34), Vector2.zero);
         Center(At("/DescriptionGroup"), new Vector2(332, 142), new Vector2(0, -187));
         Center(At("/DescriptionGroup/DescriptionText"), new Vector2(304, 126), Vector2.zero);
         Center(At("/ContinueButton"), new Vector2(190, 44), new Vector2(0, -285));
@@ -52,8 +113,8 @@ public static class SpeciesUnlockSceneInstaller
             label.characterSpacing = 0; label.lineSpacing = 0; label.paragraphSpacing = wrap ? 4 : 0;
             EditorUtility.SetDirty(label);
         }
-        Text("/TitleText", 20, 18, TextAlignmentOptions.Center, false);
-        Text("/NameText", 24, 18, TextAlignmentOptions.Center, false);
+        Text("/CardFrame/CardTitleBubble/TitleText", 20, 18, TextAlignmentOptions.Center, false);
+        Text("/CardFrame/CardNameBubble/NameText", 24, 18, TextAlignmentOptions.Center, false);
         Text("/DescriptionGroup/DescriptionText", 17, 14, TextAlignmentOptions.TopLeft, true);
         Text("/ContinueButton/Label", 21, 19, TextAlignmentOptions.Center, false);
     }
@@ -92,6 +153,8 @@ public static class SpeciesUnlockSceneInstaller
         font = GameUITheme.TMPFont;
         Sprite paper = Import("CardPaperCutout");
         Sprite frame = Import("CardFrame");
+        Sprite titleBubble = Import("CardFrameTopBubble");
+        Sprite nameBubble = Import("CardFrameBottomBubble");
         Sprite[] questions = Slice("QuestionMarks");
         Sprite[] stars = Slice("Sparkles");
 
@@ -109,9 +172,16 @@ public static class SpeciesUnlockSceneInstaller
         var paperImage = Picture("CardPaperBackground", card, paper,
             new Vector2(450, 600), Vector2.zero);
         paperImage.preserveAspect = true;
-        Picture("CardFrame", card, frame, new Vector2(340, 453), new Vector2(0, 55));
-        Label("TitleText", card, "新物种发现", 25,
-            new Vector2(0, 225), new Vector2(230, 42));
+        var frameImage = Picture("CardFrame", card, frame,
+            new Vector2(340, 453), new Vector2(0, 55));
+        var titleBubbleImage = Picture("CardTitleBubble", frameImage.transform, titleBubble,
+            new Vector2(164, 55), new Vector2(0, 172));
+        titleBubbleImage.preserveAspect = true;
+        Label("TitleText", titleBubbleImage.transform, "新物种发现", 25,
+            Vector2.zero, new Vector2(144, 34));
+        var nameBubbleImage = Picture("CardNameBubble", frameImage.transform, nameBubble,
+            new Vector2(230, 77), new Vector2(0, -102));
+        nameBubbleImage.preserveAspect = true;
 
         var creature = Rect("CreatureArea", card);
         Center(creature, new Vector2(265, 250), new Vector2(0, 72));
@@ -144,8 +214,8 @@ public static class SpeciesUnlockSceneInstaller
                 new Vector2(66, 95), new Vector2(i == 0 ? -118 : i == 1 ? 112 : 105,
                     i == 2 ? -92 : 88));
 
-        var name = Label("NameText", card, "灵感菇狸", 25,
-            new Vector2(0, -50), new Vector2(270, 44));
+        var name = Label("NameText", nameBubbleImage.transform, "灵感菇狸", 25,
+            Vector2.zero, new Vector2(220, 34));
         var descriptionRoot = Rect("DescriptionGroup", card);
         Center(descriptionRoot, new Vector2(330, 114), new Vector2(0, -180));
         var descriptionGroup = descriptionRoot.gameObject.AddComponent<CanvasGroup>();

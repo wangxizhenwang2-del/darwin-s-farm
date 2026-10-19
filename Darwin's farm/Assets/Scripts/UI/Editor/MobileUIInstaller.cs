@@ -48,7 +48,8 @@ public static class MobileUIInstaller
         var economy = Panel("Economy", hud, new Vector2(190, 68));
         CopyArt(information.transform.Find("InformationHUD/EconomyHUD"), economy);
         Layout(economy, 190f, false);
-        var economyLabel = Label("Function", economy, "生物能：未接入", 18, Vector2.zero, new Vector2(190, 68), false, true);
+        var economyLabel = Label("Function", economy, "0", 18, Vector2.zero, new Vector2(190, 68), false, true);
+        Set(saved, "bioenergyLabel", economyLabel);
         economyLabel.rectTransform.offsetMin = new Vector2(64, 0);
         economyLabel.rectTransform.offsetMax = new Vector2(-8, 0);
         var day = Panel("Day", hud, new Vector2(140, 68));

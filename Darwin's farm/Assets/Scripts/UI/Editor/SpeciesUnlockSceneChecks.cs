@@ -17,6 +17,12 @@ public static class SpeciesUnlockSceneChecks
             var card = journal.transform.Find("SafeArea/SpeciesUnlockUI");
             Require(card != null, "authored SpeciesUnlockUI missing");
             Require(card.Find("CardRoot/CardFrame") != null, "card frame missing");
+            var titleBubble = card.Find("CardRoot/CardFrame/CardTitleBubble")?.GetComponent<Image>();
+            var nameBubble = card.Find("CardRoot/CardFrame/CardNameBubble")?.GetComponent<Image>();
+            Require(titleBubble != null && titleBubble.sprite != null &&
+                titleBubble.sprite.name == "CardFrameTopBubble", "title bubble missing");
+            Require(nameBubble != null && nameBubble.sprite != null &&
+                nameBubble.sprite.name == "CardFrameBottomBubble", "name bubble missing");
             Require(card.Find("CardRoot/CreatureArea/SilhouetteImage") != null,
                 "silhouette missing");
             Require(card.Find("CardRoot/CreatureArea/CreatureImage") != null,
@@ -32,7 +38,9 @@ public static class SpeciesUnlockSceneChecks
                 "scene preview is hidden");
             Require(card.Find("CardRoot/CreatureArea/CreatureImage")
                 .GetComponent<Image>().sprite != null, "scene sample portrait missing");
-            Require(!string.IsNullOrWhiteSpace(card.Find("CardRoot/NameText")
+            Require(!string.IsNullOrWhiteSpace(card.Find("CardRoot/CardFrame/CardTitleBubble/TitleText")
+                .GetComponent<TMP_Text>().text), "scene sample title missing");
+            Require(!string.IsNullOrWhiteSpace(card.Find("CardRoot/CardFrame/CardNameBubble/NameText")
                 .GetComponent<TMP_Text>().text), "scene sample name missing");
             Require(!string.IsNullOrWhiteSpace(card.Find("CardRoot/DescriptionGroup/DescriptionText")
                 .GetComponent<TMP_Text>().text), "scene sample description missing");

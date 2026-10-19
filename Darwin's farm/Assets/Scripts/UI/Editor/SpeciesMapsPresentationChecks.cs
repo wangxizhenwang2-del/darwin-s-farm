@@ -32,12 +32,23 @@ public static class SpeciesMapsPresentationChecks
         Require(((RectTransform)button.transform).anchoredPosition.y < ((RectTransform)build.transform).anchoredPosition.y,"Mobile button position");
         var flags = Private;
         var show = maps.GetType().GetMethod("ShowClue",flags);
+        var eligible = maps.GetType().GetMethod("CanShowClue",flags);
         var text = root.GetComponentsInChildren<TMPro.TMP_Text>(true).First(t=>t.name=="BreedingClue");
+        var popup = text.transform.parent;
         int count=0;
         foreach(var node in root.GetComponentsInChildren<SpeciesMapNodeView>(true))
         {
             show.Invoke(maps,new object[]{node}); Canvas.ForceUpdateCanvases(); text.ForceMeshUpdate();
-            Require(!text.isTextOverflowing,"Clue overflow: "+node.name); count++;
+            bool canShow=(bool)eligible.Invoke(maps,new object[]{node.Species});
+            Require(popup.gameObject.activeSelf==canShow,"Clue eligibility: "+node.name);
+            if(canShow)
+            {
+                Require(!text.isTextOverflowing,"Clue overflow: "+node.name);
+                string narrative=text.text.Split(new[]{"\n\n"},StringSplitOptions.None)[0];
+                int redKeywords=System.Text.RegularExpressions.Regex.Matches(narrative,"<color=#C3342D>").Count;
+                Require(redKeywords<=2,"Too many highlighted clue keywords: "+node.name);
+            }
+            count++;
         }
         maps.GetType().GetMethod("HideClue",flags).Invoke(maps,null);
         var buttons=root.GetComponentsInChildren<UnityEngine.UI.Button>(true);

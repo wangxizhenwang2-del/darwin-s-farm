@@ -9,7 +9,6 @@ public sealed class BioenergySettingsWindow : EditorWindow
     private static readonly (string field, string label)[] AccountFields =
     {
         ("initialBalance", "开局生物能"),
-        ("dailyIncomeMultiplier", "日收入倍率"),
         ("harvestIncomeMultiplier", "收割收入倍率"),
         ("harvestPercent", "收割比例（%）"),
         ("minimumHarvestCount", "最低收割数量"),
@@ -78,7 +77,7 @@ public sealed class BioenergySettingsWindow : EditorWindow
             if (GUILayout.Button("重新读取")) OnEnable();
             return;
         }
-        EditorGUILayout.HelpBox("修改后自动保存到项目资产。费用和收益会在下一次计算时使用新数值；开局余额在新开局时生效。", MessageType.Info);
+        EditorGUILayout.HelpBox("修改后自动保存到项目资产。每日收入为所有种群的数量乘物种价值之和；玩家操作目前免费，费用设置留待后续启用。", MessageType.Info);
         scroll = EditorGUILayout.BeginScrollView(scroll);
         var serialized = new SerializedObject(settings);
         serialized.Update();

@@ -83,9 +83,7 @@ public sealed class WhiteboxEcologyDebugView : MonoBehaviour
         {
             GUI.Label(new Rect(12f, 30f, 230f, 22f),
                 $"生物能 {account.Balance}  预计日收 {account.PreviewDailyIncome()}", textStyle);
-            Rect toggle = new Rect(12f, 53f, 230f, 22f);
-            interactiveRects.Add(toggle);
-            account.CostsEnabled = GUI.Toggle(toggle, account.CostsEnabled, "启用经济限制（扣费）");
+            GUI.Label(new Rect(12f, 53f, 230f, 22f), "当前玩家操作免费", textStyle);
         }
 
         foreach (WhiteboxEcologyDebugController.TileLabel label in controller.Labels)

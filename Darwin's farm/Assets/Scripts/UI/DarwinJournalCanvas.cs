@@ -55,6 +55,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private SettingsData settings = new SettingsData();
     private Page page = Page.Title, parent = Page.Title;
     private SimulationTime clock;
+    private SimulationController audioSimulation;
+    private SaveAssetCatalog audioSpeciesCatalog;
     private Vector2Int[] resolutions;
     private Rect previousSafe;
     private Vector2Int previousScreen;
@@ -68,6 +70,9 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     {
         clock = FindFirstObjectByType<SimulationTime>();
         if (clock == null) { Debug.LogError("Journal Canvas needs SimulationTime in this scene.", this); enabled=false; return; }
+        audioSimulation = FindFirstObjectByType<SimulationController>();
+        audioSpeciesCatalog = Resources.Load<SaveAssetCatalog>("DarwinJournal/SaveAssetCatalog");
+        if (audioSimulation != null) audioSimulation.OnSpeciesUnlocked += OnAudioSpeciesUnlocked;
         worldScale = Time.timeScale > 0 ? Time.timeScale : 1f;
         Time.timeScale = 0f;
         clock.AcquireModalPause();
@@ -79,6 +84,9 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (audioSimulation != null) audioSimulation.OnSpeciesUnlocked -= OnAudioSpeciesUnlocked;
+        DarwinAudioDispatch.SetGameplayActive(false);
+        DarwinAudioDispatch.SetMenuOpen("Journal", false);
         if (clock != null) clock.ReleaseModalPause();
         if (Time.timeScale == 0f) Time.timeScale = worldScale;
     }
@@ -166,6 +174,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private void Show(Page target)
     {
         page = target;
+        DarwinAudioDispatch.SetMenuOpen("Journal", target != Page.Game);
         titlePanel.SetActive(target == Page.Title);
         pausePanel.SetActive(target == Page.Pause);
         settingsPanel.SetActive(target == Page.Settings);
@@ -192,14 +201,34 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (page == Page.Confirm) { Show(confirmReturn); return; }
         Show(parent);
     }
-    private void NewGame() => EnterGame(false);
+    private void NewGame()
+    {
+        // Species assets survive scene reloads; begin each new run with fresh
+        // discovery flags so the first deer unlock can open the water palette.
+        var catalog = Resources.Load<SaveAssetCatalog>("DarwinJournal/SaveAssetCatalog");
+        if (catalog != null)
+        {
+            foreach (var entry in catalog.species)
+                if (entry.asset != null) entry.asset.RestoreProgress(false, false, 0);
+            var simulation = FindFirstObjectByType<SimulationController>();
+            if (simulation != null) simulation.RefreshSpeciesStatuses();
+        }
+        EnterGame(false);
+    }
     private void EnterGame(bool loadedSave)
     {
         inGame = true;
+        DarwinAudioDispatch.RefreshUnlockedSpecies(audioSpeciesCatalog);
         Time.timeScale = worldScale;
         clock.ReleaseModalPause();
         Show(Page.Game);
+        DarwinAudioDispatch.SetGameplayActive(true);
         GameEntered?.Invoke(loadedSave);
+    }
+
+    private void OnAudioSpeciesUnlocked(SpeciesData species)
+    {
+        if (inGame) DarwinAudioDispatch.RefreshUnlockedSpecies(audioSpeciesCatalog);
     }
     private void Pause()
     {
@@ -478,6 +507,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     {
         DarwinWwiseAmbience.SetEffectsVolume(settings.effects);
         DarwinAudioCategory.SetCategoryVolumes(settings.music, settings.effects);
+        DarwinAudioDispatch.SetMusicVolume(settings.music);
     }
     private void SelectCategory(int index)
     {

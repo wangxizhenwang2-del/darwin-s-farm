@@ -29,6 +29,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     [SerializeField] private float keyboardPanSpeed = 650f;
 
     private readonly Dictionary<SpeciesData, int> indices = new Dictionary<SpeciesData, int>();
+    private readonly Dictionary<SpeciesData, HashSet<SpeciesData>> evolutionNeighbors =
+        new Dictionary<SpeciesData, HashSet<SpeciesData>>();
     private readonly List<RaycastResult> hits = new List<RaycastResult>();
     private SimulationTime clock;
     private Canvas canvas;
@@ -66,6 +68,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         var speciesById = new Dictionary<string, SpeciesData>();
         foreach (SpeciesData item in setup.MapSpecies)
             if (item != null) speciesById[item.SpeciesId.Replace("-", "")] = item;
+        BuildEvolutionNeighbors(topology?.evolutionLinks, speciesById);
 
         Canvas.ForceUpdateCanvases();
         for (int map = 0; map < 2; map++)
@@ -81,7 +84,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             page.zoom = MinimumZoom(page) * defaultZoomMultiplier;
             page.content.localScale = Vector3.one * page.zoom;
             foreach (SpeciesMapNodeView node in page.nodes)
-                if (node != null) node.Bind(Hovered, ShowClue, map == 0);
+                if (node != null) node.Bind(Hovered, ShowClue);
             page.switchButton.onClick.AddListener(Switch);
             page.closeButton.onClick.AddListener(Close);
             ConfigureGraph(page, map == 1 ? topology?.foodLinks : topology?.evolutionLinks, speciesById);
@@ -92,6 +95,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         if (open && clock != null) clock.ReleaseModalPause();
     }
 
@@ -99,6 +103,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (!open) return;
         open = dragging = false;
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         HideClue();
         if (overlay != null) overlay.SetActive(false);
         if (clock != null) clock.ReleaseModalPause();
@@ -177,6 +182,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (placement != null && placement.IsDragging) placement.CancelDrag();
         FindFirstObjectByType<MapTouchInput>()?.CancelGesture();
         open = true;
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", true);
         activePage = 0;
         overlay.SetActive(true);
         // Unity initializes an inactive nested Canvas on first activation.
@@ -196,6 +202,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (!open) return;
         open = dragging = false;
+        DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", false);
         touchId = -1;
         pinchDistance = 0f;
         HideClue();
@@ -278,15 +285,31 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         paper.color = paper.sprite != null ? Color.white : new Color(.96f, .93f, .82f);
         paper.raycastTarget = true;
 
+        var titleObject = new GameObject("ClueTitle", typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform titleRect = (RectTransform)titleObject.transform;
+        titleRect.SetParent(cluePopup, false);
+        titleRect.anchorMin = new Vector2(0f, 1f);
+        titleRect.anchorMax = Vector2.one;
+        titleRect.pivot = new Vector2(.5f, 1f);
+        titleRect.offsetMin = new Vector2(76f, -112f);
+        titleRect.offsetMax = new Vector2(-76f, -58f);
+        var titleText = titleObject.GetComponent<TextMeshProUGUI>();
+        titleText.font = GameUITheme.HandwrittenTMPFont;
+        titleText.fontSize = 34f;
+        titleText.color = new Color(.12f, .17f, .13f);
+        titleText.alignment = TextAlignmentOptions.Center;
+        titleText.text = "培育线索";
+        titleText.raycastTarget = false;
+
         var textObject = new GameObject("BreedingClue", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform textRect = (RectTransform)textObject.transform;
         textRect.SetParent(cluePopup, false);
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = Vector2.one;
         textRect.offsetMin = new Vector2(76f, 64f);
-        textRect.offsetMax = new Vector2(-76f, -64f);
+        textRect.offsetMax = new Vector2(-76f, -130f);
         clueText = textObject.GetComponent<TextMeshProUGUI>();
-        clueText.font = GameUITheme.TMPFont;
+        clueText.font = GameUITheme.HandwrittenTMPFont;
         clueText.fontSize = GameUITheme.ReadableFontSize(22);
         clueText.enableAutoSizing = true;
         clueText.fontSizeMin = 22f;
@@ -303,14 +326,16 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void ShowClue(SpeciesMapNodeView node)
     {
         if (!open || node == null || node.Species == null || cluePopup == null) return;
+        if (!CanShowClue(node.Species)) { HideClue(); return; }
+        if (clueNode != node || !cluePopup.gameObject.activeSelf)
+            clueText.text = node.Species.FormattedBreedingClue;
         clueNode = node;
-        clueText.text = node.Species.FormattedBreedingClue;
         RectTransform overlayRect = (RectTransform)overlay.transform;
         Rect bounds = overlayRect.rect;
         float width = Mathf.Min(720f, bounds.width - 32f);
         float textHeight = clueText.GetPreferredValues(clueText.text, width - 152f, 0f).y;
         cluePopup.sizeDelta = new Vector2(width,
-            Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 128f), bounds.height - 32f));
+            Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 194f), bounds.height - 32f));
         Vector2 local = overlayRect.InverseTransformPoint(node.transform.position);
         Vector2 half = cluePopup.sizeDelta * .5f;
         float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);
@@ -324,6 +349,35 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private void HideClue()
     {
         if (cluePopup != null) cluePopup.gameObject.SetActive(false);
+        clueNode = null;
+    }
+
+    private void BuildEvolutionNeighbors(MapLink[] links, Dictionary<string, SpeciesData> speciesById)
+    {
+        evolutionNeighbors.Clear();
+        if (links == null) return;
+        foreach (MapLink link in links)
+        {
+            if (link == null || string.IsNullOrEmpty(link.from) || string.IsNullOrEmpty(link.to) ||
+                !speciesById.TryGetValue(link.from.Replace("-", ""), out SpeciesData source) ||
+                !speciesById.TryGetValue(link.to.Replace("-", ""), out SpeciesData target) ||
+                source == target) continue;
+            if (!evolutionNeighbors.TryGetValue(source, out HashSet<SpeciesData> from))
+                evolutionNeighbors[source] = from = new HashSet<SpeciesData>();
+            if (!evolutionNeighbors.TryGetValue(target, out HashSet<SpeciesData> to))
+                evolutionNeighbors[target] = to = new HashSet<SpeciesData>();
+            from.Add(target);
+            to.Add(source);
+        }
+    }
+
+    private bool CanShowClue(SpeciesData species)
+    {
+        if (species == null || !evolutionNeighbors.TryGetValue(species, out HashSet<SpeciesData> neighbors))
+            return false;
+        foreach (SpeciesData neighbor in neighbors)
+            if (neighbor != null && neighbor.HasEverUnlocked) return true;
+        return false;
     }
 
     private bool PointerHitsClueOrNode(Vector2 pointer)

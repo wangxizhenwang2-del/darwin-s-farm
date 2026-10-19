@@ -18,12 +18,14 @@ public sealed class AnimationLabController : MonoBehaviour
     }
 
     [SerializeField] private Animal[] animals;
+    [SerializeField] private string initialAnimalName = "鲨母";
     [SerializeField] private float travelSpeed = 1.8f;
     [SerializeField] private float leftEdge = -3f;
     [SerializeField] private float rightEdge = 3f;
     private int selected;
     private int direction = 1;
     private bool moving = true;
+    private string[] animalNames;
 
     public void Configure(Animal[] configuredAnimals) => animals = configuredAnimals;
 
@@ -38,13 +40,20 @@ public sealed class AnimationLabController : MonoBehaviour
     private void Start()
     {
         if (animals == null) return;
+        animalNames = new string[animals.Length];
+        int initialIndex = 0;
+        for (int i = 0; i < animals.Length; i++)
+        {
+            animalNames[i] = animals[i]?.displayName ?? string.Empty;
+            if (animalNames[i] == initialAnimalName) initialIndex = i;
+        }
         foreach (Animal animal in animals)
         {
             if (animal?.root == null || animal.player == null || animal.sprite == null) continue;
             animal.player.Bind(animal.sprite, animal.animations, Color.white);
             animal.root.SetActive(false);
         }
-        Select(0);
+        Select(initialIndex);
     }
 
     private void Update()
@@ -125,6 +134,7 @@ public sealed class AnimationLabController : MonoBehaviour
     {
         if (animals == null || animals.Length == 0) return;
         Animal animal = animals[selected];
+        if (animal?.player == null) return;
         GUILayout.BeginArea(new Rect(18, 18, 540, 120), GUI.skin.box);
         GUILayout.Label(animal.player.IsCommonLoop ?
             "Animation Lab  |  Left / Right: animal  |  Space: move / stop (animation independent)" :
@@ -133,5 +143,11 @@ public sealed class AnimationLabController : MonoBehaviour
             $"{animal.player.Phase}  |  frame {animal.player.CurrentFrame}  |  " +
             (moving ? "start requested" : "stop requested"));
         GUILayout.EndArea();
+        if (animalNames == null || animalNames.Length != animals.Length) return;
+        const int columns = 4;
+        int rows = (animalNames.Length + columns - 1) / columns;
+        int chosen = GUI.SelectionGrid(new Rect(18, 145, 620, rows * 28),
+            selected, animalNames, columns);
+        if (chosen != selected) Select(chosen);
     }
 }

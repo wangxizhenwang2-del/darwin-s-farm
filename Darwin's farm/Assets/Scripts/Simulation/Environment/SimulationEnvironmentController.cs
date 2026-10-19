@@ -47,6 +47,41 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
     }
     private readonly Dictionary<GridPosition, BlockInfo> blocks = new Dictionary<GridPosition, BlockInfo>();
     public event Action<IReadOnlyList<EnvironmentReadSnapshot>> Changed;
+    public event Action<TerrainKind, Vector2Int> TerrainUnlocked;
+    public event Action WaterUnlocked;
+    public event Action UnlocksRestored;
+    private readonly HashSet<TerrainKind> unlockedTerrain = new HashSet<TerrainKind> { TerrainKind.Desert };
+    private bool waterUnlocked;
+    private bool discoveryReady;
+    private bool restoringSave;
+    private const string DeerId = "fd1c574bfd1247b2933cdfbc54758cf8";
+    private const string TameDeerId = "b2afc73aa25c41b18fd8f5ed4f3bc62a";
+    public bool WaterIsUnlocked => waterUnlocked;
+    public bool IsUnlocked(MapTileDefinition definition) => definition != null &&
+        (definition.initialWaterCoverage != WaterCoverage.Land ? waterUnlocked :
+            unlockedTerrain.Contains(TerrainFromPreset(definition.biome)));
+    public List<TerrainKind> CaptureTerrainUnlocks() => new List<TerrainKind>(unlockedTerrain);
+    public void BeginSaveRestore() => restoringSave = true;
+    public void RestoreUnlocks(List<TerrainKind> terrain, bool water, bool legacy)
+    {
+        unlockedTerrain.Clear();
+        unlockedTerrain.Add(TerrainKind.Desert);
+        if (terrain != null) foreach (TerrainKind kind in terrain)
+            if (Enum.IsDefined(typeof(TerrainKind), kind)) unlockedTerrain.Add(kind);
+        if (legacy && grid != null) foreach (MapTileInstance tile in grid.GetPlacedTiles())
+            if (tile.Block != null && !HabitatTopology.IsWater(tile.Block))
+                unlockedTerrain.Add(TerrainFromPreset(tile.Biome));
+        waterUnlocked = water;
+        restoringSave = false;
+        UnlocksRestored?.Invoke();
+    }
+    private void OnSpeciesUnlocked(SpeciesData species)
+    {
+        if (restoringSave || waterUnlocked || species == null ||
+            (species.SpeciesId != DeerId && species.SpeciesId != TameDeerId)) return;
+        waterUnlocked = true;
+        WaterUnlocked?.Invoke();
+    }
 
     private void Awake()
     {
@@ -60,14 +95,16 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
         if (simulation != null) simulation.OnBeforeDaySimulated += Advance;
         if (simulation != null) simulation.OnDaySimulated += NotifyReaders;
         if (clock != null) clock.OnDayReset += RebaseClock;
+        if (simulation != null) simulation.OnSpeciesUnlocked += OnSpeciesUnlocked;
     }
-    private void Start() => Synchronize();
+    private void Start() { Synchronize(); discoveryReady = true; }
     private void OnDisable()
     {
         if (bridge != null) bridge.BlockGraphSynchronized -= Synchronize;
         if (simulation != null) simulation.OnBeforeDaySimulated -= Advance;
         if (simulation != null) simulation.OnDaySimulated -= NotifyReaders;
         if (clock != null) clock.OnDayReset -= RebaseClock;
+        if (simulation != null) simulation.OnSpeciesUnlocked -= OnSpeciesUnlocked;
     }
 
     public static TerrainKind TerrainFromPreset(BiomeType type)
@@ -180,7 +217,13 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 EnvironmentRules.Round(state.Humidity.Value), EnvironmentRules.Round(state.Recovery.Value));
             if (!state.IsWater && grid != null && grid.TryGetTile(
                     new Vector2Int(state.Position.X, state.Position.Y), out MapTileInstance tile))
-                tile.SetRuntimeBiome(BiomeFromTerrain(state.Terrain));
+            {
+                BiomeType next = BiomeFromTerrain(state.Terrain);
+                bool transformed = tile.Biome != next;
+                tile.SetRuntimeBiome(next);
+                if (transformed && discoveryReady && !restoringSave && unlockedTerrain.Add(state.Terrain))
+                    TerrainUnlocked?.Invoke(state.Terrain, tile.Coordinate);
+            }
             snapshots.Add(new EnvironmentReadSnapshot(state, block.plantBiomass));
         }
         if (notifyReaders) Changed?.Invoke(snapshots.AsReadOnly());

@@ -23,16 +23,15 @@ public sealed class BioenergySettings : ScriptableObject
     }
 
     public long initialBalance = 2000;
-    public int dailyIncomeMultiplier = 1;
     public int harvestIncomeMultiplier = 10;
     [Range(0, 100)] public int harvestPercent = 50;
     public int minimumHarvestCount = 50;
     public int herbivoreUnlockReward = 200;
     public int levelOneUnlockReward = 500;
     public int levelTwoUnlockReward = 1000;
-    public int fallbackHerbivoreValue = 10;
-    public int fallbackLevelOneValue = 20;
-    public int fallbackLevelTwoValue = 40;
+    public int fallbackHerbivoreValue = 1;
+    public int fallbackLevelOneValue = 3;
+    public int fallbackLevelTwoValue = 5;
 
     public int expandTileCost = 600;
     public int reshapeWaterCost = 500;
@@ -60,16 +59,15 @@ public sealed class BioenergySettings : ScriptableObject
     private void OnValidate()
     {
         initialBalance = System.Math.Max(0, initialBalance);
-        dailyIncomeMultiplier = Mathf.Max(0, dailyIncomeMultiplier);
         harvestIncomeMultiplier = Mathf.Max(0, harvestIncomeMultiplier);
         harvestPercent = Mathf.Clamp(harvestPercent, 0, 100);
         minimumHarvestCount = Mathf.Max(0, minimumHarvestCount);
         herbivoreUnlockReward = Mathf.Max(0, herbivoreUnlockReward);
         levelOneUnlockReward = Mathf.Max(0, levelOneUnlockReward);
         levelTwoUnlockReward = Mathf.Max(0, levelTwoUnlockReward);
-        fallbackHerbivoreValue = Mathf.Clamp(fallbackHerbivoreValue, 10, 100);
-        fallbackLevelOneValue = Mathf.Clamp(fallbackLevelOneValue, 10, 100);
-        fallbackLevelTwoValue = Mathf.Clamp(fallbackLevelTwoValue, 10, 100);
+        fallbackHerbivoreValue = Mathf.Clamp(fallbackHerbivoreValue, 1, 100);
+        fallbackLevelOneValue = Mathf.Clamp(fallbackLevelOneValue, 1, 100);
+        fallbackLevelTwoValue = Mathf.Clamp(fallbackLevelTwoValue, 1, 100);
         expandTileCost = Mathf.Max(0, expandTileCost);
         reshapeWaterCost = Mathf.Max(0, reshapeWaterCost);
         demolishTileCost = Mathf.Max(0, demolishTileCost);

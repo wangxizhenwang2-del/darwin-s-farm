@@ -27,7 +27,8 @@ public sealed class BioenergyAccount : MonoBehaviour
         public List<Receipt> receipts = new List<Receipt>();
     }
 
-    // Testing default: legal operations are free; enable costs for economy testing.
+    // Player UI leaves charging disabled for now; test scenarios can still
+    // enable it to exercise the saved price settings and transaction path.
     [SerializeField] private bool costsEnabled = false;
     [SerializeField] private long balance;
     private int lastSettledDay;
@@ -89,7 +90,7 @@ public sealed class BioenergyAccount : MonoBehaviour
         PlayerEconomyController operations = GetComponent<PlayerEconomyController>();
         if (operations != null && operations.IsGameLost)
         { error = "本局已经结束，请重新开局"; return false; }
-        long paid = costsEnabled ? price : 0;
+        long paid = CostsEnabled ? price : 0;
         if (balance < paid) { error = "生物能不足"; return false; }
         string id = Guid.NewGuid().ToString("N");
         balance -= paid;
@@ -139,7 +140,6 @@ public sealed class BioenergyAccount : MonoBehaviour
 
     private void AfterDay(int day)
     {
-        if (!costsEnabled) return;
         if (day <= lastSettledDay) return;
         if (!initialSpeciesCaptured) BeforeDay(day);
         long daily = 0;
@@ -148,9 +148,7 @@ public sealed class BioenergyAccount : MonoBehaviour
             if (rewardedSpecies.Add(pair.Key))
                 Grant(BioenergySettings.Current.UnlockReward(pair.Value.level),
                     "首次解锁:" + pair.Key);
-            if (pair.Value.count > 1)
-                daily += (long)Math.Floor(BioenergySettings.Current.dailyIncomeMultiplier *
-                    (double)pair.Value.value * Math.Log(pair.Value.count));
+            checked { daily += pair.Value.count * pair.Value.value; }
         }
         if (daily > 0) Grant(daily, "每日收成:" + day);
         lastSettledDay = day;
@@ -194,12 +192,9 @@ public sealed class BioenergyAccount : MonoBehaviour
 
     public int PreviewDailyIncome()
     {
-        if (!costsEnabled) return 0;
         long total = 0;
         foreach (SpeciesCount count in CountWildSpecies().Values)
-            if (count.count > 1) total += (long)Math.Floor(
-                BioenergySettings.Current.dailyIncomeMultiplier * (double)count.value *
-                Math.Log(count.count));
+            checked { total += count.count * count.value; }
         return (int)Math.Min(int.MaxValue, total);
     }
 
@@ -226,7 +221,7 @@ public sealed class BioenergyAccount : MonoBehaviour
             if (receipt == null || string.IsNullOrEmpty(receipt.id) ||
                 !receiptIds.Add(receipt.id)) return false;
         balance = state.balance;
-        costsEnabled = state.costsEnabled;
+        costsEnabled = false; // Loading an older paid save also enters the free-operations phase.
         lastSettledDay = state.lastSettledDay;
         initialSpeciesCaptured = state.initialSpeciesCaptured;
         rewardedSpecies.Clear();

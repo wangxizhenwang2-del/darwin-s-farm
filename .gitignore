@@ -154,6 +154,9 @@ InitTestScene*.unity*
 /Darwin's farm/Assets/_Recovery/
 /Darwin's farm/Assets/_Recovery.meta
 
+/AndroidBuild
+/PCBuild
+
 # Stray Unity batch-mode log created at the repository root.
 /Darwin's
 

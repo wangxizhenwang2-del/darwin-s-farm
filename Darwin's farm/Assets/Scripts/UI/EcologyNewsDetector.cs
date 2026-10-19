@@ -34,6 +34,10 @@ public sealed class EcologyNewsDetector : MonoBehaviour
     private readonly List<PopulationTransitionResult> migrations = new List<PopulationTransitionResult>();
     private readonly List<PopulationTransitionResult> evolutions = new List<PopulationTransitionResult>();
     private SimulationController simulation;
+    private SimulationEnvironmentController environment;
+    private SimulationTime clock;
+    private readonly List<EcologicalEventData> startupUnlockNews=new List<EcologicalEventData>();
+    private bool ready;
     private int ordinal;
     [Serializable] public sealed class SaveState
     {
@@ -79,9 +83,22 @@ public sealed class EcologyNewsDetector : MonoBehaviour
         foreach(var v in state.crises)crises.Add(v.key,new CrisisState { days=v.days,active=v.active });
     }
 
+    private void OnEnable()
+    {
+        environment=FindFirstObjectByType<SimulationEnvironmentController>();
+        clock=FindFirstObjectByType<SimulationTime>();
+        if(environment!=null)
+        {
+            environment.TerrainUnlocked+=OnTerrainUnlocked;
+            environment.WaterUnlocked+=OnWaterUnlocked;
+        }
+    }
     private void Start()
     {
         simulation=FindFirstObjectByType<SimulationController>();
+        ready=true;
+        foreach(EcologicalEventData value in startupUnlockNews) Bus.Publish(value);
+        startupUnlockNews.Clear();
         if(simulation==null){Debug.LogWarning("News detector: no simulation.",this);return;}
         foreach(var entry in Snapshot().Values)
         {
@@ -94,10 +111,53 @@ public sealed class EcologyNewsDetector : MonoBehaviour
     }
     private void OnDestroy()
     {
+        if(environment!=null)
+        {
+            environment.TerrainUnlocked-=OnTerrainUnlocked;
+            environment.WaterUnlocked-=OnWaterUnlocked;
+        }
         if(simulation==null)return;
         simulation.OnMigrationResolved-=RememberMigration;
         simulation.OnPresetEvolutionResolved-=RememberEvolution;
         simulation.OnDaySimulated-=AfterDay;
+    }
+    private void PublishUnlock(EcologicalEventData value)
+    {
+        if(ready)Bus.Publish(value);
+        else startupUnlockNews.Add(value);
+    }
+    private void OnTerrainUnlocked(DarwinFarm.Environment.TerrainKind kind, Vector2Int coordinate)
+    {
+        string name=TerrainName(kind);
+        PublishUnlock(new EcologicalEventData {
+            eventId="terrain:"+kind,gameDay=clock!=null?clock.currentDay:0,
+            type=EcologicalEventType.TerrainUnlocked,
+            targetBlockId=coordinate.x+","+coordinate.y,
+            message="地块 ("+coordinate.x+","+coordinate.y+") 自然演变为「"+name+"」；现在可以建造"+name+"地块。"
+        });
+    }
+    private void OnWaterUnlocked()
+    {
+        PublishUnlock(new EcologicalEventData {
+            eventId="terrain:all-water",gameDay=clock!=null?clock.currentDay:0,
+            type=EcologicalEventType.WatersUnlocked,
+            message="首次发现鹿或鹿驯，所有水域地块已解锁。"
+        });
+    }
+    private static string TerrainName(DarwinFarm.Environment.TerrainKind kind)
+    {
+        switch(kind)
+        {
+            case DarwinFarm.Environment.TerrainKind.Forest:return "森林";
+            case DarwinFarm.Environment.TerrainKind.Rainforest:return "雨林";
+            case DarwinFarm.Environment.TerrainKind.Grassland:return "草原";
+            case DarwinFarm.Environment.TerrainKind.Desert:return "荒漠";
+            case DarwinFarm.Environment.TerrainKind.Tundra:return "苔原";
+            case DarwinFarm.Environment.TerrainKind.Highland:return "高山";
+            case DarwinFarm.Environment.TerrainKind.SnowMountain:return "雪山";
+            case DarwinFarm.Environment.TerrainKind.Volcano:return "火山";
+            default:return kind.ToString();
+        }
     }
     private void RememberMigration(PopulationTransitionResult result)
     {

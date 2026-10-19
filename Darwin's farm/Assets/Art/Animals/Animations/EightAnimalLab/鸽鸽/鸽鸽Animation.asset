@@ -87,8 +87,8 @@ MonoBehaviour:
   idleStartFrame: 1
   idleEndFrame: 22
   stopFrame: 1
-  walkFps: 15
-  idleFps: 15
+  walkFps: 20
+  idleFps: 20
   idleDelayMin: 2
   idleDelayMax: 5
   movementHoldMin: 4
