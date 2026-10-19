@@ -46,6 +46,9 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private float pinchDistance;
     private float suppressNodeClicksUntil;
     private SpeciesMapNodeView clueNode;
+    private float nextClueRefresh;
+    private int displayedTraitMask = -1;
+    private bool displayedSpeciesUnlocked;
     private Vector2 lastCanvasSize;
     public bool IsOpen => open;
     public bool SuppressNodeClicks => Time.unscaledTime < suppressNodeClicksUntil;
@@ -167,10 +170,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
                 clueWindow.SetDragBounds(bounds, cluePopup.anchoredPosition);
             }
             if (clueNode != null)
-            {
-                string title = ClueTitle(clueNode.Species);
-                if (clueTitle.text != title) clueTitle.text = title;
-            }
+                RefreshOpenClue(false);
         }
         if (!open) return;
         MapPage page = pages[activePage];
@@ -366,15 +366,34 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private static string ClueTitle(SpeciesData species) =>
         (species != null && species.HasEverUnlocked ? species.SpeciesName : "？？？") + "的培育线索";
 
+    private void RefreshOpenClue(bool force)
+    {
+        if (clueNode == null || clueNode.Species == null ||
+            (!force && Time.unscaledTime < nextClueRefresh)) return;
+        nextClueRefresh = Time.unscaledTime + .5f;
+        SpeciesData species = clueNode.Species;
+        int traitMask = species.RevealedTraitMask;
+        bool unlocked = species.HasEverUnlocked;
+        if (force || traitMask != displayedTraitMask)
+        {
+            clueText.text = species.FormattedBreedingClue;
+            displayedTraitMask = traitMask;
+        }
+        if (force || unlocked != displayedSpeciesUnlocked)
+        {
+            clueTitle.text = ClueTitle(species);
+            displayedSpeciesUnlocked = unlocked;
+        }
+    }
+
     private void ShowClue(SpeciesMapNodeView node)
     {
         if (!open || node == null || node.Species == null || cluePopup == null) return;
         if (!CanShowClue(node.Species)) { HideClue(); return; }
         TutorialFlowController.ReportColorClue(node.Species);
         bool newNode = clueNode != node || !clueWindow.IsOpen;
-        if (newNode)
-            clueText.text = node.Species.FormattedBreedingClue;
-        clueTitle.text = ClueTitle(node.Species);
+        clueNode = node;
+        RefreshOpenClue(newNode);
         RectTransform parentRect = (RectTransform)transform;
         Vector2 anchorOrigin = parentRect.rect.center;
         Rect bounds = new Rect(-parentRect.rect.size * .5f, parentRect.rect.size);
@@ -418,7 +437,6 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             lastCanvasSize = parentRect.rect.size;
             clueWindow.Open();
         }
-        clueNode = node;
         cluePopup.SetAsLastSibling();
     }
 
@@ -426,6 +444,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (clueWindow != null) clueWindow.HideImmediately();
         clueNode = null;
+        displayedTraitMask = -1;
     }
 
     private void BuildEvolutionNeighbors(MapLink[] links, Dictionary<string, SpeciesData> speciesById)
