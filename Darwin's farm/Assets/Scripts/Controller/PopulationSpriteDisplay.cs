@@ -22,12 +22,13 @@ public static class PopulationSpriteDisplay
         return renderer;
     }
 
-    public static void Configure(SpriteRenderer renderer, Sprite sprite, Color tint)
+    public static void Configure(SpriteRenderer renderer, Sprite sprite, Color tint, float referenceHeight = 0f)
     {
         if (renderer == null) return;
         renderer.sprite = sprite;
         renderer.color = tint;
-        float height = sprite == null ? 1f : Mathf.Max(0.01f, sprite.bounds.size.y);
+        float height = referenceHeight > 0f ? referenceHeight :
+            sprite == null ? 1f : Mathf.Max(0.01f, sprite.bounds.size.y);
         renderer.transform.localScale = Vector3.one * (HeightPerProxySize / height);
     }
 
@@ -76,12 +77,14 @@ public static class PopulationSpriteDisplay
         visibleBounds.Add(sprite, bounds); return bounds;
     }
 
-    public static float WaterRadius(float size, float multiplier, Sprite sprite, Camera camera, float fraction)
+    public static float WaterRadius(float size, float multiplier, Sprite sprite, Camera camera, float fraction,
+        float referenceHeight = 0f)
     {
         float radius = size * multiplier;
         if (!sprite) return radius;
         Bounds bounds = VisibleBounds(sprite);
-        float scale = size * HeightPerProxySize / Mathf.Max(.01f, sprite.bounds.size.y);
+        float scale = size * HeightPerProxySize / Mathf.Max(.01f,
+            referenceHeight > 0f ? referenceHeight : sprite.bounds.size.y);
         Vector3 right = camera ? camera.transform.right : Vector3.right;
         Vector3 up = camera ? camera.transform.up : Vector3.up; right.y = up.y = 0;
         float line = bounds.min.y + bounds.size.y * Mathf.Clamp01(fraction);

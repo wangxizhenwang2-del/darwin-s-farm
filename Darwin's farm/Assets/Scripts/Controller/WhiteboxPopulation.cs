@@ -56,7 +56,8 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     public bool IsWater { get; private set; }
     private MapWaterController water;
     internal float SwimRadius => PopulationSpriteDisplay.WaterRadius(leader.size, controller.Settings.swimClearanceMultiplier,
-        leader.sprite ? leader.sprite.sprite : null, controller.ViewCamera ? controller.ViewCamera : Camera.main, controller.Settings.submergedFraction);
+        leader.sprite ? leader.sprite.sprite : null, controller.ViewCamera ? controller.ViewCamera : Camera.main,
+        controller.Settings.submergedFraction, boundAnimation != null ? boundAnimation.ReferenceVisualHeight : 0f);
     private bool WaterPose(Vector3 position) => water && water.TrySwimmingPose(tileId, position, SwimRadius, out _);
 
     internal Representative leader;

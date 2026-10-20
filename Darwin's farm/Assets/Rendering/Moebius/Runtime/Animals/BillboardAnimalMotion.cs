@@ -79,7 +79,7 @@ namespace Darwin.Rendering
             if(CurrentFrame<start) CurrentFrame=start;
             image.sprite=frames[CurrentFrame];
             var reference=animationSet.IdleSprite?animationSet.IdleSprite:frames[start];
-            float scale=spriteHeight/Mathf.Max(reference.bounds.size.y,.01f);
+            float scale=spriteHeight/animationSet.ReferenceVisualHeight;
             image.transform.localScale=Vector3.one*scale;
             float facing=Vector3.Dot(forward,camera.transform.right);
             if(Mathf.Abs(facing)>.15f)image.flipX=artworkFacesLeft?facing>0:facing<0;

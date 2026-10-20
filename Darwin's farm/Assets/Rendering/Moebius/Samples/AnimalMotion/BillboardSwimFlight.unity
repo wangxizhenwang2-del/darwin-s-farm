@@ -487,7 +487,7 @@ MonoBehaviour:
   routeRadius: {x: 3.8, y: 1.9}
   speed: 1.1
   routePhase: 0.1
-  spriteHeight: 3.9
+  spriteHeight: 3.5
   artworkFacesLeft: 1
   immersion: 0.43
   bobAmplitude: 0.028
@@ -547,7 +547,7 @@ MonoBehaviour:
   routeRadius: {x: 3.5, y: 1.4}
   speed: 1.4
   routePhase: 0.58
-  spriteHeight: 3.7
+  spriteHeight: 3.5
   artworkFacesLeft: 0
   immersion: 0.35
   bobAmplitude: 0.028
@@ -1311,7 +1311,7 @@ MonoBehaviour:
   routeRadius: {x: 3.1, y: 1.6}
   speed: 1.4
   routePhase: 0.7
-  spriteHeight: 2.8
+  spriteHeight: 3.5
   artworkFacesLeft: 1
   immersion: 0.35
   bobAmplitude: 0.18
@@ -1481,7 +1481,7 @@ MonoBehaviour:
   routeRadius: {x: 3.7, y: 2.5}
   speed: 1.9
   routePhase: 0.2
-  spriteHeight: 4
+  spriteHeight: 3.5
   artworkFacesLeft: 1
   immersion: 0.35
   bobAmplitude: 0.18

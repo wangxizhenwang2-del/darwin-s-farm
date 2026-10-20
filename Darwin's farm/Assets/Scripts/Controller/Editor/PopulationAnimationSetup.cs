@@ -98,6 +98,7 @@ public static class PopulationAnimationSetup
         serializedSet.FindProperty("referenceMoveSpeed").floatValue = 1.8f;
         serializedSet.FindProperty("artworkFacesLeft").boolValue = true;
         serializedSet.ApplyModifiedPropertiesWithoutUndo();
+        PopulationAnimationSizing.Bake(set);
 
         var species = new SerializedObject(AssetDatabase.LoadAssetAtPath<SpeciesData>(SpeciesPath));
         species.FindProperty("populationAnimation").objectReferenceValue = set;

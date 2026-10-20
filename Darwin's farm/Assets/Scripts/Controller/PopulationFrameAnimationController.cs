@@ -332,7 +332,7 @@ public sealed class PopulationFrameAnimationController : MonoBehaviour
     {
         if (set != null && image != null)
             PopulationSpriteDisplay.Configure(image, IsCommonLoop ? CommonStopSprite :
-                HasTransition ? set.IdleFrames[IdleEnd] : StopSprite, tint);
+                HasTransition ? set.IdleFrames[IdleEnd] : StopSprite, tint, set.ReferenceVisualHeight);
         CurrentFrame = 0;
     }
 
@@ -358,7 +358,7 @@ public sealed class PopulationFrameAnimationController : MonoBehaviour
         if (index < 0 || index >= frames.Length) return;
         shownFrame = index;
         CurrentFrame = index + 1;
-        PopulationSpriteDisplay.Configure(image, frames[index], tint);
+        PopulationSpriteDisplay.Configure(image, frames[index], tint, set.ReferenceVisualHeight);
         if (frameEvents == null) return;
         foreach (PopulationFrameEvent frameEvent in frameEvents)
             if (frameEvent != null && frameEvent.action == action && frameEvent.frame == CurrentFrame)
