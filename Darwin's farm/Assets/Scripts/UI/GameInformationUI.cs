@@ -35,6 +35,8 @@ public sealed class GameInformationUI : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button populationCloseButton;
     [SerializeField] private TileTrendHistory tileHistory;
     [SerializeField] private TileTrendPanel tileTrendPanel;
+    [SerializeField] private TileInformationPanel tileInformationPanel;
+    [SerializeField] private TileInformationLogHistory tileLogHistory;
     private MapTileInstance selectedTile;
     private WhiteboxPopulation selectedVisual;
     private string selectedPopulationId;
@@ -117,6 +119,7 @@ public sealed class GameInformationUI : MonoBehaviour
         RefreshBioenergy(bioenergy != null ? bioenergy.Balance : 0);
         BindWindows();
         tileHistory.Initialize(grid, simulation, clock);
+        if (tileLogHistory != null) tileLogHistory.Initialize(grid, simulation, clock);
         biomeVisibility = gameObject.GetComponent<BiomeOcclusionVisibility>();
         if (biomeVisibility == null) biomeVisibility = gameObject.AddComponent<BiomeOcclusionVisibility>();
         biomeVisibility.Initialize(viewCamera, grid, movement, canvasRect, font);
@@ -138,7 +141,14 @@ public sealed class GameInformationUI : MonoBehaviour
             tileHistory = GetComponent<TileTrendHistory>();
             if (tileHistory == null) tileHistory = gameObject.AddComponent<TileTrendHistory>();
         }
-        if (tileTrendPanel == null)
+        if (tileInformationPanel == null && tileWindow != null)
+            tileInformationPanel = tileWindow.GetComponent<TileInformationPanel>();
+        if (tileInformationPanel != null && tileLogHistory == null)
+        {
+            tileLogHistory = GetComponent<TileInformationLogHistory>();
+            if (tileLogHistory == null) tileLogHistory = gameObject.AddComponent<TileInformationLogHistory>();
+        }
+        if (tileInformationPanel == null && tileTrendPanel == null)
         {
             tileTrendPanel = tileWindow.GetComponent<TileTrendPanel>();
             if (tileTrendPanel == null) tileTrendPanel = tileWindow.gameObject.AddComponent<TileTrendPanel>();
@@ -645,6 +655,11 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void RefreshTile()
     {
+        if (tileInformationPanel != null)
+        {
+            tileInformationPanel.Show(selectedTile, tileHistory, tileLogHistory, environment);
+            return;
+        }
         if (tileText == null) return;
         if (tileTrendPanel != null) tileTrendPanel.Show(selectedTile, tileHistory);
         tileText.text = ReadTileDetails();

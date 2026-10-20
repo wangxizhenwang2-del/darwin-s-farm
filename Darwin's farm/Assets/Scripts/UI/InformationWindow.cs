@@ -20,6 +20,10 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
 
     public bool IsOpen => open;
     public bool TitleOnlyDragging => titleOnlyDragging;
+    public void KeepWithinBounds()
+    {
+        if (rect != null && canvasRect != null) ClampToBounds();
+    }
     public void SetDragBounds(RectTransform bounds, Vector2 defaultPosition)
     { canvasRect = bounds; home = defaultPosition; if (open) ClampToBounds(); }
     public void HideImmediately()

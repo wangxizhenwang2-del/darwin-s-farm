@@ -367,16 +367,33 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     {
         if (safeArea == null || Screen.width <= 0 || Screen.height <= 0) return;
         Rect area=Screen.safeArea;
+        if (area.width <= 0f || area.height <= 0f) return;
         previousSafe=area; previousScreen=new Vector2Int(Screen.width,Screen.height);
         safeArea.anchorMin=new Vector2(area.xMin/Screen.width,area.yMin/Screen.height);
         safeArea.anchorMax=new Vector2(area.xMax/Screen.width,area.yMax/Screen.height);
         safeArea.offsetMin=safeArea.offsetMax=Vector2.zero;
+        // A landscape cutout makes Screen.safeArea exclude a strip for the entire
+        // height. Let full-screen artwork and modal shades cover that strip;
+        // the menu button and sizing calculations still use the safe rect.
+        foreach (GameObject view in new[]{titlePanel,pausePanel,settingsPanel,tutorialPanel,
+                     infoPanel,saveLoadPanel,confirmDialog})
+        {
+            if (view==null) continue;
+            var rect=view.transform as RectTransform;
+            if (rect==null) continue;
+            rect.anchorMin=new Vector2(-area.xMin/area.width,-area.yMin/area.height);
+            rect.anchorMax=new Vector2((Screen.width-area.xMin)/area.width,
+                (Screen.height-area.yMin)/area.height);
+            rect.offsetMin=rect.offsetMax=Vector2.zero;
+        }
         Canvas.ForceUpdateCanvases();
         var landscape=titlePanel.transform.Find("Landscape") as RectTransform;
         if(landscape!=null)
         {
-            float width=Mathf.Max(safeArea.rect.width,safeArea.rect.height*16f/9f);
-            float height=Mathf.Max(safeArea.rect.height,safeArea.rect.width*9f/16f);
+            float width=Mathf.Max(((RectTransform)titlePanel.transform).rect.width,
+                ((RectTransform)titlePanel.transform).rect.height*16f/9f);
+            float height=Mathf.Max(((RectTransform)titlePanel.transform).rect.height,
+                ((RectTransform)titlePanel.transform).rect.width*9f/16f);
             landscape.anchorMin=landscape.anchorMax=new Vector2(.5f,.5f);
             landscape.sizeDelta=new Vector2(width,height);
             landscape.anchoredPosition=Vector2.zero;

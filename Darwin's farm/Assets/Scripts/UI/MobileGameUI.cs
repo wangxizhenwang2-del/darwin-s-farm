@@ -307,6 +307,14 @@ public sealed class MobileGameUI : MonoBehaviour
     private void LayoutMobileControls()
     {
         if (statusBar == null || actionColumn == null || gestureHelp == null) return;
+        // In landscape the cutout is usually at mid-height on one side. Keep
+        // mid-screen actions inside the safe rect, but let top and bottom UI
+        // use the unobstructed corners instead of leaving a full-height strip.
+        Rect safe = ReadSafeArea();
+        float unitsPerPixel = safe.width > 0f ? safeArea.rect.width / safe.width : 0f;
+        float leftInset = Screen.width > Screen.height ? safe.xMin * unitsPerPixel : 0f;
+        float rightInset = Screen.width > Screen.height ? (Screen.width - safe.xMax) * unitsPerPixel : 0f;
+        float fullWidth = safeArea.rect.width + leftInset + rightInset;
         float statusHeight = Mathf.Clamp(safeArea.rect.height * .086f, 44f, 62f);
         float hintHeight = Mathf.Clamp(safeArea.rect.height * .1f, 44f, 72f);
         float buttonHeight = Mathf.Clamp((safeArea.rect.height - statusHeight - hintHeight - 32f) / 2f, 44f, 64f);
@@ -315,7 +323,10 @@ public sealed class MobileGameUI : MonoBehaviour
             rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.up;
             rect.anchoredPosition = position; rect.sizeDelta = size;
         }
-        statusBar.anchorMin=Vector2.up;statusBar.anchorMax=Vector2.one;statusBar.pivot=Vector2.up;
+        float safeWidth = Mathf.Max(1f, safeArea.rect.width);
+        statusBar.anchorMin=new Vector2(-leftInset/safeWidth,1f);
+        statusBar.anchorMax=new Vector2(1f+rightInset/safeWidth,1f);
+        statusBar.pivot=Vector2.up;
         statusBar.anchoredPosition=new Vector2(8,-8);statusBar.sizeDelta=new Vector2(-16,statusHeight);
         statusBar.localScale = Vector3.one;
         var economy = statusBar.Find("Economy") as RectTransform;
@@ -333,8 +344,8 @@ public sealed class MobileGameUI : MonoBehaviour
             speed.anchorMin=speed.anchorMax=speed.pivot=Vector2.one;
         }
         float drawerWidth = Mathf.Clamp(safeArea.rect.width * drawerWidthFraction,320f,maximumDrawerWidth);
-        Place(gestureHelp,new Vector2(8,-statusHeight-16),
-            new Vector2(Mathf.Clamp(safeArea.rect.width-drawerWidth-32,200,620),hintHeight));
+        Place(gestureHelp,new Vector2(8-leftInset,-statusHeight-16),
+            new Vector2(Mathf.Clamp(fullWidth-drawerWidth-32,200,620),hintHeight));
         if (pauseButton != null) pauseButton.gameObject.SetActive(false);
         Place(actionColumn,new Vector2(8,-statusHeight-hintHeight-24),new Vector2(168,buttonHeight*3+16));
         var buttons = new[] { environmentToolsButton, buildButton, speciesMapButton };
@@ -346,14 +357,14 @@ public sealed class MobileGameUI : MonoBehaviour
             float placementLeft=actionBottom+4>safeArea.rect.height-276 ? 196 : 8;
             var controls=(RectTransform)placementControls.transform;
             controls.anchorMin=controls.anchorMax=controls.pivot=Vector2.zero;
-            controls.anchoredPosition=new Vector2(placementLeft,144);
-            controls.sizeDelta=new Vector2(Mathf.Min(600,safeArea.rect.width-placementLeft-8),132);
+            controls.anchoredPosition=new Vector2(placementLeft-leftInset,144);
+            controls.sizeDelta=new Vector2(Mathf.Min(600,fullWidth-placementLeft-8),132);
             if (buildPalette != null)
             {
                 var palette=(RectTransform)buildPalette.transform;
                 float paletteLeft=actionBottom+4>safeArea.rect.height-140 ? 196 : 8;
-                palette.offsetMin=new Vector2(paletteLeft,8);
-                palette.offsetMax=new Vector2(-8,140);
+                palette.offsetMin=new Vector2(paletteLeft-leftInset,8);
+                palette.offsetMax=new Vector2(rightInset-8,140);
             }
         }
     }
