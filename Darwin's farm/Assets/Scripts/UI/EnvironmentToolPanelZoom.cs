@@ -1,5 +1,6 @@
 using UnityEngine;
-// Only the paper panel scales. Its neighboring tool category rail stays fixed.
+
+// Scale the complete tool paper uniformly; the fixed category rail is separate.
 public sealed class EnvironmentToolPanelZoom : MonoBehaviour
 {
     [SerializeField] private RectTransform target;
@@ -7,6 +8,7 @@ public sealed class EnvironmentToolPanelZoom : MonoBehaviour
     private float baseScale = 1f;
     private float dragStartScale, dragPixelsPerScale;
     private Vector2 dragStart;
+
     public float EffectiveScale => baseScale * userScale;
 
     public void Configure(RectTransform panel)
@@ -37,9 +39,15 @@ public sealed class EnvironmentToolPanelZoom : MonoBehaviour
     public void DragResize(Vector2 screenPoint)
     {
         Vector2 delta = screenPoint - dragStart;
-        // Screen coordinates grow upward: left/up shrinks, right/down grows.
-        userScale = Mathf.Clamp(dragStartScale + (delta.x - delta.y) * .5f /
-            dragPixelsPerScale, .72f, 1.4f);
+        // Horizontal drag drives diagonals; vertical drag works when it is stronger.
+        float signed = Mathf.Abs(delta.x) >= Mathf.Abs(delta.y) ? delta.x : -delta.y;
+        userScale = Mathf.Clamp(dragStartScale + signed / dragPixelsPerScale, .4f, 1.6f);
+        Apply();
+    }
+
+    public void ResetFull()
+    {
+        userScale = 1f;
         Apply();
     }
 

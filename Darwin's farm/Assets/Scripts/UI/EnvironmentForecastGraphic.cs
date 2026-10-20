@@ -6,6 +6,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasRenderer))]
 public sealed class EnvironmentForecastGraphic : MaskableGraphic
 {
+    public static Rect PlotRect(Rect bounds) => Rect.MinMaxRect(
+        bounds.xMin + 30, bounds.yMin + 18, bounds.xMax - 7, bounds.yMax - 21);
     public enum Scenario { None, Apply, Cancel }
     private TileTrendHistory.TileRecord history;
     private bool temperature, available;
@@ -75,7 +77,7 @@ public sealed class EnvironmentForecastGraphic : MaskableGraphic
     {
         mesh.Clear();
         var r = rectTransform.rect;
-        Rect plot = Rect.MinMaxRect(r.xMin + 30, r.yMin + 18, r.xMax - 7, r.yMax - 21);
+        Rect plot = PlotRect(r);
         for (int i = 0; i <= 4; i++)
         {
             float y = plot.yMin + plot.height * i / 4f;

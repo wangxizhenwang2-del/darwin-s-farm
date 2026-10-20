@@ -260,7 +260,8 @@ public sealed class SimulationEnvironmentController : MonoBehaviour
                 if (HabitatTopology.IsWater(blocks[state.Position])) { error = "水格不能进行温湿度干预"; return false; }
                 if (!EnvironmentRules.IsClimateStrength(amount)) { error = "温湿度强度必须为 ±25 或 ±50"; return false; }
                 var attribute = kind == SimulationInterventionKind.Temperature ? EnvironmentAttribute.Temperature : EnvironmentAttribute.Humidity;
-                target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) + amount);
+                target = EnvironmentRules.Clamp(attribute,
+                    (attribute == EnvironmentAttribute.Temperature ? state.Temperature.Value : state.Humidity.Value) + amount);
                 if (attribute == EnvironmentAttribute.Temperature) t = target; else h = target;
                 enter = EnvironmentRules.TransitionDays;
                 hold = EnvironmentRules.ClimateHoldDays;

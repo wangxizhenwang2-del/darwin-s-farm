@@ -168,8 +168,8 @@ public static class SpeciesJournalSceneInstaller
             grip.SetParent(journal.transform, false);
         }
         grip.anchorMin = grip.anchorMax = grip.pivot = new Vector2(1f, 0f);
-        grip.anchoredPosition = new Vector2(-3f, 3f);
-        grip.sizeDelta = new Vector2(34f, 34f);
+        grip.anchoredPosition = new Vector2(19f, -19f);
+        grip.sizeDelta = new Vector2(46f, 46f);
         grip.SetAsLastSibling();
         var image = grip.GetComponent<Image>();
         image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(ArtPath + "ResizeGrip.png");

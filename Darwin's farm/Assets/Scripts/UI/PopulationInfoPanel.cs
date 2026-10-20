@@ -9,6 +9,7 @@ public sealed class PopulationInfoPanel : MonoBehaviour
 {
     public const float BoardWidth = 525f;
     public const float BoardHeight = 860f;
+    public const float CompactHeight = 250f;
     private static readonly Color Ink = new Color(.17f, .17f, .13f);
     private static readonly Color SoftInk = new Color(.35f, .37f, .28f);
     [SerializeField] private int layoutVersion;
@@ -21,6 +22,13 @@ public sealed class PopulationInfoPanel : MonoBehaviour
     [SerializeField] private PopulationRadarChart radar;
     [SerializeField] private RectTransform foodNodes;
     private string foodSignature;
+    private RectTransform compactContent;
+    private TextMeshProUGUI compactName, compactCount;
+    private TextMeshProUGUI[] compactLabels;
+    private PopulationRadarChart compactRadar;
+    private bool compact;
+
+    public bool IsCompact => compact;
 
     public int LayoutVersion => layoutVersion;
 
@@ -41,9 +49,11 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         if (layoutVersion == 2 && content != null)
         {
             ApplyTypography();
+            if (Application.isPlaying) EnsureCompactContent();
             return;
         }
         RebuildJournal();
+        if (Application.isPlaying) EnsureCompactContent();
     }
 
     public void RebuildJournal()
@@ -92,6 +102,7 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         labels[2] = Label("Humidity", content, "适湿 --", 15, 423, 526, 83, 25);
         labels[3] = Label("Temperature", content, "适温 --", 15, 260, 526, 83, 25);
         labels[4] = Label("Size", content, "体型 --", 15, 252, 431, 75, 25);
+        PlaceRadarLabels(labels, 303f, 400f);
 
         relationshipTitle = Label("RelationshipScope", content, "当前地块 · 捕食关系", 15, 302, 569, 168, 28,
             TextAlignmentOptions.Right);
@@ -115,7 +126,11 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         speciesName.enableAutoSizing = true;
         speciesName.fontSizeMin = 21;
         speciesName.fontSizeMax = 36;
+        // The title belongs in the painted part of the sticker, clear of its leaf.
+        Place(speciesName.rectTransform, 13, 10, 140, 42);
+        speciesName.alignment = TextAlignmentOptions.Center;
         description.fontSize = 18; // The longer introduction keeps its five ruled lines.
+        description.textWrappingMode = TextWrappingModes.Normal;
         count.fontSize = 29;
         count.enableAutoSizing = true;
         count.fontSizeMin = 23;
@@ -124,6 +139,7 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         additional.fontSize = 20;
         additional.lineSpacing = 3f;
         foreach (var label in labels) label.fontSize = 18;
+        PlaceRadarLabels(labels, 303f, 400f);
         sources.fontSize = current.fontSize = predators.fontSize = 20;
         trophic.fontSize = 19;
         relationshipTitle.fontSize = 17;
@@ -172,6 +188,16 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         trophic.text = "营养级：--";
         relationshipTitle.text = "当前地块 · 捕食关系";
         ClearDynamicNodes();
+        if (Application.isPlaying)
+        {
+            EnsureCompactContent();
+            compactName.text = message;
+            compactCount.text = "数量：--";
+            compactRadar.SetBaseline(null);
+            compactRadar.SetTrackedTarget(null);
+            compactRadar.SetValues(0, 0, 0, 0, 0);
+            foreach (var label in compactLabels) label.text = "--";
+        }
     }
 
     public void Refresh(WhiteboxPopulation visual, PopulationData data, BlockInfo block)
@@ -186,6 +212,9 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         portrait.enabled = image != null;
         placeholder.gameObject.SetActive(image == null);
         count.text = "数量：" + (data != null ? data.speciesAmount : visual.Count);
+        EnsureCompactContent();
+        compactName.text = speciesName.text;
+        compactCount.text = count.text;
         mutation.text = "变异记录：暂无";
         description.text = species != null ? species.EcologicalTrivia : "暂无物种介绍";
         if (data == null)
@@ -196,6 +225,10 @@ public sealed class PopulationInfoPanel : MonoBehaviour
             foreach (var label in labels) label.text = "--";
             trophic.text = "营养级：--";
             ClearDynamicNodes();
+            compactRadar.SetBaseline(null);
+            compactRadar.SetTrackedTarget(null);
+            compactRadar.SetValues(0, 0, 0, 0, 0);
+            foreach (var label in compactLabels) label.text = "--";
             return;
         }
         additional.text = "地块：" + visual.TileId +
@@ -204,11 +237,122 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         radar.SetBaseline(species);
         radar.SetTrackedTarget(SpeciesTrackingState.IsDirectSource(species) ? SpeciesTrackingState.Target : null);
         radar.SetValues(data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.size);
+        compactRadar.SetBaseline(species);
+        compactRadar.SetTrackedTarget(SpeciesTrackingState.IsDirectSource(species) ? SpeciesTrackingState.Target : null);
+        compactRadar.SetValues(data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.size);
         int[] values = { data.fertility, data.movementAbility, data.fitHumidity, data.fitTemperature, data.size };
         string[] names = { "繁殖", "运动", "适湿", "适温", "体型" };
-        for (int i = 0; i < 5; i++) labels[i].text = names[i] + " " + values[i];
+        SpeciesData target = SpeciesTrackingState.IsDirectSource(species) ? SpeciesTrackingState.Target : null;
+        int[] targetValues = target != null ? new[] { target.baseFertility, target.baseMovementAbility,
+            target.baseFitHumidity, target.baseFitTemperature, target.baseSize } : null;
+        int[] traitIndices = { 4, 2, 1, 0, 3 };
+        int tolerance = FindFirstObjectByType<SimulationController>()?.ReadLandRules()?.evolutionTraitTolerance ?? 5;
+        for (int i = 0; i < 5; i++)
+        {
+            string hint = "";
+            if (target != null && target.HasRevealedTrait(traitIndices[i]) &&
+                !(data.ecologicalNiche == EcologicalNiche.Water && (i == 2 || i == 3)))
+            {
+                int difference = values[i] - targetValues[i];
+                hint = difference < -tolerance ? "<color=#BF302A>需提升</color>" :
+                    difference > tolerance ? "<color=#378047>需降低</color>" :
+                    "<color=#3269A0>需保持</color>";
+            }
+            string value = names[i] + " " + values[i];
+            labels[i].text = value + (hint.Length == 0 ? "" : i == 0 ? "  " + hint : "\n" + hint);
+            compactLabels[i].text = value + (hint.Length == 0 ? "" : i == 0 ? "  " + hint : "\n" + hint);
+            labels[i].alignment = compactLabels[i].alignment = i == 0 ?
+                TextAlignmentOptions.Top : i == 3 || i == 4 ?
+                TextAlignmentOptions.TopRight : TextAlignmentOptions.TopLeft;
+            labels[i].rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, hint.Length == 0 || i == 0 ? 26f : 48f);
+        }
         trophic.text = "营养级：L" + data.trophicLevel;
         UpdateFoodChain(species, data, block);
+    }
+
+    public void SetCompact(bool value)
+    {
+        EnsureCompactContent();
+        compact = value;
+        content.gameObject.SetActive(!value);
+        compactContent.gameObject.SetActive(value);
+        var frame = (RectTransform)transform;
+        frame.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, BoardWidth);
+        frame.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value ? CompactHeight : BoardHeight);
+        Image board = GetComponent<Image>();
+        if (board != null)
+        {
+            board.sprite = value ? PanelParchmentArt.CroppedPaper :
+                Resources.Load<Sprite>("GameUI/SpeciesJournal/JournalBoard");
+            board.type = value && board.sprite != null && board.sprite.border.sqrMagnitude > 0f
+                ? Image.Type.Sliced : Image.Type.Simple;
+            board.preserveAspect = !value;
+        }
+    }
+
+    private void EnsureCompactContent()
+    {
+        if (compactContent != null) return;
+        compactContent = Rect("CompactJournal", (RectTransform)transform, 0, 0, BoardWidth, CompactHeight);
+        var nameSticker = Rect("CompactNameSticker", compactContent, 49, 67, 183, 65);
+        var nameBrush = nameSticker.gameObject.AddComponent<Image>();
+        nameBrush.sprite = Resources.Load<Sprite>("GameUI/SpeciesJournal/SectionSticker");
+        nameBrush.preserveAspect = true;
+        nameBrush.raycastTarget = false;
+        compactName = Label("CompactName", compactContent, "物种名称", 34, 59, 72, 144, 51,
+            TextAlignmentOptions.Center);
+        compactName.fontStyle = FontStyles.Bold;
+        compactName.enableAutoSizing = true;
+        compactName.fontSizeMin = 22;
+        compactName.fontSizeMax = 34;
+        compactCount = Label("CompactCount", compactContent, "数量：--", 25, 62, 151, 163, 42,
+            TextAlignmentOptions.Center);
+        var divider = Rect("CompactDivider", compactContent, 244, 30, 1, 190);
+        var dividerImage = divider.gameObject.AddComponent<Image>();
+        dividerImage.color = new Color(.38f, .43f, .3f, .3f);
+        dividerImage.raycastTarget = false;
+        var chart = Rect("CompactRadar", compactContent, 306, 59, 128, 128);
+        compactRadar = chart.gameObject.AddComponent<PopulationRadarChart>();
+        compactRadar.raycastTarget = false;
+        compactLabels = new TextMeshProUGUI[5];
+        compactLabels[0] = Label("CompactFertility", compactContent, "繁殖 --", 17, 298, 24, 144, 32,
+            TextAlignmentOptions.Top);
+        compactLabels[1] = Label("CompactMovement", compactContent, "运动 --", 17, 434, 88, 86, 48);
+        compactLabels[2] = Label("CompactHumidity", compactContent, "适湿 --", 17, 413, 174, 106, 48);
+        compactLabels[3] = Label("CompactTemperature", compactContent, "适温 --", 17, 234, 174, 94, 48,
+            TextAlignmentOptions.TopRight);
+        compactLabels[4] = Label("CompactSize", compactContent, "体型 --", 17, 228, 88, 78, 48,
+            TextAlignmentOptions.TopRight);
+        PlaceRadarLabels(compactLabels, 306f, 59f);
+        compactContent.gameObject.SetActive(compact);
+    }
+
+    // The chart has a 128-unit square and vertices at 46% of its half-width.
+    // Each label's inner edge stays outside its adjacent vertex, including
+    // the second line shown while following an evolution target.
+    private static void PlaceRadarLabels(TextMeshProUGUI[] traitLabels, float chartX, float chartY)
+    {
+        if (traitLabels == null || traitLabels.Length != 5) return;
+        bool small = chartY < 100f;
+        float top = chartY - (small ? 37f : 36f);
+        Place(traitLabels[0].rectTransform, chartX - 24f, top, 176f, 30f);
+        Place(traitLabels[1].rectTransform, chartX + 128f, chartY + (small ? 29f : 27f),
+            80f, 48f);
+        Place(traitLabels[2].rectTransform, chartX + 107f, chartY + 114f,
+            94f, 48f);
+        Place(traitLabels[3].rectTransform, chartX - 69f, chartY + 114f, 90f, 48f);
+        Place(traitLabels[4].rectTransform, chartX - 78f, chartY + (small ? 29f : 27f),
+            78f, 48f);
+        traitLabels[0].alignment = TextAlignmentOptions.Top;
+        traitLabels[1].alignment = traitLabels[2].alignment = TextAlignmentOptions.TopLeft;
+        traitLabels[3].alignment = traitLabels[4].alignment = TextAlignmentOptions.TopRight;
+    }
+
+    private static void Place(RectTransform rect, float x, float y, float width, float height)
+    {
+        rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.up;
+        rect.anchoredPosition = new Vector2(x, -y);
+        rect.sizeDelta = new Vector2(width, height);
     }
 
     private void UpdateFoodChain(SpeciesData species, PopulationData data, BlockInfo block)

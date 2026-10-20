@@ -86,7 +86,23 @@ public static class TileStatusUIChecks
         restored.AdvanceToDay(EnvironmentRules.TransitionDays + EnvironmentRules.ClimateHoldDays + 1);
         Require(Read(restored).Temperature.Value < 100,
             "The first recovery day must descend from 100, not an unseen 120.");
-        Debug.Log("TILE_STATUS_TIMELINES_PASS: entry, hold, recovery, cancellation, save/load and 0–100 clipping.");
+        world = World(false);
+        var nearCeiling = world.CaptureState();
+        nearCeiling.tiles[0].values[0] = 95;
+        nearCeiling.tiles[0].tracks[0].start = 95;
+        nearCeiling.tiles[0].tracks[0].target = 95;
+        world.RestoreState(nearCeiling);
+        Require(world.TrySetClimate(position, EnvironmentAttribute.Temperature, 25, out error), error);
+        state = Read(world);
+        Require(state.Temperature.Value == 95 && state.Temperature.Target == 100,
+            "A +25 tool at 95 must enter from 95 and cap at 100.");
+        world.AdvanceToDay(12);
+        Require(Math.Abs(Read(world).Temperature.Value - 97.4) < .000001,
+            "The capped entry must interpolate from 95 to 100 over 25 days.");
+        world.AdvanceToDay(EnvironmentRules.TransitionDays);
+        Require(Read(world).Temperature.Value == 100,
+            "The capped tool must reach 100 after the entry period.");
+        Debug.Log("TILE_STATUS_TIMELINES_PASS: entry, hold, recovery, cancellation, save/load and 0–100 clipping including 95 + 25.");
     }
 
     private static EnvironmentWorld World(bool water)

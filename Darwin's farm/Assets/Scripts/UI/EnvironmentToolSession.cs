@@ -198,7 +198,8 @@ public sealed class EnvironmentToolSession : MonoBehaviour
         {
             var attribute = temperature ? EnvironmentAttribute.Temperature :
                 EnvironmentAttribute.Humidity;
-            target = EnvironmentRules.Clamp(attribute, state.Defaults.Get(attribute) +
+            target = EnvironmentRules.Clamp(attribute,
+                (temperature ? state.Temperature.Value : state.Humidity.Value) +
                 EnvironmentTechnologyCatalog.SignedClimate(Choice));
         }
         foreach (PopulationData population in community)

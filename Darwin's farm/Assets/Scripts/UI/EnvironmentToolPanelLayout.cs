@@ -13,13 +13,22 @@ public static class EnvironmentToolPanelLayout
     public static void Apply(RectTransform body, bool compact)
     {
         if (body == null) return;
+        foreach (Transform child in body)
+            child.gameObject.SetActive(!IsRetiredToolView(child.name));
         body.sizeDelta = new Vector2(compact ? CompactWidth : WideWidth,
             compact ? CompactHeight : WideHeight);
         var paper = body.GetComponent<Image>();
-        if (paper != null) { paper.type = Image.Type.Simple; paper.preserveAspect = true; }
+        if (paper != null)
+        {
+            var full = Resources.Load<Sprite>("GameUI/ToolArt/Generated/PanelShell");
+            if (full != null) paper.sprite = full;
+            paper.type = Image.Type.Simple;
+            paper.preserveAspect = true;
+        }
 
         if (compact) ApplyCompact(body);
         else ApplyWide(body);
+        body.Find("ResizeGrip")?.SetAsLastSibling();
     }
 
     private static void ApplyWide(RectTransform body)
@@ -27,7 +36,7 @@ public static class EnvironmentToolPanelLayout
         Label(body, "Title", 28, 30, -17, 330, 39);
         Label(body, "ToolTitle", 28, 30, -17, 330, 39);
         Button(body, "×", 376, -10, 42, 42, 28);
-        Grip(body, 392, -658, 27);
+        Grip(body, 405, -675, 46);
         Cards(body, false);
         Line(body, "TopDivider", 28, -190, 374);
         Label(body, "EffectCaption", 17, 28, -198, 70, 25);
@@ -56,7 +65,7 @@ public static class EnvironmentToolPanelLayout
         Label(body, "Title", 25, 25, -14, 245, 34);
         Label(body, "ToolTitle", 25, 25, -14, 245, 34);
         Button(body, "×", 302, -8, 39, 39, 26);
-        Grip(body, 316, -525, 27);
+        Grip(body, 325, -545, 46);
         Cards(body, true);
         Line(body, "TopDivider", 28, -162, 294);
         Label(body, "EffectCaption", 19, 28, -169, 72, 23);
@@ -86,6 +95,10 @@ public static class EnvironmentToolPanelLayout
         {
             var card = body.Find("TierCard" + i) as RectTransform;
             if (card == null) continue;
+            var cardFill = card.GetComponent<Image>();
+            if (cardFill != null) cardFill.color = Color.clear;
+            var tagFill = card.Find("TierTag")?.GetComponent<Image>();
+            if (tagFill != null) tagFill.color = Color.clear;
             if (compact) Rect(card, 29 + 75 * i, -57, 70, 100);
             else Rect(card, 26 + 100 * i, -66, 90, 114);
             var option = card.GetComponentInChildren<Button>(true);
@@ -121,9 +134,16 @@ public static class EnvironmentToolPanelLayout
             SetText(annotations, "Hold", compact ? "维持期" : "维持150日");
             SetText(annotations, "Return", compact ? "恢复期" : "恢复100日");
             float axis = compact ? 15 : 15;
-            Label(annotations, "Axis100", axis, 2, compact ? -30 : -39, 30, 19);
-            Label(annotations, "Axis50", axis, 2, compact ? -64 : -85, 30, 19);
-            Label(annotations, "Axis0", axis, 2, compact ? -101 : -137, 30, 19);
+            float height = ((RectTransform)frame).rect.height;
+            Rect plot = EnvironmentForecastGraphic.PlotRect(new Rect(0, 0,
+                ((RectTransform)frame).rect.width, height));
+            const float axisLabelHeight = 19f;
+            Label(annotations, "Axis100", axis, 2,
+                -(height - plot.yMax - axisLabelHeight / 2f), 30, axisLabelHeight);
+            Label(annotations, "Axis50", axis, 2,
+                -(height - plot.center.y - axisLabelHeight / 2f), 30, axisLabelHeight);
+            Label(annotations, "Axis0", axis, 2,
+                -(height - plot.yMin - axisLabelHeight / 2f), 30, axisLabelHeight);
             float phase = compact ? 17 : 16;
             Label(annotations, "Enter", phase, compact ? 89 : 111, -5, compact ? 73 : 92, 21);
             Label(annotations, "Hold", phase, compact ? 157 : 206, -5, compact ? 69 : 83, 21);
@@ -152,8 +172,31 @@ public static class EnvironmentToolPanelLayout
         Label(body, name, size, x + 28, y - 3, 144, size < 18 ? 21 : 23);
     }
 
-    private static void Grip(RectTransform body, float x, float y, float size) =>
+    private static void Grip(RectTransform body, float x, float y, float size)
+    {
         Rect(body, "ResizeGrip", x, y, size, size);
+        var image = body.Find("ResizeGrip")?.GetComponent<Image>();
+        if (image == null) return;
+        image.raycastTarget = true;
+        image.maskable = false;
+        image.raycastPadding = new Vector4(10f, 10f, 10f, 10f);
+    }
+
+    // The old view remains in the authored scene for serialized controller
+    // references. Re-enabling it places invisible raycast targets over the new
+    // controls, including the corner resize grip.
+    private static bool IsRetiredToolView(string name)
+    {
+        switch (name)
+        {
+            case "Options": case "Current": case "Notice": case "Preview":
+            case "EffectPreview": case "CurrentTechnology":
+            case "DeployAndCancel": case "TechnologyKinds":
+            case "EffectOptions": case "ExpandTechnology":
+                return true;
+            default: return false;
+        }
+    }
 
     private static void SetText(Transform root, string name, string value)
     {

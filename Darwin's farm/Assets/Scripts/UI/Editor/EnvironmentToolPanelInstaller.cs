@@ -340,10 +340,11 @@ public static class EnvironmentToolPanelInstaller
         for (int i = 0; i < options.Length; i++)
         {
             var card = Rect(body, "TierCard" + i); Place(card, 29 + 75 * i, -58, 70, 98);
-            cards[i] = Picture(card, null, new Color(.96f, .93f, .81f, .92f));
+            cards[i] = Picture(card, null, Color.clear);
             var border = card.GetComponent<Outline>();
             if (border == null) border = card.gameObject.AddComponent<Outline>();
             border.effectColor = new Color(.37f, .57f, .36f); border.effectDistance = new Vector2(2, -2);
+            border.useGraphicAlpha = false;
             border.enabled = i == 1;
             options[i].transform.SetParent(card, false);
             Place((RectTransform)options[i].transform, 10, -3, 50, 50);
@@ -353,7 +354,7 @@ public static class EnvironmentToolPanelInstaller
             if (marker != null) marker.gameObject.SetActive(false);
             values[i] = Label(card, "Value", "+25", 15, 4, -51, 62, 20, Ink, TextAlignmentOptions.Center);
             var tag = Rect(card, "TierTag"); Place(tag, 4, -76, 62, 17);
-            Picture(tag, null, i < 2 ? new Color(.86f,.83f,.68f,.8f) : new Color(.78f,.87f,.88f,.8f));
+            Picture(tag, null, Color.clear);
             names[i] = Label(tag, "Name", "小幅升温", 11, 0, 0, 62, 17, Ink, TextAlignmentOptions.Center);
         }
         oldRow.gameObject.SetActive(false);

@@ -47,6 +47,20 @@ public sealed class GameInformationUI : MonoBehaviour
     private EnvironmentToolSession tools;
     private BioenergyAccount bioenergy;
     private bool mobilePresentation;
+    private RectTransform legacyPopulationGrip;
+    private Vector2 legacyClosePosition;
+    private bool legacyPopulationCompact;
+    private float legacyPopulationScale = 1f, legacyCompactScale = 1f, legacyResizeStartScale = 1f;
+    private bool legacyResizeSnapped;
+    private float LegacyMaximumScale
+    {
+        get
+        {
+            var rect = (RectTransform)populationWindow.transform;
+            float availableHeight = canvasRect.rect.height + rect.anchoredPosition.y - 35f;
+            return Mathf.Min(1f, Mathf.Max(.35f, availableHeight / PopulationInfoPanel.BoardHeight));
+        }
+    }
     public bool ToolModeActive => tools != null && tools.Active;
     public WhiteboxPopulation SelectedPopulation
     {
@@ -163,11 +177,75 @@ public sealed class GameInformationUI : MonoBehaviour
         tileWindow.Initialize(canvasRect, ((RectTransform)tileWindow.transform).anchoredPosition);
         populationWindow.Initialize(canvasRect, ((RectTransform)populationWindow.transform).anchoredPosition);
         populationPanel.Initialize(populationWindow);
+        EnsureLegacyPopulationResize();
         foreach (InformationTextDragHandle handle in GetComponentsInChildren<InformationTextDragHandle>(true))
             // Initialize() hides windows before binding; include inactive parents.
             handle.Initialize(handle.GetComponentInParent<InformationWindow>(true));
         tileCloseButton.onClick.AddListener(CloseTile);
         populationCloseButton.onClick.AddListener(ClosePopulation);
+    }
+
+    private void EnsureLegacyPopulationResize()
+    {
+        // WhiteBox still contains the pre-journal window, without a viewport or saved grip.
+        if (populationWindow.GetComponent<PopulationJournalViewport>() != null) return;
+        if (legacyPopulationGrip != null) return;
+        legacyClosePosition = ((RectTransform)populationCloseButton.transform).anchoredPosition;
+        var go = new GameObject("PopulationResizeGrip", typeof(RectTransform), typeof(Image),
+            typeof(SnapPanelResizeHandle));
+        legacyPopulationGrip = (RectTransform)go.transform;
+        legacyPopulationGrip.SetParent(populationWindow.transform, false);
+        legacyPopulationGrip.anchorMin = legacyPopulationGrip.anchorMax =
+            legacyPopulationGrip.pivot = new Vector2(1f, 0f);
+        legacyPopulationGrip.anchoredPosition = new Vector2(10f, -10f);
+        legacyPopulationGrip.sizeDelta = new Vector2(46f, 46f);
+        var image = go.GetComponent<Image>();
+        image.sprite = Resources.Load<Sprite>("GameUI/SpeciesJournal/ResizeGrip");
+        image.color = image.sprite == null ? new Color(.25f, .34f, .22f) : Color.white;
+        image.raycastTarget = true;
+        // The artwork sits beyond the journal's corner. Give that small visible
+        // grip a larger hit area without changing its drawn size.
+        image.raycastPadding = new Vector4(-16f, -16f, -16f, -16f);
+        image.maskable = false;
+        go.GetComponent<SnapPanelResizeHandle>().Initialize(delta =>
+        {
+            if (legacyResizeSnapped) return;
+            if (!legacyPopulationCompact && delta < -76f)
+            { legacyResizeSnapped = true; SetLegacyPopulationCompact(true); return; }
+            if (legacyPopulationCompact && delta > 76f)
+            { legacyResizeSnapped = true; SetLegacyPopulationCompact(false); return; }
+            if (legacyPopulationCompact)
+            {
+                legacyCompactScale = Mathf.Clamp(legacyResizeStartScale + delta / 500f, .65f, 1.35f);
+                populationWindow.transform.localScale = Vector3.one * legacyCompactScale;
+            }
+            else
+            {
+                float maximum = LegacyMaximumScale;
+                legacyPopulationScale = Mathf.Clamp(legacyResizeStartScale + delta / 500f,
+                    maximum * .65f, maximum);
+                populationWindow.transform.localScale = Vector3.one * legacyPopulationScale;
+            }
+        }, () => { legacyResizeStartScale = legacyPopulationCompact ? legacyCompactScale : legacyPopulationScale;
+                legacyResizeSnapped = false; });
+        legacyPopulationGrip.SetAsLastSibling();
+    }
+
+    private void SetLegacyPopulationCompact(bool compact)
+    {
+        if (legacyPopulationGrip == null) return;
+        if (compact && !legacyPopulationCompact) legacyCompactScale = 1f;
+        legacyPopulationCompact = compact;
+        populationPanel.SetCompact(compact);
+        ((RectTransform)populationWindow.transform).SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Horizontal, PopulationInfoPanel.BoardWidth);
+        ((RectTransform)populationWindow.transform).SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical, compact ? PopulationInfoPanel.CompactHeight : PopulationInfoPanel.BoardHeight);
+        ((RectTransform)populationCloseButton.transform).anchoredPosition = compact
+            ? new Vector2(-20f, -18f) : legacyClosePosition;
+        populationWindow.transform.localScale = Vector3.one *
+            (compact ? legacyCompactScale : legacyPopulationScale);
+        populationWindow.SetDragBounds(canvasRect, ((RectTransform)populationWindow.transform).anchoredPosition);
     }
 
     public void CloseTile() { tileWindow.Close(); selectedTile = null; SelectionChanged?.Invoke(false); }
@@ -273,6 +351,16 @@ public sealed class GameInformationUI : MonoBehaviour
         // visible sprite rectangles before querying the terrain colliders below.
         WhiteboxPopulation visual = PickPopulation(position, Mathf.Max(0f, paddingPixels));
         if (visual == null) return false;
+        if (!populationWindow.IsOpen && !mobilePresentation)
+        {
+            var journal = populationWindow.GetComponent<PopulationJournalViewport>();
+            if (journal != null) journal.ResetToFull();
+            else
+            {
+                legacyPopulationScale = LegacyMaximumScale;
+                SetLegacyPopulationCompact(false);
+            }
+        }
         selectedVisual = visual;
         selectedPopulationId = visual.EcologicalPopulation != null
             ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
