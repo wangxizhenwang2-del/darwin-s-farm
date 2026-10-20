@@ -171,6 +171,11 @@ public sealed class TestSessionRecorder : MonoBehaviour
         operation = "test_difficulty",
         detail = value.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
     });
+    public void RecordMovementDifficulty(float value) => Add(new Entry {
+        kind = "action", day = clock.currentDay, source = "settings",
+        operation = "movement_difficulty",
+        detail = value.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+    });
     private void Action(string source, Vector2Int point, string detail) => Add(new Entry {
         kind = "action", day = clock.currentDay, source = source,
         operation = detail != null && detail.StartsWith("rejected:", StringComparison.Ordinal) ? "rejected" : "commit",

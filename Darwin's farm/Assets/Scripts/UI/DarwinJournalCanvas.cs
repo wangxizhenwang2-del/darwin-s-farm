@@ -25,6 +25,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         public bool testMode;
         public bool tutorialOnNewGame = true;
         public float testDifficulty;
+        public float movementDifficulty;
     }
     private enum Page { Title, Game, Pause, Settings, Tutorial, Info, Saves, Confirm }
 
@@ -43,6 +44,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     [SerializeField] private GameObject resolutionRow, fullscreenRow;
     private Toggle testModeToggle, newGameTutorialToggle;
     private Slider testDifficultySlider;
+    private Slider movementDifficultySlider;
     private LandRuleTuning testDifficultyBaseline;
     private Button exportTestButton;
     private TMP_Text exportTestStatus;
@@ -229,6 +231,15 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             ApplyTestDifficulty();
             if (testRecorder != null && testRecorder.IsRecording)
                 testRecorder.RecordTestDifficulty(value);
+            SaveSettings();
+        });
+        movementDifficultySlider.SetValueWithoutNotify(settings.movementDifficulty);
+        movementDifficultySlider.interactable = true;
+        movementDifficultySlider.onValueChanged.AddListener(value => {
+            settings.movementDifficulty = value;
+            ApplyTestDifficulty();
+            if (testRecorder != null && testRecorder.IsRecording)
+                testRecorder.RecordMovementDifficulty(value);
             SaveSettings();
         });
         exportTestButton.onClick.AddListener(ExportTestCode);
@@ -601,37 +612,50 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             else if (child.name == "AudioNote")
                 rect.anchoredPosition = new Vector2(0, -320);
             else if (child.name == "主音量" || child.name == "主音量Track")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 250);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 265);
             else if (child.name == "背景音乐" || child.name == "背景音乐Track")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 200);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 220);
             else if (child.name == "音效" || child.name == "音效Track")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 150);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 175);
             else if (child.name == "画质" || child.name == "画质Dropdown")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 100);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 130);
             else if (child.name == "ResolutionRow")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 48);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 80);
             else if (child.name == "FullscreenRow")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, -7);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 30);
         }
         newGameTutorialToggle = CloneSettingsToggle(paper, "NewGameTutorialRow",
-            "新游戏进入教程", -64);
-        testModeToggle = CloneSettingsToggle(paper, "TestModeRow", "测试模式", -121);
+            "新游戏进入教程", -20);
+        testModeToggle = CloneSettingsToggle(paper, "TestModeRow", "测试模式", -70);
         var difficultyLabel = Instantiate(paper.Find("主音量"), paper);
         difficultyLabel.name = "TestDifficultyLabel";
-        ((RectTransform)difficultyLabel).anchoredPosition = new Vector2(-185, -173);
+        ((RectTransform)difficultyLabel).anchoredPosition = new Vector2(-185, -120);
         difficultyLabel.GetComponent<TMP_Text>().text = "进化/抗逆难度";
         difficultyLabel.GetComponent<TMP_Text>().fontSize = 20;
         testDifficultySlider = Instantiate(masterSlider, paper);
         testDifficultySlider.name = "TestDifficultySlider";
         ((RectTransform)testDifficultySlider.transform).anchoredPosition =
-            new Vector2(105, -173);
+            new Vector2(105, -120);
         testDifficultySlider.onValueChanged.RemoveAllListeners();
         testDifficultySlider.minValue = -1f;
         testDifficultySlider.maxValue = 1f;
         testDifficultySlider.wholeNumbers = false;
+        var movementLabel = Instantiate(paper.Find("主音量"), paper);
+        movementLabel.name = "MovementDebugLabel";
+        ((RectTransform)movementLabel).anchoredPosition = new Vector2(-185, -170);
+        movementLabel.GetComponent<TMP_Text>().text = "运动调试";
+        movementLabel.GetComponent<TMP_Text>().fontSize = 20;
+        movementDifficultySlider = Instantiate(masterSlider, paper);
+        movementDifficultySlider.name = "MovementDebugSlider";
+        ((RectTransform)movementDifficultySlider.transform).anchoredPosition =
+            new Vector2(105, -170);
+        movementDifficultySlider.onValueChanged.RemoveAllListeners();
+        movementDifficultySlider.minValue = -1f;
+        movementDifficultySlider.maxValue = 1f;
+        movementDifficultySlider.wholeNumbers = false;
         var difficultyNote = Instantiate(paper.Find("AudioNote"), paper);
-        difficultyNote.name = "TestDifficultyNote";
-        ((RectTransform)difficultyNote).anchoredPosition = new Vector2(0, -216);
+        difficultyNote.name = "MovementDebugNote";
+        ((RectTransform)difficultyNote).anchoredPosition = new Vector2(0, -215);
         difficultyNote.GetComponent<TMP_Text>().fontSize = 16;
         difficultyNote.GetComponent<TMP_Text>().text =
             "左：运动50天保底     中：120天保底     右：不保底";
@@ -666,12 +690,13 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (audioSimulation == null || testDifficultyBaseline == null) return;
         float difficulty = Mathf.Clamp(settings.testDifficulty, -1f, 1f);
         LandRuleTuning rules = testDifficultyBaseline.Copy();
-        // The center of the existing difficulty slider is a 120-day target.
-        // At the easiest end it is 50 days; the hardest end has no deadline.
-        rules.movementTargetDeadlineDays = difficulty < 0f
-            ? Mathf.RoundToInt(Mathf.Lerp(120f, 50f, -difficulty))
-            : difficulty >= 1f ? 0
-            : Mathf.RoundToInt(120f / (1f - difficulty));
+        // Movement deadline is independent of evolution and resilience.
+        float movementDifficulty = Mathf.Clamp(settings.movementDifficulty,
+            -1f, 1f);
+        rules.movementTargetDeadlineDays = movementDifficulty < 0f
+            ? Mathf.RoundToInt(Mathf.Lerp(120f, 50f, -movementDifficulty))
+            : movementDifficulty >= 1f ? 0
+            : Mathf.RoundToInt(120f / (1f - movementDifficulty));
         if (!Mathf.Approximately(difficulty, 0f))
         {
             // Formal evolution: all five traits must fit, then the food gates
@@ -823,6 +848,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         settings.music=Mathf.Clamp01(settings.music);
         settings.effects=Mathf.Clamp01(settings.effects);
         settings.testDifficulty=Mathf.Clamp(settings.testDifficulty,-1f,1f);
+        settings.movementDifficulty=Mathf.Clamp(settings.movementDifficulty,-1f,1f);
         AudioListener.volume=settings.master;
         DarwinWwiseAmbience.SetMasterVolume(settings.master);
         settings.quality = Mathf.Clamp(settings.quality, 0, QualityLevels.Length - 1);
