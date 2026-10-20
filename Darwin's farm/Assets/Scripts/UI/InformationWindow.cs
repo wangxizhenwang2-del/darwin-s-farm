@@ -19,6 +19,7 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
     private Vector2 dragOffset;
 
     public bool IsOpen => open;
+    public Vector2 DefaultPosition => home;
     public bool TitleOnlyDragging => titleOnlyDragging;
     public void KeepWithinBounds()
     {
