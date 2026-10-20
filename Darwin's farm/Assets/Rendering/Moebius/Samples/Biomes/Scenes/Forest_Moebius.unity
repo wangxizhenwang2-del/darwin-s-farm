@@ -302,6 +302,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -8.2
       objectReference: {fileID: 0}
+    - target: {fileID: 2876656113206946198, guid: bd7de7a97ff452e4b9b97a7dccdad220, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3768282944878961166, guid: bd7de7a97ff452e4b9b97a7dccdad220, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5019876283404848898, guid: bd7de7a97ff452e4b9b97a7dccdad220, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5185060615094221304, guid: bd7de7a97ff452e4b9b97a7dccdad220, type: 3}
       propertyPath: m_Name
       value: Forest_Moebius
@@ -464,6 +476,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 31.893, y: 72.457, z: -5.354}
+--- !u!1 &1366712723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1366712725}
+  - component: {fileID: 1366712724}
+  m_Layer: 0
+  m_Name: WwiseGlobal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1366712724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366712723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75e8f1924714684ea92fe21ab9c7a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkInitializer
+  InitializationSettings: {fileID: 11400000, guid: 9071ec0272c7c30478bc58396cdf4a59, type: 2}
+  basePath: 
+  language: 
+  defaultPoolSize: 0
+  lowerPoolSize: 0
+  streamingPoolSize: 0
+  memoryCutoffThreshold: 0
+  monitorPoolSize: 0
+  monitorQueuePoolSize: 0
+  callbackManagerBufferSize: 0
+  spatialAudioPoolSize: 0
+  maxSoundPropagationDepth: 0
+  engineLogging: 0
+--- !u!4 &1366712725
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366712723}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1691783275
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,19 +606,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.10159116
+      value: 0.07233329
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.02494024
+      value: 0.020800224
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.072565116
+      value: 0.051666636
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.017814456
+      value: 0.014857302
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -633,19 +702,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.23583661
+      value: 0.16791655
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.057896983
+      value: 0.048286233
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.16845472
+      value: 0.11994039
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.041354988
+      value: 0.034490164
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -653,27 +722,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.29026046
+      value: 0.20666653
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.07125783
+      value: 0.05942921
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.2073289
+      value: 0.14761895
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.05089845
+      value: 0.042449437
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.1607353
+      value: -0.20000602
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.32073528
+      value: -0.36000603
       objectReference: {fileID: 0}
     - target: {fileID: 9090321274784119070, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: m_Name
@@ -693,3 +762,4 @@ SceneRoots:
   - {fileID: 844723971}
   - {fileID: 1851635425}
   - {fileID: 7247066871409101703}
+  - {fileID: 1366712725}

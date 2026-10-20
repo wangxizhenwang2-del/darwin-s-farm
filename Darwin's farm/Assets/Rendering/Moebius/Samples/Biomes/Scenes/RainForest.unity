@@ -8210,7 +8210,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &650524899
 Transform:
   m_ObjectHideFlags: 0
@@ -12257,6 +12257,63 @@ Transform:
   - {fileID: 772325907}
   - {fileID: 777802948}
   m_Father: {fileID: 650524899}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &938835523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 938835525}
+  - component: {fileID: 938835524}
+  m_Layer: 0
+  m_Name: WwiseGlobal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &938835524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938835523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75e8f1924714684ea92fe21ab9c7a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkInitializer
+  InitializationSettings: {fileID: 11400000, guid: 9071ec0272c7c30478bc58396cdf4a59, type: 2}
+  basePath: 
+  language: 
+  defaultPoolSize: 0
+  lowerPoolSize: 0
+  streamingPoolSize: 0
+  memoryCutoffThreshold: 0
+  monitorPoolSize: 0
+  monitorQueuePoolSize: 0
+  callbackManagerBufferSize: 0
+  spatialAudioPoolSize: 0
+  maxSoundPropagationDepth: 0
+  engineLogging: 0
+--- !u!4 &938835525
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938835523}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &940708596
 GameObject:
@@ -18244,7 +18301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1393458837
 Transform:
   m_ObjectHideFlags: 0
@@ -20112,7 +20169,7 @@ Transform:
   m_GameObject: {fileID: 1483379893}
   serializedVersion: 2
   m_LocalRotation: {x: 0.27712095, y: 0.63882864, z: -0.27624997, w: 0.66241074}
-  m_LocalPosition: {x: -12.8, y: 4, z: 0.17}
+  m_LocalPosition: {x: -12.8, y: 6, z: 0.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29328,19 +29385,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1934668865090480033, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.10208852
+      value: 0.13912421
       objectReference: {fileID: 0}
     - target: {fileID: 1934668865090480033, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.04400502
+      value: 0.021193484
       objectReference: {fileID: 0}
     - target: {fileID: 1934668865090480033, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.072920375
+      value: 0.099374436
       objectReference: {fileID: 0}
     - target: {fileID: 1934668865090480033, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.03143216
+      value: 0.015138203
       objectReference: {fileID: 0}
     - target: {fileID: 1934668865090480033, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -29380,19 +29437,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3096757594809449362, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.05182956
+      value: 0.0706323
       objectReference: {fileID: 0}
     - target: {fileID: 3096757594809449362, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.022341013
+      value: 0.010759771
       objectReference: {fileID: 0}
     - target: {fileID: 3096757594809449362, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.037021115
+      value: 0.050451644
       objectReference: {fileID: 0}
     - target: {fileID: 3096757594809449362, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.015957868
+      value: 0.0076855505
       objectReference: {fileID: 0}
     - target: {fileID: 3096757594809449362, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -29404,11 +29461,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3096757594809449362, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.3269819
+      value: -0.071172774
       objectReference: {fileID: 0}
     - target: {fileID: 3096757594809449362, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.48698193
+      value: -0.23117277
       objectReference: {fileID: 0}
     - target: {fileID: 3576404502356307251, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: m_Name
@@ -29416,19 +29473,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4006146187869857122, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.12564743
+      value: 0.17122981
       objectReference: {fileID: 0}
     - target: {fileID: 4006146187869857122, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.054160032
+      value: 0.02608429
       objectReference: {fileID: 0}
     - target: {fileID: 4006146187869857122, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.08974816
+      value: 0.122307
       objectReference: {fileID: 0}
     - target: {fileID: 4006146187869857122, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.038685735
+      value: 0.018631635
       objectReference: {fileID: 0}
     - target: {fileID: 4006146187869857122, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -29436,27 +29493,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4006146187869857122, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.3269819
+      value: -0.071172774
       objectReference: {fileID: 0}
     - target: {fileID: 4006146187869857122, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.48698193
+      value: -0.23117277
       objectReference: {fileID: 0}
     - target: {fileID: 5462035555275741099, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.043976594
+      value: 0.059930433
       objectReference: {fileID: 0}
     - target: {fileID: 5462035555275741099, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.01895601
+      value: 0.009129501
       objectReference: {fileID: 0}
     - target: {fileID: 5462035555275741099, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.031411853
+      value: 0.042807452
       objectReference: {fileID: 0}
     - target: {fileID: 5462035555275741099, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.013540007
+      value: 0.0065210722
       objectReference: {fileID: 0}
     - target: {fileID: 5462035555275741099, guid: cda5f37378d9d314f8b298ab7b25793a, type: 3}
       propertyPath: NoiseModule.strength.scalar
@@ -29521,3 +29578,4 @@ SceneRoots:
   - {fileID: 1393458837}
   - {fileID: 650524899}
   - {fileID: 6358116515887294528}
+  - {fileID: 938835525}
