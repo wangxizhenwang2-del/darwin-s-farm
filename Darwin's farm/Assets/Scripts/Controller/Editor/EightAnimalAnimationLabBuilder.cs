@@ -283,6 +283,7 @@ public static class EightAnimalAnimationLabBuilder
         serialized.FindProperty("controller").objectReferenceValue = controller;
         serialized.ApplyModifiedPropertiesWithoutUndo();
 
+        PopulationAnimationSizing.Bake(set);
         if (!File.Exists(animal.speciesPath)) return set; // Standalone asset-build project.
         SpeciesData species = AssetDatabase.LoadAssetAtPath<SpeciesData>(animal.speciesPath);
         if (species == null) throw new InvalidOperationException("Missing species asset: " + animal.speciesPath);
@@ -336,6 +337,7 @@ public static class EightAnimalAnimationLabBuilder
         serialized = new SerializedObject(set);
         serialized.FindProperty("controller").objectReferenceValue = controller;
         serialized.ApplyModifiedPropertiesWithoutUndo();
+        PopulationAnimationSizing.Bake(set);
         if (!File.Exists(animal.speciesPath)) return set;
         SpeciesData species = AssetDatabase.LoadAssetAtPath<SpeciesData>(animal.speciesPath);
         if (species == null) throw new InvalidOperationException("Missing species asset: " + animal.speciesPath);
@@ -455,7 +457,7 @@ public static class EightAnimalAnimationLabBuilder
             animal.transform.SetParent(root.transform);
             SetPreviewPosition(animal.transform, name);
             SpriteRenderer sprite = animal.AddComponent<SpriteRenderer>();
-            PopulationSpriteDisplay.Configure(sprite, sets[i].StopSprite, Color.white);
+            PopulationSpriteDisplay.Configure(sprite, sets[i].StopSprite, Color.white, sets[i].ReferenceVisualHeight);
             animal.AddComponent<Animator>().runtimeAnimatorController = sets[i].Controller;
             animal.GetComponent<Animator>().enabled = false; // Frame scheduler owns exact playback.
             PopulationFrameAnimationController player = animal.AddComponent<PopulationFrameAnimationController>();
@@ -496,7 +498,7 @@ public static class EightAnimalAnimationLabBuilder
                     created.transform.SetParent(labObject.transform, false);
                     SetPreviewPosition(created.transform, name);
                     SpriteRenderer sprite = created.AddComponent<SpriteRenderer>();
-                    PopulationSpriteDisplay.Configure(sprite, sets[i].StopSprite, Color.white);
+                    PopulationSpriteDisplay.Configure(sprite, sets[i].StopSprite, Color.white, sets[i].ReferenceVisualHeight);
                     Animator animator = created.AddComponent<Animator>();
                     animator.runtimeAnimatorController = sets[i].Controller;
                     animator.enabled = false;

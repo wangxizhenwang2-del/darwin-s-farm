@@ -32,7 +32,8 @@ public sealed class PopulationAnimationDriver : MonoBehaviour
             animator.runtimeAnimatorController = null;
         }
         PopulationSpriteDisplay.Configure(image,
-            animationSet != null ? animationSet.IdleSprite : fallback, tint);
+            animationSet != null ? animationSet.IdleSprite : fallback, tint,
+            animationSet != null ? animationSet.ReferenceVisualHeight : 0f);
         image.flipX = false;
         ResetMotion(groundPosition);
         if (animationSet == null)
