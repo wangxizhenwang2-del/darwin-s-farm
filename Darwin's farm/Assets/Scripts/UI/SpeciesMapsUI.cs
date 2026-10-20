@@ -239,6 +239,12 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (clock != null) clock.ReleaseModalPause();
     }
 
+    public void CloseAll()
+    {
+        HideClue();
+        Close();
+    }
+
     public void Toggle() { if (open) Close(); else Open(); }
 
     // Touch positions are in screen pixels, matching the desktop pointer path.

@@ -32,9 +32,9 @@ public sealed class EnvironmentToolPanelZoom : MonoBehaviour
         dragStartScale = userScale;
         var canvas = target != null ? target.GetComponentInParent<Canvas>() : null;
         float canvasScale = canvas != null ? canvas.scaleFactor : 1f;
-        dragPixelsPerScale = Mathf.Max(180f,
+        dragPixelsPerScale = Mathf.Max(140f,
             (target != null ? target.rect.width : EnvironmentToolPanelLayout.WideContentWidth) *
-            baseScale * canvasScale);
+            baseScale * canvasScale * .45f);
     }
 
     public void DragResize(Vector2 screenPoint)

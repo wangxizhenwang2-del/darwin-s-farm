@@ -18,6 +18,8 @@ public sealed class MobilePanelPinchZoom : MonoBehaviour
         mapInput = input;
         previousDistance = 0f;
     }
+    public void SetArea(RectTransform area)
+    { touchArea = area; previousDistance = 0f; }
 
     private void Update()
     {

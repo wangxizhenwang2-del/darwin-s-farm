@@ -177,7 +177,17 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             ((RectTransform)titleLoad.transform).anchoredPosition=new Vector2(0,-86);
         }
         titleExit.onClick.AddListener(Application.Quit);
-        gameMenuButton.GetComponent<Button>().onClick.AddListener(Pause);
+        var emergencyMenuCanvas = gameMenuButton.GetComponent<Canvas>();
+        if (emergencyMenuCanvas != null)
+        {
+            emergencyMenuCanvas.overrideSorting = true;
+            emergencyMenuCanvas.sortingOrder = 400;
+        }
+        gameMenuButton.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            CloseGameplayPanels();
+            Pause();
+        });
         pauseResume.onClick.AddListener(Resume);
         pauseSettings.onClick.AddListener(() => Open(Page.Settings));
         pauseSaves.onClick.AddListener(() => Open(Page.Saves));
@@ -317,6 +327,19 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         clock.AcquireModalPause();
         Time.timeScale = 0f;
         Show(Page.Pause);
+    }
+    private void CloseGameplayPanels()
+    {
+        FindFirstObjectByType<SpeciesMapsUI>()?.CloseAll();
+        FindFirstObjectByType<GameInformationUI>()?.ClosePanelsForMenu();
+        FindFirstObjectByType<EnvironmentToolSession>()?.End();
+        var placement = FindFirstObjectByType<MapTilePlacementController>();
+        if (placement != null && placement.IsDragging) placement.CancelDrag();
+        var buildMode = FindFirstObjectByType<MapBuildModeController>();
+        if (buildMode != null && buildMode.IsBuildMode) buildMode.SetBuildMode(false);
+        foreach (var window in FindObjectsByType<InformationWindow>(
+            FindObjectsInactive.Include, FindObjectsSortMode.None))
+            if (window.IsOpen) window.Close();
     }
     private void Resume()
     {

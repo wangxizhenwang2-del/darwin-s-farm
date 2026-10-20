@@ -203,10 +203,13 @@ public sealed class GameInformationUI : MonoBehaviour
         if (populationWindow.GetComponent<PopulationJournalViewport>() != null) return;
         if (legacyPopulationGrip != null) return;
         legacyClosePosition = ((RectTransform)populationCloseButton.transform).anchoredPosition;
-        var go = new GameObject("PopulationResizeGrip", typeof(RectTransform), typeof(Image),
-            typeof(SnapPanelResizeHandle));
-        legacyPopulationGrip = (RectTransform)go.transform;
-        legacyPopulationGrip.SetParent(populationWindow.transform, false);
+        legacyPopulationGrip = populationWindow.transform.Find("PopulationResizeGrip") as RectTransform;
+        if (legacyPopulationGrip == null)
+        {
+            Debug.LogError("PopulationResizeGrip is missing from WhiteBox scene.", populationWindow);
+            return;
+        }
+        var go = legacyPopulationGrip.gameObject;
         legacyPopulationGrip.anchorMin = legacyPopulationGrip.anchorMax =
             legacyPopulationGrip.pivot = new Vector2(1f, 0f);
         legacyPopulationGrip.anchoredPosition = new Vector2(10f, -10f);
@@ -265,6 +268,21 @@ public sealed class GameInformationUI : MonoBehaviour
     {
         populationWindow.Close(); selectedVisual = null; selectedPopulationId = null;
         SelectionChanged?.Invoke(true);
+    }
+
+    public void ClosePanelsForMenu()
+    {
+        if (tileWindow == null || populationWindow == null) return;
+        CloseTile();
+        ClosePopulation();
+        tileInformationPanel?.ResetMobileSize();
+        var journal = populationWindow.GetComponent<PopulationJournalViewport>();
+        if (journal != null) journal.ResetToFull();
+        else if (populationWindow.GetComponentInParent<MobileFixedInformationFrame>() == null)
+        {
+            legacyPopulationScale = LegacyMaximumScale;
+            SetLegacyPopulationCompact(false);
+        }
     }
 
     private void OnEnable()
@@ -363,7 +381,8 @@ public sealed class GameInformationUI : MonoBehaviour
         // visible sprite rectangles before querying the terrain colliders below.
         WhiteboxPopulation visual = PickPopulation(position, Mathf.Max(0f, paddingPixels));
         if (visual == null) return false;
-        if (!populationWindow.IsOpen && !mobilePresentation)
+        if (!populationWindow.IsOpen && !mobilePresentation &&
+            populationWindow.GetComponentInParent<MobileFixedInformationFrame>() == null)
         {
             var journal = populationWindow.GetComponent<PopulationJournalViewport>();
             if (journal != null) journal.ResetToFull();
@@ -378,7 +397,8 @@ public sealed class GameInformationUI : MonoBehaviour
             ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
         RefreshPopulation();
         populationWindow.Open();
-        if (!mobilePresentation) populationWindow.transform.SetAsLastSibling();
+        if (!mobilePresentation && populationWindow.GetComponentInParent<MobileFixedInformationFrame>() == null)
+            populationWindow.transform.SetAsLastSibling();
         SelectionChanged?.Invoke(true);
         return true;
     }
@@ -410,7 +430,8 @@ public sealed class GameInformationUI : MonoBehaviour
         if (showInformation)
         {
             tileWindow.Open();
-            if (!mobilePresentation) tileWindow.transform.SetAsLastSibling();
+            if (!mobilePresentation && tileWindow.GetComponentInParent<MobileFixedInformationFrame>() == null)
+                tileWindow.transform.SetAsLastSibling();
         }
         SelectionChanged?.Invoke(false);
         return true;
