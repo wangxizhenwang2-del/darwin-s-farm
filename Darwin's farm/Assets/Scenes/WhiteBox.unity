@@ -14012,8 +14012,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.12
-  m_Text: "\u5730\u5757\u4FE1\u606F\n\u5730\u5F62\uFF1A--    \u6D77\u62D4\uFF1A--\n\u6E29\u5EA6\uFF1A--   
-    \u6E7F\u5EA6\uFF1A--\n\u690D\u7269\u5E93\u5B58\uFF1A--\n\u6BCF\u65E5\u6062\u590D\uFF1A--   
+  m_Text: "\u5730\u5757\u4FE1\u606F\n\u6E29\u5EA6\uFF1A--    \u6E7F\u5EA6\uFF1A--\n\u5730\u5F62\uFF1A--   
+    \u6D77\u62D4\uFF1A--\n\u690D\u7269\u5E93\u5B58\uFF1A--\n\u6BCF\u65E5\u6062\u590D\uFF1A--   
     \u79CD\u7FA4\uFF1A--"
 --- !u!1 &420451138
 GameObject:
@@ -23209,7 +23209,7 @@ RectTransform:
   m_Father: {fileID: 1799952138}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -24915,7 +24915,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -5515328}
+  m_AnchoredPosition: {x: 0, y: -5726864}
   m_SizeDelta: {x: 500, y: 690}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &739927184
@@ -24981,7 +24981,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1264607089}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.40229884
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -33130,7 +33130,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.38, g: 0.52, b: 0.38, a: 1}
@@ -35003,7 +35003,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Scrollbar
   m_Navigation:
     m_Mode: 3
@@ -35052,7 +35052,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.66, g: 0.71, b: 0.58, a: 0.5}
@@ -38038,7 +38038,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.38, g: 0.52, b: 0.38, a: 1}
@@ -40585,7 +40585,7 @@ RectTransform:
   m_GameObject: {fileID: 1192045885}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.98285717, y: 0.98285717, z: 0.98285717}
+  m_LocalScale: {x: 0.98285705, y: 0.98285705, z: 0.98285705}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1947614250}
@@ -41681,7 +41681,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0}
@@ -48570,8 +48570,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -16, y: -79.33331}
-  m_SizeDelta: {x: 100, y: 61.333313}
+  m_AnchoredPosition: {x: -15.178955, y: -75.67267}
+  m_SizeDelta: {x: 94.86835, y: 58.185883}
   m_Pivot: {x: 1, y: 1}
 --- !u!1 &1416467966
 GameObject:
@@ -48698,7 +48698,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Scrollbar
   m_Navigation:
     m_Mode: 3
@@ -48747,7 +48747,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.66, g: 0.71, b: 0.58, a: 0.5}
@@ -52931,7 +52931,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1550651072
 RectTransform:
   m_ObjectHideFlags: 0
@@ -71360,7 +71360,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0}
@@ -72682,7 +72682,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2030507334}
   m_HandleRect: {fileID: 2030507333}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
