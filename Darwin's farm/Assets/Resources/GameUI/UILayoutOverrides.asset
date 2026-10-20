@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd03ad2f3da45ea4f8fdb5aa4136a3f7, type: 3}
+  m_Name: UILayoutOverrides
+  m_EditorClassIdentifier: Assembly-CSharp::UILayoutOverrides
+  entries:
+  - scene: Assets/Scenes/WhiteBox.unity
+    path: Canvas#0/ClueSafeArea#0
+    component: UnityEngine.RectTransform, UnityEngine.CoreModule
+    componentIndex: 0
+    values:
+    - property: anchorMin
+      number: {x: 0, y: 0, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: anchorMax
+      number: {x: 1, y: 1, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: pivot
+      number: {x: 0.5, y: 0.5, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: sizeDelta
+      number: {x: 0, y: 0, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: localRotation
+      number: {x: 0, y: 0, z: 0, w: 1}
+      reference: {fileID: 0}
+      serialized: 
+    - property: localScale
+      number: {x: 1, y: 1, z: 1, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: anchoredPosition3D
+      number: {x: 0, y: 110, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+  - scene: Assets/Scenes/WhiteBox.unity
+    path: Canvas#0/ClueSafeArea#0/SpeciesCluePopup#0
+    component: UnityEngine.RectTransform, UnityEngine.CoreModule
+    componentIndex: 0
+    values:
+    - property: sizeDelta
+      number: {x: 620, y: 317, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: anchoredPosition3D
+      number: {x: -189.8346, y: 180.72498, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+  - scene: Assets/Scenes/WhiteBox.unity
+    path: Canvas#0/ClueSafeArea#0/SpeciesCluePopup#0/CompactClue#0/Title#0
+    component: UnityEngine.RectTransform, UnityEngine.CoreModule
+    componentIndex: 0
+    values:
+    - property: anchoredPosition3D
+      number: {x: -44.5, y: -34.7, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: localScale
+      number: {x: 1.3359, y: 1.3359, z: 1.3359, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+  - scene: Assets/Scenes/WhiteBox.unity
+    path: Canvas#0/ClueSafeArea#0/SpeciesCluePopup#0/CompactClue#0/Title#0
+    component: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+    componentIndex: 0
+    values:
+    - property: fontStyle
+      number: {x: 1, y: 0, z: 0, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+  - scene: Assets/Scenes/WhiteBox.unity
+    path: Canvas#0/ClueSafeArea#0/SpeciesCluePopup#0/CompactClue#0/TraitsOne#0
+    component: UnityEngine.RectTransform, UnityEngine.CoreModule
+    componentIndex: 0
+    values:
+    - property: localScale
+      number: {x: 1.5778712, y: 1.5778712, z: 1.5778712, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+  - scene: Assets/Scenes/WhiteBox.unity
+    path: Canvas#0/ClueSafeArea#0/SpeciesCluePopup#0/CompactClue#0/TraitsTwo#0
+    component: UnityEngine.RectTransform, UnityEngine.CoreModule
+    componentIndex: 0
+    values:
+    - property: localScale
+      number: {x: 1.5778712, y: 1.5778712, z: 1.5778712, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+  - scene: Assets/Scenes/WhiteBox.unity
+    path: Canvas#0/ClueSafeArea#0/SpeciesCluePopup#0/CompactClue#0/Progress#0
+    component: UnityEngine.RectTransform, UnityEngine.CoreModule
+    componentIndex: 0
+    values:
+    - property: localScale
+      number: {x: 1.5778712, y: 1.5778712, z: 1.5778712, w: 0}
+      reference: {fileID: 0}
+      serialized: 

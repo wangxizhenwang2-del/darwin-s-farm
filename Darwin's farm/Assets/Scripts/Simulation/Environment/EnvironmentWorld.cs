@@ -170,7 +170,7 @@ namespace DarwinFarm.Environment
             { error = "温湿度科技只适用于陆格"; return false; }
             int index = (int)attribute;
             tile.Values[index] = EnvironmentRules.Clamp(attribute, tile.Values[index]);
-            double target = EnvironmentRules.Clamp(attribute, EnvironmentRules.Defaults(tile.Habitat).Get(attribute) + amount);
+            double target = EnvironmentRules.Clamp(attribute, tile.Values[index] + amount);
             if (Math.Abs(target - tile.Values[index]) < .000001)
             { error = "环境数值未发生有效变化"; return false; }
             tile.Locals[index] = new LocalClimateEffect {

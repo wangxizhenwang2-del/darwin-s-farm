@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15a63e38b9679164194a54caac8b1f4d, type: 3}
-  m_Name: "灵感菇狸Animation"
+  m_Name: "\u7075\u611F\u83C7\u72F8Animation"
   m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
   controller: {fileID: 9100000, guid: 0d6567151cc146b691e1f3b7e9ca73a8, type: 2}
   idleSprite: {fileID: 21300000, guid: 42d78d923df25e549bad9b4c0f9db146, type: 3}
+  referenceVisualHeight: 1.3854166
   referenceMoveSpeed: 1.8
   artworkFacesLeft: 0
   mode: 0

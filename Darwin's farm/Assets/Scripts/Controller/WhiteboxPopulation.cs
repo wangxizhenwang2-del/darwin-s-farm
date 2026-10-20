@@ -26,6 +26,11 @@ public sealed class PopulationMovementSettings
     [Min(0f)] public float flightBob = 0.12f;
     [Min(0.2f)] public float flightEdgeMargin = 0.8f;
     [Min(0.5f)] public float flightPatrolRadius = 4.5f;
+    [Header("Illustrated flight and swimming effects")]
+    public bool flightEffects = true;
+    [Range(0f, 1f)] public float flightEffectIntensity = 1f;
+    public bool swimmingEffects = true;
+    [Range(0f, 1f)] public float swimmingEffectIntensity = 1f;
 }
 
 // A single visible animal represents the entire population. Movement never
@@ -56,7 +61,8 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     public bool IsWater { get; private set; }
     private MapWaterController water;
     internal float SwimRadius => PopulationSpriteDisplay.WaterRadius(leader.size, controller.Settings.swimClearanceMultiplier,
-        leader.sprite ? leader.sprite.sprite : null, controller.ViewCamera ? controller.ViewCamera : Camera.main, controller.Settings.submergedFraction);
+        leader.sprite ? leader.sprite.sprite : null, controller.ViewCamera ? controller.ViewCamera : Camera.main,
+        controller.Settings.submergedFraction, boundAnimation != null ? boundAnimation.ReferenceVisualHeight : 0f);
     private bool WaterPose(Vector3 position) => water && water.TrySwimmingPose(tileId, position, SwimRadius, out _);
 
     internal Representative leader;
@@ -75,6 +81,7 @@ public sealed class WhiteboxPopulation : MonoBehaviour
     private Color boundTint;
     private PopulationAnimationSet boundAnimation;
     private PopulationFlight flight;
+    private Darwin.Rendering.MoebiusAnimalMotionStrokes motionStrokes;
 
     public bool HasAppearance(Sprite sprite, Color tint, PopulationAnimationSet animations) =>
         boundSprite == (sprite != null ? sprite : controller.FallbackSprite) &&
@@ -187,6 +194,32 @@ public sealed class WhiteboxPopulation : MonoBehaviour
         label.transform.rotation = camera.transform.rotation;
         PopulationSpriteDisplay.FaceCamera(leader.sprite, camera);
         if (IsWater) PopulationSpriteDisplay.ConfigureWater(leader.sprite, leader.groundPosition.y, controller.Settings.submergedFraction);
+        UpdateMotionEffects(camera);
+    }
+
+    private void UpdateMotionEffects(Camera camera)
+    {
+        bool visible = (IsAir && controller.Settings.flightEffects || IsWater && controller.Settings.swimmingEffects) &&
+            leader.sprite != null && leader.sprite.sprite != null;
+        if (!visible)
+        {
+            if (motionStrokes != null) motionStrokes.gameObject.SetActive(false);
+            return;
+        }
+        if (motionStrokes == null)
+        {
+            var owner = new GameObject(IsWater ? "Swimming Motion VFX" : "Flight Motion VFX");
+            owner.layer = leader.sprite.gameObject.layer;
+            owner.transform.SetParent(transform, false);
+            motionStrokes = owner.AddComponent<Darwin.Rendering.MoebiusAnimalMotionStrokes>();
+        }
+        if (!motionStrokes.gameObject.activeSelf) motionStrokes.gameObject.SetActive(true);
+        float reference = boundAnimation != null ? boundAnimation.ReferenceVisualHeight : leader.sprite.sprite.bounds.size.y;
+        float height = Mathf.Abs(leader.sprite.transform.lossyScale.y) * reference;
+        motionStrokes.swimming = IsWater;
+        motionStrokes.Evaluate(IsWater ? leader.groundPosition + Vector3.up * .025f : leader.sprite.bounds.center, height, camera, Time.time,
+            frameAnimation != null && frameAnimation.AnimationSet != null ? frameAnimation.CycleProgress : Time.time * 1.5f,
+            IsWater ? controller.Settings.swimmingEffectIntensity : controller.Settings.flightEffectIntensity);
     }
 
     internal void Tick(float deltaTime)

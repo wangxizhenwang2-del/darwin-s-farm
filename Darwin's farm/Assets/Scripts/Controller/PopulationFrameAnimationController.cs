@@ -53,6 +53,9 @@ public sealed class PopulationFrameAnimationController : MonoBehaviour
 
     public PopulationFramePhase Phase { get; private set; } = PopulationFramePhase.Hold;
     public int CurrentFrame { get; private set; }
+    public float CycleProgress => Phase == PopulationFramePhase.Walk ? elapsed / WalkCycleSeconds :
+        Phase == PopulationFramePhase.IdleAction ? elapsed / IdleCycleSeconds :
+        Phase == PopulationFramePhase.CommonAction ? elapsed / CommonCycleSeconds : 0f;
     public bool HasStartRequest => startRequested;
     public bool CanBeginWalk => set != null && set.Mode == PopulationAnimationMode.WalkAndIdle &&
         Phase == PopulationFramePhase.Hold && startRequested && transitionReadyToWalk;
@@ -332,7 +335,7 @@ public sealed class PopulationFrameAnimationController : MonoBehaviour
     {
         if (set != null && image != null)
             PopulationSpriteDisplay.Configure(image, IsCommonLoop ? CommonStopSprite :
-                HasTransition ? set.IdleFrames[IdleEnd] : StopSprite, tint);
+                HasTransition ? set.IdleFrames[IdleEnd] : StopSprite, tint, set.ReferenceVisualHeight);
         CurrentFrame = 0;
     }
 
@@ -358,7 +361,7 @@ public sealed class PopulationFrameAnimationController : MonoBehaviour
         if (index < 0 || index >= frames.Length) return;
         shownFrame = index;
         CurrentFrame = index + 1;
-        PopulationSpriteDisplay.Configure(image, frames[index], tint);
+        PopulationSpriteDisplay.Configure(image, frames[index], tint, set.ReferenceVisualHeight);
         if (frameEvents == null) return;
         foreach (PopulationFrameEvent frameEvent in frameEvents)
             if (frameEvent != null && frameEvent.action == action && frameEvent.frame == CurrentFrame)

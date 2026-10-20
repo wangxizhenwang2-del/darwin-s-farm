@@ -1,13 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Mobile keeps readable text on narrow screens by moving the category rail above
-// the panel. The enclosing ScrollRect supplies drag and shows bars on overflow.
+// The category rail retains one vertical layout at every screen size. Only the
+// separate paper panel chooses its authored wide or compact composition.
 public sealed class EnvironmentToolResponsiveLayout : MonoBehaviour
 {
     [SerializeField] private RectTransform body, rail, categoryRow;
     [SerializeField] private Button[] categoryButtons;
     private bool? narrow;
+    private bool keepWideLayout;
+    private float lastAvailableWidth = WideDefault;
+    private const float WideDefault = 532f;
+
+    public void RefreshMode() => Apply(lastAvailableWidth);
+    public void KeepDesktopPaper(bool value) { keepWideLayout = value; narrow = null; Apply(lastAvailableWidth); }
 
     public void Configure(RectTransform panel, RectTransform sideRail,
         RectTransform topRow, Button[] buttons)
@@ -15,28 +21,25 @@ public sealed class EnvironmentToolResponsiveLayout : MonoBehaviour
 
     public float Apply(float availableWidth)
     {
-        bool compact = availableWidth < EnvironmentToolPanelLayout.WideContentWidth;
+        lastAvailableWidth = availableWidth;
+        var zoom = GetComponent<EnvironmentToolPanelZoom>();
+        bool compact = !keepWideLayout && availableWidth < EnvironmentToolPanelLayout.WideContentWidth;
+        body.anchoredPosition = rail.IsChildOf(transform) ? new Vector2(102f, 0f) : Vector2.zero;
         if (narrow != compact)
         {
             narrow = compact;
-            rail.gameObject.SetActive(!compact);
-            categoryRow.gameObject.SetActive(compact);
-            body.anchoredPosition = compact ? new Vector2(0, -64) : new Vector2(102, 0);
-            if (!compact)
-            {
-                rail.anchoredPosition = Vector2.zero;
-                rail.sizeDelta = new Vector2(EnvironmentToolPanelLayout.RailWidth, 363f);
-            }
+            rail.gameObject.SetActive(true);
+            if (categoryRow != null) categoryRow.gameObject.SetActive(false);
+            rail.sizeDelta = new Vector2(EnvironmentToolPanelLayout.RailWidth, 363f);
             int[] displayOrder = { 0, 2, 4, 3, 1 };
             for (int display = 0; display < displayOrder.Length; display++)
             {
                 var button = categoryButtons[displayOrder[display]];
                 RectTransform rect = (RectTransform)button.transform;
-                rect.SetParent(compact ? categoryRow : rail, false);
+                rect.SetParent(rail, false);
                 rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.up;
-                rect.anchoredPosition = compact ? new Vector2(10 + display * 68, -4) :
-                    new Vector2(15, -17 - display * 65);
-                rect.sizeDelta = compact ? new Vector2(50, 50) : new Vector2(60, 60);
+                rect.anchoredPosition = new Vector2(15, -17 - display * 65);
+                rect.sizeDelta = new Vector2(60, 60);
                 rect.localScale = Vector3.one;
             }
         }
@@ -44,10 +47,9 @@ public sealed class EnvironmentToolResponsiveLayout : MonoBehaviour
         // Keep the rail at its authored size; scale only the paper panel.
         float panelWidth = compact ? EnvironmentToolPanelLayout.CompactWidth :
             EnvironmentToolPanelLayout.WideWidth;
-        float leftOffset = compact ? 0f : 102f;
-        float scale = Mathf.Min(1f,
-            Mathf.Max(.8f, (availableWidth - leftOffset) / panelWidth));
-        var zoom = GetComponent<EnvironmentToolPanelZoom>();
+        float leftOffset = rail.IsChildOf(transform) ? 102f : 0f;
+        float scale = keepWideLayout ? 1f : Mathf.Min(1f,
+            Mathf.Max(.1f, (availableWidth - leftOffset) / panelWidth));
         if (zoom != null) zoom.SetBaseScale(scale);
         else body.localScale = Vector3.one * scale;
         ((RectTransform)transform).localScale = Vector3.one;
@@ -62,12 +64,11 @@ public sealed class EnvironmentToolResponsiveLayout : MonoBehaviour
         if (body == null || narrow == null) return;
         bool compact = narrow.Value;
         float scale = body.localScale.x;
-        float width = compact ? Mathf.Max(332f,
-            EnvironmentToolPanelLayout.CompactWidth * scale) :
-            Mathf.Max(EnvironmentToolPanelLayout.RailWidth,
-                102f + EnvironmentToolPanelLayout.WideWidth * scale);
-        float height = compact ? 64f + EnvironmentToolPanelLayout.CompactHeight * scale :
-            Mathf.Max(363f, EnvironmentToolPanelLayout.WideHeight * scale);
+        float width = (rail.IsChildOf(transform) ? 102f : 0f) +
+            (compact ? EnvironmentToolPanelLayout.CompactWidth :
+            EnvironmentToolPanelLayout.WideWidth) * scale;
+        float height = (compact ? EnvironmentToolPanelLayout.CompactHeight :
+            EnvironmentToolPanelLayout.WideHeight) * scale;
         ((RectTransform)transform).sizeDelta = new Vector2(width, height);
     }
 }

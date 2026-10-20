@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
   controller: {fileID: 9100000, guid: 3169b03095f02b0478d5300af0cf1673, type: 2}
   idleSprite: {fileID: 21300000, guid: a1baa36849769cb45816bdd05c02f856, type: 3}
+  referenceVisualHeight: 1.1923828
   referenceMoveSpeed: 1.8
   artworkFacesLeft: 1
+  mode: 0
   walkFrames:
   - {fileID: 21300000, guid: f777c30baca24b946b378dd210841c01, type: 3}
   - {fileID: 21300000, guid: c3d306050df4e414baf68893c6c719ca, type: 3}
@@ -34,6 +36,17 @@ MonoBehaviour:
   - {fileID: 21300000, guid: dbce95f529806a640b8490b3e4a40942, type: 3}
   - {fileID: 21300000, guid: c8953581c418f5643b83c4eb84fb8988, type: 3}
   - {fileID: 21300000, guid: 2f88db0363f9066449821cd42c999331, type: 3}
+  commonFrames: []
+  transitionFrames: []
+  transitionStartFrame: 1
+  transitionEndFrame: 2
+  transitionFps: 8
+  commonStartFrame: 1
+  commonEndFrame: 1
+  commonStopFrame: 1
+  commonFps: 8
+  commonHoldMin: 1
+  commonHoldMax: 3
   walkStartFrame: 1
   walkEndFrame: 8
   idleStartFrame: 1

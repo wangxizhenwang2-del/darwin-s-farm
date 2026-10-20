@@ -43,6 +43,14 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     private TextMeshProUGUI clueTitle;
     private TextMeshProUGUI clueText;
     private TextMeshProUGUI targetButtonText;
+    private RectTransform clueSafeArea, clueClose, clueResize;
+    private RectTransform fullTargetButton, compactClue;
+    private TextMeshProUGUI compactClueTitle, compactTraitsOne, compactTraitsTwo,
+        compactProgress, compactTargetButtonText;
+    private bool clueCompact;
+    private Vector2 fullClueSize;
+    private float clueUserScale = 1f, clueCompactScale = 1f, clueResizeStartScale = 1f;
+    private bool clueResizeSnapped;
     private int touchId = -1;
     private float pinchDistance;
     private float suppressNodeClicksUntil;
@@ -165,6 +173,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (clueWindow != null && clueWindow.IsOpen)
         {
             RectTransform bounds = (RectTransform)transform;
+            UpdateClueSafeArea();
             if (bounds.rect.size != lastCanvasSize)
             {
                 lastCanvasSize = bounds.rect.size;
@@ -239,6 +248,14 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         }
         if (first == null) { touchId = -1; pinchDistance = 0f; return false; }
         Vector2 position = first.position.ReadValue();
+        if (clueWindow != null && clueWindow.IsOpen && cluePopup != null &&
+            (RectTransformUtility.RectangleContainsScreenPoint(cluePopup, position, canvas.worldCamera) ||
+             (second != null && RectTransformUtility.RectangleContainsScreenPoint(
+                 cluePopup, second.position.ReadValue(), canvas.worldCamera))))
+        {
+            touchId = -1; pinchDistance = 0f; dragging = false;
+            return true;
+        }
         if (second != null)
         {
             Vector2 other = second.position.ReadValue();
@@ -285,10 +302,17 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
     private void CreateCluePopup()
     {
+        var safeObject = new GameObject("ClueSafeArea", typeof(RectTransform));
+        clueSafeArea = (RectTransform)safeObject.transform;
+        clueSafeArea.SetParent(transform, false);
+        clueSafeArea.anchorMin = Vector2.zero;
+        clueSafeArea.anchorMax = Vector2.one;
+        clueSafeArea.offsetMin = clueSafeArea.offsetMax = Vector2.zero;
+        UpdateClueSafeArea();
         var root = new GameObject("SpeciesCluePopup", typeof(RectTransform), typeof(Canvas),
             typeof(GraphicRaycaster), typeof(Image), typeof(InformationWindow));
         cluePopup = (RectTransform)root.transform;
-        cluePopup.SetParent(transform, false);
+        cluePopup.SetParent(clueSafeArea, false);
         cluePopup.anchorMin = cluePopup.anchorMax = new Vector2(.5f, .5f);
         cluePopup.sizeDelta = new Vector2(720f, 480f);
         clueCanvas = root.GetComponent<Canvas>();
@@ -296,8 +320,9 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         clueCanvas.sortingOrder = open ? 310 : 210;
         clueWindow = root.GetComponent<InformationWindow>();
         Image paper = root.GetComponent<Image>();
-        paper.sprite = Resources.Load<Sprite>("GameUI/SpeciesCluePaper");
-        paper.type = Image.Type.Simple;
+        paper.sprite = PanelParchmentArt.CroppedPaper;
+        paper.type = paper.sprite != null && paper.sprite.border.sqrMagnitude > 0f
+            ? Image.Type.Sliced : Image.Type.Simple;
         paper.color = paper.sprite != null ? Color.white : new Color(.96f, .93f, .82f);
         paper.raycastTarget = true;
 
@@ -319,6 +344,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
 
         var closeObject = new GameObject("CloseClue", typeof(RectTransform), typeof(Image), typeof(Button));
         RectTransform closeRect = (RectTransform)closeObject.transform;
+        clueClose = closeRect;
         closeRect.SetParent(cluePopup, false);
         closeRect.anchorMin = closeRect.anchorMax = closeRect.pivot = Vector2.one;
         closeRect.anchoredPosition = new Vector2(-35f, -29f);
@@ -363,6 +389,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         clueText.raycastTarget = false;
         var targetObject = new GameObject("TrackSpeciesButton", typeof(RectTransform), typeof(Image), typeof(Button));
         RectTransform targetRect = (RectTransform)targetObject.transform;
+        fullTargetButton = targetRect;
         targetRect.SetParent(cluePopup, false);
         targetRect.anchorMin = targetRect.anchorMax = targetRect.pivot = new Vector2(.5f, 0f);
         targetRect.anchoredPosition = new Vector2(0f, 52f);
@@ -384,7 +411,189 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         targetButtonText.color = new Color(.18f, .2f, .14f);
         targetButtonText.alignment = TextAlignmentOptions.Center;
         targetButtonText.raycastTarget = false;
-        clueWindow.Initialize((RectTransform)transform, Vector2.zero);
+        CreateCompactClue();
+        CreateClueResize();
+        clueWindow.Initialize(clueSafeArea, Vector2.zero);
+        root.AddComponent<MobilePanelPinchZoom>().Configure(cluePopup, ZoomClueBy,
+            FindFirstObjectByType<MapTouchInput>());
+    }
+
+    private void UpdateClueSafeArea()
+    {
+        if (clueSafeArea == null || Screen.width < 1 || Screen.height < 1) return;
+        Rect safe = Screen.safeArea;
+        clueSafeArea.anchorMin = new Vector2(safe.xMin / Screen.width, safe.yMin / Screen.height);
+        clueSafeArea.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
+        clueSafeArea.offsetMin = clueSafeArea.offsetMax = Vector2.zero;
+    }
+
+    private TextMeshProUGUI CompactClueLabel(string name, Vector2 position, Vector2 size,
+        int fontSize, TextAlignmentOptions alignment)
+    {
+        var obj = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform rect = (RectTransform)obj.transform;
+        rect.SetParent(compactClue, false);
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f, 1f);
+        rect.anchoredPosition = position;
+        rect.sizeDelta = size;
+        var label = obj.GetComponent<TextMeshProUGUI>();
+        label.font = GameUITheme.HandwrittenTMPFont;
+        label.fontSize = fontSize;
+        label.enableAutoSizing = true;
+        label.fontSizeMin = 15f;
+        label.fontSizeMax = fontSize;
+        label.color = new Color(.12f, .17f, .13f);
+        label.alignment = alignment;
+        label.richText = true;
+        label.raycastTarget = false;
+        return label;
+    }
+
+    private void CreateCompactClue()
+    {
+        var obj = new GameObject("CompactClue", typeof(RectTransform));
+        compactClue = (RectTransform)obj.transform;
+        compactClue.SetParent(cluePopup, false);
+        compactClue.anchorMin = Vector2.zero;
+        compactClue.anchorMax = Vector2.one;
+        compactClue.offsetMin = compactClue.offsetMax = Vector2.zero;
+        compactClueTitle = CompactClueLabel("Title", new Vector2(48f, -34f),
+            new Vector2(524f, 42f), 31, TextAlignmentOptions.Center);
+        compactTraitsOne = CompactClueLabel("TraitsOne", new Vector2(51f, -100f),
+            new Vector2(524f, 32f), 23, TextAlignmentOptions.Left);
+        compactTraitsTwo = CompactClueLabel("TraitsTwo", new Vector2(51f, -146f),
+            new Vector2(524f, 32f), 23, TextAlignmentOptions.Left);
+        compactProgress = CompactClueLabel("Progress", new Vector2(51f, -195f),
+            new Vector2(524f, 32f), 20, TextAlignmentOptions.Left);
+        var buttonObject = new GameObject("CompactTargetButton", typeof(RectTransform),
+            typeof(Image), typeof(Button));
+        RectTransform buttonRect = (RectTransform)buttonObject.transform;
+        buttonRect.SetParent(compactClue, false);
+        buttonRect.anchorMin = buttonRect.anchorMax = buttonRect.pivot = new Vector2(.5f, 0f);
+        buttonRect.anchoredPosition = new Vector2(0f, 29f);
+        buttonRect.sizeDelta = new Vector2(174f, 42f);
+        var image = buttonObject.GetComponent<Image>();
+        image.color = new Color(.88f, .78f, .58f, .95f);
+        var button = buttonObject.GetComponent<Button>();
+        button.targetGraphic = image;
+        button.onClick.AddListener(ToggleTarget);
+        var caption = new GameObject("Caption", typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform captionRect = (RectTransform)caption.transform;
+        captionRect.SetParent(buttonRect, false);
+        captionRect.anchorMin = Vector2.zero;
+        captionRect.anchorMax = Vector2.one;
+        captionRect.offsetMin = captionRect.offsetMax = Vector2.zero;
+        compactTargetButtonText = caption.GetComponent<TextMeshProUGUI>();
+        compactTargetButtonText.font = GameUITheme.HandwrittenTMPFont;
+        compactTargetButtonText.fontSize = 24f;
+        compactTargetButtonText.alignment = TextAlignmentOptions.Center;
+        compactTargetButtonText.color = new Color(.18f, .2f, .14f);
+        compactTargetButtonText.raycastTarget = false;
+        compactClue.gameObject.SetActive(false);
+    }
+
+    private void CreateClueResize()
+    {
+        var obj = new GameObject("ClueResize", typeof(RectTransform), typeof(Image),
+            typeof(SnapPanelResizeHandle));
+        clueResize = (RectTransform)obj.transform;
+        clueResize.SetParent(cluePopup, false);
+        clueResize.anchorMin = clueResize.anchorMax = clueResize.pivot = new Vector2(1f, 0f);
+        clueResize.anchoredPosition = new Vector2(-21f, 21f);
+        clueResize.sizeDelta = new Vector2(42f, 42f);
+        var image = obj.GetComponent<Image>();
+        image.sprite = Resources.Load<Sprite>("GameUI/SpeciesJournal/ResizeGrip");
+        image.color = image.sprite != null ? Color.white : new Color(.4f, .48f, .34f);
+        image.raycastTarget = true;
+        var handle = obj.GetComponent<SnapPanelResizeHandle>();
+        handle.Initialize(delta =>
+        {
+            if (clueResizeSnapped) return;
+            if (!clueCompact && delta < -76f)
+            { clueResizeSnapped = true; SetClueCompact(true); return; }
+            if (clueCompact && delta > 76f)
+            { clueResizeSnapped = true; SetClueCompact(false); return; }
+            if (clueCompact) clueCompactScale = Mathf.Clamp(clueResizeStartScale + delta / 500f, .65f, 1.35f);
+            else clueUserScale = Mathf.Clamp(clueResizeStartScale + delta / 500f, .7f, 1.35f);
+            SetClueCompact(clueCompact);
+        }, () =>
+        { clueResizeStartScale = clueCompact ? clueCompactScale : clueUserScale; clueResizeSnapped = false; });
+    }
+
+    private void SetClueCompact(bool compact)
+    {
+        if (compact && !clueCompact) clueCompactScale = 1f;
+        clueCompact = compact;
+        clueTitle.gameObject.SetActive(!compact);
+        clueText.gameObject.SetActive(!compact);
+        fullTargetButton.gameObject.SetActive(!compact);
+        compactClue.gameObject.SetActive(compact);
+        clueClose.anchoredPosition = compact ? new Vector2(-22f, -22f) : new Vector2(-35f, -29f);
+        cluePopup.sizeDelta = compact ? new Vector2(620f, 317f) : fullClueSize;
+        Rect safe = clueSafeArea.rect;
+        float scale = Mathf.Min(compact ? clueCompactScale : clueUserScale, (safe.width - 20f) / cluePopup.sizeDelta.x,
+            (safe.height - 20f) / cluePopup.sizeDelta.y);
+        cluePopup.localScale = Vector3.one * Mathf.Max(.25f, scale);
+        clueResize.SetAsLastSibling();
+        if (clueWindow != null && clueWindow.IsOpen)
+            clueWindow.SetDragBounds(clueSafeArea, cluePopup.anchoredPosition);
+    }
+
+    private void ZoomClueBy(float factor)
+    {
+        if (clueCompact) clueCompactScale = Mathf.Clamp(clueCompactScale * factor, .55f, 1.6f);
+        else clueUserScale = Mathf.Clamp(clueUserScale * factor, .55f, 1.6f);
+        SetClueCompact(clueCompact);
+    }
+
+    private static string ClueValue(SpeciesData species, int trait, int value) =>
+        species.HasRevealedTrait(trait) ? "<color=#C3342D>" + value + "</color>" : "？？？";
+
+    private void RefreshCompactClue(SpeciesData species)
+    {
+        compactClueTitle.text = ClueTitle(species);
+        compactTraitsOne.text = "体型：" + ClueValue(species, 3, species.baseSize) +
+            "   繁殖：" + ClueValue(species, 4, species.baseFertility) +
+            "   运动：" + ClueValue(species, 2, species.baseMovementAbility);
+        bool water = species.baseEcologicalNiche == EcologicalNiche.Water;
+        compactTraitsTwo.text = water ? "适温：不参与   适湿：不参与" :
+            "适温：" + ClueValue(species, 0, species.baseFitTemperature) +
+            "   适湿：" + ClueValue(species, 1, species.baseFitHumidity);
+        int percent = 0, days = 5;
+        bool foundPopulation = false;
+        var grid = FindFirstObjectByType<MapGridManager>();
+        var simulation = FindFirstObjectByType<SimulationController>();
+        LandRuleTuning rules = simulation != null ? simulation.ReadLandRules() : null;
+        int tolerance = rules != null ? rules.evolutionTraitTolerance : 5;
+        if (grid != null)
+            foreach (MapTileInstance tile in grid.GetPlacedTiles())
+            {
+                BlockInfo block = tile != null ? tile.Block : null;
+                if (block == null || block.community == null) continue;
+                foreach (PopulationData population in block.community)
+                {
+                    if (population == null || population.speciesAmount <= 0 ||
+                        !SpeciesTrackingState.Connected(population.species, species)) continue;
+                    bool aquatic = water || population.ecologicalNiche == EcologicalNiche.Water;
+                    int matched = 0, total = aquatic ? 3 : 5;
+                    if (Mathf.Abs(population.size - species.baseSize) <= tolerance) matched++;
+                    if (Mathf.Abs(population.fertility - species.baseFertility) <= tolerance) matched++;
+                    if (Mathf.Abs(population.movementAbility - species.baseMovementAbility) <= tolerance) matched++;
+                    if (!aquatic)
+                    {
+                        if (Mathf.Abs(population.fitTemperature - species.baseFitTemperature) <= tolerance) matched++;
+                        if (Mathf.Abs(population.fitHumidity - species.baseFitHumidity) <= tolerance) matched++;
+                    }
+                    int candidate = Mathf.RoundToInt(matched * 100f / total);
+                    if (foundPopulation && candidate <= percent) continue;
+                    foundPopulation = true;
+                    percent = candidate;
+                    days = SimulationController.LivingPopulationCount(block) == 4 && rules != null
+                        ? rules.evolutionRequiredDaysAtFour : rules != null ? rules.evolutionRequiredDays : 5;
+                }
+            }
+        compactProgress.text = "进化完成度 <color=#C3342D>" + percent +
+            "%</color>  |  全部达标后连续保持" + days + "天";
     }
 
     private void ToggleTarget()
@@ -398,6 +607,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (targetButtonText != null && clueNode != null)
             targetButtonText.text = SpeciesTrackingState.Target == clueNode.Species ? "取消目标" : "设为目标";
+        if (compactTargetButtonText != null && clueNode != null)
+            compactTargetButtonText.text = SpeciesTrackingState.Target == clueNode.Species ? "取消目标" : "设为目标";
     }
 
     private static string ClueTitle(SpeciesData species) =>
@@ -411,6 +622,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         nextClueRefresh = Time.unscaledTime + .5f;
         SpeciesData species = clueNode.Species;
         RefreshTargetButton();
+        RefreshCompactClue(species);
         int traitMask = species.RevealedTraitMask;
         bool nameVisible = species.HasEverUnlocked || TutorialFlowController.RevealsSpeciesName(species);
         if (force || traitMask != displayedTraitMask)
@@ -433,13 +645,17 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         bool newNode = clueNode != node || !clueWindow.IsOpen;
         clueNode = node;
         RefreshOpenClue(newNode);
-        RectTransform parentRect = (RectTransform)transform;
+        if (!newNode) { cluePopup.SetAsLastSibling(); return; }
+        RectTransform parentRect = clueSafeArea;
         Vector2 anchorOrigin = parentRect.rect.center;
         Rect bounds = new Rect(-parentRect.rect.size * .5f, parentRect.rect.size);
         float width = Mathf.Min(720f, bounds.width - 32f);
         float textHeight = clueText.GetPreferredValues(clueText.text, width - 152f, 0f).y;
         cluePopup.sizeDelta = new Vector2(width,
             Mathf.Min(Mathf.Max(width * 2f / 3f, textHeight + 234f), bounds.height - 32f));
+        fullClueSize = cluePopup.sizeDelta;
+        clueUserScale = 1f;
+        SetClueCompact(false);
         Vector2 local = (Vector2)parentRect.InverseTransformPoint(node.transform.position) - anchorOrigin;
         Vector2 half = cluePopup.sizeDelta * .5f;
         float x = local.x + (local.x < 0f ? half.x + 70f : -half.x - 70f);
@@ -466,13 +682,14 @@ public sealed class SpeciesMapsUI : MonoBehaviour
                 float bottom = Mathf.Max(bounds.yMin + gap, bubble.yMax + gap);
                 float availableHeight = Mathf.Max(0f, top - bottom);
                 cluePopup.sizeDelta = new Vector2(width, Mathf.Min(cluePopup.sizeDelta.y, availableHeight));
+                fullClueSize = cluePopup.sizeDelta;
                 position.y = top - cluePopup.sizeDelta.y * .5f;
             }
         }
         if (newNode)
         {
             clueWindow.HideImmediately();
-            clueWindow.Initialize(parentRect, position);
+            clueWindow.Initialize(clueSafeArea, position);
             lastCanvasSize = parentRect.rect.size;
             clueWindow.Open();
         }

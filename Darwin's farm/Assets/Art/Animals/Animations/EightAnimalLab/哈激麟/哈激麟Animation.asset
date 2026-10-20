@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PopulationAnimationSet
   controller: {fileID: 9100000, guid: 3e8c2f27ed6f439eb3ceb4d302acd26b, type: 2}
   idleSprite: {fileID: 21300000, guid: abdc89c1cbd284948b93f70340fc7e50, type: 3}
+  referenceVisualHeight: 1.4020833
   referenceMoveSpeed: 1.8
   artworkFacesLeft: 1
   mode: 0

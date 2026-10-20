@@ -8,6 +8,7 @@ public sealed class PopulationAnimationSet : ScriptableObject
 {
     [SerializeField] private RuntimeAnimatorController controller;
     [SerializeField] private Sprite idleSprite;
+    [SerializeField, HideInInspector] private float referenceVisualHeight;
     [SerializeField, Min(0.01f)] private float referenceMoveSpeed = 1.8f;
     [SerializeField] private bool artworkFacesLeft = true;
     [SerializeField] private PopulationAnimationMode mode;
@@ -40,6 +41,10 @@ public sealed class PopulationAnimationSet : ScriptableObject
 
     public RuntimeAnimatorController Controller => controller;
     public Sprite IdleSprite => idleSprite;
+    // Baked from the reference illustration's alpha silhouette, excluding canvas padding.
+    // All action frames use this one scale so flapping and stretching remain natural.
+    public float ReferenceVisualHeight => referenceVisualHeight > 0.001f ? referenceVisualHeight :
+        idleSprite != null ? Mathf.Max(0.01f, idleSprite.bounds.size.y) : 1f;
     public float ReferenceMoveSpeed => Mathf.Max(0.01f, referenceMoveSpeed);
     public bool ArtworkFacesLeft => artworkFacesLeft;
     public PopulationAnimationMode Mode => mode;

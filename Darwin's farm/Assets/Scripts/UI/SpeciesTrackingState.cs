@@ -20,8 +20,10 @@ public static class SpeciesTrackingState
 
     public static void Restore(SpeciesData species) => Target = species;
 
-    public static bool IsDirectSource(SpeciesData species) =>
-        Target != null && species != null && species != Target &&
-        (species.evolutionTargets != null && species.evolutionTargets.Contains(Target) ||
-         Target.evolutionTargets != null && Target.evolutionTargets.Contains(species));
+    public static bool IsDirectSource(SpeciesData species) => Connected(species, Target);
+
+    public static bool Connected(SpeciesData source, SpeciesData target) =>
+        source != null && target != null && source != target &&
+        (source.evolutionTargets != null && source.evolutionTargets.Contains(target) ||
+         target.evolutionTargets != null && target.evolutionTargets.Contains(source));
 }

@@ -9,7 +9,7 @@ using UnityEngine.TextCore.LowLevel;
 using UnityEngine.UI;
 
 // Upgrades the two saved WhiteBox presentations when invoked from the Editor menu.
-// Also restores the journal interaction after another editor scene save.
+// Existing authored objects are retained unless this installer is explicitly invoked.
 // The existing PopulationPanel.png asset is deliberately left untouched.
 public static class SpeciesJournalSceneInstaller
 {
@@ -18,60 +18,7 @@ public static class SpeciesJournalSceneInstaller
     private const string FontPath = ArtPath + "HandwrittenJournal.asset";
     private const string GrayPath = ArtPath + "GrayscalePortrait.mat";
 
-    static SpeciesJournalSceneInstaller()
-    {
-        EditorApplication.delayCall += InstallInteractionIfNeeded;
-        EditorSceneManager.sceneSaved += OnSceneSaved;
-        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-    }
-
-    private static void OnPlayModeStateChanged(PlayModeStateChange state)
-    {
-        if (state == PlayModeStateChange.EnteredEditMode)
-            EditorApplication.delayCall += InstallInteractionIfNeeded;
-    }
-
-    private static void OnSceneSaved(Scene scene)
-    {
-        if (scene.path == ScenePath) EditorApplication.delayCall += InstallInteractionIfNeeded;
-    }
-
-    private static void InstallInteractionIfNeeded()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode ||
-            SceneManager.GetActiveScene().path != ScenePath) return;
-        foreach (var panel in UnityEngine.Object.FindObjectsByType<PopulationInfoPanel>(
-            FindObjectsInactive.Include, FindObjectsSortMode.None))
-            if (panel.gameObject.scene.path == ScenePath && panel.LayoutVersion < 2)
-            {
-                InstallActiveScene();
-                return;
-            }
-        if (File.Exists(ScenePath) && File.ReadAllText(ScenePath).Contains("layoutVersion: 0"))
-        {
-            InstallActiveScene();
-            return;
-        }
-        var journal = UnityEngine.Object.FindFirstObjectByType<PopulationJournalViewport>(
-            FindObjectsInactive.Include);
-        if (journal == null) return;
-        var board = journal.transform.Find("JournalViewport/PopulationInformation");
-        if (board == null || (board.GetComponent<PopulationJournalGesture>() != null &&
-            journal.transform.Find("ResizeGrip") != null)) return;
-        ImportArt("ResizeGrip.png");
-        ConfigureInteraction(journal);
-        foreach (var panel in UnityEngine.Object.FindObjectsByType<PopulationInfoPanel>(
-            FindObjectsInactive.Include, FindObjectsSortMode.None))
-            if (panel.gameObject.scene.path == ScenePath)
-            {
-                panel.ApplyTypography();
-                EditorUtility.SetDirty(panel);
-            }
-        Scene scene = SceneManager.GetActiveScene();
-        EditorSceneManager.MarkSceneDirty(scene);
-        EditorSceneManager.SaveScene(scene);
-        Debug.Log("Species journal drag and corner resize saved to WhiteBox.");
-    }
+    // Installation is explicit. Saving a scene or leaving Play must never restyle authored UI.
 
     [MenuItem("Tools/Darwin's Farm/UI/Apply species journal to open WhiteBox scene")]
     public static void InstallActiveScene()
@@ -168,8 +115,8 @@ public static class SpeciesJournalSceneInstaller
             grip.SetParent(journal.transform, false);
         }
         grip.anchorMin = grip.anchorMax = grip.pivot = new Vector2(1f, 0f);
-        grip.anchoredPosition = new Vector2(-3f, 3f);
-        grip.sizeDelta = new Vector2(34f, 34f);
+        grip.anchoredPosition = new Vector2(19f, -19f);
+        grip.sizeDelta = new Vector2(46f, 46f);
         grip.SetAsLastSibling();
         var image = grip.GetComponent<Image>();
         image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(ArtPath + "ResizeGrip.png");

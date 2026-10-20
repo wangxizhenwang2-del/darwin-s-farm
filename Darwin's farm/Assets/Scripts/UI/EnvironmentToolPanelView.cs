@@ -15,8 +15,9 @@ public sealed class EnvironmentToolPanelView : MonoBehaviour
     [SerializeField] private EnvironmentForecastGraphic chart;
     private SimulationEnvironmentController environment;
     private TileTrendHistory history;
-    private static readonly Color Paper = new Color(.96f, .93f, .81f, .92f);
-    private static readonly Color Selected = new Color(.82f, .91f, .75f, .92f);
+    // The card graphic supplies only the selection outline. The tool artwork
+    // and tier tag remain visible against the panel's own parchment.
+    private static readonly Color ClearCard = new Color(1f, 1f, 1f, 0f);
 
     public void Configure(TextMeshProUGUI toolTitle, TextMeshProUGUI effectLabel,
         TextMeshProUGUI hintLabel, TextMeshProUGUI terrainLabel, TextMeshProUGUI defaultLabel,
@@ -49,9 +50,15 @@ public sealed class EnvironmentToolPanelView : MonoBehaviour
             var item = new EnvironmentTechnologyChoice(choice.Kind, tier);
             tierValues[i].text = Value(item);
             tierNames[i].text = TierName(item);
-            tierCards[i].color = session.OptionSelected(i) ? Selected : Paper;
+            tierCards[i].color = ClearCard;
+            var tag = tierCards[i].transform.Find("TierTag")?.GetComponent<Image>();
+            if (tag != null) tag.color = ClearCard;
             var border = tierCards[i].GetComponent<Outline>();
-            if (border != null) border.enabled = session.OptionSelected(i);
+            if (border != null)
+            {
+                border.useGraphicAlpha = false;
+                border.enabled = session.OptionSelected(i);
+            }
         }
         effect.text = session.HasPendingOption ? Effect(choice) : "请选择档位预览变化";
         effectHint.text = session.HasPendingOption ? Hint(choice) : "";
