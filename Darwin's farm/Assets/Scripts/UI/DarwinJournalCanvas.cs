@@ -74,6 +74,8 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private Rect previousSafe;
     private Vector2Int previousScreen;
     private int currentCategory, currentPage;
+    private int operationCategoryIndex = -1;
+    private OperationGuideGallery operationGuide;
     private bool inGame, busy;
     private Action confirmedAction;
     private Page confirmReturn=Page.Pause;
@@ -96,6 +98,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         testRecorder = GetComponent<TestSessionRecorder>();
         if (testRecorder == null) testRecorder = gameObject.AddComponent<TestSessionRecorder>();
         CreateExtraSettingsControls();
+        CreateOperationGuide();
         Bind();
         UpdateSafeArea();
         Show(saveMessage.text.StartsWith("读档失败：",StringComparison.Ordinal)?Page.Saves:Page.Title);
@@ -127,6 +130,12 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     {
         if (previousScreen != new Vector2Int(Screen.width, Screen.height) || previousSafe != Screen.safeArea)
             UpdateSafeArea();
+        if (page == Page.Tutorial && operationGuide != null && operationGuide.IsViewing &&
+            AnyKeyboardKeyPressed())
+        {
+            operationGuide.CloseViewer();
+            return;
+        }
         bool back;
 #if ENABLE_INPUT_SYSTEM
         back = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
@@ -140,6 +149,18 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             var unlock = FindFirstObjectByType<SpeciesUnlockPresenter>();
             if (unlock == null || !unlock.IsPresenting) Back();
         }
+    }
+
+    private static bool AnyKeyboardKeyPressed()
+    {
+#if ENABLE_INPUT_SYSTEM
+        return Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame;
+#else
+        // Legacy anyKeyDown also includes mouse input, so exclude pointer actions.
+        return Input.anyKeyDown && Input.touchCount == 0 &&
+            !Input.GetMouseButtonDown(0) && !Input.GetMouseButtonDown(1) &&
+            !Input.GetMouseButtonDown(2);
+#endif
     }
 
     private void Bind()
@@ -231,6 +252,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             RefreshTestExport();
         }
         tutorialPanel.SetActive(target == Page.Tutorial);
+        if (target != Page.Tutorial) operationGuide?.CloseViewer();
         infoPanel.SetActive(target == Page.Info);
         saveLoadPanel.SetActive(target == Page.Saves);
         if(target==Page.Saves)RefreshSlots();
@@ -248,6 +270,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private void Back()
     {
         if (busy) return;
+        if (page == Page.Tutorial && operationGuide != null && operationGuide.IsViewing)
+        {
+            operationGuide.CloseViewer();
+            return;
+        }
         if (page == Page.Game) { Pause(); return; }
         if (page == Page.Pause) { Resume(); return; }
         if (page == Page.Confirm) { Show(confirmReturn); return; }
@@ -448,6 +475,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         }
         for(int i=0;i<pageButtons.Length;i++)
         {
+            if (currentCategory == operationCategoryIndex)
+            {
+                pageButtons[i].gameObject.SetActive(false);
+                continue;
+            }
             var item=(RectTransform)pageButtons[i].transform;
             item.sizeDelta=portrait?new Vector2(110,43):new Vector2(123,43);
             item.anchoredPosition=portrait?
@@ -475,6 +507,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             illustration.sizeDelta=portrait?new Vector2(550,145):new Vector2(550,145);
             illustration.anchoredPosition=portrait?new Vector2(0,177):new Vector2(119,68);
         }
+        operationGuide?.Layout(portrait);
     }
 
     private void BindSettings()
@@ -801,19 +834,50 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         DarwinAudioCategory.SetCategoryVolumes(settings.music, settings.effects);
         DarwinAudioDispatch.SetMusicVolume(settings.music);
     }
+    private void CreateOperationGuide()
+    {
+        if (tutorial == null || categoryButtons == null || categoryButtons.Length == 0 ||
+            tutorialPanel == null || tutorialBody == null) return;
+        operationCategoryIndex = tutorial.categories.Length;
+        var template = categoryButtons[0];
+        var button = Instantiate(template, template.transform.parent);
+        button.name = "CategoryOperationGuide";
+        button.onClick.RemoveAllListeners();
+        var label = button.GetComponentInChildren<TMP_Text>(true);
+        Array.Resize(ref categoryButtons, operationCategoryIndex + 1);
+        Array.Resize(ref categoryLabels, operationCategoryIndex + 1);
+        categoryButtons[operationCategoryIndex] = button;
+        categoryLabels[operationCategoryIndex] = label;
+        operationGuide = tutorialPanel.AddComponent<OperationGuideGallery>();
+        operationGuide.Build((RectTransform)tutorialPanel.transform.Find("Paper"),
+            safeArea, tutorialBody);
+    }
+
     private void SelectCategory(int index)
     {
-        if(tutorial==null || index<0 || index>=tutorial.categories.Length)return;
+        if(tutorial==null || index<0 || index>operationCategoryIndex)return;
         currentCategory=index;
+        bool guide = index == operationCategoryIndex;
         for(int i=0;i<categoryButtons.Length;i++)
         {
-            bool exists=i<tutorial.categories.Length;
+            bool exists=i<tutorial.categories.Length || i==operationCategoryIndex;
             categoryButtons[i].gameObject.SetActive(exists);
             if(exists)
             {
-                categoryLabels[i].text=tutorial.categories[i].title;
+                categoryLabels[i].text=i==operationCategoryIndex?
+                    "操作说明":tutorial.categories[i].title;
                 StyleTutorialButton(categoryButtons[i],categoryLabels[i],i==index);
             }
+        }
+        operationGuide?.SetVisible(guide);
+        tutorialScroll.gameObject.SetActive(!guide);
+        if (tutorialIllustration != null && guide)
+            tutorialIllustration.gameObject.SetActive(false);
+        if (guide)
+        {
+            foreach (var button in pageButtons) button.gameObject.SetActive(false);
+            LayoutTutorial(safeArea.rect.height > safeArea.rect.width * 1.18f);
+            return;
         }
         var pages=tutorial.categories[index].pages;
         for(int i=0;i<pageButtons.Length;i++)
@@ -826,6 +890,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     }
     private void SelectTutorialPage(int index)
     {
+        if (currentCategory == operationCategoryIndex) return;
         var pages=tutorial.categories[currentCategory].pages;
         if(index<0 || index>=pages.Length)return;
         currentPage=index;
