@@ -58,7 +58,7 @@ public static class TileInformationSceneInstaller
         if (close != null)
         {
             close.anchorMin = close.anchorMax = close.pivot = Vector2.one;
-            close.anchoredPosition = new Vector2(-33f, -20f);
+            close.anchoredPosition = new Vector2(-78f, -15f);
             close.sizeDelta = new Vector2(44f, 44f);
             var image = close.GetComponent<Image>();
             if (image != null) image.color = new Color(1f, 1f, 1f, .001f);

@@ -248,6 +248,14 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         }
         if (first == null) { touchId = -1; pinchDistance = 0f; return false; }
         Vector2 position = first.position.ReadValue();
+        if (clueWindow != null && clueWindow.IsOpen && cluePopup != null &&
+            (RectTransformUtility.RectangleContainsScreenPoint(cluePopup, position, canvas.worldCamera) ||
+             (second != null && RectTransformUtility.RectangleContainsScreenPoint(
+                 cluePopup, second.position.ReadValue(), canvas.worldCamera))))
+        {
+            touchId = -1; pinchDistance = 0f; dragging = false;
+            return true;
+        }
         if (second != null)
         {
             Vector2 other = second.position.ReadValue();
@@ -406,6 +414,8 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         CreateCompactClue();
         CreateClueResize();
         clueWindow.Initialize(clueSafeArea, Vector2.zero);
+        root.AddComponent<MobilePanelPinchZoom>().Configure(cluePopup, ZoomClueBy,
+            FindFirstObjectByType<MapTouchInput>());
     }
 
     private void UpdateClueSafeArea()
@@ -527,6 +537,13 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         clueResize.SetAsLastSibling();
         if (clueWindow != null && clueWindow.IsOpen)
             clueWindow.SetDragBounds(clueSafeArea, cluePopup.anchoredPosition);
+    }
+
+    private void ZoomClueBy(float factor)
+    {
+        if (clueCompact) clueCompactScale = Mathf.Clamp(clueCompactScale * factor, .55f, 1.6f);
+        else clueUserScale = Mathf.Clamp(clueUserScale * factor, .55f, 1.6f);
+        SetClueCompact(clueCompact);
     }
 
     private static string ClueValue(SpeciesData species, int trait, int value) =>

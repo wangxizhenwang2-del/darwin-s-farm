@@ -34,16 +34,16 @@ MonoBehaviour:
       number: {x: 0, y: 0, z: 0, w: 0}
       reference: {fileID: 0}
       serialized: 
-    - property: anchoredPosition3D
-      number: {x: 0, y: 0, z: 0, w: 0}
-      reference: {fileID: 0}
-      serialized: 
     - property: localRotation
       number: {x: 0, y: 0, z: 0, w: 1}
       reference: {fileID: 0}
       serialized: 
     - property: localScale
       number: {x: 1, y: 1, z: 1, w: 0}
+      reference: {fileID: 0}
+      serialized: 
+    - property: anchoredPosition3D
+      number: {x: 0, y: 110, z: 0, w: 0}
       reference: {fileID: 0}
       serialized: 
   - scene: Assets/Scenes/WhiteBox.unity

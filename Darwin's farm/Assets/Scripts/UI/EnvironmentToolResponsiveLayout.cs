@@ -8,10 +8,12 @@ public sealed class EnvironmentToolResponsiveLayout : MonoBehaviour
     [SerializeField] private RectTransform body, rail, categoryRow;
     [SerializeField] private Button[] categoryButtons;
     private bool? narrow;
+    private bool keepWideLayout;
     private float lastAvailableWidth = WideDefault;
     private const float WideDefault = 532f;
 
     public void RefreshMode() => Apply(lastAvailableWidth);
+    public void KeepDesktopPaper(bool value) { keepWideLayout = value; narrow = null; Apply(lastAvailableWidth); }
 
     public void Configure(RectTransform panel, RectTransform sideRail,
         RectTransform topRow, Button[] buttons)
@@ -21,7 +23,7 @@ public sealed class EnvironmentToolResponsiveLayout : MonoBehaviour
     {
         lastAvailableWidth = availableWidth;
         var zoom = GetComponent<EnvironmentToolPanelZoom>();
-        bool compact = availableWidth < EnvironmentToolPanelLayout.WideContentWidth;
+        bool compact = !keepWideLayout && availableWidth < EnvironmentToolPanelLayout.WideContentWidth;
         body.anchoredPosition = rail.IsChildOf(transform) ? new Vector2(102f, 0f) : Vector2.zero;
         if (narrow != compact)
         {
@@ -46,7 +48,7 @@ public sealed class EnvironmentToolResponsiveLayout : MonoBehaviour
         float panelWidth = compact ? EnvironmentToolPanelLayout.CompactWidth :
             EnvironmentToolPanelLayout.WideWidth;
         float leftOffset = rail.IsChildOf(transform) ? 102f : 0f;
-        float scale = Mathf.Min(1f,
+        float scale = keepWideLayout ? 1f : Mathf.Min(1f,
             Mathf.Max(.1f, (availableWidth - leftOffset) / panelWidth));
         if (zoom != null) zoom.SetBaseScale(scale);
         else body.localScale = Vector3.one * scale;

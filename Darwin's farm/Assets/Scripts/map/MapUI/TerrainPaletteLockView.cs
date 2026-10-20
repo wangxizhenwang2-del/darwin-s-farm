@@ -2,12 +2,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Runtime view for the authored tile palette item. Building starts once the map
-// has its first tile; terrain discovery remains separate from construction.
+// Runtime view for the authored tile palette item. Terrain must be discovered
+// before its preset can be used for construction.
 public sealed class TerrainPaletteLockView : MonoBehaviour
 {
     private MapTileDefinition definition;
     private MapGridManager grid;
+    private SimulationEnvironmentController environment;
     private TMP_Text label;
     private Image preview;
     private GameObject dashedBorder;
@@ -17,23 +18,39 @@ public sealed class TerrainPaletteLockView : MonoBehaviour
     {
         definition = tile;
         grid = FindFirstObjectByType<MapGridManager>();
+        environment = FindFirstObjectByType<SimulationEnvironmentController>();
         label = transform.Find("NameText")?.GetComponent<TMP_Text>();
         preview = transform.Find("ColorPreview")?.GetComponent<Image>();
         if (label != null) labelColor = label.color;
         CreateDashedBorder();
         if (grid != null) grid.TilesChanged += Refresh;
+        if (environment != null)
+        {
+            environment.TerrainUnlocked += OnTerrainUnlocked;
+            environment.WaterUnlocked += Refresh;
+            environment.UnlocksRestored += Refresh;
+        }
         Refresh();
     }
 
     private void OnDestroy()
     {
         if (grid != null) grid.TilesChanged -= Refresh;
+        if (environment != null)
+        {
+            environment.TerrainUnlocked -= OnTerrainUnlocked;
+            environment.WaterUnlocked -= Refresh;
+            environment.UnlocksRestored -= Refresh;
+        }
     }
+
+    private void OnTerrainUnlocked(DarwinFarm.Environment.TerrainKind _, Vector2Int __) => Refresh();
 
     private void Refresh()
     {
         if (definition == null) return;
-        bool unlocked = grid != null && grid.HasPlacedTile;
+        bool unlocked = grid != null && grid.HasPlacedTile &&
+            environment != null && environment.IsUnlocked(definition);
         if (label != null)
         {
             label.text = unlocked ? definition.displayName : definition.displayName + "\n未解锁";

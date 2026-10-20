@@ -20,6 +20,13 @@ public sealed class PopulationJournalViewport : MonoBehaviour
     private RectTransform closeButton;
     private Vector2 fullClosePosition;
     private bool compact;
+    private bool lockFullLayout;
+
+    public void LockFullLayout(bool value)
+    {
+        lockFullLayout = value;
+        if (value) SetCompact(false);
+    }
 
     public void BeginResize(Vector2 screenPoint)
     {
@@ -38,7 +45,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         if (snappedDuringDrag) return;
         Vector2 delta = screenPoint - resizeStart;
         float signed = Mathf.Abs(delta.x) >= Mathf.Abs(delta.y) ? delta.x : -delta.y;
-        if (!compact && signed < -resizeSnapPixels) { SetCompact(true); snappedDuringDrag = true; return; }
+        if (!lockFullLayout && !compact && signed < -resizeSnapPixels) { SetCompact(true); snappedDuringDrag = true; return; }
         if (compact)
         {
             if (signed > resizeSnapPixels) { SetCompact(false); snappedDuringDrag = true; return; }
@@ -53,6 +60,13 @@ public sealed class PopulationJournalViewport : MonoBehaviour
 
     public void ResetToFull() { userScale = 1f; SetCompact(false); }
 
+    public void ZoomBy(float factor)
+    {
+        userScale = Mathf.Clamp(userScale * factor, .55f, 1.6f);
+        Fit();
+        GetComponent<InformationWindow>()?.KeepWithinBounds();
+    }
+
     private void SetCompact(bool value)
     {
         if (panel == null && board != null) panel = board.GetComponent<PopulationInfoPanel>();
@@ -65,6 +79,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
                     fullClosePosition = closeButton.anchoredPosition;
                     break;
                 }
+        if (lockFullLayout) value = false;
         if (compact != value) userScale = 1f;
         compact = value;
         panel.SetCompact(value);
@@ -114,6 +129,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
 
     private void Fit()
     {
+        canvas = GetComponentInParent<Canvas>()?.transform as RectTransform;
         if (board == null || viewport == null || scroll == null || canvas == null ||
             canvas.rect.width < 1 || canvas.rect.height < 1) return;
         float availableWidth = Mathf.Max(180f, canvas.rect.width - 24f);
@@ -121,8 +137,9 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         float boardHeight = compact ? PopulationInfoPanel.CompactHeight : PopulationInfoPanel.BoardHeight;
         float baseScale = Mathf.Min(1f, availableWidth / PopulationInfoPanel.BoardWidth,
             availableHeight / boardHeight);
+        bool touchZoom = GetComponent<MobilePanelPinchZoom>()?.enabled == true;
         float scale = Mathf.Clamp(baseScale * userScale, .1f,
-            Mathf.Min(availableWidth / PopulationInfoPanel.BoardWidth, availableHeight / boardHeight));
+            baseScale * (touchZoom ? 1.6f : 1f));
         if (!Mathf.Approximately(window.localScale.x, scale))
             window.localScale = Vector3.one * scale;
         if (!Mathf.Approximately(window.rect.width, PopulationInfoPanel.BoardWidth))

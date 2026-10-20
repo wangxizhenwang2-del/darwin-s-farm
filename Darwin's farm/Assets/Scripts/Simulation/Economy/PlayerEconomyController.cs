@@ -148,6 +148,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         int rotation, out string error)
     {
         error = null;
+        if (terrainUnlocks == null || !terrainUnlocks.IsUnlocked(definition))
+        { error = "地形尚未解锁"; return false; }
         if (account == null || grid == null || !grid.HasPlacedTile ||
             definition == null || !grid.CanPlaceAt(coordinate))
         { error = "目标地块不可建造"; return false; }

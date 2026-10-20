@@ -22,8 +22,15 @@ public sealed class TileInformationPanel : MonoBehaviour
     [SerializeField, Range(.55f, 1.45f)] private float userScale = 1f;
     [SerializeField, Range(.65f, 1.4f)] private float compactScale = .72f;
     [SerializeField] private bool compact;
+    private bool lockFullLayout;
     private float startScale;
     private bool snappedDuringDrag;
+
+    public void LockFullLayout(bool value)
+    {
+        lockFullLayout = value;
+        if (value) SetCompact(false);
+    }
     private RectTransform board;
     private RectTransform compactContents;
     private TextMeshProUGUI compactHeading, compactTemperature, compactHumidity, compactPlants, compactTools;
@@ -217,6 +224,7 @@ public sealed class TileInformationPanel : MonoBehaviour
 
     private void SetCompact(bool value)
     {
+        if (lockFullLayout) value = false;
         compact = value;
         if (board == null) board = (RectTransform)transform;
         EnsureCompactLayout();
@@ -241,7 +249,11 @@ public sealed class TileInformationPanel : MonoBehaviour
             grip.SetAsLastSibling();
         }
         var close = board.Find("Close");
-        if (close != null) close.SetAsLastSibling();
+        if (close != null)
+        {
+            PositionClose((RectTransform)close);
+            close.SetAsLastSibling();
+        }
         FitToCanvas();
         GetComponent<InformationWindow>()?.KeepWithinBounds();
     }
@@ -253,7 +265,7 @@ public sealed class TileInformationPanel : MonoBehaviour
         if (grip == null) return;
         grip.GetComponent<SnapPanelResizeHandle>()?.Initialize(delta => {
             if (snappedDuringDrag) return;
-            if (!compact && startScale + delta / BoardWidth < .70f)
+            if (!lockFullLayout && !compact && startScale + delta / BoardWidth < .70f)
             { userScale = .70f; snappedDuringDrag = true; SetCompact(true); return; }
             if (compact && delta > 75f)
             { userScale = Mathf.Max(.70f, compactScale); snappedDuringDrag = true; SetCompact(false); return; }
@@ -262,13 +274,18 @@ public sealed class TileInformationPanel : MonoBehaviour
             FitToCanvas();
         }, () => { startScale = compact ? compactScale : userScale; snappedDuringDrag = false; });
     }
+    public void ZoomBy(float factor)
+    {
+        if (compact) compactScale = Mathf.Clamp(compactScale * factor, .55f, 1.6f);
+        else userScale = Mathf.Clamp(userScale * factor, .55f, 1.6f);
+        FitToCanvas();
+        GetComponent<InformationWindow>()?.KeepWithinBounds();
+    }
     private void EnsureCloseMark()
     {
         var close = transform.Find("Close") as RectTransform;
         if (close == null) return;
-        close.anchorMin = close.anchorMax = close.pivot = Vector2.one;
-        close.anchoredPosition = new Vector2(-33f, -20f);
-        close.sizeDelta = new Vector2(44f, 44f);
+        PositionClose(close);
         var image = close.GetComponent<Image>();
         if (image != null) image.color = new Color(1f, 1f, 1f, .001f);
         var legacy = close.GetComponentInChildren<Text>(true);
@@ -288,10 +305,19 @@ public sealed class TileInformationPanel : MonoBehaviour
         }
         close.SetAsLastSibling();
     }
+    private void PositionClose(RectTransform close)
+    {
+        close.anchorMin = close.anchorMax = close.pivot = Vector2.one;
+        // Each illustration has its paper tab at a slightly different x/y.
+        // Keep the visible cross and its hit area centered on that tab.
+        close.anchoredPosition = compact ? new Vector2(-66f, -23f) :
+            new Vector2(-78f, -15f);
+        close.sizeDelta = new Vector2(44f, 44f);
+    }
     private void FitToCanvas()
     {
         if (board == null) board = (RectTransform)transform;
-        if (canvas == null) canvas = GetComponentInParent<Canvas>();
+        canvas = GetComponentInParent<Canvas>();
         if (canvas == null) return;
         var canvasRect = canvas.transform as RectTransform;
         if (canvasRect == null || canvasRect.rect.width <= 0 || canvasRect.rect.height <= 0) return;
@@ -299,9 +325,8 @@ public sealed class TileInformationPanel : MonoBehaviour
         float selectedScale = compact ? compactScale : userScale;
         float fit = Mathf.Min(1f, (canvasRect.rect.width - 24f) / BoardWidth,
             (canvasRect.rect.height - 24f) / height);
-        float scale = Mathf.Min(fit * selectedScale,
-            Mathf.Min((canvasRect.rect.width - 24f) / BoardWidth,
-                (canvasRect.rect.height - 24f) / height));
+        bool touchZoom = GetComponent<MobilePanelPinchZoom>()?.enabled == true;
+        float scale = Mathf.Min(fit * selectedScale, fit * (touchZoom ? 1.6f : 1f));
         if (!Mathf.Approximately(board.localScale.x, scale)) board.localScale = Vector3.one * scale;
     }
 

@@ -26,6 +26,7 @@ public class MapTilePlacementController : MonoBehaviour
         new Color(1f, 0.2f, 0.2f);
 
     private PlayerEconomyController economy;
+    private SimulationEnvironmentController terrainUnlocks;
     private MapTileDefinition draggingDefinition;
     private ScreenEdgeCamera screenEdgeCamera;
 
@@ -92,6 +93,7 @@ public class MapTilePlacementController : MonoBehaviour
         properties = new MaterialPropertyBlock();
 
         if (gridManager != null) economy = gridManager.GetComponent<PlayerEconomyController>();
+        if (gridManager != null) terrainUnlocks = gridManager.GetComponent<SimulationEnvironmentController>();
 
         if (viewCamera == null)
             viewCamera = Camera.main;
@@ -115,6 +117,7 @@ public class MapTilePlacementController : MonoBehaviour
         if (!isActiveAndEnabled ||
             !buildMode.IsBuildMode ||
             definition == null ||
+            terrainUnlocks == null || !terrainUnlocks.IsUnlocked(definition) ||
             gridManager == null || !gridManager.HasPlacedTile ||
             (screenEdgeCamera != null && screenEdgeCamera.IsMapDragging))
         {

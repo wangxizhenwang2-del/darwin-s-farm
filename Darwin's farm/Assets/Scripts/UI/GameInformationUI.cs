@@ -77,6 +77,8 @@ public sealed class GameInformationUI : MonoBehaviour
     public MapTileInstance SelectedTile => selectedTile;
     public bool TileIsOpen => tileWindow != null && tileWindow.IsOpen;
     public bool PopulationIsOpen => populationWindow != null && populationWindow.IsOpen;
+    public InformationWindow TileWindow => tileWindow;
+    public InformationWindow PopulationWindow => populationWindow;
     public event System.Action<bool> SelectionChanged;
     public void SetMobilePresentation(bool mobile)
     {
