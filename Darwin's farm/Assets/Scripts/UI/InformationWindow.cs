@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 // Owns only window positioning and presentation; simulation data stays elsewhere.
 public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
-    IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
+    IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     [SerializeField, Min(0.05f)] private float animationSeconds = 0.35f;
     [SerializeField] private bool titleOnlyDragging;
@@ -119,10 +119,24 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
     public void OnPointerDown(PointerEventData eventData)
     { if (!scrollContentMode) transform.SetAsLastSibling(); }
 
+    public void OnInitializePotentialDrag(PointerEventData eventData)
+    {
+        if (!scrollContentMode) return;
+        var frame = GetComponentInParent<MobileFixedInformationFrame>();
+        if (frame != null && frame.IsCompact) frame.OnInitializePotentialDrag(eventData);
+        else GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnInitializePotentialDrag(eventData);
+    }
+
     // The panel background also receives drags; child controls retain their gestures.
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (scrollContentMode) { GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnBeginDrag(eventData); return; }
+        if (scrollContentMode)
+        {
+            var frame = GetComponentInParent<MobileFixedInformationFrame>();
+            if (frame != null && frame.IsCompact) frame.BeginCompactDrag(eventData);
+            else GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnBeginDrag(eventData);
+            return;
+        }
         if (!titleOnlyDragging && dragPointer == int.MinValue &&
             (eventData.pointerPressRaycast.gameObject == null ||
              eventData.pointerPressRaycast.gameObject.GetComponentInParent<UnityEngine.UI.Selectable>() == null))
@@ -130,12 +144,22 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
     }
     public void OnDrag(PointerEventData eventData)
     {
-        if (scrollContentMode) GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnDrag(eventData);
+        if (scrollContentMode)
+        {
+            var frame = GetComponentInParent<MobileFixedInformationFrame>();
+            if (frame != null && frame.IsCompact) frame.DragCompact(eventData);
+            else GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnDrag(eventData);
+        }
         else DragText(eventData, dragOffset);
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (scrollContentMode) GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnEndDrag(eventData);
+        if (scrollContentMode)
+        {
+            var frame = GetComponentInParent<MobileFixedInformationFrame>();
+            if (frame != null && frame.IsCompact) frame.EndCompactDrag();
+            else GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnEndDrag(eventData);
+        }
         else EndTextDrag(eventData);
     }
     public void OnPointerUp(PointerEventData eventData) => EndTextDrag(eventData);

@@ -53,6 +53,7 @@ public partial class SimulationController
                         population.predationDeathsToday;
             LandLifeRules.Simulate(block, LandRules, EcologicalNiche.Air,
                 growPlants: false);
+            EvolveCommunityNewRules(block, EcologicalNiche.Air);
             foreach (var entry in preyDeathsBefore)
             {
                 PopulationData prey = entry.Key;

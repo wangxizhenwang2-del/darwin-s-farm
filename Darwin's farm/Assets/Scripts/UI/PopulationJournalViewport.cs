@@ -32,6 +32,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         userScale = 1f;
         SetCompact(false);
     }
+    public void SetMobileCompact(bool value) => SetCompact(value, true);
 
     public void BeginResize(Vector2 screenPoint)
     {
@@ -72,7 +73,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         GetComponent<InformationWindow>()?.KeepWithinBounds();
     }
 
-    private void SetCompact(bool value)
+    private void SetCompact(bool value, bool mobileOverride = false)
     {
         if (panel == null && board != null) panel = board.GetComponent<PopulationInfoPanel>();
         if (panel == null) return;
@@ -84,7 +85,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
                     fullClosePosition = closeButton.anchoredPosition;
                     break;
                 }
-        if (lockFullLayout) value = false;
+        if (lockFullLayout && !mobileOverride) value = false;
         if (compact != value) userScale = 1f;
         compact = value;
         panel.SetCompact(value);
@@ -141,13 +142,10 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         float availableHeight = Mathf.Max(180f, canvas.rect.height - 16f);
         float boardHeight = compact ? PopulationInfoPanel.CompactHeight : PopulationInfoPanel.BoardHeight;
         var fixedFrame = GetComponentInParent<MobileFixedInformationFrame>();
-        float baseScale = fixedFrame != null ? Mathf.Min(1f,
-            (((RectTransform)fixedFrame.transform).rect.width - 12f) / PopulationInfoPanel.BoardWidth) :
+        float baseScale = fixedFrame != null ? fixedFrame.ContentScale :
             Mathf.Min(1f, availableWidth / PopulationInfoPanel.BoardWidth,
                 availableHeight / boardHeight);
-        bool touchZoom = GetComponent<MobilePanelPinchZoom>()?.enabled == true;
-        float scale = Mathf.Clamp(baseScale * userScale, .1f,
-            baseScale * (touchZoom ? 1.6f : 1f));
+        float scale = fixedFrame != null ? baseScale : Mathf.Clamp(baseScale * userScale, .1f, baseScale);
         if (!Mathf.Approximately(window.localScale.x, scale))
             window.localScale = Vector3.one * scale;
         if (!Mathf.Approximately(window.rect.width, PopulationInfoPanel.BoardWidth))
@@ -159,7 +157,8 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         viewport.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, boardHeight);
         if (scrollbar != null && scrollbar.gameObject.activeSelf)
             scrollbar.gameObject.SetActive(false);
-        scroll.vertical = false;
+        scroll.enabled = fixedFrame == null;
+        scroll.vertical = fixedFrame == null;
         if (board.anchoredPosition.y != 0f)
             board.anchoredPosition = Vector2.zero;
     }

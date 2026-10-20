@@ -10,10 +10,15 @@ using UnityEngine.InputSystem;
 // original detail. Everything is attached to the existing tutorial Canvas.
 public sealed class OperationGuideGallery : MonoBehaviour
 {
-    private static readonly string[] Titles =
+    private static readonly string[] DesktopTitles =
     {
         "农场主画面", "信息面板", "环境工具与扩建",
         "进化网与目标", "食物网与教程", "PC 键位操作表"
+    };
+    private static readonly string[] MobileTitles =
+    {
+        "认识农场", "进化网与目标", "读懂信息面板",
+        "使用环境工具", "建造地块", "管理小面板"
     };
 
     private RectTransform galleryRoot;
@@ -22,21 +27,26 @@ public sealed class OperationGuideGallery : MonoBehaviour
     private OperationGuideImageViewer viewer;
     private TMP_Text viewerTitle;
     private Texture2D[] pages;
+    private string[] titles;
 
     public bool IsViewing => viewerOverlay != null && viewerOverlay.activeSelf;
 
     public void Build(RectTransform paper, RectTransform safeRoot, TMP_Text fontSource)
     {
-        pages = new Texture2D[Titles.Length];
+        bool mobile = Application.platform == RuntimePlatform.Android ||
+            Application.platform == RuntimePlatform.IPhonePlayer;
+        titles = mobile ? MobileTitles : DesktopTitles;
+        string imagePrefix = mobile ? "手机教程-" : "PC教程-";
+        pages = new Texture2D[titles.Length];
         galleryRoot = Rect("OperationGuideGallery", paper);
-        cards = new RectTransform[Titles.Length];
-        for (int i = 0; i < Titles.Length; i++)
+        cards = new RectTransform[titles.Length];
+        for (int i = 0; i < titles.Length; i++)
         {
             int index = i;
             pages[i] = Resources.Load<Texture2D>(
-                "DarwinJournal/OperationGuide/PC教程-" + (i + 1).ToString("00"));
+                "DarwinJournal/OperationGuide/" + imagePrefix + (i + 1).ToString("00"));
             if (pages[i] == null)
-                Debug.LogError("Operation guide image missing: " + (i + 1), this);
+                Debug.LogError("Operation guide image missing: " + imagePrefix + (i + 1), this);
 
             var card = Rect("Guide" + (i + 1), galleryRoot);
             cards[i] = card;
@@ -51,7 +61,7 @@ public sealed class OperationGuideGallery : MonoBehaviour
             raw.texture = pages[i];
             raw.raycastTarget = false;
             var label = Text("Caption", card, fontSource);
-            label.text = (i + 1).ToString("00") + "  " + Titles[i];
+            label.text = (i + 1).ToString("00") + "  " + titles[i];
             label.alignment = TextAlignmentOptions.Center;
             label.color = new Color32(43, 73, 55, 255);
             label.fontSize = 19;
@@ -62,6 +72,7 @@ public sealed class OperationGuideGallery : MonoBehaviour
         viewerOverlay = overlay.gameObject;
         var shade = overlay.gameObject.AddComponent<Image>();
         shade.color = new Color(0.08f, 0.12f, 0.10f, 0.94f);
+        var backdropTap = overlay.gameObject.AddComponent<OperationGuideBackdropTap>();
 
         viewerTitle = Text("ImageTitle", overlay, fontSource);
         viewerTitle.alignment = TextAlignmentOptions.Center;
@@ -81,7 +92,7 @@ public sealed class OperationGuideGallery : MonoBehaviour
         closeButton.targetGraphic = closeImage;
         closeButton.onClick.AddListener(() =>
         {
-            if (!viewer.IsPinchInProgress) CloseViewer();
+            if (viewer.CanTapClose) CloseViewer();
         });
         var cross = Text("Cross", close, fontSource);
         Stretch(cross.rectTransform);
@@ -102,11 +113,13 @@ public sealed class OperationGuideGallery : MonoBehaviour
         var picture = Rect("GuideImage", viewport);
         var rawImage = picture.gameObject.AddComponent<RawImage>();
         rawImage.raycastTarget = false;
-        viewer.Initialize(viewport, picture, rawImage, safeRoot.GetComponentInParent<Canvas>());
+        viewer.Initialize(viewport, picture, rawImage,
+            safeRoot.GetComponentInParent<Canvas>(), CloseViewer);
+        backdropTap.Initialize(viewer, CloseViewer);
 
         var hint = Text("ZoomHint", overlay, fontSource);
         hint.text = Application.isMobilePlatform
-            ? "双指缩放   ·   单指拖动   ·   点 × 关闭"
+            ? "双指缩放   ·   单指拖动   ·   轻点关闭"
             : "滚轮缩放   ·   拖动平移   ·   任意键关闭";
         hint.fontSize = 21;
         hint.alignment = TextAlignmentOptions.Center;
@@ -156,7 +169,7 @@ public sealed class OperationGuideGallery : MonoBehaviour
     private void Open(int index)
     {
         if (index < 0 || index >= pages.Length || pages[index] == null) return;
-        viewerTitle.text = (index + 1).ToString("00") + "  " + Titles[index];
+        viewerTitle.text = (index + 1).ToString("00") + "  " + titles[index];
         viewerOverlay.SetActive(true);
         viewerOverlay.transform.SetAsLastSibling();
         Canvas.ForceUpdateCanvases();
@@ -191,7 +204,8 @@ public sealed class OperationGuideGallery : MonoBehaviour
     }
 }
 
-public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler, IDragHandler
+public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler,
+    IDragHandler, IPointerDownHandler, IPointerClickHandler
 {
     private RectTransform viewport, picture;
     private RawImage image;
@@ -201,16 +215,25 @@ public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler, I
     private Vector2 lastPinchCenter;
     private bool pinching;
     private bool pinchInProgress;
+    private bool tapCanceled;
+    private int tapPointerId;
+    private Vector2 tapStartPosition;
+    private float tapStartTime;
+    private float lastPinchTime = -10f;
+    private System.Action closeViewer;
     private Vector2 lastViewportSize;
     public bool IsPinchInProgress => pinchInProgress;
+    public bool CanTapClose => !pinchInProgress &&
+        Time.unscaledTime - lastPinchTime > .3f;
 
     public void Initialize(RectTransform visibleArea, RectTransform imageRect,
-        RawImage rawImage, Canvas rootCanvas)
+        RawImage rawImage, Canvas rootCanvas, System.Action closeAction)
     {
         viewport = visibleArea;
         picture = imageRect;
         image = rawImage;
         canvas = rootCanvas;
+        closeViewer = closeAction;
     }
 
     public void Show(Texture2D texture)
@@ -219,6 +242,8 @@ public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler, I
         zoom = 1f;
         pinching = false;
         pinchInProgress = false;
+        tapCanceled = false;
+        lastPinchTime = -10f;
         picture.localScale = Vector3.one;
         picture.anchoredPosition = Vector2.zero;
         Fit();
@@ -228,6 +253,7 @@ public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler, I
     {
         pinching = false;
         pinchInProgress = false;
+        tapCanceled = false;
     }
 
     private void LateUpdate()
@@ -257,8 +283,28 @@ public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler, I
     {
         if (pinching || TwoTouchesDown() ||
             eventData.button != PointerEventData.InputButton.Left) return;
+        tapCanceled = true;
         picture.anchoredPosition += eventData.delta / Mathf.Max(0.01f, canvas.scaleFactor);
         ClampPosition();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (!Application.isMobilePlatform) return;
+        tapPointerId = eventData.pointerId;
+        tapStartPosition = eventData.position;
+        tapStartTime = Time.unscaledTime;
+        tapCanceled = TwoTouchesDown() || !CanTapClose;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!Application.isMobilePlatform || tapCanceled || !CanTapClose ||
+            eventData.pointerId != tapPointerId ||
+            Time.unscaledTime - tapStartTime > .6f ||
+            Vector2.Distance(eventData.position, tapStartPosition) > 24f)
+            return;
+        closeViewer?.Invoke();
     }
 
     private static bool TwoTouchesDown()
@@ -315,6 +361,8 @@ public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler, I
             return;
         }
         pinchInProgress = true;
+        tapCanceled = true;
+        lastPinchTime = Time.unscaledTime;
         float distance = Vector2.Distance(first, second);
         Vector2 center = (first + second) * .5f;
         if (pinching && lastPinchDistance > 1f)
@@ -338,5 +386,42 @@ public sealed class OperationGuideImageViewer : MonoBehaviour, IScrollHandler, I
         picture.anchoredPosition = new Vector2(
             Mathf.Clamp(position.x, -limit.x, limit.x),
             Mathf.Clamp(position.y, -limit.y, limit.y));
+    }
+}
+
+public sealed class OperationGuideBackdropTap : MonoBehaviour, IPointerDownHandler,
+    IPointerClickHandler, IDragHandler
+{
+    private OperationGuideImageViewer viewer;
+    private System.Action closeViewer;
+    private Vector2 startPosition;
+    private int pointerId;
+    private bool dragged;
+
+    public void Initialize(OperationGuideImageViewer imageViewer, System.Action closeAction)
+    {
+        viewer = imageViewer;
+        closeViewer = closeAction;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        pointerId = eventData.pointerId;
+        startPosition = eventData.position;
+        dragged = false;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        dragged = true;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!Application.isMobilePlatform || dragged || !viewer.CanTapClose ||
+            eventData.pointerId != pointerId ||
+            Vector2.Distance(eventData.position, startPosition) > 24f)
+            return;
+        closeViewer?.Invoke();
     }
 }

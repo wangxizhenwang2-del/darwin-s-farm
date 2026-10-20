@@ -44,9 +44,13 @@ public static class SpeciesUnlockTriggerSmoke
                     "Assets/BiowebV46/Species/灵感菇狸-761468a5.asset");
                 Require(presenter != null && hud != null && model != null && sample != null,
                     "required scene components missing");
+                // A scene or UI transition may leave the authored card disabled.
+                presenter.gameObject.SetActive(false);
                 var start = GameObject.Find("JournalCanvas").transform
                     .Find("SafeArea/TitlePanel/NewGame").GetComponent<Button>();
                 start.onClick.Invoke();
+                Require(presenter.gameObject.activeInHierarchy && presenter.enabled,
+                    "new game did not reactivate the species card presenter");
                 var species = ScriptableObject.CreateInstance<SpeciesData>();
                 Set(species, "speciesName", "即时解锁测试");
                 Set(species, "speciesId", "test:direct-unlock");

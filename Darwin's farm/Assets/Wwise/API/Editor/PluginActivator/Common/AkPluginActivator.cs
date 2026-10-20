@@ -126,10 +126,10 @@ public class AkPluginActivator : UnityEditor.AssetPostprocessor
 		}
 
 		var importers = GetWwisePluginImporters();
-		var assetChanged = false;
 		AssetDatabase.StartAssetEditing();
 		foreach (var pluginImporter in importers)
 		{
+			var assetChanged = false;
 			if (pluginImporter.GetCompatibleWithAnyPlatform())
 			{
 				WwiseLogger.LogFormat(LogLevel.Log, "Plugin{0} was compatible with the \"any\" platform, deactivating.", pluginImporter.assetPath);

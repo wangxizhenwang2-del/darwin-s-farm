@@ -25,6 +25,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         public bool testMode;
         public bool tutorialOnNewGame = true;
         public float testDifficulty;
+        public float movementDifficulty;
     }
     private enum Page { Title, Game, Pause, Settings, Tutorial, Info, Saves, Confirm }
 
@@ -43,11 +44,36 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     [SerializeField] private GameObject resolutionRow, fullscreenRow;
     private Toggle testModeToggle, newGameTutorialToggle;
     private Slider testDifficultySlider;
+    private Slider movementDifficultySlider;
     private LandRuleTuning testDifficultyBaseline;
     private Button exportTestButton;
     private TMP_Text exportTestStatus;
     private TestSessionRecorder testRecorder;
     public bool NewGameTutorialEnabled => settings.tutorialOnNewGame;
+    public bool OpenTutorialGuide(string guide)
+    {
+        if (!inGame || page != Page.Game || busy || tutorial == null) return false;
+        int category = guide == "OperationGuide" ? operationCategoryIndex : -1;
+        if (guide == "TraitGuide")
+            for (int i = 0; i < tutorial.categories.Length; i++)
+                if (tutorial.categories[i].id == "chapter6") { category = i; break; }
+        if (category < 0) return false;
+        int pageIndex = -1;
+        if (guide == "TraitGuide")
+        {
+            var pages = tutorial.categories[category].pages;
+            for (int i = 0; i < pages.Length; i++)
+                if (pages[i].id == "6_2") { pageIndex = i; break; }
+            if (pageIndex < 0) return false;
+        }
+        clock.AcquireModalPause();
+        Time.timeScale = 0f;
+        parent = Page.Game;
+        Show(Page.Tutorial);
+        SelectCategory(category);
+        if (pageIndex >= 0) SelectTutorialPage(pageIndex);
+        return true;
+    }
     [Header("Tutorial")]
     [SerializeField] private TutorialDatabase tutorial;
     [SerializeField] private Button[] categoryButtons, pageButtons;
@@ -83,6 +109,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
 
     private void Awake()
     {
+        EnsureSpeciesUnlockPresenter();
         clock = FindFirstObjectByType<SimulationTime>();
         if (clock == null) { Debug.LogError("Journal Canvas needs SimulationTime in this scene.", this); enabled=false; return; }
         audioSimulation = FindFirstObjectByType<SimulationController>();
@@ -177,7 +204,17 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             ((RectTransform)titleLoad.transform).anchoredPosition=new Vector2(0,-86);
         }
         titleExit.onClick.AddListener(Application.Quit);
-        gameMenuButton.GetComponent<Button>().onClick.AddListener(Pause);
+        var emergencyMenuCanvas = gameMenuButton.GetComponent<Canvas>();
+        if (emergencyMenuCanvas != null)
+        {
+            emergencyMenuCanvas.overrideSorting = true;
+            emergencyMenuCanvas.sortingOrder = 400;
+        }
+        gameMenuButton.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            CloseGameplayPanels();
+            Pause();
+        });
         pauseResume.onClick.AddListener(Resume);
         pauseSettings.onClick.AddListener(() => Open(Page.Settings));
         pauseSaves.onClick.AddListener(() => Open(Page.Saves));
@@ -213,12 +250,21 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             RefreshTestExport();
         });
         testDifficultySlider.SetValueWithoutNotify(settings.testDifficulty);
-        testDifficultySlider.interactable = settings.testMode;
+        testDifficultySlider.interactable = true;
         testDifficultySlider.onValueChanged.AddListener(value => {
             settings.testDifficulty = value;
             ApplyTestDifficulty();
             if (testRecorder != null && testRecorder.IsRecording)
                 testRecorder.RecordTestDifficulty(value);
+            SaveSettings();
+        });
+        movementDifficultySlider.SetValueWithoutNotify(settings.movementDifficulty);
+        movementDifficultySlider.interactable = true;
+        movementDifficultySlider.onValueChanged.AddListener(value => {
+            settings.movementDifficulty = value;
+            ApplyTestDifficulty();
+            if (testRecorder != null && testRecorder.IsRecording)
+                testRecorder.RecordMovementDifficulty(value);
             SaveSettings();
         });
         exportTestButton.onClick.AddListener(ExportTestCode);
@@ -275,6 +321,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             operationGuide.CloseViewer();
             return;
         }
+        if (page == Page.Tutorial && parent == Page.Game) { Resume(); return; }
         if (page == Page.Game) { Pause(); return; }
         if (page == Page.Pause) { Resume(); return; }
         if (page == Page.Confirm) { Show(confirmReturn); return; }
@@ -282,6 +329,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     }
     private void NewGame()
     {
+        EnsureSpeciesUnlockPresenter();
         // Species assets survive scene reloads; begin each new run with fresh
         // discovery flags so the first deer unlock can open the water palette.
         var catalog = Resources.Load<SaveAssetCatalog>("DarwinJournal/SaveAssetCatalog");
@@ -296,6 +344,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     }
     private void EnterGame(bool loadedSave)
     {
+        EnsureSpeciesUnlockPresenter();
         inGame = true;
         DarwinAudioDispatch.RefreshUnlockedSpecies(audioSpeciesCatalog);
         Time.timeScale = worldScale;
@@ -305,6 +354,26 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         GameEntered?.Invoke(loadedSave);
         if (settings.testMode) StartTestRecording();
         else RefreshTestExport();
+    }
+
+    private void EnsureSpeciesUnlockPresenter()
+    {
+        Transform card = safeArea != null ? safeArea.Find("SpeciesUnlockUI") : null;
+        if (card == null)
+        {
+            Debug.LogError("SpeciesUnlockUI is missing from the journal safe area.", this);
+            return;
+        }
+        var presenter = card.GetComponent<SpeciesUnlockPresenter>();
+        if (presenter == null)
+        {
+            Debug.LogError("SpeciesUnlockUI has no SpeciesUnlockPresenter.", card);
+            return;
+        }
+        if (!card.gameObject.activeSelf) card.gameObject.SetActive(true);
+        if (!presenter.enabled) presenter.enabled = true;
+        if (!card.gameObject.activeInHierarchy)
+            Debug.LogError("SpeciesUnlockUI is inactive because a parent is disabled.", card);
     }
 
     private void OnAudioSpeciesUnlocked(SpeciesData species)
@@ -317,6 +386,19 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         clock.AcquireModalPause();
         Time.timeScale = 0f;
         Show(Page.Pause);
+    }
+    private void CloseGameplayPanels()
+    {
+        FindFirstObjectByType<SpeciesMapsUI>()?.CloseAll();
+        FindFirstObjectByType<GameInformationUI>()?.ClosePanelsForMenu();
+        FindFirstObjectByType<EnvironmentToolSession>()?.End();
+        var placement = FindFirstObjectByType<MapTilePlacementController>();
+        if (placement != null && placement.IsDragging) placement.CancelDrag();
+        var buildMode = FindFirstObjectByType<MapBuildModeController>();
+        if (buildMode != null && buildMode.IsBuildMode) buildMode.SetBuildMode(false);
+        foreach (var window in FindObjectsByType<InformationWindow>(
+            FindObjectsInactive.Include, FindObjectsSortMode.None))
+            if (window.IsOpen) window.Close();
     }
     private void Resume()
     {
@@ -578,40 +660,53 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             else if (child.name == "AudioNote")
                 rect.anchoredPosition = new Vector2(0, -320);
             else if (child.name == "主音量" || child.name == "主音量Track")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 250);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 265);
             else if (child.name == "背景音乐" || child.name == "背景音乐Track")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 200);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 220);
             else if (child.name == "音效" || child.name == "音效Track")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 150);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 175);
             else if (child.name == "画质" || child.name == "画质Dropdown")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 100);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 130);
             else if (child.name == "ResolutionRow")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 48);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 80);
             else if (child.name == "FullscreenRow")
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, -7);
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 30);
         }
         newGameTutorialToggle = CloneSettingsToggle(paper, "NewGameTutorialRow",
-            "新游戏进入教程", -64);
-        testModeToggle = CloneSettingsToggle(paper, "TestModeRow", "测试模式", -121);
+            "新游戏进入教程", -20);
+        testModeToggle = CloneSettingsToggle(paper, "TestModeRow", "测试模式", -70);
         var difficultyLabel = Instantiate(paper.Find("主音量"), paper);
         difficultyLabel.name = "TestDifficultyLabel";
-        ((RectTransform)difficultyLabel).anchoredPosition = new Vector2(-185, -173);
+        ((RectTransform)difficultyLabel).anchoredPosition = new Vector2(-185, -120);
         difficultyLabel.GetComponent<TMP_Text>().text = "进化/抗逆难度";
         difficultyLabel.GetComponent<TMP_Text>().fontSize = 20;
         testDifficultySlider = Instantiate(masterSlider, paper);
         testDifficultySlider.name = "TestDifficultySlider";
         ((RectTransform)testDifficultySlider.transform).anchoredPosition =
-            new Vector2(105, -173);
+            new Vector2(105, -120);
         testDifficultySlider.onValueChanged.RemoveAllListeners();
         testDifficultySlider.minValue = -1f;
         testDifficultySlider.maxValue = 1f;
         testDifficultySlider.wholeNumbers = false;
+        var movementLabel = Instantiate(paper.Find("主音量"), paper);
+        movementLabel.name = "MovementDebugLabel";
+        ((RectTransform)movementLabel).anchoredPosition = new Vector2(-185, -170);
+        movementLabel.GetComponent<TMP_Text>().text = "运动调试";
+        movementLabel.GetComponent<TMP_Text>().fontSize = 20;
+        movementDifficultySlider = Instantiate(masterSlider, paper);
+        movementDifficultySlider.name = "MovementDebugSlider";
+        ((RectTransform)movementDifficultySlider.transform).anchoredPosition =
+            new Vector2(105, -170);
+        movementDifficultySlider.onValueChanged.RemoveAllListeners();
+        movementDifficultySlider.minValue = -1f;
+        movementDifficultySlider.maxValue = 1f;
+        movementDifficultySlider.wholeNumbers = false;
         var difficultyNote = Instantiate(paper.Find("AudioNote"), paper);
-        difficultyNote.name = "TestDifficultyNote";
-        ((RectTransform)difficultyNote).anchoredPosition = new Vector2(0, -216);
+        difficultyNote.name = "MovementDebugNote";
+        ((RectTransform)difficultyNote).anchoredPosition = new Vector2(0, -215);
         difficultyNote.GetComponent<TMP_Text>().fontSize = 16;
         difficultyNote.GetComponent<TMP_Text>().text =
-            "左：易进化、更抗逆     中：当前     右：难进化、更脆弱";
+            "左：运动50天保底     中：120天保底     右：不保底";
         exportTestButton = Instantiate(pauseResume, paper);
         exportTestButton.name = "ExportTestCode";
         exportTestButton.onClick.RemoveAllListeners();
@@ -639,11 +734,21 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private void ApplyTestDifficulty()
     {
         if (testDifficultySlider != null)
-            testDifficultySlider.interactable = settings.testMode;
+            testDifficultySlider.interactable = true;
         if (audioSimulation == null || testDifficultyBaseline == null) return;
-        float difficulty = settings.testMode ?
-            Mathf.Clamp(settings.testDifficulty, -1f, 1f) : 0f;
+        float difficulty = Mathf.Clamp(settings.testDifficulty, -1f, 1f);
         LandRuleTuning rules = testDifficultyBaseline.Copy();
+        // Movement deadline is independent of evolution and resilience.
+        float movementDifficulty = Mathf.Clamp(settings.movementDifficulty,
+            -1f, 1f);
+        rules.movementTargetDeadlineDays = movementDifficulty < 0f
+            ? Mathf.RoundToInt(Mathf.Lerp(120f, 50f, -movementDifficulty))
+            : movementDifficulty >= 1f ? 0
+            : Mathf.RoundToInt(120f / (1f - movementDifficulty));
+        rules.targetCompletionDeadlineDays = difficulty < 0f
+            ? Mathf.RoundToInt(Mathf.Lerp(120f, 50f, -difficulty))
+            : difficulty >= 1f ? 0
+            : Mathf.RoundToInt(120f / (1f - difficulty));
         if (!Mathf.Approximately(difficulty, 0f))
         {
             // Formal evolution: all five traits must fit, then the food gates
@@ -795,6 +900,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         settings.music=Mathf.Clamp01(settings.music);
         settings.effects=Mathf.Clamp01(settings.effects);
         settings.testDifficulty=Mathf.Clamp(settings.testDifficulty,-1f,1f);
+        settings.movementDifficulty=Mathf.Clamp(settings.movementDifficulty,-1f,1f);
         AudioListener.volume=settings.master;
         DarwinWwiseAmbience.SetMasterVolume(settings.master);
         settings.quality = Mathf.Clamp(settings.quality, 0, QualityLevels.Length - 1);

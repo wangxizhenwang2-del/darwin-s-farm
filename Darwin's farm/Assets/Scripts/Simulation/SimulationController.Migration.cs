@@ -808,6 +808,10 @@ internal static class PopulationTransfer
             mutationSelectionCandidate = source.mutationSelectionCandidate,
             trackedEvolutionTarget = source.trackedEvolutionTarget,
             manualEvolutionTarget = source.manualEvolutionTarget,
+            movementPaceTarget = source.movementPaceTarget,
+            movementPaceStartDay = source.movementPaceStartDay,
+            movementPaceInitialDistance = source.movementPaceInitialDistance,
+            movementPaceTrait = source.movementPaceTrait,
             targetProtectionSince = source.targetProtectionSince == null
                 ? new[] { -1, -1, -1 }
                 : (int[])source.targetProtectionSince.Clone(),

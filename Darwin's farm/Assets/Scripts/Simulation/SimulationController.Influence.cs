@@ -118,16 +118,21 @@ public partial class SimulationController
         if (population.species == null) return;
         List<SpeciesData> targets = ConnectedTargets(population.species);
         SpeciesData manual = population.manualEvolutionTarget;
-        if (manual != null && (!targets.Contains(manual) ||
-            !CanTrackEvolutionTarget(block, population, manual)))
+        // Keep an explicitly chosen goal while the player temporarily closes
+        // its route. Formal evolution still checks the route when it commits.
+        if (manual != null && !targets.Contains(manual))
             population.manualEvolutionTarget = manual = null;
         SpeciesData current = population.trackedEvolutionTarget;
         if (current != null && (!targets.Contains(current) ||
             !CanTrackEvolutionTarget(block, population, current))) current = null;
-        SpeciesData best = manual;
-        int bestDistance = manual == null ? int.MaxValue :
-            TraitDistance(population, manual);
-        if (manual == null)
+        SpeciesData selected = manual;
+        if (selected == null && SpeciesTrackingState.IsDirectSource(population.species) &&
+            targets.Contains(SpeciesTrackingState.Target))
+            selected = SpeciesTrackingState.Target;
+        SpeciesData best = selected;
+        int bestDistance = selected == null ? int.MaxValue :
+            TraitDistance(population, selected);
+        if (selected == null)
             foreach (SpeciesData target in targets)
             {
                 if (target == null ||
@@ -138,7 +143,7 @@ public partial class SimulationController
                 { best = target; bestDistance = distance; }
             }
         // Keep a valid current target unless the new one is clearly closer.
-        if (manual == null && current != null &&
+        if (selected == null && current != null &&
             TraitDistance(population, current) <= bestDistance + 2)
             best = current;
         if (best != population.trackedEvolutionTarget)

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 // The same authored presentation is used inside the desktop and Android canvases.
 public sealed class EnvironmentToolPanelView : MonoBehaviour
 {
+    private const string ElevationMovementHint =
+        "升高或降低地块，会改变它与邻地的高差。高差0可吸引运动提升至40；高差1吸引更持久，可提升至80；高差达到2就会阻断通路。若因此成为孤地，运动会回落。";
     [SerializeField] private TextMeshProUGUI title, effect, effectHint, terrain, defaultValue;
     [SerializeField] private TextMeshProUGUI chartPrompt, chartSubtitle, chartTitle;
     [SerializeField] private TextMeshProUGUI appliedFirst, appliedSecond;
@@ -76,7 +78,8 @@ public sealed class EnvironmentToolPanelView : MonoBehaviour
             chartPrompt.gameObject.SetActive(true);
             chartPrompt.text = "请点击地块以继续";
             chartSubtitle.gameObject.SetActive(true);
-            chartSubtitle.text = "选择后显示历史与预测趋势";
+            chartSubtitle.text = choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
+                ElevationMovementHint : "选择后显示历史与预测趋势";
             chartAnnotations.SetActive(false);
             SetChartLabels(EnvironmentForecastGraphic.Scenario.None);
             chart.Show(null, true, 0, 0, 0, 0, default,
@@ -159,7 +162,7 @@ public sealed class EnvironmentToolPanelView : MonoBehaviour
                 "日增量变化：" + (prediction != null && prediction.IsValid ? prediction.After : "等待预测");
             chartSubtitle.gameObject.SetActive(true);
             chartSubtitle.text = choice.Kind == EnvironmentTechnologyKind.ElevationChange ?
-                "温湿度默认值随预计地形调整" : "植物库存未来走势受生物消耗影响";
+                ElevationMovementHint : "植物库存未来走势受生物消耗影响";
         }
         terrain.text = !session.HasPendingOption && !session.CancelPreviewActive ?
             "当前地形：" + state.HabitatTitle :
@@ -231,7 +234,7 @@ public sealed class EnvironmentToolPanelView : MonoBehaviour
     {
         return choice.Kind == EnvironmentTechnologyKind.TemperatureChange ? "适温可能改变" :
             choice.Kind == EnvironmentTechnologyKind.HumidityChange ? "适湿可能改变" :
-            choice.Kind == EnvironmentTechnologyKind.ElevationChange ? "性状可能改变" :
+            choice.Kind == EnvironmentTechnologyKind.ElevationChange ? "改变邻地高差，可引导运动升降" :
             "植物生长可能改变";
     }
     private static void Applied(EnvironmentSnapshot state, TextMeshProUGUI first, TextMeshProUGUI second)

@@ -16,6 +16,8 @@ public static class SpeciesUnlockSceneChecks
             Require(journal != null, "JournalCanvas missing");
             var card = journal.transform.Find("SafeArea/SpeciesUnlockUI");
             Require(card != null, "authored SpeciesUnlockUI missing");
+            Require(card.gameObject.activeSelf,
+                "SpeciesUnlockUI must be active so its presenter can subscribe to unlock events");
             Require(card.Find("CardRoot/CardFrame") != null, "card frame missing");
             var titleBubble = card.Find("CardRoot/CardFrame/CardTitleBubble")?.GetComponent<Image>();
             var nameBubble = card.Find("CardRoot/CardFrame/CardNameBubble")?.GetComponent<Image>();

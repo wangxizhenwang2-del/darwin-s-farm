@@ -58,13 +58,12 @@ public partial class SimulationController
         }
         else if (enableNeighborMovementFormula)
         {
-            attraction = BestSustainableNeighborOpportunity(block, p,
-                ReadLandTraits(p), out _, out _, out _);
-            ceiling = attraction > 0f ? 100 : p.movementAbility;
+            attraction = BestNeighborMovementChance(block, p, out _,
+                out ceiling) / 0.85f;
         }
         else attraction = BestNeighborAttraction(block, p, out ceiling);
         bool neighborOpportunity = enableV62Mobility || enableNeighborMovementFormula
-            ? attraction > 0f && p.movementAbility < 100
+            ? attraction > 0f && p.movementAbility < ceiling
             : attraction >= LandRules.neighborAttractionThreshold &&
                 p.movementAbility < ceiling;
         return new LandSelectionSignals
@@ -664,13 +663,15 @@ public partial class SimulationController
                     population.actualEnergySatisfactionToday) / 0.35f));
     }
 
-    private void EvolveCommunityNewRules(BlockInfo block)
+    private void EvolveCommunityNewRules(BlockInfo block,
+        EcologicalNiche? onlyNiche = null)
     {
         if (!mutationEnabled || mutationStep <= 0f) return;
         foreach (PopulationData population in block.community)
         {
             if (population == null || population.speciesAmount <= 0 ||
-                (population.ecologicalNiche != EcologicalNiche.Land &&
+                (onlyNiche.HasValue ? population.ecologicalNiche != onlyNiche.Value :
+                 population.ecologicalNiche != EcologicalNiche.Land &&
                  population.ecologicalNiche != EcologicalNiche.Water)) continue;
             population.mutationDaysElapsed++;
             if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval))
@@ -678,15 +679,29 @@ public partial class SimulationController
             population.mutationDaysElapsed = 0;
             UpdateInfluences(population, currentSimulationDay);
             RefreshTrackedTarget(block, population, currentSimulationDay);
+            if (population.ecologicalNiche == EcologicalNiche.Air)
+            {
+                var airChoices = new List<ChanceMutation>(1);
+                OfferTargetCompletionAttraction(population, airChoices);
+                int airStep = TargetCompletionPaceDirection(population,
+                    out int airTrait);
+                if (airStep != 0)
+                {
+                    airChoices.Clear();
+                    OfferChance(airChoices, population, airTrait, airStep, 1f,
+                        "target_completion_deadline", bypassProtection: true);
+                }
+                ChooseChanceMutation(block, population, airChoices,
+                    "mutation.air.target");
+                continue;
+            }
             ReleaseTargetProtectionFIFO(block, population);
             var choices = new List<ChanceMutation>(16);
-            OfferCliffRecovery(block, population, choices);
             OfferRecoveryGuidance(block, population, choices);
             OfferStockGuidance(block, population, choices);
             OfferPredatorDirected(block, population, choices);
-            OfferNeighborMovement(block, population, choices);
+            OfferUnifiedMovement(block, population, choices);
             OfferSiblingAttraction(block, population, choices);
-            OfferNaturalRecovery(block, population, choices);
 
             LandTraits original = ReadLandTraits(population);
             float baseline = ForecastLandGrowth(block, population, original);
@@ -712,9 +727,8 @@ public partial class SimulationController
                 for (int trait = 2; trait < 5; trait++)
                     for (int direction = -1; direction <= 1; direction += 2)
                     {
-                        // V4 movement-up probability is still unspecified.
-                        // Old V2 neighbor gain is not a natural mutation source.
-                        if (trait == 2 && direction > 0)
+                        // Movement uses one shared ecological direction below.
+                        if (trait == 2)
                             continue;
                         int next = TraitLimit(trait,
                             TraitValue(population, trait) + direction);
@@ -735,6 +749,16 @@ public partial class SimulationController
                                     100f, 0.05f, 5f));
                     }
 
+            OfferTargetCompletionAttraction(population, choices);
+            int pacedDirection = TargetCompletionPaceDirection(population,
+                out int pacedTrait);
+            if (pacedDirection != 0)
+            {
+                choices.Clear();
+                OfferChance(choices, population, pacedTrait, pacedDirection,
+                    1f, "target_completion_deadline",
+                    bypassProtection: true);
+            }
             ChooseChanceMutation(block, population, choices,
                 "mutation.shared");
         }
