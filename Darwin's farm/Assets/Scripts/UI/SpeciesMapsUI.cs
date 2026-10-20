@@ -613,6 +613,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
     {
         if (clueNode == null || clueNode.Species == null) return;
         SpeciesTrackingState.Toggle(clueNode.Species);
+        TutorialFlowController.ReportEvolutionTargetSet(clueNode.Species);
         RefreshTargetButton();
     }
 

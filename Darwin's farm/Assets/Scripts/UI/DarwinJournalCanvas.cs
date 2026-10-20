@@ -223,7 +223,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             RefreshTestExport();
         });
         testDifficultySlider.SetValueWithoutNotify(settings.testDifficulty);
-        testDifficultySlider.interactable = settings.testMode;
+        testDifficultySlider.interactable = true;
         testDifficultySlider.onValueChanged.AddListener(value => {
             settings.testDifficulty = value;
             ApplyTestDifficulty();
@@ -634,7 +634,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         ((RectTransform)difficultyNote).anchoredPosition = new Vector2(0, -216);
         difficultyNote.GetComponent<TMP_Text>().fontSize = 16;
         difficultyNote.GetComponent<TMP_Text>().text =
-            "左：易进化、更抗逆     中：当前     右：难进化、更脆弱";
+            "左：运动50天保底     中：120天保底     右：不保底";
         exportTestButton = Instantiate(pauseResume, paper);
         exportTestButton.name = "ExportTestCode";
         exportTestButton.onClick.RemoveAllListeners();
@@ -662,11 +662,16 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private void ApplyTestDifficulty()
     {
         if (testDifficultySlider != null)
-            testDifficultySlider.interactable = settings.testMode;
+            testDifficultySlider.interactable = true;
         if (audioSimulation == null || testDifficultyBaseline == null) return;
-        float difficulty = settings.testMode ?
-            Mathf.Clamp(settings.testDifficulty, -1f, 1f) : 0f;
+        float difficulty = Mathf.Clamp(settings.testDifficulty, -1f, 1f);
         LandRuleTuning rules = testDifficultyBaseline.Copy();
+        // The center of the existing difficulty slider is a 120-day target.
+        // At the easiest end it is 50 days; the hardest end has no deadline.
+        rules.movementTargetDeadlineDays = difficulty < 0f
+            ? Mathf.RoundToInt(Mathf.Lerp(120f, 50f, -difficulty))
+            : difficulty >= 1f ? 0
+            : Mathf.RoundToInt(120f / (1f - difficulty));
         if (!Mathf.Approximately(difficulty, 0f))
         {
             // Formal evolution: all five traits must fit, then the food gates

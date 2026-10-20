@@ -4386,7 +4386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3582894e496aba645ba3807330b795d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MobileGameUI
-  displayMode: 2
+  displayMode: 0
   informationTab: 0
   information: {fileID: 1640010071}
   touchInput: {fileID: 1669876472}

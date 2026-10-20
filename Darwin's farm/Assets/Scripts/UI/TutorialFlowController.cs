@@ -14,7 +14,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     {
         public int day;
         public int temperatureAtLeast;
-        public string lesson, text, unlocks, completion;
+        public string lesson, text, mobileText, unlocks, completion;
         public bool pause, lockSkip;
     }
 
@@ -27,6 +27,7 @@ public sealed class TutorialFlowController : MonoBehaviour
 
     [Serializable] public sealed class SaveState
     {
+        public int flowVersion;
         public bool active, satisfied, sawPause, colorUnlocked, startupCardClosed;
         public bool tutorialPaused, resumePending;
         public bool tutorialSeedApplied;
@@ -67,6 +68,15 @@ public sealed class TutorialFlowController : MonoBehaviour
         if (species != null && !string.IsNullOrEmpty(species.SpeciesId) &&
             species.SpeciesId.Replace("-", "") == ColorChickenId) Report("colorClue");
     }
+    public static void ReportEvolutionTargetSet(SpeciesData species)
+    {
+        if (IsColorChickenTarget(species)) Report("setEvolutionTarget");
+    }
+    private static bool IsColorChickenTarget(SpeciesData species) =>
+        species != null && SpeciesTrackingState.Target == species &&
+        !string.IsNullOrEmpty(species.SpeciesId) &&
+        string.Equals(species.SpeciesId.Replace("-", ""), ColorChickenId,
+            StringComparison.OrdinalIgnoreCase);
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -97,6 +107,8 @@ public sealed class TutorialFlowController : MonoBehaviour
     private string firstTerrainName;
     private const string ColorChickenId = "b59a4a829b4949c5813cf76caa760b47";
     private const string StarterChickenId = "7f1137399e3946cf95ad1054096acacb";
+    private const int FlowVersion = 2;
+    private const int TargetStepIndex = 12;
 
     private void Awake()
     {
@@ -160,6 +172,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     }
 
     public SaveState CaptureSaveState() => new SaveState {
+        flowVersion = FlowVersion,
         active = active, stepIndex = stepIndex, satisfied = satisfied,
         sawPause = sawPause, colorUnlocked = colorUnlocked,
         startupCardClosed = startupCardClosed,
@@ -179,10 +192,13 @@ public sealed class TutorialFlowController : MonoBehaviour
     public void RestoreSaveState(SaveState state)
     {
         if (state == null) return;
-        if (state.stepIndex < 0 || state.stepIndex >= flow.steps.Length)
+        int restoredStepIndex = state.stepIndex;
+        if (state.flowVersion < FlowVersion && restoredStepIndex >= TargetStepIndex)
+            restoredStepIndex++;
+        if (restoredStepIndex < 0 || restoredStepIndex >= flow.steps.Length)
             throw new ArgumentException("Invalid tutorial step in save.");
         active = state.active;
-        stepIndex = state.stepIndex;
+        stepIndex = restoredStepIndex;
         satisfied = state.satisfied;
         sawPause = state.sawPause;
         colorUnlocked = state.colorUnlocked;
@@ -203,7 +219,8 @@ public sealed class TutorialFlowController : MonoBehaviour
 
     public void Skip()
     {
-        if (active && CurrentStep.lockSkip && !satisfied) return;
+        if (active && (!IsColorChickenTarget(SpeciesTrackingState.Target) ||
+            CurrentStep.lockSkip && !satisfied)) return;
         FinishTutorial();
     }
 
@@ -228,6 +245,13 @@ public sealed class TutorialFlowController : MonoBehaviour
             resumePending = false;
             if (clock != null && clock.IsPaused) clock.Play();
         }
+        if (!active) return;
+        // Map panels are not restored with a save. Reconcile objectives whose
+        // required state can already be true when gameplay resumes.
+        if (CurrentStep.completion == "setEvolutionTarget")
+            ReportEvolutionTargetSet(SpeciesTrackingState.Target);
+        if (active && CurrentStep.completion == "closeMap" && maps != null && !maps.IsOpen)
+            Complete("closeMap");
         if (!active) return;
         // A restored save can already be on the target day without firing a new
         // OnDayChanged event. Reconcile day gates from the current clock as well.
@@ -440,10 +464,12 @@ public sealed class TutorialFlowController : MonoBehaviour
         if (showingTerrainHint)
         {
             bubble.SetLesson("新地形", "新地形【" + firstTerrainName + "】解锁了！",
-                true, !CurrentStep.lockSkip || satisfied);
+                true, IsColorChickenTarget(SpeciesTrackingState.Target) &&
+                    (!CurrentStep.lockSkip || satisfied));
             return;
         }
-        string message = CurrentStep.text;
+        string message = Application.isMobilePlatform && !string.IsNullOrEmpty(CurrentStep.mobileText)
+            ? CurrentStep.mobileText : CurrentStep.text;
         if (satisfied && stepIndex + 1 < flow.steps.Length)
         {
             Step next = flow.steps[stepIndex + 1];
@@ -451,8 +477,10 @@ public sealed class TutorialFlowController : MonoBehaviour
                 "\n等待地块温度达到 " + next.temperatureAtLeast + " 度…" :
                 "\n等待第 " + next.day + " 天…";
         }
-        bool allowSkip = !CurrentStep.lockSkip || satisfied;
-        if (!allowSkip) message += "\n完成当前操作后可跳过教程。";
+        bool targetSet = IsColorChickenTarget(SpeciesTrackingState.Target);
+        bool allowSkip = targetSet && (!CurrentStep.lockSkip || satisfied);
+        if (!targetSet) message += "\n设定彩鸡进化目标后，可跳过后续引导。";
+        else if (!allowSkip) message += "\n请先完成当前操作。";
         bubble.SetLesson("引导 " + (stepIndex + 1) + "/" + flow.steps.Length + " · " +
             CurrentStep.lesson, message, !satisfied && CurrentStep.completion == "continue",
             allowSkip);

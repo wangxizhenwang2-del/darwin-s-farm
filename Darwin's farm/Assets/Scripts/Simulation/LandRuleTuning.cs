@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public sealed class LandRuleTuning
 {
-    [SerializeField] private int ruleVersion = 5;
+    [SerializeField] private int ruleVersion = 6;
     public bool useFoodCapacityForSelection;
     public bool enablePreyDensityFeedback;
     public bool enablePaidBirthStress;
@@ -67,6 +67,9 @@ public sealed class LandRuleTuning
     [Min(1)] public int evolutionRequiredDays = 5;
     [Min(1)] public int evolutionRequiredDaysAtFour = 10;
     [Min(0)] public int evolutionTraitTolerance = 5;
+    // Zero disables the target deadline. A qualified target still attracts
+    // movement through the ordinary mutation lottery.
+    [Min(0)] public int movementTargetDeadlineDays = 120;
     [Min(0)] public int evolutionCooldownDays = 100;
     [Min(0f)] public float neighborAttractionThreshold = 0.2f;
     [Min(0f)] public float attractionMovementGain = 2f;
@@ -137,6 +140,11 @@ public sealed class LandRuleTuning
             splitMinimumRenewalPressure = 0.9f;
             ruleVersion = 5;
         }
+        if (ruleVersion < 6)
+        {
+            movementTargetDeadlineDays = 120;
+            ruleVersion = 6;
+        }
         // Old serialized ruleVersion=5 assets may omit these new fields.
         // This candidate is disabled unless explicitly opted into in a test.
         if (dynamicPreyRefugeFraction <= 0f)
@@ -197,6 +205,7 @@ public sealed class LandRuleTuning
         evolutionRequiredDays = Mathf.Max(1, evolutionRequiredDays);
         evolutionRequiredDaysAtFour = Mathf.Max(1, evolutionRequiredDaysAtFour);
         evolutionTraitTolerance = Mathf.Max(0, evolutionTraitTolerance);
+        movementTargetDeadlineDays = Mathf.Max(0, movementTargetDeadlineDays);
         // New formal evolutions use 100 days. Existing populations retain
         // their serialized absolute nextEvolutionDay deadline.
         evolutionCooldownDays = 100;
