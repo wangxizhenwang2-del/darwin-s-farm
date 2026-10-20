@@ -13,6 +13,7 @@ public static class DarwinAudioDispatch
     public static event Action<bool> GameplayChanged;
     public static event Action<MusicPhase> MusicPhaseChanged;
     public static event Action<float> MusicVolumeChanged;
+    public static event Action HandbookOpened;
 
     private static readonly HashSet<string> OpenMenus = new HashSet<string>(StringComparer.Ordinal);
 
@@ -62,6 +63,8 @@ public static class DarwinAudioDispatch
         MusicVolumeChanged?.Invoke(clamped);
     }
 
+    public static void NotifyHandbookOpened() => HandbookOpened?.Invoke();
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void Reset()
     {
@@ -74,5 +77,6 @@ public static class DarwinAudioDispatch
         GameplayChanged = null;
         MusicPhaseChanged = null;
         MusicVolumeChanged = null;
+        HandbookOpened = null;
     }
 }

@@ -186,39 +186,7 @@ public partial class SimulationController
     // A rare distance larger than the easy deadline uses a multi-point step.
     private int MovementPaceDirection(PopulationData population)
     {
-        SpeciesData target = population.trackedEvolutionTarget;
-        int deadline = LandRules.movementTargetDeadlineDays;
-        if (deadline <= 0 || !OtherTargetTraitsReady(population, target))
-        {
-            population.movementPaceTarget = null;
-            return 0;
-        }
-        int tolerance = LandRules.evolutionTraitTolerance;
-        int lower = target.baseMovementAbility - tolerance;
-        int upper = target.baseMovementAbility + tolerance;
-        int distance = population.movementAbility < lower
-            ? lower - population.movementAbility
-            : population.movementAbility > upper
-                ? population.movementAbility - upper : 0;
-        if (distance == 0)
-        {
-            population.movementPaceTarget = null;
-            return 0;
-        }
-        if (population.movementPaceTarget != target ||
-            currentSimulationDay < population.movementPaceStartDay)
-        {
-            population.movementPaceTarget = target;
-            population.movementPaceStartDay = currentSimulationDay - 1;
-            population.movementPaceInitialDistance = distance;
-        }
-        int elapsed = currentSimulationDay - population.movementPaceStartDay;
-        int initial = population.movementPaceInitialDistance;
-        int requiredProgress = Mathf.CeilToInt((float)initial *
-            Mathf.Min(elapsed, deadline) / deadline);
-        int catchUp = Mathf.Min(distance,
-            requiredProgress - (initial - distance));
-        return catchUp > 0
-            ? population.movementAbility < lower ? catchUp : -catchUp : 0;
+        int step = TargetCompletionPaceDirection(population, out int trait);
+        return trait == 2 ? step : 0;
     }
 }

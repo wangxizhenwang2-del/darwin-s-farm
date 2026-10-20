@@ -37,6 +37,7 @@ public sealed class DarwinWwiseMusicAndUi : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        DarwinAudioDispatch.HandbookOpened += PlayHandbookOpen;
         BindSceneEvents();
     }
 
@@ -64,6 +65,7 @@ public sealed class DarwinWwiseMusicAndUi : MonoBehaviour
             if (appliedPhase != phase)
             {
                 AkUnitySoundEngine.SetState("BGM_Phase", phase == DarwinAudioDispatch.MusicPhase.Second ? "Second" : "First");
+                Debug.Log("Wwise music phase: " + phase, this);
                 appliedPhase = phase;
             }
 
@@ -84,6 +86,7 @@ public sealed class DarwinWwiseMusicAndUi : MonoBehaviour
             else if (!shouldPlay && playing)
             {
                 AkUnitySoundEngine.PostEvent("Stop_MSC_BGM", gameObject);
+                Debug.Log("Wwise music stopped: Stop_MSC_BGM", this);
                 playing = false;
             }
         }
@@ -171,6 +174,11 @@ public sealed class DarwinWwiseMusicAndUi : MonoBehaviour
         PostUiEvent("Play_UI_Click");
     }
 
+    private void PlayHandbookOpen()
+    {
+        PostUiEvent("Play_UI_Handbook_Open");
+    }
+
     private void PostUiEvent(string eventName)
     {
         if (!uiLoaded || !AkUnitySoundEngine.IsInitialized()) return;
@@ -189,6 +197,7 @@ public sealed class DarwinWwiseMusicAndUi : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        DarwinAudioDispatch.HandbookOpened -= PlayHandbookOpen;
         if (unlockPresenter != null) unlockPresenter.OnRevealStarted -= PlaySpeciesReveal;
         if (newsHud != null) newsHud.NewsShown -= PlayNews;
         unlockPresenter = null;

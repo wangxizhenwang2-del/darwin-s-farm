@@ -60,7 +60,7 @@
     {
       "day": 6,
       "lesson": "观察趋势",
-      "text": "<color=#C33A32>折线图</color>显示当前种群和植物量的变化趋势。现在鸽鸽适应环境，数量正在上升。",
+      "text": "<color=#C33A32>折线图</color>显示当前种群和植物量的变化趋势。现在鸽鸽适应环境，数量正在上升。下一步会展示操作说明；以后也能在<color=#C33A32>菜单 → 教程</color>里随时查看。",
       "unlocks": "",
       "completion": "continue",
       "pause": true,
@@ -69,6 +69,7 @@
     {
       "day": 7,
       "lesson": "变异与适应",
+      "openGuide": "OperationGuide",
       "text": "只要环境不是过于恶劣，<color=#C33A32>变异</color>就可能让鸽鸽逐渐适应这里。希望它们能及时适应，让种群继续增长。",
       "unlocks": "",
       "completion": "continue",
@@ -127,7 +128,7 @@
     {
       "day": 50,
       "lesson": "准备改造环境",
-      "text": "<color=#C33A32>关闭进化网</color>。我们来改善环境，促成【彩鸡】进化。",
+      "text": "<color=#C33A32>关闭进化网</color>。接着阅读如何用环境引导性状；这页以后也能在<color=#C33A32>菜单 → 教程</color>里随时查看。",
       "unlocks": "",
       "completion": "closeMap",
       "pause": true,
@@ -136,6 +137,7 @@
     {
       "day": 50,
       "lesson": "提高温度",
+      "openGuide": "TraitGuide",
       "text": "彩鸡喜欢炎热的环境。打开<color=#C33A32>温度工具</color>，选择<color=#C33A32>提高一档</color>，选中鸽鸽所在的地块并应用。",
       "unlocks": "EnvironmentPreview,Temperature",
       "completion": "temperature",
@@ -202,8 +204,8 @@
     {
       "day": 50,
       "lesson": "等待彩鸡诞生",
-      "text": "现在你已掌握主要操作。继续改造环境并观察鸽鸽的性状，直到<color=#C33A32>彩鸡真正出现</color>。地图上已有地块时，可以按 N 在旁边建造；相邻地块可能影响迁徙和运动能力。",
-      "mobileText": "现在你已掌握主要操作。继续改造环境并观察鸽鸽的性状，直到<color=#C33A32>彩鸡真正出现</color>。地图上已有地块时，可以点击<color=#C33A32>建造地块</color>在旁边扩建；相邻地块可能影响迁徙和运动能力。",
+      "text": "现在你已掌握主要操作。继续改造环境并观察鸽鸽的性状，直到<color=#C33A32>彩鸡真正出现</color>。地图上已有地块时，按 N 建造温湿适宜、植物充足的邻地，就能吸引迁徙、提升运动。",
+      "mobileText": "现在你已掌握主要操作。继续改造环境并观察鸽鸽的性状，直到<color=#C33A32>彩鸡真正出现</color>。点击<color=#C33A32>建造地块</color>，造出温湿适宜、植物充足的邻地，就能吸引迁徙、提升运动。",
       "unlocks": "",
       "completion": "colorUnlocked",
       "pause": false,
@@ -212,7 +214,8 @@
     {
       "day": 50,
       "lesson": "彩鸡诞生",
-      "text": "<color=#C33A32>彩鸡诞生了</color>！你完成了从观察种群、改善环境到物种演化的一次完整循环。继续培育更多物种吧！",
+      "text": "<color=#C33A32>彩鸡诞生了</color>！海拔工具已解锁。用海拔连接通路，再建造温湿适宜、植物充足的邻地，就能吸引迁徙、提升运动；用海拔或河流隔断陆地通路，成为孤地后运动会逐渐回落。继续培育更多物种吧！",
+      "mobileText": "<color=#C33A32>彩鸡诞生了</color>！海拔工具已解锁。用海拔连接通路，再建造温湿适宜、植物充足的邻地，就能吸引迁徙、提升运动；用海拔或河流隔断陆地通路，成为孤地后运动会逐渐回落。继续培育更多物种吧！",
       "unlocks": "Advanced",
       "completion": "continue",
       "pause": true,

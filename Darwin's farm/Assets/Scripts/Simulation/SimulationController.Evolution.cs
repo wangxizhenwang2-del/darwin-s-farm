@@ -770,6 +770,82 @@ public partial class SimulationController
             && renewal / demand >= LandRules.evolutionRenewalSatisfaction;
     }
 
+    // Read-only food diagnosis for the compact breeding clue. Return false when
+    // another gate prevents the food check from being meaningful.
+    public bool InspectEvolutionFoodForClue(BlockInfo block,
+        PopulationData source, SpeciesData target, out bool supported)
+    {
+        supported = false;
+        if (block == null || source == null || target == null ||
+            source.speciesAmount <= 0 || source.species == null ||
+            !ConnectedTargets(source.species).Contains(target) ||
+            !EachTraitWithinTolerance(source, target)) return false;
+
+        if (target.baseEcologicalNiche == EcologicalNiche.Air)
+        {
+            if (source.ecologicalNiche != EcologicalNiche.Land ||
+                source.speciesAmount <= 50 || HasAirPopulation(block) ||
+                target.trophicLevel != 2 ||
+                !TryPlanFlightPayment(block, source, target, 50,
+                    out _, out _)) return false;
+            supported = CrossTargetFoodSupportedHere(block, target, 50);
+            return true;
+        }
+
+        if (source.ecologicalNiche == EcologicalNiche.Land &&
+            target.baseEcologicalNiche == EcologicalNiche.Land)
+        {
+            if (HasLivingSpecies(block, target) ||
+                LivingPopulationCount(block) >= 5 ||
+                !TryPlanFormalEvolution(block, source, target,
+                    out int founders, out _, out _)) return false;
+            supported = HasEvolutionFoodSupport(block, source, target, founders);
+            return true;
+        }
+
+        if (source.ecologicalNiche == EcologicalNiche.Air)
+        {
+            if (source.trophicLevel != 2 ||
+                GroundPopulationCount(block) >= 5 ||
+                HasLivingSpecies(block, target)) return false;
+            int founders = Mathf.Min(source.speciesAmount - 1,
+                Mathf.FloorToInt(source.speciesAmount *
+                    flightReverseFounderFraction + .5f));
+            if (founders < 1 ||
+                !TryPlanFlightPayment(block, source, target, founders,
+                    out _, out _)) return false;
+            supported = CrossTargetFoodSupportedHere(block, target, founders);
+            return true;
+        }
+
+        int amount = Mathf.Min(source.speciesAmount - 1,
+            Mathf.FloorToInt(source.speciesAmount * .1f + .5f));
+        if (amount < 1 || target.trophicLevel == 2 && amount < 10 ||
+            source.energySatisfactionToday < LandRules.evolutionTodaySatisfaction)
+            return false;
+        float spendable = Mathf.Max(0f, block.plantBiomass);
+        if (LandRules.useCompensatedEvolutionFoodGate)
+            spendable -= Mathf.Min(spendable * .5f,
+                Mathf.Max(0f, block.maxPlantBiomass) *
+                LandRules.minimumPlantReserveFraction);
+        float sourceBody = source.bodyBiomassInitialized
+            ? source.bodyBiomass : source.speciesAmount *
+                LandLifeRules.BodyMass(source.size, LandRules);
+        float extra = Mathf.Max(0f, LandLifeRules.BodyMass(target.baseSize,
+            LandRules) - sourceBody / source.speciesAmount);
+        if (spendable + .01f < amount * extra) return false;
+        bool foundRoute = false;
+        foreach (BlockInfo destination in blockInfos)
+        {
+            if (InspectCrossHabitatEvolutionRoute(block, source, destination,
+                    target) != "ROUTE_OK") continue;
+            foundRoute = true;
+            if (CrossTargetFoodSupportedHere(destination, target, amount))
+            { supported = true; return true; }
+        }
+        return foundRoute;
+    }
+
     // A conservative, read-only L2 admission forecast. The supply is the
     // existing net renewable prey ledger after competing hunters' claims.
     // No population, resource, RNG or cooldown is touched on rejection.

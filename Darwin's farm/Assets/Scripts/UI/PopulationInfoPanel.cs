@@ -252,10 +252,17 @@ public sealed class PopulationInfoPanel : MonoBehaviour
             if (target != null && target.HasRevealedTrait(traitIndices[i]) &&
                 !(data.ecologicalNiche == EcologicalNiche.Water && (i == 2 || i == 3)))
             {
-                int difference = values[i] - targetValues[i];
-                hint = difference < -tolerance ? "<color=#BF302A>需提升</color>" :
-                    difference > tolerance ? "<color=#378047>需降低</color>" :
-                    "<color=#3269A0>需保持</color>";
+                if (i == 1 && target.baseEcologicalNiche == EcologicalNiche.Air)
+                    hint = data.movementAbility > 50
+                        ? "<color=#3269A0>需保持</color>"
+                        : "<color=#BF302A>需提升</color>";
+                else
+                {
+                    int difference = values[i] - targetValues[i];
+                    hint = difference < -tolerance ? "<color=#BF302A>需提升</color>" :
+                        difference > tolerance ? "<color=#378047>需降低</color>" :
+                        "<color=#3269A0>需保持</color>";
+                }
             }
             string value = names[i] + " " + values[i];
             labels[i].text = value + (hint.Length == 0 ? "" : i == 0 ? "  " + hint : "\n" + hint);

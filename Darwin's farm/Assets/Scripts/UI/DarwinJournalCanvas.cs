@@ -50,6 +50,30 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private TMP_Text exportTestStatus;
     private TestSessionRecorder testRecorder;
     public bool NewGameTutorialEnabled => settings.tutorialOnNewGame;
+    public bool OpenTutorialGuide(string guide)
+    {
+        if (!inGame || page != Page.Game || busy || tutorial == null) return false;
+        int category = guide == "OperationGuide" ? operationCategoryIndex : -1;
+        if (guide == "TraitGuide")
+            for (int i = 0; i < tutorial.categories.Length; i++)
+                if (tutorial.categories[i].id == "chapter6") { category = i; break; }
+        if (category < 0) return false;
+        int pageIndex = -1;
+        if (guide == "TraitGuide")
+        {
+            var pages = tutorial.categories[category].pages;
+            for (int i = 0; i < pages.Length; i++)
+                if (pages[i].id == "6_2") { pageIndex = i; break; }
+            if (pageIndex < 0) return false;
+        }
+        clock.AcquireModalPause();
+        Time.timeScale = 0f;
+        parent = Page.Game;
+        Show(Page.Tutorial);
+        SelectCategory(category);
+        if (pageIndex >= 0) SelectTutorialPage(pageIndex);
+        return true;
+    }
     [Header("Tutorial")]
     [SerializeField] private TutorialDatabase tutorial;
     [SerializeField] private Button[] categoryButtons, pageButtons;
@@ -85,6 +109,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
 
     private void Awake()
     {
+        EnsureSpeciesUnlockPresenter();
         clock = FindFirstObjectByType<SimulationTime>();
         if (clock == null) { Debug.LogError("Journal Canvas needs SimulationTime in this scene.", this); enabled=false; return; }
         audioSimulation = FindFirstObjectByType<SimulationController>();
@@ -296,6 +321,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             operationGuide.CloseViewer();
             return;
         }
+        if (page == Page.Tutorial && parent == Page.Game) { Resume(); return; }
         if (page == Page.Game) { Pause(); return; }
         if (page == Page.Pause) { Resume(); return; }
         if (page == Page.Confirm) { Show(confirmReturn); return; }
@@ -303,6 +329,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     }
     private void NewGame()
     {
+        EnsureSpeciesUnlockPresenter();
         // Species assets survive scene reloads; begin each new run with fresh
         // discovery flags so the first deer unlock can open the water palette.
         var catalog = Resources.Load<SaveAssetCatalog>("DarwinJournal/SaveAssetCatalog");
@@ -317,6 +344,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     }
     private void EnterGame(bool loadedSave)
     {
+        EnsureSpeciesUnlockPresenter();
         inGame = true;
         DarwinAudioDispatch.RefreshUnlockedSpecies(audioSpeciesCatalog);
         Time.timeScale = worldScale;
@@ -326,6 +354,26 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         GameEntered?.Invoke(loadedSave);
         if (settings.testMode) StartTestRecording();
         else RefreshTestExport();
+    }
+
+    private void EnsureSpeciesUnlockPresenter()
+    {
+        Transform card = safeArea != null ? safeArea.Find("SpeciesUnlockUI") : null;
+        if (card == null)
+        {
+            Debug.LogError("SpeciesUnlockUI is missing from the journal safe area.", this);
+            return;
+        }
+        var presenter = card.GetComponent<SpeciesUnlockPresenter>();
+        if (presenter == null)
+        {
+            Debug.LogError("SpeciesUnlockUI has no SpeciesUnlockPresenter.", card);
+            return;
+        }
+        if (!card.gameObject.activeSelf) card.gameObject.SetActive(true);
+        if (!presenter.enabled) presenter.enabled = true;
+        if (!card.gameObject.activeInHierarchy)
+            Debug.LogError("SpeciesUnlockUI is inactive because a parent is disabled.", card);
     }
 
     private void OnAudioSpeciesUnlocked(SpeciesData species)
@@ -697,6 +745,10 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             ? Mathf.RoundToInt(Mathf.Lerp(120f, 50f, -movementDifficulty))
             : movementDifficulty >= 1f ? 0
             : Mathf.RoundToInt(120f / (1f - movementDifficulty));
+        rules.targetCompletionDeadlineDays = difficulty < 0f
+            ? Mathf.RoundToInt(Mathf.Lerp(120f, 50f, -difficulty))
+            : difficulty >= 1f ? 0
+            : Mathf.RoundToInt(120f / (1f - difficulty));
         if (!Mathf.Approximately(difficulty, 0f))
         {
             // Formal evolution: all five traits must fit, then the food gates

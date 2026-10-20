@@ -14,7 +14,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     {
         public int day;
         public int temperatureAtLeast;
-        public string lesson, text, mobileText, unlocks, completion;
+        public string lesson, text, mobileText, unlocks, completion, openGuide;
         public bool pause, lockSkip;
     }
 
@@ -105,6 +105,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     private Vector2Int temperatureTarget;
     private bool firstTerrainHintSeen, firstTerrainHintPending, showingTerrainHint;
     private string firstTerrainName;
+    private string pendingGuide;
     private const string ColorChickenId = "b59a4a829b4949c5813cf76caa760b47";
     private const string StarterChickenId = "7f1137399e3946cf95ad1054096acacb";
     private const int FlowVersion = 2;
@@ -162,6 +163,7 @@ public sealed class TutorialFlowController : MonoBehaviour
         temperatureTargetSet = false;
         firstTerrainHintSeen = firstTerrainHintPending = showingTerrainHint = false;
         firstTerrainName = null;
+        pendingGuide = null;
         pendingTutorialSeed = active;
         if (active)
         {
@@ -212,6 +214,7 @@ public sealed class TutorialFlowController : MonoBehaviour
         firstTerrainHintPending = state.firstTerrainHintPending;
         firstTerrainName = state.firstTerrainName;
         showingTerrainHint = false;
+        pendingGuide = null;
         pendingTutorialSeed = active && !tutorialSeedApplied && clock != null && clock.currentDay == 0;
         restored = true;
         Refresh();
@@ -228,6 +231,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     {
         if (!active) return;
         active = false;
+        pendingGuide = null;
         firstTerrainHintPending = showingTerrainHint = false;
         satisfied = false;
         pendingTutorialSeed = false;
@@ -238,6 +242,10 @@ public sealed class TutorialFlowController : MonoBehaviour
     private void Update()
     {
         if (pendingTutorialSeed) TryApplyTutorialSeed();
+        if (active && !string.IsNullOrEmpty(pendingGuide) && journal != null &&
+            journal.IsGameplayVisible && (maps == null || !maps.IsOpen) &&
+            (discovery == null || !discovery.IsPresenting) &&
+            journal.OpenTutorialGuide(pendingGuide)) pendingGuide = null;
         if (resumePending && journal != null && journal.IsGameplayVisible &&
             (discovery == null || !discovery.IsPresenting) &&
             (maps == null || !maps.IsOpen))
@@ -381,6 +389,7 @@ public sealed class TutorialFlowController : MonoBehaviour
     private void EnterStep()
     {
         enteredAt = Time.unscaledTime;
+        pendingGuide = CurrentStep.openGuide;
         if (clock == null) return;
         if (CurrentStep.pause)
         {

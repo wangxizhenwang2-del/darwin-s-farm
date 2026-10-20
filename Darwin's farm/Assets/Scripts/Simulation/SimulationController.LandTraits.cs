@@ -663,13 +663,15 @@ public partial class SimulationController
                     population.actualEnergySatisfactionToday) / 0.35f));
     }
 
-    private void EvolveCommunityNewRules(BlockInfo block)
+    private void EvolveCommunityNewRules(BlockInfo block,
+        EcologicalNiche? onlyNiche = null)
     {
         if (!mutationEnabled || mutationStep <= 0f) return;
         foreach (PopulationData population in block.community)
         {
             if (population == null || population.speciesAmount <= 0 ||
-                (population.ecologicalNiche != EcologicalNiche.Land &&
+                (onlyNiche.HasValue ? population.ecologicalNiche != onlyNiche.Value :
+                 population.ecologicalNiche != EcologicalNiche.Land &&
                  population.ecologicalNiche != EcologicalNiche.Water)) continue;
             population.mutationDaysElapsed++;
             if (population.mutationDaysElapsed < Mathf.Max(1, mutationInterval))
@@ -677,6 +679,22 @@ public partial class SimulationController
             population.mutationDaysElapsed = 0;
             UpdateInfluences(population, currentSimulationDay);
             RefreshTrackedTarget(block, population, currentSimulationDay);
+            if (population.ecologicalNiche == EcologicalNiche.Air)
+            {
+                var airChoices = new List<ChanceMutation>(1);
+                OfferTargetCompletionAttraction(population, airChoices);
+                int airStep = TargetCompletionPaceDirection(population,
+                    out int airTrait);
+                if (airStep != 0)
+                {
+                    airChoices.Clear();
+                    OfferChance(airChoices, population, airTrait, airStep, 1f,
+                        "target_completion_deadline", bypassProtection: true);
+                }
+                ChooseChanceMutation(block, population, airChoices,
+                    "mutation.air.target");
+                continue;
+            }
             ReleaseTargetProtectionFIFO(block, population);
             var choices = new List<ChanceMutation>(16);
             OfferRecoveryGuidance(block, population, choices);
@@ -731,12 +749,15 @@ public partial class SimulationController
                                     100f, 0.05f, 5f));
                     }
 
-            int pacedDirection = MovementPaceDirection(population);
+            OfferTargetCompletionAttraction(population, choices);
+            int pacedDirection = TargetCompletionPaceDirection(population,
+                out int pacedTrait);
             if (pacedDirection != 0)
             {
                 choices.Clear();
-                OfferChance(choices, population, 2, pacedDirection, 1f,
-                    "movement_target_deadline", bypassProtection: true);
+                OfferChance(choices, population, pacedTrait, pacedDirection,
+                    1f, "target_completion_deadline",
+                    bypassProtection: true);
             }
             ChooseChanceMutation(block, population, choices,
                 "mutation.shared");

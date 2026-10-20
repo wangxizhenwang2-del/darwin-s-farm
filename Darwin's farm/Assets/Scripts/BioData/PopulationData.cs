@@ -145,10 +145,11 @@ public class PopulationData
     public CliffMovementRecovery cliffMovementRecovery = new CliffMovementRecovery();
     public SpeciesData trackedEvolutionTarget;
     public SpeciesData manualEvolutionTarget;
-    // Consecutive days with the other required target traits ready.
+    // Shared progress clock for the last unmet trait of a tracked target.
     public SpeciesData movementPaceTarget;
     public int movementPaceStartDay;
     public int movementPaceInitialDistance;
+    public int movementPaceTrait = -1;
     // Movement, size, fertility target protection. A released protection
     // cannot reappear until the trait leaves its target interval.
     public int[] targetProtectionSince = { -1, -1, -1 };

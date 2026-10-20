@@ -206,6 +206,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         if (placement != null && placement.IsDragging) placement.CancelDrag();
         FindFirstObjectByType<MapTouchInput>()?.CancelGesture();
         open = true;
+        DarwinAudioDispatch.NotifyHandbookOpened();
         TutorialFlowController.Report("openMap");
         DarwinAudioDispatch.SetMenuOpen("SpeciesMaps", true);
         activePage = 0;
@@ -573,6 +574,7 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             "适温：" + ClueValue(species, 0, species.baseFitTemperature) +
             "   适湿：" + ClueValue(species, 1, species.baseFitHumidity);
         int percent = 0, days = 5;
+        bool foodChecked = false, foodSupported = false;
         bool foundPopulation = false;
         var grid = FindFirstObjectByType<MapGridManager>();
         var simulation = FindFirstObjectByType<SimulationController>();
@@ -591,13 +593,26 @@ public sealed class SpeciesMapsUI : MonoBehaviour
                     int matched = 0, total = aquatic ? 3 : 5;
                     if (Mathf.Abs(population.size - species.baseSize) <= tolerance) matched++;
                     if (Mathf.Abs(population.fertility - species.baseFertility) <= tolerance) matched++;
-                    if (Mathf.Abs(population.movementAbility - species.baseMovementAbility) <= tolerance) matched++;
+                    if (species.baseEcologicalNiche == EcologicalNiche.Air
+                        ? population.ecologicalNiche == EcologicalNiche.Land &&
+                          population.movementAbility > 50
+                        : Mathf.Abs(population.movementAbility -
+                            species.baseMovementAbility) <= tolerance) matched++;
                     if (!aquatic)
                     {
                         if (Mathf.Abs(population.fitTemperature - species.baseFitTemperature) <= tolerance) matched++;
                         if (Mathf.Abs(population.fitHumidity - species.baseFitHumidity) <= tolerance) matched++;
                     }
                     int candidate = Mathf.RoundToInt(matched * 100f / total);
+                    if (candidate == 100 && simulation != null &&
+                        SpeciesTrackingState.Target == species &&
+                        SpeciesTrackingState.IsDirectSource(population.species) &&
+                        simulation.InspectEvolutionFoodForClue(block, population,
+                            species, out bool canFeed))
+                    {
+                        foodChecked = true;
+                        foodSupported |= canFeed;
+                    }
                     if (foundPopulation && candidate <= percent) continue;
                     foundPopulation = true;
                     percent = candidate;
@@ -606,7 +621,9 @@ public sealed class SpeciesMapsUI : MonoBehaviour
                 }
             }
         compactProgress.text = "进化完成度 <color=#C3342D>" + percent +
-            "%</color>  |  全部达标后连续保持" + days + "天";
+            "%</color>  |  " + (foodChecked && !foodSupported
+                ? "<color=#C3342D>当地食物不足，无法进化</color>"
+                : "达标后保持" + days + "天可进化");
     }
 
     private void ToggleTarget()

@@ -811,6 +811,7 @@ internal static class PopulationTransfer
             movementPaceTarget = source.movementPaceTarget,
             movementPaceStartDay = source.movementPaceStartDay,
             movementPaceInitialDistance = source.movementPaceInitialDistance,
+            movementPaceTrait = source.movementPaceTrait,
             targetProtectionSince = source.targetProtectionSince == null
                 ? new[] { -1, -1, -1 }
                 : (int[])source.targetProtectionSince.Clone(),
