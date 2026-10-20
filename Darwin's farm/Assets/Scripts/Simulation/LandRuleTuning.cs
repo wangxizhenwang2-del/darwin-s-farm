@@ -72,6 +72,7 @@ public sealed class LandRuleTuning
     [Min(0f)] public float attractionMovementGain = 2f;
     [Min(0f)] public float localMovementGain = 1f;
     [Min(0f)] public float resourceTraitGain = 0.003f;
+    [Min(0.1f)] public float siblingAttractionScale = 1f;
     [Min(0f)] public float lowStockDays = 3f;
     [Min(0f)] public float highStockDays = 5f;
     [Min(0f)] public float lowRenewalCoverage = 0.9f;
@@ -203,6 +204,9 @@ public sealed class LandRuleTuning
         attractionMovementGain = NonNegative(attractionMovementGain, 2f);
         localMovementGain = NonNegative(localMovementGain, 1f);
         resourceTraitGain = NonNegative(resourceTraitGain, 0.003f);
+        // Existing serialized scenes omit this field and deserialize it as 0.
+        siblingAttractionScale = siblingAttractionScale <= 0f ? 1f :
+            Mathf.Max(0.1f, siblingAttractionScale);
         lowStockDays = NonNegative(lowStockDays, 3f);
         highStockDays = Mathf.Max(lowStockDays, NonNegative(highStockDays, 5f));
         lowRenewalCoverage = NonNegative(lowRenewalCoverage, 0.9f);

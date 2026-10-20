@@ -10,15 +10,13 @@ public sealed class SpeciesMapNodeView : MonoBehaviour, IPointerEnterHandler, IP
     [SerializeField] private Text label;
     private Action<SpeciesData> hovered;
     private Action<SpeciesMapNodeView> clicked;
-    private bool hideLockedName;
     public SpeciesData Species => species;
     public Vector2 NodePosition => ((RectTransform)transform).anchoredPosition;
 
-    public void Bind(Action<SpeciesData> onHover, Action<SpeciesMapNodeView> onClick, bool concealLockedName)
+    public void Bind(Action<SpeciesData> onHover, Action<SpeciesMapNodeView> onClick)
     {
         hovered = onHover;
         clicked = onClick;
-        hideLockedName = concealLockedName;
         Refresh();
     }
 
@@ -29,8 +27,9 @@ public sealed class SpeciesMapNodeView : MonoBehaviour, IPointerEnterHandler, IP
         portrait.color = species.HasEverUnlocked ? Color.white : Color.black;
         string niche = species.baseEcologicalNiche == EcologicalNiche.Water ? "水生" :
             species.baseEcologicalNiche == EcologicalNiche.Air ? "空中" : "陆生";
-        label.text = hideLockedName && !species.HasEverUnlocked ? "？？？" :
-            species.SpeciesName + " | L" + species.trophicLevel + " " + niche;
+        label.text = species.HasEverUnlocked
+            ? species.SpeciesName + " | L" + species.trophicLevel + " " + niche
+            : TutorialFlowController.RevealsSpeciesName(species) ? species.SpeciesName : "？？？";
     }
 
     public void OnPointerEnter(PointerEventData eventData) { hovered?.Invoke(species); }

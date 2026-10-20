@@ -29,8 +29,11 @@ namespace DarwinFarm.Environment
         public EffectPhase Phase { get; }
         public int RemainingDays { get; }
         public double Progress { get; }
-        internal AttributeSnapshot(double value, double target, EffectPhase phase, int remaining, double progress)
-        { Value = value; Target = target; Phase = phase; RemainingDays = remaining; Progress = progress; }
+        // Presentation metadata stays with the applied effect, including its return phase.
+        public int ToolTier { get; }
+        internal AttributeSnapshot(double value, double target, EffectPhase phase, int remaining, double progress,
+            int toolTier = 0)
+        { Value = value; Target = target; Phase = phase; RemainingDays = remaining; Progress = progress; ToolTier = toolTier; }
     }
 
     public sealed class EnvironmentSnapshot
@@ -46,6 +49,9 @@ namespace DarwinFarm.Environment
         public AttributeSnapshot Temperature { get; }
         public AttributeSnapshot Humidity { get; }
         public AttributeSnapshot Recovery { get; }
+        public double TemperatureCancelTarget { get; }
+        public double HumidityCancelTarget { get; }
+        public double RecoveryCancelTarget { get; }
         public bool HasLocalClimate { get; }
         public bool HasLocalTemperature { get; }
         public bool HasLocalHumidity { get; }
@@ -57,6 +63,12 @@ namespace DarwinFarm.Environment
             Habitat = tile.Habitat; IsWater = tile.IsWater;
             NaturalDefaults = EnvironmentRules.Defaults(tile.Habitat);
             Temperature = tile.Attribute(0); Humidity = tile.Attribute(1); Recovery = tile.Attribute(2);
+            TemperatureCancelTarget = CancelTarget(tile, 0);
+            HumidityCancelTarget = CancelTarget(tile, 1);
+            RecoveryCancelTarget = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+                tile.IsWater || tile.RecoveryHabitatAtSubmit != tile.Habitat ?
+                    (tile.IsWater ? EnvironmentRules.WaterDefaultRecovery :
+                        EnvironmentRules.Defaults(tile.Habitat).Recovery) : tile.RecoveryBaseline);
             HasLocalClimate = tile.HasLocalClimate;
             HasLocalTemperature = tile.Locals[0] != null;
             HasLocalHumidity = tile.Locals[1] != null;
@@ -64,6 +76,14 @@ namespace DarwinFarm.Environment
             CanCancelRecovery = tile.RecoveryReturning &&
                 tile.RecoveryAge < tile.RecoveryHoldThreshold &&
                 !tile.RecoveryCancelIssued;
+        }
+
+        private static double CancelTarget(EnvironmentTile tile, int index)
+        {
+            var local = tile.Locals[index];
+            double destination = local != null && local.HabitatAtSubmit == tile.Habitat ?
+                local.Baseline : EnvironmentRules.Defaults(tile.Habitat).Get((EnvironmentAttribute)index);
+            return EnvironmentRules.Clamp((EnvironmentAttribute)index, destination);
         }
     }
 
@@ -84,6 +104,7 @@ namespace DarwinFarm.Environment
     internal sealed class LocalClimateEffect
     {
         internal int Age;
+        internal int Tier;
         internal long Sequence;
         internal double Baseline;
         internal HabitatState HabitatAtSubmit;
@@ -104,6 +125,7 @@ namespace DarwinFarm.Environment
         internal readonly LocalClimateEffect[] Locals = new LocalClimateEffect[2];
         internal long RecoverySequence;
         internal int RecoveryAge;
+        internal int RecoveryTier;
         internal bool RecoveryReturning;
         internal bool RecoveryCancelIssued;
         internal bool RecoveryDetached;
@@ -149,7 +171,8 @@ namespace DarwinFarm.Environment
                 RecoveryAge < RecoveryHoldThreshold ? Values[2] : track.Target;
             return new AttributeSnapshot(EnvironmentRules.Clamp((EnvironmentAttribute)index, Values[index]),
                 EnvironmentRules.Clamp((EnvironmentAttribute)index, target),
-                phase, remaining, track.Progress);
+                phase, remaining, track.Progress, local != null ? local.Tier :
+                    index == 2 && RecoveryReturning ? RecoveryTier : 0);
         }
     }
 

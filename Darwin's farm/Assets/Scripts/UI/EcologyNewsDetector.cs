@@ -38,6 +38,7 @@ public sealed class EcologyNewsDetector : MonoBehaviour
     private SimulationTime clock;
     private readonly List<EcologicalEventData> startupUnlockNews=new List<EcologicalEventData>();
     private bool ready;
+    private bool firstTerrainNewsShown;
     private int ordinal;
     [Serializable] public sealed class SaveState
     {
@@ -69,7 +70,10 @@ public sealed class EcologyNewsDetector : MonoBehaviour
     {
         if(state==null||state.previous==null||state.everHere==null||
             state.crashes==null||state.crises==null)throw new ArgumentException("Invalid ecology news history.");
-        ordinal=state.ordinal;previous.Clear();everHere.Clear();crashes.Clear();crises.Clear();
+        ordinal=state.ordinal;
+        firstTerrainNewsShown=environment!=null && environment.CaptureTerrainUnlocks()
+            .Any(kind=>kind!=DarwinFarm.Environment.TerrainKind.Desert);
+        previous.Clear();everHere.Clear();crashes.Clear();crises.Clear();
         foreach(var v in state.previous)
             previous.Add(v.key,new SpeciesAtSite { key=v.key,site=v.site,species=v.species,
                 name=v.name,count=v.count,capacity=v.capacity });
@@ -128,12 +132,16 @@ public sealed class EcologyNewsDetector : MonoBehaviour
     }
     private void OnTerrainUnlocked(DarwinFarm.Environment.TerrainKind kind, Vector2Int coordinate)
     {
+        bool first = !firstTerrainNewsShown;
+        firstTerrainNewsShown = true;
+        if (first && TutorialFlowController.HandlesFirstTerrainNews(kind)) return;
         string name=TerrainName(kind);
         PublishUnlock(new EcologicalEventData {
             eventId="terrain:"+kind,gameDay=clock!=null?clock.currentDay:0,
             type=EcologicalEventType.TerrainUnlocked,
             targetBlockId=coordinate.x+","+coordinate.y,
-            message="地块 ("+coordinate.x+","+coordinate.y+") 自然演变为「"+name+"」；现在可以建造"+name+"地块。"
+            message=first ? "新地形【"+name+"】解锁了！" :
+                "地块 ("+coordinate.x+","+coordinate.y+") 自然演变为「"+name+"」；现在可以建造"+name+"地块。"
         });
     }
     private void OnWaterUnlocked()
@@ -144,7 +152,7 @@ public sealed class EcologyNewsDetector : MonoBehaviour
             message="首次发现鹿或鹿驯，所有水域地块已解锁。"
         });
     }
-    private static string TerrainName(DarwinFarm.Environment.TerrainKind kind)
+    public static string TerrainName(DarwinFarm.Environment.TerrainKind kind)
     {
         switch(kind)
         {

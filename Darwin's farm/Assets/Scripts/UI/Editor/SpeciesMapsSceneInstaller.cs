@@ -74,14 +74,23 @@ public static class SpeciesMapsSceneInstaller
 
     private static void ConfigureWideGraph(RectTransform content)
     {
-        // Keep portraits round and text readable: spread positions, never stretch the graph transform.
+        // Keep the portraits at their authored size and set column spacing to 1.5 times row spacing.
         var background = content.Find("SpeciesMapBackground");
         if (background != null) background.gameObject.SetActive(false);
         content.sizeDelta = new Vector2(2080f,1060f);
         var nodes = content.GetComponentsInChildren<SpeciesMapNodeView>(true);
-        float extent = nodes.Length > 0 ? nodes.Max(n=>Mathf.Abs(n.NodePosition.x)) : 0f;
-        if (extent <= 0f) return;
-        float factor = 910f / extent;
+        float rowSpacing = float.MaxValue;
+        float columnSpacing = float.MaxValue;
+        foreach (var first in nodes)
+            foreach (var second in nodes)
+            {
+                float rowDifference = Mathf.Abs(first.NodePosition.y - second.NodePosition.y);
+                float columnDifference = Mathf.Abs(first.NodePosition.x - second.NodePosition.x);
+                if (rowDifference > 1f) rowSpacing = Mathf.Min(rowSpacing, rowDifference);
+                if (columnDifference > 1f) columnSpacing = Mathf.Min(columnSpacing, columnDifference);
+            }
+        if (rowSpacing == float.MaxValue || columnSpacing == float.MaxValue) return;
+        float factor = rowSpacing * 1.5f / columnSpacing;
         foreach (RectTransform child in content)
         {
             if (child.GetComponent<SpeciesMapNodeView>() == null && !child.name.EndsWith(" Caption",StringComparison.Ordinal)) continue;

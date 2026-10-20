@@ -30,6 +30,7 @@ public sealed class GameInformationUI : MonoBehaviour
     [SerializeField] private PopulationInfoPanel populationPanel;
     [SerializeField] private Text dayText;
     [SerializeField] private Text speedText;
+    [SerializeField] private Text bioenergyText;
     [SerializeField] private UnityEngine.UI.Button tileCloseButton;
     [SerializeField] private UnityEngine.UI.Button populationCloseButton;
     [SerializeField] private TileTrendHistory tileHistory;
@@ -44,7 +45,22 @@ public sealed class GameInformationUI : MonoBehaviour
     private BiomeOcclusionVisibility biomeVisibility;
     private MapTouchInput touchInput;
     private EnvironmentToolSession tools;
+    private BioenergyAccount bioenergy;
     private bool mobilePresentation;
+    private RectTransform legacyPopulationGrip;
+    private Vector2 legacyClosePosition;
+    private bool legacyPopulationCompact;
+    private float legacyPopulationScale = 1f, legacyCompactScale = 1f, legacyResizeStartScale = 1f;
+    private bool legacyResizeSnapped;
+    private float LegacyMaximumScale
+    {
+        get
+        {
+            var rect = (RectTransform)populationWindow.transform;
+            float availableHeight = canvasRect.rect.height + rect.anchoredPosition.y - 35f;
+            return Mathf.Min(1f, Mathf.Max(.35f, availableHeight / PopulationInfoPanel.BoardHeight));
+        }
+    }
     public bool ToolModeActive => tools != null && tools.Active;
     public WhiteboxPopulation SelectedPopulation
     {
@@ -63,7 +79,6 @@ public sealed class GameInformationUI : MonoBehaviour
     public void SetMobilePresentation(bool mobile)
     {
         mobilePresentation = mobile;
-        if (ToolModeActive && tileWindow != null) tileWindow.Close();
         if (tileWindow != null) tileWindow.SetPresentationVisible(!mobile);
         if (populationWindow != null) populationWindow.SetPresentationVisible(!mobile);
     }
@@ -90,6 +105,16 @@ public sealed class GameInformationUI : MonoBehaviour
     {
         Canvas.ForceUpdateCanvases();
         EnsureLayout();
+        if (bioenergyText == null)
+        {
+            Transform label = transform.Find("InformationHUD/EconomyHUD/BioenergyBalance");
+            if (label == null) label = transform.Find("InformationHUD/EconomyHUD/FundsPlaceholder");
+            if (label != null) bioenergyText = label.GetComponent<Text>();
+        }
+        if (grid != null) bioenergy = grid.GetComponent<BioenergyAccount>();
+        if (bioenergy == null) bioenergy = FindFirstObjectByType<BioenergyAccount>();
+        if (bioenergy != null) bioenergy.BalanceChanged += RefreshBioenergy;
+        RefreshBioenergy(bioenergy != null ? bioenergy.Balance : 0);
         BindWindows();
         tileHistory.Initialize(grid, simulation, clock);
         biomeVisibility = gameObject.GetComponent<BiomeOcclusionVisibility>();
@@ -102,6 +127,9 @@ public sealed class GameInformationUI : MonoBehaviour
     {
         canvasRect = (RectTransform)transform;
         font = GameUITheme.Font;
+        var tileStatus = GetComponent<TileStatusPresenter>();
+        if (tileStatus == null) tileStatus = gameObject.AddComponent<TileStatusPresenter>();
+        tileStatus.EnsureLayout();
         if (dayText == null && speedText == null) BuildHud();
         BindSpeedControl();
         if (tileWindow == null && populationWindow == null) BuildWindows();
@@ -149,11 +177,75 @@ public sealed class GameInformationUI : MonoBehaviour
         tileWindow.Initialize(canvasRect, ((RectTransform)tileWindow.transform).anchoredPosition);
         populationWindow.Initialize(canvasRect, ((RectTransform)populationWindow.transform).anchoredPosition);
         populationPanel.Initialize(populationWindow);
+        EnsureLegacyPopulationResize();
         foreach (InformationTextDragHandle handle in GetComponentsInChildren<InformationTextDragHandle>(true))
             // Initialize() hides windows before binding; include inactive parents.
             handle.Initialize(handle.GetComponentInParent<InformationWindow>(true));
         tileCloseButton.onClick.AddListener(CloseTile);
         populationCloseButton.onClick.AddListener(ClosePopulation);
+    }
+
+    private void EnsureLegacyPopulationResize()
+    {
+        // WhiteBox still contains the pre-journal window, without a viewport or saved grip.
+        if (populationWindow.GetComponent<PopulationJournalViewport>() != null) return;
+        if (legacyPopulationGrip != null) return;
+        legacyClosePosition = ((RectTransform)populationCloseButton.transform).anchoredPosition;
+        var go = new GameObject("PopulationResizeGrip", typeof(RectTransform), typeof(Image),
+            typeof(SnapPanelResizeHandle));
+        legacyPopulationGrip = (RectTransform)go.transform;
+        legacyPopulationGrip.SetParent(populationWindow.transform, false);
+        legacyPopulationGrip.anchorMin = legacyPopulationGrip.anchorMax =
+            legacyPopulationGrip.pivot = new Vector2(1f, 0f);
+        legacyPopulationGrip.anchoredPosition = new Vector2(10f, -10f);
+        legacyPopulationGrip.sizeDelta = new Vector2(46f, 46f);
+        var image = go.GetComponent<Image>();
+        image.sprite = Resources.Load<Sprite>("GameUI/SpeciesJournal/ResizeGrip");
+        image.color = image.sprite == null ? new Color(.25f, .34f, .22f) : Color.white;
+        image.raycastTarget = true;
+        // The artwork sits beyond the journal's corner. Give that small visible
+        // grip a larger hit area without changing its drawn size.
+        image.raycastPadding = new Vector4(-16f, -16f, -16f, -16f);
+        image.maskable = false;
+        go.GetComponent<SnapPanelResizeHandle>().Initialize(delta =>
+        {
+            if (legacyResizeSnapped) return;
+            if (!legacyPopulationCompact && delta < -76f)
+            { legacyResizeSnapped = true; SetLegacyPopulationCompact(true); return; }
+            if (legacyPopulationCompact && delta > 76f)
+            { legacyResizeSnapped = true; SetLegacyPopulationCompact(false); return; }
+            if (legacyPopulationCompact)
+            {
+                legacyCompactScale = Mathf.Clamp(legacyResizeStartScale + delta / 500f, .65f, 1.35f);
+                populationWindow.transform.localScale = Vector3.one * legacyCompactScale;
+            }
+            else
+            {
+                float maximum = LegacyMaximumScale;
+                legacyPopulationScale = Mathf.Clamp(legacyResizeStartScale + delta / 500f,
+                    maximum * .65f, maximum);
+                populationWindow.transform.localScale = Vector3.one * legacyPopulationScale;
+            }
+        }, () => { legacyResizeStartScale = legacyPopulationCompact ? legacyCompactScale : legacyPopulationScale;
+                legacyResizeSnapped = false; });
+        legacyPopulationGrip.SetAsLastSibling();
+    }
+
+    private void SetLegacyPopulationCompact(bool compact)
+    {
+        if (legacyPopulationGrip == null) return;
+        if (compact && !legacyPopulationCompact) legacyCompactScale = 1f;
+        legacyPopulationCompact = compact;
+        populationPanel.SetCompact(compact);
+        ((RectTransform)populationWindow.transform).SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Horizontal, PopulationInfoPanel.BoardWidth);
+        ((RectTransform)populationWindow.transform).SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical, compact ? PopulationInfoPanel.CompactHeight : PopulationInfoPanel.BoardHeight);
+        ((RectTransform)populationCloseButton.transform).anchoredPosition = compact
+            ? new Vector2(-20f, -18f) : legacyClosePosition;
+        populationWindow.transform.localScale = Vector3.one *
+            (compact ? legacyCompactScale : legacyPopulationScale);
+        populationWindow.SetDragBounds(canvasRect, ((RectTransform)populationWindow.transform).anchoredPosition);
     }
 
     public void CloseTile() { tileWindow.Close(); selectedTile = null; SelectionChanged?.Invoke(false); }
@@ -172,6 +264,7 @@ public sealed class GameInformationUI : MonoBehaviour
             simulation.OnBlockCommunityChanged += RefreshCommunity;
         }
         if (environment != null) environment.Changed += RefreshEnvironment;
+        if (bioenergy != null) bioenergy.BalanceChanged += RefreshBioenergy;
     }
 
     private void OnDisable()
@@ -183,6 +276,7 @@ public sealed class GameInformationUI : MonoBehaviour
             simulation.OnBlockCommunityChanged -= RefreshCommunity;
         }
         if (environment != null) environment.Changed -= RefreshEnvironment;
+        if (bioenergy != null) bioenergy.BalanceChanged -= RefreshBioenergy;
         awaitingRelease = false;
     }
 
@@ -218,7 +312,7 @@ public sealed class GameInformationUI : MonoBehaviour
             dragged = true;
         if (!mouse.leftButton.wasReleasedThisFrame) return;
         awaitingRelease = false;
-        if (!dragged && !PointerOverUi(position)) SelectSceneTarget(position);
+        if (!dragged && !PointerOverUi(position)) SelectSceneTarget(position, alt);
     }
 
     private bool PointerOverUi(Vector2 position)
@@ -233,13 +327,14 @@ public sealed class GameInformationUI : MonoBehaviour
         return false;
     }
 
-    private void SelectSceneTarget(Vector2 position) => TrySelectSceneAt(position);
+    private void SelectSceneTarget(Vector2 position, bool inspect) => TrySelectSceneAt(position, 0f, inspect);
 
-    public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f)
+    public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f,
+        bool inspectWhileUsingTool = false)
     {
-        if (ToolModeActive) return TrySelectTileAt(position);
+        if (ToolModeActive && !inspectWhileUsingTool) return TrySelectTileAt(position);
         if (TrySelectPopulationAt(position, populationPaddingPixels)) return true;
-        return TrySelectTileAt(position);
+        return TrySelectTileAt(position, true);
     }
 
     private bool CanSelectAt(Vector2 position) => isActiveAndEnabled &&
@@ -247,25 +342,40 @@ public sealed class GameInformationUI : MonoBehaviour
         (buildMode == null || !buildMode.IsBuildMode) && viewCamera.pixelRect.Contains(position) &&
         !PointerOverUi(position);
 
-    // Selection replaces the corresponding window's target on both platforms.
+    // Selecting one kind of information does not close the other open windows.
     public bool TrySelectPopulationAt(Vector2 position, float paddingPixels = 0f)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.PopulationInfo)) return false;
         if (!CanSelectAt(position)) return false;
         // The existing population cubes intentionally have no colliders. Pick their
         // visible sprite rectangles before querying the terrain colliders below.
         WhiteboxPopulation visual = PickPopulation(position, Mathf.Max(0f, paddingPixels));
         if (visual == null) return false;
+        if (!populationWindow.IsOpen && !mobilePresentation)
+        {
+            var journal = populationWindow.GetComponent<PopulationJournalViewport>();
+            if (journal != null) journal.ResetToFull();
+            else
+            {
+                legacyPopulationScale = LegacyMaximumScale;
+                SetLegacyPopulationCompact(false);
+            }
+        }
         selectedVisual = visual;
         selectedPopulationId = visual.EcologicalPopulation != null
             ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
         RefreshPopulation();
         populationWindow.Open();
+        if (!mobilePresentation) populationWindow.transform.SetAsLastSibling();
         SelectionChanged?.Invoke(true);
         return true;
     }
 
-    public bool TrySelectTileAt(Vector2 position)
+    public bool TrySelectTileAt(Vector2 position) => TrySelectTileAt(position, !ToolModeActive);
+
+    private bool TrySelectTileAt(Vector2 position, bool showInformation)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.TileInfo)) return false;
         if (!CanSelectAt(position)) return false;
         Ray ray = viewCamera.ScreenPointToRay(position);
         int count = Physics.RaycastNonAlloc(ray, groundHits, 1000f,
@@ -283,10 +393,13 @@ public sealed class GameInformationUI : MonoBehaviour
         if (tile == null) return false;
         selectedTile = tile;
         RefreshTile();
-        // Tool targeting selects a tile independently of either platform's
-        // information window. Only an information request opens that window.
-        if (ToolModeActive) tileWindow.Close();
-        else tileWindow.Open();
+        // Tool targeting keeps existing information windows open. An explicit
+        // inspection request also opens the tile window while tools are active.
+        if (showInformation)
+        {
+            tileWindow.Open();
+            if (!mobilePresentation) tileWindow.transform.SetAsLastSibling();
+        }
         SelectionChanged?.Invoke(false);
         return true;
     }
@@ -387,12 +500,9 @@ public sealed class GameInformationUI : MonoBehaviour
             new Vector2(300f, 98f), "GameUI/经济ui", new Rect(155f, 482f, 1453f, 473f), root);
         funds.anchoredPosition = new Vector2(24f, -14f);
         funds.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
-        Text money = NewText("FundsPlaceholder", funds, "生物能\n未接入", 22, Ink(),
+        bioenergyText = NewText("BioenergyBalance", funds, "0", 22, Ink(),
             new Vector2(116f, -22f), new Vector2(168f, 62f), false);
-        money.alignment = TextAnchor.MiddleCenter;
-        Text news = NewText("NewsPlaceholder", root, "生态新闻：未接入", 22, Ink(),
-            new Vector2(350f, -25f), new Vector2(450f, 42f), false);
-        news.alignment = TextAnchor.MiddleCenter;
+        bioenergyText.alignment = TextAnchor.MiddleCenter;
         RectTransform time = NewPanel("TimeHUD", Vector2.one, Vector2.one,
             new Vector2(230f, 92f), "GameUI/时间ui", new Rect(320f, 1315f, 1317f, 528f), root);
         time.anchoredPosition = new Vector2(-138f, -14f);
@@ -509,11 +619,28 @@ public sealed class GameInformationUI : MonoBehaviour
 
     private void RefreshVisible()
     {
+        if (bioenergy != null) RefreshBioenergy(bioenergy.Balance);
         if (dayText != null) dayText.text = "Day " + (clock == null ? "--" : clock.currentDay.ToString());
         if (speedText != null) speedText.text = clock == null ? "--" :
             clock.IsPaused ? "暂停" : clock.Speed.ToString("0.#") + "X";
+        RefreshTutorialLocks();
         if (tileWindow != null && tileWindow.IsOpen) RefreshTile();
         if (populationWindow != null && populationWindow.IsOpen) RefreshPopulation();
+    }
+
+    public void RefreshTutorialLocks()
+    {
+        if (speedText == null) return;
+        // The tutorial hides this Button before it is unlocked. Include inactive
+        // parents so a later lesson can find and show it again.
+        var speedButton = speedText.GetComponentInParent<UnityEngine.UI.Button>(true);
+        if (speedButton != null)
+            speedButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.Clock));
+    }
+
+    private void RefreshBioenergy(long balance)
+    {
+        if (bioenergyText != null) bioenergyText.text = balance.ToString("N0");
     }
 
     private void RefreshTile()

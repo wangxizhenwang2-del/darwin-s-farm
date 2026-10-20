@@ -1,0 +1,1 @@
+MASK_PIXELS_PASS: Screenshot comparison confirms left-half darkened ratio 0.000, right-half darkened ratio 1.000 for both tool icons at 50% timer coverage.

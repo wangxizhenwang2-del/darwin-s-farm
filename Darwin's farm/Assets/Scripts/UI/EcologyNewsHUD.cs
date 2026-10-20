@@ -6,6 +6,7 @@ using UnityEngine;
 // One preauthored card, bounded priority queue, unscaled presentation clock.
 public sealed class EcologyNewsHUD : MonoBehaviour
 {
+    public event Action<EcologicalEventType> NewsShown;
     [SerializeField] private RectTransform card;
     [SerializeField] private CanvasGroup group;
     [SerializeField] private TMP_Text heading, body, dayLabel;
@@ -83,6 +84,7 @@ public sealed class EcologyNewsHUD : MonoBehaviour
         current=value;phase=0;timer=0f;
         heading.text=Title(value.type);body.text=value.message;
         dayLabel.text="第 "+value.gameDay+" 日";
+        NewsShown?.Invoke(value.type);
     }
     private void QueueReady(EcologicalEventData value)
     {
@@ -114,6 +116,7 @@ public sealed class EcologyNewsHUD : MonoBehaviour
             current=pending[0];pending.RemoveAt(0);
             heading.text=Title(current.type);body.text=current.message;
             dayLabel.text="第 "+current.gameDay+" 日";phase=0;timer=0;
+            NewsShown?.Invoke(current.type);
         }
         timer+=Time.unscaledDeltaTime;
         if(phase==0)
@@ -143,14 +146,14 @@ public sealed class EcologyNewsHUD : MonoBehaviour
     {
         switch(type)
         {
-            case EcologicalEventType.NewSpecies:return "✿ 新物种诞生";
-            case EcologicalEventType.TerrainUnlocked:return "✦ 新地形解锁";
-            case EcologicalEventType.WatersUnlocked:return "✦ 水域解锁";
-            case EcologicalEventType.LocalExtinction:return "○ 本地灭绝";
-            case EcologicalEventType.GlobalExtinction:return "◆ 全局灭绝";
-            case EcologicalEventType.SpeciesReappeared:return "↻ 物种重新出现";
-            case EcologicalEventType.SuccessfulMigration:return "↗ 成功迁徙";
-            case EcologicalEventType.PopulationCrash:return "↓ 种群骤减";
+            case EcologicalEventType.NewSpecies:return "新物种诞生";
+            case EcologicalEventType.TerrainUnlocked:return "新地形解锁";
+            case EcologicalEventType.WatersUnlocked:return "水域解锁";
+            case EcologicalEventType.LocalExtinction:return "本地灭绝";
+            case EcologicalEventType.GlobalExtinction:return "全局灭绝";
+            case EcologicalEventType.SpeciesReappeared:return "物种重新出现";
+            case EcologicalEventType.SuccessfulMigration:return "成功迁徙";
+            case EcologicalEventType.PopulationCrash:return "种群骤减";
             default:return "! 生态承载危机";
         }
     }

@@ -48,7 +48,8 @@ public static class MobileUIInstaller
         var economy = Panel("Economy", hud, new Vector2(190, 68));
         CopyArt(information.transform.Find("InformationHUD/EconomyHUD"), economy);
         Layout(economy, 190f, false);
-        var economyLabel = Label("Function", economy, "生物能：未接入", 18, Vector2.zero, new Vector2(190, 68), false, true);
+        var economyLabel = Label("Function", economy, "0", 18, Vector2.zero, new Vector2(190, 68), false, true);
+        Set(saved, "bioenergyLabel", economyLabel);
         economyLabel.rectTransform.offsetMin = new Vector2(64, 0);
         economyLabel.rectTransform.offsetMax = new Vector2(-8, 0);
         var day = Panel("Day", hud, new Vector2(140, 68));
@@ -114,16 +115,13 @@ public static class MobileUIInstaller
         var technology = BuildTechnology(tile, drawer, Object.FindFirstObjectByType<EnvironmentTechnologyController>());
         Set(saved, "technologyPanel", technology);
 
-        RectTransform population = Rect("PopulationContent", viewport, Vector2.up, Vector2.up, new Vector2(500, 690), Vector2.zero);
+        RectTransform population = Rect("PopulationContent", viewport, Vector2.up, Vector2.up,
+            new Vector2(PopulationInfoPanel.BoardWidth, PopulationInfoPanel.BoardHeight), Vector2.zero);
+        var boardImage = population.gameObject.AddComponent<UnityEngine.UI.Image>();
+        boardImage.sprite = Resources.Load<Sprite>("GameUI/SpeciesJournal/JournalBoard");
+        boardImage.preserveAspect = true;
         var panel = population.gameObject.AddComponent<PopulationInfoPanel>(); panel.Initialize(drawer);
-        RectTransform content = (RectTransform)population.Find("Content");
-        content.anchoredPosition = new Vector2(12, -8); content.localScale = Vector3.one;
         panel.ShowUnavailable("点击种群查看生物信息");
-        content.Find("SpeciesHeader/SpeciesName").GetComponent<TextMeshProUGUI>().text = "物种名称";
-        content.Find("SpeciesHeader/PopulationCount").GetComponent<TextMeshProUGUI>().text = "数量：--";
-        content.Find("SpeciesHeader/SpeciesDescription/Viewport/Content").GetComponent<TextMeshProUGUI>().text = "物种介绍（运行时读取物种资料）";
-        string[] attributes = { "适温 --", "适湿 --", "运动 --", "繁殖 --", "体型 --" };
-        for (int i = 0; i < 5; i++) content.Find("RadarChartSection/Attribute" + i).GetComponent<TextMeshProUGUI>().text = attributes[i];
         Set(saved, "populationPanel", panel); Set(saved, "populationContent", population);
         population.gameObject.SetActive(false); scroll.content = tile;
 
@@ -146,7 +144,8 @@ public static class MobileUIInstaller
         background.SetAsFirstSibling();
         Stretch(background, Vector2.zero, new Vector2(0, -56));
         var image = background.GetComponent<UnityEngine.UI.Image>();
-        image.color = Color.white; image.raycastTarget = false; image.preserveAspect = false;
+        image.color = Color.white; image.raycastTarget = false;
+        image.preserveAspect = saved.FindProperty("informationTab").enumValueIndex == 1;
         var source = new SerializedObject(information);
         Sprite Picture(string key) => ((Component)source.FindProperty(key).objectReferenceValue).GetComponent<UnityEngine.UI.Image>().sprite;
         Sprite environment = Picture("tileWindow"), population = Picture("populationWindow");
@@ -214,7 +213,7 @@ public static class MobileUIInstaller
         palette.anchorMin = Vector2.zero; palette.anchorMax = Vector2.right; palette.pivot = Vector2.zero;
         palette.offsetMin = new Vector2(8, 8); palette.offsetMax = new Vector2(-8, 140);
         Set(saved, "buildPalette", palette.gameObject);
-        Label("Function", palette, "左右滑动选地块 → 点击地图定位预览 → 旋转 → 确认", 19, new Vector2(12, -8), new Vector2(1080, 32), false);
+        Label("Function", palette, "左右滑动选地块，点击地图定位预览，旋转后确认", 19, new Vector2(12, -8), new Vector2(1080, 32), false);
         var scrollRoot = Rect("TileList", palette, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         Stretch(scrollRoot, new Vector2(12, 8), new Vector2(-12, -42));
         var scroll = scrollRoot.gameObject.AddComponent<UnityEngine.UI.ScrollRect>(); scroll.horizontal = true; scroll.vertical = false;
@@ -241,7 +240,7 @@ public static class MobileUIInstaller
         Set(saved, "placementControls", controls.gameObject);
         Set(saved, "placementLabel", Label("PreviewStatus", controls, "选地块后，点击地图定位预览", 18, new Vector2(12, -6), new Vector2(576, 28), false));
         var actions = Rect("Actions", controls, Vector2.up, Vector2.up, new Vector2(576, 54), new Vector2(12, -38)); Row(actions, 8);
-        BindButton(saved, "rotateButton", null, Button("RotatePreview", actions, "旋转 90°", new Vector2(180, 54)), 180);
+        BindButton(saved, "rotateButton", null, Button("RotatePreview", actions, "旋转 90 度", new Vector2(180, 54)), 180);
         BindButton(saved, "confirmButton", null, Button("ConfirmPlacement", actions, "确认放置", new Vector2(180, 54)), 180);
         BindButton(saved, "cancelButton", null, Button("CancelPlacement", actions, "取消预览", new Vector2(180, 54)), 180);
     }

@@ -741,6 +741,10 @@ public partial class SimulationController
     private bool HasEvolutionFoodSupport(BlockInfo block, PopulationData source,
         SpeciesData target, int amount)
     {
+        // L0 targets bypass the daily food supply forecast regardless of source.
+        // Trait, founder and material gates still apply before this check.
+        if (target.trophicLevel == 0)
+            return true;
         if (target.trophicLevel > 0)
         {
             StockFoodForecast stock = ForecastStockPredatorFood(block, source,

@@ -27,6 +27,35 @@
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>
 				</SoundBank>
+				<SoundBank Name="SB_Animals" ID="{3B7C7971-F448-4C1B-9CBF-06C7659FBF92}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_Rc_lu" ID="{6CC25176-B45C-4547-944D-27F26D692F95}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Rc_ji" ID="{F60FFE9A-8175-4B31-9DC5-E1D1BFDAEFC0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Rc_caiji" ID="{88A2C2BA-AE11-4DA4-93FA-FE97BAF376E0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+				<SoundBank Name="SB_UI" ID="{F1293EFE-65EC-4DC9-B71B-4CF558B283F6}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_UI_Handbook_Open" ID="{77F815F1-321B-41D5-A391-201FCF79E474}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_News_Bad" ID="{95AEB729-F8EA-44B5-AB7D-06EB04E3F75C}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Species_Reveal" ID="{0A348A85-3370-4848-9E67-B930A4DE59C7}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_News_Mid" ID="{6890589B-C437-49B2-B981-87CA308D3F57}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_Click" ID="{53571117-0A79-4B30-B6EE-FD0F05660C10}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_UI_News_good" ID="{1C700386-9CA0-4B9F-986C-12941331AE80}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+				<SoundBank Name="SB_Music" ID="{CE7AF621-0B2F-4284-B538-2FD00CB450E2}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Stop_MSC_BGM" ID="{F0A9294F-FE62-4395-887D-4156700F03CE}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_BGM" ID="{F0224911-DCA0-4563-8709-B784C25DDD25}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
 			</ChildrenList>
 		</WorkUnit>
 	</SoundBanks>

@@ -1,0 +1,157 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "289583631",
+    "Type": "User",
+    "GUID": "{F1293EFE-65EC-4DC9-B71B-4CF558B283F6}",
+    "Language": "SFX",
+    "Hash": "{7738FB5E-2EC6-BD30-9FB0-ECF00E94CE3A}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SB_UI",
+    "ShortName": "SB_UI",
+    "Path": "SB_UI.bnk",
+    "Media": [
+     {
+      "Id": "152037826",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "ui_水滴.wav",
+      "CachePath": "9F/{9F7A0D00-FC84-00D1-6562-F42EDC5A7625}.wem"
+     },
+     {
+      "Id": "614188399",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "UI_News_Evolution_Celebrate_V1.wav",
+      "CachePath": "AC/{AC86C983-D1D3-16B1-E9FC-6F7CD1DCBE1A}.wem"
+     },
+     {
+      "Id": "619935095",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "UI_Handbook_PageTurn_Game_V3.wav",
+      "CachePath": "81/{81427DDF-0F8C-FD49-728F-3A96690024C9}.wem"
+     },
+     {
+      "Id": "652789747",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "UI_News_Notification_V1.wav",
+      "CachePath": "61/{61C250DF-02E9-4072-CB07-5742BE57CC6D}.wem"
+     },
+     {
+      "Id": "936948770",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "UI_News_Extinction_Regret_V1.wav",
+      "CachePath": "D0/{D014519A-890F-D76C-AC27-4796674FCEE9}.wem"
+     },
+     {
+      "Id": "1054074646",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "UI_NewSpecies_Unlock_Full.wav",
+      "CachePath": "16/{1611BE42-5127-1D75-1D50-00CDB53895D2}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "1749424733",
+      "Name": "Play_UI_Click",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Click",
+      "GUID": "{53571117-0A79-4B30-B6EE-FD0F05660C10}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.28302",
+      "DurationMax": "0.28302",
+      "MediaRefs": [
+       {
+        "Id": "152037826"
+       }
+      ]
+     },
+     {
+      "Id": "1414291570",
+      "Name": "Play_UI_Handbook_Open",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Handbook_Open",
+      "GUID": "{77F815F1-321B-41D5-A391-201FCF79E474}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.66",
+      "DurationMax": "0.66",
+      "MediaRefs": [
+       {
+        "Id": "619935095"
+       }
+      ]
+     },
+     {
+      "Id": "2735047506",
+      "Name": "Play_UI_News_Bad",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_News_Bad",
+      "GUID": "{95AEB729-F8EA-44B5-AB7D-06EB04E3F75C}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.78",
+      "DurationMax": "0.78",
+      "MediaRefs": [
+       {
+        "Id": "936948770"
+       }
+      ]
+     },
+     {
+      "Id": "1116394086",
+      "Name": "Play_UI_News_good",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_News_good",
+      "GUID": "{1C700386-9CA0-4B9F-986C-12941331AE80}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.72",
+      "DurationMax": "0.72",
+      "MediaRefs": [
+       {
+        "Id": "614188399"
+       }
+      ]
+     },
+     {
+      "Id": "2334503293",
+      "Name": "Play_UI_News_Mid",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_News_Mid",
+      "GUID": "{6890589B-C437-49B2-B981-87CA308D3F57}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.48",
+      "DurationMax": "0.48",
+      "MediaRefs": [
+       {
+        "Id": "652789747"
+       }
+      ]
+     },
+     {
+      "Id": "224975701",
+      "Name": "Play_UI_Species_Reveal",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_UI_Species_Reveal",
+      "GUID": "{0A348A85-3370-4848-9E67-B930A4DE59C7}",
+      "DurationType": "OneShot",
+      "DurationMin": "2.25",
+      "DurationMax": "2.25",
+      "MediaRefs": [
+       {
+        "Id": "1054074646"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{B1E66E1C-B578-5BC1-28FF-509EC9586ABB}"
+ }
+}

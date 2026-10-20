@@ -296,8 +296,9 @@ public static class EnvironmentIntegrationAudit
         time.CycleSpeed(); Check(time.IsPaused, "SpeedHUD cycles 4x to pause");
         time.CycleSpeed(); Check(time.Speed == 1f, "SpeedHUD resumes at 1x");
         time.CycleSpeed(); Check(time.Speed == 2f, "SpeedHUD cycles 1x to 2x");
-        time.TogglePause(); Check(time.IsPaused, "space pauses the day clock");
-        time.TogglePause(); Check(time.Speed == 2f, "space resumes the previous speed");
+        time.CycleSpeed(); Check(time.Speed == 4f, "Shared speed input cycles 2x to 4x");
+        time.CycleSpeed(); Check(time.IsPaused, "Shared speed input cycles 4x to pause");
+        time.CycleSpeed(); Check(time.Speed == 1f, "Shared speed input resumes at 1x");
         time.Pause(); time.CycleSpeed();
         Check(time.Speed == 1f, "SpeedHUD resumes at 1x while paused");
         time.Pause();

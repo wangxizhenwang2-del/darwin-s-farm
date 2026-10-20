@@ -2,12 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Runtime view for the authored tile palette item. The unlock state lives in the
-// environment controller, so reopening the build panel never resets progress.
+// Runtime view for the authored tile palette item. Building starts once the map
+// has its first tile; terrain discovery remains separate from construction.
 public sealed class TerrainPaletteLockView : MonoBehaviour
 {
     private MapTileDefinition definition;
-    private SimulationEnvironmentController progress;
+    private MapGridManager grid;
     private TMP_Text label;
     private Image preview;
     private GameObject dashedBorder;
@@ -16,35 +16,24 @@ public sealed class TerrainPaletteLockView : MonoBehaviour
     public void Bind(MapTileDefinition tile)
     {
         definition = tile;
-        progress = FindFirstObjectByType<SimulationEnvironmentController>();
+        grid = FindFirstObjectByType<MapGridManager>();
         label = transform.Find("NameText")?.GetComponent<TMP_Text>();
         preview = transform.Find("ColorPreview")?.GetComponent<Image>();
         if (label != null) labelColor = label.color;
         CreateDashedBorder();
-        if (progress != null)
-        {
-            progress.TerrainUnlocked += OnTerrainUnlocked;
-            progress.WaterUnlocked += OnWaterUnlocked;
-            progress.UnlocksRestored += Refresh;
-        }
+        if (grid != null) grid.TilesChanged += Refresh;
         Refresh();
     }
 
     private void OnDestroy()
     {
-        if (progress == null) return;
-        progress.TerrainUnlocked -= OnTerrainUnlocked;
-        progress.WaterUnlocked -= OnWaterUnlocked;
-        progress.UnlocksRestored -= Refresh;
+        if (grid != null) grid.TilesChanged -= Refresh;
     }
-
-    private void OnTerrainUnlocked(DarwinFarm.Environment.TerrainKind _, Vector2Int __) => Refresh();
-    private void OnWaterUnlocked() => Refresh();
 
     private void Refresh()
     {
         if (definition == null) return;
-        bool unlocked = progress != null && progress.IsUnlocked(definition);
+        bool unlocked = grid != null && grid.HasPlacedTile;
         if (label != null)
         {
             label.text = unlocked ? definition.displayName : definition.displayName + "\n未解锁";

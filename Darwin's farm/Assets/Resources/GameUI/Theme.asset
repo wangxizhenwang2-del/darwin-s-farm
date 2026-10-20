@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameUITheme
   font: {fileID: 12800000, guid: 07522333e098a5741bd68818f4c8f22b, type: 3}
   textMeshProFont: {fileID: 11400000, guid: 7515b639f5c24524b98142d41d28cfb4, type: 2}
+  handwrittenFont: {fileID: 12800000, guid: 4ad51971b31c78049b6e96fd4772d044, type: 3}

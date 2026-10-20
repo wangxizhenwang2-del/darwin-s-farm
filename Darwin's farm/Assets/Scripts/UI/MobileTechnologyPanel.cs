@@ -14,6 +14,7 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
     [SerializeField, Min(1f)] private float foldedContentHeight = 690f, expandedContentHeight = 1090f;
     [SerializeField] private Color selectedColor = new Color(.58f, .83f, .64f);
     [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private EnvironmentToolPanelView redesigned;
     private EnvironmentToolSession session;
     private bool bound;
     public bool Expanded => expanded;
@@ -23,6 +24,9 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         session = FindFirstObjectByType<EnvironmentToolSession>();
         if (session == null) return;
         bound = true;
+        session.Changed += Refresh;
+        session.RegisterPreviewControls(optionButtons, deployButton);
+        previewText.richText = true;
         foldButton.onClick.AddListener(session.End);
         deployButton.onClick.AddListener(session.Deploy);
         cancelButton.onClick.AddListener(session.CancelEffect);
@@ -47,8 +51,9 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
     {
         // The independent window owns visibility, including its close animation.
         if (body != null) body.SetActive(true);
-        if (tileContent != null) tileContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
-            expanded ? expandedContentHeight : foldedContentHeight);
+        if (tileContent != null && tileContent.GetComponent<EnvironmentToolResponsiveLayout>() == null)
+            tileContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                expanded ? expandedContentHeight : foldedContentHeight);
         // The tool scroll owns this content's position; refreshing labels must
         // not move the information drawer or reset a user's scrolling.
         if (foldLabel != null) foldLabel.text = "×";
@@ -58,10 +63,23 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         if (session == null) return;
         expanded = session.Active; ApplyFold();
         for (int i = 0; i < kindButtons.Length; i++)
-            kindButtons[i].targetGraphic.color =
+        {
+            if (i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length)
+                kindButtons[i].gameObject.SetActive(TutorialFlowController.AllowsTool(
+                    DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i]));
+            if (redesigned != null)
+            {
+                kindButtons[i].targetGraphic.color = Color.white;
+                var outline = kindButtons[i].GetComponent<UnityEngine.UI.Outline>();
+                if (outline != null) outline.enabled =
+                    i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&
+                    DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind;
+            }
+            else kindButtons[i].targetGraphic.color =
                 i < DarwinFarm.Environment.EnvironmentTechnologyCatalog.All.Length &&
                 DarwinFarm.Environment.EnvironmentTechnologyCatalog.All[i] == session.Choice.Kind ?
                 selectedColor : normalColor;
+        }
         for (int i = 0; i < optionButtons.Length; i++)
         {
             EnvironmentToolArtwork.RefreshOption(optionButtons[i], session, i);
@@ -71,5 +89,8 @@ public sealed class MobileTechnologyPanel : MonoBehaviour
         notice.text = session.Notice;
         deployButton.interactable = session.CanDeploy;
         cancelButton.interactable = session.Active && session.CanCancel;
+        if (redesigned != null) redesigned.Refresh(session);
     }
+    private void OnDestroy()
+    { if (session != null) session.Changed -= Refresh; }
 }

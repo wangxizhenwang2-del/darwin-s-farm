@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DarwinFarm.Environment;
 using UnityEngine;
 
 // Runtime, read-only daily snapshots. No Editor dependency and no simulation writes.
@@ -8,6 +9,7 @@ public sealed class TileTrendHistory : MonoBehaviour
     private MapGridManager grid;
     private SimulationController simulation;
     private SimulationTime clock;
+    private SimulationEnvironmentController environment;
     private bool subscribed, simulating;
     private readonly Dictionary<MapTileInstance, TileRecord> records = new Dictionary<MapTileInstance, TileRecord>();
     private readonly HashSet<MapTileInstance> present = new HashSet<MapTileInstance>();
@@ -36,6 +38,7 @@ public sealed class TileTrendHistory : MonoBehaviour
         public readonly BlockInfo Source;
         private readonly int[] days;
         private readonly float[] plants;
+        private readonly float[] temperatures, humidities, temperatureDefaults, humidityDefaults;
         private readonly Dictionary<string, Series> byId = new Dictionary<string, Series>();
         private readonly List<Series> series = new List<Series>();
         private int first, count, colorIndex;
@@ -47,13 +50,19 @@ public sealed class TileTrendHistory : MonoBehaviour
         {
             Source = source;
             days = new int[Mathf.Max(2, capacity)]; plants = new float[days.Length];
+            temperatures = new float[days.Length]; humidities = new float[days.Length];
+            temperatureDefaults = new float[days.Length]; humidityDefaults = new float[days.Length];
         }
         private int Slot(int index) => (first + index) % days.Length;
         public int Day(int index) => days[Slot(index)];
         public float Plants(int index) => plants[Slot(index)];
+        public float Temperature(int index) => temperatures[Slot(index)];
+        public float Humidity(int index) => humidities[Slot(index)];
+        public float TemperatureDefault(int index) => temperatureDefaults[Slot(index)];
+        public float HumidityDefault(int index) => humidityDefaults[Slot(index)];
         public float Amount(Series population, int index) => population.values[Slot(index)];
 
-        public void Capture(int day)
+        public void Capture(int day, EnvironmentSnapshot climate = null)
         {
             if (Source == null) return;
             if (count > 0 && day < Day(count - 1))
@@ -74,6 +83,10 @@ public sealed class TileTrendHistory : MonoBehaviour
             }
             days[slot] = day;
             plants[slot] = Source.plantBiomass;
+            temperatures[slot] = climate != null ? (float)climate.Temperature.Value : float.NaN;
+            humidities[slot] = climate != null ? (float)climate.Humidity.Value : float.NaN;
+            temperatureDefaults[slot] = climate != null ? (float)climate.Defaults.Temperature : float.NaN;
+            humidityDefaults[slot] = climate != null ? (float)climate.Defaults.Humidity : float.NaN;
             foreach (Series item in series) item.values[slot] = float.NaN;
             if (Source.community != null)
                 foreach (PopulationData population in Source.community)
@@ -104,6 +117,8 @@ public sealed class TileTrendHistory : MonoBehaviour
         Unsubscribe();
         if (grid != map || simulation != controller) records.Clear();
         grid = map; simulation = controller; clock = time;
+        environment = controller != null ? controller.GetComponent<SimulationEnvironmentController>() : null;
+        if (environment == null) environment = FindFirstObjectByType<SimulationEnvironmentController>();
         Subscribe(); CaptureAll(clock != null ? clock.currentDay : 0);
     }
     private void OnEnable() => Subscribe();
@@ -153,7 +168,10 @@ public sealed class TileTrendHistory : MonoBehaviour
         {
             record = new TileRecord(tile.Block, retainedDays); records[tile] = record;
         }
-        record.Capture(day);
+        EnvironmentSnapshot climate = null;
+        if (environment != null && environment.TryRead(tile.Coordinate, out var read))
+            climate = read.Environment;
+        record.Capture(day, climate);
     }
     private void CaptureAll(int day)
     {
