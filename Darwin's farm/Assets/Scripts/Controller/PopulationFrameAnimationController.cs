@@ -53,6 +53,9 @@ public sealed class PopulationFrameAnimationController : MonoBehaviour
 
     public PopulationFramePhase Phase { get; private set; } = PopulationFramePhase.Hold;
     public int CurrentFrame { get; private set; }
+    public float CycleProgress => Phase == PopulationFramePhase.Walk ? elapsed / WalkCycleSeconds :
+        Phase == PopulationFramePhase.IdleAction ? elapsed / IdleCycleSeconds :
+        Phase == PopulationFramePhase.CommonAction ? elapsed / CommonCycleSeconds : 0f;
     public bool HasStartRequest => startRequested;
     public bool CanBeginWalk => set != null && set.Mode == PopulationAnimationMode.WalkAndIdle &&
         Phase == PopulationFramePhase.Hold && startRequested && transitionReadyToWalk;

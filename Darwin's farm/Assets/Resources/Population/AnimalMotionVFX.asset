@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a6a51f87b1d47f183c5288553fdb479, type: 3}
+  m_Name: AnimalMotionVFX
+  m_EditorClassIdentifier: Assembly-CSharp::Darwin.Rendering.MoebiusAnimalMotionStyle
+  material: {fileID: 2100000, guid: b922a6fe434ae1d4e8a3826d37aa7c37, type: 2}
+  trailLifetime: 1.35
+  lineWidth: 0.018
+  intensity: 0.85
+  wingtipStrength: 0.45
+  gustStrength: 0.55
+  curvature: 0.045
+  pale: {r: 0.9, g: 0.98, b: 0.94, a: 1}
+  ink: {r: 0.24, g: 0.45, b: 0.47, a: 1}
+  wakeLifetime: 1.8
+  rippleInterval: 0.55
+  rippleLifetime: 2.4
+  rippleExpansion: 0.4

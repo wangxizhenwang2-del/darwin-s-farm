@@ -82,7 +82,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         window = (RectTransform)transform;
         canvas = GetComponentInParent<Canvas>()?.transform as RectTransform;
         panel = board != null ? board.GetComponent<PopulationInfoPanel>() : null;
-        PlaceResizeGrip();
+        if (Application.isPlaying) PlaceResizeGrip();
         foreach (Button button in GetComponentsInChildren<Button>(true))
             if (button.transform.parent == transform)
             {
@@ -90,14 +90,14 @@ public sealed class PopulationJournalViewport : MonoBehaviour
                 fullClosePosition = closeButton.anchoredPosition;
                 break;
             }
-        Fit();
+        if (Application.isPlaying) Fit();
     }
 
     private void OnEnable()
     {
         window = (RectTransform)transform;
         canvas = GetComponentInParent<Canvas>()?.transform as RectTransform;
-        PlaceResizeGrip();
+        if (Application.isPlaying) PlaceResizeGrip();
     }
 
     private void PlaceResizeGrip()
@@ -110,7 +110,7 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         grip.SetAsLastSibling();
     }
 
-    private void LateUpdate() => Fit();
+    private void LateUpdate() { if (Application.isPlaying) Fit(); }
 
     private void Fit()
     {

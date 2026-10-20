@@ -22,10 +22,10 @@ public sealed class PopulationInfoPanel : MonoBehaviour
     [SerializeField] private PopulationRadarChart radar;
     [SerializeField] private RectTransform foodNodes;
     private string foodSignature;
-    private RectTransform compactContent;
-    private TextMeshProUGUI compactName, compactCount;
-    private TextMeshProUGUI[] compactLabels;
-    private PopulationRadarChart compactRadar;
+    [SerializeField] private RectTransform compactContent;
+    [SerializeField] private TextMeshProUGUI compactName, compactCount;
+    [SerializeField] private TextMeshProUGUI[] compactLabels;
+    [SerializeField] private PopulationRadarChart compactRadar;
     private bool compact;
 
     public bool IsCompact => compact;
@@ -35,6 +35,11 @@ public sealed class PopulationInfoPanel : MonoBehaviour
     public void Initialize(InformationWindow owner)
     {
         window = owner;
+        if (layoutVersion == 2 && content != null)
+        {
+            EnsureCompactContent();
+            return; // Authored geometry and typography belong to the saved scene.
+        }
         Image board = GetComponent<Image>();
         if (board != null)
         {
@@ -46,14 +51,8 @@ public sealed class PopulationInfoPanel : MonoBehaviour
         }
         RectTransform frame = (RectTransform)transform;
         frame.sizeDelta = new Vector2(BoardWidth, BoardHeight);
-        if (layoutVersion == 2 && content != null)
-        {
-            ApplyTypography();
-            if (Application.isPlaying) EnsureCompactContent();
-            return;
-        }
         RebuildJournal();
-        if (Application.isPlaying) EnsureCompactContent();
+        EnsureCompactContent();
     }
 
     public void RebuildJournal()
@@ -261,10 +260,6 @@ public sealed class PopulationInfoPanel : MonoBehaviour
             string value = names[i] + " " + values[i];
             labels[i].text = value + (hint.Length == 0 ? "" : i == 0 ? "  " + hint : "\n" + hint);
             compactLabels[i].text = value + (hint.Length == 0 ? "" : i == 0 ? "  " + hint : "\n" + hint);
-            labels[i].alignment = compactLabels[i].alignment = i == 0 ?
-                TextAlignmentOptions.Top : i == 3 || i == 4 ?
-                TextAlignmentOptions.TopRight : TextAlignmentOptions.TopLeft;
-            labels[i].rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, hint.Length == 0 || i == 0 ? 26f : 48f);
         }
         trophic.text = "营养级：L" + data.trophicLevel;
         UpdateFoodChain(species, data, block);
