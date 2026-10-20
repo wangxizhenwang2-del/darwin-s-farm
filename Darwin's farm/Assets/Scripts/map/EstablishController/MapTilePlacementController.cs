@@ -114,6 +114,10 @@ public class MapTilePlacementController : MonoBehaviour
     // UI条目按下左键时调用。
     public void BeginDrag(MapTileDefinition definition)
     {
+        // MapSimulationBridge may attach this component after our Awake has run.
+        if (terrainUnlocks == null && gridManager != null)
+            terrainUnlocks = gridManager.GetComponent<SimulationEnvironmentController>();
+
         if (!isActiveAndEnabled ||
             !buildMode.IsBuildMode ||
             definition == null ||

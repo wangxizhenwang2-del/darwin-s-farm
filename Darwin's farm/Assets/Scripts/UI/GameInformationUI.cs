@@ -59,7 +59,8 @@ public sealed class GameInformationUI : MonoBehaviour
         get
         {
             var rect = (RectTransform)populationWindow.transform;
-            float availableHeight = canvasRect.rect.height + rect.anchoredPosition.y - 35f;
+            Vector2 position = populationWindow.IsOpen ? rect.anchoredPosition : populationWindow.DefaultPosition;
+            float availableHeight = canvasRect.rect.height + position.y - 35f;
             return Mathf.Min(1f, Mathf.Max(.35f, availableHeight / PopulationInfoPanel.BoardHeight));
         }
     }
@@ -260,7 +261,8 @@ public sealed class GameInformationUI : MonoBehaviour
             ? new Vector2(-20f, -18f) : legacyClosePosition;
         populationWindow.transform.localScale = Vector3.one *
             (compact ? legacyCompactScale : legacyPopulationScale);
-        populationWindow.SetDragBounds(canvasRect, ((RectTransform)populationWindow.transform).anchoredPosition);
+        // Resizing must preserve the opening position and the current desktop/mobile bounds.
+        if (populationWindow.IsOpen) populationWindow.KeepWithinBounds();
     }
 
     public void CloseTile() { tileWindow.Close(); selectedTile = null; SelectionChanged?.Invoke(false); }
