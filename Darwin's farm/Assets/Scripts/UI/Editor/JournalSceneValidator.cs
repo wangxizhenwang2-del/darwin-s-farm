@@ -58,6 +58,24 @@ public static class JournalSceneValidator
             var scroll = root.GetComponentsInChildren<ScrollRect>(true).Single(x => x.name == name);
             Require(scroll.GetComponent<Image>()?.raycastTarget == true, name + " cannot receive drag input");
         }
+        Require(QualitySettings.names.SequenceEqual(new[] { "Low", "Medium", "High" }),
+            "Expected three quality tiers in Low/Medium/High order");
+        for (int i = 0; i < 3; i++)
+            Require(QualitySettings.GetRenderPipelineAssetAt(i) != null, "Quality tier has no render pipeline");
+        foreach (var dropdown in root.GetComponentsInChildren<TMP_Dropdown>(true))
+        {
+            var scroll = dropdown.template.GetComponent<ScrollRect>();
+            Require(scroll != null && scroll.vertical && !scroll.horizontal, dropdown.name + " cannot scroll vertically");
+            Require(scroll.verticalScrollbar != null && scroll.verticalScrollbar.handleRect.sizeDelta == Vector2.zero,
+                dropdown.name + " scrollbar handle extends outside its track");
+            Require(scroll.verticalScrollbar.targetGraphic.raycastTarget &&
+                    scroll.viewport.GetComponent<Image>()?.raycastTarget == true,
+                dropdown.name + " cannot receive scroll/drag input");
+            var label = dropdown.itemText.rectTransform;
+            Require(label.anchorMin == Vector2.zero && label.anchorMax == Vector2.one &&
+                    label.offsetMin.y >= 0 && label.offsetMax.y <= 0,
+                dropdown.name + " item text extends outside its row");
+        }
         Debug.Log("JournalSceneValidator: PASS — serialized Canvas views, references, font, sprites and EventSystem.");
     }
     private static void Require(bool condition, string message)

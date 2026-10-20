@@ -304,7 +304,8 @@ public static class JournalSceneInstaller
         Label(title,p,title,22,new Vector2(-185,y),new Vector2(170,44),TextAlignmentOptions.Left);
         var track=Image(title+"Track",p,null,new Color(.66f,.71f,.58f));Center((RectTransform)track.transform,new Vector2(245,14),new Vector2(105,y));
         var fill=Image("Fill",track.transform,null,new Color(.38f,.52f,.38f));Stretch((RectTransform)fill.transform);
-        var knob=Image("Handle",track.transform,button);Center((RectTransform)knob.transform,new Vector2(36,33),Vector2.zero);
+        // Slider stretches the handle across the 14px track: 22px extra gives 36px total.
+        var knob=Image("Handle",track.transform,button);Center((RectTransform)knob.transform,new Vector2(30,22),Vector2.zero);
         var slider=track.gameObject.AddComponent<Slider>();slider.fillRect=(RectTransform)fill.transform;slider.handleRect=(RectTransform)knob.transform;
         slider.targetGraphic=knob;slider.minValue=0;slider.maxValue=1;slider.value=1;
         track.raycastTarget=true;return slider;
@@ -316,22 +317,96 @@ public static class JournalSceneInstaller
         var image=Image(name,parent,button);image.type=UnityEngine.UI.Image.Type.Sliced;image.raycastTarget=true;
         Center((RectTransform)image.transform,size,position);
         var caption=Label("Caption",image.transform,"选项  ▾",21,Vector2.zero,size-new Vector2(20,4));
-        var template=Rect("Template",image.transform);Center(template,new Vector2(size.x,215),new Vector2(0,-131));
+        var template=Rect("Template",image.transform);
         var templateImage=template.gameObject.AddComponent<Image>();templateImage.sprite=paper;templateImage.type=UnityEngine.UI.Image.Type.Sliced;
         var scroll=template.gameObject.AddComponent<ScrollRect>();scroll.horizontal=false;
         var viewport=Rect("Viewport",template);Stretch(viewport);viewport.gameObject.AddComponent<RectMask2D>();
-        var content=Rect("Content",viewport);content.anchorMin=new Vector2(0,1);content.anchorMax=Vector2.one;content.pivot=new Vector2(.5f,1);
-        content.offsetMin=content.offsetMax=Vector2.zero;
-        var item=Rect("Item",content);item.anchorMin=new Vector2(0,1);item.anchorMax=new Vector2(1,1);item.pivot=new Vector2(.5f,1);
-        item.sizeDelta=new Vector2(0,40);item.anchoredPosition=Vector2.zero;
+        var content=Rect("Content",viewport);
+        var item=Rect("Item",content);
         var itemBg=item.gameObject.AddComponent<Image>();itemBg.color=new Color(.95f,.93f,.83f);
         var toggle=item.gameObject.AddComponent<Toggle>();toggle.targetGraphic=itemBg;
-        var check=Image("Checkmark",item,pressed);Center((RectTransform)check.transform,new Vector2(25,25),new Vector2(-size.x*.5f+24,-20));toggle.graphic=check;
-        var itemText=Label("ItemLabel",item,"选项",19,new Vector2(10,-20),new Vector2(size.x-50,36),TextAlignmentOptions.Left);
+        var check=Image("Checkmark",item,pressed);toggle.graphic=check;
+        var itemText=Label("ItemLabel",item,"选项",19,Vector2.zero,new Vector2(size.x-50,40),TextAlignmentOptions.Left);
         scroll.viewport=viewport;scroll.content=content;template.gameObject.SetActive(false);
         var dropdown=image.gameObject.AddComponent<TMP_Dropdown>();dropdown.targetGraphic=image;dropdown.template=template;
         dropdown.captionText=(TextMeshProUGUI)caption;dropdown.itemText=(TextMeshProUGUI)itemText;
+        ConfigureSettingsDropdown(dropdown);
         return dropdown;
+    }
+
+    // Also used to upgrade the authored scene without rebuilding the journal hierarchy.
+    public static void ConfigureSettingsDropdown(TMP_Dropdown dropdown)
+    {
+        var template = dropdown.template;
+        template.anchorMin = new Vector2(0, 0);
+        template.anchorMax = new Vector2(1, 0);
+        template.pivot = new Vector2(.5f, 1);
+        template.sizeDelta = new Vector2(0, 264);
+        template.anchoredPosition = new Vector2(0, -4);
+        var scroll = template.GetComponent<UnityEngine.UI.ScrollRect>();
+        scroll.horizontal = false;
+        scroll.vertical = true;
+        scroll.movementType = UnityEngine.UI.ScrollRect.MovementType.Clamped;
+        scroll.scrollSensitivity = 44;
+        var viewport = scroll.viewport;
+        viewport.offsetMin = new Vector2(6, 0);
+        viewport.offsetMax = new Vector2(-20, 0);
+        var hit = viewport.GetComponent<UnityEngine.UI.Image>();
+        if (hit == null) hit = viewport.gameObject.AddComponent<UnityEngine.UI.Image>();
+        hit.color = Color.clear;
+        hit.raycastTarget = true;
+        var content = scroll.content;
+        content.anchorMin = new Vector2(0, 1);
+        content.anchorMax = Vector2.one;
+        content.pivot = new Vector2(.5f, 1);
+        content.sizeDelta = new Vector2(0, 44);
+        content.anchoredPosition = Vector2.zero;
+        var item = dropdown.itemText.GetComponentInParent<UnityEngine.UI.Toggle>(true);
+        var itemRect = (RectTransform)item.transform;
+        itemRect.anchorMin = new Vector2(0, 1);
+        itemRect.anchorMax = Vector2.one;
+        itemRect.pivot = new Vector2(.5f, .5f);
+        itemRect.sizeDelta = new Vector2(0, 44);
+        itemRect.anchoredPosition = new Vector2(0, -22);
+        var textRect = dropdown.itemText.rectTransform;
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(32, 2);
+        textRect.offsetMax = new Vector2(-4, -2);
+        dropdown.itemText.alignment = TextAlignmentOptions.MidlineLeft;
+        dropdown.itemText.textWrappingMode = TextWrappingModes.NoWrap;
+        dropdown.itemText.raycastTarget = false;
+        var check = (RectTransform)item.graphic.transform;
+        check.anchorMin = check.anchorMax = new Vector2(0, .5f);
+        check.pivot = new Vector2(.5f, .5f);
+        check.sizeDelta = new Vector2(20, 20);
+        check.anchoredPosition = new Vector2(16, 0);
+        item.graphic.raycastTarget = false;
+
+        var bar = template.Find("Scrollbar")?.GetComponent<UnityEngine.UI.Scrollbar>();
+        if (bar == null)
+        {
+            var background = Image("Scrollbar", template, null, new Color(.66f, .71f, .58f, .5f));
+            var barRect = (RectTransform)background.transform;
+            barRect.anchorMin = new Vector2(1, 0);
+            barRect.anchorMax = Vector2.one;
+            barRect.pivot = new Vector2(1, .5f);
+            barRect.sizeDelta = new Vector2(10, -8);
+            barRect.anchoredPosition = new Vector2(-5, 0);
+            var area = Rect("SlidingArea", barRect);
+            Stretch(area);
+            var handle = Image("Handle", area, null, new Color(.38f, .52f, .38f));
+            bar = background.gameObject.AddComponent<UnityEngine.UI.Scrollbar>();
+            bar.handleRect = (RectTransform)handle.transform;
+            bar.targetGraphic = handle;
+            bar.direction = UnityEngine.UI.Scrollbar.Direction.BottomToTop;
+        }
+        Stretch(bar.handleRect);
+        bar.GetComponent<UnityEngine.UI.Image>().raycastTarget = true;
+        bar.targetGraphic.raycastTarget = true;
+        scroll.verticalScrollbar = bar;
+        scroll.verticalScrollbarVisibility = UnityEngine.UI.ScrollRect.ScrollbarVisibility.AutoHide;
+        scroll.verticalNormalizedPosition = 1;
     }
     private static Toggle Toggle(string name,Transform parent,Vector2 size,Vector2 position)
     {
