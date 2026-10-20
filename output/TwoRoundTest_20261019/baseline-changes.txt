@@ -1,0 +1,2 @@
+Darwin's farm/Assets/Resources/GameUI/Editable/GameUIFont.asset
+Darwin's farm/Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset

@@ -1,0 +1,312 @@
+{
+  "success": true,
+  "command": "command console",
+  "data": {
+    "command": "console",
+    "parameters": {
+      "tail": "80",
+      "level": "warn"
+    },
+    "result": {
+      "entries": [
+        {
+          "seq": 1,
+          "timestampUtc": "2026-10-19T16:18:10.3271696Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nMobileGameUI:ApplyMode () (at Assets/Scripts/UI/MobileGameUI.cs:191)\nMobileGameUI:RefreshEditorPreview () (at Assets/Scripts/UI/MobileGameUI.cs:112)\nUnityEditor.EditorApplication:Internal_CallUpdateFunctions ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 6,
+          "timestampUtc": "2026-10-19T16:19:44.7529735Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 7,
+          "timestampUtc": "2026-10-19T16:19:48.3155848Z",
+          "level": "error",
+          "logType": "Error",
+          "message": "Command 'capture_game_view' failed: Path '../output/GameplayTutorialTest_20261020/round1-title.png' must not contain '..'.",
+          "stackTrace": "UnityEngine.Debug:LogError (object)\nUnity.Pipeline.BasePipelineServer:ExecuteCommandDirect (Unity.Pipeline.Commands.CommandInfo,object[]) (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/BasePipelineServer.cs:2828)\nUnity.Pipeline.BasePipelineServer/<>c__DisplayClass138_0:<ExecuteCommand>b__1 () (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/BasePipelineServer.cs:2694)\nUnity.Pipeline.Threading.Dispatcher/WorkItem`1<object>:ExecuteCore () (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/Dispatcher.cs:284)\nUnity.Pipeline.Threading.Dispatcher/WorkItem:Execute () (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/Dispatcher.cs:229)\nUnity.Pipeline.Threading.Dispatcher:ProcessWorkQueue (int) (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/Dispatcher.cs:195)\nUnity.Pipeline.Threading.Dispatcher:ProcessWorkQueue () (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/Dispatcher.cs:210)\nUnityEditor.EditorApplication:Internal_CallUpdateFunctions ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 8,
+          "timestampUtc": "2026-10-19T16:20:10.3981817Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 9,
+          "timestampUtc": "2026-10-19T16:21:06.0424924Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 12,
+          "timestampUtc": "2026-10-19T16:23:03.417518Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 16,
+          "timestampUtc": "2026-10-19T16:23:21.2963575Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 19,
+          "timestampUtc": "2026-10-19T16:23:31.1050947Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 62,
+          "timestampUtc": "2026-10-19T16:23:41.8680008Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u2726 was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 63,
+          "timestampUtc": "2026-10-19T16:23:42.8115226Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 106,
+          "timestampUtc": "2026-10-19T16:23:55.3917335Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u2726 was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 107,
+          "timestampUtc": "2026-10-19T16:23:56.3298624Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 110,
+          "timestampUtc": "2026-10-19T16:24:38.8674573Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 114,
+          "timestampUtc": "2026-10-19T16:25:31.8015605Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 117,
+          "timestampUtc": "2026-10-19T16:25:41.4087428Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 120,
+          "timestampUtc": "2026-10-19T16:25:43.6022074Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u25C6 was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 121,
+          "timestampUtc": "2026-10-19T16:25:46.8694464Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 122,
+          "timestampUtc": "2026-10-19T16:25:50.5384136Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u25C6 was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 123,
+          "timestampUtc": "2026-10-19T16:26:06.8036912Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 127,
+          "timestampUtc": "2026-10-19T16:26:55.8945687Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 130,
+          "timestampUtc": "2026-10-19T16:27:04.9415318Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u2726 was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 131,
+          "timestampUtc": "2026-10-19T16:27:08.28873Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 135,
+          "timestampUtc": "2026-10-19T16:27:29.39926Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 138,
+          "timestampUtc": "2026-10-19T16:27:41.2263877Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 179,
+          "timestampUtc": "2026-10-19T16:27:54.0725906Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 220,
+          "timestampUtc": "2026-10-19T16:28:06.7962682Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 223,
+          "timestampUtc": "2026-10-19T16:28:15.8424354Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u2726 was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 224,
+          "timestampUtc": "2026-10-19T16:28:19.173565Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        },
+        {
+          "seq": 227,
+          "timestampUtc": "2026-10-19T16:28:28.2013272Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u25C6 was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:SendWillRenderCanvases ()\n",
+          "seeded": false
+        },
+        {
+          "seq": 228,
+          "timestampUtc": "2026-10-19T16:28:30.1911194Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "The character with Unicode value \\u273F was not found in the [GameUIFont] font asset or any potential fallbacks. It was replaced by Unicode character \\u25A1 in text object [EventType].",
+          "stackTrace": "UnityEngine.Debug:LogWarning (object,UnityEngine.Object)\nTMPro.TextMeshProUGUI:SetArraySizes (TMPro.TMP_Text/TextProcessingElement[]) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2010)\nTMPro.TMP_Text:ParseInputText () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TMP_Text.cs:2021)\nTMPro.TextMeshProUGUI:OnPreRenderCanvas () (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:2491)\nTMPro.TextMeshProUGUI:Rebuild (UnityEngine.UI.CanvasUpdate) (at ./Library/PackageCache/com.unity.ugui@7056cb05de4c/Runtime/TMP/TextMeshProUGUI.cs:227)\nUnityEngine.Canvas:ForceUpdateCanvases ()\nGameInformationUI:Start () (at Assets/Scripts/UI/GameInformationUI.cs:93)\n",
+          "seeded": false
+        }
+      ],
+      "cursor": 230,
+      "session": "d7bf2ca265884aaa9441585fe7df1c2e",
+      "returned": 30,
+      "dropped": false,
+      "reset": false,
+      "counts": {
+        "error": 1,
+        "warn": 29,
+        "log": 200
+      },
+      "groundTruth": {
+        "sampledUtc": "2026-10-19T16:29:28.666583Z",
+        "ageMs": 107,
+        "compilationFailed": false,
+        "compiling": false,
+        "consoleErrors": 1,
+        "consoleWarnings": 29,
+        "consoleLogs": 199,
+        "seeded": true
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "D:\\文档\\GitHub\\darwin-s-farm\\Darwin's farm"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,90 @@
+{
+  "round": 2,
+  "checks": [
+    {
+      "name": "M opens species/evolution network",
+      "pass": true
+    },
+    {
+      "name": "Click colorful-chicken portrait opens evolution clue",
+      "pass": true,
+      "text": "培育线索\n它比祖先更钟情于<color=#C3342D>炎热的天气</color>，对潮湿倒没有特别讲究。它常顶着一根捡来的漂亮羽毛四处炫耀，直到发现那根羽毛本来就长在自己身上。凭着轻巧的身板，它仍然不太爱远行，却很擅长让<color=#C3342D>家族越来越热闹</color>。\n\n温度：？？？   湿度：？？？\n运动：？？？   繁殖：？？？   体型：？？？"
+    },
+    {
+      "name": "Escape closes network",
+      "pass": true
+    },
+    {
+      "name": "N opens building mode",
+      "pass": true
+    },
+    {
+      "name": "N closes building mode",
+      "pass": true
+    },
+    {
+      "name": "Alt-left-click selects origin information",
+      "pass": true
+    },
+    {
+      "name": "Tool choice-target-preview-apply-cancel",
+      "pass": true,
+      "preview": "温度+ · 地块 (0, 0)\n状态：待投放（投放后约25天达到预计目标）\n预计：温度目标 80；预计生境 干热的荒漠\n性状：适温可能↑\n费用：0 生物能\n生效名额 0/2",
+      "applyNotice": "已应用",
+      "cancelNotice": "已撤销效果"
+    },
+    {
+      "name": "Space pause/resume and 4x shortcut",
+      "pass": true,
+      "advanced": 4
+    }
+  ],
+  "final": {
+    "day": 5,
+    "SecondsPerDay": 1.0,
+    "living": [
+      "鸽鸽"
+    ],
+    "balance": 2908,
+    "costsEnabled": false,
+    "lost": false,
+    "tiles": [
+      {
+        "x": 0,
+        "y": 0,
+        "terrain": "荒漠",
+        "temperature": 55,
+        "humidity": 35,
+        "elevation": 0,
+        "plants": 255688.391,
+        "capacity": 1000000.0,
+        "recovery": 50000,
+        "populations": [
+          {
+            "species": "鸽鸽",
+            "id": "seed:1:Tile_0_0_荒漠:0",
+            "count": 197,
+            "temp": 55,
+            "humidity": 35,
+            "movement": 10,
+            "size": 10,
+            "fertility": 72,
+            "energy": 1.0,
+            "progress": [
+              {
+                "target": "彩鸡",
+                "effectiveDays": 0,
+                "failedDraws": 0
+              },
+              {
+                "target": "灵感菇狸",
+                "effectiveDays": 0,
+                "failedDraws": 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -18,7 +18,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     public bool IsGameplayVisible => inGame && page == Page.Game;
     [Serializable] private sealed class SettingsData
     {
-        public int schemaVersion = 2;
+        public int schemaVersion = 3;
         public float master = 1, music = 1, effects = 1;
         public int quality = -1, width, height;
         public bool fullscreen = true;
@@ -68,6 +68,9 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
     private SimulationController audioSimulation;
     private SaveAssetCatalog audioSpeciesCatalog;
     private Vector2Int[] resolutions;
+    private Coroutine pendingDisplayChange;
+    private static readonly string[] QualityLabels = { "高", "中", "低" };
+    private static readonly int[] QualityLevels = { 2, 1, 0 };
     private Rect previousSafe;
     private Vector2Int previousScreen;
     private int currentCategory, currentPage;
@@ -222,7 +225,11 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         titlePanel.SetActive(target == Page.Title);
         pausePanel.SetActive(target == Page.Pause);
         settingsPanel.SetActive(target == Page.Settings);
-        if (target == Page.Settings) RefreshTestExport();
+        if (target == Page.Settings)
+        {
+            RefreshDisplayOptions();
+            RefreshTestExport();
+        }
         tutorialPanel.SetActive(target == Page.Tutorial);
         infoPanel.SetActive(target == Page.Info);
         saveLoadPanel.SetActive(target == Page.Saves);
@@ -479,22 +486,18 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         musicSlider.onValueChanged.AddListener(v => { settings.music=v; ApplyCategorizedAudio(); SaveSettings(); });
         effectsSlider.onValueChanged.AddListener(v => { settings.effects=v; ApplyCategorizedAudio(); SaveSettings(); });
         qualityDropdown.ClearOptions();
-        qualityDropdown.AddOptions(QualitySettings.names.ToList());
-        qualityDropdown.SetValueWithoutNotify(Mathf.Clamp(QualitySettings.GetQualityLevel(),0,Mathf.Max(0,qualityDropdown.options.Count-1)));
-        qualityDropdown.onValueChanged.AddListener(i => { QualitySettings.SetQualityLevel(i,true); settings.quality=i; SaveSettings(); });
+        qualityDropdown.AddOptions(QualityLabels.ToList());
+        qualityDropdown.SetValueWithoutNotify(Array.IndexOf(QualityLevels, settings.quality));
+        qualityDropdown.onValueChanged.AddListener(i => {
+            if (i < 0 || i >= QualityLevels.Length) return;
+            settings.quality = QualityLevels[i];
+            QualitySettings.SetQualityLevel(settings.quality, true);
+            SaveSettings();
+        });
         bool desktop=!Application.isMobilePlatform;
         resolutionRow.SetActive(desktop); fullscreenRow.SetActive(desktop);
         if (!desktop) return;
-        var available = Screen.resolutions.Select(r => new Vector2Int(r.width, r.height)).ToList();
-        available.Add(new Vector2Int(Screen.width, Screen.height));
-        if (settings.width > 0 && settings.height > 0)
-            available.Add(new Vector2Int(settings.width, settings.height));
-        resolutions = available.Where(r => r.x > 0 && r.y > 0).Distinct()
-            .OrderBy(r => (long)r.x * r.y).ThenBy(r => r.x).ToArray();
-        resolutionDropdown.ClearOptions();
-        resolutionDropdown.AddOptions(resolutions.Select(r=>r.x+" × "+r.y).ToList());
-        int current=Array.FindIndex(resolutions,r=>r.x==settings.width && r.y==settings.height);
-        resolutionDropdown.SetValueWithoutNotify(Mathf.Max(0,current));
+        RefreshDisplayOptions(false);
         resolutionDropdown.onValueChanged.AddListener(i => {
             if(i<0 || i>=resolutions.Length)return;
             settings.width=resolutions[i].x; settings.height=resolutions[i].y;
@@ -502,6 +505,30 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         });
         fullscreenToggle.SetIsOnWithoutNotify(settings.fullscreen);
         fullscreenToggle.onValueChanged.AddListener(v => { settings.fullscreen=v; ApplyDisplaySettings(); SaveSettings(); });
+    }
+
+    private void RefreshDisplayOptions(bool readActualSize = true)
+    {
+        if (Application.isMobilePlatform) return;
+        // Read the actual window after Unity has applied any pending resolution change.
+        if (readActualSize)
+        {
+            settings.width = Screen.width;
+            settings.height = Screen.height;
+#if !UNITY_EDITOR
+            settings.fullscreen = Screen.fullScreen;
+#endif
+        }
+        var available = Screen.resolutions.Select(r => new Vector2Int(r.width, r.height)).ToList();
+        available.Add(new Vector2Int(settings.width, settings.height));
+        available.Add(new Vector2Int(Screen.width, Screen.height));
+        resolutions = available.Where(r => r.x > 0 && r.y > 0).Distinct()
+            .OrderByDescending(r => (long)r.x * r.y).ThenByDescending(r => r.x).ToArray();
+        resolutionDropdown.ClearOptions();
+        resolutionDropdown.AddOptions(resolutions.Select(r => r.x + " × " + r.y).ToList());
+        int current = Array.FindIndex(resolutions, r => r.x == settings.width && r.y == settings.height);
+        resolutionDropdown.SetValueWithoutNotify(Mathf.Max(0, current));
+        fullscreenToggle.SetIsOnWithoutNotify(settings.fullscreen);
     }
     private void CreateExtraSettingsControls()
     {
@@ -670,6 +697,31 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         if (Application.isMobilePlatform || settings.width <= 0 || settings.height <= 0) return;
         Screen.SetResolution(settings.width, settings.height,
             settings.fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed);
+#if UNITY_EDITOR
+        // A fixed Game view ignores Screen.SetResolution in this Editor version.
+        // Preview the selected size as well, so settings can be exercised in Play Mode.
+        var viewType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GameView");
+        var preview = viewType?.GetMethod("SetCustomResolution",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public |
+            System.Reflection.BindingFlags.NonPublic);
+        if (preview != null)
+        {
+            var view = UnityEditor.EditorWindow.GetWindow(viewType);
+            preview.Invoke(view, new object[] { new Vector2(settings.width, settings.height), "游戏设置" });
+            view.Repaint();
+        }
+#endif
+        if (pendingDisplayChange != null) StopCoroutine(pendingDisplayChange);
+        pendingDisplayChange = StartCoroutine(RefreshAppliedDisplay());
+    }
+    private System.Collections.IEnumerator RefreshAppliedDisplay()
+    {
+        // SetResolution is deferred until the end of the frame, including while paused.
+        yield return null;
+        yield return null;
+        RefreshDisplayOptions();
+        SaveSettings();
+        pendingDisplayChange = null;
     }
     private string SettingsPath => Path.Combine(Application.persistentDataPath,"Config","settings.json");
     private void LoadSettings()
@@ -680,7 +732,7 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
             height = Screen.height,
             fullscreen = Screen.fullScreen
         };
-        bool hasSavedSettings = false;
+        bool hasSavedSettings = false, migratedSettings = false;
         try
         {
             if(File.Exists(SettingsPath))
@@ -694,6 +746,13 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
                         settings.tutorialOnNewGame = true;
                         settings.schemaVersion = 2;
                     }
+                    if (settings.schemaVersion < 3)
+                    {
+                        // Old indices represented Mobile (0) and PC (1), not quality tiers.
+                        settings.quality = settings.quality == 0 ? 0 : 2;
+                        settings.schemaVersion = 3;
+                        migratedSettings = true;
+                    }
                     hasSavedSettings=true;
                 }
             }
@@ -705,14 +764,15 @@ public sealed class DarwinJournalCanvas : MonoBehaviour
         settings.testDifficulty=Mathf.Clamp(settings.testDifficulty,-1f,1f);
         AudioListener.volume=settings.master;
         DarwinWwiseAmbience.SetMasterVolume(settings.master);
-        if(settings.quality>=0 && settings.quality<QualitySettings.names.Length)
-            QualitySettings.SetQualityLevel(settings.quality,true);
+        settings.quality = Mathf.Clamp(settings.quality, 0, QualityLevels.Length - 1);
+        QualitySettings.SetQualityLevel(settings.quality, true);
         if (settings.width <= 0 || settings.height <= 0)
         {
             settings.width = Screen.width;
             settings.height = Screen.height;
         }
         if (hasSavedSettings) ApplyDisplaySettings();
+        if (migratedSettings) SaveSettings();
         ApplyCategorizedAudio();
     }
     private void SaveSettings()

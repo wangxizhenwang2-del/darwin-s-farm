@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/TileStatusAudit/RuntimeAudit.cs",
+      "timeout_ms": "45000"
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 1096,
+      "executeMs": 9615,
+      "assemblyName": "PipelineRunScript_RuntimeAudit_55bd584664304319b108347179e7dd24",
+      "success": true,
+      "result": "TILE_STATUS_RUNTIME_PASS: 24 checks\nPlayer loop advances\nCentered tile appears automatically at the wider default 60-degree view\nExactly one reusable status view\nStatus UI does not intercept map input\nZoom hysteresis retains a visible panel at 63 degrees\nZooming out hides the panel\nZoom hysteresis keeps a hidden panel hidden at 63 degrees\nPanning switches to the new central tile without clicking\nNear-equal tile distances do not flicker\nNo central tile hides the panel\nWider orthographic view supported at size 35\nOrthographic zoom-out supported\nStock fill reads the actual plant inventory\nNo applied tools leaves only the stock bar\nTwo applied tools display together\nPaused simulation keeps the tool time still\nRendered mask reaches 50 percent at half of the hold duration\nTimer uses a visible solid circular face independently of transparent tool artwork\nDisk save and scene reload preserve ecology, tool identity and remaining days\nReloaded scene displays the same half-time mask automatically\nShared status view remains visible in mobile presentation\nCancelled tool becomes a covered recovery icon\nExpired recovery icon disappears independently\n4x simulation advances tool time through the shared game clock"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "D:\\文档\\GitHub\\darwin-s-farm\\Darwin's farm"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

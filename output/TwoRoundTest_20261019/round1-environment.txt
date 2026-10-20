@@ -1,0 +1,3 @@
+C:\Program Files\dotnet\sdk\9.0.306\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets(166,5): error NETSDK1045: 当前 .NET SDK 不支持面向 .NET 10.0。请面向 .NET 9.0 或更低版本，或者使用支持 .NET 10.0 的 .NET SDK 版本。从 https://aka.ms/dotnet/download 下载 .NET SDK [D:\文档\GitHub\darwin-s-farm\Darwin's farm\Tools\EnvironmentAudit\EnvironmentAudit.csproj]
+
+生成失败。请修复生成错误并重新运行。
