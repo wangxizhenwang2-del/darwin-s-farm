@@ -4,7 +4,6 @@ using UnityEngine;
 public sealed class EnvironmentToolPanelZoom : MonoBehaviour
 {
     [SerializeField] private RectTransform target;
-    private RectTransform mobileFrame;
     [SerializeField] private float userScale = 1f;
     private float baseScale = 1f;
     private float dragStartScale, dragPixelsPerScale;
@@ -18,12 +17,6 @@ public sealed class EnvironmentToolPanelZoom : MonoBehaviour
         Apply();
     }
 
-    public void ConfigureMobileFrame(RectTransform frame)
-    {
-        mobileFrame = frame;
-        baseScale = 1f;
-        Apply();
-    }
 
     public void SetBaseScale(float value)
     {
@@ -40,8 +33,7 @@ public sealed class EnvironmentToolPanelZoom : MonoBehaviour
         var canvas = target != null ? target.GetComponentInParent<Canvas>() : null;
         float canvasScale = canvas != null ? canvas.scaleFactor : 1f;
         dragPixelsPerScale = Mathf.Max(180f,
-            (mobileFrame != null ? mobileFrame.rect.width :
-                target != null ? target.rect.width : EnvironmentToolPanelLayout.WideContentWidth) *
+            (target != null ? target.rect.width : EnvironmentToolPanelLayout.WideContentWidth) *
             baseScale * canvasScale);
     }
 
@@ -69,12 +61,6 @@ public sealed class EnvironmentToolPanelZoom : MonoBehaviour
     private void Apply()
     {
         if (target == null) return;
-        if (mobileFrame != null)
-        {
-            target.localScale = Vector3.one;
-            mobileFrame.localScale = Vector3.one * EffectiveScale;
-            return;
-        }
         target.pivot = Vector2.up;
         target.localScale = Vector3.one * EffectiveScale;
     }

@@ -15,14 +15,24 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
     private Coroutine windowAnimation;
     private bool open;
     private bool presentationVisible = true;
+    private bool scrollContentMode;
     private int dragPointer = int.MinValue;
     private Vector2 dragOffset;
 
     public bool IsOpen => open;
     public bool TitleOnlyDragging => titleOnlyDragging;
+    public void SetScrollContentMode(bool value)
+    {
+        scrollContentMode = value;
+        if (value && windowAnimation != null)
+        {
+            StopCoroutine(windowAnimation);
+            windowAnimation = null;
+        }
+    }
     public void KeepWithinBounds()
     {
-        if (rect != null && canvasRect != null) ClampToBounds();
+        if (!scrollContentMode && rect != null && canvasRect != null) ClampToBounds();
     }
     public void SetAuthoredPosition(Vector2 position)
     {
@@ -76,6 +86,13 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
         open = true;
         if (!presentationVisible) return;
         gameObject.SetActive(true);
+        if (scrollContentMode)
+        {
+            rect.anchoredPosition = home;
+            group.alpha = 1f;
+            group.interactable = group.blocksRaycasts = true;
+            return;
+        }
         transform.SetAsLastSibling();
         rect.anchoredPosition = Offscreen();
         group.alpha = 0f;
@@ -91,24 +108,35 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
         open = false;
         ResetDrag();
         if (!presentationVisible) return;
+        if (scrollContentMode) { HideImmediately(); return; }
         group.interactable = false;
         group.blocksRaycasts = false;
         if (windowAnimation != null) StopCoroutine(windowAnimation);
         windowAnimation = StartCoroutine(Animate(Offscreen(), 0f, true));
     }
 
-    public void OnPointerDown(PointerEventData eventData) => transform.SetAsLastSibling();
+    public void OnPointerDown(PointerEventData eventData)
+    { if (!scrollContentMode) transform.SetAsLastSibling(); }
 
     // The panel background also receives drags; child controls retain their gestures.
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (scrollContentMode) { GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnBeginDrag(eventData); return; }
         if (!titleOnlyDragging && dragPointer == int.MinValue &&
             (eventData.pointerPressRaycast.gameObject == null ||
              eventData.pointerPressRaycast.gameObject.GetComponentInParent<UnityEngine.UI.Selectable>() == null))
             BeginTextDrag(eventData, out dragOffset);
     }
-    public void OnDrag(PointerEventData eventData) => DragText(eventData, dragOffset);
-    public void OnEndDrag(PointerEventData eventData) => EndTextDrag(eventData);
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (scrollContentMode) GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnDrag(eventData);
+        else DragText(eventData, dragOffset);
+    }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (scrollContentMode) GetComponentInParent<UnityEngine.UI.ScrollRect>()?.OnEndDrag(eventData);
+        else EndTextDrag(eventData);
+    }
     public void OnPointerUp(PointerEventData eventData) => EndTextDrag(eventData);
 
     public bool BeginTextDrag(PointerEventData eventData, out Vector2 offset)

@@ -105,6 +105,10 @@ public sealed class SpeciesMapsUI : MonoBehaviour
             ConfigureGraph(page, map == 1 ? topology?.foodLinks : topology?.evolutionLinks, speciesById);
         }
         CreateCluePopup();
+        var hold = overlay.GetComponent<MobileLongPressClose>();
+        if (hold == null) hold = overlay.AddComponent<MobileLongPressClose>();
+        hold.Configure((RectTransform)overlay.transform,
+            () => { if (clueWindow != null && clueWindow.IsOpen) HideClue(); else Close(); });
         overlay.SetActive(false);
     }
 
@@ -213,8 +217,11 @@ public sealed class SpeciesMapsUI : MonoBehaviour
         pages[0].panel.SetActive(true);
         pages[1].panel.SetActive(false);
         foreach (MapPage page in pages)
+        {
             foreach (SpeciesMapNodeView node in page.nodes)
                 if (node != null) node.Refresh();
+            SetZoom(page, MinimumZoom(page));
+        }
         if (clock != null) clock.AcquireModalPause();
         Clamp(pages[0]);
     }

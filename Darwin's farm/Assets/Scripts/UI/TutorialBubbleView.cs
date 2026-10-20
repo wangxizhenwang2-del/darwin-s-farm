@@ -47,7 +47,7 @@ public sealed class TutorialBubbleView : MonoBehaviour
         view.title.rectTransform.pivot = new Vector2(0f, 1f);
         view.title.rectTransform.offsetMin = new Vector2(29f, -57f);
         view.title.rectTransform.offsetMax = new Vector2(-58f, -20f);
-        view.title.enableWordWrapping = false;
+        view.title.textWrappingMode = TextWrappingModes.NoWrap;
         view.title.enableAutoSizing = true;
         view.title.fontSizeMin = 16f;
         view.title.fontSizeMax = 23f;
@@ -73,7 +73,7 @@ public sealed class TutorialBubbleView : MonoBehaviour
         view.body.rectTransform.anchorMin = Vector2.zero;
         view.body.rectTransform.anchorMax = Vector2.one;
         view.body.rectTransform.offsetMin = view.body.rectTransform.offsetMax = Vector2.zero;
-        view.body.enableWordWrapping = true;
+        view.body.textWrappingMode = TextWrappingModes.Normal;
         view.body.richText = true;
 
         view.skipButton = NewButton("Skip tutorial", view.panel, "×", onSkip, new Vector2(42f, 38f),

@@ -27,6 +27,11 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         lockFullLayout = value;
         if (value) SetCompact(false);
     }
+    public void ResetMobileSize()
+    {
+        userScale = 1f;
+        SetCompact(false);
+    }
 
     public void BeginResize(Vector2 screenPoint)
     {
@@ -135,8 +140,11 @@ public sealed class PopulationJournalViewport : MonoBehaviour
         float availableWidth = Mathf.Max(180f, canvas.rect.width - 24f);
         float availableHeight = Mathf.Max(180f, canvas.rect.height - 16f);
         float boardHeight = compact ? PopulationInfoPanel.CompactHeight : PopulationInfoPanel.BoardHeight;
-        float baseScale = Mathf.Min(1f, availableWidth / PopulationInfoPanel.BoardWidth,
-            availableHeight / boardHeight);
+        var fixedFrame = GetComponentInParent<MobileFixedInformationFrame>();
+        float baseScale = fixedFrame != null ? Mathf.Min(1f,
+            (((RectTransform)fixedFrame.transform).rect.width - 12f) / PopulationInfoPanel.BoardWidth) :
+            Mathf.Min(1f, availableWidth / PopulationInfoPanel.BoardWidth,
+                availableHeight / boardHeight);
         bool touchZoom = GetComponent<MobilePanelPinchZoom>()?.enabled == true;
         float scale = Mathf.Clamp(baseScale * userScale, .1f,
             baseScale * (touchZoom ? 1.6f : 1f));

@@ -31,6 +31,12 @@ public sealed class TileInformationPanel : MonoBehaviour
         lockFullLayout = value;
         if (value) SetCompact(false);
     }
+    public void ResetMobileSize()
+    {
+        userScale = 1f;
+        compactScale = 1f;
+        SetCompact(false);
+    }
     private RectTransform board;
     private RectTransform compactContents;
     private TextMeshProUGUI compactHeading, compactTemperature, compactHumidity, compactPlants, compactTools;
@@ -323,8 +329,11 @@ public sealed class TileInformationPanel : MonoBehaviour
         if (canvasRect == null || canvasRect.rect.width <= 0 || canvasRect.rect.height <= 0) return;
         float height = compact ? CompactHeight : BoardHeight;
         float selectedScale = compact ? compactScale : userScale;
-        float fit = Mathf.Min(1f, (canvasRect.rect.width - 24f) / BoardWidth,
-            (canvasRect.rect.height - 24f) / height);
+        var fixedFrame = GetComponentInParent<MobileFixedInformationFrame>();
+        float fit = fixedFrame != null ? Mathf.Min(1f,
+            (((RectTransform)fixedFrame.transform).rect.width - 12f) / BoardWidth) :
+            Mathf.Min(1f, (canvasRect.rect.width - 24f) / BoardWidth,
+                (canvasRect.rect.height - 24f) / height);
         bool touchZoom = GetComponent<MobilePanelPinchZoom>()?.enabled == true;
         float scale = Mathf.Min(fit * selectedScale, fit * (touchZoom ? 1.6f : 1f));
         if (!Mathf.Approximately(board.localScale.x, scale)) board.localScale = Vector3.one * scale;

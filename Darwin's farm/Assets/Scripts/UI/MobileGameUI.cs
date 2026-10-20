@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-// Saved mobile presentation. No UI objects are created at runtime.
+// Mobile presentation of the authored WhiteBox UI, with fixed frames assembled at runtime.
 [ExecuteAlways, DefaultExecutionOrder(100), DisallowMultipleComponent]
 [RequireComponent(typeof(Canvas))]
 public sealed class MobileGameUI : MonoBehaviour
@@ -34,7 +34,7 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private MobileTechnologyPanel technologyPanel;
     [Header("Independent environment tool window")]
     [SerializeField] private InformationWindow toolsDrawer;
-    [SerializeField] private RectTransform toolsDrawerRect, toolsViewport, toolsContent;
+    [SerializeField] private RectTransform toolsViewport, toolsContent;
     [SerializeField] private UnityEngine.UI.ScrollRect toolsScroll;
     [SerializeField] private GameObject buildPalette, placementControls;
     [SerializeField] private UnityEngine.UI.Button buildButton, pauseButton, speedButton;
@@ -48,11 +48,6 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI bioenergyLabel;
     [Header("Mobile layout (Canvas units)")]
     [SerializeField] private RectTransform statusBar, actionColumn, gestureHelp;
-    [SerializeField, Min(320f)] private float maximumDrawerWidth = 520f;
-    [SerializeField, Range(.3f, .6f)] private float drawerWidthFraction = .43f;
-    [SerializeField] private Vector2 drawerDefaultPosition = new Vector2(-8f, -92f);
-    private Vector2 ToolsDrawerHome => drawerDefaultPosition + new Vector2(-48f, -48f);
-    [SerializeField, Min(100f)] private float drawerBottomClearance = 152f;
     [SerializeField, Min(.05f)] private float refreshSeconds = .25f;
     [Tooltip("Editor preview only: left, top, right, bottom in 720-height Canvas units")]
     [SerializeField] private Vector4 editorSafeInsets;
@@ -78,7 +73,12 @@ public sealed class MobileGameUI : MonoBehaviour
     private RectTransform fixedToolRail;
     private Transform desktopTileParent, desktopPopulationParent;
     private Vector2 desktopTilePosition, desktopPopulationPosition;
+    private Vector2 desktopTileAnchorMin, desktopTileAnchorMax, desktopTilePivot;
+    private Vector2 desktopPopulationAnchorMin, desktopPopulationAnchorMax, desktopPopulationPivot;
     private bool informationPanelsAttached;
+    private bool informationAttachmentWarningShown;
+    private MobileFixedInformationFrame tileFrame, populationFrame;
+    private UnityEngine.UI.Button tileBoardClose, populationBoardClose;
 
     public bool IsMobileActive => isActiveAndEnabled && mobile;
     public DisplayMode Mode
@@ -171,7 +171,7 @@ public sealed class MobileGameUI : MonoBehaviour
         if (toolsDrawer != null)
         {
             var obsolete = toolsDrawer.gameObject;
-            toolsDrawer = null; toolsDrawerRect = null;
+            toolsDrawer = null;
             Destroy(obsolete);
         }
         foreach (var handle in toolsContent.GetComponentsInChildren<InformationTextDragHandle>(true))
@@ -206,6 +206,9 @@ public sealed class MobileGameUI : MonoBehaviour
                     rect.anchoredPosition = new Vector2(-20f, -20f);
                     rect.sizeDelta = new Vector2(44f, 44f);
                     EnsureCloseMark(button);
+                    // The authored ExpandTechnology button was saved inactive.
+                    // Moving it out of the old drawer does not enable it.
+                    button.gameObject.SetActive(true);
                     rect.SetAsLastSibling();
                     break;
                 }
@@ -213,10 +216,13 @@ public sealed class MobileGameUI : MonoBehaviour
             var zoom = toolsContent.GetComponent<EnvironmentToolPanelZoom>();
             if (zoom != null)
             {
-                zoom.ConfigureMobileFrame((RectTransform)toolsScroll.transform);
-                toolsScroll.gameObject.AddComponent<MobilePanelPinchZoom>().Configure(
-                    (RectTransform)toolsScroll.transform, zoom.ZoomBy, touchInput);
+                var pinch = toolsScroll.GetComponent<MobilePanelPinchZoom>();
+                if (pinch == null) pinch = toolsScroll.gameObject.AddComponent<MobilePanelPinchZoom>();
+                pinch.Configure((RectTransform)toolsScroll.transform, zoom.ZoomBy, touchInput);
             }
+            var hold = toolsScroll.GetComponent<MobileLongPressClose>();
+            if (hold == null) hold = toolsScroll.gameObject.AddComponent<MobileLongPressClose>();
+            hold.Configure((RectTransform)toolsScroll.transform, () => toolSession?.End());
             toolsScroll.gameObject.SetActive(false);
         }
     }
@@ -226,24 +232,43 @@ public sealed class MobileGameUI : MonoBehaviour
         if (information == null || safeArea == null || informationPanelsAttached) return;
         var tile = information.TileWindow;
         var population = information.PopulationWindow;
-        if (tile == null || population == null) return;
+        if (tile == null || population == null)
+        {
+            if (!informationAttachmentWarningShown)
+            {
+                Debug.LogWarning("Mobile UI is waiting for the WhiteBox tile and population windows to initialize.", this);
+                informationAttachmentWarningShown = true;
+            }
+            return;
+        }
         var tileRect = (RectTransform)tile.transform;
         var populationRect = (RectTransform)population.transform;
         desktopTileParent = tileRect.parent;
         desktopPopulationParent = populationRect.parent;
         desktopTilePosition = tileRect.anchoredPosition;
         desktopPopulationPosition = populationRect.anchoredPosition;
+        desktopTileAnchorMin = tileRect.anchorMin;
+        desktopTileAnchorMax = tileRect.anchorMax;
+        desktopTilePivot = tileRect.pivot;
+        desktopPopulationAnchorMin = populationRect.anchorMin;
+        desktopPopulationAnchorMax = populationRect.anchorMax;
+        desktopPopulationPivot = populationRect.pivot;
         tileRect.SetParent(safeArea, false);
         populationRect.SetParent(safeArea, false);
+        foreach (var handle in tile.GetComponentsInChildren<InformationTextDragHandle>(true)) handle.enabled = false;
+        foreach (var handle in population.GetComponentsInChildren<InformationTextDragHandle>(true)) handle.enabled = false;
+        foreach (var gesture in population.GetComponentsInChildren<PopulationJournalGesture>(true)) gesture.enabled = false;
         var tilePanel = tile.GetComponent<TileInformationPanel>();
         if (tilePanel != null)
         {
             tilePanel.LockFullLayout(true);
-            EnsureCloseMark(tile.GetComponentInChildren<UnityEngine.UI.Button>(true));
-            var pinch = tile.GetComponent<MobilePanelPinchZoom>();
-            if (pinch == null) pinch = tile.gameObject.AddComponent<MobilePanelPinchZoom>();
-            pinch.Configure(tileRect, tilePanel.ZoomBy, touchInput);
-            pinch.enabled = true;
+            var boardGrip = tile.transform.Find("ResizeGrip");
+            if (boardGrip != null) boardGrip.gameObject.SetActive(false);
+            tileBoardClose = tile.GetComponentInChildren<UnityEngine.UI.Button>(true);
+            if (tileBoardClose != null) tileBoardClose.gameObject.SetActive(false);
+            tileFrame = MobileFixedInformationFrame.Create(safeArea, tile,
+                "TileInformationFrame", information.CloseTile, tilePanel.ResetMobileSize,
+                tilePanel.ZoomBy, touchInput);
         }
         var journal = population.GetComponent<PopulationJournalViewport>();
         if (journal != null)
@@ -251,33 +276,50 @@ public sealed class MobileGameUI : MonoBehaviour
             journal.LockFullLayout(true);
             foreach (var button in population.GetComponentsInChildren<UnityEngine.UI.Button>(true))
                 if (button.transform.parent == population.transform)
-                { EnsureCloseMark(button); break; }
-            var pinch = population.GetComponent<MobilePanelPinchZoom>();
-            if (pinch == null) pinch = population.gameObject.AddComponent<MobilePanelPinchZoom>();
-            pinch.Configure(populationRect, journal.ZoomBy, touchInput);
-            pinch.enabled = true;
+                { populationBoardClose = button; button.gameObject.SetActive(false); break; }
+            populationFrame = MobileFixedInformationFrame.Create(safeArea, population,
+                "PopulationInformationFrame", information.ClosePopulation,
+                journal.ResetMobileSize, journal.ZoomBy, touchInput);
         }
         informationPanelsAttached = true;
+        informationAttachmentWarningShown = false;
         LayoutInformationPanels();
+        Debug.Log("Mobile UI attached the WhiteBox tile and population boards to fixed information frames.", this);
     }
 
     private void RestoreInformationPanels()
     {
         if (!informationPanelsAttached || information == null) return;
-        RestorePanel(information.TileWindow, desktopTileParent, desktopTilePosition);
-        RestorePanel(information.PopulationWindow, desktopPopulationParent, desktopPopulationPosition);
+        RestorePanel(information.TileWindow, desktopTileParent, desktopTilePosition,
+            desktopTileAnchorMin, desktopTileAnchorMax, desktopTilePivot);
+        RestorePanel(information.PopulationWindow, desktopPopulationParent, desktopPopulationPosition,
+            desktopPopulationAnchorMin, desktopPopulationAnchorMax, desktopPopulationPivot);
+        if (tileBoardClose != null) tileBoardClose.gameObject.SetActive(true);
+        if (populationBoardClose != null) populationBoardClose.gameObject.SetActive(true);
+        if (tileFrame != null) Destroy(tileFrame.gameObject);
+        if (populationFrame != null) Destroy(populationFrame.gameObject);
+        tileFrame = populationFrame = null;
         informationPanelsAttached = false;
     }
 
-    private void RestorePanel(InformationWindow window, Transform parent, Vector2 position)
+    private void RestorePanel(InformationWindow window, Transform parent, Vector2 position,
+        Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot)
     {
         if (window == null || parent == null) return;
         var rect = (RectTransform)window.transform;
         var pinch = window.GetComponent<MobilePanelPinchZoom>();
         if (pinch != null) pinch.enabled = false;
+        window.SetScrollContentMode(false);
         window.GetComponent<TileInformationPanel>()?.LockFullLayout(false);
         window.GetComponent<PopulationJournalViewport>()?.LockFullLayout(false);
+        var boardGrip = window.transform.Find("ResizeGrip");
+        if (boardGrip != null) boardGrip.gameObject.SetActive(true);
+        foreach (var handle in window.GetComponentsInChildren<InformationTextDragHandle>(true)) handle.enabled = true;
+        foreach (var gesture in window.GetComponentsInChildren<PopulationJournalGesture>(true)) gesture.enabled = true;
         rect.SetParent(parent, false);
+        rect.anchorMin = anchorMin;
+        rect.anchorMax = anchorMax;
+        rect.pivot = pivot;
         rect.anchoredPosition = position;
         window.SetDragBounds((RectTransform)parent, position);
     }
@@ -304,7 +346,7 @@ public sealed class MobileGameUI : MonoBehaviour
         text.color = new Color(.12f, .25f, .08f);
         text.alignment = TextAlignmentOptions.Center;
         text.raycastTarget = false;
-        text.text = "×";
+        text.text = "X";
         mark.SetAsLastSibling();
     }
 
@@ -316,17 +358,17 @@ public sealed class MobileGameUI : MonoBehaviour
         if (tile != null)
         {
             var rect = (RectTransform)tile.transform;
-            float x = Mathf.Max(8f, safeArea.rect.width - rect.rect.width * rect.localScale.x - 16f);
-            Vector2 home = new Vector2(x, -86f);
-            if (!tile.IsOpen) rect.anchoredPosition = home;
-            tile.SetDragBounds(safeArea, home);
+            float width = Mathf.Clamp(safeArea.rect.width - 116f, 180f, 620f);
+            float x = Mathf.Max(106f, safeArea.rect.width - width - 8f);
+            if (tileFrame != null) tileFrame.Place(x, 86f, width,
+                Mathf.Max(180f, safeArea.rect.height - 94f));
         }
         if (population != null)
         {
-            var rect = (RectTransform)population.transform;
-            Vector2 home = new Vector2(-16f, -88f);
-            if (!population.IsOpen) rect.anchoredPosition = home;
-            population.SetDragBounds(safeArea, home);
+            float width = Mathf.Clamp(safeArea.rect.width - 116f, 180f, 570f);
+            float x = Mathf.Max(106f, safeArea.rect.width - width - 8f);
+            if (populationFrame != null) populationFrame.Place(x, 86f, width,
+                Mathf.Max(180f, safeArea.rect.height - 94f));
         }
     }
 
@@ -340,6 +382,10 @@ public sealed class MobileGameUI : MonoBehaviour
         if (safeArea == null) return;
         if (Application.isPlaying && !bound) BindRuntime();
         ApplyMode();
+        // Other scene controllers may finish initializing their windows after our Start.
+        // Keep trying while mobile mode is active instead of permanently keeping the old view.
+        if (Application.isPlaying && mobile && !informationPanelsAttached)
+            AttachInformationPanels();
         Vector2 screen = new Vector2(Screen.width, Screen.height);
         if (screen != lastScreen || ReadSafeArea() != lastSafeArea)
         { lastScreen = screen; lastSafeArea = ReadSafeArea(); RefreshLayout(); }
@@ -381,9 +427,9 @@ public sealed class MobileGameUI : MonoBehaviour
             buildPalette.SetActive(true); placementControls.SetActive(true);
             return;
         }
+        safeArea.gameObject.SetActive(mobile);
         if (mobile) AttachInformationPanels();
         else RestoreInformationPanels();
-        safeArea.gameObject.SetActive(mobile);
         if (desktopCanvas != null) desktopCanvas.enabled = true; // Keep world population markers.
         if (desktopHud != null) desktopHud.SetActive(!mobile);
         if (desktopBuildPanel != null) desktopBuildPanel.SetActive(!mobile && buildMode.IsBuildMode);
@@ -416,6 +462,7 @@ public sealed class MobileGameUI : MonoBehaviour
             var root = (RectTransform)toolsScroll.transform;
             root.anchorMin = root.anchorMax = root.pivot = Vector2.up;
             root.anchoredPosition = new Vector2(toolLeft, -railTop);
+            root.localScale = Vector3.one;
             root.sizeDelta = new Vector2(Mathf.Max(180f, Mathf.Min(
                     safeArea.rect.width - toolLeft - 8f, EnvironmentToolPanelLayout.WideWidth + 24f)),
                 Mathf.Max(180f, safeArea.rect.height - railTop - 8f));
