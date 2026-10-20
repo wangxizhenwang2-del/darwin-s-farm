@@ -1,0 +1,16 @@
+Event	ID	Name			Wwise Object Path	Notes
+	224975701	Play_UI_Species_Reveal			\Default Work Unit\Play_UI_Species_Reveal	
+	1116394086	Play_UI_News_good			\Default Work Unit\Play_UI_News_good	
+	1414291570	Play_UI_Handbook_Open			\Default Work Unit\Play_UI_Handbook_Open	
+	1749424733	Play_UI_Click			\Default Work Unit\Play_UI_Click	
+	2334503293	Play_UI_News_Mid			\Default Work Unit\Play_UI_News_Mid	
+	2735047506	Play_UI_News_Bad			\Default Work Unit\Play_UI_News_Bad	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	152037826	UI_按钮	.cache\9F\{9F7A0D00-FC84-00D1-6562-F42EDC5A7625}.wem		\Containers\Default Work Unit\UI\UI_按钮		54436
+	614188399	UI_News_good	.cache\AC\{AC86C983-D1D3-16B1-E9FC-6F7CD1DCBE1A}.wem		\Containers\Default Work Unit\UI\UI_News_good		138336
+	619935095	UI_生物书	.cache\81\{81427DDF-0F8C-FD49-728F-3A96690024C9}.wem		\Containers\Default Work Unit\UI\UI_生物书		126816
+	652789747	UI_News_Mid	.cache\61\{61C250DF-02E9-4072-CB07-5742BE57CC6D}.wem		\Containers\Default Work Unit\UI\UI_News_Mid		92256
+	936948770	UI_News_Bad	.cache\D0\{D014519A-890F-D76C-AC27-4796674FCEE9}.wem		\Containers\Default Work Unit\UI\UI_News_Bad		149856
+	1054074646	UI_翻卡	.cache\16\{1611BE42-5127-1D75-1D50-00CDB53895D2}.wem		\Containers\Default Work Unit\UI\UI_翻卡		432096
+

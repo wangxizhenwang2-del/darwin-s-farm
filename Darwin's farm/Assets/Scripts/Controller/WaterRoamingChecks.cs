@@ -183,11 +183,18 @@ public sealed class WaterRoamingChecks : MonoBehaviour
             Require(clock.Speed == expected && speedText.text == (expected == 0 ? "暂停" : expected.ToString("0") + "X"), "PC speed button/label mismatch");
         }
         clock.DoubleSpeed(); clock.TogglePause(); clock.TogglePause();
-        Require(clock.Speed == 2f, "Space pause no longer restores previous speed");
+        Require(clock.Speed == 2f, "General pause toggle no longer restores previous speed");
+        clock.QuadrupleSpeed(); clock.ToggleSpacePause();
+        Require(clock.IsPaused, "Space did not pause 4x speed");
+        clock.ToggleSpacePause();
+        Require(clock.Speed == 1f, "Space did not resume at 1x");
+        clock.DoubleSpeed(); clock.ToggleSpacePause(); clock.ToggleSpacePause();
+        Require(clock.Speed == 1f, "Space did not resume 2x speed at 1x");
+        clock.DoubleSpeed();
         clock.AcquireModalPause(); desktopButton.onClick.Invoke();
         Require(clock.IsPaused, "Speed click released a modal pause");
         clock.ReleaseModalPause(); Require(clock.Speed == 2f, "Modal did not restore previous speed");
-        passed.Add("Real PC button cycles 1x -> 2x -> 4x -> pause -> 1x with matching labels; Space and modal pause preserve the prior speed.");
+        passed.Add("PC button cycles 1x -> 2x -> 4x -> pause -> 1x; Space pauses and resumes at 1x; modal pause restores the prior speed.");
 
         // The mobile handler is private and its panel is inactive on PC.
         // Bind its existing clock reference only in this runtime fixture.

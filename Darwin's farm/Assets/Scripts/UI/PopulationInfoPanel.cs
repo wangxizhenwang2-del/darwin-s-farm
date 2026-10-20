@@ -1,170 +1,389 @@
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// A view of one selected population. Static presentation is read from its SpeciesData.
+// The journal is authored at 525 x 860. Its parent may scale uniformly, never reshape it.
 public sealed class PopulationInfoPanel : MonoBehaviour
 {
+    public const float BoardWidth = 525f;
+    public const float BoardHeight = 860f;
+    private static readonly Color Ink = new Color(.17f, .17f, .13f);
+    private static readonly Color SoftInk = new Color(.35f, .37f, .28f);
+    [SerializeField] private int layoutVersion;
+    [SerializeField] private RectTransform content;
+    [SerializeField] private InformationWindow window;
     [SerializeField] private Image portrait;
     [SerializeField] private TextMeshProUGUI placeholder, speciesName, count, mutation, description, additional;
     [SerializeField] private TextMeshProUGUI sources, current, predators, trophic, relationshipTitle;
     [SerializeField] private TextMeshProUGUI[] labels;
     [SerializeField] private PopulationRadarChart radar;
-    [SerializeField] private PopulationFoodWebGraphic foodGraphic;
-    [SerializeField] private Vector2[] radarLabelPositions = {
-        new Vector2(160f, 0f), new Vector2(320f, -66f), new Vector2(283f, -170f),
-        new Vector2(32f, -170f), new Vector2(0f, -66f) };
-    [SerializeField] private RectTransform content;
-    [SerializeField] private InformationWindow window;
+    [SerializeField] private RectTransform foodNodes;
+    private string foodSignature;
+
+    public int LayoutVersion => layoutVersion;
 
     public void Initialize(InformationWindow owner)
     {
         window = owner;
-        if (content != null) return;
-        content = Rect("Content", (RectTransform)transform, Vector2.zero, new Vector2(450f, 665f));
-        content.anchoredPosition = new Vector2(35f, -140f);
-        float scale = Mathf.Min(1f, (((RectTransform)transform).rect.width - 70f) / 450f);
-        content.localScale = Vector3.one * scale;
-        RectTransform header = Rect("SpeciesHeader", content, Vector2.zero, new Vector2(450f, 235f));
-        RectTransform picture = Rect("SpeciesPortrait", header, Vector2.zero, new Vector2(165f, 130f));
-        portrait = picture.gameObject.AddComponent<Image>();
-        portrait.preserveAspect = true; portrait.raycastTarget = false;
-        placeholder = Text("PortraitPlaceholder", picture, "?", 64, Vector2.zero, new Vector2(165f, 130f));
-        placeholder.alignment = TextAlignmentOptions.Center;
-        speciesName = Text("SpeciesName", header, "", 32, new Vector2(0f, -133f), new Vector2(190f, 42f));
-        count = Text("PopulationCount", header, "", 22, new Vector2(0f, -176f), new Vector2(200f, 31f));
-        mutation = Text("MutationInfo", header, "变异：暂无记录", 19, new Vector2(0f, -211f), new Vector2(205f, 30f));
-        description = ScrollText("SpeciesDescription", header, new Vector2(210f, -25f), new Vector2(240f, 207f), 21);
+        Image board = GetComponent<Image>();
+        if (board != null)
+        {
+            Sprite journal = Resources.Load<Sprite>("GameUI/SpeciesJournal/JournalBoard");
+            if (journal != null) board.sprite = journal;
+            board.type = Image.Type.Simple;
+            board.preserveAspect = true;
+            board.raycastTarget = true;
+        }
+        RectTransform frame = (RectTransform)transform;
+        frame.sizeDelta = new Vector2(BoardWidth, BoardHeight);
+        if (layoutVersion == 2 && content != null)
+        {
+            ApplyTypography();
+            return;
+        }
+        RebuildJournal();
+    }
 
-        RectTransform section = Rect("RadarChartSection", content, new Vector2(0f, -249f), new Vector2(450f, 205f));
-        RectTransform chartRect = Rect("RadarChart", section, new Vector2(141f, -30f), new Vector2(168f, 168f));
-        radar = chartRect.gameObject.AddComponent<PopulationRadarChart>(); radar.raycastTarget = false;
-        labels = new TextMeshProUGUI[5];
-        Vector2[] positions = radarLabelPositions;
+    public void RebuildJournal()
+    {
+        if (content != null)
+        {
+            content.gameObject.SetActive(false);
+            if (Application.isPlaying) Destroy(content.gameObject);
+            else DestroyImmediate(content.gameObject);
+        }
+        // Keep all positions in native board coordinates, including the transparent clip at its top.
+        content = Rect("JournalContent", (RectTransform)transform, 0, 0, BoardWidth, BoardHeight);
+        content.localScale = Vector3.one;
+        var sticker = Resources.Load<Sprite>("GameUI/SpeciesJournal/SectionSticker");
+        Section("NameSticker", "物种名称", 77, 145, 177, 62, 33, sticker, out speciesName);
+        Section("IntroductionSticker", "简介", 252, 154, 113, 52, 25, sticker, out _);
+        Section("EcologySticker", "生态信息", 76, 339, 183, 59, 25, sticker, out _);
+        Section("AttributesSticker", "属性", 252, 339, 124, 59, 25, sticker, out _);
+        Section("FoodSticker", "食物链", 76, 552, 150, 59, 25, sticker, out _);
+
+        var portraitFrame = Rect("SpeciesPortrait", content, 88, 191, 150, 147);
+        portrait = portraitFrame.gameObject.AddComponent<Image>();
+        portrait.preserveAspect = true;
+        portrait.raycastTarget = false;
+        placeholder = Label("PortraitPlaceholder", portraitFrame, "?", 58, 0, 0, 150, 147, TextAlignmentOptions.Center);
+
         for (int i = 0; i < 5; i++)
-            labels[i] = Text("Attribute" + i, section, "", 18, positions[i], new Vector2(130f, 32f));
+            Rule("IntroductionRule" + i, 256, 224 + i * 25, 205, .55f);
+        description = Label("Description", content, "暂无物种介绍", 18, 253, 197, 210, 144);
+        description.lineSpacing = 1.5f;
+        description.overflowMode = TextOverflowModes.Ellipsis;
 
-        RectTransform food = Rect("FoodWebSection", content, new Vector2(0f, -461f), new Vector2(450f, 98f));
-        relationshipTitle = Text("RelationshipScope", food, "当前地块食物关系", 17, Vector2.zero, new Vector2(450f, 24f));
-        RectTransform nodes = Rect("FoodNodes", food, new Vector2(0f, -27f), new Vector2(450f, 30f));
-        foodGraphic = nodes.gameObject.AddComponent<PopulationFoodWebGraphic>(); foodGraphic.raycastTarget = false;
-        sources = ScrollText("FoodSources", food, new Vector2(0f, -58f), new Vector2(128f, 30f), 17);
-        sources.alignment = TextAlignmentOptions.Top;
-        current = Text("CurrentSpecies", food, "", 19, new Vector2(160f, -58f), new Vector2(130f, 30f));
-        current.alignment = TextAlignmentOptions.Center;
-        predators = ScrollText("Predators", food, new Vector2(322f, -58f), new Vector2(128f, 30f), 17);
-        predators.alignment = TextAlignmentOptions.Top;
-        trophic = Text("TrophicLevel", food, "", 20, new Vector2(135f, -89f), new Vector2(250f, 30f));
-        additional = ScrollText("AdditionalInformation", content, new Vector2(0f, -584f), new Vector2(450f, 65f), 17);
+        count = Label("PopulationCount", content, "数量：--", 26, 87, 388, 158, 36);
+        count.fontStyle = FontStyles.Bold;
+        mutation = Label("MutationInfo", content, "变异记录：暂无", 18, 87, 426, 158, 28);
+        additional = Label("EcologyDetails", content, "", 18, 87, 459, 163, 91);
+        additional.lineSpacing = 5f;
+        for (int i = 0; i < 4; i++) Rule("EcologyRule" + i, 87, 424 + i * 31, 155, .6f);
+
+        RectTransform chart = Rect("RadarChart", content, 303, 400, 128, 128);
+        radar = chart.gameObject.AddComponent<PopulationRadarChart>();
+        radar.raycastTarget = false;
+        labels = new TextMeshProUGUI[5];
+        labels[0] = Label("Fertility", content, "繁殖 --", 15, 339, 381, 100, 25, TextAlignmentOptions.Center);
+        labels[1] = Label("Movement", content, "运动 --", 15, 428, 432, 77, 25);
+        labels[2] = Label("Humidity", content, "适湿 --", 15, 423, 526, 83, 25);
+        labels[3] = Label("Temperature", content, "适温 --", 15, 260, 526, 83, 25);
+        labels[4] = Label("Size", content, "体型 --", 15, 252, 431, 75, 25);
+
+        relationshipTitle = Label("RelationshipScope", content, "当前地块 · 捕食关系", 15, 302, 569, 168, 28,
+            TextAlignmentOptions.Right);
+        sources = Label("FoodSourceTitle", content, "食物来源", 17, 85, 617, 105, 26);
+        current = Label("CurrentTitle", content, "当前物种", 17, 211, 617, 108, 26, TextAlignmentOptions.Center);
+        predators = Label("PredatorTitle", content, "捕食者", 17, 356, 617, 95, 26, TextAlignmentOptions.Center);
+        foodNodes = Rect("FoodNodes", content, 70, 644, 405, 105);
+        Label("ArrowToSpecies", foodNodes, "→", 35, 109, 19, 52, 56, TextAlignmentOptions.Center);
+        Label("ArrowToPredators", foodNodes, "→", 35, 256, 19, 52, 56, TextAlignmentOptions.Center);
+        trophic = Label("TrophicLevel", content, "营养级：--", 16, 205, 754, 138, 27,
+            TextAlignmentOptions.Center);
+        layoutVersion = 2;
+        foodSignature = null;
+        ApplyTypography();
+    }
+
+    public void ApplyTypography()
+    {
+        if (layoutVersion != 2 || content == null) return;
+        speciesName.fontSize = 36;
+        speciesName.enableAutoSizing = true;
+        speciesName.fontSizeMin = 21;
+        speciesName.fontSizeMax = 36;
+        description.fontSize = 18; // The longer introduction keeps its five ruled lines.
+        count.fontSize = 29;
+        count.enableAutoSizing = true;
+        count.fontSizeMin = 23;
+        count.fontSizeMax = 29;
+        mutation.fontSize = 20;
+        additional.fontSize = 20;
+        additional.lineSpacing = 3f;
+        foreach (var label in labels) label.fontSize = 18;
+        sources.fontSize = current.fontSize = predators.fontSize = 20;
+        trophic.fontSize = 19;
+        relationshipTitle.fontSize = 17;
+        relationshipTitle.enableAutoSizing = true;
+        relationshipTitle.fontSizeMin = 14;
+        relationshipTitle.fontSizeMax = 17;
+        SetSectionSize("IntroductionSticker", 27);
+        SetSectionSize("EcologySticker", 27);
+        SetSectionSize("AttributesSticker", 27);
+        SetSectionSize("FoodSticker", 27);
+        SetTop("FoodSticker", 570);
+        relationshipTitle.rectTransform.anchoredPosition = new Vector2(302, -587);
+        sources.rectTransform.anchoredPosition = new Vector2(85, -635);
+        current.rectTransform.anchoredPosition = new Vector2(211, -635);
+        predators.rectTransform.anchoredPosition = new Vector2(356, -635);
+        foodNodes.anchoredPosition = new Vector2(70, -662);
+        trophic.rectTransform.anchoredPosition = new Vector2(205, -772);
+    }
+
+    private void SetSectionSize(string name, float size)
+    {
+        var caption = content.Find(name + "/Caption")?.GetComponent<TextMeshProUGUI>();
+        if (caption != null) caption.fontSize = size;
+    }
+
+    private void SetTop(string name, float y)
+    {
+        var section = content.Find(name) as RectTransform;
+        if (section != null) section.anchoredPosition = new Vector2(section.anchoredPosition.x, -y);
     }
 
     public void ShowUnavailable(string message)
     {
-        foodGraphic.enabled = false;
-        speciesName.text = message; count.text = ""; mutation.text = "变异：暂无记录";
-        portrait.enabled = true; portrait.sprite = null; portrait.color = new Color(.86f, .88f, .82f, .8f); placeholder.gameObject.SetActive(true);
-        SetScrollText(description, "暂无物种介绍"); SetScrollText(additional, "目标已不可用");
-        SetScrollText(sources, "--"); SetScrollText(predators, "--"); current.text = "--"; trophic.text = "营养级：--";
-        radar.SetValues(0, 0, 0, 0, 0); radar.SetBaseline(null);
+        if (layoutVersion != 2) Initialize(window);
+        speciesName.text = message;
+        portrait.sprite = null;
+        portrait.enabled = false;
+        placeholder.gameObject.SetActive(true);
+        count.text = "数量：--";
+        mutation.text = "变异记录：暂无";
+        additional.text = "地块：--\n生/死：--\n容量 K：--";
+        description.text = "暂无物种介绍";
+        radar.SetValues(0, 0, 0, 0, 0);
+        radar.SetBaseline(null);
         foreach (var label in labels) label.text = "--";
+        trophic.text = "营养级：--";
+        relationshipTitle.text = "当前地块 · 捕食关系";
+        ClearDynamicNodes();
     }
 
     public void Refresh(WhiteboxPopulation visual, PopulationData data, BlockInfo block)
     {
-        foodGraphic.enabled = data != null && data.ecologicalNiche == EcologicalNiche.Land;
+        if (layoutVersion != 2) Initialize(window);
         SpeciesData species = data != null ? data.species : null;
-        radar.SetBaseline(species);
         string name = species != null ? species.SpeciesName :
             data != null && !string.IsNullOrWhiteSpace(data.lineageName) ? data.lineageName : "测试种群";
-        if (string.IsNullOrWhiteSpace(name)) name = "未命名物种";
-        speciesName.text = name;
+        speciesName.text = string.IsNullOrWhiteSpace(name) ? "未命名物种" : name;
         Sprite image = species != null ? species.Portrait : null;
-        portrait.sprite = image; portrait.enabled = true; portrait.color = image != null ? Color.white : new Color(.86f, .88f, .82f, .8f);
+        portrait.sprite = image;
+        portrait.enabled = image != null;
         placeholder.gameObject.SetActive(image == null);
         count.text = "数量：" + (data != null ? data.speciesAmount : visual.Count);
-        // Mutation accumulators are fractional calculation state, not mutation history.
-        mutation.text = "变异：暂无记录";
-        SetScrollText(description, species != null ? species.EcologicalTrivia : "暂无物种介绍");
+        mutation.text = "变异记录：暂无";
+        description.text = species != null ? species.EcologicalTrivia : "暂无物种介绍";
         if (data == null)
         {
-            radar.SetValues(0, 0, 0, 0, 0); foreach (var label in labels) label.text = "未接入";
-            SetScrollText(additional, "所属地块：" + visual.TileId + "\n种群 ID：" + visual.UniqueId + "\n生态数据：未接入");
-            relationshipTitle.text = "生态关系待接入"; SetScrollText(sources, "未接入");
-            SetScrollText(predators, "未接入"); current.text = name; trophic.text = "营养级：未接入";
+            additional.text = "地块：" + visual.TileId + "\n生态数据：未接入";
+            radar.SetValues(0, 0, 0, 0, 0);
+            radar.SetBaseline(null);
+            foreach (var label in labels) label.text = "--";
+            trophic.text = "营养级：--";
+            ClearDynamicNodes();
             return;
         }
+        additional.text = "地块：" + visual.TileId +
+            "\n生/死：" + data.birthsToday + "/" + data.deathsToday +
+            "\n容量 K：" + data.carryingCapacity.ToString("F0");
+        radar.SetBaseline(species);
+        radar.SetTrackedTarget(SpeciesTrackingState.IsDirectSource(species) ? SpeciesTrackingState.Target : null);
         radar.SetValues(data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.size);
-        int[] values = { data.fitTemperature, data.fitHumidity, data.movementAbility, data.fertility, data.size };
-        string[] names = { "适温", "适湿", "运动", "繁殖", "体型" };
+        int[] values = { data.fertility, data.movementAbility, data.fitHumidity, data.fitTemperature, data.size };
+        string[] names = { "繁殖", "运动", "适湿", "适温", "体型" };
         for (int i = 0; i < 5; i++) labels[i].text = names[i] + " " + values[i];
-        SetScrollText(additional, "所属地块：" + visual.TileId + "   生态位：" + data.ecologicalNiche +
-            "\n今日出生 / 死亡：" + data.birthsToday + " / " + data.deathsToday +
-            "\n体型：" + data.size + "   承载量 K：" + data.carryingCapacity.ToString("F0") +
-            "\n综合适应度：" + data.environmentalFitness + "\n种群 ID：" + data.PopulationId);
-        current.text = name; trophic.text = "营养级：L" + data.trophicLevel;
-        var foods = new List<string>(); var hunters = new List<string>();
-        if (block != null && block.community != null && data.ecologicalNiche == EcologicalNiche.Land)
+        trophic.text = "营养级：L" + data.trophicLevel;
+        UpdateFoodChain(species, data, block);
+    }
+
+    private void UpdateFoodChain(SpeciesData species, PopulationData data, BlockInfo block)
+    {
+        var prey = new List<SpeciesData>();
+        var hunters = new List<SpeciesData>();
+        var setup = FindFirstObjectByType<WhiteboxBiowebTestSetup>();
+        if (species != null)
         {
-            relationshipTitle.text = "当前地块食物关系（滚轮查看更多）";
-            if (data.trophicLevel == 0) foods.Add("植物");
-            foreach (PopulationData other in block.community)
+            if (species.preySpecies != null)
+                foreach (var item in species.preySpecies)
+                    if (item != null && !prey.Contains(item)) prey.Add(item);
+            if (setup != null && setup.MapSpecies != null)
+                foreach (var candidate in setup.MapSpecies)
+                    if (candidate != null && candidate.preySpecies != null &&
+                        candidate.preySpecies.Contains(species) && !hunters.Contains(candidate))
+                        hunters.Add(candidate);
+        }
+        if (block != null && block.community != null)
+            foreach (var other in block.community)
             {
-                if (other == null || other.speciesAmount <= 0 || other.ecologicalNiche != EcologicalNiche.Land) continue;
-                string otherName = other.species != null ? other.species.SpeciesName : other.lineageName;
-                if (FoodWeb.CanEat(data, other) && !foods.Contains(otherName)) foods.Add(otherName);
-                if (FoodWeb.CanEat(other, data) && !hunters.Contains(otherName)) hunters.Add(otherName);
+                if (other == null || other.species == null || other.species == species) continue;
+                if (FoodWeb.CanEat(data, other) && !prey.Contains(other.species)) prey.Add(other.species);
+                if (FoodWeb.CanEat(other, data) && !hunters.Contains(other.species)) hunters.Add(other.species);
             }
-            SetScrollText(sources, foods.Count > 0 ? string.Join("\n", foods) : "当前无食物源");
-            SetScrollText(predators, hunters.Count > 0 ? string.Join("\n", hunters) : "当前无捕食者");
+        var signature = new StringBuilder(species != null ? species.GetInstanceID().ToString() : "none");
+        foreach (var item in prey) signature.Append("/p").Append(item.GetInstanceID())
+            .Append(item.HasEverUnlocked).Append(IsPresent(item, block));
+        foreach (var item in hunters) signature.Append("/h").Append(item.GetInstanceID())
+            .Append(item.HasEverUnlocked).Append(IsPresent(item, block));
+        string key = signature.ToString();
+        if (key == foodSignature) return;
+        ClearDynamicNodes();
+        foodSignature = key;
+        relationshipTitle.text = block != null ? "当前地块 · 捕食关系" : "食物关系";
+        if (prey.Count == 0) MakeNode("Plant", 28, 16, 49, null, true, false, "草");
+        else DrawGroup(prey, block, 0, 106, "Prey");
+        MakeNode("CurrentSpecies", 163, 13, 55, species, true, false, "?");
+        DrawGroup(hunters, block, 306, 102, "Predator");
+    }
+
+    private void DrawGroup(List<SpeciesData> species, BlockInfo block, float x, float width, string prefix)
+    {
+        int count = Mathf.Min(5, species.Count);
+        if (count == 0) { MakeNode(prefix + "None", x + width / 2 - 24, 17, 48, null, false, true, "—"); return; }
+        // Three form a pyramid; five interleave as two above three.
+        for (int i = 0; i < count; i++)
+        {
+            int row, column, columns;
+            if (count == 1) { row = 0; column = 0; columns = 1; }
+            else if (count == 2) { row = 0; column = i; columns = 2; }
+            else if (count == 3) { row = i == 0 ? 0 : 1; column = i == 0 ? 0 : i - 1; columns = row == 0 ? 1 : 2; }
+            else if (count == 4) { row = i / 2; column = i % 2; columns = 2; }
+            else { row = i < 2 ? 0 : 1; column = i < 2 ? i : i - 2; columns = row == 0 ? 2 : 3; }
+            float diameter = count >= 5 ? 39 : count >= 3 ? 44 : 49;
+            float gap = 3;
+            float rowWidth = columns * diameter + (columns - 1) * gap;
+            float px = x + (width - rowWidth) / 2 + column * (diameter + gap);
+            float py = count >= 3 ? 4 + row * 47 : 16;
+            SpeciesData item = species[i];
+            MakeNode(prefix + i, px, py, diameter, item,
+                item.HasEverUnlocked && IsPresent(item, block), !item.HasEverUnlocked, "?");
+        }
+        if (species.Count > 5)
+            Label(prefix + "More", foodNodes, "+" + (species.Count - 5), 13, x + width - 18, 84, 23, 21);
+    }
+
+    private static bool IsPresent(SpeciesData species, BlockInfo block)
+    {
+        if (block == null || block.community == null) return false;
+        foreach (var population in block.community)
+            if (population != null && population.species == species && population.speciesAmount > 0) return true;
+        return false;
+    }
+
+    private void MakeNode(string name, float x, float y, float diameter, SpeciesData species,
+        bool present, bool locked, string fallback)
+    {
+        var node = Rect(name, foodNodes, x, y, diameter, diameter);
+        Sprite circle = Resources.Load<Sprite>("GameUI/SpeciesCircle");
+        var maskImage = node.gameObject.AddComponent<Image>();
+        maskImage.sprite = circle;
+        maskImage.color = new Color(.91f, .91f, .80f);
+        maskImage.raycastTarget = false;
+        var mask = node.gameObject.AddComponent<Mask>();
+        mask.showMaskGraphic = true;
+        if (!locked && species != null && species.Portrait != null)
+        {
+            var picture = Rect("HeadPortrait", node, -diameter * .13f, -diameter * .02f,
+                diameter * 1.26f, diameter * 1.75f);
+            var image = picture.gameObject.AddComponent<Image>();
+            image.sprite = species.Portrait;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            if (!present)
+            {
+                Material gray = Resources.Load<Material>("GameUI/SpeciesJournal/GrayscalePortrait");
+                if (gray != null) image.material = gray;
+                image.color = new Color(.77f, .77f, .77f);
+            }
         }
         else
         {
-            relationshipTitle.text = "生态关系待接入";
-            SetScrollText(sources, "未接入"); SetScrollText(predators, "未接入");
+            var question = Label("Symbol", node, fallback, locked ? 27 : 25, 0, 0, diameter, diameter,
+                TextAlignmentOptions.Center);
+            question.color = SoftInk;
+        }
+        var outline = Rect("PencilOutline", foodNodes, x - 1, y - 1, diameter + 2, diameter + 2);
+        var ring = outline.gameObject.AddComponent<Image>();
+        ring.sprite = circle;
+        ring.type = Image.Type.Simple;
+        ring.color = new Color(.28f, .31f, .23f, .18f);
+        ring.raycastTarget = false;
+        outline.SetSiblingIndex(node.GetSiblingIndex());
+    }
+
+    private void ClearDynamicNodes()
+    {
+        foodSignature = null;
+        if (foodNodes == null) return;
+        for (int i = foodNodes.childCount - 1; i >= 0; i--)
+        {
+            Transform child = foodNodes.GetChild(i);
+            if (child.name.StartsWith("Arrow")) continue;
+            child.gameObject.SetActive(false);
+            if (Application.isPlaying) Destroy(child.gameObject);
+            else DestroyImmediate(child.gameObject);
         }
     }
 
-    private TextMeshProUGUI Text(string name, RectTransform parent, string value, float size, Vector2 position, Vector2 dimensions)
+    private void Section(string id, string caption, float x, float y, float w, float h, int size,
+        Sprite sticker, out TextMeshProUGUI label)
     {
-        RectTransform rect = Rect(name, parent, position, dimensions);
-        var label = rect.gameObject.AddComponent<TextMeshProUGUI>();
-        label.font = GameUITheme.TMPFont; label.fontSize = GameUITheme.ReadableFontSize(size); label.color = new Color(.11f, .16f, .17f);
-        label.textWrappingMode = TextWrappingModes.Normal; label.overflowMode = TextOverflowModes.Truncate;
-        label.richText = false; label.text = value; label.raycastTarget = true;
-        rect.gameObject.AddComponent<InformationTextDragHandle>().Initialize(window);
-        return label;
+        var rect = Rect(id, content, x, y, w, h);
+        var image = rect.gameObject.AddComponent<Image>();
+        image.sprite = sticker;
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+        label = Label("Caption", rect, caption, size, 16, 9, w - 29, h - 15);
     }
 
-    private TextMeshProUGUI ScrollText(string name, RectTransform parent, Vector2 position, Vector2 dimensions, float size)
+    private void Rule(string id, float x, float y, float width, float height)
     {
-        RectTransform root = Rect(name, parent, position, dimensions);
-        var scroll = root.gameObject.AddComponent<ScrollRect>();
-        scroll.horizontal = false; scroll.vertical = true; scroll.movementType = ScrollRect.MovementType.Clamped;
-        scroll.scrollSensitivity = 24f;
-        RectTransform viewport = Rect("Viewport", root, Vector2.zero, dimensions);
-        var hit = viewport.gameObject.AddComponent<Image>(); hit.color = Color.clear; hit.raycastTarget = true;
-        viewport.gameObject.AddComponent<RectMask2D>();
-        TextMeshProUGUI text = Text("Content", viewport, "", size, Vector2.zero, dimensions);
-        text.overflowMode = TextOverflowModes.Overflow;
-        scroll.viewport = viewport; scroll.content = text.rectTransform;
+        var rule = Rect(id, content, x, y, width, height);
+        var image = rule.gameObject.AddComponent<Image>();
+        image.color = new Color(.66f, .49f, .34f, .32f);
+        image.raycastTarget = false;
+    }
+
+    private TextMeshProUGUI Label(string id, RectTransform parent, string value, float size,
+        float x, float y, float w, float h, TextAlignmentOptions alignment = TextAlignmentOptions.TopLeft)
+    {
+        var rect = Rect(id, parent, x, y, w, h);
+        var text = rect.gameObject.AddComponent<TextMeshProUGUI>();
+        text.font = Resources.Load<TMP_FontAsset>("GameUI/SpeciesJournal/HandwrittenJournal") ??
+            GameUITheme.HandwrittenTMPFont;
+        text.fontSize = size;
+        text.color = Ink;
+        text.alignment = alignment;
+        text.textWrappingMode = TextWrappingModes.Normal;
+        text.overflowMode = TextOverflowModes.Truncate;
+        text.raycastTarget = false;
+        text.text = value;
         return text;
     }
 
-    private static void SetScrollText(TextMeshProUGUI text, string value)
+    private static RectTransform Rect(string id, RectTransform parent, float x, float y, float w, float h)
     {
-        if (text.text == value) return;
-        text.text = value;
-        RectTransform rect = text.rectTransform;
-        float height = text.GetPreferredValues(value, rect.rect.width, float.PositiveInfinity).y;
-        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(((RectTransform)rect.parent).rect.height, height + 4f));
-    }
-
-    private static RectTransform Rect(string name, RectTransform parent, Vector2 position, Vector2 size)
-    {
-        var go = new GameObject(name, typeof(RectTransform)); var rect = (RectTransform)go.transform;
-        rect.SetParent(parent, false); rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f);
-        rect.pivot = new Vector2(0f, 1f); rect.anchoredPosition = position; rect.sizeDelta = size;
+        var go = new GameObject(id, typeof(RectTransform));
+        go.layer = parent.gameObject.layer;
+        var rect = (RectTransform)go.transform;
+        rect.SetParent(parent, false);
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0, 1);
+        rect.anchoredPosition = new Vector2(x, -y);
+        rect.sizeDelta = new Vector2(w, h);
         return rect;
     }
 }

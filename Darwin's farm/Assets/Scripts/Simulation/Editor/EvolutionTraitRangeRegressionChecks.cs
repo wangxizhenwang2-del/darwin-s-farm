@@ -145,26 +145,36 @@ public static class EvolutionTraitRangeRegressionChecks
                 "Every ready but cooling day must reach JSONL and Debug.Log.");
             source.nextEvolutionDay = 0;
             block.plantBiomass = block.habitatRecovery = 0;
+            MethodInfo foodSupport = typeof(SimulationController).GetMethod(
+                "HasEvolutionFoodSupport", BindingFlags.Instance |
+                BindingFlags.NonPublic);
+            Require(foodSupport != null, "Evolution food admission gate is missing.");
+            for (int sourceLevel = 0; sourceLevel <= 2; sourceLevel++)
+            {
+                source.trophicLevel = sourceLevel;
+                sourceSpecies.trophicLevel = sourceLevel;
+                Require((bool)foodSupport.Invoke(simulation,
+                    new object[] { block, source, target, 10 }),
+                    "Every L0 target must bypass daily food supply regardless of source level.");
+            }
+            source.trophicLevel = sourceSpecies.trophicLevel = 0;
             run.Invoke(simulation, new object[] { 12 });
             Require(events.Count == 3 && console.Count == 3 &&
-                events[2].Contains("reason=food_support") &&
-                events[2].Contains("plantDemand="),
-                "Ready traits with no renewable food need a measured refusal.");
-            block.maxPlantBiomass = 1000000f;
-            block.plantBiomass = 100000f;
-            block.habitatRecovery = 100000;
-            for (int day = 13; day <= 16; day++)
+                events[2].Contains("reason=consecutive_days") &&
+                events[2].Contains("effectiveDays=1"),
+                "L0-to-L0 evolution must start its streak without renewable food.");
+            for (int day = 13; day <= 15; day++)
                 run.Invoke(simulation, new object[] { day });
-            Require(events.Count == 7 && console.Count == 7 &&
-                events[6].Contains("reason=consecutive_days") &&
-                events[6].Contains("effectiveDays=4") &&
-                events[6].Contains("requiredDays=5"),
+            Require(events.Count == 6 && console.Count == 6 &&
+                events[5].Contains("reason=consecutive_days") &&
+                events[5].Contains("effectiveDays=4") &&
+                events[5].Contains("requiredDays=5"),
                 "Every qualifying day before conversion needs streak progress.");
-            run.Invoke(simulation, new object[] { 17 });
+            run.Invoke(simulation, new object[] { 16 });
             PopulationData descendant = block.community.Find(p => p.species == target);
-            Require(events.Count == 7 && console.Count == 7 &&
-                descendant != null && source.nextEvolutionDay == 117 &&
-                descendant.nextEvolutionDay == 117,
+            Require(events.Count == 6 && console.Count == 6 &&
+                descendant != null && source.nextEvolutionDay == 116 &&
+                descendant.nextEvolutionDay == 116,
                 "A successful conversion must not be reported as waiting.");
         }
         finally

@@ -65,7 +65,6 @@ public sealed class GameInformationUI : MonoBehaviour
     public void SetMobilePresentation(bool mobile)
     {
         mobilePresentation = mobile;
-        if (ToolModeActive && tileWindow != null) tileWindow.Close();
         if (tileWindow != null) tileWindow.SetPresentationVisible(!mobile);
         if (populationWindow != null) populationWindow.SetPresentationVisible(!mobile);
     }
@@ -235,7 +234,7 @@ public sealed class GameInformationUI : MonoBehaviour
             dragged = true;
         if (!mouse.leftButton.wasReleasedThisFrame) return;
         awaitingRelease = false;
-        if (!dragged && !PointerOverUi(position)) SelectSceneTarget(position);
+        if (!dragged && !PointerOverUi(position)) SelectSceneTarget(position, alt);
     }
 
     private bool PointerOverUi(Vector2 position)
@@ -250,13 +249,14 @@ public sealed class GameInformationUI : MonoBehaviour
         return false;
     }
 
-    private void SelectSceneTarget(Vector2 position) => TrySelectSceneAt(position);
+    private void SelectSceneTarget(Vector2 position, bool inspect) => TrySelectSceneAt(position, 0f, inspect);
 
-    public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f)
+    public bool TrySelectSceneAt(Vector2 position, float populationPaddingPixels = 0f,
+        bool inspectWhileUsingTool = false)
     {
-        if (ToolModeActive) return TrySelectTileAt(position);
+        if (ToolModeActive && !inspectWhileUsingTool) return TrySelectTileAt(position);
         if (TrySelectPopulationAt(position, populationPaddingPixels)) return true;
-        return TrySelectTileAt(position);
+        return TrySelectTileAt(position, true);
     }
 
     private bool CanSelectAt(Vector2 position) => isActiveAndEnabled &&
@@ -264,9 +264,10 @@ public sealed class GameInformationUI : MonoBehaviour
         (buildMode == null || !buildMode.IsBuildMode) && viewCamera.pixelRect.Contains(position) &&
         !PointerOverUi(position);
 
-    // Selection replaces the corresponding window's target on both platforms.
+    // Selecting one kind of information does not close the other open windows.
     public bool TrySelectPopulationAt(Vector2 position, float paddingPixels = 0f)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.PopulationInfo)) return false;
         if (!CanSelectAt(position)) return false;
         // The existing population cubes intentionally have no colliders. Pick their
         // visible sprite rectangles before querying the terrain colliders below.
@@ -277,12 +278,16 @@ public sealed class GameInformationUI : MonoBehaviour
             ? visual.EcologicalPopulation.PopulationId : visual.UniqueId;
         RefreshPopulation();
         populationWindow.Open();
+        if (!mobilePresentation) populationWindow.transform.SetAsLastSibling();
         SelectionChanged?.Invoke(true);
         return true;
     }
 
-    public bool TrySelectTileAt(Vector2 position)
+    public bool TrySelectTileAt(Vector2 position) => TrySelectTileAt(position, !ToolModeActive);
+
+    private bool TrySelectTileAt(Vector2 position, bool showInformation)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.TileInfo)) return false;
         if (!CanSelectAt(position)) return false;
         Ray ray = viewCamera.ScreenPointToRay(position);
         int count = Physics.RaycastNonAlloc(ray, groundHits, 1000f,
@@ -300,10 +305,13 @@ public sealed class GameInformationUI : MonoBehaviour
         if (tile == null) return false;
         selectedTile = tile;
         RefreshTile();
-        // Tool targeting selects a tile independently of either platform's
-        // information window. Only an information request opens that window.
-        if (ToolModeActive) tileWindow.Close();
-        else tileWindow.Open();
+        // Tool targeting keeps existing information windows open. An explicit
+        // inspection request also opens the tile window while tools are active.
+        if (showInformation)
+        {
+            tileWindow.Open();
+            if (!mobilePresentation) tileWindow.transform.SetAsLastSibling();
+        }
         SelectionChanged?.Invoke(false);
         return true;
     }
@@ -527,8 +535,19 @@ public sealed class GameInformationUI : MonoBehaviour
         if (dayText != null) dayText.text = "Day " + (clock == null ? "--" : clock.currentDay.ToString());
         if (speedText != null) speedText.text = clock == null ? "--" :
             clock.IsPaused ? "暂停" : clock.Speed.ToString("0.#") + "X";
+        RefreshTutorialLocks();
         if (tileWindow != null && tileWindow.IsOpen) RefreshTile();
         if (populationWindow != null && populationWindow.IsOpen) RefreshPopulation();
+    }
+
+    public void RefreshTutorialLocks()
+    {
+        if (speedText == null) return;
+        // The tutorial hides this Button before it is unlocked. Include inactive
+        // parents so a later lesson can find and show it again.
+        var speedButton = speedText.GetComponentInParent<UnityEngine.UI.Button>(true);
+        if (speedButton != null)
+            speedButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.Clock));
     }
 
     private void RefreshBioenergy(long balance)

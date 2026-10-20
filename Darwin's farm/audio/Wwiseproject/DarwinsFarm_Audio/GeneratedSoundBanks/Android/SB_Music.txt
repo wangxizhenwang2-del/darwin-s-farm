@@ -1,0 +1,16 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1562872116	Stop_MSC_BGM			\Default Work Unit\Stop_MSC_BGM	
+	3332953678	Play_MSC_BGM			\Default Work Unit\Play_MSC_BGM	
+
+State Group	ID	Name			Wwise Object Path	Notes
+	2597075221	BGM_Phase			\Default Work Unit\BGM_Phase	
+
+State	ID	Name	State Group			Notes
+	748895195	None	BGM_Phase			
+	998496889	First	BGM_Phase			
+	3476314365	Second	BGM_Phase			
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	610726031	bossa nova (1)(1)	.cache\57\{57D5A9D5-8C70-416C-DC11-EACD21305DA3}.wem		\Containers\Default Work Unit\MSC_BGM\MPL_Second\MUS_Second\bossa nova (1)(1)		37842048
+	767792914	bossa nova	.cache\8D\{8DA05718-47C8-6887-9798-3B8E0C9F3753}.wem		\Containers\Default Work Unit\MSC_BGM\MPL_First\MUS_First\bossa nova		31618656
+

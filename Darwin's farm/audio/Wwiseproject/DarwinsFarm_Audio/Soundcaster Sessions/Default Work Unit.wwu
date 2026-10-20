@@ -14,32 +14,28 @@
 							<Position X="0" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Amb_Desert" ID="{AD3EC4A9-FE4D-42BD-91F6-D55D31991A1E}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_Amb_Mountain" ID="{E128DC14-3484-41B5-8451-5B0C16951FE1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="0" Y="2"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Amb_Volcano" ID="{E7DEA007-CEA8-4029-A46B-875848A90D2D}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_Amb_Tundra" ID="{F8C883B5-8FE8-45CD-91AA-2FD72043D719}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="0" Y="3"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Amb_Mountain" ID="{E128DC14-3484-41B5-8451-5B0C16951FE1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_Amb_SnowMountain" ID="{A237FC82-36A1-4E17-96C1-58A3B511FEAD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="0" Y="4"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Amb_Tundra" ID="{F8C883B5-8FE8-45CD-91AA-2FD72043D719}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_Rc_ji" ID="{F60FFE9A-8175-4B31-9DC5-E1D1BFDAEFC0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="0" Y="5"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Amb_ForestWaterfall" ID="{48163E4C-4863-4C0D-8071-0EA9686624E0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_UI_Handbook_Open" ID="{77F815F1-321B-41D5-A391-201FCF79E474}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="0" Y="6"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Play_Amb_Forest" ID="{207749F8-901F-4EC5-B0BC-22DBBE90A47A}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_MSC_BGM" ID="{F0224911-DCA0-4563-8709-B784C25DDD25}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="0" Y="7"/>
-						</Module>
-						<Module>
-							<ObjectRef Name="Play_Amb_SnowMountain" ID="{A237FC82-36A1-4E17-96C1-58A3B511FEAD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
-							<Position X="0" Y="8"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="Stop_Amb_Water" ID="{01705C25-FF7C-478F-ACEE-FBC6615368A1}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
@@ -50,32 +46,76 @@
 							<Position X="1" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Stop_Amb_Desert" ID="{4FEA22D7-1E32-45A8-9733-0303A33086F6}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Stop_Amb_Mountain" ID="{FCD5CDDB-138D-4046-A56B-4D1331FDB486}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="2"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Stop_Amb_Volcano" ID="{2BDE5A72-C311-462B-B810-4BC5EC0851FD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Stop_Amb_Tundra" ID="{07227EB1-A5C1-49E9-8B50-5CE6C16E139C}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="3"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Stop_Amb_Mountain" ID="{FCD5CDDB-138D-4046-A56B-4D1331FDB486}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Stop_Amb_SnowMountain" ID="{BB32338B-F6D2-4584-A496-B66DB386768F}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="4"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Stop_Amb_Tundra" ID="{07227EB1-A5C1-49E9-8B50-5CE6C16E139C}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_Rc_caiji" ID="{88A2C2BA-AE11-4DA4-93FA-FE97BAF376E0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="5"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Stop_Amb_ForestWaterfall" ID="{08E18584-D359-44ED-AED2-91241F60B9DD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Play_UI_Species_Reveal" ID="{0A348A85-3370-4848-9E67-B930A4DE59C7}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="6"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Stop_Amb_Forest" ID="{A1B1CA2D-3EC3-4094-B006-55E705D0CF5D}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<ObjectRef Name="Stop_MSC_BGM" ID="{F0A9294F-FE62-4395-887D-4156700F03CE}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
 							<Position X="1" Y="7"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="Stop_Amb_SnowMountain" ID="{BB32338B-F6D2-4584-A496-B66DB386768F}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
-							<Position X="1" Y="8"/>
+							<ObjectRef Name="Play_Amb_Desert" ID="{AD3EC4A9-FE4D-42BD-91F6-D55D31991A1E}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="2" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Amb_Volcano" ID="{E7DEA007-CEA8-4029-A46B-875848A90D2D}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="2" Y="1"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Amb_ForestWaterfall" ID="{48163E4C-4863-4C0D-8071-0EA9686624E0}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="2" Y="2"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Amb_Forest" ID="{207749F8-901F-4EC5-B0BC-22DBBE90A47A}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="2" Y="3"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_Rc_lu" ID="{6CC25176-B45C-4547-944D-27F26D692F95}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="2" Y="5"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_News_Bad" ID="{95AEB729-F8EA-44B5-AB7D-06EB04E3F75C}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="2" Y="6"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Stop_Amb_Desert" ID="{4FEA22D7-1E32-45A8-9733-0303A33086F6}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="3" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Stop_Amb_Volcano" ID="{2BDE5A72-C311-462B-B810-4BC5EC0851FD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="3" Y="1"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Stop_Amb_ForestWaterfall" ID="{08E18584-D359-44ED-AED2-91241F60B9DD}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="3" Y="2"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Stop_Amb_Forest" ID="{A1B1CA2D-3EC3-4094-B006-55E705D0CF5D}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="3" Y="3"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_News_good" ID="{1C700386-9CA0-4B9F-986C-12941331AE80}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="3" Y="6"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Play_UI_News_Mid" ID="{6890589B-C437-49B2-B981-87CA308D3F57}" WorkUnitID="{D241EE68-F22A-4CC6-8D9F-105A555DA41A}"/>
+							<Position X="4" Y="6"/>
 						</Module>
 					</ModuleList>
 				</SoundcasterSession>

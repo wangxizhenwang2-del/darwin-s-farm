@@ -52,11 +52,13 @@ public static class GameSaveService
         public List<EnvironmentTechnologyController.SavedChoice> technologies;
         public EcologyNewsDetector.SaveState news;
         public EcologyNewsHUD.SaveState newsHud;
+        public TutorialFlowController.SaveState tutorialFlow;
         public List<TerrainKind> terrainUnlocks;
         public bool waterUnlocked;
         public string bioenergy, storage;
         public List<TileData> tiles;
         public List<SpeciesProgress> species;
+        public string trackedSpecies;
     }
     private sealed class TileData
     {
@@ -113,6 +115,9 @@ public static class GameSaveService
         }
         catch(Exception e) { error=e.Message; Debug.LogError("Save failed: "+e); return false; }
     }
+    // Captures the exact current save state for a test session's starting point.
+    // Call only on the main thread, once when recording begins.
+    public static string CaptureShareSnapshot() => JsonConvert.SerializeObject(Capture(), Formatting.None);
     public static bool TryPrepareLoad(int slot,out string error)
     {
         error=null;
@@ -150,6 +155,7 @@ public static class GameSaveService
         var economy=UnityEngine.Object.FindFirstObjectByType<PlayerEconomyController>();
         var news=UnityEngine.Object.FindFirstObjectByType<EcologyNewsDetector>();
         var hud=UnityEngine.Object.FindFirstObjectByType<EcologyNewsHUD>(FindObjectsInactive.Include);
+        var tutorial=TutorialFlowController.Current;
         SaveAssetCatalog catalog=Catalog;
         if(grid==null||clock==null||simulation==null||environment==null||technology==null||
             account==null||economy==null||news==null||hud==null||catalog==null)throw new InvalidOperationException("存档组件尚未准备好。");
@@ -164,8 +170,10 @@ public static class GameSaveService
             environment=environment.CaptureSaveState(), technologies=technology.CaptureSaveState(),
             terrainUnlocks=environment.CaptureTerrainUnlocks(), waterUnlocked=environment.WaterIsUnlocked,
             news=news.CaptureSaveState(), newsHud=hud.CaptureSaveState(),
+            tutorialFlow=tutorial != null ? tutorial.CaptureSaveState() : null,
             bioenergy=account.CaptureState(), storage=economy.CaptureStorageState(),
-            tiles=new List<TileData>(), species=new List<SpeciesProgress>()
+            tiles=new List<TileData>(), species=new List<SpeciesProgress>(),
+            trackedSpecies=catalog.SpeciesId(SpeciesTrackingState.Target)
         };
         foreach(MapTileInstance tile in placed)
         {
@@ -250,6 +258,7 @@ public static class GameSaveService
         technology.RestoreSaveState(data.technologies);
         foreach(SpeciesProgress progress in data.species)
             catalog.Species(progress.id).RestoreProgress(progress.unlocked,progress.extinct,progress.revealedTraits);
+        SpeciesTrackingState.Restore(catalog.Species(data.trackedSpecies));
         bool legacy=data.terrainUnlocks==null;
         bool legacyWater=legacy && data.species.Any(progress=>progress.unlocked &&
             (catalog.Species(progress.id).SpeciesId=="fd1c574bfd1247b2933cdfbc54758cf8" ||
@@ -259,6 +268,7 @@ public static class GameSaveService
             throw new InvalidOperationException("经济数据无法恢复。");
         news.RestoreSaveState(data.news);
         hud.RestoreSaveState(data.newsHud);
+        TutorialFlowController.Current?.RestoreSaveState(data.tutorialFlow);
     }
     private static GameData Read(string path)
     {
@@ -306,6 +316,7 @@ public static class GameSaveService
         if(Catalog==null)throw new InvalidOperationException("缺少存档资源目录。");
         foreach(TileData tile in data.tiles)Catalog.Tile(tile.definition);
         foreach(SpeciesProgress value in data.species)Catalog.Species(value.id);
+        Catalog.Species(data.trackedSpecies);
         if(data.scene!=UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
             throw new InvalidDataException("存档来自不同场景。");
     }

@@ -78,6 +78,8 @@ public class MapGridManager : MonoBehaviour
         return tiles.Values;
     }
 
+    public bool HasPlacedTile => tiles.Count > 0;
+
     // 网格坐标转换成世界位置。
     public Vector3 GridToWorld(Vector2Int coordinate)
     {

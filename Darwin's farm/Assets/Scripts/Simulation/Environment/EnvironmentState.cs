@@ -49,6 +49,9 @@ namespace DarwinFarm.Environment
         public AttributeSnapshot Temperature { get; }
         public AttributeSnapshot Humidity { get; }
         public AttributeSnapshot Recovery { get; }
+        public double TemperatureCancelTarget { get; }
+        public double HumidityCancelTarget { get; }
+        public double RecoveryCancelTarget { get; }
         public bool HasLocalClimate { get; }
         public bool HasLocalTemperature { get; }
         public bool HasLocalHumidity { get; }
@@ -60,6 +63,12 @@ namespace DarwinFarm.Environment
             Habitat = tile.Habitat; IsWater = tile.IsWater;
             NaturalDefaults = EnvironmentRules.Defaults(tile.Habitat);
             Temperature = tile.Attribute(0); Humidity = tile.Attribute(1); Recovery = tile.Attribute(2);
+            TemperatureCancelTarget = CancelTarget(tile, 0);
+            HumidityCancelTarget = CancelTarget(tile, 1);
+            RecoveryCancelTarget = EnvironmentRules.Clamp(EnvironmentAttribute.Recovery,
+                tile.IsWater || tile.RecoveryHabitatAtSubmit != tile.Habitat ?
+                    (tile.IsWater ? EnvironmentRules.WaterDefaultRecovery :
+                        EnvironmentRules.Defaults(tile.Habitat).Recovery) : tile.RecoveryBaseline);
             HasLocalClimate = tile.HasLocalClimate;
             HasLocalTemperature = tile.Locals[0] != null;
             HasLocalHumidity = tile.Locals[1] != null;
@@ -67,6 +76,14 @@ namespace DarwinFarm.Environment
             CanCancelRecovery = tile.RecoveryReturning &&
                 tile.RecoveryAge < tile.RecoveryHoldThreshold &&
                 !tile.RecoveryCancelIssued;
+        }
+
+        private static double CancelTarget(EnvironmentTile tile, int index)
+        {
+            var local = tile.Locals[index];
+            double destination = local != null && local.HabitatAtSubmit == tile.Habitat ?
+                local.Baseline : EnvironmentRules.Defaults(tile.Habitat).Get((EnvironmentAttribute)index);
+            return EnvironmentRules.Clamp((EnvironmentAttribute)index, destination);
         }
     }
 

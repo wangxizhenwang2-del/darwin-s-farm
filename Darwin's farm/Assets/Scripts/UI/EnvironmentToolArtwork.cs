@@ -47,6 +47,8 @@ public sealed class EnvironmentToolArtwork : ScriptableObject
         var outline = button.GetComponent<UnityEngine.UI.Outline>();
         if (outline != null) outline.enabled = false;
         var marker = button.transform.Find("SelectedMarker");
-        if (marker != null) marker.gameObject.SetActive(session.OptionSelected(index));
+        if (marker != null) marker.gameObject.SetActive(
+            button.transform.parent == null || !button.transform.parent.name.StartsWith("TierCard")
+                ? session.OptionSelected(index) : false);
     }
 }

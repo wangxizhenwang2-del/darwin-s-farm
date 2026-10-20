@@ -33,9 +33,14 @@ public static class SpeciesMapsPresentationChecks
         var flags = Private;
         var show = maps.GetType().GetMethod("ShowClue",flags);
         var eligible = maps.GetType().GetMethod("CanShowClue",flags);
-        var text = root.GetComponentsInChildren<TMPro.TMP_Text>(true).First(t=>t.name=="BreedingClue");
-        var popup = text.transform.parent;
+        var popup = maps.transform.Find("SpeciesCluePopup");
+        var text = popup.GetComponentsInChildren<TMPro.TMP_Text>(true).First(t=>t.name=="BreedingClue");
+        var title = popup.GetComponentsInChildren<TMPro.TMP_Text>(true).First(t=>t.name=="ClueTitle");
+        var closeClue = popup.GetComponentInChildren<UnityEngine.UI.Button>(true);
+        Require(popup.GetComponent<InformationWindow>() != null && closeClue.name == "CloseClue",
+            "Clue window is missing drag or close controls");
         int count=0;
+        SpeciesMapNodeView firstEligible = null;
         foreach(var node in root.GetComponentsInChildren<SpeciesMapNodeView>(true))
         {
             show.Invoke(maps,new object[]{node}); Canvas.ForceUpdateCanvases(); text.ForceMeshUpdate();
@@ -43,6 +48,10 @@ public static class SpeciesMapsPresentationChecks
             Require(popup.gameObject.activeSelf==canShow,"Clue eligibility: "+node.name);
             if(canShow)
             {
+                if (firstEligible == null) firstEligible = node;
+                Require(title.text == (node.Species.HasEverUnlocked ||
+                    TutorialFlowController.RevealsSpeciesName(node.Species) ? node.Species.SpeciesName : "？？？") +
+                    "的培育线索", "Clue title: " + node.name);
                 Require(!text.isTextOverflowing,"Clue overflow: "+node.name);
                 string narrative=text.text.Split(new[]{"\n\n"},StringSplitOptions.None)[0];
                 int redKeywords=System.Text.RegularExpressions.Regex.Matches(narrative,"<color=#C3342D>").Count;
@@ -56,6 +65,15 @@ public static class SpeciesMapsPresentationChecks
         Require(root.Find("Food Web").gameObject.activeSelf,"Switch to food web");
         buttons.First(b=>b.name=="Close Map"&&b.gameObject.activeInHierarchy).onClick.Invoke();
         Require(!maps.IsOpen && clock.IsPaused==paused,"Close/pause restoration");
+        if (firstEligible != null)
+        {
+            maps.Open();
+            show.Invoke(maps,new object[]{firstEligible});
+            maps.Close();
+            Require(popup.gameObject.activeSelf,"Clue closed together with the map");
+            closeClue.onClick.Invoke();
+            Require(!popup.gameObject.activeSelf,"Clue close button did not close the window");
+        }
         maps.Open();
         return $"PASS: mobile entry, icon mesh, placement, modal sorting, {count} clues, page switch, close and pause restoration ({Screen.width}x{Screen.height}).";
     }

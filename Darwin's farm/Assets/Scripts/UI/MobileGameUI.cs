@@ -51,6 +51,7 @@ public sealed class MobileGameUI : MonoBehaviour
     [SerializeField, Min(320f)] private float maximumDrawerWidth = 520f;
     [SerializeField, Range(.3f, .6f)] private float drawerWidthFraction = .43f;
     [SerializeField] private Vector2 drawerDefaultPosition = new Vector2(-8f, -92f);
+    private Vector2 ToolsDrawerHome => drawerDefaultPosition + new Vector2(-48f, -48f);
     [SerializeField, Min(100f)] private float drawerBottomClearance = 152f;
     [SerializeField, Min(.05f)] private float refreshSeconds = .25f;
     [Tooltip("Editor preview only: left, top, right, bottom in 720-height Canvas units")]
@@ -66,7 +67,7 @@ public sealed class MobileGameUI : MonoBehaviour
     private readonly float[] scrollPositions = { 1f, 1f };
     [SerializeField] private UnityEngine.UI.Button environmentToolsButton;
     private EnvironmentToolSession toolSession;
-    private SimulationEnvironmentController terrainUnlocks;
+    private MapGridManager grid;
     private BioenergyAccount bioenergy;
     private bool previousToolMode;
 
@@ -125,13 +126,13 @@ public sealed class MobileGameUI : MonoBehaviour
         bound = true;
         Canvas.ForceUpdateCanvases();
         drawer.Initialize(safeArea, drawerDefaultPosition);
-        if (toolsDrawer != null) toolsDrawer.Initialize(safeArea, drawerDefaultPosition);
+        if (toolsDrawer != null) toolsDrawer.Initialize(safeArea, ToolsDrawerHome);
         populationPanel.Initialize(drawer);
         foreach (InformationTextDragHandle handle in GetComponentsInChildren<InformationTextDragHandle>(true))
             handle.Initialize(toolsDrawer != null && handle.transform.IsChildOf(toolsDrawer.transform) ? toolsDrawer : drawer);
         technologyPanel.Initialize();
         toolSession = information.GetComponent<EnvironmentToolSession>();
-        terrainUnlocks = FindFirstObjectByType<SimulationEnvironmentController>();
+        grid = FindFirstObjectByType<MapGridManager>();
         bioenergy = FindFirstObjectByType<BioenergyAccount>();
         if (bioenergyLabel == null)
         {
@@ -232,17 +233,30 @@ public sealed class MobileGameUI : MonoBehaviour
         titleLabel.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width - 24f);
         if (!Application.isPlaying || !drawer.IsOpen) drawerRect.anchoredPosition = drawerDefaultPosition;
         if (Application.isPlaying && bound) drawer.SetDragBounds(safeArea, drawerDefaultPosition);
-        float scale = Mathf.Min(1f, viewport.rect.width / 500f);
-        tileContent.localScale = populationContent.localScale = Vector3.one * scale;
+        tileContent.localScale = Vector3.one * Mathf.Min(1f, viewport.rect.width / 500f);
+        // The complete journal scrolls vertically on narrow screens; its artwork
+        // and every child share one uniform scale.
+        populationContent.localScale = Vector3.one *
+            Mathf.Min(1f, viewport.rect.width / PopulationInfoPanel.BoardWidth);
         if (toolsDrawerRect != null)
         {
-            toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            float requestedToolWidth = safeArea.rect.width >= 900f ?
+                Mathf.Clamp(safeArea.rect.width * drawerWidthFraction, 570f, 620f) :
+                Mathf.Clamp(safeArea.rect.width * drawerWidthFraction, 370f, maximumDrawerWidth);
+            float toolWidth = Mathf.Min(safeArea.rect.width - 16f, requestedToolWidth);
+            toolWidth = Mathf.Max(280f, toolWidth);
+            toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, toolWidth);
             toolsDrawerRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
                 Mathf.Clamp(safeArea.rect.height + drawerDefaultPosition.y - 20f, 180f, 612f));
-            if (!Application.isPlaying || !toolsDrawer.IsOpen) toolsDrawerRect.anchoredPosition = drawerDefaultPosition;
-            if (Application.isPlaying && bound) toolsDrawer.SetDragBounds(safeArea, drawerDefaultPosition);
+            if (!Application.isPlaying || !toolsDrawer.IsOpen) toolsDrawerRect.anchoredPosition = ToolsDrawerHome;
+            if (Application.isPlaying && bound) toolsDrawer.SetDragBounds(safeArea, ToolsDrawerHome);
             if (toolsContent != null && toolsViewport != null)
-                toolsContent.localScale = Vector3.one * Mathf.Min(1f, Mathf.Max(1f, width - 40f) / 500f);
+            {
+                float available = Mathf.Max(1f, toolWidth - 20f);
+                var responsive = toolsContent.GetComponent<EnvironmentToolResponsiveLayout>();
+                if (responsive != null) responsive.Apply(available);
+                else toolsContent.localScale = Vector3.one * Mathf.Min(1f, available / 500f);
+            }
         }
     }
     private void LayoutMobileControls()
@@ -321,11 +335,17 @@ public sealed class MobileGameUI : MonoBehaviour
     private void ShowTab()
     {
         if (informationBackground != null)
-            informationBackground.sprite = informationTab == InformationTab.Environment ? environmentBackground : populationBackground;
+        {
+            informationBackground.enabled = informationTab == InformationTab.Environment;
+            informationBackground.sprite = environmentBackground;
+        }
         informationScroll.StopMovement();
         tileContent.gameObject.SetActive(informationTab == InformationTab.Environment);
         populationContent.gameObject.SetActive(informationTab == InformationTab.Population);
         informationScroll.content = informationTab == InformationTab.Environment ? tileContent : populationContent;
+        if (informationScroll.verticalScrollbar != null)
+            informationScroll.verticalScrollbarVisibility =
+                UnityEngine.UI.ScrollRect.ScrollbarVisibility.AutoHide;
         Canvas.ForceUpdateCanvases();
         informationScroll.verticalNormalizedPosition = scrollPositions[(int)informationTab];
         lastTab = informationTab;
@@ -371,7 +391,7 @@ public sealed class MobileGameUI : MonoBehaviour
         if (lastTab != informationTab) ShowTab();
         bool operating = toolSession != null && toolSession.Active;
         bool any = information.TileIsOpen || information.PopulationIsOpen;
-        drawer.SetPresentationVisible(!operating);
+        drawer.SetPresentationVisible(true);
         if (any && !drawer.IsOpen) { ShowTab(); drawer.Open(); }
         else if (!any && drawer.IsOpen) drawer.Close();
         if (toolsDrawer != null)
@@ -392,6 +412,14 @@ public sealed class MobileGameUI : MonoBehaviour
         else if (information.PopulationIsOpen) information.RefreshPopulationView(populationPanel);
         else populationPanel.ShowUnavailable("点击种群查看生物信息");
         technologyPanel.Refresh();
+        if (buildButton != null)
+            buildButton.gameObject.SetActive(grid != null && grid.HasPlacedTile);
+        if (environmentToolsButton != null)
+            environmentToolsButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.EnvironmentPreview));
+        if (speciesMapButton != null)
+            speciesMapButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.SpeciesMap));
+        if (speedButton != null)
+            speedButton.gameObject.SetActive(TutorialFlowController.Allows(TutorialFlowController.Feature.Clock));
         if (bioenergyLabel != null)
             bioenergyLabel.text = bioenergy != null ? bioenergy.Balance.ToString("N0") : "0";
         dayLabel.text = clock == null ? "时间未接入" : "Day " + clock.currentDay;
@@ -399,10 +427,10 @@ public sealed class MobileGameUI : MonoBehaviour
         bool building = buildMode != null && buildMode.IsBuildMode;
         buildLabel.text = building ? "退出建造" : "建造地块";
         buildPalette.SetActive(building);
-        if (building && terrainUnlocks != null)
+        if (building && grid != null)
             for (int i = 0; i < tileButtons.Length && i < tileDefinitions.Length; i++)
             {
-                bool unlocked = terrainUnlocks.IsUnlocked(tileDefinitions[i]);
+                bool unlocked = grid.HasPlacedTile && tileDefinitions[i] != null;
                 tileButtons[i].interactable = unlocked;
                 var label = tileButtons[i].GetComponentInChildren<TextMeshProUGUI>(true);
                 if (label != null && tileDefinitions[i] != null)

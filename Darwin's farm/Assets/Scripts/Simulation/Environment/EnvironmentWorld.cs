@@ -98,8 +98,9 @@ namespace DarwinFarm.Environment
                 for (int i=0;i<3;i++)
                 {
                     SavedTrack t=saved.tracks[i] ?? throw new ArgumentException("Missing environment track.");
-                    tile.Values[i]=saved.values[i];
-                    tile.Tracks[i].Start=t.start;tile.Tracks[i].Target=t.target;
+                    tile.Values[i]=EnvironmentRules.Clamp((EnvironmentAttribute)i, saved.values[i]);
+                    tile.Tracks[i].Start=EnvironmentRules.Clamp((EnvironmentAttribute)i, t.start);
+                    tile.Tracks[i].Target=EnvironmentRules.Clamp((EnvironmentAttribute)i, t.target);
                     tile.Tracks[i].Age=t.age;tile.Tracks[i].Duration=t.duration;
                     tile.Tracks[i].Phase=(EffectPhase)t.phase;
                 }
@@ -107,7 +108,8 @@ namespace DarwinFarm.Environment
                 {
                     SavedLocal local=saved.locals[i];
                     tile.Locals[i]=local==null ? null : new LocalClimateEffect {
-                        Age=local.age, Tier=local.tier, Sequence=local.sequence, Baseline=local.baseline,
+                        Age=local.age, Tier=local.tier, Sequence=local.sequence,
+                        Baseline=EnvironmentRules.Clamp((EnvironmentAttribute)i, local.baseline),
                         HabitatAtSubmit=(HabitatState)local.habitat };
                 }
             }
@@ -167,6 +169,7 @@ namespace DarwinFarm.Environment
             if (!tiles.TryGetValue(position, out EnvironmentTile tile) || tile.IsWater)
             { error = "温湿度科技只适用于陆格"; return false; }
             int index = (int)attribute;
+            tile.Values[index] = EnvironmentRules.Clamp(attribute, tile.Values[index]);
             double target = EnvironmentRules.Clamp(attribute, EnvironmentRules.Defaults(tile.Habitat).Get(attribute) + amount);
             if (Math.Abs(target - tile.Values[index]) < .000001)
             { error = "环境数值未发生有效变化"; return false; }
@@ -338,7 +341,8 @@ namespace DarwinFarm.Environment
         {
             foreach (var tile in tiles.Values)
             {
-                for (int i = 0; i < 2; i++) if (tile.Tracks[i].Active) tile.Values[i] = tile.Tracks[i].Tick();
+                for (int i = 0; i < 2; i++) if (tile.Tracks[i].Active)
+                    tile.Values[i] = EnvironmentRules.Clamp((EnvironmentAttribute)i, tile.Tracks[i].Tick());
                 if (tile.Tracks[2].Active) tile.Values[2] = tile.Tracks[2].Tick();
                 // Each active command owns a slot only until its return begins.
                 for (int i = 0; i < 2; i++) if (tile.Locals[i] != null) tile.Locals[i].Age++;
@@ -384,7 +388,9 @@ namespace DarwinFarm.Environment
             LocalClimateEffect effect = tile.Locals[index];
             double destination = effect != null && effect.HabitatAtSubmit == tile.Habitat
                 ? effect.Baseline : ClimateDestination(tile, index);
-            tile.Tracks[index].Begin(tile.Values[index], destination,
+            tile.Values[index] = EnvironmentRules.Clamp((EnvironmentAttribute)index, tile.Values[index]);
+            tile.Tracks[index].Begin(tile.Values[index],
+                EnvironmentRules.Clamp((EnvironmentAttribute)index, destination),
                 EnvironmentRules.ClimateReturnDays, EffectPhase.Returning);
         }
         private void StartRecoveryReturn(EnvironmentTile tile)

@@ -13,6 +13,8 @@ public sealed class EnvironmentTechnologyPreview
     public string Timing { get; internal set; }
     public IReadOnlyList<Vector2Int> Area { get; internal set; } = Array.Empty<Vector2Int>();
     public int Cost { get; internal set; }
+    public double? TargetValue { get; internal set; }
+    public HabitatState? EstimatedHabitat { get; internal set; }
 }
 
 // 2026-10-09 14:46 +08:00: player Controller validates the immutable V4.3
@@ -106,6 +108,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 result.After = (temperature ? "温度" : "湿度") + "目标 " +
                     climate.Target.ToString("F0") + "；预计生境 " +
                     EnvironmentRules.Profile(climate.EstimatedHabitat).Title;
+                result.TargetValue = climate.Target;
+                result.EstimatedHabitat = climate.EstimatedHabitat;
                 result.Timing = "25天进入 · 150天维持 · 100天恢复";
                 break;
             case EnvironmentTechnologyKind.PlantStockChange:
@@ -153,6 +157,7 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                         out EnvironmentOperationPreview height, out validationError))
                     { result.Error = validationError; return result; }
                     result.After += "；预计生境 " + EnvironmentRules.Profile(height.EstimatedHabitat).Title;
+                    result.EstimatedHabitat = height.EstimatedHabitat;
                 }
                 result.Timing = "立即生效 · 不回滚";
                 break;
@@ -164,6 +169,24 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
     public bool TryDeploy(Vector2Int coordinate, EnvironmentTechnologyChoice choice,
         out EnvironmentTechnologyPreview result)
     {
+        if (!TutorialFlowController.AllowsTool(choice.Kind))
+        {
+            result = new EnvironmentTechnologyPreview { Error = "该工具将在教程后续阶段解锁" };
+            return false;
+        }
+        if (!TutorialFlowController.AllowsChoice(choice))
+        {
+            result = new EnvironmentTechnologyPreview { Error = "教程当前只允许温度提高一档" };
+            return false;
+        }
+        if (grid == null) grid = GetComponent<MapGridManager>();
+        if (!TutorialFlowController.AllowsDeployment(
+                grid != null && grid.TryGetTile(coordinate, out MapTileInstance tile) ? tile : null,
+                choice))
+        {
+            result = new EnvironmentTechnologyPreview { Error = "请在有鸽鸽的地块应用温度提高一档" };
+            return false;
+        }
         result = Preview(coordinate, choice);
         if (!result.IsValid)
         {
@@ -255,6 +278,15 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
                 }
         OperationCommitted?.Invoke(coordinate, "technology_deploy:" + choice.Kind +
             ";tier=" + choice.Tier + ";affectedTiles=" + result.Area.Count);
+        if (choice.Tier > 0)
+        {
+            if (choice.Kind == EnvironmentTechnologyKind.PlantRecoveryChange)
+                TutorialFlowController.Report("plantRecovery");
+            else if (choice.Kind == EnvironmentTechnologyKind.TemperatureChange && choice.Tier == 1)
+                TutorialFlowController.ReportTemperatureApplied(coordinate);
+            else if (choice.Kind == EnvironmentTechnologyKind.HumidityChange)
+                TutorialFlowController.Report("humidity");
+        }
         return true;
     }
 
@@ -304,6 +336,8 @@ public sealed class EnvironmentTechnologyController : MonoBehaviour
         out string error)
     {
         error = null;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.CancelTool))
+        { error = "撤销工具尚未解锁"; return false; }
         if (!CanCancel(coordinate, kind))
         {
             error = "这里没有可撤销的对应科技";

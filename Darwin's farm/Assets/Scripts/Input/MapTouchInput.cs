@@ -115,7 +115,8 @@ public sealed class MapTouchInput : MonoBehaviour
                 break;
             case MapTouchGesture.Action.LongPress:
                 if (!building && !placing && information != null)
-                    information.TrySelectSceneAt(action.Position, populationPickPaddingPixels * ResolutionScale);
+                    information.TrySelectSceneAt(action.Position,
+                        populationPickPaddingPixels * ResolutionScale, true);
                 break;
             case MapTouchGesture.Action.Pan:
                 if (!placing) mapCamera.PanMap(action.Previous, action.Position);

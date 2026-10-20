@@ -1,0 +1,114 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Android",
+  "BasePlatform": "Android",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "172",
+  "SoundBanks": [
+   {
+    "Id": "779753582",
+    "Type": "User",
+    "GUID": "{CE7AF621-0B2F-4284-B538-2FD00CB450E2}",
+    "Language": "SFX",
+    "Hash": "{1D602082-EEF5-A074-2106-11F83DD50DFC}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SB_Music",
+    "ShortName": "SB_Music",
+    "Path": "SB_Music.bnk",
+    "Media": [
+     {
+      "Id": "610726031",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "bossa nova (1)(1).wav",
+      "CachePath": "57/{57D5A9D5-8C70-416C-DC11-EACD21305DA3}.wem"
+     },
+     {
+      "Id": "767792914",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "bossa nova.wav",
+      "CachePath": "8D/{8DA05718-47C8-6887-9798-3B8E0C9F3753}.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "3332953678",
+      "Name": "Play_MSC_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_MSC_BGM",
+      "GUID": "{F0224911-DCA0-4563-8709-B784C25DDD25}",
+      "DurationType": "Infinite",
+      "SwitchContainers": [
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2597075221",
+         "Id": "998496889",
+         "GUID": "{D4D74822-5B02-4AE9-ACCD-55BE6426DCEB}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "767792914"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2597075221",
+         "Id": "3476314365",
+         "GUID": "{8113A589-EA11-47DA-AF2B-5F0940E7D9D2}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "610726031"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "Id": "1562872116",
+      "Name": "Stop_MSC_BGM",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_MSC_BGM",
+      "GUID": "{F0A9294F-FE62-4395-887D-4156700F03CE}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
+     }
+    ],
+    "StateGroups": [
+     {
+      "Id": "2597075221",
+      "Name": "BGM_Phase",
+      "ObjectPath": "\\States\\Default Work Unit\\BGM_Phase",
+      "GUID": "{D9227AF0-A232-4511-8094-88113F913B75}",
+      "States": [
+       {
+        "Id": "748895195",
+        "Name": "None",
+        "ObjectPath": "\\States\\Default Work Unit\\BGM_Phase\\None",
+        "GUID": "{219E9AB0-9745-4272-9BB8-5F1E21845E99}"
+       },
+       {
+        "Id": "998496889",
+        "Name": "First",
+        "ObjectPath": "\\States\\Default Work Unit\\BGM_Phase\\First",
+        "GUID": "{D4D74822-5B02-4AE9-ACCD-55BE6426DCEB}"
+       },
+       {
+        "Id": "3476314365",
+        "Name": "Second",
+        "ObjectPath": "\\States\\Default Work Unit\\BGM_Phase\\Second",
+        "GUID": "{8113A589-EA11-47DA-AF2B-5F0940E7D9D2}"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{681ADAF8-6F38-2937-066A-96E25245E6AF}"
+ }
+}

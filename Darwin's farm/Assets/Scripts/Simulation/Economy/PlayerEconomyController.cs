@@ -148,10 +148,9 @@ public sealed class PlayerEconomyController : MonoBehaviour
         int rotation, out string error)
     {
         error = null;
-        if (account == null || grid == null || definition == null || !grid.CanPlaceAt(coordinate))
+        if (account == null || grid == null || !grid.HasPlacedTile ||
+            definition == null || !grid.CanPlaceAt(coordinate))
         { error = "目标地块不可建造"; return false; }
-        if (terrainUnlocks == null || !terrainUnlocks.IsUnlocked(definition))
-        { error = "地形未解锁"; return false; }
         bool placed = account.TryExecute(BioenergySettings.Current.expandTileCost,
             "地块扩张", (_, __) => grid.TryPlaceTile(coordinate, definition, rotation), out error);
         if (placed) OperationCommitted?.Invoke(coordinate,
@@ -196,6 +195,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
 
     public bool TryDemolish(Vector2Int coordinate, out string error)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Advanced))
+        { error = "拆除将在彩鸡引导完成后解锁"; return false; }
         if (!CanDemolish(coordinate, out error)) return false;
         bool removed = account.TryExecute(BioenergySettings.Current.demolishTileCost,
             "拆除地块", (_, __) => CanDemolish(coordinate, out _) &&
@@ -238,6 +239,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
     public bool TryReshapeWater(Vector2Int coordinate, MapTileDefinition shape,
         int rotation, out string error)
     {
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Advanced))
+        { error = "水域改造将在彩鸡引导完成后解锁"; return false; }
         if (!TryPreviewWaterShape(coordinate, shape, rotation, out _, out error)) return false;
         bool changed = account.TryExecute(BioenergySettings.Current.reshapeWaterCost,
             "水道改造", (_, __) => grid.TryChangeWaterShape(coordinate, shape, rotation), out error);
@@ -311,6 +314,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         out int harvested, out long earned, out string error)
     {
         harvested = 0; earned = 0;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Advanced))
+        { error = "收割将在彩鸡引导完成后解锁"; return false; }
         if (!TryPreviewHarvest(source, population, out HarvestPreview preview, out error))
             return false;
         harvested = preview.Harvested;
@@ -356,6 +361,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         BlockInfo target, out string error)
     {
         error = null;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Advanced))
+        { error = "手动迁徙将在彩鸡引导完成后解锁"; return false; }
         if (!IsResident(source, population) ||
             !CanPlacePopulation(target, population, source, out error))
         { if (error == null) error = "来源种群不存在"; return false; }
@@ -416,6 +423,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
         out string storageId, out string error)
     {
         storageId = null; error = null;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Advanced))
+        { error = "生态仓将在彩鸡引导完成后解锁"; return false; }
         if (!IsResident(source, population)) { error = "复制来源种群不存在"; return false; }
         string id = simulation.IsDeterministicRunConfigured
             ? "storage:" + simulation.SimulationSeed + ":" + nextStorageSerial
@@ -443,6 +452,8 @@ public sealed class PlayerEconomyController : MonoBehaviour
     public bool TryRelease(string storageId, BlockInfo target, out string error)
     {
         error = null;
+        if (!TutorialFlowController.Allows(TutorialFlowController.Feature.Advanced))
+        { error = "生态仓将在彩鸡引导完成后解锁"; return false; }
         StoredPopulation backup = storage.Find(entry => entry.id == storageId);
         if (backup == null || !CanPlacePopulation(target, backup.copy, null, out error))
         { if (error == null) error = "生态仓备份不存在"; return false; }
