@@ -20,6 +20,11 @@ public sealed class InformationWindow : MonoBehaviour, IPointerDownHandler,
 
     public bool IsOpen => open;
     public bool TitleOnlyDragging => titleOnlyDragging;
+    public void SetAuthoredPosition(Vector2 position)
+    {
+        home = position;
+        if (rect != null && open && windowAnimation == null) rect.anchoredPosition = home;
+    }
     public void SetDragBounds(RectTransform bounds, Vector2 defaultPosition)
     { canvasRect = bounds; home = defaultPosition; if (open) ClampToBounds(); }
     public void HideImmediately()

@@ -23,6 +23,7 @@ namespace Darwin.Rendering
         readonly Color[] colors=new Color[Count];
         readonly Vector2[] uv=new Vector2[Count];
         int[] indices;
+        MoebiusAnimalMotionStrokes flight;
         public int LiveMeshVertices=>mesh?mesh.vertexCount:0;
         void OnEnable() => EnsureMesh();
         void EnsureMesh()
@@ -50,6 +51,21 @@ namespace Darwin.Rendering
         {
             EnsureMesh();transform.SetPositionAndRotation(Vector3.zero,Quaternion.identity);transform.localScale=Vector3.one;
             bool swimming=animal.medium==BillboardAnimalMotion.Medium.Swimming;
+            GetComponent<MeshRenderer>().enabled = swimming;
+            if (!swimming)
+            {
+                if (flight == null)
+                {
+                    var owner = new GameObject("Flight Motion VFX"); owner.transform.SetParent(transform, false);
+                    flight = owner.AddComponent<MoebiusAnimalMotionStrokes>();
+                }
+                flight.gameObject.SetActive(true);
+                int frames = animal.animationSet.WalkEnd - animal.animationSet.WalkStart + 1;
+                flight.Evaluate(animal.image.bounds.center, animal.spriteHeight, camera, time,
+                    (time + animal.routePhase * 3) * animal.animationSet.WalkFps * animal.frameRateMultiplier / Mathf.Max(1, frames), intensity);
+                return;
+            }
+            if (flight != null) flight.gameObject.SetActive(false);
             for(int lane=0;lane<Ribbons;lane++)for(int j=0;j<=Segments;j++)
             {
                 float age=j/(float)Segments, delay=age*trailSeconds;
@@ -101,6 +117,7 @@ namespace Darwin.Rendering
         }
         void OnDisable()
         {
+            if (flight != null) flight.gameObject.SetActive(false);
             if(!mesh)return;
             GetComponent<MeshFilter>().sharedMesh=null;
             if(Application.isPlaying)Destroy(mesh);else DestroyImmediate(mesh);
