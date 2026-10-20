@@ -181,6 +181,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7927711835938721366, guid: c7be9a1bd52427f4f82e2d812b25ff1d, type: 3}
   m_PrefabInstance: {fileID: 125394322}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &387546552
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 387546554}
+  - component: {fileID: 387546553}
+  m_Layer: 0
+  m_Name: WwiseGlobal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &387546553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387546552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75e8f1924714684ea92fe21ab9c7a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkInitializer
+  InitializationSettings: {fileID: 11400000, guid: 9071ec0272c7c30478bc58396cdf4a59, type: 2}
+  basePath: 
+  language: 
+  defaultPoolSize: 0
+  lowerPoolSize: 0
+  streamingPoolSize: 0
+  memoryCutoffThreshold: 0
+  monitorPoolSize: 0
+  monitorQueuePoolSize: 0
+  callbackManagerBufferSize: 0
+  spatialAudioPoolSize: 0
+  maxSoundPropagationDepth: 0
+  engineLogging: 0
+--- !u!4 &387546554
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387546552}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &523949107
 GameObject:
   m_ObjectHideFlags: 0
@@ -492,13 +549,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1674968486}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.34001887, y: -0.6366896, z: 0.34194854, w: 0.6017348}
-  m_LocalPosition: {x: 10.2, y: 16.7, z: 0.5}
+  m_LocalRotation: {x: 0.3476547, y: -0.622938, z: 0.33418244, w: 0.61595994}
+  m_LocalPosition: {x: 10, y: 16.7, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 57.633, y: -94.497, z: -2.296}
+  m_LocalEulerAnglesHint: {x: 57.633, y: -91.909, z: -2.296}
 --- !u!1001 &5868869956580042279
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -547,6 +604,66 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2301588923693094604, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0.30838653
+      objectReference: {fileID: 0}
+    - target: {fileID: 2301588923693094604, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0.11542558
+      objectReference: {fileID: 0}
+    - target: {fileID: 2301588923693094604, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 0.2202761
+      objectReference: {fileID: 0}
+    - target: {fileID: 2301588923693094604, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 0.08244684
+      objectReference: {fileID: 0}
+    - target: {fileID: 2833023920729516971, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0.8811044
+      objectReference: {fileID: 0}
+    - target: {fileID: 2833023920729516971, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0.32978734
+      objectReference: {fileID: 0}
+    - target: {fileID: 2833023920729516971, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 0.6293603
+      objectReference: {fileID: 0}
+    - target: {fileID: 2833023920729516971, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 0.2355624
+      objectReference: {fileID: 0}
+    - target: {fileID: 2833023920729516971, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 1.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 2833023920729516971, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: InitialModule.startRotationY.scalar
+      value: -0.27814686
+      objectReference: {fileID: 0}
+    - target: {fileID: 2833023920729516971, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: InitialModule.startRotationY.minScalar
+      value: -0.4381469
+      objectReference: {fileID: 0}
+    - target: {fileID: 5008947102922010715, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0.7158973
+      objectReference: {fileID: 0}
+    - target: {fileID: 5008947102922010715, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.z.scalar
+      value: 0.26795223
+      objectReference: {fileID: 0}
+    - target: {fileID: 5008947102922010715, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 0.5113552
+      objectReference: {fileID: 0}
+    - target: {fileID: 5008947102922010715, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
+      propertyPath: VelocityModule.z.minScalar
+      value: 0.19139445
+      objectReference: {fileID: 0}
     - target: {fileID: 8681556767194830538, guid: 83f23bf62d73a0e44802f98f0109aeaa, type: 3}
       propertyPath: m_Name
       value: GrasslandVFX
@@ -565,3 +682,4 @@ SceneRoots:
   - {fileID: 1674968490}
   - {fileID: 1406163376}
   - {fileID: 5868869956580042279}
+  - {fileID: 387546554}
