@@ -302,6 +302,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -8.2
       objectReference: {fileID: 0}
+    - target: {fileID: 2876656113206946198, guid: bd7de7a97ff452e4b9b97a7dccdad220, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5019876283404848898, guid: bd7de7a97ff452e4b9b97a7dccdad220, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5185060615094221304, guid: bd7de7a97ff452e4b9b97a7dccdad220, type: 3}
       propertyPath: m_Name
       value: Forest_Moebius
@@ -457,13 +465,70 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 844723967}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04227503, y: 0.9340424, z: 0.11973676, w: -0.33382747}
-  m_LocalPosition: {x: 32.2, y: 1, z: 25}
+  m_LocalRotation: {x: -0.082619764, y: 0.75571334, z: 0.0964275, w: 0.64247423}
+  m_LocalPosition: {x: 23.9, y: 2.2, z: 10.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 345.41, y: -2300.659, z: 359.943}
+  m_LocalEulerAnglesHint: {x: 345.41, y: -2420.732, z: 359.943}
+--- !u!1 &1409492859
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1409492861}
+  - component: {fileID: 1409492860}
+  m_Layer: 0
+  m_Name: WwiseGlobal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1409492860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409492859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75e8f1924714684ea92fe21ab9c7a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkInitializer
+  InitializationSettings: {fileID: 11400000, guid: 9071ec0272c7c30478bc58396cdf4a59, type: 2}
+  basePath: 
+  language: 
+  defaultPoolSize: 0
+  lowerPoolSize: 0
+  streamingPoolSize: 0
+  memoryCutoffThreshold: 0
+  monitorPoolSize: 0
+  monitorQueuePoolSize: 0
+  callbackManagerBufferSize: 0
+  spatialAudioPoolSize: 0
+  maxSoundPropagationDepth: 0
+  engineLogging: 0
+--- !u!4 &1409492861
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409492859}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1691783275
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,19 +602,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.078483246
+      value: 0.073458046
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.024197627
+      value: 0.020295365
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.05605946
+      value: 0.052470036
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.017284019
+      value: 0.014496689
       objectReference: {fileID: 0}
     - target: {fileID: 1780379594421501718, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -633,47 +698,71 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.18219323
+      value: 0.1705276
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.05617306
+      value: 0.04711424
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.13013802
+      value: 0.12180543
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.040123615
+      value: 0.03365303
       objectReference: {fileID: 0}
     - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
       value: 20.8
       objectReference: {fileID: 0}
+    - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: InitialModule.startRotationX.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236969335568209761, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: InitialModule.startRotationY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 0.22423784
+      value: 0.20988014
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.scalar
-      value: 0.069136076
+      value: 0.057986755
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.x.minScalar
-      value: 0.16016988
+      value: 0.14991438
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: VelocityModule.z.minScalar
-      value: 0.04938291
+      value: 0.04141911
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: InitialModule.startRotationY.scalar
-      value: -0.21906842
+      value: -0.18956058
+      objectReference: {fileID: 0}
+    - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: InitialModule.startRotationY.minScalar
-      value: -0.37906843
+      value: -0.34956056
+      objectReference: {fileID: 0}
+    - target: {fileID: 6291169215291005129, guid: df3b36de897d954498121efaca65ed60, type: 3}
+      propertyPath: InitialModule.startRotationY.minMaxState
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9090321274784119070, guid: df3b36de897d954498121efaca65ed60, type: 3}
       propertyPath: m_Name
@@ -693,3 +782,4 @@ SceneRoots:
   - {fileID: 844723971}
   - {fileID: 1851635425}
   - {fileID: 7247066871409101703}
+  - {fileID: 1409492861}
