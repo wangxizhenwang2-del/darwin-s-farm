@@ -1,0 +1,7498 @@
+{
+  "round": 2,
+  "policy": "neighbor-rainforest",
+  "seed": 17,
+  "requestedDays": 3600,
+  "firstLoss": -1,
+  "minimumPopulation": 167,
+  "maxSpecies": 1,
+  "finalHash": "34479b96c76a085e2a4b935dd34ac5fc7a1b9b84bb573eeffd6c07dabab9f4c9",
+  "actions": [
+    {
+      "day": 0,
+      "kind": "expand-rainforest",
+      "ok": false,
+      "error": "地形未解锁"
+    }
+  ],
+  "events": [],
+  "final": {
+    "day": 3600,
+    "SecondsPerDay": 1.0,
+    "living": [
+      "鸽鸽"
+    ],
+    "balance": 5359650,
+    "costsEnabled": false,
+    "lost": false,
+    "tiles": [
+      {
+        "x": 0,
+        "y": 0,
+        "terrain": "荒漠",
+        "temperature": 55,
+        "humidity": 35,
+        "elevation": 0,
+        "plants": 50000.0,
+        "capacity": 1000000.0,
+        "recovery": 50000,
+        "populations": [
+          {
+            "species": "鸽鸽",
+            "id": "seed:17:Tile_0_0_荒漠:0",
+            "count": 1495,
+            "temp": 55,
+            "humidity": 35,
+            "movement": 10,
+            "size": 11,
+            "fertility": 80,
+            "energy": 1.0,
+            "progress": [
+              {
+                "target": "彩鸡",
+                "effectiveDays": 0,
+                "failedDraws": 0
+              },
+              {
+                "target": "灵感菇狸",
+                "effectiveDays": 0,
+                "failedDraws": 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "samples": [
+    {
+      "day": 0,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2000,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 160,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 8,
+              "fertility": 71,
+              "energy": 0.0,
+              "progress": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2167,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 91921.5859,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 167,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 8,
+              "fertility": 71,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2341,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 133489.75,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 174,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 8,
+              "fertility": 71,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2522,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 174704.469,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 181,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 9,
+              "fertility": 71,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2711,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 215493.781,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 189,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 9,
+              "fertility": 71,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2908,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 255876.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 197,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 9,
+              "fertility": 72,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3113,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 295796.9,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 205,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 9,
+              "fertility": 72,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3327,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 335308.5,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 214,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 9,
+              "fertility": 73,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 8,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3551,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 374300.719,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 224,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 9,
+              "fertility": 74,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 9,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3785,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 412716.9,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 234,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 10,
+              "fertility": 74,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 10,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4030,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 450370.125,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 245,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 74,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 25,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 9378,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 918962.9,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 480,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 77,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 50,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 32384,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 786007.563,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1514,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 79,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 75,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 83939,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 69459.09,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1962,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 79,
+              "energy": 0.9884518,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 100,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 125402,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1550,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 79,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 125,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 163411,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1505,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 79,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 150,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 200911,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1497,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 175,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 238313,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 200,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 275698,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 225,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 313079,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 250,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 350461,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 275,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 387842,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 300,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 425226,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 325,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 462607,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 350,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 499990,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 375,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 537371,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 400,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 574753,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 425,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 612135,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 450,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 649517,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 475,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 686900,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 500,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 724282,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 525,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 761663,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 550,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 799045,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 575,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 836427,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 600,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 873809,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 625,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 911192,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 650,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 948573,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 675,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 985955,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 700,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1023337,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 725,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1060719,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 750,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1098101,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 775,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1135483,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 800,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1172865,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 825,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1210247,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 850,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1247629,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 875,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1285012,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 900,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1322393,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 925,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1359776,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 950,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1397157,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 975,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1434539,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1000,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1471921,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1025,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1509303,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1050,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1546686,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1075,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1584068,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1100,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1621449,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1125,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1658831,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1150,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1696213,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1175,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1733595,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1200,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1770977,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1225,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1808359,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1250,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1845741,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1275,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1883123,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1300,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1920505,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1325,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1957887,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1350,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 1995269,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1375,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2032651,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1400,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2070034,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1425,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2107415,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1450,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2144797,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1475,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2182178,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1500,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2219562,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1525,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2256943,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1550,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2294326,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1575,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2331707,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1600,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2369089,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1625,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2406471,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1650,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2443853,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1675,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2481236,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1700,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2518618,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1725,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2555999,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1750,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2593381,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1775,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2630763,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1800,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2668145,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1825,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2705527,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1850,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2742909,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1875,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2780291,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1900,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2817673,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1925,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2855055,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1950,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2892437,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 1975,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2929820,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2000,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 2967201,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2025,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3004584,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2050,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3041965,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2075,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3079348,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2100,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3116729,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2125,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3154112,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2150,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3191493,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2175,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3228875,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2200,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3266258,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2225,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3303640,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2250,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3341022,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2275,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3378404,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2300,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3415785,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2325,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3453167,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2350,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3490549,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2375,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3527931,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2400,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3565314,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2425,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3602695,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2450,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3640077,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2475,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3677459,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2500,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3714841,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2525,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3752223,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2550,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3789605,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2575,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3826987,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2600,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3864370,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2625,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3901751,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2650,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3939134,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2675,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 3976515,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2700,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4013898,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2725,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4051279,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2750,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4088662,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2775,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4126043,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2800,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4163425,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2825,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4200807,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2850,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4238190,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2875,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4275571,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2900,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4312954,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2925,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4350335,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2950,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4387717,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2975,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4425099,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3000,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4462481,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3025,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4499863,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3050,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4537245,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3075,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4574627,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3100,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4612009,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3125,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4649391,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3150,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4686773,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3175,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4724156,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3200,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4761537,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3225,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4798919,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3250,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4836301,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3275,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4873684,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3300,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4911065,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3325,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4948448,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3350,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 4985829,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3375,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5023211,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3400,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5060594,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3425,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5097976,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3450,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5135358,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3475,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5172740,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1496,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3500,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5210121,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3525,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5247503,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3550,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5284886,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3575,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5322268,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3600,
+      "SecondsPerDay": 1.0,
+      "living": [
+        "鸽鸽"
+      ],
+      "balance": 5359650,
+      "costsEnabled": false,
+      "lost": false,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "terrain": "荒漠",
+          "temperature": 55,
+          "humidity": 35,
+          "elevation": 0,
+          "plants": 50000.0,
+          "capacity": 1000000.0,
+          "recovery": 50000,
+          "populations": [
+            {
+              "species": "鸽鸽",
+              "id": "seed:17:Tile_0_0_荒漠:0",
+              "count": 1495,
+              "temp": 55,
+              "humidity": 35,
+              "movement": 10,
+              "size": 11,
+              "fertility": 80,
+              "energy": 1.0,
+              "progress": [
+                {
+                  "target": "彩鸡",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                },
+                {
+                  "target": "灵感菇狸",
+                  "effectiveDays": 0,
+                  "failedDraws": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

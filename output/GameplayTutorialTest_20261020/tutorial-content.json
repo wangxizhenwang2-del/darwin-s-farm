@@ -1,0 +1,313 @@
+{
+    "categories": [
+        {
+            "id": "chapter1",
+            "title": "初识农场",
+            "sortOrder": 0,
+            "pages": [
+                {
+                    "id": "1_1",
+                    "title": "你是谁？",
+                    "content": "<color=#2F6148><b>欢迎来到达尔文农场！</b></color>\n在一颗遥远的星球上，一场关于生命的实验即将开始。\n你是一名<color=#2F6148><b>星际生态培育者</b></color>，负责照料这片年轻的生命实验场。\n在这里，你不需要指挥每一只生物。它们会自行觅食、繁殖、竞争，也可能迁徙到新的土地。\n你真正能够掌控的，是<color=#2F6148><b>它们生活的环境</b></color>。\n改变气候、调整食物供给、开辟新的栖息地，然后静静观察——生命将如何回应你的选择？",
+                    "mobileContent": "<color=#2F6148><b>欢迎来到达尔文农场！</b></color>\n在一颗遥远的星球上，一场关于生命的实验即将开始。\n你是一名<color=#2F6148><b>星际生态培育者</b></color>，负责照料这片年轻的生命实验场。\n在这里，你不需要指挥每一只生物。它们会自行觅食、繁殖、竞争，也可能迁徙到新的土地。\n你真正能够掌控的，是<color=#2F6148><b>它们生活的环境</b></color>。\n改变气候、调整食物供给、开辟新的栖息地，然后静静观察——生命将如何回应你的选择？",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 0
+                },
+                {
+                    "id": "1_2",
+                    "title": "生命如何涌现？",
+                    "content": "<color=#2F6148><b>生命会找到自己的道路</b></color>\n每一种生物都有自己的生存方式。\n有的适应炎热，有的喜欢潮湿；有的擅长奔跑，有的依靠旺盛的繁殖能力延续种群。\n当环境发生变化，原本适合生存的性状可能变成负担，而不起眼的特征也可能成为新的优势。\n随着一代代生命更替，种群会逐渐发生变化。\n当这些变化积累到一定程度，一个全新的物种便可能诞生。\n你无法直接命令生命进化，却可以<color=#2F6148><b>改变它们进化的方向</b></color>。",
+                    "mobileContent": "<color=#2F6148><b>生命会找到自己的道路</b></color>\n每一种生物都有自己的生存方式。\n有的适应炎热，有的喜欢潮湿；有的擅长奔跑，有的依靠旺盛的繁殖能力延续种群。\n当环境发生变化，原本适合生存的性状可能变成负担，而不起眼的特征也可能成为新的优势。\n随着一代代生命更替，种群会逐渐发生变化。\n当这些变化积累到一定程度，一个全新的物种便可能诞生。\n你无法直接命令生命进化，却可以<color=#2F6148><b>改变它们进化的方向</b></color>。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 1
+                },
+                {
+                    "id": "1_3",
+                    "title": "你的目标",
+                    "content": "培育属于你的生命世界\n你的旅程将从最初的鸡种群开始。\n通过调整环境，引导它们沿着不同的演化道路前进，逐渐发现彩鸡、孔雀、灵感菇狸与鹿。\n但发现新物种只是第一步。\n每一种生命都需要食物与合适的栖息地，它们可能相互竞争，也可能因为环境变化而消失。\n你的<color=#2F6148><b>最终目标</b></color>，是让<color=#2F6148><b>鸡、彩鸡、孔雀、灵感菇狸和鹿五种生命在同一个生态世界中共存</b></color>。\n<color=#2F6148><b>观察笔记</b></color>：进化成功不代表培育结束。让新生命在<color=#2F6148><b>生态系统中延续</b></color>下去，同样重要。",
+                    "mobileContent": "培育属于你的生命世界\n你的旅程将从最初的鸡种群开始。\n通过调整环境，引导它们沿着不同的演化道路前进，逐渐发现彩鸡、孔雀、灵感菇狸与鹿。\n但发现新物种只是第一步。\n每一种生命都需要食物与合适的栖息地，它们可能相互竞争，也可能因为环境变化而消失。\n你的<color=#2F6148><b>最终目标</b></color>，是让<color=#2F6148><b>鸡、彩鸡、孔雀、灵感菇狸和鹿五种生命在同一个生态世界中共存</b></color>。\n<color=#2F6148><b>观察笔记</b></color>：进化成功不代表培育结束。让新生命在<color=#2F6148><b>生态系统中延续</b></color>下去，同样重要。",
+                    "illustration": {
+                        "instanceID": 48058
+                    },
+                    "sortOrder": 2
+                }
+            ]
+        },
+        {
+            "id": "chapter2",
+            "title": "认识地块",
+            "sortOrder": 1,
+            "pages": [
+                {
+                    "id": "2_1",
+                    "title": "一块土地",
+                    "content": "<color=#2F6148><b>从一块土地开始</b></color>\n你的农场由一块块独立的土地组成，我们称它们为<color=#2F6148><b>地块</b></color>。\n每块<color=#2F6148><b>地块</b></color>都有自己的<color=#2F6148><b>温度、湿度、海拔和植物资源</b></color>，也生活着不同的生物种群。\n按住 <color=#914B2D><b>Alt</b></color> 并用<color=#914B2D><b>鼠标左键单击地块</b></color>，即可查看它的环境和生物信息。\n你还可以调整<color=#2F6148><b>地块</b></color>的环境，改变生物所面临的生存条件。\n同一种生物，在不同<color=#2F6148><b>地块</b></color>上，也可能走向<color=#2F6148><b>不同的演化道路</b></color>。\n<color=#2F6148><b>操作提示</b></color>：直接按住<color=#914B2D><b>鼠标中键</b></color>拖动以平移地图，滚动<color=#914B2D><b>鼠标滚轮</b></color>放大或缩小画面。平移和缩放无需按住 Alt。",
+                    "mobileContent": "<color=#2F6148><b>从一块土地开始</b></color>\n你的农场由一块块独立的土地组成，我们称它们为<color=#2F6148><b>地块</b></color>。\n每块<color=#2F6148><b>地块</b></color>都有自己的<color=#2F6148><b>温度、湿度、海拔和植物资源</b></color>，也生活着不同的生物种群。\n在触屏上<color=#914B2D><b>长按地块</b></color>，即可查看它的环境和生物信息。\n你还可以调整<color=#2F6148><b>地块</b></color>的环境，改变生物所面临的生存条件。\n同一种生物，在不同<color=#2F6148><b>地块</b></color>上，也可能走向<color=#2F6148><b>不同的演化道路</b></color>。\n<color=#2F6148><b>操作提示</b></color>：<color=#914B2D><b>单指拖动</b></color>平移视角，<color=#914B2D><b>双指捏合</b></color>缩放画面。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 0
+                },
+                {
+                    "id": "2_2",
+                    "title": "不同的地貌",
+                    "content": "<color=#2F6148><b>气候塑造土地</b></color>\n你可能遇见干燥的荒漠、湿润的雨林、寒冷的雪山，或炽热的火山。\n一块土地的地貌由<color=#2F6148><b>温度、湿度和海拔</b></color>共同决定。不同地貌也拥有不同的植物资源条件。\n改变地块环境，可能让它逐渐呈现出另一种地貌。\n<color=#2F6148><b>操作提示</b></color>：查看物种<color=#2F6148><b>适宜的温度与湿度</b></color>，并与地块环境进行比较。",
+                    "mobileContent": "<color=#2F6148><b>气候塑造土地</b></color>\n你可能遇见干燥的荒漠、湿润的雨林、寒冷的雪山，或炽热的火山。\n一块土地的地貌由<color=#2F6148><b>温度、湿度和海拔</b></color>共同决定。不同地貌也拥有不同的植物资源条件。\n改变地块环境，可能让它逐渐呈现出另一种地貌。\n<color=#2F6148><b>操作提示</b></color>：查看物种<color=#2F6148><b>适宜的温度与湿度</b></color>，并与地块环境进行比较。",
+                    "illustration": {
+                        "instanceID": 48054
+                    },
+                    "sortOrder": 1
+                },
+                {
+                    "id": "2_3",
+                    "title": "相邻地块",
+                    "content": "<color=#2F6148><b>让农场向外延伸</b></color>\n除了最初的土地，你还可以向周围扩展地块。\n<color=#2F6148><b>相邻地块</b></color>可以拥有不同环境，为不同种群提供栖息地。地块之间能够通行时，生物还有机会自行迁徙。\n<color=#2F6148><b>海拔差</b></color>会影响通行；高差越大，迁徙越困难。\n扩展地块，也是在创造<color=#2F6148><b>新的演化机会</b></color>。\n<color=#2F6148><b>操作提示</b></color>：按 <color=#914B2D><b>N</b></color> 打开土地建造栏，从下方栏拖动土地到目标格子进行建造。",
+                    "mobileContent": "<color=#2F6148><b>让农场向外延伸</b></color>\n除了最初的土地，你还可以向周围扩展地块。\n<color=#2F6148><b>相邻地块</b></color>可以拥有不同环境，为不同种群提供栖息地。地块之间能够通行时，生物还有机会自行迁徙。\n<color=#2F6148><b>海拔差</b></color>会影响通行；高差越大，迁徙越困难。\n扩展地块，也是在创造<color=#2F6148><b>新的演化机会</b></color>。\n<color=#2F6148><b>操作提示</b></color>：点击「<color=#914B2D><b>建造地块</b></color>」，选择土地，再在目标格子<color=#914B2D><b>确认建造</b></color>。",
+                    "illustration": {
+                        "instanceID": 48054
+                    },
+                    "sortOrder": 2
+                }
+            ]
+        },
+        {
+            "id": "chapter3",
+            "title": "环境与资源",
+            "sortOrder": 2,
+            "pages": [
+                {
+                    "id": "3_1",
+                    "title": "使用环境工具",
+                    "content": "画面左侧有五种<color=#914B2D><b>环境工具</b></color>：<color=#2F6148><b>植物增量</b></color>、<color=#2F6148><b>植物存量</b></color>、<color=#2F6148><b>温度</b></color>、<color=#2F6148><b>湿度</b></color>、<color=#2F6148><b>海拔</b></color>。\n每种工具都有不同档位，用来调整<color=#2F6148><b>变化方向和强度</b></color>。\n<color=#2F6148><b>操作步骤</b></color>：选择左侧工具，再<color=#914B2D><b>选择档位</b></color>，再点击地块，再点击「<color=#914B2D><b>应用</b></color>」。\n要取消已有干预，重新选中对应工具与地块，点击「<color=#914B2D><b>撤销</b></color>」。",
+                    "mobileContent": "点击「<color=#914B2D><b>环境工具</b></color>」可选择五种工具：<color=#2F6148><b>植物增量</b></color>、<color=#2F6148><b>植物存量</b></color>、<color=#2F6148><b>温度</b></color>、<color=#2F6148><b>湿度</b></color>、<color=#2F6148><b>海拔</b></color>。\n每种工具都有不同档位，用来调整<color=#2F6148><b>变化方向和强度</b></color>。\n<color=#2F6148><b>操作步骤</b></color>：选择左侧工具，再<color=#914B2D><b>选择档位</b></color>，再点击地块，再点击「<color=#914B2D><b>应用</b></color>」。\n要取消已有干预，重新选中对应工具与地块，点击「<color=#914B2D><b>撤销</b></color>」。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 0
+                },
+                {
+                    "id": "3_2",
+                    "title": "认识五种工具",
+                    "content": "工具 · 用途\n<color=#2F6148><b>植物增量</b></color> · 调整植物每天恢复的数量，影响<color=#2F6148><b>长期食物供应</b></color>\n<color=#2F6148><b>植物存量</b></color> · <color=#2F6148><b>立即增加或减少</b></color>已有植物资源\n<color=#2F6148><b>温度</b></color> · 让地块逐渐升温或降温\n<color=#2F6148><b>湿度</b></color> · 让地块逐渐变湿或变干\n<color=#2F6148><b>海拔</b></color> · 改变地块高度，影响地貌与<color=#2F6148><b>迁徙通道</b></color>",
+                    "mobileContent": "工具 · 用途\n<color=#2F6148><b>植物增量</b></color> · 调整植物每天恢复的数量，影响<color=#2F6148><b>长期食物供应</b></color>\n<color=#2F6148><b>植物存量</b></color> · <color=#2F6148><b>立即增加或减少</b></color>已有植物资源\n<color=#2F6148><b>温度</b></color> · 让地块逐渐升温或降温\n<color=#2F6148><b>湿度</b></color> · 让地块逐渐变湿或变干\n<color=#2F6148><b>海拔</b></color> · 改变地块高度，影响地貌与<color=#2F6148><b>迁徙通道</b></color>",
+                    "illustration": {
+                        "instanceID": 48022
+                    },
+                    "sortOrder": 1
+                },
+                {
+                    "id": "3_3",
+                    "title": "工具档位",
+                    "content": "工具 · <color=#2F6148><b>小幅调整</b></color> · <color=#2F6148><b>大幅调整</b></color>\n<color=#2F6148><b>植物增量</b></color> · <color=#914B2D><b>±25,000</b></color> / 游戏日 · <color=#914B2D><b>±50,000</b></color> / 游戏日\n<color=#2F6148><b>植物存量</b></color> · <color=#914B2D><b>±25%</b></color> · <color=#914B2D><b>±50%</b></color>\n<color=#2F6148><b>温度</b></color> · <color=#914B2D><b>±25</b></color> · <color=#914B2D><b>±50</b></color>\n<color=#2F6148><b>湿度</b></color> · <color=#914B2D><b>±25</b></color> · <color=#914B2D><b>±50</b></color>\n<color=#2F6148><b>海拔</b></color> · <color=#914B2D><b>+1</b></color> 或 <color=#914B2D><b>-1</b></color> · <color=#2F6148><b>无第二档</b></color>\n档位数值已按当前游戏配置核对。",
+                    "mobileContent": "工具 · <color=#2F6148><b>小幅调整</b></color> · <color=#2F6148><b>大幅调整</b></color>\n<color=#2F6148><b>植物增量</b></color> · <color=#914B2D><b>±25,000</b></color> / 游戏日 · <color=#914B2D><b>±50,000</b></color> / 游戏日\n<color=#2F6148><b>植物存量</b></color> · <color=#914B2D><b>±25%</b></color> · <color=#914B2D><b>±50%</b></color>\n<color=#2F6148><b>温度</b></color> · <color=#914B2D><b>±25</b></color> · <color=#914B2D><b>±50</b></color>\n<color=#2F6148><b>湿度</b></color> · <color=#914B2D><b>±25</b></color> · <color=#914B2D><b>±50</b></color>\n<color=#2F6148><b>海拔</b></color> · <color=#914B2D><b>+1</b></color> 或 <color=#914B2D><b>-1</b></color> · <color=#2F6148><b>无第二档</b></color>\n档位数值已按当前游戏配置核对。",
+                    "illustration": {
+                        "instanceID": 48022
+                    },
+                    "sortOrder": 2
+                },
+                {
+                    "id": "3_4",
+                    "title": "环境与生命",
+                    "content": "环境变化既会影响生物的生存，也可能<color=#2F6148><b>引导性状变化</b></color>。\n例如，食物充足可能有利于更大的体型；<color=#2F6148><b>长期稳定的食物供应</b></color>可能有利于繁殖；寒冷则可能让种群逐渐适应低温。\n<color=#2F6148><b>你改变的是环境，而不是直接修改生物。</b></color>",
+                    "mobileContent": "环境变化既会影响生物的生存，也可能<color=#2F6148><b>引导性状变化</b></color>。\n例如，食物充足可能有利于更大的体型；<color=#2F6148><b>长期稳定的食物供应</b></color>可能有利于繁殖；寒冷则可能让种群逐渐适应低温。\n<color=#2F6148><b>你改变的是环境，而不是直接修改生物。</b></color>",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 3
+                }
+            ]
+        },
+        {
+            "id": "chapter4",
+            "title": "认识生命",
+            "sortOrder": 3,
+            "pages": [
+                {
+                    "id": "4_1",
+                    "title": "认识生物",
+                    "content": "农场中生活着各种生物，每种生物都有自己的习性和生存需求。\n按住 <color=#914B2D><b>Alt</b></color> 并用<color=#914B2D><b>鼠标左键单击地块上的生物</b></color>，可以查看详细信息，包括<color=#2F6148><b>种群数量</b></color>、<color=#2F6148><b>性状</b></color>和<color=#2F6148><b>生存状态</b></color>。\n游戏主要模拟<color=#2F6148><b>种群</b></color>，<color=#2F6148><b>而非逐只模拟动物</b></color>。",
+                    "mobileContent": "农场中生活着各种生物，每种生物都有自己的习性和生存需求。\n<color=#914B2D><b>轻点地块上的生物</b></color>，可以查看详细信息，包括<color=#2F6148><b>种群数量</b></color>、<color=#2F6148><b>性状</b></color>和<color=#2F6148><b>生存状态</b></color>。\n游戏主要模拟<color=#2F6148><b>种群</b></color>，<color=#2F6148><b>而非逐只模拟动物</b></color>。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 0
+                },
+                {
+                    "id": "4_2",
+                    "title": "五项性状",
+                    "content": "性状 · 作用\n<color=#2F6148><b>适温</b></color> · 最适应的温度\n<color=#2F6148><b>适湿</b></color> · 最适应的湿度\n<color=#2F6148><b>运动</b></color> · 活动与迁徙能力\n<color=#2F6148><b>体型</b></color> · 影响食物消耗和生存方式\n<color=#2F6148><b>繁殖</b></color> · 影响种群产生后代的能力\n性状可能<color=#2F6148><b>随环境和时间变化</b></color>。",
+                    "mobileContent": "性状 · 作用\n<color=#2F6148><b>适温</b></color> · 最适应的温度\n<color=#2F6148><b>适湿</b></color> · 最适应的湿度\n<color=#2F6148><b>运动</b></color> · 活动与迁徙能力\n<color=#2F6148><b>体型</b></color> · 影响食物消耗和生存方式\n<color=#2F6148><b>繁殖</b></color> · 影响种群产生后代的能力\n性状可能<color=#2F6148><b>随环境和时间变化</b></color>。",
+                    "illustration": {
+                        "instanceID": 47896
+                    },
+                    "sortOrder": 1
+                },
+                {
+                    "id": "4_3",
+                    "title": "生物网与进化网",
+                    "content": "按 <color=#914B2D><b>M</b></color> 打开<color=#2F6148><b>生物网</b></color>与<color=#2F6148><b>进化网</b></color>。\n- <color=#2F6148><b>生物网</b></color>：查看不同生物之间的<color=#2F6148><b>生态关系</b></color>。\n- <color=#2F6148><b>进化网</b></color>：查看可能的<color=#2F6148><b>进化路线</b></color>。\n在<color=#2F6148><b>生物网</b></color>中<color=#914B2D><b>左键点击某种生物</b></color>，可以查看它的信息与<color=#2F6148><b>进化需求</b></color>。例如，需求提示可能出现：温度 ++、湿度 - 等。\n+ 表示<color=#2F6148><b>提高</b></color>，- 表示<color=#2F6148><b>降低</b></color>，约等于 表示<color=#2F6148><b>接近目标</b></color>；重复符号表示需要<color=#2F6148><b>更大幅度调整</b></color>。",
+                    "mobileContent": "触控版可在生物信息面板观察种群；<color=#2F6148><b>生物网</b></color>与<color=#2F6148><b>进化网</b></color>当前需在桌面版按 <color=#914B2D><b>M</b></color> 查看。\n- <color=#2F6148><b>生物网</b></color>：查看不同生物之间的<color=#2F6148><b>生态关系</b></color>。\n- <color=#2F6148><b>进化网</b></color>：查看可能的<color=#2F6148><b>进化路线</b></color>。\n在桌面版<color=#2F6148><b>生物网</b></color>中点击某种生物，可以查看它的信息与<color=#2F6148><b>进化需求</b></color>。例如，需求提示可能出现：温度 ++、湿度 - 等。\n+ 表示<color=#2F6148><b>提高</b></color>，- 表示<color=#2F6148><b>降低</b></color>，约等于 表示<color=#2F6148><b>接近目标</b></color>；重复符号表示需要<color=#2F6148><b>更大幅度调整</b></color>。",
+                    "illustration": {
+                        "instanceID": 47988
+                    },
+                    "sortOrder": 2
+                },
+                {
+                    "id": "4_4",
+                    "title": "观察生物的变化",
+                    "content": "生物<color=#2F6148><b>不会因为一次环境操作就立刻进化</b></color>。\n观察<color=#2F6148><b>五项性状</b></color>、<color=#2F6148><b>种群数量</b></color>和<color=#2F6148><b>进化需求</b></color>，判断调整是否有效。\n<color=#2F6148><b>观察笔记</b></color>：想培育新物种？先在进化网中<color=#2F6148><b>找到目标</b></color>，再尝试创造它需要的环境。",
+                    "mobileContent": "生物<color=#2F6148><b>不会因为一次环境操作就立刻进化</b></color>。\n观察<color=#2F6148><b>五项性状</b></color>、<color=#2F6148><b>种群数量</b></color>和<color=#2F6148><b>进化需求</b></color>，判断调整是否有效。\n<color=#2F6148><b>观察笔记</b></color>：想培育新物种？先在进化网中<color=#2F6148><b>找到目标</b></color>，再尝试创造它需要的环境。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 3
+                }
+            ]
+        },
+        {
+            "id": "chapter5",
+            "title": "生态与演化",
+            "sortOrder": 4,
+            "pages": [
+                {
+                    "id": "5_1",
+                    "title": "食物与生存",
+                    "content": "每一种生物都需要食物才能生存和繁殖。\n食草生物依靠<color=#2F6148><b>植物资源</b></color>，食肉生物则需要<color=#2F6148><b>捕食其他动物</b></color>。\n<color=#2F6148><b>食物充足</b></color>时种群可能壮大；<color=#2F6148><b>食物不足</b></color>时，种群可能下降甚至<color=#2F6148><b>灭绝</b></color>。",
+                    "mobileContent": "每一种生物都需要食物才能生存和繁殖。\n食草生物依靠<color=#2F6148><b>植物资源</b></color>，食肉生物则需要<color=#2F6148><b>捕食其他动物</b></color>。\n<color=#2F6148><b>食物充足</b></color>时种群可能壮大；<color=#2F6148><b>食物不足</b></color>时，种群可能下降甚至<color=#2F6148><b>灭绝</b></color>。",
+                    "illustration": {
+                        "instanceID": 47988
+                    },
+                    "sortOrder": 0
+                },
+                {
+                    "id": "5_2",
+                    "title": "竞争与捕食",
+                    "content": "同一块土地上的生物会相互影响。\n多个种群可能<color=#2F6148><b>争夺同一份食物</b></color>，<color=#2F6148><b>捕食者</b></color>也会影响<color=#2F6148><b>猎物数量</b></color>。\n一个种群的变化，可能影响整块土地的<color=#2F6148><b>生态平衡</b></color>。",
+                    "mobileContent": "同一块土地上的生物会相互影响。\n多个种群可能<color=#2F6148><b>争夺同一份食物</b></color>，<color=#2F6148><b>捕食者</b></color>也会影响<color=#2F6148><b>猎物数量</b></color>。\n一个种群的变化，可能影响整块土地的<color=#2F6148><b>生态平衡</b></color>。",
+                    "illustration": {
+                        "instanceID": 47988
+                    },
+                    "sortOrder": 1
+                },
+                {
+                    "id": "5_3",
+                    "title": "迁徙与扩散",
+                    "content": "当<color=#2F6148><b>相邻地块</b></color>出现更适宜的生存环境时，生物可能迁徙过去。\n迁徙受到<color=#2F6148><b>运动能力</b></color>、<color=#2F6148><b>地块环境</b></color>与<color=#2F6148><b>海拔连通性</b></color>的影响，<color=#2F6148><b>并不保证成功</b></color>。\n<color=#2F6148><b>观察笔记</b></color>：建造环境不同的邻地，也许能为生物创造新的生存机会。",
+                    "mobileContent": "当<color=#2F6148><b>相邻地块</b></color>出现更适宜的生存环境时，生物可能迁徙过去。\n迁徙受到<color=#2F6148><b>运动能力</b></color>、<color=#2F6148><b>地块环境</b></color>与<color=#2F6148><b>海拔连通性</b></color>的影响，<color=#2F6148><b>并不保证成功</b></color>。\n<color=#2F6148><b>观察笔记</b></color>：建造环境不同的邻地，也许能为生物创造新的生存机会。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 2
+                },
+                {
+                    "id": "5_4",
+                    "title": "适应与变异",
+                    "content": "环境变化时，生物也可能逐渐改变自身的<color=#2F6148><b>性状</b></color>，以<color=#2F6148><b>适应</b></color>新的生存条件。\n例如，寒冷可能促使种群<color=#2F6148><b>适应</b></color>更低温度；食物供给变化可能影响体型和繁殖。\n这些微小的<color=#2F6148><b>性状</b></color>变化称为<color=#2F6148><b>变异</b></color>，但变化<color=#2F6148><b>未必都符合你的预期</b></color>。",
+                    "mobileContent": "环境变化时，生物也可能逐渐改变自身的<color=#2F6148><b>性状</b></color>，以<color=#2F6148><b>适应</b></color>新的生存条件。\n例如，寒冷可能促使种群<color=#2F6148><b>适应</b></color>更低温度；食物供给变化可能影响体型和繁殖。\n这些微小的<color=#2F6148><b>性状</b></color>变化称为<color=#2F6148><b>变异</b></color>，但变化<color=#2F6148><b>未必都符合你的预期</b></color>。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 3
+                },
+                {
+                    "id": "5_5",
+                    "title": "变异与进化",
+                    "content": "一次变异通常只带来微小变化。\n当变异不断积累，使种群<color=#2F6148><b>五项性状接近目标</b></color>，并持续满足<color=#2F6148><b>数量与时间条件</b></color>时，一部分原有种群便可能<color=#2F6148><b>分化成新的物种</b></color>。\n新物种仍需要<color=#2F6148><b>食物与生存空间</b></color>，也会面对竞争和捕食。\n<color=#2F6148><b>观察笔记</b></color>：进化来自变化的积累；新生命诞生后，也需要<color=#2F6148><b>生态环境支持</b></color>它继续生存。",
+                    "mobileContent": "一次变异通常只带来微小变化。\n当变异不断积累，使种群<color=#2F6148><b>五项性状接近目标</b></color>，并持续满足<color=#2F6148><b>数量与时间条件</b></color>时，一部分原有种群便可能<color=#2F6148><b>分化成新的物种</b></color>。\n新物种仍需要<color=#2F6148><b>食物与生存空间</b></color>，也会面对竞争和捕食。\n<color=#2F6148><b>观察笔记</b></color>：进化来自变化的积累；新生命诞生后，也需要<color=#2F6148><b>生态环境支持</b></color>它继续生存。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 4
+                }
+            ]
+        },
+        {
+            "id": "chapter6",
+            "title": "引导进化",
+            "sortOrder": 5,
+            "pages": [
+                {
+                    "id": "6_1",
+                    "title": "选择进化目标",
+                    "content": "按 <color=#914B2D><b>M</b></color> 打开进化网，选择想培育的物种，查看<color=#2F6148><b>五项性状需求</b></color>。\n+ 代表需要<color=#2F6148><b>提高</b></color>，- 代表需要<color=#2F6148><b>降低</b></color>，约等于 代表已经<color=#2F6148><b>接近目标</b></color>。符号越多，所需<color=#2F6148><b>调整幅度越大</b></color>。",
+                    "mobileContent": "在生物信息中观察性状；桌面版可按 <color=#914B2D><b>M</b></color> 打开进化网，选择想培育的物种，查看<color=#2F6148><b>五项性状需求</b></color>。\n+ 代表需要<color=#2F6148><b>提高</b></color>，- 代表需要<color=#2F6148><b>降低</b></color>，约等于 代表已经<color=#2F6148><b>接近目标</b></color>。符号越多，所需<color=#2F6148><b>调整幅度越大</b></color>。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 0
+                },
+                {
+                    "id": "6_2",
+                    "title": "用环境引导性状",
+                    "content": "想要的变化 · 可以尝试的操作\n<color=#2F6148><b>适温</b></color> 提高 / 降低 · 升高 / 降低温度\n<color=#2F6148><b>适湿</b></color> 提高 / 降低 · 增加 / 降低湿度\n<color=#2F6148><b>运动</b></color> 提高 · 创造更有吸引力的邻地，鼓励迁徙\n<color=#2F6148><b>运动</b></color> 降低 · 制造地形隔离，或降低邻地吸引力\n<color=#2F6148><b>体型</b></color> 提高 / 降低 · 增加 / 减少<color=#2F6148><b>植物存量</b></color>\n<color=#2F6148><b>繁殖</b></color> 提高 / 降低 · 增加 / 减少<color=#2F6148><b>植物增量</b></color>\n操作只能<color=#2F6148><b>引导方向</b></color>，<color=#2F6148><b>不能保证</b></color>每次都产生相应变异。",
+                    "mobileContent": "想要的变化 · 可以尝试的操作\n<color=#2F6148><b>适温</b></color> 提高 / 降低 · 升高 / 降低温度\n<color=#2F6148><b>适湿</b></color> 提高 / 降低 · 增加 / 降低湿度\n<color=#2F6148><b>运动</b></color> 提高 · 创造更有吸引力的邻地，鼓励迁徙\n<color=#2F6148><b>运动</b></color> 降低 · 制造地形隔离，或降低邻地吸引力\n<color=#2F6148><b>体型</b></color> 提高 / 降低 · 增加 / 减少<color=#2F6148><b>植物存量</b></color>\n<color=#2F6148><b>繁殖</b></color> 提高 / 降低 · 增加 / 减少<color=#2F6148><b>植物增量</b></color>\n操作只能<color=#2F6148><b>引导方向</b></color>，<color=#2F6148><b>不能保证</b></color>每次都产生相应变异。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 1
+                },
+                {
+                    "id": "6_3",
+                    "title": "抓住进化时机",
+                    "content": "可以先集中引导一项性状，再根据进化需求调整策略。\n当某项性状<color=#2F6148><b>接近目标</b></color>时，可以考虑<color=#2F6148><b>撤销当前干预</b></color>，转而关注其他性状。\n<color=#2F6148><b>观察笔记</b></color>：留意进化需求的变化；环境干预结束后，种群仍会继续<color=#2F6148><b>自然演化</b></color>。",
+                    "mobileContent": "可以先集中引导一项性状，再根据进化需求调整策略。\n当某项性状<color=#2F6148><b>接近目标</b></color>时，可以考虑<color=#2F6148><b>撤销当前干预</b></color>，转而关注其他性状。\n<color=#2F6148><b>观察笔记</b></color>：留意进化需求的变化；环境干预结束后，种群仍会继续<color=#2F6148><b>自然演化</b></color>。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 2
+                },
+                {
+                    "id": "6_4",
+                    "title": "迎接新物种",
+                    "content": "当<color=#2F6148><b>五项性状接近目标</b></color>，并<color=#2F6148><b>持续满足进化条件</b></color>时，种群便有机会正式分化。\n一部分原有种群成为新物种，<color=#2F6148><b>母种群仍然保留</b></color>。\n进化成功只是开始，<color=#2F6148><b>让新物种存活下来</b></color>同样重要。",
+                    "mobileContent": "当<color=#2F6148><b>五项性状接近目标</b></color>，并<color=#2F6148><b>持续满足进化条件</b></color>时，种群便有机会正式分化。\n一部分原有种群成为新物种，<color=#2F6148><b>母种群仍然保留</b></color>。\n进化成功只是开始，<color=#2F6148><b>让新物种存活下来</b></color>同样重要。",
+                    "illustration": {
+                        "instanceID": 48058
+                    },
+                    "sortOrder": 3
+                }
+            ]
+        },
+        {
+            "id": "chapter7",
+            "title": "生命的价值",
+            "sortOrder": 6,
+            "pages": [
+                {
+                    "id": "7_1",
+                    "title": "生物能",
+                    "content": "<color=#914B2D><b>规划玩法：当前测试版可能关闭经济系统。</b></color>\n生命不仅会消耗资源，也会为农场带来珍贵的<color=#2F6148><b>生物能</b></color>。\n每一种生物都会<color=#2F6148><b>随着时间自然产生</b></color><color=#2F6148><b>生物能</b></color>。种群越繁盛，积累的<color=#2F6148><b>生物能</b></color>也可能越多。\n<color=#2F6148><b>生物能</b></color>是你培育这颗星球的重要资源。",
+                    "mobileContent": "<color=#914B2D><b>规划玩法：当前测试版可能关闭经济系统。</b></color>\n生命不仅会消耗资源，也会为农场带来珍贵的<color=#2F6148><b>生物能</b></color>。\n每一种生物都会<color=#2F6148><b>随着时间自然产生</b></color><color=#2F6148><b>生物能</b></color>。种群越繁盛，积累的<color=#2F6148><b>生物能</b></color>也可能越多。\n<color=#2F6148><b>生物能</b></color>是你培育这颗星球的重要资源。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 0
+                },
+                {
+                    "id": "7_2",
+                    "title": "培育的代价",
+                    "content": "<color=#914B2D><b>规划玩法：当前测试版可能关闭经济系统。</b></color>\n<color=#2F6148><b>改造环境</b></color>、<color=#2F6148><b>建造土地</b></color>，都需要<color=#2F6148><b>消耗生物能</b></color>。\n不同操作有着不同的消耗。<color=#2F6148><b>合理分配生物能</b></color>，才能持续开展生态实验。\n<color=#2F6148><b>观察笔记</b></color>：不必急着改变所有土地，先让已有的生命繁衍壮大，也是一种策略。",
+                    "mobileContent": "<color=#914B2D><b>规划玩法：当前测试版可能关闭经济系统。</b></color>\n<color=#2F6148><b>改造环境</b></color>、<color=#2F6148><b>建造土地</b></color>，都需要<color=#2F6148><b>消耗生物能</b></color>。\n不同操作有着不同的消耗。<color=#2F6148><b>合理分配生物能</b></color>，才能持续开展生态实验。\n<color=#2F6148><b>观察笔记</b></color>：不必急着改变所有土地，先让已有的生命繁衍壮大，也是一种策略。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 1
+                },
+                {
+                    "id": "7_3",
+                    "title": "丰富的生命，更大的价值",
+                    "content": "<color=#914B2D><b>规划玩法：当前测试版可能关闭经济系统。</b></color>\n每一种生命都有独特的<color=#2F6148><b>生态价值</b></color>。\n从食草生物到捕食者，从原始物种到新生物种，它们共同构成一张复杂的生命网络。\n<color=#2F6148><b>培育更多样的物种</b></color>，<color=#2F6148><b>建立更丰富的生物网</b></color>，便能获得更高的<color=#2F6148><b>生态价值</b></color>与<color=#2F6148><b>生物能收益</b></color>。\n这也是达尔文农场的经营之道：让生命繁荣，再利用生命带来的能量，创造新的生存机会。",
+                    "mobileContent": "<color=#914B2D><b>规划玩法：当前测试版可能关闭经济系统。</b></color>\n每一种生命都有独特的<color=#2F6148><b>生态价值</b></color>。\n从食草生物到捕食者，从原始物种到新生物种，它们共同构成一张复杂的生命网络。\n<color=#2F6148><b>培育更多样的物种</b></color>，<color=#2F6148><b>建立更丰富的生物网</b></color>，便能获得更高的<color=#2F6148><b>生态价值</b></color>与<color=#2F6148><b>生物能收益</b></color>。\n这也是达尔文农场的经营之道：让生命繁荣，再利用生命带来的能量，创造新的生存机会。",
+                    "illustration": {
+                        "instanceID": 0
+                    },
+                    "sortOrder": 2
+                }
+            ]
+        }
+    ]
+}
